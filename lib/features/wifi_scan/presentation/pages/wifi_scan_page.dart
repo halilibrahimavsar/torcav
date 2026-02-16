@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../features/security/presentation/pages/wifi_details_page.dart';
+import '../../../../features/network_scan/presentation/pages/network_scan_page.dart';
+import '../../../../features/monitoring/presentation/pages/channel_rating_page.dart';
 import '../../domain/entities/wifi_network.dart';
 import '../bloc/wifi_scan_bloc.dart';
 
@@ -16,6 +20,38 @@ class WifiScanPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('DETECTED SIGNALS'),
           actions: [
+            BlocBuilder<WifiScanBloc, WifiScanState>(
+              builder: (context, state) {
+                return IconButton(
+                  icon: const Icon(Icons.analytics),
+                  tooltip: 'Channel Rating',
+                  onPressed:
+                      state is WifiScanLoaded && state.networks.isNotEmpty
+                          ? () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => ChannelRatingPage(
+                                      networks: state.networks,
+                                    ),
+                              ),
+                            );
+                          }
+                          : null,
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.radar),
+              tooltip: 'Network Scanner',
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const NetworkScanPage(),
+                  ),
+                );
+              },
+            ),
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () {
@@ -85,64 +121,90 @@ class _WifiNetworkCard extends StatelessWidget {
     final theme = Theme.of(context);
     final color = theme.primaryColor;
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => WifiDetailsPage(network: network),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),
-        child: Row(
+        decoration: BoxDecoration(
+          color: const Color(0xFF0F172A),
+          border: Border.all(color: AppTheme.primaryColor.withOpacity(0.3)),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: AppTheme.primaryColor.withOpacity(0.1),
+              blurRadius: 10,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: Column(
           children: [
-            _buildSignalIcon(network.signalStrength, color),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    network.ssid.isEmpty ? '<HIDDEN SSID>' : network.ssid,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color:
-                          network.ssid.isEmpty ? Colors.white30 : Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
+            Row(
+              children: [
+                _buildSignalIcon(network.signalStrength, color),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildTag(
-                        network.security
-                            .toString()
-                            .split('.')
-                            .last
-                            .toUpperCase(),
-                        theme,
+                      Text(
+                        network.ssid.isEmpty ? 'Hidden Network' : network.ssid,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: color,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      const SizedBox(width: 8),
-                      _buildTag('CH ${network.channel}', theme),
-                      const SizedBox(width: 8),
+                      const SizedBox(height: 4),
                       Text(
                         network.bssid,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          fontFamily: 'Courier',
-                          color: Colors.white54,
+                          color: Colors.grey,
+                          fontFamily: GoogleFonts.rajdhani().fontFamily,
                         ),
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  '${network.signalStrength} dBm', // Using the raw value which is likely quality % currently, need fix
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.bold,
-                  ),
                 ),
-                Text(
-                  '${network.frequency} MHz',
-                  style: theme.textTheme.bodySmall,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '${network.signalStrength} dBm',
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: color,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '${network.frequency} MHz',
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildTag(
+                  context,
+                  'CH ${network.channel}',
+                  AppTheme.secondaryColor,
+                ),
+                _buildTag(
+                  context,
+                  network.security.toString().split('.').last.toUpperCase(),
+                  network.security == SecurityType.open
+                      ? Theme.of(context).colorScheme.error
+                      : AppTheme.primaryColor,
                 ),
               ],
             ),
@@ -155,12 +217,12 @@ class _WifiNetworkCard extends StatelessWidget {
   Widget _buildSignalIcon(int signal, Color color) {
     // Basic signal strength icon logic
     IconData icon;
-    if (signal > 80) {
-      // If using quality
+    if (signal > -50) {
+      // dBm closer to 0 is better. -50 is excellent.
       icon = Icons.wifi;
-    } else if (signal > 60) {
+    } else if (signal > -70) {
       icon = Icons.wifi_2_bar;
-    } else if (signal > 40) {
+    } else if (signal > -80) {
       icon = Icons.wifi_1_bar;
     } else {
       icon = Icons.wifi_off;
@@ -168,19 +230,19 @@ class _WifiNetworkCard extends StatelessWidget {
     return Icon(icon, color: color, size: 32);
   }
 
-  Widget _buildTag(String text, ThemeData theme) {
+  Widget _buildTag(BuildContext context, String text, Color tagColor) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        border: Border.all(color: theme.primaryColor.withOpacity(0.5)),
+        border: Border.all(color: tagColor.withOpacity(0.5)),
         borderRadius: BorderRadius.circular(4),
-        color: theme.primaryColor.withOpacity(0.1),
+        color: tagColor.withOpacity(0.1),
       ),
       child: Text(
         text,
         style: TextStyle(
           fontSize: 10,
-          color: theme.primaryColor,
+          color: tagColor, // Use tagColor for text
           fontWeight: FontWeight.bold,
         ),
       ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:injectable/injectable.dart';
 import '../../../../core/error/failures.dart';
@@ -7,6 +8,7 @@ import '../../domain/entities/wifi_network.dart';
 import 'wifi_data_source.dart';
 
 @LazySingleton(as: WifiDataSource)
+@Named('linux')
 class LinuxWifiDataSource implements WifiDataSource {
   final ProcessRunner processRunner;
 
@@ -14,10 +16,14 @@ class LinuxWifiDataSource implements WifiDataSource {
 
   @override
   Future<List<WifiNetwork>> scanNetworks() async {
+    if (!Platform.isLinux) {
+      throw const ScanFailure('nmcli is only supported on Linux');
+    }
+
     try {
       // Using nmcli with terse output (-t) and specific fields
       // nmcli -t -f BSSID,SSID,SIGNAL,SECURITY,CHAN,FREQ,BARS devise wifi
-      final result = await processRunner.run('nmcli', [
+      final result = await processRunner.run('/usr/bin/nmcli', [
         '-t',
         '-f',
         'BSSID,SSID,SIGNAL,SECURITY,CHAN,FREQ',

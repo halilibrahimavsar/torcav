@@ -40,7 +40,7 @@ dependencies:
   fpdart: ^1.2.0
   equatable: ^2.0.8
   google_fonts: ^6.3.2
-  fl_chart: ^1.1.0
+  fl_chart: ^0.68.0
   sqflite_common_ffi: ^2.3.6
   sqlite3_flutter_libs: ^0.5.41
   path_provider: ^2.1.5
@@ -53,6 +53,9 @@ dependencies:
     path: /home/garuda/Masaüstü/remote_auth_module
   unified_flutter_features:
     path: /home/garuda/Masaüstü/unified_flutter_features
+  wifi_scan: ^0.4.1+2
+  permission_handler: ^12.0.1
+
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +71,7 @@ dev_dependencies:
   injectable_generator: ^2.8.1
   mocktail: ^1.0.4
   very_good_analysis: ^8.0.0
+  bloc_test: ^10.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
