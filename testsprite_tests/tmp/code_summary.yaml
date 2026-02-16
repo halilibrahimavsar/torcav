@@ -1,0 +1,13 @@
+version: "2"
+type: frontend
+tech_stack:
+  - language: Dart
+  - framework: Flutter
+features:
+  - name: Dashboard
+    description: Main dashboard showing overview
+    files:
+      - lib/features/dashboard/presentation/pages/dashboard_page.dart
+    endpoints: []
+    depends_on: []
+known_limitations: []

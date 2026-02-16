@@ -1,0 +1,60 @@
+Comprehensive Wi-Fi Analyzer Feature List
+Core Wi-Fi Scanning
+- Multi-pass Wi-Fi scanning with signal averaging
+- Dual backend support (iw/nmcli) with automatic fallback
+- Automatic network interface detection and management
+- Real-time signal strength monitoring (dBm)
+- Channel occupancy analysis and congestion scoring
+- Band analysis (2.4GHz, 5GHz, 6GHz) with recommendations
+- Hidden SSID discovery via probe response analysis
+- BSSID tracking and vendor identification (OUI lookup)
+Security Assessment
+- Passive security analysis (Open/WEP/WPA/WPA2/WPA3 detection)
+- Rogue AP/Evil Twin detection
+- Deauthentication attack detection and alerting
+- WPA handshake capture for offline analysis
+- Captive portal detection
+- Security scoring and risk assessment per network
+Network Scanning (Nmap Integration)
+- LAN host discovery (ping sweep)
+- Deep target scanning with multiple profiles (fast/balanced/aggressive)
+- OS fingerprinting and service detection
+- Port scanning with SYN/Connect/UDP methods
+- Network exposure risk scoring
+- Vulnerability scanning via NSE scripts
+- Device type identification
+Monitoring & Analysis
+- Real-time bandwidth monitoring (TX/RX throughput)
+- Network topology mapping and visualization
+- Device fingerprinting (MAC + DHCP analysis)
+- Signal heatmap tracking over time
+- Historical data storage and trend analysis
+- Mesh network topology discovery
+- DFS channel radar detection
+Alerting & Notifications
+- Real-time security alerts (email/Telegram/webhook)
+- IDS/IPS mode for continuous monitoring
+- Anomaly detection with customizable thresholds
+- Rate limiting for scan flood prevention
+- Push notifications for critical events
+Data Management
+- PDF/JSON/HTML report generation and export
+- Database storage (SQLite/PostgreSQL) for historical data
+- Session saving and comparison
+- Import/export scan results
+- Cloud sync capability
+User Interface
+- Interactive TUI with live updates (Rich-based)
+- Modern web dashboard with real-time metrics
+- CLI for scripting and automation
+- Dark/light theme support
+- Responsive mobile-friendly design
+System Features
+- Async I/O operations for performance
+- Root/sudo privilege management
+- Isolated virtual environment support
+- Cross-platform compatibility (Linux/Windows/macOS)
+- Plugin architecture for extensibility
+---
+Prompt for Flutter Developer:
+"Build a professional Wi-Fi analyzer app in Flutter with these features: real-time Wi-Fi scanning with signal visualization, security analysis showing encryption types and vulnerabilities, network device discovery using nmap integration, channel recommendation engine, speed test integration, signal strength heatmaps, exportable PDF reports, dark theme UI, and background monitoring with push notifications. Use clean architecture with BLoC pattern, support both Android and iOS, implement local database with Hive/SQLite, and include comprehensive unit/widget tests."
