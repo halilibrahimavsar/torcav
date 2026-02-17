@@ -12,12 +12,14 @@ class WifiScanInitial extends WifiScanState {}
 class WifiScanLoading extends WifiScanState {}
 
 class WifiScanLoaded extends WifiScanState {
-  final List<WifiNetwork> networks;
+  final ScanSnapshot snapshot;
 
-  const WifiScanLoaded(this.networks);
+  const WifiScanLoaded(this.snapshot);
+
+  List<WifiObservation> get networks => snapshot.networks;
 
   @override
-  List<Object> get props => [networks];
+  List<Object> get props => [snapshot];
 }
 
 class WifiScanError extends WifiScanState {

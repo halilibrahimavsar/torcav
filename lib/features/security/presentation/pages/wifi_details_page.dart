@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../../../../core/theme/app_theme.dart';
 import '../../../wifi_scan/domain/entities/wifi_network.dart';
 import '../../../../features/monitoring/presentation/pages/signal_graph_page.dart';
@@ -25,6 +26,24 @@ class WifiDetailsPage extends StatelessWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
           actions: [
+            Builder(
+              builder: (context) {
+                return IconButton(
+                  icon: const Icon(Icons.handshake_outlined),
+                  tooltip: 'Handshake capture check',
+                  onPressed: () => _runHandshakeCheck(context),
+                );
+              },
+            ),
+            Builder(
+              builder: (context) {
+                return IconButton(
+                  icon: const Icon(Icons.gpp_good_outlined),
+                  tooltip: 'Active defense readiness',
+                  onPressed: () => _runActiveDefenseCheck(context),
+                );
+              },
+            ),
             IconButton(
               icon: const Icon(Icons.show_chart),
               tooltip: 'Signal Graph',
@@ -38,7 +57,15 @@ class WifiDetailsPage extends StatelessWidget {
             ),
           ],
         ),
-        body: BlocBuilder<WifiDetailsBloc, WifiDetailsState>(
+        body: BlocConsumer<WifiDetailsBloc, WifiDetailsState>(
+          listener: (context, state) {
+            if (state is WifiDetailsLoaded &&
+                state.lastSecurityMessage != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.lastSecurityMessage!)),
+              );
+            }
+          },
           builder: (context, state) {
             if (state is WifiDetailsLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -50,11 +77,26 @@ class WifiDetailsPage extends StatelessWidget {
                   children: [
                     _buildSecurityScore(
                       context,
-                      state.report.score,
-                      state.report.overallStatus,
+                      state.assessment.score,
+                      state.assessment.statusLabel,
                     ),
                     const SizedBox(height: 24),
                     _buildNetworkDetails(context),
+                    if (state.assessment.riskFactors.isNotEmpty) ...[
+                      const SizedBox(height: 16),
+                      Text(
+                        'RISK FACTORS',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(color: AppTheme.secondaryColor),
+                      ),
+                      const SizedBox(height: 8),
+                      ...state.assessment.riskFactors.map(
+                        (factor) => Text(
+                          '- $factor',
+                          style: const TextStyle(color: Colors.white70),
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 24),
                     Text(
                       'VULNERABILITIES',
@@ -63,10 +105,10 @@ class WifiDetailsPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    ...state.report.vulnerabilities.map(
+                    ...state.assessment.findings.map(
                       (v) => _buildVulnerabilityCard(context, v),
                     ),
-                    if (state.report.vulnerabilities.isEmpty)
+                    if (state.assessment.findings.isEmpty)
                       _buildSafeCard(context),
                   ],
                 ),
@@ -93,10 +135,10 @@ class WifiDetailsPage extends StatelessWidget {
         height: 200,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(color: color.withOpacity(0.3), width: 10),
+          border: Border.all(color: color.withValues(alpha: 0.3), width: 10),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.2),
+              color: color.withValues(alpha: 0.2),
               blurRadius: 20,
               spreadRadius: 5,
             ),
@@ -135,7 +177,7 @@ class WifiDetailsPage extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: const Color(0xFF0F172A),
-        border: Border.all(color: AppTheme.primaryColor.withOpacity(0.3)),
+        border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.3)),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -192,8 +234,8 @@ class WifiDetailsPage extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        border: Border.all(color: color.withOpacity(0.5)),
+        color: color.withValues(alpha: 0.1),
+        border: Border.all(color: color.withValues(alpha: 0.5)),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -234,8 +276,8 @@ class WifiDetailsPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.primaryColor.withOpacity(0.1),
-        border: Border.all(color: AppTheme.primaryColor.withOpacity(0.5)),
+        color: AppTheme.primaryColor.withValues(alpha: 0.1),
+        border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.5)),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -258,6 +300,18 @@ class WifiDetailsPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _runHandshakeCheck(BuildContext context) {
+    context.read<WifiDetailsBloc>().add(
+      CaptureHandshake(network, 'wlo1'), // TODO: Dynamic interface name
+    );
+  }
+
+  void _runActiveDefenseCheck(BuildContext context) {
+    context.read<WifiDetailsBloc>().add(
+      RunActiveDefense(network, 'wlo1'), // TODO: Dynamic interface name
     );
   }
 }

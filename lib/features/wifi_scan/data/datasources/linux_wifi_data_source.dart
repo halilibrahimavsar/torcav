@@ -1,126 +1,388 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:injectable/injectable.dart';
+
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/process_runner.dart';
+import '../../domain/entities/scan_request.dart';
+import '../../domain/entities/scan_snapshot.dart';
 import '../../domain/entities/wifi_network.dart';
+import 'scan_snapshot_builder.dart';
 import 'wifi_data_source.dart';
 
 @LazySingleton(as: WifiDataSource)
 @Named('linux')
 class LinuxWifiDataSource implements WifiDataSource {
-  final ProcessRunner processRunner;
+  final ProcessRunner _processRunner;
+  final ScanSnapshotBuilder _snapshotBuilder;
 
-  LinuxWifiDataSource(this.processRunner);
+  LinuxWifiDataSource(this._processRunner)
+    : _snapshotBuilder = const ScanSnapshotBuilder();
 
   @override
-  Future<List<WifiNetwork>> scanNetworks() async {
+  Future<List<WifiNetwork>> scanNetworks({ScanRequest? request}) async {
+    final snapshot = await scanSnapshot(request ?? const ScanRequest());
+    return snapshot.toLegacyNetworks();
+  }
+
+  @override
+  Future<ScanSnapshot> scanSnapshot(ScanRequest request) async {
     if (!Platform.isLinux) {
-      throw const ScanFailure('nmcli is only supported on Linux');
+      throw const ScanFailure('Linux scanner is only supported on Linux');
+    }
+
+    final interfaceName =
+        request.interfaceName ?? await _detectActiveInterfaceName() ?? 'wlan0';
+
+    final passCount = max(1, request.passes);
+    final passResults = <List<WifiNetwork>>[];
+    String backendUsed = 'unknown';
+
+    for (var pass = 0; pass < passCount; pass++) {
+      final result = await _scanSinglePass(interfaceName, request);
+      backendUsed = backendUsed == 'unknown' ? result.backend : backendUsed;
+      passResults.add(result.networks);
+
+      if (pass < passCount - 1 && request.passIntervalMs > 0) {
+        await Future<void>.delayed(
+          Duration(milliseconds: request.passIntervalMs),
+        );
+      }
+    }
+
+    if (passResults.every((entry) => entry.isEmpty)) {
+      throw const ScanFailure('No networks found in scan passes');
+    }
+
+    return _snapshotBuilder.build(
+      timestamp: DateTime.now(),
+      backendUsed: backendUsed,
+      interfaceName: interfaceName,
+      passes: passResults,
+    );
+  }
+
+  Future<_PassResult> _scanSinglePass(
+    String interfaceName,
+    ScanRequest request,
+  ) async {
+    switch (request.backendPreference) {
+      case WifiBackendPreference.nmcli:
+        return _PassResult(
+          backend: 'nmcli',
+          networks: await _scanWithNmcli(interfaceName),
+        );
+      case WifiBackendPreference.iw:
+        return _PassResult(
+          backend: 'iw',
+          networks: await _scanWithIw(interfaceName),
+        );
+      case WifiBackendPreference.android:
+        throw const ScanFailure('Android backend is not available on Linux');
+      case WifiBackendPreference.auto:
+        try {
+          final networks = await _scanWithNmcli(interfaceName);
+          return _PassResult(backend: 'nmcli', networks: networks);
+        } on Failure {
+          final networks = await _scanWithIw(interfaceName);
+          return _PassResult(backend: 'iw', networks: networks);
+        }
+    }
+  }
+
+  Future<List<WifiNetwork>> _scanWithNmcli(String interfaceName) async {
+    final result = await _processRunner.run('nmcli', [
+      '-t',
+      '-f',
+      'BSSID,SSID,SIGNAL,SECURITY,CHAN,FREQ',
+      'device',
+      'wifi',
+      'list',
+      'ifname',
+      interfaceName,
+    ]);
+
+    if (result.exitCode != 0) {
+      throw ScanFailure('nmcli failed: ${result.stderr}');
+    }
+
+    final output = result.stdout.toString();
+    final lines = const LineSplitter().convert(output);
+    final networks = <WifiNetwork>[];
+
+    for (final line in lines) {
+      final parts = _splitTerse(line);
+      if (parts.length < 6) {
+        continue;
+      }
+
+      final bssid = _unescape(parts[0]);
+      if (bssid.isEmpty) {
+        continue;
+      }
+
+      final ssid = _unescape(parts[1]);
+      final quality = int.tryParse(parts[2]) ?? 0;
+      final signalDbm = (quality / 2).round() - 100;
+      final security = _parseSecurity(_unescape(parts[3]));
+      final channel = int.tryParse(parts[4]) ?? 0;
+      final freqRaw = _unescape(parts[5]).replaceAll(' MHz', '');
+      final frequency = int.tryParse(freqRaw) ?? 0;
+
+      networks.add(
+        WifiNetwork(
+          ssid: ssid,
+          bssid: bssid,
+          signalStrength: signalDbm,
+          channel: channel == 0 ? _frequencyToChannel(frequency) : channel,
+          frequency: frequency,
+          security: security,
+          isHidden: ssid.isEmpty,
+        ),
+      );
+    }
+
+    return networks;
+  }
+
+  Future<List<WifiNetwork>> _scanWithIw(String interfaceName) async {
+    final result = await _processRunner.run('iw', [
+      'dev',
+      interfaceName,
+      'scan',
+    ]);
+    if (result.exitCode != 0) {
+      throw ScanFailure('iw failed: ${result.stderr}');
+    }
+
+    final lines = const LineSplitter().convert(result.stdout.toString());
+    final networks = <WifiNetwork>[];
+    _IwNetworkAccumulator? current;
+
+    void flushCurrent() {
+      final entry = current;
+      if (entry == null || entry.bssid.isEmpty) {
+        return;
+      }
+
+      final frequency = entry.frequency;
+      final derivedChannel =
+          entry.channel == 0 ? _frequencyToChannel(frequency) : entry.channel;
+
+      networks.add(
+        WifiNetwork(
+          ssid: entry.ssid,
+          bssid: entry.bssid,
+          signalStrength: entry.signalDbm.round(),
+          channel: derivedChannel,
+          frequency: frequency,
+          security: entry.security,
+          isHidden: entry.ssid.isEmpty,
+        ),
+      );
+    }
+
+    for (final rawLine in lines) {
+      final line = rawLine.trimLeft();
+
+      if (line.startsWith('BSS ')) {
+        flushCurrent();
+        final match = RegExp(r'^BSS\s+([0-9A-Fa-f:]{17})').firstMatch(line);
+        current = _IwNetworkAccumulator(
+          bssid: match?.group(1)?.toUpperCase() ?? '',
+        );
+        continue;
+      }
+
+      if (current == null) {
+        continue;
+      }
+
+      if (line.startsWith('SSID:')) {
+        current = current.copyWith(ssid: line.substring(5).trim());
+      } else if (line.startsWith('freq:')) {
+        current = current.copyWith(
+          frequency: int.tryParse(line.substring(5).trim()) ?? 0,
+        );
+      } else if (line.startsWith('signal:')) {
+        final match = RegExp(
+          r'signal:\s*(-?[0-9]+(\.[0-9]+)?)',
+        ).firstMatch(line);
+        current = current.copyWith(
+          signalDbm: double.tryParse(match?.group(1) ?? '') ?? -100,
+        );
+      } else if (line.contains('DS Parameter set: channel')) {
+        final match = RegExp(r'channel\s+([0-9]+)').firstMatch(line)?.group(1);
+        current = current.copyWith(channel: int.tryParse(match ?? '') ?? 0);
+      } else if (line.contains('SAE') || line.contains('WPA3')) {
+        current = current.copyWith(security: SecurityType.wpa3);
+      } else if (line.contains('RSN:')) {
+        if (current.security != SecurityType.wpa3) {
+          current = current.copyWith(security: SecurityType.wpa2);
+        }
+      } else if (line.contains('WPA:')) {
+        if (current.security == SecurityType.open) {
+          current = current.copyWith(security: SecurityType.wpa);
+        }
+      } else if (line.contains('WEP')) {
+        current = current.copyWith(security: SecurityType.wep);
+      }
+    }
+
+    flushCurrent();
+    return networks;
+  }
+
+  Future<String?> _detectActiveInterfaceName() async {
+    try {
+      final nmcliResult = await _processRunner.run('nmcli', [
+        '-t',
+        '-f',
+        'DEVICE,TYPE,STATE',
+        'device',
+        'status',
+      ]);
+
+      if (nmcliResult.exitCode == 0) {
+        final lines = const LineSplitter().convert(
+          nmcliResult.stdout.toString(),
+        );
+        String? fallbackWifi;
+
+        for (final line in lines) {
+          final parts = _splitTerse(line);
+          if (parts.length < 3) {
+            continue;
+          }
+          final device = _unescape(parts[0]);
+          final type = _unescape(parts[1]).toLowerCase();
+          final state = _unescape(parts[2]).toLowerCase();
+
+          if (type != 'wifi') {
+            continue;
+          }
+          fallbackWifi ??= device;
+          if (state.contains('connected')) {
+            return device;
+          }
+        }
+
+        if (fallbackWifi != null && fallbackWifi.isNotEmpty) {
+          return fallbackWifi;
+        }
+      }
+    } catch (_) {
+      // fallback to iw parser below
     }
 
     try {
-      // Using nmcli with terse output (-t) and specific fields
-      // nmcli -t -f BSSID,SSID,SIGNAL,SECURITY,CHAN,FREQ,BARS devise wifi
-      final result = await processRunner.run('/usr/bin/nmcli', [
-        '-t',
-        '-f',
-        'BSSID,SSID,SIGNAL,SECURITY,CHAN,FREQ',
-        'device',
-        'wifi',
-        'list',
-      ]);
-
-      if (result.exitCode != 0) {
-        throw const ScanFailure('Failed to execute nmcli');
+      final iwResult = await _processRunner.run('iw', ['dev']);
+      if (iwResult.exitCode != 0) {
+        return null;
       }
 
-      final output = result.stdout.toString();
-      final lines = const LineSplitter().convert(output);
-      final networks = <WifiNetwork>[];
-
+      final lines = const LineSplitter().convert(iwResult.stdout.toString());
       for (final line in lines) {
-        // nmcli escapes colons in values with backslash, but the separator is also colon.
-        // -t format separates fields with :. BSSID also has :.
-        // nmcli -t escapes the field separators (Wait, nmcli -t output is tricky with BSSID)
-        // Actually, nmcli -t escapes field delimiters using backslash.
-        // Let's parse carefully. Or maybe use CSV output? nmcli doesn't output CSV directly easily.
-        // Let's assume standard behavior: BSSID:SSID:SIGNAL...
-        // But BSSID itself contains colons! "AA:BB:CC..."
-        //
-        // A better approach might be to use fixed width or just handle the split carefully.
-        // Or use `iw` which is more raw but robust.
-        //
-        // Let's try parsing manually. BSSID is always the first field and contains 5 colons? No, BSSID has 5 colons.
-        //
-        // Alternative: Use `nmcli -f BSSID,SSID...` without `-t` and parse column based? No, strict is better.
-        //
-        // nmcli documentation says: "In terse mode, the columns are separated by colons (:). Colons inside the values are escaped with a backslash (\)."
-        // So we can split by `(?<!\\):`.
-
-        final parts = _splitTerse(line);
-        if (parts.length < 6) continue;
-
-        final bssid = _unescape(parts[0]);
-        final ssid = _unescape(parts[1]);
-        final quality = int.tryParse(parts[2]) ?? 0;
-        final signalDbm =
-            (quality / 2).round() - 100; // Approximate dBm from quality
-        final securityStr = _unescape(parts[3]);
-        final channel = int.tryParse(parts[4]) ?? 0;
-        final freqStr = _unescape(parts[5].replaceAll(' MHz', ''));
-        final frequency = int.tryParse(freqStr) ?? 0;
-
-        networks.add(
-          WifiNetwork(
-            ssid: ssid,
-            bssid: bssid,
-            signalStrength:
-                signalDbm, // nmcli 'SIGNAL' is usually quality 0-100. 'SSID-HEX' might be needed.
-            // Wait, SIGNAL in nmcli is usually bars/quality.
-            // dbm is in 'SIGNAL-DBM' field? Let's check.
-            // Command: nmcli -f BSSID,SSID,SIGNAL,SECURITY,CHAN,FREQ device wifi
-            // Yes. SIGNAL is usually 0-100.
-            // We want dBm. nmcli usually doesn't explicitly expose dBm easily in all versions.
-            // `iw dev wlan0 scan` gives dBm.
-            // But parsing `iw` is harder.
-            // Let's try to map quality to dBm roughly if needed, or check if we can get dBm.
-            //
-            // Actually, let's use `nmcli -f BSSID,SSID,SIGNAL,SECURITY,CHAN,FREQ,Rate,BARS device wifi`
-            // If we can't get dBm, we might approximate: dBm ~= (quality / 2) - 100.
-            //
-            // Let's stick with this for now and improve later if we switch to `iw`.
-            frequency: frequency,
-            channel: channel,
-            security: _parseSecurity(securityStr),
-            isHidden: ssid.isEmpty,
-          ),
-        );
+        final match = RegExp(r'^\s*Interface\s+(\S+)\s*$').firstMatch(line);
+        if (match != null) {
+          return match.group(1);
+        }
       }
-      return networks;
-    } catch (e) {
-      throw ScanFailure(e.toString());
+    } catch (_) {
+      return null;
     }
+
+    return null;
   }
 
   List<String> _splitTerse(String line) {
-    // Split by colon not preceded by backslash
-    final regex = RegExp(r'(?<!\\):');
-    return line.split(regex);
+    return line.split(RegExp(r'(?<!\\):'));
   }
 
-  String _unescape(String start) {
-    return start.replaceAll(r'\:', ':').replaceAll(r'\\', r'\');
+  String _unescape(String value) {
+    return value.replaceAll(r'\:', ':').replaceAll(r'\\', r'\').trim();
   }
 
-  SecurityType _parseSecurity(String sec) {
-    final s = sec.toUpperCase();
-    if (s.contains('WPA3')) return SecurityType.wpa3;
-    if (s.contains('WPA2')) return SecurityType.wpa2;
-    if (s.contains('WPA')) return SecurityType.wpa;
-    if (s.contains('WEP')) return SecurityType.wep;
-    if (s == '--' || s.isEmpty) return SecurityType.open;
+  SecurityType _parseSecurity(String securityRaw) {
+    final security = securityRaw.toUpperCase();
+    if (security.contains('WPA3') || security.contains('SAE')) {
+      return SecurityType.wpa3;
+    }
+    if (security.contains('WPA2') || security.contains('RSN')) {
+      return SecurityType.wpa2;
+    }
+    if (security.contains('WPA')) {
+      return SecurityType.wpa;
+    }
+    if (security.contains('WEP')) {
+      return SecurityType.wep;
+    }
+    if (security == '--' || security.isEmpty) {
+      return SecurityType.open;
+    }
     return SecurityType.unknown;
+  }
+
+  int _frequencyToChannel(int frequency) {
+    if (frequency == 2484) {
+      return 14;
+    }
+    if (frequency < 2484 && frequency >= 2412) {
+      return (frequency - 2407) ~/ 5;
+    }
+    if (frequency >= 4910 && frequency <= 4980) {
+      return (frequency - 4000) ~/ 5;
+    }
+    if (frequency >= 5000 && frequency < 5925) {
+      return (frequency - 5000) ~/ 5;
+    }
+    if (frequency >= 5955) {
+      return (frequency - 5950) ~/ 5;
+    }
+    return 0;
+  }
+}
+
+class _PassResult {
+  final String backend;
+  final List<WifiNetwork> networks;
+
+  const _PassResult({required this.backend, required this.networks});
+}
+
+class _IwNetworkAccumulator {
+  final String bssid;
+  final String ssid;
+  final int frequency;
+  final double signalDbm;
+  final int channel;
+  final SecurityType security;
+
+  const _IwNetworkAccumulator({
+    required this.bssid,
+    this.ssid = '',
+    this.frequency = 0,
+    this.signalDbm = -100,
+    this.channel = 0,
+    this.security = SecurityType.open,
+  });
+
+  _IwNetworkAccumulator copyWith({
+    String? ssid,
+    int? frequency,
+    double? signalDbm,
+    int? channel,
+    SecurityType? security,
+  }) {
+    return _IwNetworkAccumulator(
+      bssid: bssid,
+      ssid: ssid ?? this.ssid,
+      frequency: frequency ?? this.frequency,
+      signalDbm: signalDbm ?? this.signalDbm,
+      channel: channel ?? this.channel,
+      security: security ?? this.security,
+    );
   }
 }

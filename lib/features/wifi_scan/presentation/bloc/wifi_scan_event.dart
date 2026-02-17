@@ -8,5 +8,19 @@ abstract class WifiScanEvent extends Equatable {
 }
 
 class WifiScanStarted extends WifiScanEvent {
-  const WifiScanStarted();
+  final ScanRequest request;
+
+  const WifiScanStarted({this.request = const ScanRequest()});
+
+  @override
+  List<Object> get props => [request];
+}
+
+class WifiScanRefreshed extends WifiScanEvent {
+  final ScanRequest request;
+
+  const WifiScanRefreshed({this.request = const ScanRequest()});
+
+  @override
+  List<Object> get props => [request];
 }

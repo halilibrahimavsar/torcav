@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../../../../core/theme/app_theme.dart';
-import '../../domain/entities/network_device.dart';
+import '../../domain/entities/host_scan_result.dart';
+import '../../domain/entities/network_scan_profile.dart';
 import '../bloc/network_scan_bloc.dart';
 
 class NetworkScanPage extends StatefulWidget {
@@ -14,29 +16,24 @@ class NetworkScanPage extends StatefulWidget {
 }
 
 class _NetworkScanPageState extends State<NetworkScanPage> {
-  final TextEditingController _subnetController = TextEditingController(
+  final TextEditingController _targetController = TextEditingController(
     text: '192.168.1.0/24',
   );
+  NetworkScanProfile _profile = NetworkScanProfile.fast;
+  PortScanMethod _method = PortScanMethod.auto;
 
   @override
   void dispose() {
-    _subnetController.dispose();
+    _targetController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Get actual subnet from wifi info. For now, hardcode or prompt.
-    // Ideally we get Gateway IP and mask.
-    // Let's assume 192.168.1.0/24 for demo or add an input field.
     return BlocProvider(
       create: (_) => GetIt.I<NetworkScanBloc>(),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('NETWORK MAPPER'),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
+        appBar: AppBar(title: const Text('LAN RECON')),
         body: Column(
           children: [
             _buildScanControl(context),
@@ -45,9 +42,11 @@ class _NetworkScanPageState extends State<NetworkScanPage> {
                 builder: (context, state) {
                   if (state is NetworkScanLoading) {
                     return const Center(child: CircularProgressIndicator());
-                  } else if (state is NetworkScanLoaded) {
-                    return _buildDeviceList(state.devices);
-                  } else if (state is NetworkScanError) {
+                  }
+                  if (state is NetworkScanLoaded) {
+                    return _buildHostList(state.hosts);
+                  }
+                  if (state is NetworkScanError) {
                     return Center(
                       child: Text(
                         'SCAN FAILED: ${state.message}',
@@ -78,121 +77,182 @@ class _NetworkScanPageState extends State<NetworkScanPage> {
   Widget _buildScanControl(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Row(
+      child: Column(
         children: [
-          Expanded(
-            child: TextField(
-              controller: _subnetController,
-              decoration: InputDecoration(
-                labelText: 'Target Subnet',
-                labelStyle: const TextStyle(color: AppTheme.secondaryColor),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: AppTheme.secondaryColor.withOpacity(0.5),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _targetController,
+                  decoration: InputDecoration(
+                    labelText: 'Target subnet/IP',
+                    labelStyle: const TextStyle(color: AppTheme.secondaryColor),
+                    filled: true,
+                    fillColor: Colors.black26,
                   ),
+                  style: GoogleFonts.sourceCodePro(color: Colors.white),
                 ),
-                focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: AppTheme.secondaryColor),
-                ),
-                filled: true,
-                fillColor: Colors.black26,
               ),
-              style: GoogleFonts.sourceCodePro(color: Colors.white),
-            ),
-          ),
-          const SizedBox(width: 16),
-          // Use Builder to get context with BlocProvider
-          Builder(
-            builder: (context) {
-              return ElevatedButton.icon(
-                onPressed: () {
-                  context.read<NetworkScanBloc>().add(
-                    StartNetworkScan(_subnetController.text),
+              const SizedBox(width: 12),
+              Builder(
+                builder: (context) {
+                  return ElevatedButton.icon(
+                    onPressed: () {
+                      context.read<NetworkScanBloc>().add(
+                        StartNetworkScan(
+                          target: _targetController.text.trim(),
+                          profile: _profile,
+                          method: _method,
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.radar),
+                    label: const Text('SCAN'),
                   );
                 },
-                icon: const Icon(Icons.radar),
-                label: const Text('SCAN'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryColor,
-                  foregroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 16,
-                  ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: DropdownButtonFormField<NetworkScanProfile>(
+                  value: _profile,
+                  decoration: const InputDecoration(labelText: 'Profile'),
+                  items:
+                      NetworkScanProfile.values
+                          .map(
+                            (profile) => DropdownMenuItem(
+                              value: profile,
+                              child: Text(profile.name.toUpperCase()),
+                            ),
+                          )
+                          .toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() => _profile = value);
+                    }
+                  },
                 ),
-              );
-            },
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: DropdownButtonFormField<PortScanMethod>(
+                  value: _method,
+                  decoration: const InputDecoration(labelText: 'Method'),
+                  items:
+                      PortScanMethod.values
+                          .map(
+                            (method) => DropdownMenuItem(
+                              value: method,
+                              child: Text(method.name.toUpperCase()),
+                            ),
+                          )
+                          .toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() => _method = value);
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildDeviceList(List<NetworkDevice> devices) {
-    if (devices.isEmpty) {
-      return const Center(child: Text('NO DEVICES FOUND'));
+  Widget _buildHostList(List<HostScanResult> hosts) {
+    if (hosts.isEmpty) {
+      return const Center(child: Text('NO HOSTS FOUND'));
     }
     return ListView.builder(
-      itemCount: devices.length,
+      itemCount: hosts.length,
       padding: const EdgeInsets.all(16),
       itemBuilder: (context, index) {
-        final device = devices[index];
-        return _NetworkDeviceCard(device: device);
+        return _HostCard(host: hosts[index]);
       },
     );
   }
 }
 
-class _NetworkDeviceCard extends StatelessWidget {
-  final NetworkDevice device;
+class _HostCard extends StatelessWidget {
+  final HostScanResult host;
 
-  const _NetworkDeviceCard({required this.device});
+  const _HostCard({required this.host});
 
   @override
   Widget build(BuildContext context) {
+    final riskColor =
+        host.exposureScore >= 70
+            ? Colors.redAccent
+            : host.exposureScore >= 40
+            ? Colors.orangeAccent
+            : AppTheme.primaryColor;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: const Color(0xFF0F172A),
-        border: Border.all(color: AppTheme.secondaryColor.withOpacity(0.3)),
+        border: Border.all(color: riskColor.withValues(alpha: 0.4)),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CircleAvatar(
-            backgroundColor: Colors.black45,
-            child: Icon(Icons.computer, color: AppTheme.secondaryColor),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  device.ip,
+          Row(
+            children: [
+              Icon(Icons.devices, color: riskColor),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  host.ip,
                   style: GoogleFonts.orbitron(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
                 ),
-                if (device.hostName.isNotEmpty)
-                  Text(
-                    device.hostName,
-                    style: GoogleFonts.rajdhani(color: Colors.grey),
-                  ),
-              ],
-            ),
+              ),
+              Text(
+                'Risk ${host.exposureScore.toStringAsFixed(0)}',
+                style: GoogleFonts.orbitron(
+                  color: riskColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
-          if (device.mac.isNotEmpty)
+          const SizedBox(height: 6),
+          Text(
+            '${host.deviceType} • ${host.hostName.isEmpty ? 'Unknown host' : host.hostName}',
+            style: GoogleFonts.rajdhani(color: Colors.white70, fontSize: 16),
+          ),
+          if (host.osGuess.isNotEmpty)
             Text(
-              device.mac,
+              'OS: ${host.osGuess}',
+              style: GoogleFonts.rajdhani(color: Colors.white60),
+            ),
+          if (host.services.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              'Services: ${host.services.take(5).map((s) => '${s.port}/${s.protocol} ${s.serviceName}').join(' | ')}',
               style: GoogleFonts.sourceCodePro(
-                color: Colors.grey,
+                color: AppTheme.secondaryColor,
                 fontSize: 12,
               ),
             ),
+          ],
+          if (host.vulnerabilities.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Text(
+              'Vuln: ${host.vulnerabilities.take(2).map((v) => v.id).join(', ')}',
+              style: GoogleFonts.rajdhani(color: Colors.redAccent),
+            ),
+          ],
         ],
       ),
     );

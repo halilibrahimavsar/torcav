@@ -23,6 +23,28 @@ class WifiNetwork extends Equatable {
     this.isHidden = false,
   });
 
+  WifiNetwork copyWith({
+    String? ssid,
+    String? bssid,
+    int? signalStrength,
+    int? channel,
+    int? frequency,
+    SecurityType? security,
+    String? vendor,
+    bool? isHidden,
+  }) {
+    return WifiNetwork(
+      ssid: ssid ?? this.ssid,
+      bssid: bssid ?? this.bssid,
+      signalStrength: signalStrength ?? this.signalStrength,
+      channel: channel ?? this.channel,
+      frequency: frequency ?? this.frequency,
+      security: security ?? this.security,
+      vendor: vendor ?? this.vendor,
+      isHidden: isHidden ?? this.isHidden,
+    );
+  }
+
   @override
   List<Object?> get props => [
     ssid,

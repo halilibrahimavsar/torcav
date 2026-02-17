@@ -3,35 +3,74 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../../../../core/theme/app_theme.dart';
 import '../../../../features/wifi_scan/domain/entities/wifi_network.dart';
+import '../bloc/heatmap_bloc.dart';
 import '../bloc/monitoring_bloc.dart';
+import 'temporal_heatmap_page.dart';
 
 class SignalGraphPage extends StatelessWidget {
   final WifiNetwork network;
+  final String interfaceName;
 
-  const SignalGraphPage({super.key, required this.network});
+  const SignalGraphPage({
+    super.key,
+    required this.network,
+    this.interfaceName = 'wlo1',
+  });
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create:
-          (_) => GetIt.I<MonitoringBloc>()..add(StartMonitoring(network.bssid)),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('SIGNAL MONITORING: ${network.ssid}'),
-          backgroundColor: Colors.transparent,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create:
+              (_) =>
+                  GetIt.I<MonitoringBloc>()
+                    ..add(StartMonitoring(network.bssid))
+                    ..add(StartBandwidthMonitoring(interfaceName)),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Expanded(child: _SignalChart()),
-              const SizedBox(height: 20),
-              _buildStats(context),
-            ],
-          ),
-        ),
+        BlocProvider(create: (_) => GetIt.I<HeatmapBloc>()),
+      ],
+      child: Builder(
+        builder: (innerContext) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('SIGNAL MONITORING: ${network.ssid}'),
+              backgroundColor: Colors.transparent,
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.map_outlined),
+                  tooltip: 'Heatmap',
+                  onPressed: () {
+                    Navigator.of(innerContext).push(
+                      MaterialPageRoute(
+                        builder:
+                            (_) => TemporalHeatmapPage(bssid: network.bssid),
+                      ),
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add_location_alt_outlined),
+                  tooltip: 'Tag current point',
+                  onPressed: () => _addHeatmapPoint(innerContext),
+                ),
+              ],
+            ),
+            body: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Expanded(child: _SignalChart()),
+                  const SizedBox(height: 20),
+                  _buildStats(innerContext),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -56,6 +95,16 @@ class SignalGraphPage extends StatelessWidget {
                 ),
                 _buildStatItem('CHANNEL', '${state.currentData.channel}'),
                 _buildStatItem('FREQ', '${state.currentData.frequency} MHz'),
+                if (state.latestBandwidth != null)
+                  _buildStatItem(
+                    'RX',
+                    '${(state.latestBandwidth!.rxBps / 1024).toStringAsFixed(1)} KB/s',
+                  ),
+                if (state.latestBandwidth != null)
+                  _buildStatItem(
+                    'TX',
+                    '${(state.latestBandwidth!.txBps / 1024).toStringAsFixed(1)} KB/s',
+                  ),
               ],
             ),
           );
@@ -82,6 +131,63 @@ class SignalGraphPage extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _addHeatmapPoint(BuildContext context) async {
+    final zoneController = TextEditingController();
+    final zone = await showDialog<String>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add Zone Point'),
+          content: TextField(
+            controller: zoneController,
+            decoration: const InputDecoration(
+              labelText: 'Zone tag (e.g. Kitchen)',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed:
+                  () => Navigator.of(context).pop(zoneController.text.trim()),
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (!context.mounted) {
+      zoneController.dispose();
+      return;
+    }
+
+    final state = context.read<MonitoringBloc>().state;
+    if (zone == null || zone.isEmpty || state is! MonitoringActive) {
+      zoneController.dispose();
+      return;
+    }
+
+    context.read<HeatmapBloc>().add(
+      LogHeatmapPoint(
+        bssid: network.bssid,
+        zoneTag: zone,
+        signalDbm: state.currentData.signalStrength,
+      ),
+    );
+
+    if (!context.mounted) {
+      zoneController.dispose();
+      return;
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Heatmap point added for $zone')));
+    zoneController.dispose();
   }
 }
 
@@ -151,7 +257,7 @@ class _SignalChart extends StatelessWidget {
                   dotData: FlDotData(show: true),
                   belowBarData: BarAreaData(
                     show: true,
-                    color: AppTheme.primaryColor.withOpacity(0.2),
+                    color: AppTheme.primaryColor.withValues(alpha: 0.2),
                   ),
                 ),
               ],
