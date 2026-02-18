@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -26,6 +27,7 @@ class _MonitoringHubView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocListener<MonitoringHubBloc, MonitoringHubState>(
       listener: (context, state) {
         if (state is SpeedTestFailure) {
@@ -41,14 +43,14 @@ class _MonitoringHubView extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           Text(
-            'Bandwidth, anomaly detection, and heatmap streams.',
+            l10n.monitoringSubtitle,
             style: GoogleFonts.rajdhani(color: Colors.white54, fontSize: 15),
           ),
           const SizedBox(height: 20),
           const _SpeedTestSection(),
           const SizedBox(height: 24),
           Text(
-            'COMING SOON',
+            l10n.comingSoon,
             style: GoogleFonts.rajdhani(
               color: Colors.white24,
               fontSize: 12,
@@ -57,9 +59,9 @@ class _MonitoringHubView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          _upcomingItem(Icons.show_chart, 'Signal Trends'),
-          _upcomingItem(Icons.route, 'Topology & Mesh'),
-          _upcomingItem(Icons.warning_amber_rounded, 'Anomaly Alerts'),
+          _upcomingItem(Icons.show_chart, l10n.signalTrends),
+          _upcomingItem(Icons.route, l10n.topologyMesh),
+          _upcomingItem(Icons.warning_amber_rounded, l10n.anomalyAlerts),
         ],
       ),
     );
@@ -89,6 +91,7 @@ class _SpeedTestSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<MonitoringHubBloc, MonitoringHubState>(
       builder: (context, state) {
         final isRunning = state is SpeedTestRunning;
@@ -133,7 +136,7 @@ class _SpeedTestSection extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'SPEED TEST',
+                      l10n.speedTestHeader,
                       style: GoogleFonts.orbitron(
                         color: AppTheme.secondaryColor,
                         fontWeight: FontWeight.bold,
@@ -156,7 +159,7 @@ class _SpeedTestSection extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20),
                       child: Text(
-                        'Test your connection speed',
+                        l10n.testConnectionSpeed,
                         style: GoogleFonts.rajdhani(
                           color: Colors.white38,
                           fontSize: 16,
@@ -188,10 +191,10 @@ class _SpeedTestSection extends StatelessWidget {
                     ),
                     child: Text(
                       isRunning
-                          ? 'TESTING…'
+                          ? l10n.testing
                           : isDone
-                          ? 'TEST AGAIN'
-                          : 'START TEST',
+                          ? l10n.testAgain
+                          : l10n.startTest,
                       style: GoogleFonts.orbitron(
                         fontWeight: FontWeight.bold,
                         fontSize: 13,
@@ -217,11 +220,12 @@ class _PhaseChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final label = switch (phase) {
-      SpeedTestPhase.latency => 'PING',
-      SpeedTestPhase.download => 'DOWNLOAD',
-      SpeedTestPhase.upload => 'UPLOAD',
-      SpeedTestPhase.done => 'DONE',
+      SpeedTestPhase.latency => l10n.phasePing,
+      SpeedTestPhase.download => l10n.phaseDownload,
+      SpeedTestPhase.upload => l10n.phaseUpload,
+      SpeedTestPhase.done => l10n.phaseDone,
       SpeedTestPhase.idle => '',
     };
 

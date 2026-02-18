@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/theme/app_theme.dart';
@@ -24,24 +25,24 @@ class AppShellPage extends StatefulWidget {
 class _AppShellPageState extends State<AppShellPage> {
   int _index = 0;
 
-  static const _primaryTabs = [
+  List<_ShellTab> _getTabs(AppLocalizations l10n) => [
     _ShellTab(
-      title: 'Dashboard',
+      title: l10n.navDashboard,
       icon: Icons.space_dashboard_outlined,
       selectedIcon: Icons.space_dashboard_rounded,
     ),
     _ShellTab(
-      title: 'Wi-Fi',
+      title: l10n.navWifi,
       icon: Icons.wifi_outlined,
       selectedIcon: Icons.wifi_rounded,
     ),
     _ShellTab(
-      title: 'LAN',
+      title: l10n.navLan,
       icon: Icons.device_hub_outlined,
       selectedIcon: Icons.device_hub_rounded,
     ),
     _ShellTab(
-      title: 'More',
+      title: l10n.navMore,
       icon: Icons.grid_view_outlined,
       selectedIcon: Icons.grid_view_rounded,
     ),
@@ -49,6 +50,9 @@ class _AppShellPageState extends State<AppShellPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final tabs = _getTabs(l10n);
+
     return Scaffold(
       body: IndexedStack(
         index: _index,
@@ -65,7 +69,7 @@ class _AppShellPageState extends State<AppShellPage> {
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         height: 70,
         destinations:
-            _primaryTabs
+            tabs
                 .map(
                   (tab) => NavigationDestination(
                     icon: Icon(tab.icon),
@@ -79,19 +83,20 @@ class _AppShellPageState extends State<AppShellPage> {
   }
 
   void _navigateTo(String destination) {
+    final l10n = AppLocalizations.of(context)!;
     switch (destination) {
       case 'wifi':
         setState(() => _index = 1);
       case 'lan':
         setState(() => _index = 2);
       case 'security':
-        _pushPage(const SecurityCenterPage(), 'Security Center');
+        _pushPage(const SecurityCenterPage(), l10n.securityCenterTitle);
       case 'monitoring':
-        _pushPage(const MonitoringHubPage(), 'Monitoring');
+        _pushPage(const MonitoringHubPage(), l10n.monitoringTitle);
       case 'reports':
-        _pushPage(const ReportsPage(), 'Reports');
+        _pushPage(const ReportsPage(), l10n.reportsTitle);
       case 'settings':
-        _pushPage(const SettingsPage(), 'Settings');
+        _pushPage(const SettingsPage(), l10n.settingsTitle);
       case 'more':
         setState(() => _index = 3);
     }
@@ -128,44 +133,50 @@ class _MoreHub extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('MORE')),
+      appBar: AppBar(title: Text(l10n.moreTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _SectionHeader(label: 'TOOLS'),
+          _SectionHeader(label: l10n.sectionTools),
           const SizedBox(height: 8),
           _MenuTile(
             icon: Icons.speed_rounded,
             iconColor: AppTheme.secondaryColor,
-            title: 'Speed Test & Monitoring',
-            subtitle: 'Bandwidth, latency, and anomaly tracking',
-            onTap: () => onNavigate(const MonitoringHubPage(), 'Monitoring'),
+            title: l10n.speedTestTitle,
+            subtitle: l10n.speedTestDesc,
+            onTap:
+                () =>
+                    onNavigate(const MonitoringHubPage(), l10n.monitoringTitle),
           ),
           _MenuTile(
             icon: Icons.shield_outlined,
             iconColor: const Color(0xFFFF6B6B),
-            title: 'Security Center',
-            subtitle: 'Risk scoring, allowlists, and policy controls',
+            title: l10n.securityCenterTitle,
+            subtitle: l10n.securityCenterDesc,
             onTap:
-                () => onNavigate(const SecurityCenterPage(), 'Security Center'),
+                () => onNavigate(
+                  const SecurityCenterPage(),
+                  l10n.securityCenterTitle,
+                ),
           ),
           _MenuTile(
             icon: Icons.description_outlined,
             iconColor: const Color(0xFFFFAB40),
-            title: 'Reports',
-            subtitle: 'Export scans as PDF, HTML, or JSON',
-            onTap: () => onNavigate(const ReportsPage(), 'Reports'),
+            title: l10n.reportsTitle,
+            subtitle: l10n.reportsDesc,
+            onTap: () => onNavigate(const ReportsPage(), l10n.reportsTitle),
           ),
           const SizedBox(height: 20),
-          _SectionHeader(label: 'PREFERENCES'),
+          _SectionHeader(label: l10n.sectionPreferences),
           const SizedBox(height: 8),
           _MenuTile(
             icon: Icons.tune_rounded,
             iconColor: Colors.white54,
-            title: 'Settings',
-            subtitle: 'Scan behavior, backends, and safety mode',
-            onTap: () => onNavigate(const SettingsPage(), 'Settings'),
+            title: l10n.settingsTitle,
+            subtitle: l10n.settingsDesc,
+            onTap: () => onNavigate(const SettingsPage(), l10n.settingsTitle),
           ),
         ],
       ),
@@ -191,7 +202,7 @@ class _SectionHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 12),
-        Expanded(child: Divider(color: Colors.white12, thickness: 1)),
+        const Expanded(child: Divider(color: Colors.white12, thickness: 1)),
       ],
     );
   }

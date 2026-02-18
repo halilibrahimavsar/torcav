@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../wifi_scan/domain/entities/wifi_network.dart';
+import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 import '../entities/security_assessment.dart';
 import '../entities/security_report.dart';
 import '../entities/vulnerability.dart';

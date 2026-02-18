@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/theme/app_theme.dart';
-import '../../../wifi_scan/domain/entities/wifi_network.dart';
+import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 import '../../../../features/monitoring/presentation/pages/signal_graph_page.dart';
 import '../../domain/entities/vulnerability.dart';
 import '../bloc/wifi_details_bloc.dart';
@@ -16,13 +17,14 @@ class WifiDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocProvider(
       create:
           (_) =>
               GetIt.I<WifiDetailsBloc>()..add(AnalyzeNetworkSecurity(network)),
       child: Scaffold(
         appBar: AppBar(
-          title: Text(network.ssid.isEmpty ? 'Hidden Network' : network.ssid),
+          title: Text(network.ssid.isEmpty ? l10n.hiddenNetwork : network.ssid),
           backgroundColor: Colors.transparent,
           elevation: 0,
           actions: [
@@ -30,7 +32,7 @@ class WifiDetailsPage extends StatelessWidget {
               builder: (context) {
                 return IconButton(
                   icon: const Icon(Icons.handshake_outlined),
-                  tooltip: 'Handshake capture check',
+                  tooltip: l10n.handshakeCaptureCheck,
                   onPressed: () => _runHandshakeCheck(context),
                 );
               },
@@ -39,14 +41,14 @@ class WifiDetailsPage extends StatelessWidget {
               builder: (context) {
                 return IconButton(
                   icon: const Icon(Icons.gpp_good_outlined),
-                  tooltip: 'Active defense readiness',
+                  tooltip: l10n.activeDefenseReadiness,
                   onPressed: () => _runActiveDefenseCheck(context),
                 );
               },
             ),
             IconButton(
               icon: const Icon(Icons.show_chart),
-              tooltip: 'Signal Graph',
+              tooltip: l10n.signalGraph,
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -85,7 +87,7 @@ class WifiDetailsPage extends StatelessWidget {
                     if (state.assessment.riskFactors.isNotEmpty) ...[
                       const SizedBox(height: 16),
                       Text(
-                        'RISK FACTORS',
+                        l10n.riskFactors,
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(color: AppTheme.secondaryColor),
                       ),
@@ -99,7 +101,7 @@ class WifiDetailsPage extends StatelessWidget {
                     ],
                     const SizedBox(height: 24),
                     Text(
-                      'VULNERABILITIES',
+                      l10n.vulnerabilities,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         color: AppTheme.primaryColor,
                       ),
@@ -173,6 +175,7 @@ class WifiDetailsPage extends StatelessWidget {
   }
 
   Widget _buildNetworkDetails(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -183,18 +186,22 @@ class WifiDetailsPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildDetailRow(context, 'BSSID', network.bssid),
+          _buildDetailRow(context, l10n.bssId, network.bssid),
           _buildDetailRow(
             context,
-            'CHANNEL',
+            l10n.channel,
             '${network.channel} (${network.frequency} MHz)',
           ),
           _buildDetailRow(
             context,
-            'SECURITY',
+            l10n.security,
             network.security.toString().split('.').last.toUpperCase(),
           ),
-          _buildDetailRow(context, 'SIGNAL', '${network.signalStrength} dBm'),
+          _buildDetailRow(
+            context,
+            l10n.signal,
+            '${network.signalStrength} dBm',
+          ),
         ],
       ),
     );
@@ -223,6 +230,7 @@ class WifiDetailsPage extends StatelessWidget {
   }
 
   Widget _buildVulnerabilityCard(BuildContext context, Vulnerability v) {
+    final l10n = AppLocalizations.of(context)!;
     final color =
         v.severity == VulnerabilitySeverity.critical
             ? Colors.red
@@ -261,7 +269,7 @@ class WifiDetailsPage extends StatelessWidget {
           Text(v.description, style: const TextStyle(color: Colors.white70)),
           const SizedBox(height: 8),
           Text(
-            'RECOMMENDATION: ${v.recommendation}',
+            l10n.recommendationLabel(v.recommendation),
             style: GoogleFonts.rajdhani(
               color: AppTheme.secondaryColor,
               fontWeight: FontWeight.w600,
@@ -273,6 +281,7 @@ class WifiDetailsPage extends StatelessWidget {
   }
 
   Widget _buildSafeCard(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -290,7 +299,7 @@ class WifiDetailsPage extends StatelessWidget {
           const SizedBox(width: 16),
           Expanded(
             child: Text(
-              'No known vulnerabilities detected based on current scan data.',
+              l10n.noVulnerabilities,
               style: GoogleFonts.rajdhani(
                 color: AppTheme.primaryColor,
                 fontSize: 18,

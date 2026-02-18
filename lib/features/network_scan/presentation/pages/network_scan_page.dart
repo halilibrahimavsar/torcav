@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -30,10 +31,11 @@ class _NetworkScanPageState extends State<NetworkScanPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocProvider(
       create: (_) => GetIt.I<NetworkScanBloc>(),
       child: Scaffold(
-        appBar: AppBar(title: const Text('LAN RECON')),
+        appBar: AppBar(title: Text(l10n.lanReconTitle)),
         body: Column(
           children: [
             _buildScanControl(context),
@@ -49,7 +51,7 @@ class _NetworkScanPageState extends State<NetworkScanPage> {
                   if (state is NetworkScanError) {
                     return Center(
                       child: Text(
-                        'SCAN FAILED: ${state.message}',
+                        l10n.scanFailed(state.message),
                         style: GoogleFonts.orbitron(
                           color: Theme.of(context).colorScheme.error,
                         ),
@@ -58,7 +60,7 @@ class _NetworkScanPageState extends State<NetworkScanPage> {
                   }
                   return Center(
                     child: Text(
-                      'READY TO SCAN',
+                      l10n.readyToScanAllCaps,
                       style: GoogleFonts.rajdhani(
                         color: Colors.grey,
                         fontSize: 20,
@@ -75,6 +77,7 @@ class _NetworkScanPageState extends State<NetworkScanPage> {
   }
 
   Widget _buildScanControl(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -85,7 +88,7 @@ class _NetworkScanPageState extends State<NetworkScanPage> {
                 child: TextField(
                   controller: _targetController,
                   decoration: InputDecoration(
-                    labelText: 'Target subnet/IP',
+                    labelText: l10n.targetSubnet,
                     labelStyle: const TextStyle(color: AppTheme.secondaryColor),
                     filled: true,
                     fillColor: Colors.black26,
@@ -107,7 +110,7 @@ class _NetworkScanPageState extends State<NetworkScanPage> {
                       );
                     },
                     icon: const Icon(Icons.radar),
-                    label: const Text('SCAN'),
+                    label: Text(l10n.scanAllCaps),
                   );
                 },
               ),
@@ -119,7 +122,7 @@ class _NetworkScanPageState extends State<NetworkScanPage> {
               Expanded(
                 child: DropdownButtonFormField<NetworkScanProfile>(
                   value: _profile,
-                  decoration: const InputDecoration(labelText: 'Profile'),
+                  decoration: InputDecoration(labelText: l10n.profile),
                   items:
                       NetworkScanProfile.values
                           .map(
@@ -140,7 +143,7 @@ class _NetworkScanPageState extends State<NetworkScanPage> {
               Expanded(
                 child: DropdownButtonFormField<PortScanMethod>(
                   value: _method,
-                  decoration: const InputDecoration(labelText: 'Method'),
+                  decoration: InputDecoration(labelText: l10n.method),
                   items:
                       PortScanMethod.values
                           .map(
@@ -166,7 +169,8 @@ class _NetworkScanPageState extends State<NetworkScanPage> {
 
   Widget _buildHostList(List<HostScanResult> hosts) {
     if (hosts.isEmpty) {
-      return const Center(child: Text('NO HOSTS FOUND'));
+      final l10n = AppLocalizations.of(context)!;
+      return Center(child: Text(l10n.noHostsFound));
     }
     return ListView.builder(
       itemCount: hosts.length,
@@ -185,6 +189,7 @@ class _HostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final riskColor =
         host.exposureScore >= 70
             ? Colors.redAccent
@@ -228,18 +233,23 @@ class _HostCard extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            '${host.deviceType} • ${host.hostName.isEmpty ? 'Unknown host' : host.hostName}',
+            '${host.deviceType} • ${host.hostName.isEmpty ? l10n.unknownHost : host.hostName}',
             style: GoogleFonts.rajdhani(color: Colors.white70, fontSize: 16),
           ),
           if (host.osGuess.isNotEmpty)
             Text(
-              'OS: ${host.osGuess}',
+              l10n.os(host.osGuess),
               style: GoogleFonts.rajdhani(color: Colors.white60),
             ),
           if (host.services.isNotEmpty) ...[
             const SizedBox(height: 8),
             Text(
-              'Services: ${host.services.take(5).map((s) => '${s.port}/${s.protocol} ${s.serviceName}').join(' | ')}',
+              l10n.services(
+                host.services
+                    .take(5)
+                    .map((s) => '${s.port}/${s.protocol} ${s.serviceName}')
+                    .join(' | '),
+              ),
               style: GoogleFonts.sourceCodePro(
                 color: AppTheme.secondaryColor,
                 fontSize: 12,
@@ -249,7 +259,9 @@ class _HostCard extends StatelessWidget {
           if (host.vulnerabilities.isNotEmpty) ...[
             const SizedBox(height: 6),
             Text(
-              'Vuln: ${host.vulnerabilities.take(2).map((v) => v.id).join(', ')}',
+              l10n.vuln(
+                host.vulnerabilities.take(2).map((v) => v.id).join(', '),
+              ),
               style: GoogleFonts.rajdhani(color: Colors.redAccent),
             ),
           ],

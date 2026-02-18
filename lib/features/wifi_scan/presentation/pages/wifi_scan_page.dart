@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/di/injection.dart';
@@ -67,13 +68,14 @@ class _WifiScanViewState extends State<_WifiScanView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('WI-FI ANALYZER'),
+        title: Text(l10n.wifiScanTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.tune),
-            tooltip: 'Scan settings',
+            tooltip: l10n.scanSettingsTooltip,
             onPressed: () => _openScanSettings(context),
           ),
           BlocBuilder<WifiScanBloc, WifiScanState>(
@@ -84,7 +86,7 @@ class _WifiScanViewState extends State<_WifiScanView> {
 
               return IconButton(
                 icon: const Icon(Icons.analytics),
-                tooltip: 'Channel rating',
+                tooltip: l10n.channelRatingTooltip,
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -100,7 +102,7 @@ class _WifiScanViewState extends State<_WifiScanView> {
           ),
           IconButton(
             icon: const Icon(Icons.refresh),
-            tooltip: 'Refresh scan',
+            tooltip: l10n.refreshScanTooltip,
             onPressed: () {
               context.read<WifiScanBloc>().add(
                 WifiScanRefreshed(request: _currentRequest),
@@ -127,7 +129,7 @@ class _WifiScanViewState extends State<_WifiScanView> {
           if (state is WifiScanLoaded) {
             return _SnapshotView(snapshot: state.snapshot);
           }
-          return const Center(child: Text('Ready to scan'));
+          return Center(child: Text(l10n.readyToScan));
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -137,13 +139,14 @@ class _WifiScanViewState extends State<_WifiScanView> {
           );
         },
         icon: const Icon(Icons.wifi_tethering),
-        label: const Text('Scan'),
+        label: Text(l10n.scanButton),
       ),
     );
   }
 
   Future<void> _openScanSettings(BuildContext context) async {
     final bloc = context.read<WifiScanBloc>();
+    final l10n = AppLocalizations.of(context)!;
     final result = await showModalBottomSheet<_ScanSettingsState>(
       context: context,
       backgroundColor: const Color(0xFF101723),
@@ -166,11 +169,11 @@ class _WifiScanViewState extends State<_WifiScanView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Scan Settings',
+                    l10n.scanSettingsTitle,
                     style: Theme.of(ctx).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 16),
-                  Text('Passes: ${draft.passes}'),
+                  Text(l10n.passes(draft.passes)),
                   Slider(
                     value: draft.passes.toDouble(),
                     min: 1,
@@ -185,7 +188,7 @@ class _WifiScanViewState extends State<_WifiScanView> {
                   ),
                   SwitchListTile(
                     value: draft.includeHidden,
-                    title: const Text('Include hidden SSIDs'),
+                    title: Text(l10n.includeHiddenSsids),
                     onChanged: (value) {
                       setModalState(() {
                         draft = draft.copyWith(includeHidden: value);
@@ -194,8 +197,8 @@ class _WifiScanViewState extends State<_WifiScanView> {
                   ),
                   DropdownButtonFormField<WifiBackendPreference>(
                     value: draft.backend,
-                    decoration: const InputDecoration(
-                      labelText: 'Backend preference',
+                    decoration: InputDecoration(
+                      labelText: l10n.backendPreference,
                     ),
                     items:
                         WifiBackendPreference.values.map((backend) {
@@ -220,14 +223,14 @@ class _WifiScanViewState extends State<_WifiScanView> {
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () => Navigator.of(ctx).pop(),
-                          child: const Text('Cancel'),
+                          child: Text(l10n.cancel),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () => Navigator.of(ctx).pop(draft),
-                          child: const Text('Apply'),
+                          child: Text(l10n.apply),
                         ),
                       ),
                     ],
@@ -269,7 +272,8 @@ class _SnapshotView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (snapshot.networks.isEmpty) {
-      return const Center(child: Text('No signals detected'));
+      final l10n = AppLocalizations.of(context)!;
+      return Center(child: Text(l10n.noSignalsDetected));
     }
 
     return RefreshIndicator(
@@ -283,9 +287,14 @@ class _SnapshotView extends StatelessWidget {
           const SizedBox(height: 12),
           _BandRecommendations(bands: snapshot.bandStats),
           const SizedBox(height: 16),
-          Text(
-            'Networks (${snapshot.networks.length})',
-            style: Theme.of(context).textTheme.titleLarge,
+          Builder(
+            builder: (context) {
+              final count = snapshot.networks.length;
+              return Text(
+                AppLocalizations.of(context)!.networksCount(count),
+                style: Theme.of(context).textTheme.titleLarge,
+              );
+            },
           ),
           const SizedBox(height: 8),
           ...snapshot.networks.map(
@@ -317,7 +326,7 @@ class _ScanSummaryCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Last Snapshot',
+            AppLocalizations.of(context)!.lastSnapshot,
             style: GoogleFonts.orbitron(
               color: AppTheme.primaryColor,
               fontWeight: FontWeight.bold,
@@ -375,7 +384,10 @@ class _BandRecommendations extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Band Analysis', style: Theme.of(context).textTheme.titleLarge),
+        Text(
+          AppLocalizations.of(context)!.bandAnalysis,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         const SizedBox(height: 8),
         SizedBox(
           height: 136,
@@ -440,6 +452,7 @@ class _WifiNetworkCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final signalColor =
         network.avgSignalDbm > -60
             ? AppTheme.primaryColor
@@ -475,7 +488,9 @@ class _WifiNetworkCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        network.ssid.isEmpty ? 'Hidden Network' : network.ssid,
+                        network.ssid.isEmpty
+                            ? l10n.hiddenNetwork
+                            : network.ssid,
                         style: GoogleFonts.orbitron(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,

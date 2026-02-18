@@ -4,7 +4,7 @@ import 'package:injectable/injectable.dart';
 import '../../../security/domain/entities/security_assessment.dart';
 import '../../../security/domain/entities/security_report.dart';
 import '../../../security/domain/usecases/security_analyzer.dart';
-import '../../../wifi_scan/domain/entities/wifi_network.dart';
+import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 import '../../domain/usecases/capture_handshake_usecase.dart';
 import '../../domain/usecases/run_active_defense_check_usecase.dart';
 

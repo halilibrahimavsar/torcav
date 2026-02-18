@@ -11,6 +11,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import '../../features/monitoring/data/repositories/heatmap_repository_impl.dart'
     as _i335;
@@ -54,13 +55,21 @@ import '../../features/reports/domain/repositories/report_export_repository.dart
 import '../../features/reports/domain/usecases/generate_report_usecase.dart'
     as _i367;
 import '../../features/reports/presentation/bloc/reports_bloc.dart' as _i554;
+import '../../features/security/data/datasources/security_local_data_source.dart'
+    as _i499;
 import '../../features/security/data/repositories/active_security_repository_impl.dart'
     as _i586;
+import '../../features/security/data/repositories/security_repository_impl.dart'
+    as _i997;
 import '../../features/security/domain/repositories/active_security_repository.dart'
     as _i508;
+import '../../features/security/domain/repositories/security_repository.dart'
+    as _i578;
 import '../../features/security/domain/services/consent_guard.dart' as _i156;
 import '../../features/security/domain/services/security_event_store.dart'
     as _i1048;
+import '../../features/security/domain/usecases/analyze_network_security_usecase.dart'
+    as _i87;
 import '../../features/security/domain/usecases/capture_handshake_usecase.dart'
     as _i467;
 import '../../features/security/domain/usecases/run_active_defense_check_usecase.dart'
@@ -88,28 +97,40 @@ import '../../features/wifi_scan/domain/services/scan_session_store.dart'
 import '../../features/wifi_scan/domain/usecases/scan_wifi.dart' as _i451;
 import '../../features/wifi_scan/presentation/bloc/wifi_scan_bloc.dart'
     as _i968;
+import '../data/database_helper.dart' as _i941;
+import '../i18n/locale_cubit.dart' as _i734;
 import '../services/privilege_service.dart' as _i286;
 import '../services/process_runner.dart' as _i522;
 import '../storage/app_database.dart' as _i690;
+import 'app_module.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
-  _i174.GetIt init({
+  Future<_i174.GetIt> init({
     String? environment,
     _i526.EnvironmentFilter? environmentFilter,
-  }) {
+  }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    final appModule = _$AppModule();
+    await gh.factoryAsync<_i460.SharedPreferences>(
+      () => appModule.prefs,
+      preResolve: true,
+    );
     gh.lazySingleton<_i690.AppDatabase>(() => _i690.AppDatabase());
+    gh.lazySingleton<_i941.DatabaseHelper>(() => _i941.DatabaseHelper());
     gh.lazySingleton<_i797.ScanSessionStore>(() => _i797.ScanSessionStore());
     gh.lazySingleton<_i471.SecurityAnalyzer>(() => _i471.SecurityAnalyzer());
     gh.lazySingleton<_i156.ConsentGuard>(() => _i156.ConsentGuard());
     gh.lazySingleton<_i1048.SecurityEventStore>(
       () => _i1048.SecurityEventStore(),
     );
+    gh.lazySingleton<_i1066.ArpDataSource>(() => _i1066.ArpDataSource());
     gh.lazySingleton<_i790.ChannelAnalyzer>(() => _i790.ChannelAnalyzer());
     gh.lazySingleton<_i552.AppSettingsStore>(() => _i552.AppSettingsStore());
-    gh.lazySingleton<_i1066.ArpDataSource>(() => _i1066.ArpDataSource());
     gh.lazySingleton<_i522.ProcessRunner>(() => _i522.ProcessRunnerImpl());
+    gh.singleton<_i734.LocaleCubit>(
+      () => _i734.LocaleCubit(gh<_i460.SharedPreferences>()),
+    );
     gh.lazySingleton<_i119.ReportExportRepository>(
       () => _i953.ReportExportRepositoryImpl(),
     );
@@ -125,6 +146,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i286.PrivilegeService>(
       () => _i286.PrivilegeService(gh<_i522.ProcessRunner>()),
+    );
+    gh.lazySingleton<_i499.SecurityLocalDataSource>(
+      () => _i499.SecurityLocalDataSourceImpl(gh<_i941.DatabaseHelper>()),
     );
     gh.lazySingleton<_i367.GenerateReportUseCase>(
       () => _i367.GenerateReportUseCase(gh<_i119.ReportExportRepository>()),
@@ -188,6 +212,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i554.ReportsBloc>(
       () => _i554.ReportsBloc(gh<_i367.GenerateReportUseCase>()),
     );
+    gh.lazySingleton<_i578.SecurityRepository>(
+      () => _i997.SecurityRepositoryImpl(gh<_i499.SecurityLocalDataSource>()),
+    );
+    gh.lazySingleton<_i87.AnalyzeNetworkSecurityUseCase>(
+      () => _i87.AnalyzeNetworkSecurityUseCase(gh<_i578.SecurityRepository>()),
+    );
     gh.factory<_i361.WifiDetailsBloc>(
       () => _i361.WifiDetailsBloc(
         gh<_i471.SecurityAnalyzer>(),
@@ -216,3 +246,5 @@ extension GetItInjectableX on _i174.GetIt {
     return this;
   }
 }
+
+class _$AppModule extends _i460.AppModule {}

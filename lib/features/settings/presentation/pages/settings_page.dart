@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/i18n/locale_cubit.dart';
 import '../../../wifi_scan/domain/entities/scan_request.dart';
 import '../../domain/entities/app_settings.dart';
 import '../../domain/services/app_settings_store.dart';
@@ -19,12 +22,26 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final settings = _store.value;
+    final l10n = AppLocalizations.of(context)!;
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        BlocBuilder<LocaleCubit, Locale>(
+          builder: (context, locale) {
+            return _card(
+              child: ListTile(
+                leading: const Icon(Icons.language),
+                title: Text(l10n.settingsLanguage),
+                subtitle: Text(_getLanguageName(locale.languageCode)),
+                onTap: () => _showLanguageDialog(context),
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 14),
         Text(
-          'Control default scan behavior, backend strategy, and safety posture.',
+          l10n.settingsScanBehavior,
           style: GoogleFonts.rajdhani(color: Colors.white70, fontSize: 17),
         ),
         const SizedBox(height: 14),
@@ -32,7 +49,7 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Column(
             children: [
               ListTile(
-                title: const Text('Default scan passes'),
+                title: Text(l10n.settingsDefaultScanPasses),
                 subtitle: Slider(
                   value: settings.defaultScanPasses.toDouble(),
                   min: 1,
@@ -47,7 +64,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               ListTile(
-                title: const Text('Monitoring interval (seconds)'),
+                title: Text(l10n.settingsMonitoringInterval),
                 subtitle: Slider(
                   value: settings.scanIntervalSeconds.toDouble(),
                   min: 2,
@@ -63,8 +80,8 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               DropdownButtonFormField<WifiBackendPreference>(
                 value: settings.defaultBackendPreference,
-                decoration: const InputDecoration(
-                  labelText: 'Default backend preference',
+                decoration: InputDecoration(
+                  labelText: l10n.settingsBackendPreference,
                 ),
                 items:
                     WifiBackendPreference.values
@@ -84,17 +101,15 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               SwitchListTile(
                 value: settings.includeHiddenSsids,
-                title: const Text('Include hidden SSIDs by default'),
+                title: Text(l10n.settingsIncludeHidden),
                 onChanged: (value) {
                   _update(settings.copyWith(includeHiddenSsids: value));
                 },
               ),
               SwitchListTile(
                 value: settings.strictSafetyMode,
-                title: const Text('Strict safety mode'),
-                subtitle: const Text(
-                  'Require consent + allowlist for active ops',
-                ),
+                title: Text(l10n.settingsStrictSafety),
+                subtitle: Text(l10n.settingsStrictSafetyDesc),
                 onChanged: (value) {
                   _update(settings.copyWith(strictSafetyMode: value));
                 },
@@ -103,6 +118,61 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ],
+    );
+  }
+
+  String _getLanguageName(String code) {
+    switch (code) {
+      case 'tr':
+        return 'Türkçe';
+      case 'ku':
+        return 'Kurdî';
+      case 'de':
+        return 'Deutsch';
+      case 'en':
+      default:
+        return 'English';
+    }
+  }
+
+  void _showLanguageDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text(AppLocalizations.of(context)!.settingsLanguage),
+          children: [
+            SimpleDialogOption(
+              onPressed: () {
+                context.read<LocaleCubit>().setLocale(const Locale('en'));
+                Navigator.pop(context);
+              },
+              child: const Text('English 🇺🇸'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                context.read<LocaleCubit>().setLocale(const Locale('tr'));
+                Navigator.pop(context);
+              },
+              child: const Text('Türkçe 🇹🇷'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                context.read<LocaleCubit>().setLocale(const Locale('ku'));
+                Navigator.pop(context);
+              },
+              child: const Text('Kurdî ☀️'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                context.read<LocaleCubit>().setLocale(const Locale('de'));
+                Navigator.pop(context);
+              },
+              child: const Text('Deutsch 🇩🇪'),
+            ),
+          ],
+        );
+      },
     );
   }
 

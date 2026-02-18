@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -27,12 +28,13 @@ class _ChannelRatingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'CHANNEL RATING',
+            l10n.channelRatingTitle,
             style: GoogleFonts.orbitron(
               fontWeight: FontWeight.bold,
               fontSize: 16,
@@ -50,7 +52,7 @@ class _ChannelRatingView extends StatelessWidget {
               fontWeight: FontWeight.bold,
               letterSpacing: 1,
             ),
-            tabs: const [Tab(text: '2.4 GHz'), Tab(text: '5 GHz')],
+            tabs: [Tab(text: l10n.band24Ghz), Tab(text: l10n.band5Ghz)],
           ),
         ),
         body: BlocBuilder<MonitoringBloc, MonitoringState>(
@@ -68,27 +70,27 @@ class _ChannelRatingView extends StatelessWidget {
                 children: [
                   _BandView(
                     ratings: r24,
-                    bandLabel: '2.4 GHz',
+                    bandLabel: l10n.band24Ghz,
                     accentColor: const Color(0xFF00E5FF),
-                    emptyHint: 'No 2.4 GHz channels detected.',
+                    emptyHint: l10n.no24GhzChannels,
                   ),
                   _BandView(
                     ratings: r5,
-                    bandLabel: '5 GHz',
+                    bandLabel: l10n.band5Ghz,
                     accentColor: const Color(0xFF76FF03),
-                    emptyHint: 'No 5 GHz channels detected.',
+                    emptyHint: l10n.no5GhzChannels,
                   ),
                 ],
               );
             } else if (state is MonitoringFailure) {
               return Center(
                 child: Text(
-                  'Error: ${state.message}',
+                  '${l10n.errorLabel}: ${state.message}',
                   style: const TextStyle(color: Colors.redAccent),
                 ),
               );
             }
-            return const Center(child: Text('Analyzing…'));
+            return Center(child: Text(l10n.analyzing));
           },
         ),
       ),
@@ -111,12 +113,13 @@ class _BandView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (ratings.isEmpty) {
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.wifi_off, color: Colors.white24, size: 48),
+            const Icon(Icons.wifi_off, color: Colors.white24, size: 48),
             const SizedBox(height: 12),
             Text(
               emptyHint,
@@ -172,7 +175,7 @@ class _BandView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'RECOMMENDED CHANNEL',
+                      l10n.recommendedChannel,
                       style: GoogleFonts.rajdhani(
                         color: accentColor,
                         fontSize: 11,
@@ -181,7 +184,7 @@ class _BandView extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Ch ${best.channel} — ${best.frequency} MHz',
+                      l10n.channelInfo(best.channel, best.frequency),
                       style: GoogleFonts.orbitron(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -206,7 +209,7 @@ class _BandView extends StatelessWidget {
 
         const SizedBox(height: 16),
         Text(
-          '$bandLabel Channels',
+          l10n.bandChannels(bandLabel),
           style: GoogleFonts.orbitron(
             color: Colors.white70,
             fontSize: 13,

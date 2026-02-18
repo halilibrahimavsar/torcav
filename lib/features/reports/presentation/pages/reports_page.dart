@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:printing/printing.dart';
@@ -33,6 +34,7 @@ class ReportsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final store = getIt<ScanSessionStore>();
     final latest = store.latest;
+    final l10n = AppLocalizations.of(context)!;
 
     return BlocListener<ReportsBloc, ReportsState>(
       listener: (context, state) {
@@ -48,17 +50,18 @@ class ReportsView extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           Text(
-            'Export the latest scan session as JSON, HTML, or PDF.',
+            l10n.reportsSubtitle,
             style: GoogleFonts.rajdhani(color: Colors.white70, fontSize: 17),
           ),
           const SizedBox(height: 12),
           if (latest == null)
-            _infoBox(
-              'No scan snapshot is available yet. Run a Wi-Fi scan first.',
-              icon: Icons.info_outline,
-            )
+            _infoBox(l10n.noSnapshotAvailable, icon: Icons.info_outline)
           else ...[
-            _sessionSummary(latest.networks.length, latest.backendUsed),
+            _sessionSummary(
+              context,
+              latest.networks.length,
+              latest.backendUsed,
+            ),
             const SizedBox(height: 14),
             BlocBuilder<ReportsBloc, ReportsState>(
               builder: (context, state) {
@@ -71,7 +74,7 @@ class ReportsView extends StatelessWidget {
                   children: [
                     _actionButton(
                       icon: Icons.data_object,
-                      label: 'Export JSON',
+                      label: l10n.exportJson,
                       onTap:
                           () => context.read<ReportsBloc>().add(
                             GenerateReport(latest, ReportFormat.json),
@@ -79,7 +82,7 @@ class ReportsView extends StatelessWidget {
                     ),
                     _actionButton(
                       icon: Icons.language,
-                      label: 'Export HTML',
+                      label: l10n.exportHtml,
                       onTap:
                           () => context.read<ReportsBloc>().add(
                             GenerateReport(latest, ReportFormat.html),
@@ -87,7 +90,7 @@ class ReportsView extends StatelessWidget {
                     ),
                     _actionButton(
                       icon: Icons.picture_as_pdf,
-                      label: 'Export PDF',
+                      label: l10n.exportPdf,
                       onTap:
                           () => context.read<ReportsBloc>().add(
                             GenerateReport(latest, ReportFormat.pdf),
@@ -95,7 +98,7 @@ class ReportsView extends StatelessWidget {
                     ),
                     _actionButton(
                       icon: Icons.print,
-                      label: 'Print PDF',
+                      label: l10n.printPdf,
                       onTap: () => _printPdf(context),
                     ),
                   ],
@@ -153,15 +156,16 @@ class ReportsView extends StatelessWidget {
     required String suggestedName,
     required String contents,
   }) async {
+    final l10n = AppLocalizations.of(context)!;
     final path = await FilePicker.platform.saveFile(
-      dialogTitle: 'Save report',
+      dialogTitle: l10n.saveReportDialog,
       fileName: suggestedName,
     );
     if (path == null) return;
 
     await File(path).writeAsString(contents);
     if (!context.mounted) return;
-    _toast(context, 'Saved: $path');
+    _toast(context, l10n.savedToast(path));
   }
 
   Future<void> _savePdfFile({
@@ -169,8 +173,9 @@ class ReportsView extends StatelessWidget {
     required String suggestedName,
     required Uint8List bytes,
   }) async {
+    final l10n = AppLocalizations.of(context)!;
     final path = await FilePicker.platform.saveFile(
-      dialogTitle: 'Save PDF report',
+      dialogTitle: l10n.savePdfReportDialog,
       fileName: suggestedName,
       type: FileType.custom,
       allowedExtensions: const ['pdf'],
@@ -179,7 +184,7 @@ class ReportsView extends StatelessWidget {
 
     await File(path).writeAsBytes(bytes);
     if (!context.mounted) return;
-    _toast(context, 'Saved: $path');
+    _toast(context, l10n.savedToast(path));
   }
 
   void _toast(BuildContext context, String message) {
@@ -200,7 +205,8 @@ class ReportsView extends StatelessWidget {
     );
   }
 
-  Widget _sessionSummary(int networks, String backend) {
+  Widget _sessionSummary(BuildContext context, int networks, String backend) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -213,7 +219,7 @@ class ReportsView extends StatelessWidget {
           const Icon(Icons.inventory_2_outlined, color: AppTheme.primaryColor),
           const SizedBox(width: 10),
           Text(
-            'Latest snapshot: $networks networks via $backend',
+            l10n.latestSnapshot(networks, backend),
             style: GoogleFonts.rajdhani(color: Colors.white70, fontSize: 17),
           ),
         ],
