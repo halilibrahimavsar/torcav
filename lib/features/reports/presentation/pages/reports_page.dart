@@ -47,8 +47,6 @@ class ReportsView extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text('Reports', style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 8),
           Text(
             'Export the latest scan session as JSON, HTML, or PDF.',
             style: GoogleFonts.rajdhani(color: Colors.white70, fontSize: 17),

@@ -23,8 +23,8 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
       final devices = await _dataSource.scanSubnet(subnet);
       if (devices.isNotEmpty) return Right(devices);
 
-      // Fallback to ARP-based discovery
-      final arpHosts = await _arpDataSource.discoverHosts();
+      // Fallback to ARP-based discovery (with Ping Scan fallback)
+      final arpHosts = await _arpDataSource.discoverHosts(targetSubnet: subnet);
       return Right(
         arpHosts
             .map(
@@ -61,7 +61,10 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
       if (hosts.isNotEmpty) return Right(hosts);
 
       // Fallback to ARP-based discovery
-      final arpHosts = await _arpDataSource.discoverHosts(profile: profile);
+      final arpHosts = await _arpDataSource.discoverHosts(
+        targetSubnet: target,
+        profile: profile,
+      );
       return Right(arpHosts);
     } on Failure catch (e) {
       return Left(e);

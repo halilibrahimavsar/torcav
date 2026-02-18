@@ -41,81 +41,40 @@ class _MonitoringHubView extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           Text(
-            'Monitoring Hub',
-            style: GoogleFonts.orbitron(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
             'Bandwidth, anomaly detection, and heatmap streams.',
             style: GoogleFonts.rajdhani(color: Colors.white54, fontSize: 15),
           ),
           const SizedBox(height: 20),
           const _SpeedTestSection(),
-          const SizedBox(height: 16),
-          _featureCard(
-            icon: Icons.show_chart,
-            title: 'Signal Trends',
-            subtitle: 'Live dBm history and fluctuation spread',
+          const SizedBox(height: 24),
+          Text(
+            'COMING SOON',
+            style: GoogleFonts.rajdhani(
+              color: Colors.white24,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 2,
+            ),
           ),
-          _featureCard(
-            icon: Icons.route,
-            title: 'Topology and Mesh',
-            subtitle: 'Device relationships and path visibility',
-          ),
-          _featureCard(
-            icon: Icons.warning_amber_rounded,
-            title: 'Anomaly Alerts',
-            subtitle: 'Threshold-based detections with rate-limiting',
-          ),
+          const SizedBox(height: 8),
+          _upcomingItem(Icons.show_chart, 'Signal Trends'),
+          _upcomingItem(Icons.route, 'Topology & Mesh'),
+          _upcomingItem(Icons.warning_amber_rounded, 'Anomaly Alerts'),
         ],
       ),
     );
   }
 
-  Widget _featureCard({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: const Color(0xFF121E31),
-        border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.3)),
-      ),
+  Widget _upcomingItem(IconData icon, String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         children: [
-          CircleAvatar(
-            backgroundColor: AppTheme.primaryColor.withValues(alpha: 0.2),
-            child: Icon(icon, color: AppTheme.primaryColor),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.orbitron(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                Text(
-                  subtitle,
-                  style: GoogleFonts.rajdhani(
-                    color: Colors.white70,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
+          Icon(icon, color: Colors.white10, size: 18),
+          const SizedBox(width: 10),
+          Text(
+            title,
+            style: GoogleFonts.rajdhani(color: Colors.white24, fontSize: 15),
           ),
         ],
       ),

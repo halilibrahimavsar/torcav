@@ -27,8 +27,6 @@ class _SecurityCenterPageState extends State<SecurityCenterPage> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text('Security Center', style: Theme.of(context).textTheme.titleLarge),
-        const SizedBox(height: 8),
         Text(
           'Active operations are blocked unless policy and allowlist conditions pass.',
           style: GoogleFonts.rajdhani(color: Colors.white70, fontSize: 17),

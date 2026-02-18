@@ -15,9 +15,16 @@ import '../../domain/entities/service_fingerprint.dart';
 class ArpDataSource {
   /// Discovers hosts via the ARP table and optional port probing.
   Future<List<HostScanResult>> discoverHosts({
+    String? targetSubnet,
     NetworkScanProfile profile = NetworkScanProfile.fast,
   }) async {
-    final arpEntries = await _readArpTable();
+    var arpEntries = await _readArpTable();
+
+    // Fallback for Android (where ARP table is restricted)
+    if (arpEntries.isEmpty && targetSubnet != null) {
+      arpEntries = await _pingScanSubnet(targetSubnet);
+    }
+
     if (arpEntries.isEmpty) return [];
 
     final hosts = <HostScanResult>[];
@@ -192,6 +199,48 @@ class ArpDataSource {
     '00-46-4B': 'Huawei',
     '48-46-FB': 'Huawei',
   };
+
+  Future<List<_ArpEntry>> _pingScanSubnet(String ipWithMask) async {
+    final parts = ipWithMask.split('/');
+    if (parts.isEmpty) return [];
+
+    final ip = parts[0];
+    // Simple logic: assume /24 by taking first 3 octets
+    if (ip.split('.').length != 4) return [];
+    final baseIp = ip.substring(0, ip.lastIndexOf('.'));
+
+    final entries = <_ArpEntry>[];
+    const parallelBatches = 20;
+
+    // Scan .1 to .254
+    for (var i = 1; i < 255; i += parallelBatches) {
+      final futures = <Future<_ArpEntry?>>[];
+      for (var j = 0; j < parallelBatches; j++) {
+        final hostPart = i + j;
+        if (hostPart > 254) break;
+        futures.add(_pingHost('$baseIp.$hostPart'));
+      }
+
+      final results = await Future.wait(futures);
+      entries.addAll(results.whereType<_ArpEntry>());
+    }
+    return entries;
+  }
+
+  Future<_ArpEntry?> _pingHost(String ip) async {
+    try {
+      // Android ping command supports these flags
+      final result = await Process.run('ping', ['-c', '1', '-W', '1', ip]);
+      if (result.exitCode == 0) {
+        return _ArpEntry(
+          ip: ip,
+          mac: '00:00:00:00:00:00', // Cannot get MAC on Android 11+
+          vendor: 'Unknown (Android Limited)',
+        );
+      }
+    } catch (_) {}
+    return null;
+  }
 }
 
 class _ArpEntry {

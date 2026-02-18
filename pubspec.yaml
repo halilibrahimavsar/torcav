@@ -55,6 +55,7 @@ dependencies:
     path: /home/garuda/Masaüstü/unified_flutter_features
   wifi_scan: ^0.4.1+2
   permission_handler: ^12.0.1
+  network_info_plus: ^7.0.0
 
 
 dev_dependencies:

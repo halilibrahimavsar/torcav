@@ -23,8 +23,6 @@ class _SettingsPageState extends State<SettingsPage> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text('Settings', style: Theme.of(context).textTheme.titleLarge),
-        const SizedBox(height: 8),
         Text(
           'Control default scan behavior, backend strategy, and safety posture.',
           style: GoogleFonts.rajdhani(color: Colors.white70, fontSize: 17),

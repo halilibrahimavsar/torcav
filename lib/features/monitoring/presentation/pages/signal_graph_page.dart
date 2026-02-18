@@ -36,6 +36,7 @@ class SignalGraphPage extends StatelessWidget {
       child: Builder(
         builder: (innerContext) {
           return Scaffold(
+            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               title: Text('SIGNAL MONITORING: ${network.ssid}'),
               backgroundColor: Colors.transparent,
@@ -134,43 +135,15 @@ class SignalGraphPage extends StatelessWidget {
   }
 
   Future<void> _addHeatmapPoint(BuildContext context) async {
-    final zoneController = TextEditingController();
     final zone = await showDialog<String>(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Add Zone Point'),
-          content: TextField(
-            controller: zoneController,
-            decoration: const InputDecoration(
-              labelText: 'Zone tag (e.g. Kitchen)',
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed:
-                  () => Navigator.of(context).pop(zoneController.text.trim()),
-              child: const Text('Save'),
-            ),
-          ],
-        );
-      },
+      builder: (context) => const _ZoneInputDialog(),
     );
 
-    if (!context.mounted) {
-      zoneController.dispose();
-      return;
-    }
+    if (!context.mounted || zone == null || zone.isEmpty) return;
 
     final state = context.read<MonitoringBloc>().state;
-    if (zone == null || zone.isEmpty || state is! MonitoringActive) {
-      zoneController.dispose();
-      return;
-    }
+    if (state is! MonitoringActive) return;
 
     context.read<HeatmapBloc>().add(
       LogHeatmapPoint(
@@ -180,14 +153,60 @@ class SignalGraphPage extends StatelessWidget {
       ),
     );
 
-    if (!context.mounted) {
-      zoneController.dispose();
-      return;
-    }
+    if (!context.mounted) return;
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text('Heatmap point added for $zone')));
-    zoneController.dispose();
+  }
+}
+
+class _ZoneInputDialog extends StatefulWidget {
+  const _ZoneInputDialog();
+
+  @override
+  State<_ZoneInputDialog> createState() => _ZoneInputDialogState();
+}
+
+class _ZoneInputDialogState extends State<_ZoneInputDialog> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Add Zone Point'),
+      content: TextField(
+        controller: _controller,
+        autofocus: true,
+        decoration: const InputDecoration(labelText: 'Zone tag (e.g. Kitchen)'),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            final text = _controller.text.trim();
+            if (text.isNotEmpty) {
+              Navigator.of(context).pop(text);
+            }
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    );
   }
 }
 

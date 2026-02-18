@@ -18,20 +18,33 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
   @override
   Stream<SpeedTestProgress> runSpeedTest() async* {
     if (Platform.isLinux) {
-      yield* _runLinuxCli();
-      return;
+      // Try CLI first, but catch errors to fallback
+      var cliSuccess = false;
+      try {
+        await for (final progress in _runLinuxCli()) {
+          yield progress;
+          if (progress.phase == SpeedTestPhase.done) {
+            cliSuccess = true;
+          }
+        }
+      } catch (_) {
+        // Fallback to HTTP if CLI fails or is missing
+      }
+
+      if (cliSuccess) return;
     }
+
     yield* _runHttpSpeedTest();
   }
 
   Stream<SpeedTestProgress> _runLinuxCli() async* {
     yield const SpeedTestProgress(phase: SpeedTestPhase.latency);
 
+    // This might throw if speedtest-cli is not installed
     final result = await _processRunner.run('speedtest-cli', ['--json']);
+
     if (result.exitCode != 0) {
-      throw const ScanFailure(
-        'speedtest-cli failed. Install with: sudo pacman -S speedtest-cli',
-      );
+      throw const ScanFailure('CLI failed');
     }
 
     final decoded =
