@@ -32,7 +32,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Future<void> _loadNetworkInfo() async {
     try {
-      final info = NetworkInfo();
+      final info = getIt<NetworkInfo>();
       final results = await Future.wait([
         info.getWifiName(),
         info.getWifiIP(),
@@ -64,6 +64,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -93,7 +94,7 @@ class _DashboardPageState extends State<DashboardPage> {
             Text(
               'QUICK ACTIONS',
               style: GoogleFonts.rajdhani(
-                color: Colors.white38,
+                color: onSurface.withValues(alpha: 0.5),
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 2,
@@ -136,7 +137,7 @@ class _DashboardPageState extends State<DashboardPage> {
             Text(
               'LAST SCAN',
               style: GoogleFonts.rajdhani(
-                color: Colors.white38,
+                color: onSurface.withValues(alpha: 0.5),
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 2,
@@ -175,6 +176,7 @@ class _ConnectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     final isConnected = ssid != '—' && ssid.isNotEmpty;
     final accentColor =
         isConnected ? AppTheme.primaryColor : const Color(0xFFFF6B6B);
@@ -231,7 +233,7 @@ class _ConnectionCard extends StatelessWidget {
                   Text(
                     ssid,
                     style: GoogleFonts.orbitron(
-                      color: Colors.white,
+                      color: onSurface,
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
@@ -260,16 +262,23 @@ class _InfoChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           '$label ',
-          style: GoogleFonts.rajdhani(color: Colors.white30, fontSize: 13),
+          style: GoogleFonts.rajdhani(
+            color: onSurface.withValues(alpha: 0.45),
+            fontSize: 13,
+          ),
         ),
         Text(
           value,
-          style: GoogleFonts.sourceCodePro(color: Colors.white60, fontSize: 13),
+          style: GoogleFonts.sourceCodePro(
+            color: onSurface.withValues(alpha: 0.7),
+            fontSize: 13,
+          ),
         ),
       ],
     );
@@ -338,22 +347,27 @@ class _LastScanStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     if (networkCount == 0) {
       return Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white12),
+          border: Border.all(color: onSurface.withValues(alpha: 0.16)),
         ),
         child: Row(
           children: [
-            const Icon(Icons.info_outline, color: Colors.white24, size: 20),
+            Icon(
+              Icons.info_outline,
+              color: onSurface.withValues(alpha: 0.35),
+              size: 20,
+            ),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
                 'No scan data yet — run a Wi-Fi scan to see results.',
                 style: GoogleFonts.rajdhani(
-                  color: Colors.white38,
+                  color: onSurface.withValues(alpha: 0.58),
                   fontSize: 14,
                 ),
               ),
@@ -389,7 +403,7 @@ class _LastScanStrip extends StatelessWidget {
                 child: Text(
                   '$networkCount networks detected',
                   style: GoogleFonts.rajdhani(
-                    color: Colors.white70,
+                    color: onSurface.withValues(alpha: 0.82),
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),
@@ -427,6 +441,7 @@ class _SafetyBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -436,7 +451,7 @@ class _SafetyBadge extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.white12),
+            border: Border.all(color: onSurface.withValues(alpha: 0.16)),
           ),
           child: Row(
             children: [
@@ -450,14 +465,14 @@ class _SafetyBadge extends StatelessWidget {
                 child: Text(
                   'Strict safety mode enabled',
                   style: GoogleFonts.rajdhani(
-                    color: Colors.white54,
+                    color: onSurface.withValues(alpha: 0.68),
                     fontSize: 14,
                   ),
                 ),
               ),
               Icon(
                 Icons.chevron_right_rounded,
-                color: Colors.white24,
+                color: onSurface.withValues(alpha: 0.35),
                 size: 18,
               ),
             ],

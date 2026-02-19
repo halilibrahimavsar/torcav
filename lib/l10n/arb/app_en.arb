@@ -113,6 +113,8 @@
     "band5Ghz": "5 GHz",
     "no24GhzChannels": "No 2.4 GHz channels detected.",
     "no5GhzChannels": "No 5 GHz channels detected.",
+    "band6Ghz": "6 GHz",
+    "no6GhzChannels": "No 6 GHz channels detected.",
     "recommendedChannel": "RECOMMENDED CHANNEL",
     "channelInfo": "Ch {channel} — {frequency} MHz",
     "bandChannels": "{band} Channels",
@@ -126,5 +128,418 @@
     "retry": "Retry",
     "knownNetworks": "Known Networks",
     "noKnownNetworksYet": "No known networks yet.",
-    "opsLabel": "Ops: {ops}"
+    "opsLabel": "Ops: {ops}",
+    "@passes": {
+        "placeholders": {
+            "count": {}
+        }
+    },
+    "@networksCount": {
+        "placeholders": {
+            "count": {}
+        }
+    },
+    "@scanFailed": {
+        "placeholders": {
+            "message": {}
+        }
+    },
+    "@os": {
+        "placeholders": {
+            "os": {}
+        }
+    },
+    "@services": {
+        "placeholders": {
+            "services": {}
+        }
+    },
+    "@vuln": {
+        "placeholders": {
+            "vuln": {}
+        }
+    },
+    "@latestSnapshot": {
+        "placeholders": {
+            "count": {},
+            "backend": {}
+        }
+    },
+    "@savedToast": {
+        "placeholders": {
+            "path": {}
+        }
+    },
+    "@recommendationLabel": {
+        "placeholders": {
+            "text": {}
+        }
+    },
+    "@channelInfo": {
+        "placeholders": {
+            "channel": {},
+            "frequency": {}
+        }
+    },
+    "@bandChannels": {
+        "placeholders": {
+            "band": {}
+        }
+    },
+    "@opsLabel": {
+        "placeholders": {
+            "ops": {}
+        }
+    },
+    "@activeOperationsBlockedMsg": {
+        "description": "Warning message when policy prevents active operations."
+    },
+    "@authorizedTargets": {
+        "description": "Label for the list of authorized networks."
+    },
+    "@add": {
+        "description": "Generic add button label."
+    },
+    "@noTargetsAllowlisted": {
+        "description": "Status message when the allowlist is empty."
+    },
+    "@hiddenNetwork": {
+        "description": "Placeholder for a network with an empty SSID."
+    },
+    "@remove": {
+        "description": "Generic remove button label."
+    },
+    "@securityTimeline": {
+        "description": "Title for the history of security events."
+    },
+    "@noSecurityEvents": {
+        "description": "Status message when there are no security events logged."
+    },
+    "@authorizeTarget": {
+        "description": "Action label to authorize a network."
+    },
+    "@ssid": {
+        "description": "Service Set Identifier (Network Name)."
+    },
+    "@bssid": {
+        "description": "Basic Service Set Identifier (MAC Address)."
+    },
+    "@allowHandshakeCapture": {
+        "description": "Checkbox label for handshake capture permission."
+    },
+    "@allowActiveDefense": {
+        "description": "Checkbox label for active defense tests permission."
+    },
+    "@cancel": {
+        "description": "Generic cancel button label."
+    },
+    "@save": {
+        "description": "Generic save button label."
+    },
+    "@legalDisclaimerAccepted": {
+        "description": "Label in settings for legal acknowledgement."
+    },
+    "@requiredForActiveOps": {
+        "description": "Instructional text about requirements for active scanning."
+    },
+    "@strictAllowlist": {
+        "description": "Toggle label for strict allowlist enforcement."
+    },
+    "@blockActiveOpsUnknown": {
+        "description": "Setting label to block ops on non-allowlisted targets."
+    },
+    "@rateLimitActiveOps": {
+        "description": "Setting label for operational rate limiting."
+    },
+    "@selectFromScanned": {
+        "description": "Button label to pick a target from results."
+    },
+    "@settingsLanguage": {
+        "description": "Label for language selection setting."
+    },
+    "@settingsScanBehavior": {
+        "description": "Description of the scan behavior settings section."
+    },
+    "@settingsDefaultScanPasses": {
+        "description": "Label for the default number of scan passes."
+    },
+    "@settingsMonitoringInterval": {
+        "description": "Label for the monitoring frequency setting."
+    },
+    "@settingsBackendPreference": {
+        "description": "Label for choosing the scanning backend (e.g., nmcli, iw)."
+    },
+    "@settingsIncludeHidden": {
+        "description": "Label for hidden SSID inclusion setting."
+    },
+    "@settingsStrictSafety": {
+        "description": "Label for strict safety mode toggle."
+    },
+    "@settingsStrictSafetyDesc": {
+        "description": "Explanation of strict safety requirements."
+    },
+    "@navDashboard": {
+        "description": "Bottom navigation label for Dashboard."
+    },
+    "@navWifi": {
+        "description": "Bottom navigation label for Wi-Fi Analyzer."
+    },
+    "@navLan": {
+        "description": "Bottom navigation label for LAN Recon."
+    },
+    "@navMore": {
+        "description": "Bottom navigation label for the More hub."
+    },
+    "@moreTitle": {
+        "description": "Header for the More hub screen."
+    },
+    "@sectionTools": {
+        "description": "Section header for utility tools."
+    },
+    "@speedTestTitle": {
+        "description": "Title for the Speed Test feature."
+    },
+    "@speedTestDesc": {
+        "description": "Brief description of the speed test tool."
+    },
+    "@securityCenterTitle": {
+        "description": "Title for the Security Center feature."
+    },
+    "@securityCenterDesc": {
+        "description": "Brief description of the security feature."
+    },
+    "@reportsTitle": {
+        "description": "Title for the Reports feature."
+    },
+    "@reportsDesc": {
+        "description": "Brief description of the reporting tool."
+    },
+    "@sectionPreferences": {
+        "description": "Section header for app preferences."
+    },
+    "@settingsTitle": {
+        "description": "Title for the Settings screen."
+    },
+    "@settingsDesc": {
+        "description": "Brief description of the settings page."
+    },
+    "@monitoringTitle": {
+        "description": "Header for the network monitoring section."
+    },
+    "@monitoringSubtitle": {
+        "description": "Subtitle for monitoring feature set."
+    },
+    "@comingSoon": {
+        "description": "Label for features under development."
+    },
+    "@signalTrends": {
+        "description": "Title for signal history graphing."
+    },
+    "@topologyMesh": {
+        "description": "Title for network topology visualization."
+    },
+    "@anomalyAlerts": {
+        "description": "Title for anomaly detection alerts."
+    },
+    "@speedTestHeader": {
+        "description": "Header in the speed test UI."
+    },
+    "@testConnectionSpeed": {
+        "description": "Prompt to start a speed test."
+    },
+    "@testing": {
+        "description": "Status text while a test is active."
+    },
+    "@testAgain": {
+        "description": "Button label to restart a test."
+    },
+    "@startTest": {
+        "description": "Button label to initiate a test."
+    },
+    "@phasePing": {
+        "description": "Latency test phase label."
+    },
+    "@phaseDownload": {
+        "description": "Download speed test phase label."
+    },
+    "@phaseUpload": {
+        "description": "Upload speed test phase label."
+    },
+    "@phaseDone": {
+        "description": "Completed test phase status."
+    },
+    "@wifiScanTitle": {
+        "description": "Main title for the Wi-Fi Analyzer screen."
+    },
+    "@scanSettingsTooltip": {
+        "description": "Tooltip for scan customization button."
+    },
+    "@channelRatingTooltip": {
+        "description": "Tooltip for channel rating view button."
+    },
+    "@refreshScanTooltip": {
+        "description": "Tooltip for scan refresh button."
+    },
+    "@readyToScan": {
+        "description": "Status text when system is idle."
+    },
+    "@scanButton": {
+        "description": "Label for the main scan action."
+    },
+    "@scanSettingsTitle": {
+        "description": "Header for scan settings dialog."
+    },
+    "@includeHiddenSsids": {
+        "description": "Checkbox label for hidden networks."
+    },
+    "@backendPreference": {
+        "description": "Label for scanning strategy selection."
+    },
+    "@apply": {
+        "description": "Generic apply button label."
+    },
+    "@noSignalsDetected": {
+        "description": "Status when no networks are found."
+    },
+    "@lastSnapshot": {
+        "description": "Header for the most recent scan data."
+    },
+    "@bandAnalysis": {
+        "description": "Title for per-band network breakdown."
+    },
+    "@recommendation": {
+        "description": "Label for the automated network recommendation."
+    },
+    "@lanReconTitle": {
+        "description": "Main title for the LAN Reconnaissance screen."
+    },
+    "@readyToScanAllCaps": {
+        "description": "Uppercase status label for readiness."
+    },
+    "@targetSubnet": {
+        "description": "Input label for the network range to scan."
+    },
+    "@profile": {
+        "description": "Label for Nmap scan profile selection."
+    },
+    "@method": {
+        "description": "Label for discovery method selection."
+    },
+    "@scanAllCaps": {
+        "description": "Uppercase label for the scan button."
+    },
+    "@noHostsFound": {
+        "description": "Status when no hosts respond on the LAN."
+    },
+    "@unknownHost": {
+        "description": "Label for a host with no hostname/SSID."
+    },
+    "@reportsSubtitle": {
+        "description": "Instructional text on the reports screen."
+    },
+    "@noSnapshotAvailable": {
+        "description": "Error when trying to report without data."
+    },
+    "@exportJson": {
+        "description": "Action label for JSON export."
+    },
+    "@exportHtml": {
+        "description": "Action label for HTML export."
+    },
+    "@exportPdf": {
+        "description": "Action label for PDF export."
+    },
+    "@printPdf": {
+        "description": "Action label to invoke the print dialog."
+    },
+    "@saveReportDialog": {
+        "description": "Title for report save dialog."
+    },
+    "@savePdfReportDialog": {
+        "description": "Title for PDF specific save dialog."
+    },
+    "@handshakeCaptureCheck": {
+        "description": "Title of the security check for handshakes."
+    },
+    "@activeDefenseReadiness": {
+        "description": "Title of the readiness check for active defense."
+    },
+    "@signalGraph": {
+        "description": "Header for the spectral visualization."
+    },
+    "@riskFactors": {
+        "description": "Section header for security risk list."
+    },
+    "@vulnerabilities": {
+        "description": "Header for detected vulnerabilities."
+    },
+    "@noVulnerabilities": {
+        "description": "Message when no vulnerabilities are found."
+    },
+    "@bssId": {
+        "description": "MAC address label (BSSID)."
+    },
+    "@channel": {
+        "description": "Wireless channel number label."
+    },
+    "@security": {
+        "description": "Encryption/Security type label."
+    },
+    "@signal": {
+        "description": "Signal strength label (RSSI)."
+    },
+    "@channelRatingTitle": {
+        "description": "Header for the channel evaluation screen."
+    },
+    "@band24Ghz": {
+        "description": "The 2.4 GHz frequency band."
+    },
+    "@band5Ghz": {
+        "description": "The 5 GHz frequency band."
+    },
+    "@no24GhzChannels": {
+        "description": "Status when no 2.4 GHz signals exist."
+    },
+    "@no5GhzChannels": {
+        "description": "Status when no 5 GHz signals exist."
+    },
+    "@band6Ghz": {
+        "description": "The 6 GHz frequency band."
+    },
+    "@no6GhzChannels": {
+        "description": "Status when no 6 GHz signals exist."
+    },
+    "@recommendedChannel": {
+        "description": "Header for the best suggested channel."
+    },
+    "@errorLabel": {
+        "description": "Prefix for error messages."
+    },
+    "@loading": {
+        "description": "Generic loading state indicator."
+    },
+    "@analyzing": {
+        "description": "Generic processing state indicator."
+    },
+    "@success": {
+        "description": "Generic success indicator."
+    },
+    "@ok": {
+        "description": "Generic acceptance button label."
+    },
+    "@scannedNetworksTitle": {
+        "description": "Title for list of discovered networks."
+    },
+    "@noNetworksFound": {
+        "description": "Status when scanning results are empty."
+    },
+    "@retry": {
+        "description": "Generic retry button label."
+    },
+    "@knownNetworks": {
+        "description": "Title for the list of previously seen networks."
+    },
+    "@noKnownNetworksYet": {
+        "description": "Status when the local database is empty."
+    }
 }

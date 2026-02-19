@@ -28,6 +28,10 @@ class SecurityRepositoryImpl implements SecurityRepository {
       _localDataSource.saveSecurityEvent(event);
 
   @override
+  Future<void> saveSecurityEvents(List<SecurityEvent> events) =>
+      _localDataSource.saveSecurityEvents(events);
+
+  @override
   Future<List<SecurityEvent>> analyzeNetworks(
     List<WifiNetwork> networks,
   ) async {
@@ -65,18 +69,22 @@ class SecurityRepositoryImpl implements SecurityRepository {
         }
 
         if (isRogue) {
-          final event = SecurityEvent(
-            type: SecurityEventType.rogueApSuspected,
-            severity: SecurityEventSeverity.critical,
-            ssid: network.ssid,
-            bssid: network.bssid,
-            timestamp: DateTime.now(),
-            evidence: evidence,
+          alerts.add(
+            SecurityEvent(
+              type: SecurityEventType.rogueApSuspected,
+              severity: SecurityEventSeverity.critical,
+              ssid: network.ssid,
+              bssid: network.bssid,
+              timestamp: DateTime.now(),
+              evidence: evidence,
+            ),
           );
-          alerts.add(event);
-          await saveSecurityEvent(event);
         }
       }
+    }
+
+    if (alerts.isNotEmpty) {
+      await saveSecurityEvents(alerts);
     }
 
     return alerts;

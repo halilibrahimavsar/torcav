@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/i18n/locale_cubit.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/theme_cubit.dart';
 import '../../../wifi_scan/domain/entities/scan_request.dart';
 import '../../domain/entities/app_settings.dart';
 import '../../domain/services/app_settings_store.dart';
@@ -23,6 +25,8 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     final settings = _store.value;
     final l10n = AppLocalizations.of(context)!;
+    final themeCubit = getIt<ThemeCubit>();
+    final onSurface = Theme.of(context).colorScheme.onSurface;
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -40,9 +44,28 @@ class _SettingsPageState extends State<SettingsPage> {
           },
         ),
         const SizedBox(height: 14),
+        _card(
+          child: ValueListenableBuilder<ThemeMode>(
+            valueListenable: themeCubit,
+            builder: (context, mode, _) {
+              return ListTile(
+                leading: Icon(
+                  mode == ThemeMode.dark ? Icons.dark_mode : Icons.light_mode,
+                ),
+                title: const Text('Theme'),
+                subtitle: Text(_getThemeName(mode)),
+                trailing: _buildThemeToggle(themeCubit),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 14),
         Text(
           l10n.settingsScanBehavior,
-          style: GoogleFonts.rajdhani(color: Colors.white70, fontSize: 17),
+          style: GoogleFonts.rajdhani(
+            color: onSurface.withValues(alpha: 0.82),
+            fontSize: 17,
+          ),
         ),
         const SizedBox(height: 14),
         _card(
@@ -121,6 +144,74 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  Widget _buildThemeToggle(ThemeCubit themeCubit) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    return Container(
+      decoration: BoxDecoration(
+        color:
+            isDark
+                ? AppTheme.darkSurface
+                : Theme.of(context).colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _themeButton(
+            icon: Icons.dark_mode,
+            isSelected: themeCubit.value == ThemeMode.dark,
+            onTap: () => themeCubit.setTheme(ThemeMode.dark),
+            unselectedColor: onSurface.withValues(alpha: 0.7),
+          ),
+          _themeButton(
+            icon: Icons.light_mode,
+            isSelected: themeCubit.value == ThemeMode.light,
+            onTap: () => themeCubit.setTheme(ThemeMode.light),
+            unselectedColor: onSurface.withValues(alpha: 0.7),
+          ),
+          _themeButton(
+            icon: Icons.brightness_auto,
+            isSelected: themeCubit.value == ThemeMode.system,
+            onTap: () => themeCubit.setTheme(ThemeMode.system),
+            unselectedColor: onSurface.withValues(alpha: 0.7),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _themeButton({
+    required IconData icon,
+    required bool isSelected,
+    required VoidCallback onTap,
+    required Color unselectedColor,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: isSelected ? AppTheme.primaryColor : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Icon(
+          icon,
+          size: 18,
+          color: isSelected ? Colors.black : unselectedColor,
+        ),
+      ),
+    );
+  }
+
+  String _getThemeName(ThemeMode mode) {
+    return switch (mode) {
+      ThemeMode.dark => 'Dark',
+      ThemeMode.light => 'Light',
+      ThemeMode.system => 'System',
+    };
+  }
+
   String _getLanguageName(String code) {
     switch (code) {
       case 'tr':
@@ -181,11 +272,12 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _card({required Widget child}) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white24),
+        border: Border.all(color: onSurface.withValues(alpha: 0.2)),
       ),
       child: child,
     );

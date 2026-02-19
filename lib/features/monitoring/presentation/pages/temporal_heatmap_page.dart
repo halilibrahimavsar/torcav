@@ -23,12 +23,13 @@ class TemporalHeatmapPage extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             } else if (state is HeatmapLoaded) {
               final zones = state.zoneAverages;
+              final onSurface = Theme.of(context).colorScheme.onSurface;
               if (zones.isEmpty) {
                 return Center(
                   child: Text(
                     'No heatmap points yet for $bssid',
                     style: GoogleFonts.rajdhani(
-                      color: Colors.white70,
+                      color: onSurface.withValues(alpha: 0.82),
                       fontSize: 18,
                     ),
                   ),
@@ -67,7 +68,7 @@ class TemporalHeatmapPage extends StatelessWidget {
                             child: Text(
                               entry.key,
                               style: GoogleFonts.orbitron(
-                                color: Colors.white,
+                                color: onSurface,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

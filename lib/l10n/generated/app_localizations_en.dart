@@ -288,7 +288,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noSnapshotAvailable => 'No scan snapshot is available yet. Run a Wi-Fi scan first.';
 
   @override
-  String latestSnapshot(Object backend, Object count) {
+  String latestSnapshot(Object count, Object backend) {
     return 'Latest snapshot: $count networks via $backend';
   }
 
@@ -364,6 +364,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no5GhzChannels => 'No 5 GHz channels detected.';
+
+  @override
+  String get band6Ghz => '6 GHz';
+
+  @override
+  String get no6GhzChannels => 'No 6 GHz channels detected.';
 
   @override
   String get recommendedChannel => 'RECOMMENDED CHANNEL';

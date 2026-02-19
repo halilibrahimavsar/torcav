@@ -26,7 +26,11 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
     on<SecurityNetworkTrustChanged>(_onTrustChanged);
 
     // Auto-analyze new scans
+    DateTime? lastTimestamp;
     _scanSubscription = _sessionStore.snapshots.listen((snapshot) {
+      if (lastTimestamp == snapshot.timestamp) return;
+      lastTimestamp = snapshot.timestamp;
+
       add(
         SecurityAnalyzeRequested(
           snapshot.networks.map((n) => n.toWifiNetwork()).toList(),

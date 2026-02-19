@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/failures.dart';
-import '../../../../core/services/process_runner.dart';
+import '../../../../core/services/privilege_service.dart';
+
 import '../../domain/entities/host_scan_result.dart';
 import '../../domain/entities/network_device.dart';
 import '../../domain/entities/network_scan_profile.dart';
@@ -22,9 +23,9 @@ abstract class NmapDataSource {
 
 @LazySingleton(as: NmapDataSource)
 class LinuxNmapDataSource implements NmapDataSource {
-  final ProcessRunner _processRunner;
+  final PrivilegeService _privilegeService;
 
-  LinuxNmapDataSource(this._processRunner);
+  LinuxNmapDataSource(this._privilegeService);
 
   @override
   Future<List<NetworkDevice>> scanSubnet(String subnet) async {
@@ -64,7 +65,8 @@ class LinuxNmapDataSource implements NmapDataSource {
     );
 
     try {
-      final result = await _processRunner.run('nmap', arguments);
+      // Use runAsRoot (pkexec) because aggressive scans (-O, -sS) require root
+      final result = await _privilegeService.runAsRoot('nmap', arguments);
       if (result.exitCode != 0) {
         throw ScanFailure('Nmap failed: ${result.stderr}');
       }

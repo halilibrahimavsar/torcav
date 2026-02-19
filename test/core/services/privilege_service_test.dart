@@ -13,7 +13,7 @@ void main() {
 
   setUp(() {
     mockProcessRunner = MockProcessRunner();
-    service = PrivilegeService(mockProcessRunner);
+    service = PrivilegeServiceImpl(mockProcessRunner);
   });
 
   group('isRoot', () {

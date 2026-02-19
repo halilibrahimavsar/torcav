@@ -288,7 +288,7 @@ class AppLocalizationsKu extends AppLocalizations {
   String get noSnapshotAvailable => 'Hîn wêneya taranê tune. Pêşî taranek Wi-Fi pêk bîne.';
 
   @override
-  String latestSnapshot(Object backend, Object count) {
+  String latestSnapshot(Object count, Object backend) {
     return 'Wêneyê dawî: $count tor bi rêya $backend';
   }
 
@@ -364,6 +364,12 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get no5GhzChannels => 'Kanalên 5 GHz nehatin dîtin.';
+
+  @override
+  String get band6Ghz => '6 GHz';
+
+  @override
+  String get no6GhzChannels => 'Kanalên 6 GHz nehatin dîtin.';
 
   @override
   String get recommendedChannel => 'KANALA PÊŞNIYARKIRÎ';

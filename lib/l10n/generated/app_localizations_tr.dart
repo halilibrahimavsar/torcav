@@ -288,7 +288,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get noSnapshotAvailable => 'Henüz tarama görüntüsü yok. Önce bir Wi-Fi taraması yapın.';
 
   @override
-  String latestSnapshot(Object backend, Object count) {
+  String latestSnapshot(Object count, Object backend) {
     return 'Son görüntü: $backend üzerinden $count ağ';
   }
 
@@ -364,6 +364,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get no5GhzChannels => '5 GHz kanal algılanmadı.';
+
+  @override
+  String get band6Ghz => '6 GHz';
+
+  @override
+  String get no6GhzChannels => '6 GHz kanal algılanmadı.';
 
   @override
   String get recommendedChannel => 'ÖNERİLEN KANAL';

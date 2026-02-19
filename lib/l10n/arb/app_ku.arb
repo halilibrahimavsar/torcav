@@ -113,6 +113,8 @@
     "band5Ghz": "5 GHz",
     "no24GhzChannels": "Kanalên 2.4 GHz nehatin dîtin.",
     "no5GhzChannels": "Kanalên 5 GHz nehatin dîtin.",
+    "band6Ghz": "6 GHz",
+    "no6GhzChannels": "Kanalên 6 GHz nehatin dîtin.",
     "recommendedChannel": "KANALA PÊŞNIYARKIRÎ",
     "channelInfo": "Kan {channel} — {frequency} MHz",
     "bandChannels": "Kanalên {band}",

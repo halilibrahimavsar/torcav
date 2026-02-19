@@ -4,7 +4,8 @@ import 'dart:math';
 
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/error/failures.dart';
+import 'package:torcav/core/error/failures.dart';
+import '../../../../core/services/privilege_service.dart';
 import '../../../../core/services/process_runner.dart';
 import '../../domain/entities/scan_request.dart';
 import '../../domain/entities/scan_snapshot.dart';
@@ -14,11 +15,14 @@ import 'wifi_data_source.dart';
 
 @LazySingleton(as: WifiDataSource)
 @Named('linux')
+@LazySingleton(as: WifiDataSource)
+@Named('linux')
 class LinuxWifiDataSource implements WifiDataSource {
   final ProcessRunner _processRunner;
+  final PrivilegeService _privilegeService;
   final ScanSnapshotBuilder _snapshotBuilder;
 
-  LinuxWifiDataSource(this._processRunner)
+  LinuxWifiDataSource(this._processRunner, this._privilegeService)
     : _snapshotBuilder = const ScanSnapshotBuilder();
 
   @override
@@ -148,7 +152,8 @@ class LinuxWifiDataSource implements WifiDataSource {
   }
 
   Future<List<WifiNetwork>> _scanWithIw(String interfaceName) async {
-    final result = await _processRunner.run('iw', [
+    // iw scan requires root privileges on Linux
+    final result = await _privilegeService.runAsRoot('iw', [
       'dev',
       interfaceName,
       'scan',

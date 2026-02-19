@@ -9,6 +9,7 @@ abstract class SecurityLocalDataSource {
   Future<void> saveKnownNetwork(KnownNetwork network);
   Future<List<SecurityEvent>> getSecurityEvents();
   Future<void> saveSecurityEvent(SecurityEvent event);
+  Future<void> saveSecurityEvents(List<SecurityEvent> events);
 }
 
 @LazySingleton(as: SecurityLocalDataSource)
@@ -82,14 +83,25 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
   }
 
   @override
-  Future<void> saveSecurityEvent(SecurityEvent event) async {
+  Future<void> saveSecurityEvent(SecurityEvent event) =>
+      saveSecurityEvents([event]);
+
+  @override
+  Future<void> saveSecurityEvents(List<SecurityEvent> events) async {
+    if (events.isEmpty) return;
     final db = await _dbHelper.database;
-    await db.insert('security_alerts', {
-      'type': event.type.toString(),
-      'message':
-          'Alert: ${event.type.name} SSID: ${event.ssid}, BSSID: ${event.bssid}',
-      'timestamp': event.timestamp.millisecondsSinceEpoch,
-      'severity': event.severity.toString(),
+    await db.transaction((txn) async {
+      final batch = txn.batch();
+      for (final event in events) {
+        batch.insert('security_alerts', {
+          'type': event.type.toString(),
+          'message':
+              'Alert: ${event.type.name} SSID: ${event.ssid}, BSSID: ${event.bssid}',
+          'timestamp': event.timestamp.millisecondsSinceEpoch,
+          'severity': event.severity.toString(),
+        });
+      }
+      await batch.commit(noResult: true);
     });
   }
 }

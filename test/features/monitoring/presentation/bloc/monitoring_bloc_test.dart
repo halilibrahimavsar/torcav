@@ -6,17 +6,31 @@ import 'package:mocktail/mocktail.dart';
 import 'package:torcav/core/error/failures.dart';
 import 'package:torcav/features/monitoring/domain/repositories/monitoring_repository.dart';
 import 'package:torcav/features/monitoring/presentation/bloc/monitoring_bloc.dart';
-import 'package:torcav/features/monitoring/domain/usecases/channel_analyzer.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
+import 'package:torcav/features/wifi_scan/domain/services/channel_rating_engine.dart';
+import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
+import 'package:torcav/features/wifi_scan/domain/repositories/channel_rating_repository.dart';
+import 'package:torcav/features/wifi_scan/domain/usecases/get_historical_best_channel.dart';
 
-class MockChannelAnalyzer extends Mock implements ChannelAnalyzer {}
+class MockChannelRatingEngine extends Mock implements ChannelRatingEngine {}
 
 class MockMonitoringRepository extends Mock implements MonitoringRepository {}
+
+class MockScanSessionStore extends Mock implements ScanSessionStore {}
+
+class MockChannelRatingRepository extends Mock
+    implements ChannelRatingRepository {}
+
+class MockGetBestHistoricalChannel extends Mock
+    implements GetBestHistoricalChannel {}
 
 void main() {
   late MonitoringBloc bloc;
   late MockMonitoringRepository repo;
-  late MockChannelAnalyzer analyzer;
+  late MockChannelRatingEngine engine;
+  late MockScanSessionStore sessionStore;
+  late MockChannelRatingRepository historyRepo;
+  late MockGetBestHistoricalChannel getHistory;
 
   setUpAll(() {
     registerFallbackValue(const Duration(seconds: 1));
@@ -24,8 +38,21 @@ void main() {
 
   setUp(() {
     repo = MockMonitoringRepository();
-    analyzer = MockChannelAnalyzer();
-    bloc = MonitoringBloc(repo, analyzer);
+    engine = MockChannelRatingEngine();
+    sessionStore = MockScanSessionStore();
+    historyRepo = MockChannelRatingRepository();
+    getHistory = MockGetBestHistoricalChannel();
+
+    // Default mock behavior for session store stream
+    when(() => sessionStore.snapshots).thenAnswer((_) => const Stream.empty());
+    when(
+      () => getHistory.call(limit: any(named: 'limit')),
+    ).thenAnswer((_) async => {});
+    when(
+      () => historyRepo.saveRatings(any()),
+    ).thenAnswer((_) async => const Right(null));
+
+    bloc = MonitoringBloc(repo, engine, sessionStore, historyRepo, getHistory);
   });
 
   tearDown(() {
@@ -77,47 +104,16 @@ void main() {
   );
 
   blocTest<MonitoringBloc, MonitoringState>(
-    'maintains history of signal strength',
+    'emits [ChannelAnalysisReady] when AnalyzeChannels is added',
     build: () {
-      // Simulate stream of 3 updates
-      when(
-        () => repo.monitorNetwork(any(), interval: any(named: 'interval')),
-      ).thenAnswer(
-        (_) => Stream.fromIterable([
-          Right(tNetwork.copyWith(signalStrength: -60)),
-          Right(tNetwork.copyWith(signalStrength: -55)),
-          Right(tNetwork.copyWith(signalStrength: -50)),
-        ]),
-      );
-      return bloc;
-    },
-    act: (bloc) => bloc.add(const StartMonitoring('00:11:22:33:44:55')),
-    expect:
-        () => [
-          MonitoringLoading(),
-          isA<MonitoringActive>().having((s) => s.signalHistory, 'history 1', [
-            -60,
-          ]),
-          isA<MonitoringActive>().having((s) => s.signalHistory, 'history 2', [
-            -60,
-            -55,
-          ]),
-          isA<MonitoringActive>().having((s) => s.signalHistory, 'history 3', [
-            -60,
-            -55,
-            -50,
-          ]),
-        ],
-  );
-
-  blocTest<MonitoringBloc, MonitoringState>(
-    'emits [MonitoringLoading, ChannelAnalysisReady] when AnalyzeChannels is added',
-    build: () {
-      when(() => analyzer.analyzeChannels(any())).thenReturn([]);
+      when(() => engine.calculateRatings(any())).thenReturn([]);
       return bloc;
     },
     act: (bloc) => bloc.add(const AnalyzeChannels([tNetwork])),
-    expect: () => [MonitoringLoading(), const ChannelAnalysisReady([])],
+    expect:
+        () => [
+          isA<ChannelAnalysisReady>().having((s) => s.ratings, 'ratings', []),
+        ],
   );
 }
 

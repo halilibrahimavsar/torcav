@@ -3,10 +3,14 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../features/wifi_scan/domain/entities/wifi_network.dart';
+import '../../../../features/wifi_scan/domain/services/scan_session_store.dart';
+import '../../../../features/wifi_scan/domain/entities/channel_rating.dart';
+import '../../../../features/wifi_scan/domain/services/channel_rating_engine.dart';
+import '../../../../features/wifi_scan/domain/entities/channel_rating_sample.dart';
+import '../../../../features/wifi_scan/domain/usecases/get_historical_best_channel.dart';
+import '../../../../features/wifi_scan/domain/repositories/channel_rating_repository.dart';
 import '../../domain/entities/bandwidth_sample.dart';
-import '../../domain/entities/channel_rating.dart';
 import '../../domain/repositories/monitoring_repository.dart';
-import '../../domain/usecases/channel_analyzer.dart';
 
 // Events
 abstract class MonitoringEvent extends Equatable {
@@ -90,9 +94,17 @@ class MonitoringActive extends MonitoringState {
 
 class ChannelAnalysisReady extends MonitoringState {
   final List<ChannelRating> ratings;
-  const ChannelAnalysisReady(this.ratings);
+  final Map<int, double> historicalAverages;
+  final DateTime timestamp;
+
+  const ChannelAnalysisReady(
+    this.ratings, {
+    this.historicalAverages = const {},
+    required this.timestamp,
+  });
+
   @override
-  List<Object?> get props => [ratings];
+  List<Object?> get props => [ratings, historicalAverages, timestamp];
 }
 
 class MonitoringFailure extends MonitoringState {
@@ -105,21 +117,33 @@ class MonitoringFailure extends MonitoringState {
 @injectable
 class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
   final MonitoringRepository _repository;
-  final ChannelAnalyzer _channelAnalyzer;
+  final ChannelRatingEngine _channelEngine;
+  final ScanSessionStore _sessionStore;
+  final ChannelRatingRepository _historyRepo;
+  final GetBestHistoricalChannel _getHistory;
+
   StreamSubscription? _networkSubscription;
   StreamSubscription? _bandwidthSubscription;
+  StreamSubscription? _channelSubscription;
+
   List<int> _history = [];
   WifiNetwork? _latestNetwork;
   BandwidthSample? _latestBandwidth;
 
-  MonitoringBloc(this._repository, this._channelAnalyzer)
-    : super(MonitoringInitial()) {
+  MonitoringBloc(
+    this._repository,
+    this._channelEngine,
+    this._sessionStore,
+    this._historyRepo,
+    this._getHistory,
+  ) : super(MonitoringInitial()) {
     on<StartMonitoring>(_onStartMonitoring);
     on<StopMonitoring>(_onStopMonitoring);
     on<StartBandwidthMonitoring>(_onStartBandwidthMonitoring);
     on<_UpdateNetwork>(_onUpdateNetwork);
     on<_UpdateBandwidth>(_onUpdateBandwidth);
     on<AnalyzeChannels>(_onAnalyzeChannels);
+    on<_UpdateRatings>(_onUpdateRatings);
     on<_MonitoringError>(_onMonitoringError);
   }
 
@@ -148,6 +172,7 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
   ) async {
     await _networkSubscription?.cancel();
     await _bandwidthSubscription?.cancel();
+    await _channelSubscription?.cancel();
     emit(MonitoringInitial());
   }
 
@@ -202,17 +227,57 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
     );
   }
 
-  void _onAnalyzeChannels(
+  Future<void> _onAnalyzeChannels(
     AnalyzeChannels event,
     Emitter<MonitoringState> emit,
-  ) {
-    emit(MonitoringLoading());
-    try {
-      final ratings = _channelAnalyzer.analyzeChannels(event.networks);
-      emit(ChannelAnalysisReady(ratings));
-    } catch (e) {
-      emit(MonitoringFailure(e.toString()));
-    }
+  ) async {
+    // Initial analysis
+    final initialRatings = _channelEngine.calculateRatings(event.networks);
+    final history = await _getHistory();
+    emit(
+      ChannelAnalysisReady(
+        initialRatings,
+        historicalAverages: history,
+        timestamp: DateTime.now(),
+      ),
+    );
+
+    // Start real-time updates
+    await _channelSubscription?.cancel();
+    _channelSubscription = _sessionStore.snapshots.listen((snapshot) {
+      final networks = snapshot.networks.map((o) => o.toWifiNetwork()).toList();
+      final liveRatings = _channelEngine.calculateRatings(networks);
+
+      // Save to history asynchronously
+      final timestamp = DateTime.now();
+      _historyRepo.saveRatings(
+        liveRatings
+            .map(
+              (r) => ChannelRatingSample(
+                channel: r.channel,
+                rating: r.rating,
+                timestamp: timestamp,
+              ),
+            )
+            .toList(),
+      );
+
+      add(_UpdateRatings(liveRatings));
+    });
+  }
+
+  Future<void> _onUpdateRatings(
+    _UpdateRatings event,
+    Emitter<MonitoringState> emit,
+  ) async {
+    final history = await _getHistory();
+    emit(
+      ChannelAnalysisReady(
+        event.ratings,
+        historicalAverages: history,
+        timestamp: DateTime.now(),
+      ),
+    );
   }
 
   void _onMonitoringError(
@@ -226,6 +291,14 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
   Future<void> close() {
     _networkSubscription?.cancel();
     _bandwidthSubscription?.cancel();
+    _channelSubscription?.cancel();
     return super.close();
   }
+}
+
+class _UpdateRatings extends MonitoringEvent {
+  final List<ChannelRating> ratings;
+  const _UpdateRatings(this.ratings);
+  @override
+  List<Object?> get props => [ratings];
 }

@@ -78,6 +78,8 @@ class _NetworkScanPageState extends State<NetworkScanPage> {
 
   Widget _buildScanControl(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -91,9 +93,14 @@ class _NetworkScanPageState extends State<NetworkScanPage> {
                     labelText: l10n.targetSubnet,
                     labelStyle: const TextStyle(color: AppTheme.secondaryColor),
                     filled: true,
-                    fillColor: Colors.black26,
+                    fillColor:
+                        isDark
+                            ? Colors.black26
+                            : Theme.of(
+                              context,
+                            ).colorScheme.surfaceContainerHighest,
                   ),
-                  style: GoogleFonts.sourceCodePro(color: Colors.white),
+                  style: GoogleFonts.sourceCodePro(color: onSurface),
                 ),
               ),
               const SizedBox(width: 12),
@@ -190,6 +197,8 @@ class _HostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     final riskColor =
         host.exposureScore >= 70
             ? Colors.redAccent
@@ -201,7 +210,10 @@ class _HostCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color:
+            isDark
+                ? const Color(0xFF0F172A)
+                : Theme.of(context).colorScheme.surface,
         border: Border.all(color: riskColor.withValues(alpha: 0.4)),
         borderRadius: BorderRadius.circular(12),
       ),
@@ -216,7 +228,7 @@ class _HostCard extends StatelessWidget {
                 child: Text(
                   host.ip,
                   style: GoogleFonts.orbitron(
-                    color: Colors.white,
+                    color: onSurface,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -234,12 +246,15 @@ class _HostCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             '${host.deviceType} • ${host.hostName.isEmpty ? l10n.unknownHost : host.hostName}',
-            style: GoogleFonts.rajdhani(color: Colors.white70, fontSize: 16),
+            style: GoogleFonts.rajdhani(
+              color: onSurface.withValues(alpha: 0.82),
+              fontSize: 16,
+            ),
           ),
           if (host.osGuess.isNotEmpty)
             Text(
               l10n.os(host.osGuess),
-              style: GoogleFonts.rajdhani(color: Colors.white60),
+              style: GoogleFonts.rajdhani(color: onSurface.withValues(alpha: 0.7)),
             ),
           if (host.services.isNotEmpty) ...[
             const SizedBox(height: 8),

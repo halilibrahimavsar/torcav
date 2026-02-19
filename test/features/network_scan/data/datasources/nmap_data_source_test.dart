@@ -3,19 +3,19 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:torcav/core/error/failures.dart';
-import 'package:torcav/core/services/process_runner.dart';
+import 'package:torcav/core/services/privilege_service.dart';
 import 'package:torcav/features/network_scan/data/datasources/nmap_data_source.dart';
 import 'package:torcav/features/network_scan/domain/entities/network_scan_profile.dart';
 
-class MockProcessRunner extends Mock implements ProcessRunner {}
+class MockPrivilegeService extends Mock implements PrivilegeService {}
 
 void main() {
   late LinuxNmapDataSource dataSource;
-  late MockProcessRunner mockProcessRunner;
+  late MockPrivilegeService mockPrivilegeService;
 
   setUp(() {
-    mockProcessRunner = MockProcessRunner();
-    dataSource = LinuxNmapDataSource(mockProcessRunner);
+    mockPrivilegeService = MockPrivilegeService();
+    dataSource = LinuxNmapDataSource(mockPrivilegeService);
   });
 
   const xmlOutput = '''
@@ -43,7 +43,7 @@ void main() {
 
   test('should parse nmap xml output correctly for subnet scan', () async {
     when(
-      () => mockProcessRunner.run('nmap', any()),
+      () => mockPrivilegeService.runAsRoot('nmap', any()),
     ).thenAnswer((_) async => ProcessResult(0, 0, xmlOutput, ''));
 
     final devices = await dataSource.scanSubnet('192.168.1.0/24');
@@ -58,7 +58,7 @@ void main() {
 
   test('should parse detailed host scan profile output', () async {
     when(
-      () => mockProcessRunner.run('nmap', any()),
+      () => mockPrivilegeService.runAsRoot('nmap', any()),
     ).thenAnswer((_) async => ProcessResult(0, 0, xmlOutput, ''));
 
     final hosts = await dataSource.scanTarget(
@@ -74,7 +74,7 @@ void main() {
 
   test('should throw ScanFailure on nmap execution error', () async {
     when(
-      () => mockProcessRunner.run(any(), any()),
+      () => mockPrivilegeService.runAsRoot(any(), any()),
     ).thenAnswer((_) async => ProcessResult(0, 1, '', 'Error'));
 
     expect(

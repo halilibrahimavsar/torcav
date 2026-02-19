@@ -12,8 +12,13 @@ import '../bloc/wifi_details_bloc.dart';
 
 class WifiDetailsPage extends StatelessWidget {
   final WifiNetwork network;
+  final String interfaceName;
 
-  const WifiDetailsPage({super.key, required this.network});
+  const WifiDetailsPage({
+    super.key,
+    required this.network,
+    required this.interfaceName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +57,11 @@ class WifiDetailsPage extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => SignalGraphPage(network: network),
+                    builder:
+                        (context) => SignalGraphPage(
+                          network: network,
+                          interfaceName: interfaceName,
+                        ),
                   ),
                 );
               },
@@ -93,10 +102,7 @@ class WifiDetailsPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       ...state.assessment.riskFactors.map(
-                        (factor) => Text(
-                          '- $factor',
-                          style: const TextStyle(color: Colors.white70),
-                        ),
+                        (factor) => Text('- $factor'),
                       ),
                     ],
                     const SizedBox(height: 24),
@@ -176,10 +182,14 @@ class WifiDetailsPage extends StatelessWidget {
 
   Widget _buildNetworkDetails(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color:
+            isDark
+                ? const Color(0xFF0F172A)
+                : Theme.of(context).colorScheme.surface,
         border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.3)),
         borderRadius: BorderRadius.circular(12),
       ),
@@ -266,7 +276,14 @@ class WifiDetailsPage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Text(v.description, style: const TextStyle(color: Colors.white70)),
+          Text(
+            v.description,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface.withValues(
+                alpha: 0.82,
+              ),
+            ),
+          ),
           const SizedBox(height: 8),
           Text(
             l10n.recommendationLabel(v.recommendation),
@@ -314,13 +331,13 @@ class WifiDetailsPage extends StatelessWidget {
 
   void _runHandshakeCheck(BuildContext context) {
     context.read<WifiDetailsBloc>().add(
-      CaptureHandshake(network, 'wlo1'), // TODO: Dynamic interface name
+      CaptureHandshake(network, interfaceName),
     );
   }
 
   void _runActiveDefenseCheck(BuildContext context) {
     context.read<WifiDetailsBloc>().add(
-      RunActiveDefense(network, 'wlo1'), // TODO: Dynamic interface name
+      RunActiveDefense(network, interfaceName),
     );
   }
 }

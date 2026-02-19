@@ -42,6 +42,7 @@ class _SecurityCenterViewState extends State<_SecurityCenterView> {
     final policy = _guard.policy;
     final targets = _guard.authorizedTargets;
     final l10n = AppLocalizations.of(context)!;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
 
     return BlocBuilder<SecurityBloc, SecurityState>(
       builder: (context, state) {
@@ -50,7 +51,10 @@ class _SecurityCenterViewState extends State<_SecurityCenterView> {
           children: [
             Text(
               l10n.activeOperationsBlockedMsg,
-              style: GoogleFonts.rajdhani(color: Colors.white70, fontSize: 17),
+              style: GoogleFonts.rajdhani(
+                color: onSurface.withValues(alpha: 0.82),
+                fontSize: 17,
+              ),
             ),
             const SizedBox(height: 12),
             _PolicyCard(
@@ -123,8 +127,9 @@ class _SecurityCenterViewState extends State<_SecurityCenterView> {
   }
 
   Widget _buildKnownNetworks(List<KnownNetwork> networks) {
-    if (networks.isEmpty)
+    if (networks.isEmpty) {
       return _emptyBox(AppLocalizations.of(context)!.noKnownNetworksYet);
+    }
     return Column(
       children: networks.map((net) => _NetworkCard(network: net)).toList(),
     );
@@ -164,15 +169,19 @@ class _SecurityCenterViewState extends State<_SecurityCenterView> {
   }
 
   Widget _emptyBox(String text) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: onSurface.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white10),
+        border: Border.all(color: onSurface.withValues(alpha: 0.15)),
       ),
       child: Center(
-        child: Text(text, style: GoogleFonts.rajdhani(color: Colors.white70)),
+        child: Text(
+          text,
+          style: GoogleFonts.rajdhani(color: onSurface.withValues(alpha: 0.78)),
+        ),
       ),
     );
   }
@@ -210,7 +219,9 @@ class _SecurityCenterViewState extends State<_SecurityCenterView> {
                       icon: const Icon(Icons.wifi_find),
                       label: Text(l10n.selectFromScanned),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
+                        backgroundColor: AppTheme.primaryColor.withValues(
+                          alpha: 0.1,
+                        ),
                         foregroundColor: AppTheme.primaryColor,
                       ),
                     ),
@@ -307,13 +318,18 @@ class _NetworkCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFF162030),
+        color:
+            isDark
+                ? const Color(0xFF162030)
+                : Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.primaryColor.withOpacity(0.2)),
+        border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -326,7 +342,7 @@ class _NetworkCard extends StatelessWidget {
                 Text(
                   network.ssid,
                   style: GoogleFonts.orbitron(
-                    color: Colors.white,
+                    color: onSurface,
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
                   ),
@@ -334,7 +350,7 @@ class _NetworkCard extends StatelessWidget {
                 Text(
                   network.bssid,
                   style: GoogleFonts.rajdhani(
-                    color: Colors.white54,
+                    color: onSurface.withValues(alpha: 0.68),
                     fontSize: 12,
                   ),
                 ),
@@ -362,13 +378,18 @@ class _TargetCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFF162030),
+        color:
+            isDark
+                ? const Color(0xFF162030)
+                : Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.primaryColor.withOpacity(0.2)),
+        border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -379,7 +400,7 @@ class _TargetCard extends StatelessWidget {
                 Text(
                   target.ssid.isEmpty ? l10n.hiddenNetwork : target.ssid,
                   style: GoogleFonts.orbitron(
-                    color: Colors.white,
+                    color: onSurface,
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
                   ),
@@ -387,7 +408,7 @@ class _TargetCard extends StatelessWidget {
                 Text(
                   target.bssid,
                   style: GoogleFonts.rajdhani(
-                    color: Colors.white54,
+                    color: onSurface.withValues(alpha: 0.68),
                     fontSize: 12,
                   ),
                 ),
@@ -396,7 +417,7 @@ class _TargetCard extends StatelessWidget {
                     target.operations.map((e) => e.name).join(', '),
                   ),
                   style: GoogleFonts.rajdhani(
-                    color: AppTheme.primaryColor.withOpacity(0.8),
+                    color: AppTheme.primaryColor.withValues(alpha: 0.8),
                     fontSize: 11,
                   ),
                 ),
@@ -424,14 +445,19 @@ class _EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     final color = _getSeverityColor(event.severity);
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFF162030),
+        color:
+            isDark
+                ? const Color(0xFF162030)
+                : Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -452,7 +478,7 @@ class _EventCard extends StatelessWidget {
               Text(
                 _formatTime(event.timestamp),
                 style: GoogleFonts.rajdhani(
-                  color: Colors.white38,
+                  color: onSurface.withValues(alpha: 0.5),
                   fontSize: 10,
                 ),
               ),
@@ -462,14 +488,17 @@ class _EventCard extends StatelessWidget {
           Text(
             '${event.ssid.isEmpty ? l10n.hiddenNetwork : event.ssid} (${event.bssid})',
             style: GoogleFonts.rajdhani(
-              color: Colors.white,
+              color: onSurface,
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 2),
           Text(
             event.evidence,
-            style: GoogleFonts.rajdhani(color: Colors.white70, fontSize: 13),
+            style: GoogleFonts.rajdhani(
+              color: onSurface.withValues(alpha: 0.82),
+              fontSize: 13,
+            ),
           ),
         ],
       ),
@@ -551,7 +580,7 @@ class _ScannedNetworksDialogState extends State<_ScannedNetworksDialog> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return AlertDialog(
-      backgroundColor: const Color(0xFF0F1722),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       title: Text(
         l10n.scannedNetworksTitle,
         style: GoogleFonts.orbitron(fontSize: 16),
@@ -571,6 +600,7 @@ class _ScannedNetworksDialogState extends State<_ScannedNetworksDialog> {
   }
 
   Widget _buildContent() {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     if (_loading) return const Center(child: CircularProgressIndicator());
     if (_error != null) {
       return Center(
@@ -612,7 +642,7 @@ class _ScannedNetworksDialogState extends State<_ScannedNetworksDialog> {
         return ListTile(
           leading: Icon(
             Icons.wifi,
-            color: AppTheme.primaryColor.withOpacity(0.7),
+            color: AppTheme.primaryColor.withValues(alpha: 0.7),
           ),
           title: Text(
             net.ssid.isEmpty
@@ -622,7 +652,10 @@ class _ScannedNetworksDialogState extends State<_ScannedNetworksDialog> {
           ),
           subtitle: Text(
             net.bssid,
-            style: const TextStyle(fontSize: 12, color: Colors.white54),
+            style: TextStyle(
+              fontSize: 12,
+              color: onSurface.withValues(alpha: 0.68),
+            ),
           ),
           onTap: () => Navigator.of(context).pop(net),
         );
@@ -640,11 +673,15 @@ class _PolicyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: const Color(0xFF0E1929),
+        color:
+            isDark
+                ? const Color(0xFF0E1929)
+                : Theme.of(context).colorScheme.surface,
         border: Border.all(
           color: AppTheme.secondaryColor.withValues(alpha: 0.3),
         ),

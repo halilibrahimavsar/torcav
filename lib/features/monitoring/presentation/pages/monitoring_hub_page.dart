@@ -28,6 +28,7 @@ class _MonitoringHubView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return BlocListener<MonitoringHubBloc, MonitoringHubState>(
       listener: (context, state) {
         if (state is SpeedTestFailure) {
@@ -44,7 +45,10 @@ class _MonitoringHubView extends StatelessWidget {
         children: [
           Text(
             l10n.monitoringSubtitle,
-            style: GoogleFonts.rajdhani(color: Colors.white54, fontSize: 15),
+            style: GoogleFonts.rajdhani(
+              color: onSurface.withValues(alpha: 0.68),
+              fontSize: 15,
+            ),
           ),
           const SizedBox(height: 20),
           const _SpeedTestSection(),
@@ -52,31 +56,35 @@ class _MonitoringHubView extends StatelessWidget {
           Text(
             l10n.comingSoon,
             style: GoogleFonts.rajdhani(
-              color: Colors.white24,
+              color: onSurface.withValues(alpha: 0.4),
               fontSize: 12,
               fontWeight: FontWeight.bold,
               letterSpacing: 2,
             ),
           ),
           const SizedBox(height: 8),
-          _upcomingItem(Icons.show_chart, l10n.signalTrends),
-          _upcomingItem(Icons.route, l10n.topologyMesh),
-          _upcomingItem(Icons.warning_amber_rounded, l10n.anomalyAlerts),
+          _upcomingItem(context, Icons.show_chart, l10n.signalTrends),
+          _upcomingItem(context, Icons.route, l10n.topologyMesh),
+          _upcomingItem(context, Icons.warning_amber_rounded, l10n.anomalyAlerts),
         ],
       ),
     );
   }
 
-  Widget _upcomingItem(IconData icon, String title) {
+  Widget _upcomingItem(BuildContext context, IconData icon, String title) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         children: [
-          Icon(icon, color: Colors.white10, size: 18),
+          Icon(icon, color: onSurface.withValues(alpha: 0.25), size: 18),
           const SizedBox(width: 10),
           Text(
             title,
-            style: GoogleFonts.rajdhani(color: Colors.white24, fontSize: 15),
+            style: GoogleFonts.rajdhani(
+              color: onSurface.withValues(alpha: 0.45),
+              fontSize: 15,
+            ),
           ),
         ],
       ),
@@ -92,6 +100,8 @@ class _SpeedTestSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return BlocBuilder<MonitoringHubBloc, MonitoringHubState>(
       builder: (context, state) {
         final isRunning = state is SpeedTestRunning;
@@ -105,10 +115,13 @@ class _SpeedTestSection extends StatelessWidget {
         return Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            gradient: const LinearGradient(
+            gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF0D1B2A), Color(0xFF1B2838)],
+              colors:
+                  isDark
+                      ? [Color(0xFF0D1B2A), Color(0xFF1B2838)]
+                      : [Color(0xFFE9F5FF), Color(0xFFF8FCFF)],
             ),
             border: Border.all(
               color: AppTheme.secondaryColor.withValues(alpha: 0.25),
@@ -161,7 +174,7 @@ class _SpeedTestSection extends StatelessWidget {
                       child: Text(
                         l10n.testConnectionSpeed,
                         style: GoogleFonts.rajdhani(
-                          color: Colors.white38,
+                          color: onSurface.withValues(alpha: 0.58),
                           fontSize: 16,
                         ),
                       ),
@@ -340,6 +353,7 @@ class _GaugeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fraction = (value / maxValue).clamp(0.0, 1.0);
+    final onSurface = Theme.of(context).colorScheme.onSurface;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -400,7 +414,7 @@ class _GaugeCard extends StatelessWidget {
           Text(
             label,
             style: GoogleFonts.rajdhani(
-              color: Colors.white38,
+              color: onSurface.withValues(alpha: 0.58),
               fontSize: 10,
               letterSpacing: 1.5,
             ),

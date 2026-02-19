@@ -80,10 +80,14 @@ class SignalGraphPage extends StatelessWidget {
     return BlocBuilder<MonitoringBloc, MonitoringState>(
       builder: (context, state) {
         if (state is MonitoringActive) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
           return Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF0F172A),
+              color:
+                  isDark
+                      ? const Color(0xFF0F172A)
+                      : Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppTheme.primaryColor),
             ),
@@ -120,7 +124,10 @@ class SignalGraphPage extends StatelessWidget {
       children: [
         Text(
           label,
-          style: GoogleFonts.rajdhani(color: Colors.grey, fontSize: 14),
+          style: GoogleFonts.rajdhani(
+            color: Colors.grey.shade500,
+            fontSize: 14,
+          ),
         ),
         Text(
           value,
@@ -213,6 +220,7 @@ class _ZoneInputDialogState extends State<_ZoneInputDialog> {
 class _SignalChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return BlocBuilder<MonitoringBloc, MonitoringState>(
       builder: (context, state) {
         if (state is MonitoringLoading) {
@@ -224,9 +232,15 @@ class _SignalChart extends StatelessWidget {
                 show: true,
                 drawVerticalLine: true,
                 getDrawingHorizontalLine:
-                    (value) => FlLine(color: Colors.white10, strokeWidth: 1),
+                    (value) => FlLine(
+                      color: onSurface.withValues(alpha: 0.12),
+                      strokeWidth: 1,
+                    ),
                 getDrawingVerticalLine:
-                    (value) => FlLine(color: Colors.white10, strokeWidth: 1),
+                    (value) => FlLine(
+                      color: onSurface.withValues(alpha: 0.12),
+                      strokeWidth: 1,
+                    ),
               ),
               titlesData: FlTitlesData(
                 show: true,
@@ -245,8 +259,8 @@ class _SignalChart extends StatelessWidget {
                     getTitlesWidget: (value, meta) {
                       return Text(
                         '${value.toInt()}',
-                        style: const TextStyle(
-                          color: Colors.white70,
+                        style: TextStyle(
+                          color: onSurface.withValues(alpha: 0.72),
                           fontSize: 10,
                         ),
                       );

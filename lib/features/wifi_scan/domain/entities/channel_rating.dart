@@ -1,10 +1,17 @@
 import 'package:equatable/equatable.dart';
 
+/// Represents the quality rating of a Wi-Fi channel.
 class ChannelRating extends Equatable {
   final int channel;
   final int frequency;
-  final double rating; // 0.0 to 10.0 (10 is best)
+
+  /// Quality score from 0.0 (worst) to 10.0 (perfect).
+  final double rating;
+
+  /// Number of APs detected on or near this channel.
   final int networkCount;
+
+  /// Human-readable recommendation (e.g., 'Excellent', 'Congested').
   final String recommendation;
 
   const ChannelRating({

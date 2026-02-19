@@ -288,7 +288,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noSnapshotAvailable => 'Noch kein Scan-Schnappschuss verfügbar. Führen Sie zuerst einen WLAN-Scan durch.';
 
   @override
-  String latestSnapshot(Object backend, Object count) {
+  String latestSnapshot(Object count, Object backend) {
     return 'Letzter Schnappschuss: $count Netzwerke über $backend';
   }
 
@@ -364,6 +364,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get no5GhzChannels => 'Keine 5-GHz-Kanäle erkannt.';
+
+  @override
+  String get band6Ghz => '6 GHz';
+
+  @override
+  String get no6GhzChannels => 'Keine 6-GHz-Kanäle erkannt.';
 
   @override
   String get recommendedChannel => 'EMPFOHLENER KANAL';

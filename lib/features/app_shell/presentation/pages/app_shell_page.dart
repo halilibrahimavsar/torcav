@@ -134,6 +134,7 @@ class _MoreHub extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.moreTitle)),
       body: ListView(
@@ -173,7 +174,12 @@ class _MoreHub extends StatelessWidget {
           const SizedBox(height: 8),
           _MenuTile(
             icon: Icons.tune_rounded,
-            iconColor: Colors.white54,
+            iconColor:
+                isDark
+                    ? Colors.white70
+                    : Theme.of(context).colorScheme.onSurface.withValues(
+                      alpha: 0.8,
+                    ),
             title: l10n.settingsTitle,
             subtitle: l10n.settingsDesc,
             onTap: () => onNavigate(const SettingsPage(), l10n.settingsTitle),
@@ -190,19 +196,22 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return Row(
       children: [
         Text(
           label,
           style: GoogleFonts.rajdhani(
-            color: Colors.white38,
+            color: onSurface.withValues(alpha: 0.5),
             fontSize: 12,
             fontWeight: FontWeight.bold,
             letterSpacing: 2,
           ),
         ),
         const SizedBox(width: 12),
-        const Expanded(child: Divider(color: Colors.white12, thickness: 1)),
+        Expanded(
+          child: Divider(color: onSurface.withValues(alpha: 0.18), thickness: 1),
+        ),
       ],
     );
   }
@@ -225,6 +234,7 @@ class _MenuTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Material(
@@ -253,7 +263,7 @@ class _MenuTile extends StatelessWidget {
                       Text(
                         title,
                         style: GoogleFonts.rajdhani(
-                          color: Colors.white,
+                          color: onSurface,
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                         ),
@@ -261,16 +271,16 @@ class _MenuTile extends StatelessWidget {
                       Text(
                         subtitle,
                         style: GoogleFonts.rajdhani(
-                          color: Colors.white38,
+                          color: onSurface.withValues(alpha: 0.58),
                           fontSize: 14,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const Icon(
+                Icon(
                   Icons.chevron_right_rounded,
-                  color: Colors.white24,
+                  color: onSurface.withValues(alpha: 0.35),
                   size: 22,
                 ),
               ],

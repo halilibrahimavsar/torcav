@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/services/privilege_service.dart';
 import '../../../../core/services/process_runner.dart';
 import '../../domain/entities/authorized_target.dart';
 import '../../domain/entities/security_event.dart';
@@ -13,13 +12,11 @@ import '../../domain/services/security_event_store.dart';
 @LazySingleton(as: ActiveSecurityRepository)
 class ActiveSecurityRepositoryImpl implements ActiveSecurityRepository {
   final ConsentGuard _consentGuard;
-  final PrivilegeService _privilegeService;
   final ProcessRunner _processRunner;
   final SecurityEventStore _eventStore;
 
   ActiveSecurityRepositoryImpl(
     this._consentGuard,
-    this._privilegeService,
     this._processRunner,
     this._eventStore,
   );
@@ -56,14 +53,7 @@ class ActiveSecurityRepositoryImpl implements ActiveSecurityRepository {
       );
     }
 
-    final isRoot = await _privilegeService.isRoot();
-    if (!isRoot) {
-      return _unsupportedEvent(
-        ssid,
-        bssid,
-        'Root privileges required for handshake capture',
-      );
-    }
+    // Root check removed to support pkexec escalation on demand
 
     final result = await _processRunner.run('which', ['airodump-ng']);
     if (result.exitCode != 0) {
@@ -119,14 +109,7 @@ class ActiveSecurityRepositoryImpl implements ActiveSecurityRepository {
       );
     }
 
-    final isRoot = await _privilegeService.isRoot();
-    if (!isRoot) {
-      return _unsupportedEvent(
-        ssid,
-        bssid,
-        'Root privileges required for active defense',
-      );
-    }
+    // Root check removed to support pkexec escalation on demand
 
     final result = await _processRunner.run('which', ['aireplay-ng']);
     if (result.exitCode != 0) {

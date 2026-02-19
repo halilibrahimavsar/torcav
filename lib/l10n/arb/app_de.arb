@@ -113,6 +113,8 @@
     "band5Ghz": "5 GHz",
     "no24GhzChannels": "Keine 2,4-GHz-Kanäle erkannt.",
     "no5GhzChannels": "Keine 5-GHz-Kanäle erkannt.",
+    "band6Ghz": "6 GHz",
+    "no6GhzChannels": "Keine 6-GHz-Kanäle erkannt.",
     "recommendedChannel": "EMPFOHLENER KANAL",
     "channelInfo": "Kanal {channel} — {frequency} MHz",
     "bandChannels": "{band}-Kanäle",

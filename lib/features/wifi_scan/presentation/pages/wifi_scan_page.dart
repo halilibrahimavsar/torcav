@@ -88,11 +88,16 @@ class _WifiScanViewState extends State<_WifiScanView> {
                 icon: const Icon(Icons.analytics),
                 tooltip: l10n.channelRatingTooltip,
                 onPressed: () {
+                  final wifiScanBloc = context.read<WifiScanBloc>();
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder:
-                          (_) => ChannelRatingPage(
-                            networks: state.snapshot.toLegacyNetworks(),
+                          (_) => BlocProvider.value(
+                            value: wifiScanBloc,
+                            child: ChannelRatingPage(
+                              networks: state.snapshot.toLegacyNetworks(),
+                              request: _currentRequest,
+                            ),
                           ),
                     ),
                   );
@@ -298,7 +303,10 @@ class _SnapshotView extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           ...snapshot.networks.map(
-            (network) => _WifiNetworkCard(network: network),
+            (network) => _WifiNetworkCard(
+              network: network,
+              interfaceName: snapshot.interfaceName,
+            ),
           ),
         ],
       ),
@@ -447,8 +455,9 @@ class _BandRecommendations extends StatelessWidget {
 
 class _WifiNetworkCard extends StatelessWidget {
   final WifiObservation network;
+  final String interfaceName;
 
-  const _WifiNetworkCard({required this.network});
+  const _WifiNetworkCard({required this.network, required this.interfaceName});
 
   @override
   Widget build(BuildContext context) {
@@ -465,7 +474,11 @@ class _WifiNetworkCard extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => WifiDetailsPage(network: network.toWifiNetwork()),
+            builder:
+                (_) => WifiDetailsPage(
+                  network: network.toWifiNetwork(),
+                  interfaceName: interfaceName,
+                ),
           ),
         );
       },
