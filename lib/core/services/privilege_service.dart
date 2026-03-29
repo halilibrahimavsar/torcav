@@ -14,6 +14,7 @@ class PrivilegeServiceImpl implements PrivilegeService {
 
   PrivilegeServiceImpl(this._processRunner);
 
+  @override
   Future<bool> isRoot() async {
     if (!Platform.isLinux && !Platform.isMacOS) return false;
     try {
@@ -25,6 +26,7 @@ class PrivilegeServiceImpl implements PrivilegeService {
   }
 
   /// Runs a command with sudo/pkexec escalation
+  @override
   Future<ProcessResult> runAsRoot(
     String executable,
     List<String> arguments,
