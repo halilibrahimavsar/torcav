@@ -11,6 +11,7 @@ import 'package:printing/printing.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/neon_widgets.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
 import '../../domain/usecases/generate_report_usecase.dart';
 import '../bloc/reports_bloc.dart';
@@ -43,70 +44,167 @@ class ReportsView extends StatelessWidget {
         } else if (state is ReportsFailure) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text('Error: ${state.message}')));
+          ).showSnackBar(
+            SnackBar(
+              backgroundColor: AppColors.neonRed.withValues(alpha: 0.8),
+              content: Text(
+                '${l10n.errorLabel}: ${state.message}',
+                style: GoogleFonts.rajdhani(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          );
         }
       },
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Text(
-            l10n.reportsSubtitle,
-            style: GoogleFonts.rajdhani(color: Colors.white70, fontSize: 17),
+      child: Scaffold(
+        appBar: AppBar(
+          title: NeonText(
+            l10n.reportsTitle.toUpperCase(),
+            style: GoogleFonts.orbitron(
+              color: AppColors.neonCyan,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 2,
+            ),
+            glowRadius: 8,
           ),
-          const SizedBox(height: 12),
-          if (latest == null)
-            _infoBox(l10n.noSnapshotAvailable, icon: Icons.info_outline)
-          else ...[
-            _sessionSummary(
-              context,
-              latest.networks.length,
-              latest.backendUsed,
+        ),
+        body: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+          children: [
+            // ── Header Section ──
+            StaggeredEntry(
+              delay: const Duration(milliseconds: 100),
+              child: NeonSectionHeader(
+                label: l10n.sectionStatus,
+                icon: Icons.analytics_outlined,
+                color: AppColors.neonCyan,
+              ),
             ),
-            const SizedBox(height: 14),
-            BlocBuilder<ReportsBloc, ReportsState>(
-              builder: (context, state) {
-                if (state is ReportsLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                return Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
-                  children: [
-                    _actionButton(
-                      icon: Icons.data_object,
-                      label: l10n.exportJson,
-                      onTap:
-                          () => context.read<ReportsBloc>().add(
-                            GenerateReport(latest, ReportFormat.json),
-                          ),
-                    ),
-                    _actionButton(
-                      icon: Icons.language,
-                      label: l10n.exportHtml,
-                      onTap:
-                          () => context.read<ReportsBloc>().add(
-                            GenerateReport(latest, ReportFormat.html),
-                          ),
-                    ),
-                    _actionButton(
-                      icon: Icons.picture_as_pdf,
-                      label: l10n.exportPdf,
-                      onTap:
-                          () => context.read<ReportsBloc>().add(
-                            GenerateReport(latest, ReportFormat.pdf),
-                          ),
-                    ),
-                    _actionButton(
-                      icon: Icons.print,
-                      label: l10n.printPdf,
-                      onTap: () => _printPdf(context),
-                    ),
-                  ],
-                );
-              },
+            const SizedBox(height: 12),
+            StaggeredEntry(
+              delay: const Duration(milliseconds: 150),
+              child: Text(
+                l10n.reportsSubtitle,
+                style: GoogleFonts.rajdhani(
+                  color: AppColors.textSecondary,
+                  fontSize: 15,
+                ),
+              ),
             ),
+            const SizedBox(height: 16),
+
+            // ── Session Snapshot ──
+            if (latest == null)
+              StaggeredEntry(
+                delay: const Duration(milliseconds: 200),
+                child: NeonCard(
+                  glowColor: AppColors.neonOrange,
+                  glowIntensity: 0.04,
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
+                    children: [
+                      _NeonIconCircle(
+                        icon: Icons.info_outline_rounded,
+                        color: AppColors.neonOrange,
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Text(
+                          l10n.noSnapshotAvailable,
+                          style: GoogleFonts.rajdhani(
+                            color: AppColors.textSecondary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else ...[
+              StaggeredEntry(
+                delay: const Duration(milliseconds: 200),
+                child: _SessionSummaryCard(
+                  networksCount: latest.networks.length,
+                  backend: latest.backendUsed,
+                  timestamp: latest.timestamp,
+                ),
+              ),
+              const SizedBox(height: 32),
+
+              // ── Export Options ──
+              StaggeredEntry(
+                delay: const Duration(milliseconds: 300),
+                child: NeonSectionHeader(
+                  label: l10n.exportOptionsTitle,
+                  icon: Icons.ios_share_rounded,
+                  color: AppColors.neonPurple,
+                ),
+              ),
+              const SizedBox(height: 16),
+              BlocBuilder<ReportsBloc, ReportsState>(
+                builder: (context, state) {
+                  final isLoading = state is ReportsLoading;
+                  return GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: 1.4,
+                    children: [
+                      _ExportActionCard(
+                        icon: Icons.data_object_rounded,
+                        label: l10n.exportJson,
+                        color: AppColors.neonCyan,
+                        isLoading: isLoading,
+                        onTap:
+                            () => context.read<ReportsBloc>().add(
+                              GenerateReport(latest, ReportFormat.json),
+                            ),
+                        delay: const Duration(milliseconds: 400),
+                      ),
+                      _ExportActionCard(
+                        icon: Icons.html_rounded,
+                        label: l10n.exportHtml,
+                        color: AppColors.neonPurple,
+                        isLoading: isLoading,
+                        onTap:
+                            () => context.read<ReportsBloc>().add(
+                              GenerateReport(latest, ReportFormat.html),
+                            ),
+                        delay: const Duration(milliseconds: 450),
+                      ),
+                      _ExportActionCard(
+                        icon: Icons.picture_as_pdf_rounded,
+                        label: l10n.exportPdf,
+                        color: AppColors.neonRed,
+                        isLoading: isLoading,
+                        onTap:
+                            () => context.read<ReportsBloc>().add(
+                              GenerateReport(latest, ReportFormat.pdf),
+                            ),
+                        delay: const Duration(milliseconds: 500),
+                      ),
+                      _ExportActionCard(
+                        icon: Icons.print_rounded,
+                        label: l10n.printPdf,
+                        color: AppColors.neonGreen,
+                        isLoading: isLoading,
+                        onTap: () => _printPdf(context),
+                        delay: const Duration(milliseconds: 550),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -141,7 +239,6 @@ class ReportsView extends StatelessWidget {
     final snapshot = getIt<ScanSessionStore>().latest;
     if (snapshot == null) return;
 
-    // For printing, we invoke the usecase directly as Printing.layoutPdf controls the flow
     await Printing.layoutPdf(
       onLayout: (_) async {
         final useCase = getIt<GenerateReportUseCase>();
@@ -190,62 +287,259 @@ class ReportsView extends StatelessWidget {
   void _toast(BuildContext context, String message) {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text(message)));
-  }
-
-  Widget _actionButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return ElevatedButton.icon(
-      onPressed: onTap,
-      icon: Icon(icon),
-      label: Text(label),
+    ).showSnackBar(
+      SnackBar(
+        backgroundColor: AppColors.neonGreen.withValues(alpha: 0.8),
+        content: Text(
+          message,
+          style: GoogleFonts.rajdhani(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
   }
+}
 
-  Widget _sessionSummary(BuildContext context, int networks, String backend) {
+// ── Session Summary Card ─────────────────────────────────────────────
+
+class _SessionSummaryCard extends StatelessWidget {
+  final int networksCount;
+  final String backend;
+  final DateTime timestamp;
+
+  const _SessionSummaryCard({
+    required this.networksCount,
+    required this.backend,
+    required this.timestamp,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF121E30),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.3)),
-      ),
-      child: Row(
+
+    return NeonCard(
+      glowColor: AppColors.neonCyan,
+      glowIntensity: 0.08,
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.inventory_2_outlined, color: AppTheme.primaryColor),
-          const SizedBox(width: 10),
-          Text(
-            l10n.latestSnapshot(networks, backend),
-            style: GoogleFonts.rajdhani(color: Colors.white70, fontSize: 17),
+          Row(
+            children: [
+              _NeonIconCircle(
+                icon: Icons.inventory_2_outlined,
+                color: AppColors.neonCyan,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.latestSnapshotTitle,
+                      style: GoogleFonts.rajdhani(
+                        color: AppColors.neonCyan,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                    Text(
+                      '${timestamp.day}/${timestamp.month}/${timestamp.year} ${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}',
+                      style: GoogleFonts.rajdhani(
+                        color: AppColors.textPrimary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(
+                child: _SummaryMetric(
+                  label: l10n.navWifi.toUpperCase(),
+                  value: '$networksCount',
+                  icon: Icons.wifi_tethering_rounded,
+                  color: AppColors.neonCyan,
+                ),
+              ),
+              Container(
+                width: 1,
+                height: 40,
+                color: AppColors.glassWhite,
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+              ),
+              Expanded(
+                child: _SummaryMetric(
+                  label: l10n.backendLabel.toUpperCase(),
+                  value: backend.toUpperCase(),
+                  icon: Icons.dns_rounded,
+                  color: AppColors.neonPurple,
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _infoBox(String message, {required IconData icon}) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white24),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: AppTheme.secondaryColor),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              message,
-              style: GoogleFonts.rajdhani(color: Colors.white70, fontSize: 16),
+class _SummaryMetric extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const _SummaryMetric({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, color: color.withValues(alpha: 0.6), size: 14),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: GoogleFonts.rajdhani(
+                color: AppColors.textMuted,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 1,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: GoogleFonts.orbitron(
+            color: color,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ── Export Action Card ───────────────────────────────────────────────
+
+class _ExportActionCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final bool isLoading;
+  final VoidCallback onTap;
+  final Duration delay;
+
+  const _ExportActionCard({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.isLoading,
+    required this.onTap,
+    required this.delay,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return StaggeredEntry(
+      delay: delay,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: isLoading ? null : onTap,
+          borderRadius: BorderRadius.circular(16),
+          splashColor: color.withValues(alpha: 0.1),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: color.withValues(alpha: 0.05),
+              border: Border.all(color: color.withValues(alpha: 0.15)),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.05),
+                  blurRadius: 16,
+                  spreadRadius: -4,
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (isLoading)
+                  SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: color,
+                    ),
+                  )
+                else
+                  _NeonIconCircle(icon: icon, color: color),
+                const SizedBox(height: 12),
+                Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.rajdhani(
+                    color: color,
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Components ──
+
+class _NeonIconCircle extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+
+  const _NeonIconCircle({required this.icon, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color.withValues(alpha: 0.1),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.15),
+            blurRadius: 12,
+          ),
         ],
       ),
+      child: Icon(icon, color: color, size: 20),
     );
   }
 }

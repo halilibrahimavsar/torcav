@@ -1,20 +1,27 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/neon_widgets.dart';
 import '../../../dashboard/presentation/pages/dashboard_page.dart';
-import '../../../monitoring/presentation/pages/monitoring_hub_page.dart';
 import '../../../network_scan/presentation/pages/network_scan_page.dart';
 import '../../../reports/presentation/pages/reports_page.dart';
 import '../../../security/presentation/pages/security_center_page.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
+import '../../../monitoring/presentation/pages/topology_page.dart';
 import '../../../wifi_scan/presentation/pages/wifi_scan_page.dart';
+import '../widgets/cyber_drawer.dart';
+import 'operations_hub_page.dart';
+import 'profile_hub_page.dart';
 
-/// Root shell that manages the bottom navigation and page switching.
+/// Root shell: simplified 3-tab navigation with neon bottom bar.
 ///
-/// Tabs are reduced to 4 to avoid clutter on smaller screens.
-/// The "More" tab opens a hub with less-frequently-used features.
+/// Tabs:  Dashboard │ Discovery │ Operations
+/// Secondary features (Security, Reports, Settings) are consolidated
+/// into the Operations hub.
 class AppShellPage extends StatefulWidget {
   const AppShellPage({super.key});
 
@@ -24,268 +31,368 @@ class AppShellPage extends StatefulWidget {
 
 class _AppShellPageState extends State<AppShellPage> {
   int _index = 0;
+  final PageController _pageController = PageController();
 
-  List<_ShellTab> _getTabs(AppLocalizations l10n) => [
-    _ShellTab(
-      title: l10n.navDashboard,
-      icon: Icons.space_dashboard_outlined,
-      selectedIcon: Icons.space_dashboard_rounded,
-    ),
-    _ShellTab(
-      title: l10n.navWifi,
-      icon: Icons.wifi_outlined,
-      selectedIcon: Icons.wifi_rounded,
-    ),
-    _ShellTab(
-      title: l10n.navLan,
-      icon: Icons.device_hub_outlined,
-      selectedIcon: Icons.device_hub_rounded,
-    ),
-    _ShellTab(
-      title: l10n.navMore,
-      icon: Icons.grid_view_outlined,
-      selectedIcon: Icons.grid_view_rounded,
-    ),
-  ];
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _onTabSelected(int index) {
+    setState(() => _index = index);
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 350),
+      curve: Curves.easeOutCubic,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final tabs = _getTabs(l10n);
 
     return Scaffold(
-      body: IndexedStack(
-        index: _index,
+      drawer: CyberDrawer(onNavigate: _navigateTo),
+      body: PageView(
+        controller: _pageController,
+        physics: const NeverScrollableScrollPhysics(),
         children: [
-          DashboardPage(onNavigate: (destination) => _navigateTo(destination)),
-          const WifiScanPage(),
-          const NetworkScanPage(),
-          _MoreHub(onNavigate: _pushPage),
+          DashboardPage(onNavigate: _navigateTo),
+          const _DiscoveryTabPage(),
+          OperationsHubPage(onNavigate: _navigateTo),
         ],
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _index,
-        onDestinationSelected: (value) => setState(() => _index = value),
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-        height: 70,
-        destinations:
-            tabs
-                .map(
-                  (tab) => NavigationDestination(
-                    icon: Icon(tab.icon),
-                    selectedIcon: Icon(tab.selectedIcon),
-                    label: tab.title,
-                  ),
-                )
-                .toList(),
+      extendBody: true,
+      bottomNavigationBar: _NeonBottomBar(
+        currentIndex: _index,
+        onTap: _onTabSelected,
+        items: [
+          _NeonBarItem(
+            icon: Icons.grid_view_outlined,
+            selectedIcon: Icons.grid_view_rounded,
+            label: l10n.navDashboard.toUpperCase(),
+          ),
+          _NeonBarItem(
+            icon: Icons.radar_outlined,
+            selectedIcon: Icons.radar_rounded,
+            label: l10n.navDiscovery.toUpperCase(),
+          ),
+          _NeonBarItem(
+            icon: Icons.hub_outlined,
+            selectedIcon: Icons.hub_rounded,
+            label: l10n.navOperations.toUpperCase(),
+          ),
+        ],
       ),
     );
   }
 
   void _navigateTo(String destination) {
-    final l10n = AppLocalizations.of(context)!;
     switch (destination) {
+      case 'dashboard':
+        _onTabSelected(0);
       case 'wifi':
-        setState(() => _index = 1);
       case 'lan':
-        setState(() => _index = 2);
+        _onTabSelected(1);
+      case 'operations':
+        _onTabSelected(2);
+      case 'monitor/topology':
+        _onTabSelected(2);
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const TopologyPage()),
+        );
       case 'security':
-        _pushPage(const SecurityCenterPage(), l10n.securityCenterTitle);
-      case 'monitoring':
-        _pushPage(const MonitoringHubPage(), l10n.monitoringTitle);
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const SecurityCenterPage()),
+        );
       case 'reports':
-        _pushPage(const ReportsPage(), l10n.reportsTitle);
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const ReportsPage()),
+        );
       case 'settings':
-        _pushPage(const SettingsPage(), l10n.settingsTitle);
-      case 'more':
-        setState(() => _index = 3);
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const SettingsPage()),
+        );
+      case 'profile':
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const ProfileHubPage()),
+        );
     }
   }
+}
 
-  void _pushPage(Widget page, String title) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder:
-            (_) => Scaffold(appBar: AppBar(title: Text(title)), body: page),
-      ),
-    );
+// ── Discovery Tab (Wi-Fi + LAN combined) ──────────────────────────────
+
+class _DiscoveryTabPage extends StatefulWidget {
+  const _DiscoveryTabPage();
+
+  @override
+  State<_DiscoveryTabPage> createState() => _DiscoveryTabPageState();
+}
+
+class _DiscoveryTabPageState extends State<_DiscoveryTabPage>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
   }
-}
 
-class _ShellTab {
-  final String title;
-  final IconData icon;
-  final IconData selectedIcon;
-
-  const _ShellTab({
-    required this.title,
-    required this.icon,
-    required this.selectedIcon,
-  });
-}
-
-// ── More Hub ──────────────────────────────────────────────────────────
-
-class _MoreHub extends StatelessWidget {
-  final void Function(Widget page, String title) onNavigate;
-
-  const _MoreHub({required this.onNavigate});
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.moreTitle)),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _SectionHeader(label: l10n.sectionTools),
-          const SizedBox(height: 8),
-          _MenuTile(
-            icon: Icons.speed_rounded,
-            iconColor: AppTheme.secondaryColor,
-            title: l10n.speedTestTitle,
-            subtitle: l10n.speedTestDesc,
-            onTap:
-                () =>
-                    onNavigate(const MonitoringHubPage(), l10n.monitoringTitle),
+      appBar: AppBar(
+        title: NeonText(
+          'DISCOVERY',
+          style: GoogleFonts.orbitron(
+            color: AppColors.neonCyan,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 2,
           ),
-          _MenuTile(
-            icon: Icons.shield_outlined,
-            iconColor: const Color(0xFFFF6B6B),
-            title: l10n.securityCenterTitle,
-            subtitle: l10n.securityCenterDesc,
-            onTap:
-                () => onNavigate(
-                  const SecurityCenterPage(),
-                  l10n.securityCenterTitle,
+          glowRadius: 8,
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(48),
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.darkSurface.withValues(alpha: 0.9),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: AppColors.neonCyan.withValues(alpha: 0.1),
+                width: 1,
+              ),
+            ),
+            child: TabBar(
+              controller: _tabController,
+              indicatorSize: TabBarIndicatorSize.tab,
+              indicatorPadding: const EdgeInsets.all(4),
+              indicator: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.neonCyan.withValues(alpha: 0.2),
+                    AppColors.neonCyan.withValues(alpha: 0.05),
+                  ],
                 ),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: AppColors.neonCyan.withValues(alpha: 0.4),
+                  width: 1,
+                ),
+              ),
+              dividerColor: Colors.transparent,
+              labelColor: AppColors.neonCyan,
+              unselectedLabelColor: AppColors.textMuted,
+              labelStyle: GoogleFonts.orbitron(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.5,
+              ),
+              unselectedLabelStyle: GoogleFonts.orbitron(
+                fontSize: 11,
+                letterSpacing: 1,
+              ),
+              tabs: [
+                Tab(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.wifi_rounded, size: 16),
+                      const SizedBox(width: 6),
+                      Text(l10n.navWifi),
+                    ],
+                  ),
+                ),
+                Tab(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.device_hub_rounded, size: 16),
+                      const SizedBox(width: 6),
+                      Text(l10n.navLan),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-          _MenuTile(
-            icon: Icons.description_outlined,
-            iconColor: const Color(0xFFFFAB40),
-            title: l10n.reportsTitle,
-            subtitle: l10n.reportsDesc,
-            onTap: () => onNavigate(const ReportsPage(), l10n.reportsTitle),
-          ),
-          const SizedBox(height: 20),
-          _SectionHeader(label: l10n.sectionPreferences),
-          const SizedBox(height: 8),
-          _MenuTile(
-            icon: Icons.tune_rounded,
-            iconColor:
-                isDark
-                    ? Colors.white70
-                    : Theme.of(context).colorScheme.onSurface.withValues(
-                      alpha: 0.8,
-                    ),
-            title: l10n.settingsTitle,
-            subtitle: l10n.settingsDesc,
-            onTap: () => onNavigate(const SettingsPage(), l10n.settingsTitle),
-          ),
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: const [
+          WifiScanPage(),
+          NetworkScanPage(),
         ],
       ),
     );
   }
 }
 
-class _SectionHeader extends StatelessWidget {
-  final String label;
-  const _SectionHeader({required this.label});
 
-  @override
-  Widget build(BuildContext context) {
-    final onSurface = Theme.of(context).colorScheme.onSurface;
-    return Row(
-      children: [
-        Text(
-          label,
-          style: GoogleFonts.rajdhani(
-            color: onSurface.withValues(alpha: 0.5),
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 2,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Divider(color: onSurface.withValues(alpha: 0.18), thickness: 1),
-        ),
-      ],
-    );
-  }
+// ── Neon Bottom Bar ──────────────────────────────────────────────────
+
+class _NeonBarItem {
+  final IconData icon;
+  final IconData selectedIcon;
+  final String label;
+
+  const _NeonBarItem({
+    required this.icon,
+    required this.selectedIcon,
+    required this.label,
+  });
 }
 
-class _MenuTile extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
+class _NeonBottomBar extends StatelessWidget {
+  final int currentIndex;
+  final ValueChanged<int> onTap;
+  final List<_NeonBarItem> items;
 
-  const _MenuTile({
-    required this.icon,
-    required this.iconColor,
-    required this.title,
-    required this.subtitle,
+  const _NeonBottomBar({
+    required this.currentIndex,
     required this.onTap,
+    required this.items,
   });
 
   @override
   Widget build(BuildContext context) {
-    final onSurface = Theme.of(context).colorScheme.onSurface;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-            child: Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: iconColor.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(icon, color: iconColor, size: 20),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: GoogleFonts.rajdhani(
-                          color: onSurface,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      Text(
-                        subtitle,
-                        style: GoogleFonts.rajdhani(
-                          color: onSurface.withValues(alpha: 0.58),
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  color: onSurface.withValues(alpha: 0.35),
-                  size: 22,
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+          child: Container(
+            height: 68,
+            decoration: BoxDecoration(
+              color: AppColors.darkSurface.withValues(alpha: 0.85),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: AppColors.neonCyan.withValues(alpha: 0.12),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.neonCyan.withValues(alpha: 0.05),
+                  blurRadius: 24,
+                  offset: const Offset(0, -4),
                 ),
               ],
             ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final itemWidth = constraints.maxWidth / items.length;
+                return Stack(
+                  children: [
+                    // Moving Shuttle
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeOutBack,
+                      left: (currentIndex * itemWidth) + (itemWidth * 0.1),
+                      top: 10,
+                      child: Container(
+                        width: itemWidth * 0.8,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: AppColors.neonCyan.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: AppColors.neonCyan.withValues(alpha: 0.2),
+                            width: 1,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.neonCyan.withValues(alpha: 0.12),
+                              blurRadius: 15,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    // Items
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: List.generate(items.length, (index) {
+                        final item = items[index];
+                        final isSelected = currentIndex == index;
+                        return _NeonBarButton(
+                          icon: isSelected ? item.selectedIcon : item.icon,
+                          label: item.label,
+                          isSelected: isSelected,
+                          onTap: () => onTap(index),
+                          width: itemWidth,
+                        );
+                      }),
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NeonBarButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final double width;
+
+  const _NeonBarButton({
+    required this.icon,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+    required this.width,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isSelected ? AppColors.neonCyan : AppColors.textMuted;
+
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: SizedBox(
+        width: width,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: color,
+              size: isSelected ? 24 : 22,
+            ),
+            const SizedBox(height: 4),
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 200),
+              style: GoogleFonts.outfit(
+                color: color,
+                fontSize: 10,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                letterSpacing: 0.5,
+              ),
+              child: Text(label),
+            ),
+          ],
         ),
       ),
     );

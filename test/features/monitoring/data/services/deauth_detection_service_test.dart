@@ -18,17 +18,26 @@ class MockProcess extends Mock implements Process {}
 void main() {
   setUpAll(() {
     registerFallbackValue(<String>[]);
+    registerFallbackValue(ProcessSignal.sigterm);
   });
 
   late DeauthDetectionService service;
   late MockProcessRunner mockProcessRunner;
   late MockPrivilegeService mockPrivilegeService;
   late MockNotificationService mockNotificationService;
+  late MockProcess mockProcess;
 
   setUp(() {
     mockProcessRunner = MockProcessRunner();
     mockPrivilegeService = MockPrivilegeService();
     mockNotificationService = MockNotificationService();
+    mockProcess = MockProcess();
+
+    // Default stubs
+    when(() => mockProcess.kill(any())).thenReturn(true);
+    when(() => mockProcess.stdout).thenAnswer((_) => const Stream.empty());
+    when(() => mockProcess.stderr).thenAnswer((_) => const Stream.empty());
+    when(() => mockProcess.exitCode).thenAnswer((_) => Future.value(0));
 
     service = DeauthDetectionService(
       mockProcessRunner,
@@ -49,33 +58,27 @@ void main() {
       }
     });
 
-    // TODO: Enable these tests once mocktail configuration for Future<ProcessResult> is resolved
-    /*
-    test('should fail if airodump-ng is missing', () async {
-      if (!Platform.isLinux) return;
-
+    test('should return false if airodump-ng is missing', () async {
+      // Simple mock for which command failure
       when(
-        () => mockProcessRunner.run(any(), any()),
+        () => mockProcessRunner.run('which', ['airodump-ng']),
       ).thenAnswer((_) async => ProcessResult(0, 1, '', 'Error'));
 
-      expect(
-        () => service.startMonitoring('wlan0'),
-        throwsA(isA<DeauthDetectionFailure>()),
-      );
+      final result = await service.startMonitoring('wlan0');
+      expect(result, false);
     });
 
     test('should start monitoring successfully when tool exists', () async {
-      if (!Platform.isLinux) return;
-
       when(
-        () => mockProcessRunner.run(any(), any()),
+        () => mockProcessRunner.run('which', ['airodump-ng']),
       ).thenAnswer((_) async => ProcessResult(0, 0, '/usr/bin/airodump-ng', ''));
 
       when(
         () => mockPrivilegeService.startAsRoot(any(), any()),
       ).thenAnswer((_) async => mockProcess);
 
-      await service.startMonitoring('wlan0');
+      final result = await service.startMonitoring('wlan0');
+      expect(result, true);
 
       verify(
         () => mockPrivilegeService.startAsRoot(
@@ -84,6 +87,5 @@ void main() {
         ),
       ).called(1);
     });
-    */
   });
 }

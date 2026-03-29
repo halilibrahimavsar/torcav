@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:torcav/l10n/generated/app_localizations.dart';
@@ -5,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/neon_widgets.dart';
 import '../bloc/security_bloc.dart';
 import '../../domain/entities/known_network.dart';
 import '../../domain/entities/security_event.dart' as domain_event;
@@ -13,6 +15,7 @@ import '../../domain/entities/consent_policy.dart';
 import '../../domain/services/consent_guard.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 import 'package:torcav/features/wifi_scan/domain/repositories/wifi_repository.dart';
+import '../widgets/security_status_radar.dart';
 
 class SecurityCenterPage extends StatelessWidget {
   const SecurityCenterPage({super.key});
@@ -42,51 +45,129 @@ class _SecurityCenterViewState extends State<_SecurityCenterView> {
     final policy = _guard.policy;
     final targets = _guard.authorizedTargets;
     final l10n = AppLocalizations.of(context)!;
-    final onSurface = Theme.of(context).colorScheme.onSurface;
 
     return BlocBuilder<SecurityBloc, SecurityState>(
       builder: (context, state) {
         return ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
           children: [
-            Text(
-              l10n.activeOperationsBlockedMsg,
-              style: GoogleFonts.rajdhani(
-                color: onSurface.withValues(alpha: 0.82),
-                fontSize: 17,
+            // ── Security Header (Bento) ──
+            StaggeredEntry(
+              delay: const Duration(milliseconds: 50),
+              child: _SecurityCenterBentoHeader(
+                state: state,
+                policy: policy,
+                targetCount: targets.length,
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // ── Info Banner (Glassmorphic) ──
+            StaggeredEntry(
+              delay: const Duration(milliseconds: 150),
+              child: GlassmorphicContainer(
+                backgroundColor: AppColors.neonRed.withValues(alpha: 0.04),
+                borderColor: AppColors.neonRed.withValues(alpha: 0.2),
+                padding: const EdgeInsets.all(14),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.shield_outlined,
+                      color: AppColors.neonRed,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        l10n.activeOperationsBlockedMsg,
+                        style: GoogleFonts.rajdhani(
+                          color: AppColors.textSecondary,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // ── Policy Settings ──
+            StaggeredEntry(
+              delay: const Duration(milliseconds: 200),
+              child: NeonSectionHeader(
+                label: l10n.defensePolicy,
+                icon: Icons.policy_rounded,
+                color: AppColors.neonPurple,
               ),
             ),
             const SizedBox(height: 12),
-            _PolicyCard(
-              policy: policy,
-              onPolicyChanged: (updated) {
-                setState(() => _guard.updatePolicy(updated));
-              },
+            StaggeredEntry(
+              delay: const Duration(milliseconds: 250),
+              child: _PolicyCard(
+                policy: policy,
+                onPolicyChanged: (updated) {
+                  setState(() => _guard.updatePolicy(updated));
+                },
+              ),
             ),
-            const SizedBox(height: 20),
-            _buildSectionHeader(
-              context,
-              l10n.knownNetworks,
-              Icons.verified_user,
+            const SizedBox(height: 24),
+
+            // ── Known Networks ──
+            StaggeredEntry(
+              delay: const Duration(milliseconds: 300),
+              child: NeonSectionHeader(
+                label: l10n.knownNetworks,
+                icon: Icons.verified_user_rounded,
+                color: AppColors.neonGreen,
+              ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             if (state is SecurityLoaded)
               _buildKnownNetworks(state.knownNetworks)
             else if (state is SecurityLoading)
-              const Center(child: CircularProgressIndicator())
+              _buildLoading()
             else
               _emptyBox(l10n.noKnownNetworksYet),
             const SizedBox(height: 24),
-            _buildSectionHeader(
-              context,
-              l10n.authorizedTargets,
-              Icons.security,
+
+            // ── Authorized Targets ──
+            StaggeredEntry(
+              delay: const Duration(milliseconds: 400),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: NeonSectionHeader(
+                      label: l10n.authorizedTargets,
+                      icon: Icons.security_rounded,
+                      color: AppColors.neonPurple,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _showAddTargetDialog,
+                    icon: Icon(
+                      Icons.add_circle_outline_rounded,
+                      color: AppColors.neonPurple,
+                      size: 22,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             _buildAuthorizedTargets(targets, l10n),
             const SizedBox(height: 24),
-            _buildSectionHeader(context, l10n.securityTimeline, Icons.history),
-            const SizedBox(height: 8),
+
+            // ── Security Timeline ──
+            StaggeredEntry(
+              delay: const Duration(milliseconds: 500),
+              child: NeonSectionHeader(
+                label: l10n.securityTimeline,
+                icon: Icons.history_rounded,
+                color: AppColors.neonCyan,
+              ),
+            ),
+            const SizedBox(height: 12),
             if (state is SecurityLoaded)
               _buildSecurityTimeline(state.recentEvents, l10n)
             else
@@ -97,32 +178,15 @@ class _SecurityCenterViewState extends State<_SecurityCenterView> {
     );
   }
 
-  Widget _buildSectionHeader(
-    BuildContext context,
-    String title,
-    IconData icon,
-  ) {
-    return Row(
-      children: [
-        Icon(icon, color: AppTheme.primaryColor, size: 20),
-        const SizedBox(width: 8),
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.1,
-          ),
+  Widget _buildLoading() {
+    return const Padding(
+      padding: EdgeInsets.all(20),
+      child: Center(
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          color: AppColors.neonCyan,
         ),
-        const Spacer(),
-        if (title == AppLocalizations.of(context)!.authorizedTargets)
-          IconButton(
-            onPressed: _showAddTargetDialog,
-            icon: const Icon(
-              Icons.add_circle_outline,
-              color: AppTheme.primaryColor,
-            ),
-          ),
-      ],
+      ),
     );
   }
 
@@ -169,18 +233,17 @@ class _SecurityCenterViewState extends State<_SecurityCenterView> {
   }
 
   Widget _emptyBox(String text) {
-    final onSurface = Theme.of(context).colorScheme.onSurface;
-    return Container(
+    return NeonCard(
+      glowColor: AppColors.neonCyan,
+      glowIntensity: 0.02,
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: onSurface.withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: onSurface.withValues(alpha: 0.15)),
-      ),
       child: Center(
         child: Text(
           text,
-          style: GoogleFonts.rajdhani(color: onSurface.withValues(alpha: 0.78)),
+          style: GoogleFonts.rajdhani(
+            color: AppColors.textMuted,
+            fontSize: 14,
+          ),
         ),
       ),
     );
@@ -199,54 +262,102 @@ class _SecurityCenterViewState extends State<_SecurityCenterView> {
         return StatefulBuilder(
           builder: (context, setLocalState) {
             return AlertDialog(
-              backgroundColor: const Color(0xFF0F1722),
-              title: Text(
+              backgroundColor: AppColors.darkSurface,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+                side: BorderSide(
+                  color: AppColors.neonPurple.withValues(alpha: 0.2),
+                ),
+              ),
+              title: NeonText(
                 l10n.authorizeTarget,
-                style: GoogleFonts.orbitron(fontSize: 18),
+                style: GoogleFonts.orbitron(
+                  fontSize: 16,
+                  color: AppColors.neonPurple,
+                ),
+                glowRadius: 6,
               ),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    ElevatedButton.icon(
-                      onPressed: () async {
-                        final selected = await _showScannedNetworksDialog();
-                        if (selected != null) {
-                          ssidController.text = selected.ssid;
-                          bssidController.text = selected.bssid;
-                        }
-                      },
-                      icon: const Icon(Icons.wifi_find),
-                      label: Text(l10n.selectFromScanned),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primaryColor.withValues(
-                          alpha: 0.1,
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () async {
+                          final selected = await _showScannedNetworksDialog();
+                          if (selected != null) {
+                            ssidController.text = selected.ssid;
+                            bssidController.text = selected.bssid;
+                          }
+                        },
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 16,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: AppColors.neonCyan.withValues(alpha: 0.08),
+                            border: Border.all(
+                              color:
+                                  AppColors.neonCyan.withValues(alpha: 0.25),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.wifi_find_rounded,
+                                color: AppColors.neonCyan,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                l10n.selectFromScanned,
+                                style: GoogleFonts.rajdhani(
+                                  color: AppColors.neonCyan,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        foregroundColor: AppTheme.primaryColor,
                       ),
                     ),
                     const SizedBox(height: 16),
                     TextField(
                       controller: ssidController,
+                      style: GoogleFonts.sourceCodePro(
+                        color: AppColors.textPrimary,
+                        fontSize: 14,
+                      ),
                       decoration: InputDecoration(
                         labelText: l10n.ssid,
-                        border: const OutlineInputBorder(),
                       ),
                     ),
                     const SizedBox(height: 12),
                     TextField(
                       controller: bssidController,
+                      style: GoogleFonts.sourceCodePro(
+                        color: AppColors.textPrimary,
+                        fontSize: 14,
+                      ),
                       decoration: InputDecoration(
                         labelText: l10n.bssid,
-                        border: const OutlineInputBorder(),
                       ),
                     ),
                     const SizedBox(height: 16),
                     SwitchListTile(
                       value: allowHandshake,
+                      activeColor: AppColors.neonGreen,
                       title: Text(
                         l10n.allowHandshakeCapture,
-                        style: const TextStyle(fontSize: 14),
+                        style: GoogleFonts.rajdhani(
+                          color: AppColors.textPrimary,
+                          fontSize: 14,
+                        ),
                       ),
                       onChanged:
                           (value) =>
@@ -254,9 +365,13 @@ class _SecurityCenterViewState extends State<_SecurityCenterView> {
                     ),
                     SwitchListTile(
                       value: allowActiveDefense,
+                      activeColor: AppColors.neonOrange,
                       title: Text(
                         l10n.allowActiveDefense,
-                        style: const TextStyle(fontSize: 14),
+                        style: GoogleFonts.rajdhani(
+                          color: AppColors.textPrimary,
+                          fontSize: 14,
+                        ),
                       ),
                       onChanged:
                           (value) =>
@@ -268,7 +383,10 @@ class _SecurityCenterViewState extends State<_SecurityCenterView> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text(l10n.cancel),
+                  child: Text(
+                    l10n.cancel,
+                    style: GoogleFonts.rajdhani(color: AppColors.textMuted),
+                  ),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -312,63 +430,96 @@ class _SecurityCenterViewState extends State<_SecurityCenterView> {
   }
 }
 
+// ── Network Card (Known) ────────────────────────────────────────────
+
 class _NetworkCard extends StatelessWidget {
   final KnownNetwork network;
   const _NetworkCard({required this.network});
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final onSurface = Theme.of(context).colorScheme.onSurface;
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color:
-            isDark
-                ? const Color(0xFF162030)
-                : Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.2)),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.verified, color: Colors.blueAccent, size: 28),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  network.ssid,
-                  style: GoogleFonts.orbitron(
-                    color: onSurface,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
-                  ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: NeonCard(
+        glowColor: AppColors.neonGreen,
+        glowIntensity: 0.04,
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.neonGreen.withValues(alpha: 0.1),
+                border: Border.all(
+                  color: AppColors.neonGreen.withValues(alpha: 0.2),
                 ),
-                Text(
-                  network.bssid,
-                  style: GoogleFonts.rajdhani(
-                    color: onSurface.withValues(alpha: 0.68),
-                    fontSize: 12,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.neonGreen.withValues(alpha: 0.15),
+                    blurRadius: 12,
                   ),
+                ],
+              ),
+              child: const Icon(
+                Icons.verified_user_rounded,
+                color: AppColors.neonGreen,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    network.ssid.toUpperCase(),
+                    style: GoogleFonts.orbitron(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    network.bssid,
+                    style: GoogleFonts.sourceCodePro(
+                      color: AppColors.textMuted,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(
+                  color: AppColors.neonGreen.withValues(alpha: 0.3),
                 ),
-              ],
+                color: AppColors.neonGreen.withValues(alpha: 0.05),
+              ),
+              child: Text(
+                'TRUSTED',
+                style: GoogleFonts.orbitron(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.neonGreen,
+                  letterSpacing: 0.5,
+                ),
+              ),
             ),
-          ),
-          Text(
-            'Trusted',
-            style: GoogleFonts.rajdhani(
-              color: Colors.blueAccent,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
+
+// ── Target Card ─────────────────────────────────────────────────────
 
 class _TargetCard extends StatelessWidget {
   final AuthorizedTarget target;
@@ -378,167 +529,223 @@ class _TargetCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final onSurface = Theme.of(context).colorScheme.onSurface;
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color:
-            isDark
-                ? const Color(0xFF162030)
-                : Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.2)),
-      ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: NeonCard(
+        glowColor: AppColors.neonPurple,
+        glowIntensity: 0.04,
+        padding: const EdgeInsets.all(12),
       child: Row(
         children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.neonPurple.withValues(alpha: 0.1),
+              border: Border.all(
+                color: AppColors.neonPurple.withValues(alpha: 0.2),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.neonPurple.withValues(alpha: 0.15),
+                  blurRadius: 10,
+                ),
+              ],
+            ),
+            child: Icon(
+              Icons.my_location_rounded,
+              color: AppColors.neonPurple,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  target.ssid.isEmpty ? l10n.hiddenNetwork : target.ssid,
+                  (target.ssid.isEmpty ? l10n.hiddenNetwork : target.ssid).toUpperCase(),
                   style: GoogleFonts.orbitron(
-                    color: onSurface,
+                    color: AppColors.textPrimary,
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
+                    letterSpacing: 1,
                   ),
                 ),
                 Text(
                   target.bssid,
-                  style: GoogleFonts.rajdhani(
-                    color: onSurface.withValues(alpha: 0.68),
-                    fontSize: 12,
-                  ),
-                ),
-                Text(
-                  l10n.opsLabel(
-                    target.operations.map((e) => e.name).join(', '),
-                  ),
-                  style: GoogleFonts.rajdhani(
-                    color: AppTheme.primaryColor.withValues(alpha: 0.8),
+                  style: GoogleFonts.sourceCodePro(
+                    color: AppColors.textMuted,
                     fontSize: 11,
                   ),
+                ),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 4,
+                  children: target.operations.map((op) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: AppColors.neonPurple.withValues(alpha: 0.1),
+                        border: Border.all(
+                          color: AppColors.neonPurple.withValues(alpha: 0.2),
+                        ),
+                      ),
+                      child: Text(
+                        op.name.toUpperCase(),
+                        style: GoogleFonts.rajdhani(
+                          color: AppColors.neonPurple,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ],
             ),
           ),
           IconButton(
             onPressed: onRemove,
-            icon: const Icon(
-              Icons.delete_outline,
-              color: Colors.redAccent,
-              size: 20,
+            icon: Icon(
+              Icons.delete_sweep_rounded,
+              color: AppColors.neonRed.withValues(alpha: 0.6),
+              size: 22,
             ),
           ),
         ],
       ),
+      ),
     );
   }
 }
+
+// ── Event Card ──────────────────────────────────────────────────────
 
 class _EventCard extends StatelessWidget {
   final domain_event.SecurityEvent event;
   final AppLocalizations l10n;
   const _EventCard({required this.event, required this.l10n});
 
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final onSurface = Theme.of(context).colorScheme.onSurface;
-    final color = _getSeverityColor(event.severity);
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color:
-            isDark
-                ? const Color(0xFF162030)
-                : Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(_getIcon(event.type), color: color, size: 16),
-              const SizedBox(width: 8),
-              Text(
-                '${event.type.name.toUpperCase()} • ${event.severity.name.toUpperCase()}',
-                style: GoogleFonts.orbitron(
-                  color: color,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const Spacer(),
-              Text(
-                _formatTime(event.timestamp),
-                style: GoogleFonts.rajdhani(
-                  color: onSurface.withValues(alpha: 0.5),
-                  fontSize: 10,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text(
-            '${event.ssid.isEmpty ? l10n.hiddenNetwork : event.ssid} (${event.bssid})',
-            style: GoogleFonts.rajdhani(
-              color: onSurface,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            event.evidence,
-            style: GoogleFonts.rajdhani(
-              color: onSurface.withValues(alpha: 0.82),
-              fontSize: 13,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Color _getSeverityColor(domain_event.SecurityEventSeverity severity) {
-    switch (severity) {
+  Color get _severityColor {
+    switch (event.severity) {
       case domain_event.SecurityEventSeverity.critical:
-        return Colors.redAccent;
+        return AppColors.neonRed;
       case domain_event.SecurityEventSeverity.high:
-        return Colors.orangeAccent;
+        return AppColors.neonOrange;
       case domain_event.SecurityEventSeverity.warning:
-        return Colors.yellowAccent;
+        return const Color(0xFFFFE066);
       case domain_event.SecurityEventSeverity.info:
-        return Colors.blueAccent;
+        return AppColors.neonCyan;
     }
   }
 
-  IconData _getIcon(domain_event.SecurityEventType type) {
-    switch (type) {
+  IconData get _icon {
+    switch (event.type) {
       case domain_event.SecurityEventType.rogueApSuspected:
         return Icons.warning_amber_rounded;
       case domain_event.SecurityEventType.deauthBurstDetected:
-        return Icons.wifi_off;
+        return Icons.wifi_off_rounded;
       case domain_event.SecurityEventType.handshakeCaptureStarted:
-        return Icons.lock_open;
+        return Icons.lock_open_rounded;
       case domain_event.SecurityEventType.handshakeCaptureCompleted:
-        return Icons.lock_open;
+        return Icons.lock_rounded;
       case domain_event.SecurityEventType.captivePortalDetected:
-        return Icons.web;
+        return Icons.web_rounded;
       case domain_event.SecurityEventType.unsupportedOperation:
-        return Icons.block;
+        return Icons.block_rounded;
     }
   }
 
-  String _formatTime(DateTime time) {
-    return '${time.hour}:${time.minute.toString().padLeft(2, '0')}';
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: NeonCard(
+        glowColor: _severityColor,
+        glowIntensity: 0.04,
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(_icon, color: _severityColor, size: 16),
+                const SizedBox(width: 8),
+                NeonText(
+                  '${event.type.name.replaceAll(RegExp(r'(?=[A-Z])'), ' ').toUpperCase()} • ${event.severity.name.toUpperCase()}',
+                  style: GoogleFonts.orbitron(
+                    color: _severityColor,
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.5,
+                  ),
+                  glowColor: _severityColor,
+                  glowRadius: 3,
+                ),
+                const Spacer(),
+                Text(
+                  '${event.timestamp.hour.toString().padLeft(2, '0')}:${event.timestamp.minute.toString().padLeft(2, '0')}',
+                  style: GoogleFonts.rajdhani(
+                    color: AppColors.textMuted,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Container(
+                  width: 2,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: _severityColor,
+                    borderRadius: BorderRadius.circular(2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: _severityColor.withValues(alpha: 0.5),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${event.ssid.isEmpty ? l10n.hiddenNetwork : event.ssid} (${event.bssid})',
+                        style: GoogleFonts.rajdhani(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        event.evidence,
+                        style: GoogleFonts.rajdhani(
+                          color: AppColors.textSecondary,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
+
+// ── Scanned Networks Dialog ─────────────────────────────────────────
 
 class _ScannedNetworksDialog extends StatefulWidget {
   final WifiRepository repository;
@@ -580,10 +787,18 @@ class _ScannedNetworksDialogState extends State<_ScannedNetworksDialog> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return AlertDialog(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      title: Text(
+      backgroundColor: AppColors.darkSurface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: AppColors.neonCyan.withValues(alpha: 0.15)),
+      ),
+      title: NeonText(
         l10n.scannedNetworksTitle,
-        style: GoogleFonts.orbitron(fontSize: 16),
+        style: GoogleFonts.orbitron(
+          fontSize: 14,
+          color: AppColors.neonCyan,
+        ),
+        glowRadius: 4,
       ),
       content: SizedBox(
         width: double.maxFinite,
@@ -593,23 +808,40 @@ class _ScannedNetworksDialogState extends State<_ScannedNetworksDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(l10n.cancel),
+          child: Text(
+            l10n.cancel,
+            style: GoogleFonts.rajdhani(color: AppColors.textMuted),
+          ),
         ),
       ],
     );
   }
 
   Widget _buildContent() {
-    final onSurface = Theme.of(context).colorScheme.onSurface;
-    if (_loading) return const Center(child: CircularProgressIndicator());
+    if (_loading) {
+      return const Center(
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          color: AppColors.neonCyan,
+        ),
+      );
+    }
     if (_error != null) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, color: Colors.orange, size: 40),
+            Icon(
+              Icons.error_outline_rounded,
+              color: AppColors.neonOrange,
+              size: 40,
+            ),
             const SizedBox(height: 8),
-            Text(_error!, textAlign: TextAlign.center),
+            Text(
+              _error!,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.rajdhani(color: AppColors.textSecondary),
+            ),
             const SizedBox(height: 8),
             ElevatedButton(
               onPressed: _scan,
@@ -624,7 +856,10 @@ class _ScannedNetworksDialogState extends State<_ScannedNetworksDialog> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(AppLocalizations.of(context)!.noNetworksFound),
+            Text(
+              AppLocalizations.of(context)!.noNetworksFound,
+              style: GoogleFonts.rajdhani(color: AppColors.textSecondary),
+            ),
             const SizedBox(height: 8),
             ElevatedButton(
               onPressed: _scan,
@@ -641,20 +876,24 @@ class _ScannedNetworksDialogState extends State<_ScannedNetworksDialog> {
         final net = _networks![index];
         return ListTile(
           leading: Icon(
-            Icons.wifi,
-            color: AppTheme.primaryColor.withValues(alpha: 0.7),
+            Icons.wifi_rounded,
+            color: AppColors.neonCyan.withValues(alpha: 0.7),
           ),
           title: Text(
             net.ssid.isEmpty
                 ? AppLocalizations.of(context)!.hiddenNetwork
                 : net.ssid,
-            style: const TextStyle(fontSize: 14),
+            style: GoogleFonts.rajdhani(
+              color: AppColors.textPrimary,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           subtitle: Text(
             net.bssid,
-            style: TextStyle(
-              fontSize: 12,
-              color: onSurface.withValues(alpha: 0.68),
+            style: GoogleFonts.sourceCodePro(
+              fontSize: 11,
+              color: AppColors.textMuted,
             ),
           ),
           onTap: () => Navigator.of(context).pop(net),
@@ -664,62 +903,304 @@ class _ScannedNetworksDialogState extends State<_ScannedNetworksDialog> {
   }
 }
 
+// ── Policy Card ─────────────────────────────────────────────────────
+
 class _PolicyCard extends StatelessWidget {
   final ConsentPolicy policy;
-  final ValueChanged<ConsentPolicy> onPolicyChanged;
+  final Function(ConsentPolicy) onPolicyChanged;
 
   const _PolicyCard({required this.policy, required this.onPolicyChanged});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color:
-            isDark
-                ? const Color(0xFF0E1929)
-                : Theme.of(context).colorScheme.surface,
-        border: Border.all(
-          color: AppTheme.secondaryColor.withValues(alpha: 0.3),
-        ),
-      ),
+
+    return NeonCard(
+      glowColor: AppColors.neonPurple,
+      glowIntensity: 0.08,
+      padding: EdgeInsets.zero,
       child: Column(
         children: [
-          SwitchListTile(
-            value: policy.legalDisclaimerAccepted,
-            title: Text(
-              l10n.legalDisclaimerAccepted,
-              style: const TextStyle(fontSize: 14),
+          _PolicyTile(
+            title: l10n.blockUnknownAP,
+            subtitle: l10n.automaticBlockMsg,
+            icon: Icons.security_rounded,
+            value: policy.blockUnknownAPs,
+            color: AppColors.neonPurple,
+            onChanged: (val) => onPolicyChanged(
+              policy.copyWith(blockUnknownAPs: val),
             ),
-            subtitle: Text(
-              l10n.requiredForActiveOps,
-              style: const TextStyle(fontSize: 11),
-            ),
-            onChanged:
-                (value) => onPolicyChanged(
-                  policy.copyWith(legalDisclaimerAccepted: value),
-                ),
           ),
-          SwitchListTile(
-            value: policy.strictAllowlistEnabled,
-            title: Text(
-              l10n.strictAllowlist,
-              style: const TextStyle(fontSize: 14),
+          Container(
+            height: 1,
+            color: AppColors.neonPurple.withValues(alpha: 0.1),
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+          ),
+          _PolicyTile(
+            title: l10n.activeProbingEnabled,
+            subtitle: l10n.activeProbingMsg,
+            icon: Icons.radar_rounded,
+            value: policy.activeProbingEnabled,
+            color: AppColors.neonCyan,
+            onChanged: (val) => onPolicyChanged(
+              policy.copyWith(activeProbingEnabled: val),
             ),
-            subtitle: Text(
-              l10n.blockActiveOpsUnknown,
-              style: const TextStyle(fontSize: 11),
+          ),
+          Container(
+            height: 1,
+            color: AppColors.neonPurple.withValues(alpha: 0.1),
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+          ),
+          _PolicyTile(
+            title: l10n.requireConsentForDeauth,
+            subtitle: l10n.manualAuthorizationMsg,
+            icon: Icons.verified_user_rounded,
+            value: policy.requireExplicitConsentForDeauth,
+            color: AppColors.neonGreen,
+            onChanged: (val) => onPolicyChanged(
+              policy.copyWith(requireExplicitConsentForDeauth: val),
             ),
-            onChanged:
-                (value) => onPolicyChanged(
-                  policy.copyWith(strictAllowlistEnabled: value),
-                ),
           ),
         ],
       ),
     );
   }
 }
+
+class _PolicyTile extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final bool value;
+  final Color color;
+  final ValueChanged<bool> onChanged;
+
+  const _PolicyTile({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.value,
+    required this.color,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => onChanged(!value),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: color.withValues(alpha: 0.2),
+                  ),
+                ),
+                child: Icon(icon, color: color, size: 20),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title.toUpperCase(),
+                      style: GoogleFonts.orbitron(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: GoogleFonts.rajdhani(
+                        color: AppColors.textSecondary,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Switch(
+                value: value,
+                onChanged: onChanged,
+                activeColor: color,
+                activeTrackColor: color.withValues(alpha: 0.2),
+                inactiveThumbColor: AppColors.textMuted,
+                inactiveTrackColor: AppColors.darkSurface,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Security Center Header ──────────────────────────────────────────
+
+class _SecurityCenterBentoHeader extends StatelessWidget {
+  final SecurityState state;
+  final ConsentPolicy policy;
+  final int targetCount;
+
+  const _SecurityCenterBentoHeader({
+    required this.state,
+    required this.policy,
+    required this.targetCount,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final currentState = state;
+    final isSecure = currentState is! SecurityLoading; 
+
+    return SizedBox(
+      height: 260,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Left: Main Radar (The core visualization)
+          Expanded(
+            flex: 6,
+            child: NeonCard(
+              glowColor: isSecure ? AppColors.neonCyan : AppColors.neonOrange,
+              glowIntensity: 0.12,
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SecurityStatusRadar(
+                      score: 0.94,
+                      isScanning: currentState is SecurityLoading,
+                      color: isSecure ? AppColors.neonCyan : AppColors.neonOrange,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  NeonText(
+                    (isSecure ? l10n.shieldActive : l10n.scanning).toUpperCase(),
+                    style: GoogleFonts.orbitron(
+                      color: isSecure ? AppColors.neonCyan : AppColors.neonOrange,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 3,
+                    ),
+                    glowRadius: 8,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    l10n.activeProtection.toUpperCase(),
+                    style: GoogleFonts.rajdhani(
+                      color: AppColors.textMuted,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 14),
+          // Right Column: High-density Stats Bento
+          Expanded(
+            flex: 4,
+            child: Column(
+              children: [
+                Expanded(
+                  child: _BentoStatTile(
+                    label: l10n.riskScore.toUpperCase(),
+                    value: '94%',
+                    icon: Icons.speed_rounded,
+                    color: AppColors.neonCyan,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Expanded(
+                  child: _BentoStatTile(
+                    label: l10n.defensePolicy.toUpperCase(),
+                    value: policy.blockUnknownAPs ? 'STRICT' : 'LAX',
+                    icon: Icons.admin_panel_settings_rounded,
+                    color: AppColors.neonPurple,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Expanded(
+                  child: _BentoStatTile(
+                    label: l10n.authorizedTargets.toUpperCase(),
+                    value: '$targetCount',
+                    icon: Icons.my_location_rounded,
+                    color: AppColors.neonGreen,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BentoStatTile extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const _BentoStatTile({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return NeonCard(
+      glowColor: color,
+      glowIntensity: 0.05,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: color.withValues(alpha: 0.6), size: 16),
+          const Spacer(),
+          Text(
+            label,
+            style: GoogleFonts.rajdhani(
+              color: AppColors.textMuted,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
+            ),
+          ),
+          NeonText(
+            value,
+            style: GoogleFonts.orbitron(
+              color: color,
+              fontSize: 18,
+              fontWeight: FontWeight.w900,
+            ),
+            glowColor: color,
+            glowRadius: 4,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Removed _ShieldCore and related painters ──────────────────────────

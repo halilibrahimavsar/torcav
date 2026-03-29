@@ -81,15 +81,17 @@ class MonitoringActive extends MonitoringState {
   final WifiNetwork currentData;
   final List<int> signalHistory;
   final BandwidthSample? latestBandwidth;
+  final String? interface;
 
   const MonitoringActive(
     this.currentData,
     this.signalHistory, {
     this.latestBandwidth,
+    this.interface,
   });
 
   @override
-  List<Object?> get props => [currentData, signalHistory, latestBandwidth];
+  List<Object?> get props => [currentData, signalHistory, latestBandwidth, interface];
 }
 
 class ChannelAnalysisReady extends MonitoringState {
@@ -129,6 +131,7 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
   List<int> _history = [];
   WifiNetwork? _latestNetwork;
   BandwidthSample? _latestBandwidth;
+  String? _activeInterface;
 
   MonitoringBloc(
     this._repository,
@@ -187,6 +190,7 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
         event.network,
         List.from(_history),
         latestBandwidth: _latestBandwidth,
+        interface: _activeInterface,
       ),
     );
   }
@@ -195,7 +199,7 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
     StartBandwidthMonitoring event,
     Emitter<MonitoringState> emit,
   ) async {
-    await _bandwidthSubscription?.cancel();
+    _activeInterface = event.interfaceName;
     _bandwidthSubscription = _repository
         .monitorBandwidth(
           event.interfaceName,
@@ -223,6 +227,7 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
         network,
         List.from(_history),
         latestBandwidth: event.sample,
+        interface: _activeInterface,
       ),
     );
   }

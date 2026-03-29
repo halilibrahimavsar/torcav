@@ -39,7 +39,7 @@ class DeauthDetectionService {
       return false;
     }
 
-    final whichResult = await _processRunner.run('which', ['airoddump-ng']);
+    final whichResult = await _processRunner.run('which', ['airodump-ng']);
     if (whichResult.exitCode != 0) {
       _emitError('airodump-ng not found. Install aircrack-ng suite.');
       return false;

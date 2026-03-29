@@ -54,6 +54,9 @@ class AppLocalizationsKu extends AppLocalizations {
   String get save => 'Tomar bike';
 
   @override
+  String get confirm => 'Confirm';
+
+  @override
   String get legalDisclaimerAccepted => 'Daxuyaniya yasayî hate qebûlkirin';
 
   @override
@@ -103,6 +106,12 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get navLan => 'LAN';
+
+  @override
+  String get navDiscovery => 'Discovery';
+
+  @override
+  String get navOperations => 'Operations';
 
   @override
   String get navMore => 'Zêdetir';
@@ -308,6 +317,18 @@ class AppLocalizationsKu extends AppLocalizations {
   String get saveReportDialog => 'Raportê tomar bike';
 
   @override
+  String get sectionStatus => 'STATUS';
+
+  @override
+  String get exportOptionsTitle => 'EXPORT OPTIONS';
+
+  @override
+  String get latestSnapshotTitle => 'LATEST SNAPSHOT';
+
+  @override
+  String get backendLabel => 'Backend';
+
+  @override
   String get savePdfReportDialog => 'Raporta PDF tomar bike';
 
   @override
@@ -418,4 +439,96 @@ class AppLocalizationsKu extends AppLocalizations {
   String opsLabel(Object ops) {
     return 'Op: $ops';
   }
+
+  @override
+  String get networkStatusLabel => 'NETWORK STATUS';
+
+  @override
+  String get activeSessionLabel => 'ACTIVE SESSION';
+
+  @override
+  String get gatewayLabel => 'GATEWAY';
+
+  @override
+  String get ipLabel => 'IP ADDRESS';
+
+  @override
+  String get connectedStatusCaps => 'CONNECTED';
+
+  @override
+  String get disconnectedStatusCaps => 'DISCONNECTED';
+
+  @override
+  String get quickActionsTitle => 'QUICK ACTIONS';
+
+  @override
+  String get lastScanTitle => 'LAST SCAN';
+
+  @override
+  String get viewDetailsAction => 'VIEW DETAILS';
+
+  @override
+  String get scanning => 'SCANNING…';
+
+  @override
+  String get secure => 'SECURE';
+
+  @override
+  String get blockUnknownAP => 'Block Unknown APs';
+
+  @override
+  String get automaticBlockMsg => 'Automatically drops connections to rogue APs';
+
+  @override
+  String get activeProbingEnabled => 'Active Probing';
+
+  @override
+  String get activeProbingMsg => 'Periodically tests connected AP for anomalies';
+
+  @override
+  String get requireConsentForDeauth => 'Require Consent';
+
+  @override
+  String get manualAuthorizationMsg => 'Manually authorize deauth/active defense';
+
+  @override
+  String get defensePolicy => 'Defense Policy';
+
+  @override
+  String get shieldActive => 'Shield Active';
+
+  @override
+  String get activeProtection => 'Active Protection';
+
+  @override
+  String get riskScore => 'Risk Score';
+
+  @override
+  String get securityRadar => 'Security Radar';
+
+  @override
+  String get profileTitle => 'AGENT PROFILE';
+
+  @override
+  String agentId(Object id) {
+    return 'AGENT_ID: $id';
+  }
+
+  @override
+  String get sessionInformation => 'SESSION INFORMATION';
+
+  @override
+  String get subscriptionStatus => 'SUBSCRIPTION STATUS';
+
+  @override
+  String get activeSession => 'ACTIVE SESSION';
+
+  @override
+  String get logout => 'LOGOUT';
+
+  @override
+  String get logoutConfirmation => 'DISCONNECT SESSION';
+
+  @override
+  String get logoutConfirmMessage => 'Are you sure you want to terminate the current session? All active monitoring will be paused.';
 }

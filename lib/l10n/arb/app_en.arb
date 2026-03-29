@@ -15,6 +15,7 @@
     "allowActiveDefense": "Allow active defense/deauth tests",
     "cancel": "Cancel",
     "save": "Save",
+    "confirm": "Confirm",
     "legalDisclaimerAccepted": "Legal disclaimer accepted",
     "requiredForActiveOps": "Required for active operations",
     "strictAllowlist": "Strict allowlist",
@@ -32,6 +33,8 @@
     "navDashboard": "Dashboard",
     "navWifi": "Wi-Fi",
     "navLan": "LAN",
+    "navDiscovery": "Discovery",
+    "navOperations": "Operations",
     "navMore": "More",
     "moreTitle": "MORE",
     "sectionTools": "TOOLS",
@@ -95,6 +98,10 @@
     "exportPdf": "Export PDF",
     "printPdf": "Print PDF",
     "saveReportDialog": "Save report",
+    "sectionStatus": "STATUS",
+    "exportOptionsTitle": "EXPORT OPTIONS",
+    "latestSnapshotTitle": "LATEST SNAPSHOT",
+    "backendLabel": "Backend",
     "savePdfReportDialog": "Save PDF report",
     "savedToast": "Saved: {path}",
     "handshakeCaptureCheck": "Handshake capture check",
@@ -129,6 +136,36 @@
     "knownNetworks": "Known Networks",
     "noKnownNetworksYet": "No known networks yet.",
     "opsLabel": "Ops: {ops}",
+    "networkStatusLabel": "NETWORK STATUS",
+    "activeSessionLabel": "ACTIVE SESSION",
+    "gatewayLabel": "GATEWAY",
+    "ipLabel": "IP ADDRESS",
+    "connectedStatusCaps": "CONNECTED",
+    "disconnectedStatusCaps": "DISCONNECTED",
+    "quickActionsTitle": "QUICK ACTIONS",
+    "lastScanTitle": "LAST SCAN",
+    "viewDetailsAction": "VIEW DETAILS",
+    "scanning": "SCANNING…",
+    "secure": "SECURE",
+    "blockUnknownAP": "Block Unknown APs",
+    "automaticBlockMsg": "Automatically drops connections to rogue APs",
+    "activeProbingEnabled": "Active Probing",
+    "activeProbingMsg": "Periodically tests connected AP for anomalies",
+    "requireConsentForDeauth": "Require Consent",
+    "manualAuthorizationMsg": "Manually authorize deauth/active defense",
+    "defensePolicy": "Defense Policy",
+    "shieldActive": "Shield Active",
+    "activeProtection": "Active Protection",
+    "riskScore": "Risk Score",
+    "securityRadar": "Security Radar",
+    "profileTitle": "AGENT PROFILE",
+    "agentId": "AGENT_ID: {id}",
+    "sessionInformation": "SESSION INFORMATION",
+    "subscriptionStatus": "SUBSCRIPTION STATUS",
+    "activeSession": "ACTIVE SESSION",
+    "logout": "LOGOUT",
+    "logoutConfirmation": "DISCONNECT SESSION",
+    "logoutConfirmMessage": "Are you sure you want to terminate the current session? All active monitoring will be paused.",
     "@passes": {
         "placeholders": {
             "count": {}
@@ -189,6 +226,11 @@
     "@opsLabel": {
         "placeholders": {
             "ops": {}
+        }
+    },
+    "@agentId": {
+        "placeholders": {
+            "id": {}
         }
     },
     "@activeOperationsBlockedMsg": {

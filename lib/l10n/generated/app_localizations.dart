@@ -189,6 +189,12 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get save;
 
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
   /// Label in settings for legal acknowledgement.
   ///
   /// In en, this message translates to:
@@ -290,6 +296,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'LAN'**
   String get navLan;
+
+  /// No description provided for @navDiscovery.
+  ///
+  /// In en, this message translates to:
+  /// **'Discovery'**
+  String get navDiscovery;
+
+  /// No description provided for @navOperations.
+  ///
+  /// In en, this message translates to:
+  /// **'Operations'**
+  String get navOperations;
 
   /// Bottom navigation label for the More hub.
   ///
@@ -669,6 +687,30 @@ abstract class AppLocalizations {
   /// **'Save report'**
   String get saveReportDialog;
 
+  /// No description provided for @sectionStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'STATUS'**
+  String get sectionStatus;
+
+  /// No description provided for @exportOptionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'EXPORT OPTIONS'**
+  String get exportOptionsTitle;
+
+  /// No description provided for @latestSnapshotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'LATEST SNAPSHOT'**
+  String get latestSnapshotTitle;
+
+  /// No description provided for @backendLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Backend'**
+  String get backendLabel;
+
   /// Title for PDF specific save dialog.
   ///
   /// In en, this message translates to:
@@ -872,6 +914,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ops: {ops}'**
   String opsLabel(Object ops);
+
+  /// No description provided for @networkStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'NETWORK STATUS'**
+  String get networkStatusLabel;
+
+  /// No description provided for @activeSessionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ACTIVE SESSION'**
+  String get activeSessionLabel;
+
+  /// No description provided for @gatewayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'GATEWAY'**
+  String get gatewayLabel;
+
+  /// No description provided for @ipLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'IP ADDRESS'**
+  String get ipLabel;
+
+  /// No description provided for @connectedStatusCaps.
+  ///
+  /// In en, this message translates to:
+  /// **'CONNECTED'**
+  String get connectedStatusCaps;
+
+  /// No description provided for @disconnectedStatusCaps.
+  ///
+  /// In en, this message translates to:
+  /// **'DISCONNECTED'**
+  String get disconnectedStatusCaps;
+
+  /// No description provided for @quickActionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'QUICK ACTIONS'**
+  String get quickActionsTitle;
+
+  /// No description provided for @lastScanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'LAST SCAN'**
+  String get lastScanTitle;
+
+  /// No description provided for @viewDetailsAction.
+  ///
+  /// In en, this message translates to:
+  /// **'VIEW DETAILS'**
+  String get viewDetailsAction;
+
+  /// No description provided for @scanning.
+  ///
+  /// In en, this message translates to:
+  /// **'SCANNING…'**
+  String get scanning;
+
+  /// No description provided for @secure.
+  ///
+  /// In en, this message translates to:
+  /// **'SECURE'**
+  String get secure;
+
+  /// No description provided for @blockUnknownAP.
+  ///
+  /// In en, this message translates to:
+  /// **'Block Unknown APs'**
+  String get blockUnknownAP;
+
+  /// No description provided for @automaticBlockMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically drops connections to rogue APs'**
+  String get automaticBlockMsg;
+
+  /// No description provided for @activeProbingEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Probing'**
+  String get activeProbingEnabled;
+
+  /// No description provided for @activeProbingMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Periodically tests connected AP for anomalies'**
+  String get activeProbingMsg;
+
+  /// No description provided for @requireConsentForDeauth.
+  ///
+  /// In en, this message translates to:
+  /// **'Require Consent'**
+  String get requireConsentForDeauth;
+
+  /// No description provided for @manualAuthorizationMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Manually authorize deauth/active defense'**
+  String get manualAuthorizationMsg;
+
+  /// No description provided for @defensePolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Defense Policy'**
+  String get defensePolicy;
+
+  /// No description provided for @shieldActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Shield Active'**
+  String get shieldActive;
+
+  /// No description provided for @activeProtection.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Protection'**
+  String get activeProtection;
+
+  /// No description provided for @riskScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Risk Score'**
+  String get riskScore;
+
+  /// No description provided for @securityRadar.
+  ///
+  /// In en, this message translates to:
+  /// **'Security Radar'**
+  String get securityRadar;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AGENT PROFILE'**
+  String get profileTitle;
+
+  /// No description provided for @agentId.
+  ///
+  /// In en, this message translates to:
+  /// **'AGENT_ID: {id}'**
+  String agentId(Object id);
+
+  /// No description provided for @sessionInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'SESSION INFORMATION'**
+  String get sessionInformation;
+
+  /// No description provided for @subscriptionStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'SUBSCRIPTION STATUS'**
+  String get subscriptionStatus;
+
+  /// No description provided for @activeSession.
+  ///
+  /// In en, this message translates to:
+  /// **'ACTIVE SESSION'**
+  String get activeSession;
+
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'LOGOUT'**
+  String get logout;
+
+  /// No description provided for @logoutConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'DISCONNECT SESSION'**
+  String get logoutConfirmation;
+
+  /// No description provided for @logoutConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to terminate the current session? All active monitoring will be paused.'**
+  String get logoutConfirmMessage;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

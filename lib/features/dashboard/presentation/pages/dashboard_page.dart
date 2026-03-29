@@ -4,10 +4,12 @@ import 'package:network_info_plus/network_info_plus.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/neon_widgets.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
+import '../widgets/security_core.dart';
 
-/// Dashboard — a quick status overview that shows current network state
-/// and provides shortcuts to the main workflows.
+/// Dashboard — neon-styled status overview with animated bento-grid layout.
 class DashboardPage extends StatefulWidget {
   final void Function(String destination) onNavigate;
 
@@ -58,100 +60,134 @@ class _DashboardPageState extends State<DashboardPage> {
 
   String? _cleanSsid(String? raw) {
     if (raw == null) return null;
-    // Android may wrap the SSID in quotes.
     return raw.replaceAll('"', '');
   }
 
   @override
   Widget build(BuildContext context) {
-    final onSurface = Theme.of(context).colorScheme.onSurface;
+
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        centerTitle: true,
+        leading: IconButton(
+          icon: Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.3)),
+            ),
+            child: const Icon(Icons.menu_rounded, size: 18),
+          ),
+          onPressed: () => Scaffold.of(context).openDrawer(),
+        ),
+        title: NeonText(
           'TORCAV',
           style: GoogleFonts.orbitron(
             fontWeight: FontWeight.bold,
-            fontSize: 18,
-            letterSpacing: 3,
+            fontSize: 20,
+            letterSpacing: 4,
+            color: AppColors.neonCyan,
           ),
+          glowRadius: 15,
         ),
+        actions: [
+          NeonIconButton(
+            icon: Icons.notifications_none_rounded,
+            onTap: () {},
+            color: AppColors.textSecondary,
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: RefreshIndicator(
+        color: AppColors.neonCyan,
+        backgroundColor: AppColors.darkSurface,
         onRefresh: _loadNetworkInfo,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 120),
           children: [
-            // ── Connection Card ──────────────────────────────
-            _ConnectionCard(
-              ssid: _ssid,
-              ip: _ip,
-              gateway: _gateway,
-              loading: _loading,
-            ),
-            const SizedBox(height: 20),
-
-            // ── Quick-Action Row ─────────────────────────────
-            Text(
-              'QUICK ACTIONS',
-              style: GoogleFonts.rajdhani(
-                color: onSurface.withValues(alpha: 0.5),
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2,
+            // ── Dynamic Bento Header: Security Core & Primary Stats ──
+            StaggeredEntry(
+              delay: const Duration(milliseconds: 100),
+              child: _SecurityBentoHeader(
+                ssid: _ssid,
+                ip: _ip,
+                gateway: _gateway,
+                loading: _loading,
               ),
             ),
-            const SizedBox(height: 10),
-            Row(
+            
+            const SizedBox(height: 32),
+
+            // ── System Metrics Strip ──
+            StaggeredEntry(
+              delay: const Duration(milliseconds: 300),
+              child: const Padding(
+                padding: EdgeInsets.only(bottom: 16),
+                child: NeonSectionHeader(
+                  label: 'LIVE PULSE',
+                  color: AppColors.neonCyan,
+                  icon: Icons.monitor_heart_rounded,
+                ),
+              ),
+            ),
+
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
+              childAspectRatio: 1.2,
               children: [
-                Expanded(
-                  child: _QuickAction(
-                    icon: Icons.wifi_find_rounded,
-                    label: 'Wi-Fi Scan',
-                    color: AppTheme.primaryColor,
-                    onTap: () => widget.onNavigate('wifi'),
-                  ),
+                _QuickAction(
+                  index: 0,
+                  icon: Icons.hub_rounded,
+                  label: 'OPERATIONS',
+                  color: AppColors.neonPurple,
+                  onTap: () => widget.onNavigate('operations'),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _QuickAction(
-                    icon: Icons.device_hub_rounded,
-                    label: 'LAN Recon',
-                    color: AppTheme.secondaryColor,
-                    onTap: () => widget.onNavigate('lan'),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _QuickAction(
-                    icon: Icons.speed_rounded,
-                    label: 'Speed Test',
-                    color: const Color(0xFFFFAB40),
-                    onTap: () => widget.onNavigate('monitoring'),
-                  ),
+                _QuickAction(
+                  index: 1,
+                  icon: Icons.device_hub_rounded,
+                  label: 'TOPOLOGY',
+                  color: AppColors.neonGreen,
+                  onTap: () => widget.onNavigate('monitor/topology'),
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            
+            const SizedBox(height: 32),
 
-            // ── Last Scan Summary ────────────────────────────
-            Text(
-              'LAST SCAN',
-              style: GoogleFonts.rajdhani(
-                color: onSurface.withValues(alpha: 0.5),
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2,
+            // ── Recent Activity Section ──
+            StaggeredEntry(
+              delay: const Duration(milliseconds: 700),
+              child: const Padding(
+                padding: EdgeInsets.only(bottom: 16),
+                child: NeonSectionHeader(
+                  label: 'NETWORK LOGS',
+                  color: AppColors.neonGreen,
+                ),
               ),
             ),
-            const SizedBox(height: 10),
-            _LastScanStrip(
-              networkCount: _networkCount,
-              onViewDetails: () => widget.onNavigate('wifi'),
+            
+            StaggeredEntry(
+              delay: const Duration(milliseconds: 800),
+              child: _LastScanStrip(
+                networkCount: _networkCount,
+                onViewDetails: () => widget.onNavigate('wifi'),
+              ),
             ),
-            const SizedBox(height: 24),
 
-            // ── Safety Badge ────────────────────────────────
-            _SafetyBadge(onTap: () => widget.onNavigate('security')),
+            const SizedBox(height: 20),
+            
+            StaggeredEntry(
+              delay: const Duration(milliseconds: 900),
+              child: _SafetyBadge(onTap: () => widget.onNavigate('security')),
+            ),
           ],
         ),
       ),
@@ -159,15 +195,15 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 }
 
-// ── Connection Card ─────────────────────────────────────────────────
+// ── Bento Header Component ──────────────────────────────────────────
 
-class _ConnectionCard extends StatelessWidget {
+class _SecurityBentoHeader extends StatelessWidget {
   final String ssid;
   final String ip;
   final String gateway;
   final bool loading;
 
-  const _ConnectionCard({
+  const _SecurityBentoHeader({
     required this.ssid,
     required this.ip,
     required this.gateway,
@@ -176,157 +212,204 @@ class _ConnectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final l10n = AppLocalizations.of(context)!;
     final isConnected = ssid != '—' && ssid.isNotEmpty;
-    final accentColor =
-        isConnected ? AppTheme.primaryColor : const Color(0xFFFF6B6B);
-    final statusLabel = isConnected ? 'CONNECTED' : 'NOT CONNECTED';
+    final accentColor = isConnected ? AppColors.neonCyan : AppColors.neonRed;
+    final statusLabel = isConnected
+        ? l10n.connectedStatusCaps
+        : l10n.disconnectedStatusCaps;
 
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            accentColor.withValues(alpha: 0.10),
-            accentColor.withValues(alpha: 0.03),
-          ],
-        ),
-        border: Border.all(color: accentColor.withValues(alpha: 0.30)),
-      ),
-      child:
-          loading
-              ? const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(24),
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-              )
-              : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: accentColor,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        statusLabel,
-                        style: GoogleFonts.rajdhani(
-                          color: accentColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    ssid,
-                    style: GoogleFonts.orbitron(
-                      color: onSurface,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      _InfoChip(label: 'IP', value: ip),
-                      const SizedBox(width: 12),
-                      _InfoChip(label: 'Gateway', value: gateway),
-                    ],
-                  ),
-                ],
-              ),
-    );
-  }
-}
-
-/// Small read-only chip — clearly non-interactive (no elevation,
-/// no ripple, muted colors).
-class _InfoChip extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _InfoChip({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    final onSurface = Theme.of(context).colorScheme.onSurface;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+    return Column(
       children: [
-        Text(
-          '$label ',
-          style: GoogleFonts.rajdhani(
-            color: onSurface.withValues(alpha: 0.45),
-            fontSize: 13,
-          ),
+        SecurityCore(
+          statusColor: accentColor,
+          label: statusLabel,
+          subLabel: ssid,
+          isLoading: loading,
         ),
-        Text(
-          value,
-          style: GoogleFonts.sourceCodePro(
-            color: onSurface.withValues(alpha: 0.7),
-            fontSize: 13,
-          ),
+        const SizedBox(height: 24),
+        Row(
+          children: [
+            Expanded(
+              child: _BentoStatTile(
+                label: l10n.ipLabel,
+                value: ip,
+                icon: Icons.lan_outlined,
+                color: AppColors.neonCyan,
+                delay: const Duration(milliseconds: 400),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _BentoStatTile(
+                label: l10n.gatewayLabel,
+                value: gateway,
+                icon: Icons.router_outlined,
+                color: AppColors.neonPurple,
+                delay: const Duration(milliseconds: 500),
+              ),
+            ),
+          ],
         ),
       ],
     );
   }
 }
 
-// ── Quick Action Button ─────────────────────────────────────────────
+class _BentoStatTile extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+  final Duration delay;
+
+  const _BentoStatTile({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+    required this.delay,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return StaggeredEntry(
+      delay: delay,
+      slideOffset: 20,
+      child: GlassmorphicContainer(
+        padding: const EdgeInsets.all(16),
+        borderColor: color.withValues(alpha: 0.3),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, color: color, size: 14),
+                const SizedBox(width: 6),
+                Text(
+                  label.toUpperCase(),
+                  style: GoogleFonts.orbitron(
+                    color: color.withValues(alpha: 0.7),
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: GoogleFonts.rajdhani(
+                color: AppColors.textPrimary,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Quick Action Component ──────────────────────────────────────────
 
 class _QuickAction extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
   final VoidCallback onTap;
+  final int index;
 
   const _QuickAction({
     required this.icon,
     required this.label,
     required this.color,
     required this.onTap,
+    required this.index,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: color.withValues(alpha: 0.08),
-            border: Border.all(color: color.withValues(alpha: 0.25)),
-          ),
-          child: Column(
-            children: [
-              Icon(icon, color: color, size: 28),
-              const SizedBox(height: 6),
-              Text(
-                label,
-                style: GoogleFonts.rajdhani(
-                  color: color,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                ),
+    return StaggeredEntry(
+      delay: Duration(milliseconds: 400 + (index * 100)),
+      slideOffset: 20,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20),
+          splashColor: color.withValues(alpha: 0.15),
+          highlightColor: color.withValues(alpha: 0.05),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: AppColors.darkSurfaceLight,
+              border: Border.all(
+                color: color.withValues(alpha: 0.2),
+                width: 1.5,
               ),
-            ],
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.05),
+                  blurRadius: 15,
+                  spreadRadius: -5,
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Stack(
+                children: [
+                  Positioned(
+                    right: -10,
+                    top: -10,
+                    child: Icon(
+                      icon,
+                      size: 80,
+                      color: color.withValues(alpha: 0.03),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: color.withValues(alpha: 0.1),
+                            border: Border.all(color: color.withValues(alpha: 0.2)),
+                          ),
+                          child: Icon(icon, color: color, size: 20),
+                        ),
+                        const Spacer(),
+                        Text(
+                          label,
+                          style: GoogleFonts.rajdhani(
+                            color: AppColors.textPrimary,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          'ACCESS ENGINE', // Thematic flavor text
+                          style: GoogleFonts.orbitron(
+                            color: color.withValues(alpha: 0.5),
+                            fontSize: 8,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -334,7 +417,7 @@ class _QuickAction extends StatelessWidget {
   }
 }
 
-// ── Last Scan Strip ─────────────────────────────────────────────────
+// ── Activity Strip Component ───────────────────────────────────────
 
 class _LastScanStrip extends StatelessWidget {
   final int networkCount;
@@ -347,92 +430,58 @@ class _LastScanStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final onSurface = Theme.of(context).colorScheme.onSurface;
-    if (networkCount == 0) {
-      return Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: onSurface.withValues(alpha: 0.16)),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              Icons.info_outline,
-              color: onSurface.withValues(alpha: 0.35),
-              size: 20,
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                'No scan data yet — run a Wi-Fi scan to see results.',
-                style: GoogleFonts.rajdhani(
-                  color: onSurface.withValues(alpha: 0.58),
-                  fontSize: 14,
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
+    final l10n = AppLocalizations.of(context)!;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onViewDetails,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: AppTheme.primaryColor.withValues(alpha: 0.06),
-            border: Border.all(
-              color: AppTheme.primaryColor.withValues(alpha: 0.20),
+    return NeonCard(
+      glowColor: AppColors.neonGreen,
+      glowIntensity: 0.08,
+      onTap: onViewDetails,
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.neonGreen.withValues(alpha: 0.1),
+              border: Border.all(color: AppColors.neonGreen.withValues(alpha: 0.2)),
             ),
+            child: const Icon(Icons.radar_rounded, color: AppColors.neonGreen, size: 20),
           ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.wifi_tethering_rounded,
-                color: AppTheme.primaryColor,
-                size: 20,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  '$networkCount networks detected',
-                  style: GoogleFonts.rajdhani(
-                    color: onSurface.withValues(alpha: 0.82),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'LATEST SNAPSHOT',
+                  style: GoogleFonts.orbitron(
+                    color: AppColors.neonGreen.withValues(alpha: 0.7),
+                    fontSize: 8,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1,
                   ),
                 ),
-              ),
-              Text(
-                'VIEW',
-                style: GoogleFonts.rajdhani(
-                  color: AppTheme.primaryColor,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1,
+                Text(
+                  networkCount == 0 ? l10n.noSnapshotAvailable : l10n.networksCount(networkCount),
+                  style: GoogleFonts.rajdhani(
+                    color: AppColors.textPrimary,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 2),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: AppTheme.primaryColor,
-                size: 18,
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+          Icon(Icons.arrow_forward_ios_rounded, color: AppColors.neonGreen.withValues(alpha: 0.5), size: 14),
+        ],
       ),
     );
   }
 }
 
-// ── Safety Badge ────────────────────────────────────────────────────
+// ── Safety Badge Component ──────────────────────────────────────────
 
 class _SafetyBadge extends StatelessWidget {
   final VoidCallback onTap;
@@ -441,42 +490,46 @@ class _SafetyBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final onSurface = Theme.of(context).colorScheme.onSurface;
-    return Material(
-      color: Colors.transparent,
+    return GlassmorphicContainer(
+      borderColor: AppColors.neonGreen.withValues(alpha: 0.3),
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: onSurface.withValues(alpha: 0.16)),
-          ),
-          child: Row(
-            children: [
-              const Icon(
-                Icons.verified_user_outlined,
-                color: AppTheme.primaryColor,
-                size: 20,
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.neonGreen.withValues(alpha: 0.1),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  'Strict safety mode enabled',
-                  style: GoogleFonts.rajdhani(
-                    color: onSurface.withValues(alpha: 0.68),
-                    fontSize: 14,
+              child: const Icon(Icons.verified_user_rounded, color: AppColors.neonGreen, size: 16),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'STRICT SAFETY ENABLED',
+                    style: GoogleFonts.orbitron(
+                      color: AppColors.textPrimary,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
+                  Text(
+                    'Active monitoring in progress',
+                    style: GoogleFonts.rajdhani(
+                      color: AppColors.textMuted,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
               ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: onSurface.withValues(alpha: 0.35),
-                size: 18,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

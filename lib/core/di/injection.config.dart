@@ -9,12 +9,9 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:cloud_firestore/cloud_firestore.dart' as _i974;
-import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:network_info_plus/network_info_plus.dart' as _i846;
-import 'package:remote_auth_module/remote_auth_module.dart' as _i1041;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import '../../features/monitoring/data/repositories/heatmap_repository_impl.dart'
@@ -124,7 +121,6 @@ import '../services/process_runner.dart' as _i522;
 import '../storage/app_database.dart' as _i690;
 import '../theme/theme_cubit.dart' as _i611;
 import 'app_module.dart' as _i460;
-import 'auth_module.dart' as _i784;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -134,14 +130,11 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final appModule = _$AppModule();
-    final authModule = _$AuthModule();
     await gh.factoryAsync<_i460.SharedPreferences>(
       () => appModule.prefs,
       preResolve: true,
     );
     gh.lazySingleton<_i846.NetworkInfo>(() => appModule.networkInfo);
-    gh.lazySingleton<_i59.FirebaseAuth>(() => authModule.firebaseAuth);
-    gh.lazySingleton<_i974.FirebaseFirestore>(() => authModule.firestore);
     gh.lazySingleton<_i941.NotificationService>(
       () => _i941.NotificationService(),
     );
@@ -182,12 +175,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i499.SecurityLocalDataSource>(
       () => _i499.SecurityLocalDataSourceImpl(gh<_i941.DatabaseHelper>()),
-    );
-    gh.lazySingleton<_i1041.AuthRepository>(
-      () => authModule.authRepository(
-        gh<_i59.FirebaseAuth>(),
-        gh<_i974.FirebaseFirestore>(),
-      ),
     );
     gh.lazySingleton<_i286.PrivilegeService>(
       () => _i286.PrivilegeServiceImpl(gh<_i522.ProcessRunner>()),
@@ -241,9 +228,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i725.GetZoneAveragesUseCase>(),
         gh<_i102.LogHeatmapPointUseCase>(),
       ),
-    );
-    gh.factory<_i1041.AuthBloc>(
-      () => authModule.authBloc(gh<_i1041.AuthRepository>()),
     );
     gh.lazySingleton<_i424.NmapDataSource>(
       () => _i424.LinuxNmapDataSource(gh<_i286.PrivilegeService>()),
@@ -323,5 +307,3 @@ extension GetItInjectableX on _i174.GetIt {
 }
 
 class _$AppModule extends _i460.AppModule {}
-
-class _$AuthModule extends _i784.AuthModule {}

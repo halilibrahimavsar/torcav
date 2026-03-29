@@ -54,6 +54,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get save => 'Kaydet';
 
   @override
+  String get confirm => 'Onayla';
+
+  @override
   String get legalDisclaimerAccepted => 'Yasal uyarı kabul edildi';
 
   @override
@@ -103,6 +106,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get navLan => 'LAN';
+
+  @override
+  String get navDiscovery => 'Discovery';
+
+  @override
+  String get navOperations => 'Operations';
 
   @override
   String get navMore => 'Daha Fazla';
@@ -308,6 +317,18 @@ class AppLocalizationsTr extends AppLocalizations {
   String get saveReportDialog => 'Raporu kaydet';
 
   @override
+  String get sectionStatus => 'DURUM';
+
+  @override
+  String get exportOptionsTitle => 'DIŞA AKTARIM SEÇENEKLERİ';
+
+  @override
+  String get latestSnapshotTitle => 'SON ANLIK GÖRÜNTÜ';
+
+  @override
+  String get backendLabel => 'Arka Uç';
+
+  @override
   String get savePdfReportDialog => 'PDF raporunu kaydet';
 
   @override
@@ -416,6 +437,98 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String opsLabel(Object ops) {
-    return 'Op: $ops';
+    return 'Ops: $ops';
   }
+
+  @override
+  String get networkStatusLabel => 'AĞ DURUMU';
+
+  @override
+  String get activeSessionLabel => 'AKTİF OTURUM';
+
+  @override
+  String get gatewayLabel => 'GEÇİT';
+
+  @override
+  String get ipLabel => 'IP ADRESİ';
+
+  @override
+  String get connectedStatusCaps => 'BAĞLI';
+
+  @override
+  String get disconnectedStatusCaps => 'BAĞLI DEĞİL';
+
+  @override
+  String get quickActionsTitle => 'HIZLI İŞLEMLER';
+
+  @override
+  String get lastScanTitle => 'SON TARAMA';
+
+  @override
+  String get viewDetailsAction => 'DETAYLARI GÖR';
+
+  @override
+  String get scanning => 'TARIYOR…';
+
+  @override
+  String get secure => 'GÜVENLİ';
+
+  @override
+  String get blockUnknownAP => 'Bilinmeyen AP\'leri Engelle';
+
+  @override
+  String get automaticBlockMsg => 'Rogue AP bağlantılarını otomatik olarak keser';
+
+  @override
+  String get activeProbingEnabled => 'Aktif Sondaj';
+
+  @override
+  String get activeProbingMsg => 'Bağlı AP\'leri anomali için periyodik test eder';
+
+  @override
+  String get requireConsentForDeauth => 'Onay Gerekli';
+
+  @override
+  String get manualAuthorizationMsg => 'Deauth/Aktif savunmayı manuel yetkilendir';
+
+  @override
+  String get defensePolicy => 'Savunma Politikası';
+
+  @override
+  String get shieldActive => 'Kalkan Aktif';
+
+  @override
+  String get activeProtection => 'Aktif Koruma';
+
+  @override
+  String get riskScore => 'Risk Puanı';
+
+  @override
+  String get securityRadar => 'Güvenlik Radarı';
+
+  @override
+  String get profileTitle => 'AJAN PROFİLİ';
+
+  @override
+  String agentId(Object id) {
+    return 'AJAN_KİMLİĞİ: $id';
+  }
+
+  @override
+  String get sessionInformation => 'OTURUM BİLGİLERİ';
+
+  @override
+  String get subscriptionStatus => 'ABONELİK DURUMU';
+
+  @override
+  String get activeSession => 'AKTİF OTURUM';
+
+  @override
+  String get logout => 'OTURUMU KAPAT';
+
+  @override
+  String get logoutConfirmation => 'OTURUMU SONLANDIR';
+
+  @override
+  String get logoutConfirmMessage => 'Mevcut oturumu sonlandırmak istediğinizden emin misiniz? Tüm aktif izlemeler duraklatılacaktır.';
 }

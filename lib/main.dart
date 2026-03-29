@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:remote_auth_module/remote_auth_module.dart';
-import 'firebase_options.dart';
 import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/i18n/delegates/fallback_localization_delegate.dart';
@@ -19,7 +16,6 @@ import 'dart:io';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     sqfliteFfiInit();
@@ -38,9 +34,6 @@ class TorcavApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => getIt<LocaleCubit>()),
-        BlocProvider(
-          create: (_) => getIt<AuthBloc>()..add(const InitializeAuthEvent()),
-        ),
       ],
       child: BlocBuilder<LocaleCubit, Locale>(
         builder: (context, locale) {
@@ -63,10 +56,7 @@ class TorcavApp extends StatelessWidget {
                   FallbackCupertinoLocalizationsDelegate(),
                 ],
                 supportedLocales: AppLocalizations.supportedLocales,
-                home: NovaAuthFlow(
-                  config: const AuthTemplateConfig(),
-                  authenticatedBuilder: (context, user) => const AppShellPage(),
-                ),
+                home: const AppShellPage(),
               );
             },
           );

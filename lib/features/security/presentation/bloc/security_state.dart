@@ -1,6 +1,6 @@
 part of 'security_bloc.dart';
 
-abstract class SecurityState extends Equatable {
+sealed class SecurityState extends Equatable {
   const SecurityState();
 
   @override

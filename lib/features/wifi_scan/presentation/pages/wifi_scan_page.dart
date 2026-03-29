@@ -5,8 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../monitoring/presentation/pages/channel_rating_page.dart';
-import '../../../security/presentation/pages/wifi_details_page.dart';
+import '../../../../core/theme/neon_widgets.dart';
 import '../../../settings/domain/services/app_settings_store.dart';
 import '../../domain/entities/band_analysis_stat.dart';
 import '../../domain/entities/scan_request.dart';
@@ -14,6 +13,9 @@ import '../../domain/entities/scan_snapshot.dart';
 import '../../domain/entities/wifi_network.dart';
 import '../../domain/entities/wifi_observation.dart';
 import '../bloc/wifi_scan_bloc.dart';
+import '../widgets/wifi_scanner_radar.dart';
+import '../../../../features/security/presentation/pages/wifi_details_page.dart';
+import '../../../../features/monitoring/presentation/pages/channel_rating_page.dart';
 
 /// Wrapper that provides the [WifiScanBloc] to the subtree.
 class WifiScanPage extends StatelessWidget {
@@ -38,7 +40,6 @@ class WifiScanPage extends StatelessWidget {
   }
 }
 
-/// The actual view, whose [BuildContext] is *inside* the [BlocProvider].
 class _WifiScanView extends StatefulWidget {
   const _WifiScanView();
 
@@ -70,56 +71,46 @@ class _WifiScanViewState extends State<_WifiScanView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.wifiScanTitle),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.tune),
-            tooltip: l10n.scanSettingsTooltip,
-            onPressed: () => _openScanSettings(context),
-          ),
-          BlocBuilder<WifiScanBloc, WifiScanState>(
-            builder: (context, state) {
-              if (state is! WifiScanLoaded) {
-                return const SizedBox.shrink();
-              }
-
-              return IconButton(
-                icon: const Icon(Icons.analytics),
-                tooltip: l10n.channelRatingTooltip,
-                onPressed: () {
-                  final wifiScanBloc = context.read<WifiScanBloc>();
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder:
-                          (_) => BlocProvider.value(
-                            value: wifiScanBloc,
-                            child: ChannelRatingPage(
-                              networks: state.snapshot.toLegacyNetworks(),
-                              request: _currentRequest,
-                            ),
-                          ),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: l10n.refreshScanTooltip,
-            onPressed: () {
-              context.read<WifiScanBloc>().add(
-                WifiScanRefreshed(request: _currentRequest),
-              );
-            },
-          ),
-        ],
-      ),
       body: BlocBuilder<WifiScanBloc, WifiScanState>(
         builder: (context, state) {
           if (state is WifiScanLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return Container(
+              width: double.infinity,
+              height: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const WifiScannerRadar(isScanning: true),
+                  const SizedBox(height: 48),
+                  StaggeredEntry(
+                    child: Column(
+                      children: [
+                        Text(
+                          'INITIATING SPECTRUM SCAN',
+                          style: GoogleFonts.orbitron(
+                            color: AppColors.neonCyan,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'BROADCASTING PROBE REQUESTS...',
+                          style: GoogleFonts.rajdhani(
+                            color: AppColors.textMuted,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
           if (state is WifiScanError) {
             return _ErrorView(
@@ -132,326 +123,344 @@ class _WifiScanViewState extends State<_WifiScanView> {
             );
           }
           if (state is WifiScanLoaded) {
-            return _SnapshotView(snapshot: state.snapshot);
+            return _SnapshotView(
+              snapshot: state.snapshot,
+              currentRequest: _currentRequest,
+            );
           }
-          return Center(child: Text(l10n.readyToScan));
+          return Center(
+            child: NeonText(
+              l10n.readyToScan,
+              style: GoogleFonts.rajdhani(
+                color: AppColors.textMuted,
+                fontSize: 18,
+              ),
+            ),
+          );
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: _NeonFAB(
         onPressed: () {
           context.read<WifiScanBloc>().add(
             WifiScanRefreshed(request: _currentRequest),
           );
         },
-        icon: const Icon(Icons.wifi_tethering),
-        label: Text(l10n.scanButton),
+        label: l10n.scanButton,
       ),
     );
-  }
-
-  Future<void> _openScanSettings(BuildContext context) async {
-    final bloc = context.read<WifiScanBloc>();
-    final l10n = AppLocalizations.of(context)!;
-    final result = await showModalBottomSheet<_ScanSettingsState>(
-      context: context,
-      backgroundColor: const Color(0xFF101723),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) {
-        var draft = _ScanSettingsState(
-          passes: _passes,
-          includeHidden: _includeHidden,
-          backend: _backend,
-        );
-
-        return StatefulBuilder(
-          builder: (ctx, setModalState) {
-            return Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.scanSettingsTitle,
-                    style: Theme.of(ctx).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(l10n.passes(draft.passes)),
-                  Slider(
-                    value: draft.passes.toDouble(),
-                    min: 1,
-                    max: 6,
-                    divisions: 5,
-                    label: '${draft.passes}',
-                    onChanged: (value) {
-                      setModalState(() {
-                        draft = draft.copyWith(passes: value.round());
-                      });
-                    },
-                  ),
-                  SwitchListTile(
-                    value: draft.includeHidden,
-                    title: Text(l10n.includeHiddenSsids),
-                    onChanged: (value) {
-                      setModalState(() {
-                        draft = draft.copyWith(includeHidden: value);
-                      });
-                    },
-                  ),
-                  DropdownButtonFormField<WifiBackendPreference>(
-                    value: draft.backend,
-                    decoration: InputDecoration(
-                      labelText: l10n.backendPreference,
-                    ),
-                    items:
-                        WifiBackendPreference.values.map((backend) {
-                          return DropdownMenuItem(
-                            value: backend,
-                            child: Text(
-                              backend.name.toUpperCase(),
-                              style: GoogleFonts.rajdhani(),
-                            ),
-                          );
-                        }).toList(),
-                    onChanged: (value) {
-                      if (value == null) return;
-                      setModalState(() {
-                        draft = draft.copyWith(backend: value);
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 18),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.of(ctx).pop(),
-                          child: Text(l10n.cancel),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () => Navigator.of(ctx).pop(draft),
-                          child: Text(l10n.apply),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-
-    if (result == null) return;
-
-    setState(() {
-      _passes = result.passes;
-      _includeHidden = result.includeHidden;
-      _backend = result.backend;
-    });
-    getIt<AppSettingsStore>().update(
-      getIt<AppSettingsStore>().value.copyWith(
-        defaultScanPasses: _passes,
-        includeHiddenSsids: _includeHidden,
-        defaultBackendPreference: _backend,
-      ),
-    );
-
-    if (!mounted) return;
-
-    bloc.add(WifiScanRefreshed(request: _currentRequest));
   }
 }
 
+// ── Neon Floating Action Button ─────────────────────────────────────
+
+class _NeonFAB extends StatelessWidget {
+  final VoidCallback onPressed;
+  final String label;
+
+  const _NeonFAB({required this.onPressed, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.neonCyan.withValues(alpha: 0.25),
+            blurRadius: 20,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: FloatingActionButton.extended(
+        onPressed: onPressed,
+        icon: const Icon(Icons.wifi_tethering_rounded),
+        label: Text(
+          label.toUpperCase(),
+          style: GoogleFonts.orbitron(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Snapshot View ───────────────────────────────────────────────────
+
 class _SnapshotView extends StatelessWidget {
   final ScanSnapshot snapshot;
+  final ScanRequest currentRequest;
 
-  const _SnapshotView({required this.snapshot});
+  const _SnapshotView({
+    required this.snapshot,
+    required this.currentRequest,
+  });
 
   @override
   Widget build(BuildContext context) {
     if (snapshot.networks.isEmpty) {
       final l10n = AppLocalizations.of(context)!;
-      return Center(child: Text(l10n.noSignalsDetected));
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            NeonGlowBox(
+              glowColor: AppColors.neonCyan,
+              child: Icon(
+                Icons.wifi_off_rounded,
+                size: 64,
+                color: AppColors.neonCyan,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              l10n.noSignalsDetected.toUpperCase(),
+              style: GoogleFonts.orbitron(
+                color: AppColors.textPrimary,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              "NO RADIOS EMITTING IN RANGE",
+              style: GoogleFonts.rajdhani(
+                color: AppColors.textMuted,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     return RefreshIndicator(
+      color: AppColors.neonCyan,
+      backgroundColor: AppColors.darkSurface,
       onRefresh: () async {
         context.read<WifiScanBloc>().add(const WifiScanRefreshed());
       },
       child: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
         children: [
-          _ScanSummaryCard(snapshot: snapshot),
-          const SizedBox(height: 12),
-          _BandRecommendations(bands: snapshot.bandStats),
-          const SizedBox(height: 16),
-          Builder(
-            builder: (context) {
-              final count = snapshot.networks.length;
-              return Text(
-                AppLocalizations.of(context)!.networksCount(count),
-                style: Theme.of(context).textTheme.titleLarge,
+          // ── Bento Header ──
+          _WifiBentoHeader(snapshot: snapshot),
+          const SizedBox(height: 24),
+
+          // ── Channel Rating Quick Link ──
+          BlocBuilder<WifiScanBloc, WifiScanState>(
+            builder: (context, state) {
+              if (state is! WifiScanLoaded) return const SizedBox.shrink();
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: _ChannelRatingLink(
+                  snapshot: snapshot,
+                  request: currentRequest,
+                ),
               );
             },
           ),
-          const SizedBox(height: 8),
-          ...snapshot.networks.map(
-            (network) => _WifiNetworkCard(
-              network: network,
-              interfaceName: snapshot.interfaceName,
+
+          // ── Network Count Header ──
+          NeonSectionHeader(
+            label: AppLocalizations.of(context)!.networksCount(
+              snapshot.networks.length,
             ),
+            icon: Icons.wifi_rounded,
+            color: AppColors.neonCyan,
           ),
-        ],
-      ),
-    );
-  }
-}
+          const SizedBox(height: 12),
 
-class _ScanSummaryCard extends StatelessWidget {
-  final ScanSnapshot snapshot;
-
-  const _ScanSummaryCard({required this.snapshot});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: const Color(0xFF111B2C),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: AppTheme.primaryColor.withValues(alpha: 0.35),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            AppLocalizations.of(context)!.lastSnapshot,
-            style: GoogleFonts.orbitron(
-              color: AppTheme.primaryColor,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              _chip('Backend: ${snapshot.backendUsed}'),
-              _chip('Interface: ${snapshot.interfaceName}'),
-              _chip(
-                'At: ${TimeOfDay.fromDateTime(snapshot.timestamp).format(context)}',
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _chip(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(999),
-        color: AppTheme.secondaryColor.withValues(alpha: 0.14),
-        border: Border.all(
-          color: AppTheme.secondaryColor.withValues(alpha: 0.4),
-        ),
-      ),
-      child: Text(
-        text,
-        style: GoogleFonts.rajdhani(
-          color: Colors.white,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
-}
-
-class _BandRecommendations extends StatelessWidget {
-  final List<BandAnalysisStat> bands;
-
-  const _BandRecommendations({required this.bands});
-
-  @override
-  Widget build(BuildContext context) {
-    if (bands.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          AppLocalizations.of(context)!.bandAnalysis,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: 136,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: bands.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 10),
-            itemBuilder: (context, index) {
-              final band = bands[index];
-              return Container(
-                width: 220,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF0E1828),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: AppTheme.secondaryColor.withValues(alpha: 0.28),
+          // ── Network Grid ──
+          ...snapshot.networks.asMap().entries.map(
+                (entry) => StaggeredEntry(
+                  delay: Duration(milliseconds: 100 + entry.key * 40),
+                  child: _WifiNetworkCard(
+                    network: entry.value,
+                    interfaceName: snapshot.interfaceName,
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      band.label,
-                      style: GoogleFonts.orbitron(
-                        color: AppTheme.secondaryColor,
-                        fontWeight: FontWeight.bold,
+              ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Wifi Bento Header ───────────────────────────────────────────────
+
+class _WifiBentoHeader extends StatelessWidget {
+  final ScanSnapshot snapshot;
+
+  const _WifiBentoHeader({required this.snapshot});
+
+  @override
+  Widget build(BuildContext context) {
+    // Calculate band-specific blips for the radar
+    final blips = snapshot.networks
+        .map((n) => (n.avgSignalDbm + 100) / 70.0) // Normalize signal to 0..1
+        .toList();
+
+    return Column(
+      children: [
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final double radarSize = constraints.maxWidth * 0.45;
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Radar Column ──
+                SizedBox(
+                  width: radarSize,
+                  height: radarSize,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      WifiScannerRadar(
+                        isScanning: false,
+                        blips: blips,
+                        color: AppColors.neonCyan,
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '${band.networkCount} networks',
-                      style: GoogleFonts.rajdhani(color: Colors.white70),
-                    ),
-                    Text(
-                      'Avg ${band.avgSignalDbm} dBm',
-                      style: GoogleFonts.rajdhani(color: Colors.white70),
-                    ),
-                    const Spacer(),
-                    Text(
-                      band.recommendation,
-                      style: GoogleFonts.rajdhani(
-                        color: AppTheme.primaryColor,
-                        fontWeight: FontWeight.w700,
+                      // Center Icon
+                      Icon(
+                        Icons.settings_input_antenna_rounded,
+                        color: AppColors.neonCyan.withValues(alpha: 0.5),
+                        size: 24,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              );
-            },
-          ),
+                const SizedBox(width: 12),
+                // ── Stats Grid ──
+                Expanded(
+                  child: SizedBox(
+                    height: radarSize,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: BentoStatTile(
+                                  label: 'Networks',
+                                  value: '${snapshot.networks.length}',
+                                  icon: Icons.wifi_find_rounded,
+                                  color: AppColors.neonCyan,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: BentoStatTile(
+                                  label: 'Security',
+                                  value: '${snapshot.networks.where((n) => n.security != SecurityType.open).length}',
+                                  icon: Icons.security_rounded,
+                                  color: AppColors.neonGreen,
+                                  subValue: '${snapshot.networks.where((n) => n.security == SecurityType.open).length} OPEN',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: BentoStatTile(
+                                  label: 'Avg Signal',
+                                  value: snapshot.networks.isEmpty
+                                      ? 'N/A'
+                                      : '${(snapshot.networks.map((n) => n.avgSignalDbm).reduce((a, b) => a + b) / snapshot.networks.length).round()}',
+                                  icon: Icons.signal_wifi_4_bar_rounded,
+                                  color: AppColors.neonPurple,
+                                  subValue: 'DBM',
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: BentoStatTile(
+                                  label: 'Interface',
+                                  value: snapshot.interfaceName.toUpperCase(),
+                                  icon: Icons.lan_rounded,
+                                  color: AppColors.neonOrange,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
+        const SizedBox(height: 12),
+        // ── Band Analysis Row ──
+        if (snapshot.bandStats.isNotEmpty)
+          SizedBox(
+            height: 80,
+            child: Row(
+              children: snapshot.bandStats.map((band) {
+                final isLast = snapshot.bandStats.last == band;
+                return Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(right: isLast ? 0 : 8),
+                    child: NeonCard(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      glowColor: _getBandColor(band.band),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            band.label,
+                            style: GoogleFonts.orbitron(
+                              color: _getBandColor(band.band),
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            '${band.networkCount} NETWORKS',
+                            style: GoogleFonts.rajdhani(
+                              color: AppColors.textPrimary,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
       ],
     );
   }
+
+  Color _getBandColor(WifiBand band) {
+    switch (band) {
+      case WifiBand.ghz24:
+        return AppColors.neonCyan;
+      case WifiBand.ghz5:
+        return AppColors.neonPurple;
+      case WifiBand.ghz6:
+        return AppColors.neonGreen;
+    }
+  }
 }
+
+// ── Wi-Fi Network Card ──────────────────────────────────────────────
 
 class _WifiNetworkCard extends StatelessWidget {
   final WifiObservation network;
@@ -459,87 +468,178 @@ class _WifiNetworkCard extends StatelessWidget {
 
   const _WifiNetworkCard({required this.network, required this.interfaceName});
 
+  Color get _signalColor {
+    if (network.avgSignalDbm > -55) return AppColors.neonGreen;
+    if (network.avgSignalDbm > -70) return AppColors.neonCyan;
+    if (network.avgSignalDbm > -85) return AppColors.neonOrange;
+    return AppColors.neonRed;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final signalColor =
-        network.avgSignalDbm > -60
-            ? AppTheme.primaryColor
-            : network.avgSignalDbm > -75
-            ? Colors.orangeAccent
-            : Colors.redAccent;
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder:
-                (_) => WifiDetailsPage(
-                  network: network.toWifiNetwork(),
-                  interfaceName: interfaceName,
-                ),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 10),
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: const Color(0xFF0D1624),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: signalColor.withValues(alpha: 0.35)),
-        ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: NeonCard(
+        glowColor: _signalColor,
+        glowIntensity: 0.08,
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => WifiDetailsPage(
+                network: network.toWifiNetwork(),
+                interfaceName: interfaceName,
+              ),
+            ),
+          );
+        },
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Row(
               children: [
-                Icon(Icons.wifi, color: signalColor),
-                const SizedBox(width: 10),
+                // ── Signal Pulse Indicator ──
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _signalColor.withValues(alpha: 0.1),
+                        border: Border.all(
+                          color: _signalColor.withValues(alpha: 0.2),
+                          width: 1,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      Icons.wifi_rounded,
+                      color: _signalColor,
+                      size: 20,
+                    ),
+                    // High-tech signal bars
+                    Positioned(
+                      bottom: 4,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: List.generate(4, (index) {
+                          final isActive = (network.avgSignalDbm + 100) / 40 > (index / 4);
+                          return Container(
+                            width: 3,
+                            height: 4 + (index * 2),
+                            margin: const EdgeInsets.symmetric(horizontal: 1),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(1),
+                              color: isActive 
+                                  ? _signalColor 
+                                  : _signalColor.withValues(alpha: 0.1),
+                              boxShadow: isActive ? [
+                                BoxShadow(
+                                  color: _signalColor.withValues(alpha: 0.5),
+                                  blurRadius: 4,
+                                )
+                              ] : null,
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        network.ssid.isEmpty
-                            ? l10n.hiddenNetwork
-                            : network.ssid,
+                        (network.ssid.isEmpty ? l10n.hiddenNetwork : network.ssid).toUpperCase(),
                         style: GoogleFonts.orbitron(
-                          color: Colors.white,
+                          color: AppColors.textPrimary,
                           fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          letterSpacing: 1,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
+                      const SizedBox(height: 2),
                       Text(
-                        '${network.bssid}  •  ${network.vendor}',
-                        style: GoogleFonts.rajdhani(color: Colors.white60),
+                        '${network.vendor.toUpperCase()} • ${network.bssid}',
+                        style: GoogleFonts.rajdhani(
+                          color: AppColors.textMuted,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ],
                   ),
                 ),
-                Text(
-                  '${network.avgSignalDbm} dBm',
-                  style: GoogleFonts.orbitron(
-                    color: signalColor,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    NeonText(
+                      '${network.avgSignalDbm}',
+                      style: GoogleFonts.orbitron(
+                        color: _signalColor,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 18,
+                      ),
+                      glowColor: _signalColor,
+                      glowRadius: 6,
+                    ),
+                    Text(
+                      'dBm',
+                      style: GoogleFonts.rajdhani(
+                        color: _signalColor.withValues(alpha: 0.7),
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
+            Container(
+              height: 1,
+              width: double.infinity,
+              color: AppColors.glassWhite.withValues(alpha: 0.05),
+            ),
+            const SizedBox(height: 12),
             Row(
               children: [
-                _metricTag('CH ${network.channel}'),
+                _MiniTechTag(
+                  label: 'CH ${network.channel}',
+                  icon: Icons.tag_rounded,
+                  color: AppColors.neonCyan,
+                ),
                 const SizedBox(width: 8),
-                _metricTag('${network.frequency} MHz'),
+                _MiniTechTag(
+                  label: '${network.frequency} MHz',
+                  icon: Icons.waves_rounded,
+                  color: AppColors.neonPurple,
+                ),
                 const SizedBox(width: 8),
-                _metricTag(
-                  network.security.name.toUpperCase(),
-                  highlighted: network.security == SecurityType.open,
+                _MiniTechTag(
+                  label: network.security.name.toUpperCase(),
+                  icon: network.security == SecurityType.open 
+                      ? Icons.lock_open_rounded 
+                      : Icons.lock_rounded,
+                  color: network.security == SecurityType.open
+                      ? AppColors.neonRed
+                      : AppColors.neonGreen,
                 ),
                 const Spacer(),
                 Text(
-                  'std ${network.signalStdDev.toStringAsFixed(1)}',
-                  style: GoogleFonts.rajdhani(color: Colors.white60),
+                  'σ ${network.signalStdDev.toStringAsFixed(1)}',
+                  style: GoogleFonts.rajdhani(
+                    color: AppColors.textMuted,
+                    fontSize: 11,
+                    letterSpacing: 0.5,
+                  ),
                 ),
               ],
             ),
@@ -548,30 +648,51 @@ class _WifiNetworkCard extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _metricTag(String text, {bool highlighted = false}) {
+class _MiniTechTag extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Color color;
+
+  const _MiniTechTag({
+    required this.label,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(999),
+        color: color.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(4),
         border: Border.all(
-          color:
-              highlighted
-                  ? Colors.redAccent.withValues(alpha: 0.5)
-                  : AppTheme.primaryColor.withValues(alpha: 0.4),
+          color: color.withValues(alpha: 0.2),
+          width: 0.5,
         ),
       ),
-      child: Text(
-        text,
-        style: GoogleFonts.rajdhani(
-          fontSize: 12,
-          color: highlighted ? Colors.redAccent : Colors.white70,
-          fontWeight: FontWeight.w700,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 10, color: color.withValues(alpha: 0.8)),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: GoogleFonts.rajdhani(
+              color: color,
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
 }
+
+// ── Error View ──────────────────────────────────────────────────────
 
 class _ErrorView extends StatelessWidget {
   final String message;
@@ -587,18 +708,39 @@ class _ErrorView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline, color: Colors.redAccent, size: 48),
-            const SizedBox(height: 12),
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.neonRed.withValues(alpha: 0.1),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.neonRed.withValues(alpha: 0.15),
+                    blurRadius: 20,
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.error_outline_rounded,
+                color: AppColors.neonRed,
+                size: 32,
+              ),
+            ),
+            const SizedBox(height: 16),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: GoogleFonts.rajdhani(fontSize: 18),
+              style: GoogleFonts.rajdhani(
+                color: AppColors.textSecondary,
+                fontSize: 16,
+              ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: onRetry,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+              icon: const Icon(Icons.refresh_rounded),
+              label: const Text('RETRY'),
             ),
           ],
         ),
@@ -607,26 +749,76 @@ class _ErrorView extends StatelessWidget {
   }
 }
 
-class _ScanSettingsState {
-  final int passes;
-  final bool includeHidden;
-  final WifiBackendPreference backend;
+// ── Channel Rating Quick Link ──────────────────────────────────────
 
-  const _ScanSettingsState({
-    required this.passes,
-    required this.includeHidden,
-    required this.backend,
-  });
+class _ChannelRatingLink extends StatelessWidget {
+  final ScanSnapshot snapshot;
+  final ScanRequest request;
 
-  _ScanSettingsState copyWith({
-    int? passes,
-    bool? includeHidden,
-    WifiBackendPreference? backend,
-  }) {
-    return _ScanSettingsState(
-      passes: passes ?? this.passes,
-      includeHidden: includeHidden ?? this.includeHidden,
-      backend: backend ?? this.backend,
+  const _ChannelRatingLink({required this.snapshot, required this.request});
+
+  @override
+  Widget build(BuildContext context) {
+    return NeonCard(
+      glowColor: AppColors.neonPurple,
+      glowIntensity: 0.1,
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ChannelRatingPage(
+              networks: snapshot.networks.map((n) => n.toWifiNetwork()).toList(),
+              request: request,
+            ),
+          ),
+        );
+      },
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.neonPurple.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(
+              Icons.auto_graph_rounded,
+              color: AppColors.neonPurple,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'SPECTRUM OPTIMIZATION',
+                  style: GoogleFonts.orbitron(
+                    color: AppColors.textPrimary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1,
+                  ),
+                ),
+                Text(
+                  'Analyze channel congestion & interference',
+                  style: GoogleFonts.rajdhani(
+                    color: AppColors.textMuted,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Icon(
+            Icons.chevron_right_rounded,
+            color: AppColors.textMuted,
+          ),
+        ],
+      ),
     );
   }
 }
+

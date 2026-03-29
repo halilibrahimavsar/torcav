@@ -1,15 +1,18 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:network_info_plus/network_info_plus.dart';
+import 'package:vector_math/vector_math_64.dart' hide Colors;
 
-import '../../../../core/di/injection.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../domain/entities/network_topology.dart';
-import '../../domain/services/topology_builder.dart';
+import '../../../../core/theme/neon_widgets.dart';
 import '../widgets/topology_graph_painter.dart';
 import '../../../network_scan/domain/entities/network_device.dart';
 import '../../../network_scan/domain/repositories/network_scan_repository.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/di/injection.dart';
+import '../../domain/entities/network_topology.dart';
+import '../../domain/services/topology_builder.dart';
 
 class TopologyPage extends StatefulWidget {
   const TopologyPage({super.key});
@@ -18,15 +21,31 @@ class TopologyPage extends StatefulWidget {
   State<TopologyPage> createState() => _TopologyPageState();
 }
 
-class _TopologyPageState extends State<TopologyPage> {
+class _TopologyPageState extends State<TopologyPage>
+    with SingleTickerProviderStateMixin {
   NetworkTopology? _topology;
   String? _selectedNodeId;
   bool _loading = true;
+  bool _showTraffic = true;
+  bool _forceView = false;
+  bool _isScanning = false;
+  double _flowSpeed = 1.0;
+  late AnimationController _pulseController;
 
   @override
   void initState() {
     super.initState();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat();
     _loadTopology();
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadTopology() async {
@@ -86,49 +105,185 @@ class _TopologyPageState extends State<TopologyPage> {
 
   @override
   Widget build(BuildContext context) {
-    final onSurface = Theme.of(context).colorScheme.onSurface;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'NETWORK TOPOLOGY',
-          style: GoogleFonts.orbitron(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            letterSpacing: 2,
+      backgroundColor: const Color(0xFF06090D),
+      body: Stack(
+        children: [
+          // Cyberpunk Grid Background
+          Positioned.fill(
+            child: CustomPaint(
+              painter: _GridPainter(
+                color: AppColors.neonCyan.withValues(alpha: 0.05),
+              ),
+            ),
           ),
-        ),
-        actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _loadTopology),
-        ],
-      ),
-      body:
+
+          // Main Content
           _loading
               ? const Center(child: CircularProgressIndicator())
               : _topology == null
-              ? _buildEmptyState(onSurface)
-              : _buildTopologyView(onSurface),
+                  ? _buildEmptyState()
+                  : _buildTopologyView(),
+
+          // Floating Header
+          _buildFloatingHeader(),
+
+          // Lateral Control Bar
+          Positioned(
+            left: 16,
+            top: 100,
+            child: _buildSideControls(),
+          ),
+
+          // Node Inspector (Floating)
+          if (_selectedNodeId != null && !_loading && _topology != null)
+            _buildNodeInspector(),
+        ],
+      ),
     );
   }
 
-  Widget _buildEmptyState(Color onSurface) {
+  Widget _buildSideControls() {
+    return Column(
+      children: [
+        _controlButton(
+          icon: Icons.traffic_outlined,
+          active: _showTraffic,
+          onTap: () => setState(() => _showTraffic = !_showTraffic),
+          label: 'TRAFFIC',
+        ),
+        const SizedBox(height: 12),
+        _controlButton(
+          icon: Icons.auto_graph_outlined,
+          active: _forceView,
+          onTap: () => setState(() => _forceView = !_forceView),
+          label: 'FORCE',
+        ),
+        const SizedBox(height: 12),
+        _controlButton(
+          icon: _flowSpeed > 1.0 ? Icons.speed : Icons.shutter_speed,
+          active: _flowSpeed > 1.0,
+          onTap: () {
+            setState(() {
+              if (_flowSpeed == 1.0) {
+                _flowSpeed = 2.5;
+              } else if (_flowSpeed == 2.5) {
+                _flowSpeed = 5.0;
+              } else {
+                _flowSpeed = 1.0;
+              }
+            });
+          },
+          label: _flowSpeed == 1.0 ? 'NORMAL' : _flowSpeed == 2.5 ? 'FAST' : 'OVERDRIVE',
+        ),
+      ],
+    );
+  }
+
+  Widget _controlButton({
+    required IconData icon,
+    required bool active,
+    required VoidCallback onTap,
+    required String label,
+  }) {
+    final color = active ? AppColors.neonCyan : Colors.white24;
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: color.withValues(alpha: 0.3)),
+              boxShadow: active ? [
+                BoxShadow(color: color.withValues(alpha: 0.2), blurRadius: 8),
+              ] : null,
+            ),
+            child: Icon(icon, color: color, size: 20),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: GoogleFonts.orbitron(
+              color: color.withValues(alpha: 0.5),
+              fontSize: 8,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFloatingHeader() {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            HolographicCard(
+              color: AppColors.neonCyan,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.hub_outlined, color: AppColors.neonCyan, size: 18),
+                    const SizedBox(width: 10),
+                    Text(
+                      'TOPOLOGY MAP v1.0',
+                      style: GoogleFonts.orbitron(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Spacer(),
+            IconButton(
+              onPressed: _loadTopology,
+              icon: const Icon(Icons.refresh, color: AppColors.neonCyan),
+              style: IconButton.styleFrom(
+                backgroundColor: AppColors.neonCyan.withValues(alpha: 0.1),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.device_hub, size: 64, color: onSurface.withValues(alpha: 0.35)),
+          Icon(
+            Icons.device_hub,
+            size: 64,
+            color: Colors.white.withValues(alpha: 0.1),
+          ),
           const SizedBox(height: 16),
           Text(
             'No topology data',
             style: GoogleFonts.rajdhani(
-              color: onSurface.withValues(alpha: 0.68),
+              color: Colors.white.withValues(alpha: 0.6),
               fontSize: 18,
+              fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Run a Wi-Fi and LAN scan first',
             style: GoogleFonts.rajdhani(
-              color: onSurface.withValues(alpha: 0.55),
+              color: Colors.white.withValues(alpha: 0.4),
               fontSize: 14,
             ),
           ),
@@ -137,213 +292,394 @@ class _TopologyPageState extends State<TopologyPage> {
     );
   }
 
-  Widget _buildTopologyView(Color onSurface) {
-    return Column(
+  Widget _buildTopologyView() {
+    return Stack(
       children: [
-        _buildLegend(onSurface),
-        Expanded(
-          child: GestureDetector(
-            onTapUp: (details) => _handleTap(details.localPosition),
-            child: CustomPaint(
-              size: Size.infinite,
-              painter: TopologyGraphPainter(
-                topology: _topology!,
-                selectedNodeId: _selectedNodeId,
-              ),
-            ),
+        InteractiveViewer(
+          boundaryMargin: const EdgeInsets.all(400),
+          minScale: 0.4,
+          maxScale: 2.0,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+                return GestureDetector(
+                    onTapUp: (details) => _handleTap(details.localPosition, constraints.biggest),
+                    child: AnimatedBuilder(
+                        animation: _pulseController,
+                        builder: (context, child) {
+                            return CustomPaint(
+                                size: constraints.biggest,
+                                painter: TopologyGraphPainter(
+                                    topology: _topology!,
+                                    selectedNodeId: _selectedNodeId,
+                                    pulseValue: _pulseController.value,
+                                    showTraffic: _showTraffic,
+                                    forceView: _forceView,
+                                    flowSpeed: _flowSpeed,
+                                ),
+                            );
+                        },
+                    ),
+                );
+            }
           ),
         ),
-        if (_selectedNodeId != null) _buildSelectedNodePanel(onSurface),
+        Positioned(
+          bottom: 24,
+          left: 16,
+          right: 16,
+          child: Visibility(
+            visible: _selectedNodeId == null,
+            child: _buildLegend(),
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildLegend(Color onSurface) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      child: Wrap(
-        spacing: 16,
-        runSpacing: 8,
-        children: [
-          _legendItem(const Color(0xFF32E6A1), 'This Device', onSurface),
-          _legendItem(const Color(0xFF5AD4FF), 'Gateway', onSurface),
-          _legendItem(const Color(0xFF32E6A1), 'Access Point', onSurface),
-          _legendItem(const Color(0xFFFFAB40), 'Mobile', onSurface),
-          _legendItem(const Color(0xFF78909C), 'Device', onSurface),
-          _legendItem(const Color(0xFFB388FF), 'IoT', onSurface),
-        ],
+  Widget _buildLegend() {
+    return HolographicCard(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 16,
+          runSpacing: 8,
+          children: [
+            _legendItem(const Color(0xFF00FF9F), 'This Device'),
+            _legendItem(const Color(0xFF00D1FF), 'Gateway'),
+            _legendItem(const Color(0xFFFF0060), 'Mobile'),
+            _legendItem(const Color(0xFF7209B7), 'Device'),
+            _legendItem(const Color(0xFFB5179E), 'IoT'),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _legendItem(Color color, String label, Color onSurface) {
+  Widget _legendItem(Color color, String label) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: color.withValues(alpha: 0.5),
+                blurRadius: 4,
+                spreadRadius: 1,
+              ),
+            ],
+          ),
         ),
-        const SizedBox(width: 4),
+        const SizedBox(width: 6),
         Text(
           label,
           style: GoogleFonts.rajdhani(
-            color: onSurface.withValues(alpha: 0.72),
-            fontSize: 12,
+            color: Colors.white.withValues(alpha: 0.7),
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],
     );
   }
 
-  void _handleTap(Offset localPosition) {
+  void _handleTap(Offset localPosition, Size canvasSize) {
     if (_topology == null) return;
 
-    final size = context.size;
-    if (size == null) return;
+    final center = Offset(canvasSize.width / 2, canvasSize.height / 2);
+    
+    // Matrix used in Painter
+    final matrix = Matrix4.identity()
+      ..setEntry(3, 2, 0.001)
+      ..rotateX(-0.5);
 
-    final renderBox = context.findRenderObject() as RenderBox?;
-    if (renderBox == null) return;
-
-    final canvasSize = renderBox.size;
-
-    String? tappedId;
-    double minDistance = double.infinity;
+    String? tappedNodeId;
+    double minDistance = 45.0;
 
     for (final node in _topology!.nodes) {
-      final pos = _estimateNodePosition(node, canvasSize);
-      final distance = (pos - localPosition).distance;
-      if (distance < 40 && distance < minDistance) {
-        minDistance = distance;
-        tappedId = node.id;
+      // 1. Get Base 2D Position
+      final pos = _getNodePosition(node, canvasSize);
+      
+      // 2. Map to 3D Space (matching the Painter's translate/transform)
+      final relativePos = pos - center;
+      final vector = Vector3(relativePos.dx, relativePos.dy, 0);
+      final projectedVector = matrix.transform3(vector);
+      
+      // 3. Project back to Screen Space
+      final screenPos = Offset(projectedVector.x + center.dx, projectedVector.y + center.dy);
+      
+      // 4. Hit Test
+      final dist = (localPosition - screenPos).distance;
+      if (dist < minDistance) {
+        minDistance = dist;
+        tappedNodeId = node.id;
       }
     }
 
-    setState(() => _selectedNodeId = tappedId);
+    if (tappedNodeId != null && tappedNodeId != _selectedNodeId) {
+        setState(() {
+            _selectedNodeId = tappedNodeId;
+            _isScanning = true;
+        });
+        Future.delayed(const Duration(milliseconds: 600), () {
+            if(mounted) setState(() => _isScanning = false);
+        });
+    } else if (tappedNodeId == null) {
+        setState(() => _selectedNodeId = null);
+    }
   }
 
-  Offset _estimateNodePosition(TopologyNode node, Size size) {
+  Offset _getNodePosition(TopologyNode node, Size size) {
+    if (_forceView) {
+        final nodes = _topology!.nodes;
+        final index = nodes.indexOf(node);
+        final radius = math.min(size.width, size.height) * 0.4;
+        final angle = (index * 2 * math.pi) / nodes.length;
+        return Offset(
+          size.width / 2 + radius * math.cos(angle),
+          size.height / 2 + radius * math.sin(angle),
+        );
+    }
+
     final center = Offset(size.width / 2, size.height / 2);
+    final accessPoints = _topology!.accessPoints;
+    final otherDevices = _topology!.connectedDevices;
 
-    if (node.isCurrentDevice) {
-      return Offset(center.dx, size.height - 80);
-    }
-    if (node.isGateway) {
-      return Offset(center.dx, 80);
+    double currentY = size.height - 100;
+    double gatewayY = 100;
+    double middleY = center.dy;
+
+    if (node.isCurrentDevice) return Offset(center.dx, currentY);
+    if (node.isGateway) return Offset(center.dx, gatewayY);
+
+    final apIndex = accessPoints.indexWhere((n) => n.id == node.id);
+    if (apIndex != -1) {
+      final radius = size.width * 0.35;
+      final x = center.dx + radius * (apIndex % 2 == 0 ? -0.6 : 0.6);
+      final y = middleY - 40 + (apIndex ~/ 2) * 100;
+      return Offset(x, y);
     }
 
-    final index = _topology!.nodes.indexOf(node);
-    final radius = size.width * 0.25;
-    return Offset(
-      center.dx + radius * (index % 3 - 1),
-      center.dy + (index ~/ 3 - 1) * 80,
-    );
+    final devIndex = otherDevices.indexWhere((n) => n.id == node.id);
+    if (devIndex != -1) {
+      const cols = 2;
+      final col = devIndex % cols;
+      final row = devIndex ~/ cols;
+      final spacingX = size.width * 0.4;
+      final x = center.dx + (col - 0.5) * spacingX;
+      final y = middleY + 100 + row * 90;
+      return Offset(x, y);
+    }
+
+    return center;
   }
 
-  Widget _buildSelectedNodePanel(Color onSurface) {
+  Widget _buildNodeInspector() {
     final node =
         _topology!.nodes.where((n) => n.id == _selectedNodeId).firstOrNull;
     if (node == null) return const SizedBox.shrink();
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color:
-            Theme.of(context).brightness == Brightness.dark
-                ? AppTheme.darkSurface
-                : Theme.of(context).colorScheme.surface,
-        border: Border(
-          top: BorderSide(color: AppTheme.primaryColor.withValues(alpha: 0.3)),
+    return Positioned(
+      bottom: 24,
+      left: 16,
+      right: 16,
+      child: StaggeredEntry(
+        delay: Duration.zero,
+        child: HolographicCard(
+          color: _getNodeColor(node),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (_isScanning) ...[
+                   _buildScanningEffect(),
+                ] else ...[
+                    _buildInspectorContent(node),
+                ]
+              ],
+            ),
+          ),
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Icon(_getNodeIcon(node.type), color: AppTheme.primaryColor),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  node.label,
-                  style: GoogleFonts.rajdhani(
-                    color: onSurface,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+    );
+  }
+
+  Widget _buildScanningEffect() {
+      return SizedBox(
+          height: 150,
+          child: Center(
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                      const CircularProgressIndicator(strokeWidth: 2, color: AppColors.neonCyan),
+                      const SizedBox(height: 16),
+                      Text(
+                          'ANALYZING NODE...',
+                          style: GoogleFonts.orbitron(
+                              color: AppColors.neonCyan,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 2,
+                          ),
+                      ),
+                  ],
               ),
-              if (node.isCurrentDevice)
+          ),
+      );
+  }
+
+  Widget _buildInspectorContent(TopologyNode node) {
+      return Column(
+          children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 54,
+                      height: 54,
+                      decoration: BoxDecoration(
+                        color: _getNodeColor(node).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
+                          color: _getNodeColor(node).withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          _getNodeIcon(node),
+                          color: _getNodeColor(node),
+                          size: 28,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            node.label.toUpperCase(),
+                            style: GoogleFonts.orbitron(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            node.isCurrentDevice
+                                ? 'AUTH_LOCAL_SYSTEM'
+                                : 'REMOTE_NODE_ID: ${node.id.substring(0, 8)}',
+                            style: GoogleFonts.shareTechMono(
+                              color: _getNodeColor(node).withValues(alpha: 0.7),
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => setState(() => _selectedNodeId = null),
+                      icon: const Icon(
+                        Icons.close,
+                        color: Colors.white38,
+                        size: 20,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 2,
-                  ),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryColor.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    'YOU',
-                    style: GoogleFonts.rajdhani(
-                      color: AppTheme.primaryColor,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
+                    color: Colors.black.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: _getNodeColor(node).withValues(alpha: 0.1),
                     ),
                   ),
+                  child: Column(
+                    children: [
+                      if (node.ip != null)
+                        _infoRow('IP_ADDR', node.ip!, Icons.lan),
+                      if (node.mac != null)
+                        _infoRow('MAC_VAL', node.mac!, Icons.fingerprint),
+                      if (node.vendor != null && node.vendor!.isNotEmpty)
+                        _infoRow('MNFR', node.vendor!, Icons.factory),
+                    ],
+                  ),
                 ),
-            ],
+          ],
+      );
+  }
+
+  Color _getNodeColor(TopologyNode node) {
+    if (node.isCurrentDevice) return const Color(0xFF00FF9F);
+    if (node.isGateway) return const Color(0xFF00D1FF);
+    return const Color(0xFFFF0060);
+  }
+
+  IconData _getNodeIcon(TopologyNode node) {
+    if (node.isCurrentDevice) return Icons.computer;
+    if (node.isGateway) return Icons.router;
+    if (node.type == TopologyNodeType.accessPoint) return Icons.settings_input_antenna;
+    return Icons.device_hub;
+  }
+
+  Widget _infoRow(String label, String value, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Icon(icon, size: 14, color: AppColors.neonCyan.withValues(alpha: 0.5)),
+          const SizedBox(width: 12),
+          Text(
+            label,
+            style: GoogleFonts.shareTechMono(
+              color: Colors.white38,
+              fontSize: 10,
+              letterSpacing: 1,
+            ),
           ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 16,
-            runSpacing: 8,
-            children: [
-              if (node.ip != null) _infoChip('IP', node.ip!, onSurface),
-              if (node.mac != null) _infoChip('MAC', node.mac!, onSurface),
-              if (node.vendor != null && node.vendor!.isNotEmpty)
-                _infoChip('Vendor', node.vendor!, onSurface),
-              if (node.signalStrength != null)
-                _infoChip('Signal', '${node.signalStrength} dBm', onSurface),
-            ],
+          const Spacer(),
+          Text(
+            value,
+            style: GoogleFonts.shareTechMono(
+              color: Colors.white.withValues(alpha: 0.9),
+              fontSize: 13,
+            ),
           ),
         ],
       ),
     );
   }
+}
 
-  IconData _getNodeIcon(TopologyNodeType type) {
-    return switch (type) {
-      TopologyNodeType.router => Icons.router,
-      TopologyNodeType.accessPoint => Icons.wifi,
-      TopologyNodeType.mobile => Icons.phone_android,
-      TopologyNodeType.iot => Icons.lightbulb,
-      TopologyNodeType.device => Icons.computer,
-      TopologyNodeType.unknown => Icons.device_unknown,
-    };
+class _GridPainter extends CustomPainter {
+  final Color color;
+  _GridPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1;
+
+    const spacing = 45.0;
+    for (double i = 0; i < size.width; i += spacing) {
+      canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
+    }
+    for (double i = 0; i < size.height; i += spacing) {
+      canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
+    }
   }
 
-  Widget _infoChip(String label, String value, Color onSurface) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          '$label: ',
-          style: GoogleFonts.rajdhani(
-            color: onSurface.withValues(alpha: 0.55),
-            fontSize: 13,
-          ),
-        ),
-        Text(
-          value,
-          style: GoogleFonts.sourceCodePro(
-            color: onSurface.withValues(alpha: 0.82),
-            fontSize: 12,
-          ),
-        ),
-      ],
-    );
-  }
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
