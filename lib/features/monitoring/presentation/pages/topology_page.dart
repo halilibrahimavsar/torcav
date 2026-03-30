@@ -236,6 +236,24 @@ class _TopologyPageState extends State<TopologyPage>
         padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
+            IconButton(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const Icon(
+                Icons.arrow_back_ios_rounded,
+                color: AppColors.neonCyan,
+                size: 18,
+              ),
+              style: IconButton.styleFrom(
+                backgroundColor: AppColors.neonCyan.withValues(alpha: 0.1),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: BorderSide(
+                    color: AppColors.neonCyan.withValues(alpha: 0.3),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
             HolographicCard(
               color: AppColors.neonCyan,
               child: Padding(

@@ -1188,13 +1188,13 @@ class _BentoStatTile extends StatelessWidget {
     return NeonCard(
       glowColor: color,
       glowIntensity: 0.05,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: color.withValues(alpha: 0.6), size: 16),
-          const Spacer(),
+          Icon(icon, color: color.withValues(alpha: 0.6), size: 14),
+          const SizedBox(height: 2),
           Text(
             label,
             style: GoogleFonts.rajdhani(
@@ -1204,19 +1204,15 @@ class _BentoStatTile extends StatelessWidget {
               letterSpacing: 1,
             ),
           ),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: NeonText(
-              value,
-              style: GoogleFonts.orbitron(
-                color: color,
-                fontSize: 18,
-                fontWeight: FontWeight.w900,
-              ),
-              glowColor: color,
-              glowRadius: 4,
+          NeonText(
+            value,
+            style: GoogleFonts.orbitron(
+              color: color,
+              fontSize: 14,
+              fontWeight: FontWeight.w900,
             ),
+            glowColor: color,
+            glowRadius: 4,
           ),
         ],
       ),
