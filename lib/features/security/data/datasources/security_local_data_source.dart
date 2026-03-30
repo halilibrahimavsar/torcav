@@ -7,6 +7,7 @@ import '../../domain/entities/security_event.dart';
 abstract class SecurityLocalDataSource {
   Future<List<KnownNetwork>> getKnownNetworks();
   Future<void> saveKnownNetwork(KnownNetwork network);
+  Future<void> deleteKnownNetwork(String bssid);
   Future<List<SecurityEvent>> getSecurityEvents();
   Future<void> saveSecurityEvent(SecurityEvent event);
   Future<void> saveSecurityEvents(List<SecurityEvent> events);
@@ -33,6 +34,16 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
       'known_networks',
       _networkToMap(network),
       conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  @override
+  Future<void> deleteKnownNetwork(String bssid) async {
+    final db = await _database.database;
+    await db.delete(
+      'known_networks',
+      where: 'bssid = ?',
+      whereArgs: [bssid],
     );
   }
 
@@ -94,7 +105,7 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
         'severity': event.severity.toString(),
         'ssid': event.ssid,
         'bssid': event.bssid,
-        'timestamp': event.timestamp.toIso8601String(),
+        'created_at': event.timestamp.toIso8601String(),
         'evidence': event.evidence,
         'is_read': event.isRead ? 1 : 0,
       };
@@ -109,7 +120,7 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
         ),
         ssid: map['ssid'] as String,
         bssid: map['bssid'] as String,
-        timestamp: DateTime.parse(map['timestamp'] as String),
+        timestamp: DateTime.parse(map['created_at'] as String),
         evidence: map['evidence'] as String,
         isRead: (map['is_read'] as int) == 1,
       );

@@ -6,14 +6,16 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../features/wifi_scan/domain/entities/wifi_network.dart';
 import '../../../../features/wifi_scan/domain/repositories/wifi_repository.dart';
+import '../../../../core/storage/app_database.dart';
 import '../../domain/entities/bandwidth_sample.dart';
 import '../../domain/repositories/monitoring_repository.dart';
 
 @LazySingleton(as: MonitoringRepository)
 class MonitoringRepositoryImpl implements MonitoringRepository {
   final WifiRepository _wifiRepository;
+  final AppDatabase _appDatabase;
 
-  MonitoringRepositoryImpl(this._wifiRepository);
+  MonitoringRepositoryImpl(this._wifiRepository, this._appDatabase);
 
   @override
   Stream<Either<Failure, List<WifiNetwork>>> monitorNetworks({
@@ -86,14 +88,14 @@ class MonitoringRepositoryImpl implements MonitoringRepository {
           if (elapsedSec > 0) {
             final rxBps = (rx - prevRx) / elapsedSec;
             final txBps = (tx - prevTx) / elapsedSec;
-            yield Right(
-              BandwidthSample(
-                timestamp: now,
-                interfaceName: interfaceName,
-                txBps: txBps,
-                rxBps: rxBps,
-              ),
+            final sample = BandwidthSample(
+              timestamp: now,
+              interfaceName: interfaceName,
+              txBps: txBps,
+              rxBps: rxBps,
             );
+            await _saveBandwidthSample(sample);
+            yield Right(sample);
           }
         }
 
@@ -105,6 +107,20 @@ class MonitoringRepositoryImpl implements MonitoringRepository {
       }
 
       await Future<void>.delayed(interval);
+    }
+  }
+
+  Future<void> _saveBandwidthSample(BandwidthSample sample) async {
+    try {
+      final db = await _appDatabase.database;
+      await db.insert('bandwidth_samples', {
+        'created_at': sample.timestamp.toIso8601String(),
+        'interface_name': sample.interfaceName,
+        'tx_bps': sample.txBps,
+        'rx_bps': sample.rxBps,
+      });
+    } catch (e) {
+      // silently fail persistence for now to avoid breaking the stream
     }
   }
 }

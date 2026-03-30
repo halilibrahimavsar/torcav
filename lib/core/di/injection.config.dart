@@ -22,6 +22,8 @@ import '../../features/monitoring/data/repositories/speed_test_repository_impl.d
     as _i528;
 import '../../features/monitoring/data/services/deauth_detection_service.dart'
     as _i328;
+import '../../features/monitoring/data/services/packet_sniffer_service.dart'
+    as _i919;
 import '../../features/monitoring/domain/repositories/heatmap_repository.dart'
     as _i494;
 import '../../features/monitoring/domain/repositories/monitoring_repository.dart'
@@ -41,6 +43,8 @@ import '../../features/monitoring/presentation/bloc/monitoring_bloc.dart'
     as _i613;
 import '../../features/monitoring/presentation/bloc/monitoring_hub_bloc.dart'
     as _i374;
+import '../../features/monitoring/presentation/bloc/packet_sniffer/packet_sniffer_bloc.dart'
+    as _i242;
 import '../../features/network_scan/data/datasources/arp_data_source.dart'
     as _i1066;
 import '../../features/network_scan/data/datasources/nmap_data_source.dart'
@@ -79,6 +83,8 @@ import '../../features/security/domain/usecases/run_active_defense_check_usecase
     as _i809;
 import '../../features/security/domain/usecases/security_analyzer.dart'
     as _i471;
+import '../../features/security/presentation/bloc/notification/notification_bloc.dart'
+    as _i796;
 import '../../features/security/presentation/bloc/security_bloc.dart' as _i676;
 import '../../features/security/presentation/bloc/wifi_details_bloc.dart'
     as _i361;
@@ -154,6 +160,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i494.HeatmapRepository>(
       () => _i335.HeatmapRepositoryImpl(gh<_i690.AppDatabase>()),
     );
+    gh.lazySingleton<_i499.SecurityLocalDataSource>(
+      () => _i499.SecurityLocalDataSourceImpl(gh<_i690.AppDatabase>()),
+    );
     gh.lazySingleton<_i522.ProcessRunner>(() => _i522.ProcessRunnerImpl());
     gh.singleton<_i734.LocaleCubit>(
       () => _i734.LocaleCubit(gh<_i460.SharedPreferences>()),
@@ -185,15 +194,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i102.LogHeatmapPointUseCase>(),
       ),
     );
+    gh.lazySingleton<_i919.PacketSnifferService>(
+      () => _i919.PacketSnifferServiceImpl(),
+    );
     gh.lazySingleton<_i790.ScanPersistenceDataSource>(
       () => _i790.ScanPersistenceDataSource(gh<_i690.AppDatabase>()),
     );
     gh.lazySingleton<_i1012.WifiDataSource>(
       () => _i672.AndroidWifiDataSource(),
       instanceName: 'android',
-    );
-    gh.lazySingleton<_i499.SecurityLocalDataSource>(
-      () => _i499.SecurityLocalDataSourceImpl(gh<_i690.AppDatabase>()),
     );
     gh.lazySingleton<_i286.PrivilegeService>(
       () => _i286.PrivilegeServiceImpl(gh<_i522.ProcessRunner>()),
@@ -220,6 +229,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i286.PrivilegeService>(),
         gh<_i941.NotificationService>(),
       ),
+    );
+    gh.factory<_i242.PacketSnifferBloc>(
+      () => _i242.PacketSnifferBloc(gh<_i919.PacketSnifferService>()),
     );
     gh.lazySingleton<_i1024.RunSpeedTestUseCase>(
       () => _i1024.RunSpeedTestUseCase(gh<_i890.SpeedTestRepository>()),
@@ -269,6 +281,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i87.AnalyzeNetworkSecurityUseCase>(
       () => _i87.AnalyzeNetworkSecurityUseCase(gh<_i578.SecurityRepository>()),
     );
+    gh.factory<_i796.NotificationBloc>(
+      () => _i796.NotificationBloc(gh<_i578.SecurityRepository>()),
+    );
     gh.factory<_i676.SecurityBloc>(
       () => _i676.SecurityBloc(
         gh<_i578.SecurityRepository>(),
@@ -287,7 +302,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i374.MonitoringHubBloc(gh<_i1024.RunSpeedTestUseCase>()),
     );
     gh.lazySingleton<_i365.MonitoringRepository>(
-      () => _i592.MonitoringRepositoryImpl(gh<_i1027.WifiRepository>()),
+      () => _i592.MonitoringRepositoryImpl(
+        gh<_i1027.WifiRepository>(),
+        gh<_i690.AppDatabase>(),
+      ),
     );
     gh.lazySingleton<_i451.ScanWifi>(
       () => _i451.ScanWifi(gh<_i1027.WifiRepository>()),

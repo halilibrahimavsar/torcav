@@ -23,6 +23,10 @@ class SecurityRepositoryImpl implements SecurityRepository {
       _localDataSource.saveKnownNetwork(network);
 
   @override
+  Future<void> deleteKnownNetwork(String bssid) =>
+      _localDataSource.deleteKnownNetwork(bssid);
+
+  @override
   Future<List<SecurityEvent>> getSecurityEvents() =>
       _localDataSource.getSecurityEvents();
 
@@ -48,47 +52,52 @@ class SecurityRepositoryImpl implements SecurityRepository {
     for (final network in networks) {
       if (network.ssid.isEmpty) continue;
 
-      final known = knownNetworks.cast<KnownNetwork?>().firstWhere(
-        (kn) => kn?.ssid == network.ssid,
-        orElse: () => null,
-      );
+      final known = knownNetworks.where((kn) => kn.ssid == network.ssid).firstOrNull;
 
       if (known != null) {
-        // Rogue AP Detection Logic
-        bool isRogue = false;
-        String evidence = '';
-
-        // 1. Different BSSID for same SSID (Evil Twin check)
+        // 1. Evil Twin detection (BSSID mismatch for same SSID)
         if (known.bssid != network.bssid) {
-          isRogue = true;
-          evidence =
-              'BSSID mismatch! Expected: ${known.bssid}, Found: ${network.bssid}. Possible Evil Twin attack.';
-        }
-
-        // 2. Randomized MAC Detection (Suspicious for fixed APs)
-        if (OuiLookup.isSuspicious(network.bssid)) {
-          isRogue = true;
-          evidence += ' Randomized/LAA MAC detected on known network! This is highly unusual for legitimate Access Points.';
-        }
-
-        // 3. Security Downgrade check
-        if (known.security != network.security.toString()) {
-          isRogue = true;
-          evidence +=
-              ' Security profile changed! Expected: ${known.security}, Found: ${network.security}.';
-        }
-
-        if (isRogue) {
           final event = SecurityEvent(
-            type: SecurityEventType.rogueApSuspected,
+            type: SecurityEventType.evilTwinDetected,
             severity: SecurityEventSeverity.critical,
             ssid: network.ssid,
             bssid: network.bssid,
             timestamp: DateTime.now(),
-            evidence: evidence,
+            evidence:
+                'BSSID mismatch! Expected: ${known.bssid}, Found: ${network.bssid}. High probability of an Evil Twin Access Point.',
           );
           alerts.add(event);
-          // Trigger local notification
+          await _notificationService.showSecurityAlert(event);
+        }
+
+        // 2. Randomized MAC Detection (Suspicious for fixed APs)
+        else if (OuiLookup.isSuspicious(network.bssid)) {
+          final event = SecurityEvent(
+            type: SecurityEventType.rogueApSuspected,
+            severity: SecurityEventSeverity.high,
+            ssid: network.ssid,
+            bssid: network.bssid,
+            timestamp: DateTime.now(),
+            evidence:
+                'Randomized/LAA MAC detected on known network! This is highly unusual for legitimate Access Points and may indicate a rogue device.',
+          );
+          alerts.add(event);
+          await _notificationService.showSecurityAlert(event);
+        }
+
+        // 3. Security Downgrade check
+        if (known.security != network.security.toString()) {
+          final isDowngrade = _isDowngrade(known.security, network.security.toString());
+          final event = SecurityEvent(
+            type: SecurityEventType.encryptionDowngraded,
+            severity: isDowngrade ? SecurityEventSeverity.high : SecurityEventSeverity.medium,
+            ssid: network.ssid,
+            bssid: network.bssid,
+            timestamp: DateTime.now(),
+            evidence:
+                'Encryption profile changed from ${known.security} to ${network.security}. Possible downgrade attack.',
+          );
+          alerts.add(event);
           await _notificationService.showSecurityAlert(event);
         }
       }
@@ -99,5 +108,21 @@ class SecurityRepositoryImpl implements SecurityRepository {
     }
 
     return alerts;
+  }
+
+  bool _isDowngrade(String oldSecurity, String newSecurity) {
+    final oldRank = _getSecurityRank(oldSecurity);
+    final newRank = _getSecurityRank(newSecurity);
+    return newRank < oldRank;
+  }
+
+  int _getSecurityRank(String security) {
+    final s = security.toLowerCase();
+    if (s.contains('wpa3')) return 5;
+    if (s.contains('wpa2')) return 4;
+    if (s.contains('wpa')) return 3;
+    if (s.contains('wep')) return 2;
+    if (s.contains('open')) return 1;
+    return 0;
   }
 }

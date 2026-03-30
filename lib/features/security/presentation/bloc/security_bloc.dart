@@ -82,7 +82,7 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
       if (event.isTrusted) {
         await _repository.saveKnownNetwork(event.network);
       } else {
-        // Implementation for untrusting if needed (delete from DB)
+        await _repository.deleteKnownNetwork(event.network.bssid);
       }
       final known = await _repository.getKnownNetworks();
       final events = await _repository.getSecurityEvents();
