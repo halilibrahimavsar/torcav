@@ -48,10 +48,10 @@ class CyberDrawer extends StatelessWidget {
             const SizedBox(height: 40),
 
             // ── System Status Section ──
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: NeonSectionHeader(
-                label: 'SYSTEM STATUS',
+                label: l10n.systemStatus,
                 icon: Icons.monitor_heart_rounded,
                 color: AppColors.neonCyan,
               ),

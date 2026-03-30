@@ -189,7 +189,7 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get save;
 
-  /// No description provided for @confirm.
+  /// Description for confirm
   ///
   /// In en, this message translates to:
   /// **'Confirm'**
@@ -297,13 +297,13 @@ abstract class AppLocalizations {
   /// **'LAN'**
   String get navLan;
 
-  /// No description provided for @navDiscovery.
+  /// Description for navDiscovery
   ///
   /// In en, this message translates to:
   /// **'Discovery'**
   String get navDiscovery;
 
-  /// No description provided for @navOperations.
+  /// Description for navOperations
   ///
   /// In en, this message translates to:
   /// **'Operations'**
@@ -687,25 +687,25 @@ abstract class AppLocalizations {
   /// **'Save report'**
   String get saveReportDialog;
 
-  /// No description provided for @sectionStatus.
+  /// Description for sectionStatus
   ///
   /// In en, this message translates to:
   /// **'STATUS'**
   String get sectionStatus;
 
-  /// No description provided for @exportOptionsTitle.
+  /// Description for exportOptionsTitle
   ///
   /// In en, this message translates to:
   /// **'EXPORT OPTIONS'**
   String get exportOptionsTitle;
 
-  /// No description provided for @latestSnapshotTitle.
+  /// Description for latestSnapshotTitle
   ///
   /// In en, this message translates to:
   /// **'LATEST SNAPSHOT'**
   String get latestSnapshotTitle;
 
-  /// No description provided for @backendLabel.
+  /// Description for backendLabel
   ///
   /// In en, this message translates to:
   /// **'Backend'**
@@ -915,139 +915,139 @@ abstract class AppLocalizations {
   /// **'Ops: {ops}'**
   String opsLabel(Object ops);
 
-  /// No description provided for @networkStatusLabel.
+  /// Description for networkStatusLabel
   ///
   /// In en, this message translates to:
   /// **'NETWORK STATUS'**
   String get networkStatusLabel;
 
-  /// No description provided for @activeSessionLabel.
+  /// Description for activeSessionLabel
   ///
   /// In en, this message translates to:
   /// **'ACTIVE SESSION'**
   String get activeSessionLabel;
 
-  /// No description provided for @gatewayLabel.
+  /// Description for gatewayLabel
   ///
   /// In en, this message translates to:
   /// **'GATEWAY'**
   String get gatewayLabel;
 
-  /// No description provided for @ipLabel.
+  /// Description for ipLabel
   ///
   /// In en, this message translates to:
   /// **'IP ADDRESS'**
   String get ipLabel;
 
-  /// No description provided for @connectedStatusCaps.
+  /// Description for connectedStatusCaps
   ///
   /// In en, this message translates to:
   /// **'CONNECTED'**
   String get connectedStatusCaps;
 
-  /// No description provided for @disconnectedStatusCaps.
+  /// Description for disconnectedStatusCaps
   ///
   /// In en, this message translates to:
   /// **'DISCONNECTED'**
   String get disconnectedStatusCaps;
 
-  /// No description provided for @quickActionsTitle.
+  /// Description for quickActionsTitle
   ///
   /// In en, this message translates to:
   /// **'QUICK ACTIONS'**
   String get quickActionsTitle;
 
-  /// No description provided for @lastScanTitle.
+  /// Description for lastScanTitle
   ///
   /// In en, this message translates to:
   /// **'LAST SCAN'**
   String get lastScanTitle;
 
-  /// No description provided for @viewDetailsAction.
+  /// Description for viewDetailsAction
   ///
   /// In en, this message translates to:
   /// **'VIEW DETAILS'**
   String get viewDetailsAction;
 
-  /// No description provided for @scanning.
+  /// Description for scanning
   ///
   /// In en, this message translates to:
   /// **'SCANNING…'**
   String get scanning;
 
-  /// No description provided for @secure.
+  /// Description for secure
   ///
   /// In en, this message translates to:
   /// **'SECURE'**
   String get secure;
 
-  /// No description provided for @blockUnknownAP.
+  /// Description for blockUnknownAP
   ///
   /// In en, this message translates to:
   /// **'Block Unknown APs'**
   String get blockUnknownAP;
 
-  /// No description provided for @automaticBlockMsg.
+  /// Description for automaticBlockMsg
   ///
   /// In en, this message translates to:
   /// **'Automatically drops connections to rogue APs'**
   String get automaticBlockMsg;
 
-  /// No description provided for @activeProbingEnabled.
+  /// Description for activeProbingEnabled
   ///
   /// In en, this message translates to:
   /// **'Active Probing'**
   String get activeProbingEnabled;
 
-  /// No description provided for @activeProbingMsg.
+  /// Description for activeProbingMsg
   ///
   /// In en, this message translates to:
   /// **'Periodically tests connected AP for anomalies'**
   String get activeProbingMsg;
 
-  /// No description provided for @requireConsentForDeauth.
+  /// Description for requireConsentForDeauth
   ///
   /// In en, this message translates to:
   /// **'Require Consent'**
   String get requireConsentForDeauth;
 
-  /// No description provided for @manualAuthorizationMsg.
+  /// Description for manualAuthorizationMsg
   ///
   /// In en, this message translates to:
   /// **'Manually authorize deauth/active defense'**
   String get manualAuthorizationMsg;
 
-  /// No description provided for @defensePolicy.
+  /// Description for defensePolicy
   ///
   /// In en, this message translates to:
   /// **'Defense Policy'**
   String get defensePolicy;
 
-  /// No description provided for @shieldActive.
+  /// Description for shieldActive
   ///
   /// In en, this message translates to:
   /// **'Shield Active'**
   String get shieldActive;
 
-  /// No description provided for @activeProtection.
+  /// Description for activeProtection
   ///
   /// In en, this message translates to:
   /// **'Active Protection'**
   String get activeProtection;
 
-  /// No description provided for @riskScore.
+  /// Description for riskScore
   ///
   /// In en, this message translates to:
   /// **'Risk Score'**
   String get riskScore;
 
-  /// No description provided for @securityRadar.
+  /// Description for securityRadar
   ///
   /// In en, this message translates to:
   /// **'Security Radar'**
   String get securityRadar;
 
-  /// No description provided for @profileTitle.
+  /// Description for profileTitle
   ///
   /// In en, this message translates to:
   /// **'AGENT PROFILE'**
@@ -1059,41 +1059,407 @@ abstract class AppLocalizations {
   /// **'AGENT_ID: {id}'**
   String agentId(Object id);
 
-  /// No description provided for @sessionInformation.
+  /// Description for sessionInformation
   ///
   /// In en, this message translates to:
   /// **'SESSION INFORMATION'**
   String get sessionInformation;
 
-  /// No description provided for @subscriptionStatus.
+  /// Description for subscriptionStatus
   ///
   /// In en, this message translates to:
   /// **'SUBSCRIPTION STATUS'**
   String get subscriptionStatus;
 
-  /// No description provided for @activeSession.
+  /// Description for activeSession
   ///
   /// In en, this message translates to:
   /// **'ACTIVE SESSION'**
   String get activeSession;
 
-  /// No description provided for @logout.
+  /// Description for logout
   ///
   /// In en, this message translates to:
   /// **'LOGOUT'**
   String get logout;
 
-  /// No description provided for @logoutConfirmation.
+  /// Description for logoutConfirmation
   ///
   /// In en, this message translates to:
   /// **'DISCONNECT SESSION'**
   String get logoutConfirmation;
 
-  /// No description provided for @logoutConfirmMessage.
+  /// Description for logoutConfirmMessage
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to terminate the current session? All active monitoring will be paused.'**
   String get logoutConfirmMessage;
+
+  /// Description for livePulse
+  ///
+  /// In en, this message translates to:
+  /// **'LIVE PULSE'**
+  String get livePulse;
+
+  /// Description for operationsLabel
+  ///
+  /// In en, this message translates to:
+  /// **'OPERATIONS'**
+  String get operationsLabel;
+
+  /// Description for topologyLabel
+  ///
+  /// In en, this message translates to:
+  /// **'TOPOLOGY'**
+  String get topologyLabel;
+
+  /// Description for accessEngine
+  ///
+  /// In en, this message translates to:
+  /// **'ACCESS ENGINE'**
+  String get accessEngine;
+
+  /// Description for networkLogs
+  ///
+  /// In en, this message translates to:
+  /// **'NETWORK LOGS'**
+  String get networkLogs;
+
+  /// Description for strictSafetyEnabled
+  ///
+  /// In en, this message translates to:
+  /// **'STRICT SAFETY ENABLED'**
+  String get strictSafetyEnabled;
+
+  /// Description for activeMonitoringProgress
+  ///
+  /// In en, this message translates to:
+  /// **'Active monitoring in progress'**
+  String get activeMonitoringProgress;
+
+  /// Description for topologyMapTitle
+  ///
+  /// In en, this message translates to:
+  /// **'TOPOLOGY MAP'**
+  String get topologyMapTitle;
+
+  /// Description for trafficLabel
+  ///
+  /// In en, this message translates to:
+  /// **'TRAFFIC'**
+  String get trafficLabel;
+
+  /// Description for forceLabel
+  ///
+  /// In en, this message translates to:
+  /// **'FORCE'**
+  String get forceLabel;
+
+  /// Description for normalSpeed
+  ///
+  /// In en, this message translates to:
+  /// **'NORMAL'**
+  String get normalSpeed;
+
+  /// Description for fastSpeed
+  ///
+  /// In en, this message translates to:
+  /// **'FAST'**
+  String get fastSpeed;
+
+  /// Description for overdriveSpeed
+  ///
+  /// In en, this message translates to:
+  /// **'OVERDRIVE'**
+  String get overdriveSpeed;
+
+  /// Description for noTopologyData
+  ///
+  /// In en, this message translates to:
+  /// **'No topology data'**
+  String get noTopologyData;
+
+  /// Description for runScanFirst
+  ///
+  /// In en, this message translates to:
+  /// **'Run a Wi-Fi and LAN scan first'**
+  String get runScanFirst;
+
+  /// Description for thisDevice
+  ///
+  /// In en, this message translates to:
+  /// **'This Device'**
+  String get thisDevice;
+
+  /// Description for gatewayDevice
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway'**
+  String get gatewayDevice;
+
+  /// Description for mobileDevice
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile'**
+  String get mobileDevice;
+
+  /// Description for deviceLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Device'**
+  String get deviceLabel;
+
+  /// Description for iotDevice
+  ///
+  /// In en, this message translates to:
+  /// **'IoT'**
+  String get iotDevice;
+
+  /// Description for analyzingNode
+  ///
+  /// In en, this message translates to:
+  /// **'ANALYZING NODE...'**
+  String get analyzingNode;
+
+  /// No description provided for @failedLoadTopology.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load topology: {error}'**
+  String failedLoadTopology(Object error);
+
+  /// Description for neuralCoreTitle
+  ///
+  /// In en, this message translates to:
+  /// **'NEURAL_CORE_AI'**
+  String get neuralCoreTitle;
+
+  /// Description for simulatedLabel
+  ///
+  /// In en, this message translates to:
+  /// **'SIMULATED'**
+  String get simulatedLabel;
+
+  /// Description for activeAnomalies
+  ///
+  /// In en, this message translates to:
+  /// **'ACTIVE ANOMALIES'**
+  String get activeAnomalies;
+
+  /// Description for predictiveHealth
+  ///
+  /// In en, this message translates to:
+  /// **'PREDICTIVE HEALTH'**
+  String get predictiveHealth;
+
+  /// Description for aiStrategyReport
+  ///
+  /// In en, this message translates to:
+  /// **'AI STRATEGY REPORT'**
+  String get aiStrategyReport;
+
+  /// Description for engineStability
+  ///
+  /// In en, this message translates to:
+  /// **'ENGINE_STABILITY: OPTIMAL'**
+  String get engineStability;
+
+  /// Description for aiStrategyText
+  ///
+  /// In en, this message translates to:
+  /// **'Current network topology suggests a stable signature. No immediate horizontal movement detected in subnets. Recommend enabling Stealth Mode on public access points to mitigate passive node discovery.'**
+  String get aiStrategyText;
+
+  /// Description for packetSnifferTitle
+  ///
+  /// In en, this message translates to:
+  /// **'PACKET_SNIFFER'**
+  String get packetSnifferTitle;
+
+  /// Description for simulatedLogStream
+  ///
+  /// In en, this message translates to:
+  /// **'SIMULATED_LOG_STREAM'**
+  String get simulatedLogStream;
+
+  /// Description for streamPaused
+  ///
+  /// In en, this message translates to:
+  /// **'STREAM_PAUSED'**
+  String get streamPaused;
+
+  /// Description for filterNone
+  ///
+  /// In en, this message translates to:
+  /// **'FILTER: NONE'**
+  String get filterNone;
+
+  /// Description for totalPackets
+  ///
+  /// In en, this message translates to:
+  /// **'TOTAL_PKTS'**
+  String get totalPackets;
+
+  /// Description for droppedLabel
+  ///
+  /// In en, this message translates to:
+  /// **'DROPPED'**
+  String get droppedLabel;
+
+  /// Description for bufferLabel
+  ///
+  /// In en, this message translates to:
+  /// **'BUFFER'**
+  String get bufferLabel;
+
+  /// Description for latencyLabel
+  ///
+  /// In en, this message translates to:
+  /// **'LATENCY'**
+  String get latencyLabel;
+
+  /// Description for activeMonitoring
+  ///
+  /// In en, this message translates to:
+  /// **'ACTIVE MONITORING'**
+  String get activeMonitoring;
+
+  /// Description for deactivate
+  ///
+  /// In en, this message translates to:
+  /// **'DEACTIVATE'**
+  String get deactivate;
+
+  /// Description for initializeLink
+  ///
+  /// In en, this message translates to:
+  /// **'INITIALIZE LINK'**
+  String get initializeLink;
+
+  /// Description for commandCenters
+  ///
+  /// In en, this message translates to:
+  /// **'COMMAND CENTERS'**
+  String get commandCenters;
+
+  /// Description for defenseTitle
+  ///
+  /// In en, this message translates to:
+  /// **'DEFENSE'**
+  String get defenseTitle;
+
+  /// Description for activeShielding
+  ///
+  /// In en, this message translates to:
+  /// **'Active Shielding'**
+  String get activeShielding;
+
+  /// Description for logisticsTitle
+  ///
+  /// In en, this message translates to:
+  /// **'LOGISTICS'**
+  String get logisticsTitle;
+
+  /// Description for intelMetrics
+  ///
+  /// In en, this message translates to:
+  /// **'Intel & Metrics'**
+  String get intelMetrics;
+
+  /// Description for networkMesh
+  ///
+  /// In en, this message translates to:
+  /// **'Network Mesh'**
+  String get networkMesh;
+
+  /// Description for tuningTitle
+  ///
+  /// In en, this message translates to:
+  /// **'TUNING'**
+  String get tuningTitle;
+
+  /// Description for systemConfig
+  ///
+  /// In en, this message translates to:
+  /// **'System Config'**
+  String get systemConfig;
+
+  /// Description for technicalTools
+  ///
+  /// In en, this message translates to:
+  /// **'TECHNICAL TOOLS'**
+  String get technicalTools;
+
+  /// Description for packetLogs
+  ///
+  /// In en, this message translates to:
+  /// **'PACKET LOGS'**
+  String get packetLogs;
+
+  /// Description for aiInsights
+  ///
+  /// In en, this message translates to:
+  /// **'AI INSIGHTS'**
+  String get aiInsights;
+
+  /// Description for interactiveSimulation
+  ///
+  /// In en, this message translates to:
+  /// **'INTERACTIVE_SIMULATION'**
+  String get interactiveSimulation;
+
+  /// Description for appearance
+  ///
+  /// In en, this message translates to:
+  /// **'APPEARANCE'**
+  String get appearance;
+
+  /// Description for theme
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get theme;
+
+  /// Description for darkTheme
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get darkTheme;
+
+  /// Description for lightTheme
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get lightTheme;
+
+  /// Description for systemTheme
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get systemTheme;
+
+  /// Description for biometricData
+  ///
+  /// In en, this message translates to:
+  /// **'BIOMETRIC DATA'**
+  String get biometricData;
+
+  /// Description for neuralSync
+  ///
+  /// In en, this message translates to:
+  /// **'Neural Sync'**
+  String get neuralSync;
+
+  /// Description for encryptionKey
+  ///
+  /// In en, this message translates to:
+  /// **'Encryption Key'**
+  String get encryptionKey;
+
+  /// Description for systemStatus
+  ///
+  /// In en, this message translates to:
+  /// **'SYSTEM STATUS'**
+  String get systemStatus;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

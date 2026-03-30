@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 
 class PacketLogsPage extends StatefulWidget {
   const PacketLogsPage({super.key});
@@ -91,12 +92,13 @@ class _PacketLogsPageState extends State<PacketLogsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.darkBackground,
       appBar: AppBar(
         title: Row(
           children: [
-            const Text('PACKET_SNIFFER_v2.1'),
+            Text(l10n.packetSnifferTitle),
             const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -106,7 +108,7 @@ class _PacketLogsPageState extends State<PacketLogsPage> {
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
-                'SIMULATED',
+                l10n.simulatedLabel,
                 style: GoogleFonts.shareTechMono(
                   color: AppColors.neonOrange,
                   fontSize: 8,
@@ -167,6 +169,7 @@ class _PacketLogsPageState extends State<PacketLogsPage> {
   }
 
   Widget _buildStatusBar() {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       color: AppColors.darkSurface.withValues(alpha: 0.5),
@@ -175,7 +178,7 @@ class _PacketLogsPageState extends State<PacketLogsPage> {
           const PulsingDot(),
           const SizedBox(width: 8),
           Text(
-            _isCapturing ? 'SIMULATED_LOG_STREAM' : 'STREAM_PAUSED',
+            _isCapturing ? l10n.simulatedLogStream : l10n.streamPaused,
             style: GoogleFonts.shareTechMono(
               color: _isCapturing ? AppColors.neonCyan : AppColors.textMuted,
               fontSize: 10,
@@ -183,7 +186,7 @@ class _PacketLogsPageState extends State<PacketLogsPage> {
           ),
           const Spacer(),
           Text(
-            'FILTER: NONE',
+            l10n.filterNone,
             style: GoogleFonts.shareTechMono(
               color: AppColors.textMuted,
               fontSize: 10,
@@ -195,15 +198,16 @@ class _PacketLogsPageState extends State<PacketLogsPage> {
   }
 
   Widget _buildBottomHUD() {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _hudStat('TOTAL_PKTS', '${_logs.length}'),
-          _hudStat('DROPPED', '0'),
-          _hudStat('BUFFER', '12%'),
-          _hudStat('LATENCY', '4ms'),
+          _hudStat(l10n.totalPackets, '${_logs.length}'),
+          _hudStat(l10n.droppedLabel, '0'),
+          _hudStat(l10n.bufferLabel, '12%'),
+          _hudStat(l10n.latencyLabel, '4ms'),
         ],
       ),
     );
@@ -270,7 +274,7 @@ class _PacketLogTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final timeStr = "${entry.timestamp.hour}:${entry.timestamp.minute}:${entry.timestamp.second}.${entry.timestamp.millisecond}";
+    final timeStr = "${entry.timestamp.hour.toString().padLeft(2, '0')}:${entry.timestamp.minute.toString().padLeft(2, '0')}:${entry.timestamp.second.toString().padLeft(2, '0')}.${entry.timestamp.millisecond.toString().padLeft(3, '0')}";
     
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),

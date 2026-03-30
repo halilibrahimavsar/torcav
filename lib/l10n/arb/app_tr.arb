@@ -1,167 +1,911 @@
 {
     "@@locale": "tr",
     "activeOperationsBlockedMsg": "Etkin operasyonlar, politika ve izin listesi koşulları sağlanmadıkça engellenir.",
+    "@activeOperationsBlockedMsg": {
+        "description": "Description for activeOperationsBlockedMsg"
+    },
     "authorizedTargets": "Yetkili Hedefler",
+    "@authorizedTargets": {
+        "description": "Description for authorizedTargets"
+    },
     "add": "Ekle",
+    "@add": {
+        "description": "Description for add"
+    },
     "noTargetsAllowlisted": "Henüz izin verilen hedef yok.",
+    "@noTargetsAllowlisted": {
+        "description": "Description for noTargetsAllowlisted"
+    },
     "hiddenNetwork": "Gizli Ağ",
+    "@hiddenNetwork": {
+        "description": "Description for hiddenNetwork"
+    },
     "remove": "Kaldır",
+    "@remove": {
+        "description": "Description for remove"
+    },
     "securityTimeline": "Güvenlik Zaman Çizelgesi",
+    "@securityTimeline": {
+        "description": "Description for securityTimeline"
+    },
     "noSecurityEvents": "Henüz güvenlik olayı yok.",
+    "@noSecurityEvents": {
+        "description": "Description for noSecurityEvents"
+    },
     "authorizeTarget": "Hedefi Yetkilendir",
+    "@authorizeTarget": {
+        "description": "Description for authorizeTarget"
+    },
     "ssid": "SSID",
+    "@ssid": {
+        "description": "Description for ssid"
+    },
     "bssid": "BSSID",
+    "@bssid": {
+        "description": "Description for bssid"
+    },
     "allowHandshakeCapture": "Yakalamaya izin ver (Handshake)",
+    "@allowHandshakeCapture": {
+        "description": "Description for allowHandshakeCapture"
+    },
     "allowActiveDefense": "Aktif savunma/deauth testlerine izin ver",
+    "@allowActiveDefense": {
+        "description": "Description for allowActiveDefense"
+    },
     "cancel": "İptal",
+    "@cancel": {
+        "description": "Description for cancel"
+    },
     "save": "Kaydet",
+    "@save": {
+        "description": "Description for save"
+    },
     "legalDisclaimerAccepted": "Yasal uyarı kabul edildi",
+    "@legalDisclaimerAccepted": {
+        "description": "Description for legalDisclaimerAccepted"
+    },
     "requiredForActiveOps": "Aktif operasyonlar için gerekli",
+    "@requiredForActiveOps": {
+        "description": "Description for requiredForActiveOps"
+    },
     "strictAllowlist": "Katı izin listesi",
+    "@strictAllowlist": {
+        "description": "Description for strictAllowlist"
+    },
     "blockActiveOpsUnknown": "Bilinmeyen hedefler için aktif operasyonları engelle",
+    "@blockActiveOpsUnknown": {
+        "description": "Description for blockActiveOpsUnknown"
+    },
     "rateLimitActiveOps": "Operasyonlar arası bekleme",
+    "@rateLimitActiveOps": {
+        "description": "Description for rateLimitActiveOps"
+    },
     "selectFromScanned": "Tarananlardan seç",
+    "@selectFromScanned": {
+        "description": "Description for selectFromScanned"
+    },
     "settingsLanguage": "Dil",
+    "@settingsLanguage": {
+        "description": "Description for settingsLanguage"
+    },
     "settingsScanBehavior": "Varsayılan tarama davranışı, arka uç stratejisi ve güvenlik durumu.",
+    "@settingsScanBehavior": {
+        "description": "Description for settingsScanBehavior"
+    },
     "settingsDefaultScanPasses": "Varsayılan tarama geçişleri",
+    "@settingsDefaultScanPasses": {
+        "description": "Description for settingsDefaultScanPasses"
+    },
     "settingsMonitoringInterval": "İzleme aralığı (saniye)",
+    "@settingsMonitoringInterval": {
+        "description": "Description for settingsMonitoringInterval"
+    },
     "settingsBackendPreference": "Varsayılan arka uç tercihi",
+    "@settingsBackendPreference": {
+        "description": "Description for settingsBackendPreference"
+    },
     "settingsIncludeHidden": "Varsayılan olarak gizli SSID'leri dahil et",
+    "@settingsIncludeHidden": {
+        "description": "Description for settingsIncludeHidden"
+    },
     "settingsStrictSafety": "Katı güvenlik modu",
+    "@settingsStrictSafety": {
+        "description": "Description for settingsStrictSafety"
+    },
     "settingsStrictSafetyDesc": "Aktif operasyonlar için onay + izin listesi gerektir",
+    "@settingsStrictSafetyDesc": {
+        "description": "Description for settingsStrictSafetyDesc"
+    },
     "navDashboard": "Panel",
+    "@navDashboard": {
+        "description": "Description for navDashboard"
+    },
     "navWifi": "Wi-Fi",
+    "@navWifi": {
+        "description": "Description for navWifi"
+    },
     "navLan": "LAN",
+    "@navLan": {
+        "description": "Description for navLan"
+    },
+    "navDiscovery": "Keşif",
+    "@navDiscovery": {
+        "description": "Description for navDiscovery"
+    },
+    "navOperations": "Operasyonlar",
+    "@navOperations": {
+        "description": "Description for navOperations"
+    },
     "navMore": "Daha Fazla",
+    "@navMore": {
+        "description": "Description for navMore"
+    },
     "moreTitle": "DAHA FAZLA",
+    "@moreTitle": {
+        "description": "Description for moreTitle"
+    },
     "sectionTools": "ARAÇLAR",
+    "@sectionTools": {
+        "description": "Description for sectionTools"
+    },
     "speedTestTitle": "Hız Testi ve İzleme",
+    "@speedTestTitle": {
+        "description": "Description for speedTestTitle"
+    },
     "speedTestDesc": "Bant genişliği, gecikme ve anomali takibi",
+    "@speedTestDesc": {
+        "description": "Description for speedTestDesc"
+    },
     "securityCenterTitle": "Güvenlik Merkezi",
+    "@securityCenterTitle": {
+        "description": "Description for securityCenterTitle"
+    },
     "securityCenterDesc": "Risk puanlama, izin listeleri ve politika denetimleri",
+    "@securityCenterDesc": {
+        "description": "Description for securityCenterDesc"
+    },
     "reportsTitle": "Raporlar",
+    "@reportsTitle": {
+        "description": "Description for reportsTitle"
+    },
     "reportsDesc": "Taramaları PDF, HTML veya JSON olarak dışa aktar",
+    "@reportsDesc": {
+        "description": "Description for reportsDesc"
+    },
     "sectionPreferences": "TERCİHLER",
+    "@sectionPreferences": {
+        "description": "Description for sectionPreferences"
+    },
     "settingsTitle": "Ayarlar",
+    "@settingsTitle": {
+        "description": "Description for settingsTitle"
+    },
     "settingsDesc": "Tarama davranışı, arka uçlar ve güvenlik modu",
+    "@settingsDesc": {
+        "description": "Description for settingsDesc"
+    },
     "monitoringTitle": "İzleme",
+    "@monitoringTitle": {
+        "description": "Description for monitoringTitle"
+    },
     "monitoringSubtitle": "Bant genişliği, anomali tespiti ve ısı haritası akışları.",
+    "@monitoringSubtitle": {
+        "description": "Description for monitoringSubtitle"
+    },
     "comingSoon": "ÇOK YAKINDA",
+    "@comingSoon": {
+        "description": "Description for comingSoon"
+    },
     "signalTrends": "Sinyal Eğilimleri",
+    "@signalTrends": {
+        "description": "Description for signalTrends"
+    },
     "topologyMesh": "Topoloji ve Mesh",
+    "@topologyMesh": {
+        "description": "Description for topologyMesh"
+    },
     "anomalyAlerts": "Anomali Uyarıları",
+    "@anomalyAlerts": {
+        "description": "Description for anomalyAlerts"
+    },
     "speedTestHeader": "HIZ TESTİ",
+    "@speedTestHeader": {
+        "description": "Description for speedTestHeader"
+    },
     "testConnectionSpeed": "Bağlantı hızınızı test edin",
+    "@testConnectionSpeed": {
+        "description": "Description for testConnectionSpeed"
+    },
     "testing": "TEST EDİLİYOR…",
+    "@testing": {
+        "description": "Description for testing"
+    },
     "testAgain": "TEKRAR TEST ET",
+    "@testAgain": {
+        "description": "Description for testAgain"
+    },
     "startTest": "TESTİ BAŞLAT",
+    "@startTest": {
+        "description": "Description for startTest"
+    },
     "phasePing": "PING",
+    "@phasePing": {
+        "description": "Description for phasePing"
+    },
     "phaseDownload": "İNDİRME",
+    "@phaseDownload": {
+        "description": "Description for phaseDownload"
+    },
     "phaseUpload": "YÜKLEME",
+    "@phaseUpload": {
+        "description": "Description for phaseUpload"
+    },
     "phaseDone": "BİTTİ",
+    "@phaseDone": {
+        "description": "Description for phaseDone"
+    },
     "wifiScanTitle": "WI-FI ANALİZÖRÜ",
+    "@wifiScanTitle": {
+        "description": "Description for wifiScanTitle"
+    },
     "scanSettingsTooltip": "Tarama ayarları",
+    "@scanSettingsTooltip": {
+        "description": "Description for scanSettingsTooltip"
+    },
     "channelRatingTooltip": "Kanal puanlaması",
+    "@channelRatingTooltip": {
+        "description": "Description for channelRatingTooltip"
+    },
     "refreshScanTooltip": "Taramayı yenile",
+    "@refreshScanTooltip": {
+        "description": "Description for refreshScanTooltip"
+    },
     "readyToScan": "Taramaya hazır",
+    "@readyToScan": {
+        "description": "Description for readyToScan"
+    },
     "scanButton": "Tara",
+    "@scanButton": {
+        "description": "Description for scanButton"
+    },
     "scanSettingsTitle": "Tarama Ayarları",
+    "@scanSettingsTitle": {
+        "description": "Description for scanSettingsTitle"
+    },
     "passes": "Geçişler: {count}",
+    "@passes": {
+        "description": "Description for passes"
+    },
     "includeHiddenSsids": "Gizli SSID'leri dahil et",
+    "@includeHiddenSsids": {
+        "description": "Description for includeHiddenSsids"
+    },
     "backendPreference": "Arka uç tercihi",
+    "@backendPreference": {
+        "description": "Description for backendPreference"
+    },
     "apply": "Uygula",
+    "@apply": {
+        "description": "Description for apply"
+    },
     "noSignalsDetected": "Sinyal algılanmadı",
+    "@noSignalsDetected": {
+        "description": "Description for noSignalsDetected"
+    },
     "lastSnapshot": "Son Anlık Görüntü",
+    "@lastSnapshot": {
+        "description": "Description for lastSnapshot"
+    },
     "bandAnalysis": "Bant Analizi",
+    "@bandAnalysis": {
+        "description": "Description for bandAnalysis"
+    },
     "networksCount": "Ağlar ({count})",
+    "@networksCount": {
+        "description": "Description for networksCount"
+    },
     "recommendation": "Öneri",
+    "@recommendation": {
+        "description": "Description for recommendation"
+    },
     "lanReconTitle": "YEREL AĞ KEŞFİ",
+    "@lanReconTitle": {
+        "description": "Description for lanReconTitle"
+    },
     "scanFailed": "TARAMA BAŞARISIZ: {message}",
+    "@scanFailed": {
+        "description": "Description for scanFailed"
+    },
     "readyToScanAllCaps": "TARAMAYA HAZIR",
+    "@readyToScanAllCaps": {
+        "description": "Description for readyToScanAllCaps"
+    },
     "targetSubnet": "Hedef Alt Ağ/IP",
+    "@targetSubnet": {
+        "description": "Description for targetSubnet"
+    },
     "profile": "Profil",
+    "@profile": {
+        "description": "Description for profile"
+    },
     "method": "Yöntem",
+    "@method": {
+        "description": "Description for method"
+    },
     "scanAllCaps": "TARA",
+    "@scanAllCaps": {
+        "description": "Description for scanAllCaps"
+    },
     "noHostsFound": "CİHAZ BULUNAMADI",
+    "@noHostsFound": {
+        "description": "Description for noHostsFound"
+    },
     "unknownHost": "Bilinmeyen cihaz",
+    "@unknownHost": {
+        "description": "Description for unknownHost"
+    },
     "os": "İS: {os}",
+    "@os": {
+        "description": "Description for os"
+    },
     "services": "Servisler: {services}",
+    "@services": {
+        "description": "Description for services"
+    },
     "vuln": "Zaafiyet: {vuln}",
+    "@vuln": {
+        "description": "Description for vuln"
+    },
     "reportsSubtitle": "Son tarama oturumunu JSON, HTML veya PDF olarak dışa aktar.",
+    "@reportsSubtitle": {
+        "description": "Description for reportsSubtitle"
+    },
     "noSnapshotAvailable": "Henüz tarama görüntüsü yok. Önce bir Wi-Fi taraması yapın.",
+    "@noSnapshotAvailable": {
+        "description": "Description for noSnapshotAvailable"
+    },
     "latestSnapshot": "Son görüntü: {backend} üzerinden {count} ağ",
+    "@latestSnapshot": {
+        "description": "Description for latestSnapshot"
+    },
     "exportJson": "JSON Dışa Aktar",
+    "@exportJson": {
+        "description": "Description for exportJson"
+    },
     "exportHtml": "HTML Dışa Aktar",
+    "@exportHtml": {
+        "description": "Description for exportHtml"
+    },
     "exportPdf": "PDF Dışa Aktar",
+    "@exportPdf": {
+        "description": "Description for exportPdf"
+    },
     "printPdf": "PDF Yazdır",
+    "@printPdf": {
+        "description": "Description for printPdf"
+    },
     "saveReportDialog": "Raporu kaydet",
+    "@saveReportDialog": {
+        "description": "Description for saveReportDialog"
+    },
     "sectionStatus": "DURUM",
+    "@sectionStatus": {
+        "description": "Description for sectionStatus"
+    },
     "exportOptionsTitle": "DIŞA AKTARIM SEÇENEKLERİ",
+    "@exportOptionsTitle": {
+        "description": "Description for exportOptionsTitle"
+    },
     "latestSnapshotTitle": "SON ANLIK GÖRÜNTÜ",
+    "@latestSnapshotTitle": {
+        "description": "Description for latestSnapshotTitle"
+    },
     "backendLabel": "Arka Uç",
+    "@backendLabel": {
+        "description": "Description for backendLabel"
+    },
     "savePdfReportDialog": "PDF raporunu kaydet",
+    "@savePdfReportDialog": {
+        "description": "Description for savePdfReportDialog"
+    },
     "savedToast": "Kaydedildi: {path}",
+    "@savedToast": {
+        "description": "Description for savedToast"
+    },
     "handshakeCaptureCheck": "Handshake yakalama kontrolü",
+    "@handshakeCaptureCheck": {
+        "description": "Description for handshakeCaptureCheck"
+    },
     "activeDefenseReadiness": "Aktif savunma hazırlığı",
+    "@activeDefenseReadiness": {
+        "description": "Description for activeDefenseReadiness"
+    },
     "signalGraph": "Sinyal Grafiği",
+    "@signalGraph": {
+        "description": "Description for signalGraph"
+    },
     "riskFactors": "RİSK FAKTÖRLERİ",
+    "@riskFactors": {
+        "description": "Description for riskFactors"
+    },
     "vulnerabilities": "ZAFİYETLER",
+    "@vulnerabilities": {
+        "description": "Description for vulnerabilities"
+    },
     "recommendationLabel": "ÖNERİ: {text}",
+    "@recommendationLabel": {
+        "description": "Description for recommendationLabel"
+    },
     "noVulnerabilities": "Mevcut tarama verilerine göre bilinen zafiyet algılanmadı.",
+    "@noVulnerabilities": {
+        "description": "Description for noVulnerabilities"
+    },
     "bssId": "BSSID",
+    "@bssId": {
+        "description": "Description for bssId"
+    },
     "channel": "KANAL",
+    "@channel": {
+        "description": "Description for channel"
+    },
     "security": "GÜVENLİK",
+    "@security": {
+        "description": "Description for security"
+    },
     "signal": "SİNYAL",
+    "@signal": {
+        "description": "Description for signal"
+    },
     "channelRatingTitle": "KANAL PUANLAMASI",
+    "@channelRatingTitle": {
+        "description": "Description for channelRatingTitle"
+    },
     "band24Ghz": "2.4 GHz",
+    "@band24Ghz": {
+        "description": "Description for band24Ghz"
+    },
     "band5Ghz": "5 GHz",
+    "@band5Ghz": {
+        "description": "Description for band5Ghz"
+    },
     "no24GhzChannels": "2.4 GHz kanal algılanmadı.",
+    "@no24GhzChannels": {
+        "description": "Description for no24GhzChannels"
+    },
     "no5GhzChannels": "5 GHz kanal algılanmadı.",
+    "@no5GhzChannels": {
+        "description": "Description for no5GhzChannels"
+    },
     "band6Ghz": "6 GHz",
+    "@band6Ghz": {
+        "description": "Description for band6Ghz"
+    },
     "no6GhzChannels": "6 GHz kanal algılanmadı.",
+    "@no6GhzChannels": {
+        "description": "Description for no6GhzChannels"
+    },
     "recommendedChannel": "ÖNERİLEN KANAL",
+    "@recommendedChannel": {
+        "description": "Description for recommendedChannel"
+    },
     "channelInfo": "Kan {channel} — {frequency} MHz",
+    "@channelInfo": {
+        "description": "Description for channelInfo"
+    },
     "bandChannels": "{band} Kanalları",
+    "@bandChannels": {
+        "description": "Description for bandChannels"
+    },
     "errorLabel": "Hata",
+    "@errorLabel": {
+        "description": "Description for errorLabel"
+    },
     "loading": "Yükleniyor…",
+    "@loading": {
+        "description": "Description for loading"
+    },
     "analyzing": "Analiz ediliyor…",
+    "@analyzing": {
+        "description": "Description for analyzing"
+    },
     "success": "Başarılı",
+    "@success": {
+        "description": "Description for success"
+    },
     "ok": "Tamam",
+    "@ok": {
+        "description": "Description for ok"
+    },
     "scannedNetworksTitle": "Taranan Ağlar",
+    "@scannedNetworksTitle": {
+        "description": "Description for scannedNetworksTitle"
+    },
     "noNetworksFound": "Ağ bulunamadı.",
+    "@noNetworksFound": {
+        "description": "Description for noNetworksFound"
+    },
     "retry": "Tekrar Dene",
+    "@retry": {
+        "description": "Description for retry"
+    },
     "knownNetworks": "Bilinen Ağlar",
+    "@knownNetworks": {
+        "description": "Description for knownNetworks"
+    },
     "noKnownNetworksYet": "Henüz bilinen ağ yok.",
+    "@noKnownNetworksYet": {
+        "description": "Description for noKnownNetworksYet"
+    },
     "opsLabel": "Ops: {ops}",
+    "@opsLabel": {
+        "description": "Description for opsLabel"
+    },
     "networkStatusLabel": "AĞ DURUMU",
+    "@networkStatusLabel": {
+        "description": "Description for networkStatusLabel"
+    },
     "activeSessionLabel": "AKTİF OTURUM",
+    "@activeSessionLabel": {
+        "description": "Description for activeSessionLabel"
+    },
     "gatewayLabel": "GEÇİT",
+    "@gatewayLabel": {
+        "description": "Description for gatewayLabel"
+    },
     "ipLabel": "IP ADRESİ",
+    "@ipLabel": {
+        "description": "Description for ipLabel"
+    },
     "connectedStatusCaps": "BAĞLI",
+    "@connectedStatusCaps": {
+        "description": "Description for connectedStatusCaps"
+    },
     "disconnectedStatusCaps": "BAĞLI DEĞİL",
+    "@disconnectedStatusCaps": {
+        "description": "Description for disconnectedStatusCaps"
+    },
     "quickActionsTitle": "HIZLI İŞLEMLER",
+    "@quickActionsTitle": {
+        "description": "Description for quickActionsTitle"
+    },
     "lastScanTitle": "SON TARAMA",
+    "@lastScanTitle": {
+        "description": "Description for lastScanTitle"
+    },
     "viewDetailsAction": "DETAYLARI GÖR",
+    "@viewDetailsAction": {
+        "description": "Description for viewDetailsAction"
+    },
     "scanning": "TARIYOR…",
+    "@scanning": {
+        "description": "Description for scanning"
+    },
     "secure": "GÜVENLİ",
+    "@secure": {
+        "description": "Description for secure"
+    },
     "blockUnknownAP": "Bilinmeyen AP'leri Engelle",
+    "@blockUnknownAP": {
+        "description": "Description for blockUnknownAP"
+    },
     "automaticBlockMsg": "Rogue AP bağlantılarını otomatik olarak keser",
+    "@automaticBlockMsg": {
+        "description": "Description for automaticBlockMsg"
+    },
     "activeProbingEnabled": "Aktif Sondaj",
+    "@activeProbingEnabled": {
+        "description": "Description for activeProbingEnabled"
+    },
     "activeProbingMsg": "Bağlı AP'leri anomali için periyodik test eder",
+    "@activeProbingMsg": {
+        "description": "Description for activeProbingMsg"
+    },
     "requireConsentForDeauth": "Onay Gerekli",
+    "@requireConsentForDeauth": {
+        "description": "Description for requireConsentForDeauth"
+    },
     "manualAuthorizationMsg": "Deauth/Aktif savunmayı manuel yetkilendir",
+    "@manualAuthorizationMsg": {
+        "description": "Description for manualAuthorizationMsg"
+    },
     "defensePolicy": "Savunma Politikası",
+    "@defensePolicy": {
+        "description": "Description for defensePolicy"
+    },
     "shieldActive": "Kalkan Aktif",
+    "@shieldActive": {
+        "description": "Description for shieldActive"
+    },
     "activeProtection": "Aktif Koruma",
+    "@activeProtection": {
+        "description": "Description for activeProtection"
+    },
     "riskScore": "Risk Puanı",
+    "@riskScore": {
+        "description": "Description for riskScore"
+    },
     "securityRadar": "Güvenlik Radarı",
+    "@securityRadar": {
+        "description": "Description for securityRadar"
+    },
     "profileTitle": "AJAN PROFİLİ",
+    "@profileTitle": {
+        "description": "Description for profileTitle"
+    },
     "agentId": "AJAN_KİMLİĞİ: {id}",
+    "@agentId": {
+        "description": "Description for agentId"
+    },
     "sessionInformation": "OTURUM BİLGİLERİ",
+    "@sessionInformation": {
+        "description": "Description for sessionInformation"
+    },
     "subscriptionStatus": "ABONELİK DURUMU",
+    "@subscriptionStatus": {
+        "description": "Description for subscriptionStatus"
+    },
     "activeSession": "AKTİF OTURUM",
+    "@activeSession": {
+        "description": "Description for activeSession"
+    },
     "logout": "OTURUMU KAPAT",
+    "@logout": {
+        "description": "Description for logout"
+    },
     "logoutConfirmation": "OTURUMU SONLANDIR",
+    "@logoutConfirmation": {
+        "description": "Description for logoutConfirmation"
+    },
     "logoutConfirmMessage": "Mevcut oturumu sonlandırmak istediğinizden emin misiniz? Tüm aktif izlemeler duraklatılacaktır.",
-    "confirm": "Onayla"
+    "@logoutConfirmMessage": {
+        "description": "Description for logoutConfirmMessage"
+    },
+    "confirm": "Onayla",
+    "@confirm": {
+        "description": "Description for confirm"
+    },
+    "livePulse": "CANLI NABIZ",
+    "@livePulse": {
+        "description": "Description for livePulse"
+    },
+    "operationsLabel": "OPERASYONLAR",
+    "@operationsLabel": {
+        "description": "Description for operationsLabel"
+    },
+    "topologyLabel": "TOPOLOJİ",
+    "@topologyLabel": {
+        "description": "Description for topologyLabel"
+    },
+    "accessEngine": "ERİŞİM MOTORU",
+    "@accessEngine": {
+        "description": "Description for accessEngine"
+    },
+    "networkLogs": "AĞ GÜNLÜKLERİ",
+    "@networkLogs": {
+        "description": "Description for networkLogs"
+    },
+    "strictSafetyEnabled": "KATI GÜVENLİK ETKİN",
+    "@strictSafetyEnabled": {
+        "description": "Description for strictSafetyEnabled"
+    },
+    "activeMonitoringProgress": "Aktif izleme devam ediyor",
+    "@activeMonitoringProgress": {
+        "description": "Description for activeMonitoringProgress"
+    },
+    "topologyMapTitle": "TOPOLOJİ HARİTASI",
+    "@topologyMapTitle": {
+        "description": "Description for topologyMapTitle"
+    },
+    "trafficLabel": "TRAFİK",
+    "@trafficLabel": {
+        "description": "Description for trafficLabel"
+    },
+    "forceLabel": "KUVVET",
+    "@forceLabel": {
+        "description": "Description for forceLabel"
+    },
+    "normalSpeed": "NORMAL",
+    "@normalSpeed": {
+        "description": "Description for normalSpeed"
+    },
+    "fastSpeed": "HIZLI",
+    "@fastSpeed": {
+        "description": "Description for fastSpeed"
+    },
+    "overdriveSpeed": "AŞIRI HIZ",
+    "@overdriveSpeed": {
+        "description": "Description for overdriveSpeed"
+    },
+    "noTopologyData": "Topoloji verisi yok",
+    "@noTopologyData": {
+        "description": "Description for noTopologyData"
+    },
+    "runScanFirst": "Önce bir Wi-Fi ve LAN taraması yapın",
+    "@runScanFirst": {
+        "description": "Description for runScanFirst"
+    },
+    "thisDevice": "Bu Cihaz",
+    "@thisDevice": {
+        "description": "Description for thisDevice"
+    },
+    "gatewayDevice": "Ağ Geçidi",
+    "@gatewayDevice": {
+        "description": "Description for gatewayDevice"
+    },
+    "mobileDevice": "Mobil",
+    "@mobileDevice": {
+        "description": "Description for mobileDevice"
+    },
+    "deviceLabel": "Cihaz",
+    "@deviceLabel": {
+        "description": "Description for deviceLabel"
+    },
+    "iotDevice": "IoT",
+    "@iotDevice": {
+        "description": "Description for iotDevice"
+    },
+    "analyzingNode": "DÜĞÜM ANALİZ EDİLİYOR...",
+    "@analyzingNode": {
+        "description": "Description for analyzingNode"
+    },
+    "failedLoadTopology": "Topoloji yüklenemedi: {error}",
+    "@failedLoadTopology": {
+        "description": "Description for failedLoadTopology"
+    },
+    "neuralCoreTitle": "SİNİRSEL_ÇEKİRDEK_AI",
+    "@neuralCoreTitle": {
+        "description": "Description for neuralCoreTitle"
+    },
+    "simulatedLabel": "SİMÜLASYON",
+    "@simulatedLabel": {
+        "description": "Description for simulatedLabel"
+    },
+    "activeAnomalies": "AKTİF ANOMALİLER",
+    "@activeAnomalies": {
+        "description": "Description for activeAnomalies"
+    },
+    "predictiveHealth": "TAHMİNİ SAĞLIK",
+    "@predictiveHealth": {
+        "description": "Description for predictiveHealth"
+    },
+    "aiStrategyReport": "AI STRATEJİ RAPORU",
+    "@aiStrategyReport": {
+        "description": "Description for aiStrategyReport"
+    },
+    "engineStability": "MOTOR_KARARLILIĞI: OPTİMAL",
+    "@engineStability": {
+        "description": "Description for engineStability"
+    },
+    "aiStrategyText": "Mevcut ağ topolojisi stabil bir imza öneriyor. Alt ağlarda anlık yatay hareket tespit edilmedi. Pasif düğüm keşfini azaltmak için genel erişim noktalarında Gizli Mod etkinleştirilmesi önerilir.",
+    "@aiStrategyText": {
+        "description": "Description for aiStrategyText"
+    },
+    "packetSnifferTitle": "PAKET_YAKALAYICI",
+    "@packetSnifferTitle": {
+        "description": "Description for packetSnifferTitle"
+    },
+    "simulatedLogStream": "SİMÜLE_KAYIT_AKIŞI",
+    "@simulatedLogStream": {
+        "description": "Description for simulatedLogStream"
+    },
+    "streamPaused": "AKIŞ_DURAKLATILDI",
+    "@streamPaused": {
+        "description": "Description for streamPaused"
+    },
+    "filterNone": "FİLTRE: YOK",
+    "@filterNone": {
+        "description": "Description for filterNone"
+    },
+    "totalPackets": "TOPLAM_PKT",
+    "@totalPackets": {
+        "description": "Description for totalPackets"
+    },
+    "droppedLabel": "DÜŞÜRÜLEN",
+    "@droppedLabel": {
+        "description": "Description for droppedLabel"
+    },
+    "bufferLabel": "TAMPON",
+    "@bufferLabel": {
+        "description": "Description for bufferLabel"
+    },
+    "latencyLabel": "GECİKME",
+    "@latencyLabel": {
+        "description": "Description for latencyLabel"
+    },
+    "activeMonitoring": "AKTİF İZLEME",
+    "@activeMonitoring": {
+        "description": "Description for activeMonitoring"
+    },
+    "deactivate": "DEVRE DIŞI BIRAK",
+    "@deactivate": {
+        "description": "Description for deactivate"
+    },
+    "initializeLink": "BAĞLANTIYI BAŞLAT",
+    "@initializeLink": {
+        "description": "Description for initializeLink"
+    },
+    "commandCenters": "KOMUTA MERKEZLERİ",
+    "@commandCenters": {
+        "description": "Description for commandCenters"
+    },
+    "defenseTitle": "SAVUNMA",
+    "@defenseTitle": {
+        "description": "Description for defenseTitle"
+    },
+    "activeShielding": "Aktif Kalkan",
+    "@activeShielding": {
+        "description": "Description for activeShielding"
+    },
+    "logisticsTitle": "LOJİSTİK",
+    "@logisticsTitle": {
+        "description": "Description for logisticsTitle"
+    },
+    "intelMetrics": "İstihbarat & Metrikler",
+    "@intelMetrics": {
+        "description": "Description for intelMetrics"
+    },
+    "networkMesh": "Ağ Mesh",
+    "@networkMesh": {
+        "description": "Description for networkMesh"
+    },
+    "tuningTitle": "AYARLAMA",
+    "@tuningTitle": {
+        "description": "Description for tuningTitle"
+    },
+    "systemConfig": "Sistem Yapılandırması",
+    "@systemConfig": {
+        "description": "Description for systemConfig"
+    },
+    "technicalTools": "TEKNİK ARAÇLAR",
+    "@technicalTools": {
+        "description": "Description for technicalTools"
+    },
+    "packetLogs": "PAKET GÜNLÜKLERİ",
+    "@packetLogs": {
+        "description": "Description for packetLogs"
+    },
+    "aiInsights": "AI İÇGÖRÜLER",
+    "@aiInsights": {
+        "description": "Description for aiInsights"
+    },
+    "interactiveSimulation": "ETKİLEŞİMLİ_SİMÜLASYON",
+    "@interactiveSimulation": {
+        "description": "Description for interactiveSimulation"
+    },
+    "appearance": "GÖRÜNÜM",
+    "@appearance": {
+        "description": "Description for appearance"
+    },
+    "theme": "Tema",
+    "@theme": {
+        "description": "Description for theme"
+    },
+    "darkTheme": "Koyu",
+    "@darkTheme": {
+        "description": "Description for darkTheme"
+    },
+    "lightTheme": "Açık",
+    "@lightTheme": {
+        "description": "Description for lightTheme"
+    },
+    "systemTheme": "Sistem",
+    "@systemTheme": {
+        "description": "Description for systemTheme"
+    },
+    "biometricData": "BİYOMETRİK VERİ",
+    "@biometricData": {
+        "description": "Description for biometricData"
+    },
+    "neuralSync": "Sinirsel Senkron",
+    "@neuralSync": {
+        "description": "Description for neuralSync"
+    },
+    "encryptionKey": "Şifreleme Anahtarı",
+    "@encryptionKey": {
+        "description": "Description for encryptionKey"
+    },
+    "systemStatus": "SİSTEM DURUMU",
+    "@systemStatus": {
+        "description": "Description for systemStatus"
+    }
 }

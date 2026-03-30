@@ -13,6 +13,7 @@ import '../../../settings/presentation/pages/settings_page.dart';
 import '../../../monitoring/presentation/pages/topology_page.dart';
 import '../../../monitoring/presentation/pages/packet_logs_page.dart';
 import '../../../monitoring/presentation/pages/ai_insights_page.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 
 class OperationsHubPage extends StatefulWidget {
   const OperationsHubPage({
@@ -42,6 +43,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
       child: Scaffold(
         body: BlocBuilder<MonitoringBloc, MonitoringState>(
           builder: (context, state) {
+            final l10n = AppLocalizations.of(context)!;
             double downloadMbps = 0;
             double uploadMbps = 0;
             bool isActive = false;
@@ -62,7 +64,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                 StaggeredEntry(
                   delay: const Duration(milliseconds: 50),
                   child: NeonSectionHeader(
-                    label: 'ACTIVE MONITORING',
+                    label: l10n.activeMonitoring,
                     icon: Icons.radar_rounded,
                     color: AppColors.neonCyan,
                   ),
@@ -88,7 +90,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              isActive ? 'DEACTIVATE' : 'INITIALIZE LINK',
+                              isActive ? l10n.deactivate : l10n.initializeLink,
                               style: GoogleFonts.orbitron(
                                 color: isActive ? AppColors.neonRed : AppColors.neonCyan,
                                 fontSize: 10,
@@ -118,7 +120,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                 StaggeredEntry(
                   delay: const Duration(milliseconds: 200),
                   child: NeonSectionHeader(
-                    label: 'COMMAND CENTERS',
+                    label: l10n.commandCenters,
                     icon: Icons.hub_rounded,
                     color: AppColors.neonPurple,
                   ),
@@ -134,8 +136,8 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                   childAspectRatio: 1.15,
                   children: [
                     _OperationCard(
-                      title: 'DEFENSE',
-                      subtitle: 'Active Shielding',
+                      title: l10n.defenseTitle,
+                      subtitle: l10n.activeShielding,
                       icon: Icons.shield_rounded,
                       color: AppColors.neonRed,
                       onTap: () => Navigator.of(context).push(
@@ -144,8 +146,8 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       delay: 300,
                     ),
                     _OperationCard(
-                      title: 'LOGISTICS',
-                      subtitle: 'Intel & Metrics',
+                      title: l10n.logisticsTitle,
+                      subtitle: l10n.intelMetrics,
                       icon: Icons.analytics_outlined,
                       color: AppColors.neonOrange,
                       onTap: () => Navigator.of(context).push(
@@ -154,8 +156,8 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       delay: 400,
                     ),
                     _OperationCard(
-                      title: 'TOPOLOGY',
-                      subtitle: 'Network Mesh',
+                      title: l10n.topologyLabel,
+                      subtitle: l10n.networkMesh,
                       icon: Icons.device_hub_rounded,
                       color: AppColors.neonGreen,
                       onTap: () => Navigator.of(context).push(
@@ -164,8 +166,8 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       delay: 500,
                     ),
                     _OperationCard(
-                      title: 'TUNING',
-                      subtitle: 'System Config',
+                      title: l10n.tuningTitle,
+                      subtitle: l10n.systemConfig,
                       icon: Icons.settings_suggest_rounded,
                       color: AppColors.neonCyan,
                       onTap: () => Navigator.of(context).push(
@@ -182,7 +184,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                 StaggeredEntry(
                   delay: const Duration(milliseconds: 700),
                   child: NeonSectionHeader(
-                    label: 'TECHNICAL TOOLS',
+                    label: l10n.technicalTools,
                     icon: Icons.terminal_rounded,
                     color: AppColors.neonCyan.withValues(alpha: 0.5),
                   ),
@@ -198,10 +200,11 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
   }
 
   Widget _buildAdvancedTools() {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         _ToolTile(
-          label: 'PACKET LOGS',
+          label: l10n.packetLogs,
           icon: Icons.list_alt_rounded,
           color: AppColors.neonPurple,
           delay: 750,
@@ -211,7 +214,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
         ),
         const SizedBox(height: 12),
         _ToolTile(
-          label: 'AI INSIGHTS',
+          label: l10n.aiInsights,
           icon: Icons.psychology_rounded,
           color: AppColors.neonGreen,
           delay: 850,
@@ -336,7 +339,7 @@ class _ToolTile extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'INTERACTIVE_SIMULATION',
+                  AppLocalizations.of(context)!.interactiveSimulation,
                   style: GoogleFonts.shareTechMono(
                     color: color.withValues(alpha: 0.4),
                     fontSize: 8,

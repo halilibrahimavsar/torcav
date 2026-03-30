@@ -531,4 +531,189 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get logoutConfirmMessage => 'Are you sure you want to terminate the current session? All active monitoring will be paused.';
+
+  @override
+  String get livePulse => 'LIVE PULSE';
+
+  @override
+  String get operationsLabel => 'OPERATIONS';
+
+  @override
+  String get topologyLabel => 'TOPOLOGY';
+
+  @override
+  String get accessEngine => 'ACCESS ENGINE';
+
+  @override
+  String get networkLogs => 'NETWORK LOGS';
+
+  @override
+  String get strictSafetyEnabled => 'STRICT SAFETY ENABLED';
+
+  @override
+  String get activeMonitoringProgress => 'Active monitoring in progress';
+
+  @override
+  String get topologyMapTitle => 'TOPOLOGY MAP';
+
+  @override
+  String get trafficLabel => 'TRAFFIC';
+
+  @override
+  String get forceLabel => 'FORCE';
+
+  @override
+  String get normalSpeed => 'NORMAL';
+
+  @override
+  String get fastSpeed => 'FAST';
+
+  @override
+  String get overdriveSpeed => 'OVERDRIVE';
+
+  @override
+  String get noTopologyData => 'No topology data';
+
+  @override
+  String get runScanFirst => 'Run a Wi-Fi and LAN scan first';
+
+  @override
+  String get thisDevice => 'This Device';
+
+  @override
+  String get gatewayDevice => 'Gateway';
+
+  @override
+  String get mobileDevice => 'Mobile';
+
+  @override
+  String get deviceLabel => 'Device';
+
+  @override
+  String get iotDevice => 'IoT';
+
+  @override
+  String get analyzingNode => 'ANALYZING NODE...';
+
+  @override
+  String failedLoadTopology(Object error) {
+    return 'Failed to load topology: $error';
+  }
+
+  @override
+  String get neuralCoreTitle => 'NEURAL_CORE_AI';
+
+  @override
+  String get simulatedLabel => 'SIMULATED';
+
+  @override
+  String get activeAnomalies => 'ACTIVE ANOMALIES';
+
+  @override
+  String get predictiveHealth => 'PREDICTIVE HEALTH';
+
+  @override
+  String get aiStrategyReport => 'AI STRATEGY REPORT';
+
+  @override
+  String get engineStability => 'ENGINE_STABILITY: OPTIMAL';
+
+  @override
+  String get aiStrategyText => 'Current network topology suggests a stable signature. No immediate horizontal movement detected in subnets. Recommend enabling Stealth Mode on public access points to mitigate passive node discovery.';
+
+  @override
+  String get packetSnifferTitle => 'PACKET_SNIFFER';
+
+  @override
+  String get simulatedLogStream => 'SIMULATED_LOG_STREAM';
+
+  @override
+  String get streamPaused => 'STREAM_PAUSED';
+
+  @override
+  String get filterNone => 'FILTER: NONE';
+
+  @override
+  String get totalPackets => 'TOTAL_PKTS';
+
+  @override
+  String get droppedLabel => 'DROPPED';
+
+  @override
+  String get bufferLabel => 'BUFFER';
+
+  @override
+  String get latencyLabel => 'LATENCY';
+
+  @override
+  String get activeMonitoring => 'ACTIVE MONITORING';
+
+  @override
+  String get deactivate => 'DEACTIVATE';
+
+  @override
+  String get initializeLink => 'INITIALIZE LINK';
+
+  @override
+  String get commandCenters => 'COMMAND CENTERS';
+
+  @override
+  String get defenseTitle => 'DEFENSE';
+
+  @override
+  String get activeShielding => 'Active Shielding';
+
+  @override
+  String get logisticsTitle => 'LOGISTICS';
+
+  @override
+  String get intelMetrics => 'Intel & Metrics';
+
+  @override
+  String get networkMesh => 'Network Mesh';
+
+  @override
+  String get tuningTitle => 'TUNING';
+
+  @override
+  String get systemConfig => 'System Config';
+
+  @override
+  String get technicalTools => 'TECHNICAL TOOLS';
+
+  @override
+  String get packetLogs => 'PACKET LOGS';
+
+  @override
+  String get aiInsights => 'AI INSIGHTS';
+
+  @override
+  String get interactiveSimulation => 'INTERACTIVE_SIMULATION';
+
+  @override
+  String get appearance => 'APPEARANCE';
+
+  @override
+  String get theme => 'Theme';
+
+  @override
+  String get darkTheme => 'Dark';
+
+  @override
+  String get lightTheme => 'Light';
+
+  @override
+  String get systemTheme => 'System';
+
+  @override
+  String get biometricData => 'BIOMETRIC DATA';
+
+  @override
+  String get neuralSync => 'Neural Sync';
+
+  @override
+  String get encryptionKey => 'Encryption Key';
+
+  @override
+  String get systemStatus => 'SYSTEM STATUS';
 }

@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 
 class AIInsightsPage extends StatelessWidget {
   const AIInsightsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.darkBackground,
       appBar: AppBar(
         title: Row(
           children: [
-            const Text('NEURAL_CORE_AI'),
+            Text(l10n.neuralCoreTitle),
             const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -23,7 +25,7 @@ class AIInsightsPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
-                'SIMULATED',
+                l10n.simulatedLabel,
                 style: GoogleFonts.shareTechMono(
                   color: AppColors.neonPurple,
                   fontSize: 8,
@@ -44,12 +46,12 @@ class AIInsightsPage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
         children: [
           // ── AI Engine Status ──
-          _buildEngineStatus(),
+          _buildEngineStatus(context),
           const SizedBox(height: 24),
           
           // ── Active Anomalies ──
           NeonSectionHeader(
-            label: 'ACTIVE ANOMALIES',
+            label: l10n.activeAnomalies,
             icon: Icons.priority_high_rounded,
             color: AppColors.neonRed,
           ),
@@ -74,7 +76,7 @@ class AIInsightsPage extends StatelessWidget {
           
           // ── Network Health ──
           NeonSectionHeader(
-            label: 'PREDICTIVE_HEALTH',
+            label: l10n.predictiveHealth,
             icon: Icons.query_stats_rounded,
             color: AppColors.neonCyan,
           ),
@@ -111,7 +113,7 @@ class AIInsightsPage extends StatelessWidget {
                     const Icon(Icons.psychology_rounded, color: AppColors.neonPurple, size: 20),
                     const SizedBox(width: 10),
                     Text(
-                      'AI_STRATEGY_REPORT',
+                      l10n.aiStrategyReport,
                       style: GoogleFonts.orbitron(
                         color: AppColors.neonPurple,
                         fontSize: 11,
@@ -123,7 +125,7 @@ class AIInsightsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Current network topology suggests a stable signature. No immediate horizontal movement detected in subnets. Recommend enabling "Stealth Mode" on public access points to mitigate passive node discovery.',
+                  l10n.aiStrategyText,
                   style: GoogleFonts.rajdhani(
                     color: AppColors.textSecondary,
                     fontSize: 13,
@@ -138,7 +140,8 @@ class AIInsightsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildEngineStatus() {
+  Widget _buildEngineStatus(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GlassmorphicContainer(
       padding: const EdgeInsets.all(20),
       borderColor: AppColors.neonCyan.withValues(alpha: 0.2),
@@ -152,7 +155,7 @@ class AIInsightsPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'ENGINE_STABILITY: OPTIMAL',
+                  l10n.engineStability,
                   style: GoogleFonts.shareTechMono(
                     color: AppColors.neonCyan,
                     fontSize: 12,

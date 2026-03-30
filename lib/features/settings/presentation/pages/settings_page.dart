@@ -31,7 +31,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       appBar: AppBar(
         title: NeonText(
-          'SETTINGS',
+          l10n.settingsTitle,
           style: GoogleFonts.orbitron(
             color: AppColors.neonCyan,
             fontSize: 16,
@@ -48,7 +48,7 @@ class _SettingsPageState extends State<SettingsPage> {
           StaggeredEntry(
             delay: const Duration(milliseconds: 100),
             child: NeonSectionHeader(
-              label: 'APPEARANCE',
+              label: l10n.appearance,
               icon: Icons.palette_rounded,
               color: AppColors.neonPurple,
             ),
@@ -131,7 +131,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Theme',
+                              l10n.theme,
                               style: GoogleFonts.rajdhani(
                                 color: AppColors.textPrimary,
                                 fontSize: 15,
@@ -139,7 +139,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               ),
                             ),
                             Text(
-                              _getThemeName(mode),
+                              _getThemeName(mode, l10n),
                               style: GoogleFonts.rajdhani(
                                 color: AppColors.textMuted,
                                 fontSize: 13,
@@ -353,11 +353,11 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  String _getThemeName(ThemeMode mode) {
+  String _getThemeName(ThemeMode mode, AppLocalizations l10n) {
     return switch (mode) {
-      ThemeMode.dark => 'Dark',
-      ThemeMode.light => 'Light',
-      ThemeMode.system => 'System',
+      ThemeMode.dark => l10n.darkTheme,
+      ThemeMode.light => l10n.lightTheme,
+      ThemeMode.system => l10n.systemTheme,
     };
   }
 

@@ -164,6 +164,22 @@ class _NeonGlowBoxState extends State<NeonGlowBox>
 
   @override
   Widget build(BuildContext context) {
+    // Static glow when reduced motion is preferred
+    if (MediaQuery.of(context).disableAnimations) {
+      return Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: widget.glowColor.withValues(alpha: widget.minOpacity),
+              blurRadius: 30,
+              spreadRadius: 4,
+            ),
+          ],
+        ),
+        child: widget.child,
+      );
+    }
+
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
@@ -268,6 +284,18 @@ class _PulsingDotState extends State<PulsingDot>
 
   @override
   Widget build(BuildContext context) {
+    // Static dot when reduced motion is preferred
+    if (MediaQuery.of(context).disableAnimations) {
+      return Container(
+        width: widget.size,
+        height: widget.size,
+        decoration: BoxDecoration(
+          color: widget.color,
+          shape: BoxShape.circle,
+        ),
+      );
+    }
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, _) {
@@ -464,6 +492,11 @@ class _StaggeredEntryState extends State<StaggeredEntry>
 
   @override
   Widget build(BuildContext context) {
+    // Skip animation when reduced motion is preferred
+    if (MediaQuery.of(context).disableAnimations) {
+      return widget.child;
+    }
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {

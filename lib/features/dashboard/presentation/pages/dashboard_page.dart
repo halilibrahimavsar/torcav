@@ -65,7 +65,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
@@ -125,10 +125,10 @@ class _DashboardPageState extends State<DashboardPage> {
             // ── System Metrics Strip ──
             StaggeredEntry(
               delay: const Duration(milliseconds: 300),
-              child: const Padding(
-                padding: EdgeInsets.only(bottom: 16),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 16),
                 child: NeonSectionHeader(
-                  label: 'LIVE PULSE',
+                  label: l10n.livePulse,
                   color: AppColors.neonCyan,
                   icon: Icons.monitor_heart_rounded,
                 ),
@@ -146,14 +146,14 @@ class _DashboardPageState extends State<DashboardPage> {
                 _QuickAction(
                   index: 0,
                   icon: Icons.hub_rounded,
-                  label: 'OPERATIONS',
+                  label: l10n.operationsLabel,
                   color: AppColors.neonPurple,
                   onTap: () => widget.onNavigate('operations'),
                 ),
                 _QuickAction(
                   index: 1,
                   icon: Icons.device_hub_rounded,
-                  label: 'TOPOLOGY',
+                  label: l10n.topologyLabel,
                   color: AppColors.neonGreen,
                   onTap: () => widget.onNavigate('monitor/topology'),
                 ),
@@ -165,10 +165,10 @@ class _DashboardPageState extends State<DashboardPage> {
             // ── Recent Activity Section ──
             StaggeredEntry(
               delay: const Duration(milliseconds: 700),
-              child: const Padding(
-                padding: EdgeInsets.only(bottom: 16),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 16),
                 child: NeonSectionHeader(
-                  label: 'NETWORK LOGS',
+                  label: l10n.networkLogs,
                   color: AppColors.neonGreen,
                 ),
               ),
@@ -396,7 +396,7 @@ class _QuickAction extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'ACCESS ENGINE', // Thematic flavor text
+                          AppLocalizations.of(context)!.accessEngine,
                           style: GoogleFonts.orbitron(
                             color: color.withValues(alpha: 0.5),
                             fontSize: 8,
@@ -455,7 +455,7 @@ class _LastScanStrip extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'LATEST SNAPSHOT',
+                  l10n.latestSnapshotTitle,
                   style: GoogleFonts.orbitron(
                     color: AppColors.neonGreen.withValues(alpha: 0.7),
                     fontSize: 8,
@@ -512,7 +512,7 @@ class _SafetyBadge extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'STRICT SAFETY ENABLED',
+                    AppLocalizations.of(context)!.strictSafetyEnabled,
                     style: GoogleFonts.orbitron(
                       color: AppColors.textPrimary,
                       fontSize: 10,
@@ -520,7 +520,7 @@ class _SafetyBadge extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Active monitoring in progress',
+                    AppLocalizations.of(context)!.activeMonitoringProgress,
                     style: GoogleFonts.rajdhani(
                       color: AppColors.textMuted,
                       fontSize: 12,

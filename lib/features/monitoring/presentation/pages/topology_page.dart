@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../widgets/topology_graph_painter.dart';
 import '../../../network_scan/domain/entities/network_device.dart';
@@ -98,7 +99,7 @@ class _TopologyPageState extends State<TopologyPage>
         setState(() => _loading = false);
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Failed to load topology: $e')));
+        ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.failedLoadTopology(e.toString()))));
       }
     }
   }
@@ -150,14 +151,14 @@ class _TopologyPageState extends State<TopologyPage>
           icon: Icons.traffic_outlined,
           active: _showTraffic,
           onTap: () => setState(() => _showTraffic = !_showTraffic),
-          label: 'TRAFFIC',
+          label: AppLocalizations.of(context)!.trafficLabel,
         ),
         const SizedBox(height: 12),
         _controlButton(
           icon: Icons.auto_graph_outlined,
           active: _forceView,
           onTap: () => setState(() => _forceView = !_forceView),
-          label: 'FORCE',
+          label: AppLocalizations.of(context)!.forceLabel,
         ),
         const SizedBox(height: 12),
         _controlButton(
@@ -174,7 +175,7 @@ class _TopologyPageState extends State<TopologyPage>
               }
             });
           },
-          label: _flowSpeed == 1.0 ? 'NORMAL' : _flowSpeed == 2.5 ? 'FAST' : 'OVERDRIVE',
+          label: _flowSpeed == 1.0 ? AppLocalizations.of(context)!.normalSpeed : _flowSpeed == 2.5 ? AppLocalizations.of(context)!.fastSpeed : AppLocalizations.of(context)!.overdriveSpeed,
         ),
       ],
     );
@@ -234,7 +235,7 @@ class _TopologyPageState extends State<TopologyPage>
                     const Icon(Icons.hub_outlined, color: AppColors.neonCyan, size: 18),
                     const SizedBox(width: 10),
                     Text(
-                      'TOPOLOGY MAP v1.0',
+                      AppLocalizations.of(context)!.topologyMapTitle,
                       style: GoogleFonts.orbitron(
                         color: Colors.white,
                         fontSize: 12,
@@ -272,7 +273,7 @@ class _TopologyPageState extends State<TopologyPage>
           ),
           const SizedBox(height: 16),
           Text(
-            'No topology data',
+            AppLocalizations.of(context)!.noTopologyData,
             style: GoogleFonts.rajdhani(
               color: Colors.white.withValues(alpha: 0.6),
               fontSize: 18,
@@ -281,11 +282,18 @@ class _TopologyPageState extends State<TopologyPage>
           ),
           const SizedBox(height: 8),
           Text(
-            'Run a Wi-Fi and LAN scan first',
+            AppLocalizations.of(context)!.runScanFirst,
             style: GoogleFonts.rajdhani(
               color: Colors.white.withValues(alpha: 0.4),
               fontSize: 14,
             ),
+          ),
+          const SizedBox(height: 24),
+          NeonButton(
+            onPressed: _loadTopology,
+            label: AppLocalizations.of(context)!.retry,
+            icon: Icons.refresh_rounded,
+            color: AppColors.neonCyan,
           ),
         ],
       ),
@@ -345,11 +353,11 @@ class _TopologyPageState extends State<TopologyPage>
           spacing: 16,
           runSpacing: 8,
           children: [
-            _legendItem(const Color(0xFF00FF9F), 'This Device'),
-            _legendItem(const Color(0xFF00D1FF), 'Gateway'),
-            _legendItem(const Color(0xFFFF0060), 'Mobile'),
-            _legendItem(const Color(0xFF7209B7), 'Device'),
-            _legendItem(const Color(0xFFB5179E), 'IoT'),
+            _legendItem(const Color(0xFF00FF9F), AppLocalizations.of(context)!.thisDevice),
+            _legendItem(const Color(0xFF00D1FF), AppLocalizations.of(context)!.gatewayDevice),
+            _legendItem(const Color(0xFFFF0060), AppLocalizations.of(context)!.mobileDevice),
+            _legendItem(const Color(0xFF7209B7), AppLocalizations.of(context)!.deviceLabel),
+            _legendItem(const Color(0xFFB5179E), AppLocalizations.of(context)!.iotDevice),
           ],
         ),
       ),
@@ -521,7 +529,7 @@ class _TopologyPageState extends State<TopologyPage>
                       const CircularProgressIndicator(strokeWidth: 2, color: AppColors.neonCyan),
                       const SizedBox(height: 16),
                       Text(
-                          'ANALYZING NODE...',
+                          AppLocalizations.of(context)!.analyzingNode,
                           style: GoogleFonts.orbitron(
                               color: AppColors.neonCyan,
                               fontSize: 12,

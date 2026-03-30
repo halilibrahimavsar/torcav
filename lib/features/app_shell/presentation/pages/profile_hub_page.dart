@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/l10n/generated/app_localizations.dart';
@@ -113,7 +111,7 @@ class ProfileHubPage extends StatelessWidget {
             const SizedBox(height: 32),
 
             // Security Posture / Bio-metrics placeholder
-            _buildSectionHeader(context, 'BIOMETRIC_DATA'),
+            _buildSectionHeader(context, l10n.biometricData),
             const SizedBox(height: 16),
             HolographicCard(
               child: Padding(
@@ -122,14 +120,14 @@ class ProfileHubPage extends StatelessWidget {
                   children: [
                     _buildInfoRow(
                       context,
-                      'Neural Sync',
+                      l10n.neuralSync,
                       '98.2%',
                       Icons.psychology_outlined,
                     ),
                     const Divider(height: 24),
                     _buildInfoRow(
                       context,
-                      'Encryption Key',
+                      l10n.encryptionKey,
                       'AES-256-GCM',
                       Icons.vpn_key_outlined,
                     ),

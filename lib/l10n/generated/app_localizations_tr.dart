@@ -108,10 +108,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get navLan => 'LAN';
 
   @override
-  String get navDiscovery => 'Discovery';
+  String get navDiscovery => 'Keşif';
 
   @override
-  String get navOperations => 'Operations';
+  String get navOperations => 'Operasyonlar';
 
   @override
   String get navMore => 'Daha Fazla';
@@ -531,4 +531,189 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get logoutConfirmMessage => 'Mevcut oturumu sonlandırmak istediğinizden emin misiniz? Tüm aktif izlemeler duraklatılacaktır.';
+
+  @override
+  String get livePulse => 'CANLI NABIZ';
+
+  @override
+  String get operationsLabel => 'OPERASYONLAR';
+
+  @override
+  String get topologyLabel => 'TOPOLOJİ';
+
+  @override
+  String get accessEngine => 'ERİŞİM MOTORU';
+
+  @override
+  String get networkLogs => 'AĞ GÜNLÜKLERİ';
+
+  @override
+  String get strictSafetyEnabled => 'KATI GÜVENLİK ETKİN';
+
+  @override
+  String get activeMonitoringProgress => 'Aktif izleme devam ediyor';
+
+  @override
+  String get topologyMapTitle => 'TOPOLOJİ HARİTASI';
+
+  @override
+  String get trafficLabel => 'TRAFİK';
+
+  @override
+  String get forceLabel => 'KUVVET';
+
+  @override
+  String get normalSpeed => 'NORMAL';
+
+  @override
+  String get fastSpeed => 'HIZLI';
+
+  @override
+  String get overdriveSpeed => 'AŞIRI HIZ';
+
+  @override
+  String get noTopologyData => 'Topoloji verisi yok';
+
+  @override
+  String get runScanFirst => 'Önce bir Wi-Fi ve LAN taraması yapın';
+
+  @override
+  String get thisDevice => 'Bu Cihaz';
+
+  @override
+  String get gatewayDevice => 'Ağ Geçidi';
+
+  @override
+  String get mobileDevice => 'Mobil';
+
+  @override
+  String get deviceLabel => 'Cihaz';
+
+  @override
+  String get iotDevice => 'IoT';
+
+  @override
+  String get analyzingNode => 'DÜĞÜM ANALİZ EDİLİYOR...';
+
+  @override
+  String failedLoadTopology(Object error) {
+    return 'Topoloji yüklenemedi: $error';
+  }
+
+  @override
+  String get neuralCoreTitle => 'SİNİRSEL_ÇEKİRDEK_AI';
+
+  @override
+  String get simulatedLabel => 'SİMÜLASYON';
+
+  @override
+  String get activeAnomalies => 'AKTİF ANOMALİLER';
+
+  @override
+  String get predictiveHealth => 'TAHMİNİ SAĞLIK';
+
+  @override
+  String get aiStrategyReport => 'AI STRATEJİ RAPORU';
+
+  @override
+  String get engineStability => 'MOTOR_KARARLILIĞI: OPTİMAL';
+
+  @override
+  String get aiStrategyText => 'Mevcut ağ topolojisi stabil bir imza öneriyor. Alt ağlarda anlık yatay hareket tespit edilmedi. Pasif düğüm keşfini azaltmak için genel erişim noktalarında Gizli Mod etkinleştirilmesi önerilir.';
+
+  @override
+  String get packetSnifferTitle => 'PAKET_YAKALAYICI';
+
+  @override
+  String get simulatedLogStream => 'SİMÜLE_KAYIT_AKIŞI';
+
+  @override
+  String get streamPaused => 'AKIŞ_DURAKLATILDI';
+
+  @override
+  String get filterNone => 'FİLTRE: YOK';
+
+  @override
+  String get totalPackets => 'TOPLAM_PKT';
+
+  @override
+  String get droppedLabel => 'DÜŞÜRÜLEN';
+
+  @override
+  String get bufferLabel => 'TAMPON';
+
+  @override
+  String get latencyLabel => 'GECİKME';
+
+  @override
+  String get activeMonitoring => 'AKTİF İZLEME';
+
+  @override
+  String get deactivate => 'DEVRE DIŞI BIRAK';
+
+  @override
+  String get initializeLink => 'BAĞLANTIYI BAŞLAT';
+
+  @override
+  String get commandCenters => 'KOMUTA MERKEZLERİ';
+
+  @override
+  String get defenseTitle => 'SAVUNMA';
+
+  @override
+  String get activeShielding => 'Aktif Kalkan';
+
+  @override
+  String get logisticsTitle => 'LOJİSTİK';
+
+  @override
+  String get intelMetrics => 'İstihbarat & Metrikler';
+
+  @override
+  String get networkMesh => 'Ağ Mesh';
+
+  @override
+  String get tuningTitle => 'AYARLAMA';
+
+  @override
+  String get systemConfig => 'Sistem Yapılandırması';
+
+  @override
+  String get technicalTools => 'TEKNİK ARAÇLAR';
+
+  @override
+  String get packetLogs => 'PAKET GÜNLÜKLERİ';
+
+  @override
+  String get aiInsights => 'AI İÇGÖRÜLER';
+
+  @override
+  String get interactiveSimulation => 'ETKİLEŞİMLİ_SİMÜLASYON';
+
+  @override
+  String get appearance => 'GÖRÜNÜM';
+
+  @override
+  String get theme => 'Tema';
+
+  @override
+  String get darkTheme => 'Koyu';
+
+  @override
+  String get lightTheme => 'Açık';
+
+  @override
+  String get systemTheme => 'Sistem';
+
+  @override
+  String get biometricData => 'BİYOMETRİK VERİ';
+
+  @override
+  String get neuralSync => 'Sinirsel Senkron';
+
+  @override
+  String get encryptionKey => 'Şifreleme Anahtarı';
+
+  @override
+  String get systemStatus => 'SİSTEM DURUMU';
 }
