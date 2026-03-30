@@ -9,8 +9,7 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get activeOperationsBlockedMsg =>
-      'Etkin operasyonlar, politika ve izin listesi koşulları sağlanmadıkça engellenir.';
+  String get activeOperationsBlockedMsg => 'Etkin operasyonlar, politika ve izin listesi koşulları sağlanmadıkça engellenir.';
 
   @override
   String get authorizedTargets => 'Yetkili Hedefler';
@@ -67,8 +66,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get strictAllowlist => 'Katı izin listesi';
 
   @override
-  String get blockActiveOpsUnknown =>
-      'Bilinmeyen hedefler için aktif operasyonları engelle';
+  String get blockActiveOpsUnknown => 'Bilinmeyen hedefler için aktif operasyonları engelle';
 
   @override
   String get rateLimitActiveOps => 'Operasyonlar arası bekleme';
@@ -80,8 +78,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsLanguage => 'Dil';
 
   @override
-  String get settingsScanBehavior =>
-      'Varsayılan tarama davranışı, arka uç stratejisi ve güvenlik durumu.';
+  String get settingsScanBehavior => 'Varsayılan tarama davranışı, arka uç stratejisi ve güvenlik durumu.';
 
   @override
   String get settingsDefaultScanPasses => 'Varsayılan tarama geçişleri';
@@ -93,15 +90,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsBackendPreference => 'Varsayılan arka uç tercihi';
 
   @override
-  String get settingsIncludeHidden =>
-      'Varsayılan olarak gizli SSID\'leri dahil et';
+  String get settingsIncludeHidden => 'Varsayılan olarak gizli SSID\'leri dahil et';
 
   @override
   String get settingsStrictSafety => 'Katı güvenlik modu';
 
   @override
-  String get settingsStrictSafetyDesc =>
-      'Aktif operasyonlar için onay + izin listesi gerektir';
+  String get settingsStrictSafetyDesc => 'Aktif operasyonlar için onay + izin listesi gerektir';
 
   @override
   String get navDashboard => 'Panel';
@@ -137,8 +132,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get securityCenterTitle => 'Güvenlik Merkezi';
 
   @override
-  String get securityCenterDesc =>
-      'Risk puanlama, izin listeleri ve politika denetimleri';
+  String get securityCenterDesc => 'Risk puanlama, izin listeleri ve politika denetimleri';
 
   @override
   String get reportsTitle => 'Raporlar';
@@ -159,8 +153,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get monitoringTitle => 'İzleme';
 
   @override
-  String get monitoringSubtitle =>
-      'Bant genişliği, anomali tespiti ve ısı haritası akışları.';
+  String get monitoringSubtitle => 'Bant genişliği, anomali tespiti ve ısı haritası akışları.';
 
   @override
   String get comingSoon => 'ÇOK YAKINDA';
@@ -298,12 +291,10 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get reportsSubtitle =>
-      'Son tarama oturumunu JSON, HTML veya PDF olarak dışa aktar.';
+  String get reportsSubtitle => 'Son tarama oturumunu JSON, HTML veya PDF olarak dışa aktar.';
 
   @override
-  String get noSnapshotAvailable =>
-      'Henüz tarama görüntüsü yok. Önce bir Wi-Fi taraması yapın.';
+  String get noSnapshotAvailable => 'Henüz tarama görüntüsü yok. Önce bir Wi-Fi taraması yapın.';
 
   @override
   String latestSnapshot(Object count, Object backend) {
@@ -366,8 +357,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get noVulnerabilities =>
-      'Mevcut tarama verilerine göre bilinen zafiyet algılanmadı.';
+  String get noVulnerabilities => 'Mevcut tarama verilerine göre bilinen zafiyet algılanmadı.';
 
   @override
   String get bssId => 'BSSID';
@@ -487,22 +477,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get blockUnknownAP => 'Bilinmeyen AP\'leri Engelle';
 
   @override
-  String get automaticBlockMsg =>
-      'Rogue AP bağlantılarını otomatik olarak keser';
+  String get automaticBlockMsg => 'Rogue AP bağlantılarını otomatik olarak keser';
 
   @override
   String get activeProbingEnabled => 'Aktif Sondaj';
 
   @override
-  String get activeProbingMsg =>
-      'Bağlı AP\'leri anomali için periyodik test eder';
+  String get activeProbingMsg => 'Bağlı AP\'leri anomali için periyodik test eder';
 
   @override
   String get requireConsentForDeauth => 'Onay Gerekli';
 
   @override
-  String get manualAuthorizationMsg =>
-      'Deauth/Aktif savunmayı manuel yetkilendir';
+  String get manualAuthorizationMsg => 'Deauth/Aktif savunmayı manuel yetkilendir';
 
   @override
   String get defensePolicy => 'Savunma Politikası';
@@ -543,8 +530,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get logoutConfirmation => 'OTURUMU SONLANDIR';
 
   @override
-  String get logoutConfirmMessage =>
-      'Mevcut oturumu sonlandırmak istediğinizden emin misiniz? Tüm aktif izlemeler duraklatılacaktır.';
+  String get logoutConfirmMessage => 'Mevcut oturumu sonlandırmak istediğinizden emin misiniz? Tüm aktif izlemeler duraklatılacaktır.';
 
   @override
   String get livePulse => 'CANLI NABIZ';
@@ -633,8 +619,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get engineStability => 'MOTOR_KARARLILIĞI: OPTİMAL';
 
   @override
-  String get aiStrategyText =>
-      'Mevcut ağ topolojisi stabil bir imza öneriyor. Alt ağlarda anlık yatay hareket tespit edilmedi. Pasif düğüm keşfini azaltmak için genel erişim noktalarında Gizli Mod etkinleştirilmesi önerilir.';
+  String get aiStrategyText => 'Mevcut ağ topolojisi stabil bir imza öneriyor. Alt ağlarda anlık yatay hareket tespit edilmedi. Pasif düğüm keşfini azaltmak için genel erişim noktalarında Gizli Mod etkinleştirilmesi önerilir.';
 
   @override
   String get packetSnifferTitle => 'PAKET_YAKALAYICI';

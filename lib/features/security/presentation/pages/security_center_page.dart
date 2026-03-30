@@ -685,18 +685,22 @@ class _EventCard extends StatelessWidget {
               children: [
                 Icon(_icon, color: _severityColor, size: 16),
                 const SizedBox(width: 8),
-                NeonText(
-                  '${event.type.name.replaceAll(RegExp(r'(?=[A-Z])'), ' ').toUpperCase()} • ${event.severity.name.toUpperCase()}',
-                  style: GoogleFonts.orbitron(
-                    color: _severityColor,
-                    fontSize: 9,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.5,
+                Flexible(
+                  child: NeonText(
+                    '${event.type.name.replaceAll(RegExp(r'(?=[A-Z])'), ' ').toUpperCase()} • ${event.severity.name.toUpperCase()}',
+                    style: GoogleFonts.orbitron(
+                      color: _severityColor,
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
+                    ),
+                    glowColor: _severityColor,
+                    glowRadius: 3,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
-                  glowColor: _severityColor,
-                  glowRadius: 3,
                 ),
-                const Spacer(),
+                const SizedBox(width: 4),
                 Text(
                   '${event.timestamp.hour.toString().padLeft(2, '0')}:${event.timestamp.minute.toString().padLeft(2, '0')}',
                   style: GoogleFonts.rajdhani(
@@ -736,6 +740,8 @@ class _EventCard extends StatelessWidget {
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         event.evidence,
@@ -743,6 +749,8 @@ class _EventCard extends StatelessWidget {
                           color: AppColors.textSecondary,
                           fontSize: 12,
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
@@ -1196,15 +1204,19 @@ class _BentoStatTile extends StatelessWidget {
               letterSpacing: 1,
             ),
           ),
-          NeonText(
-            value,
-            style: GoogleFonts.orbitron(
-              color: color,
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: NeonText(
+              value,
+              style: GoogleFonts.orbitron(
+                color: color,
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
+              ),
+              glowColor: color,
+              glowRadius: 4,
             ),
-            glowColor: color,
-            glowRadius: 4,
           ),
         ],
       ),

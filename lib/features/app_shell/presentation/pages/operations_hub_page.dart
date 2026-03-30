@@ -5,7 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/di/injection.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
-import '../../../monitoring/presentation/bloc/monitoring_bloc.dart';
+import '../../../monitoring/presentation/bloc/monitoring_hub_bloc.dart';
+import '../../../monitoring/domain/entities/speed_test_progress.dart';
 import '../../../monitoring/presentation/widgets/speed_command_gauge.dart';
 import '../../../reports/presentation/pages/reports_page.dart';
 import '../../../security/presentation/pages/security_center_page.dart';
@@ -25,18 +26,12 @@ class OperationsHubPage extends StatefulWidget {
 }
 
 class _OperationsHubPageState extends State<OperationsHubPage> {
-  final MonitoringBloc _bloc = getIt<MonitoringBloc>();
-
-  @override
-  void dispose() {
-    _bloc.add(StopMonitoring());
-    super.dispose();
-  }
+  final MonitoringHubBloc _hubBloc = getIt<MonitoringHubBloc>();
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: _bloc,
+      value: _hubBloc,
       child: Scaffold(
         body: Builder(
           builder: (context) {
@@ -45,12 +40,12 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
             return ListView(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
               children: [
-                // ── Section 1: ACTIVE MONITORING ──
+                // ── Section 1: SPEED TEST ──
                 StaggeredEntry(
                   delay: const Duration(milliseconds: 50),
                   child: NeonSectionHeader(
-                    label: l10n.activeMonitoring,
-                    icon: Icons.radar_rounded,
+                    label: l10n.speedTestHeader,
+                    icon: Icons.speed_rounded,
                     color: AppColors.neonCyan,
                   ),
                 ),
@@ -58,52 +53,70 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
 
                 StaggeredEntry(
                   delay: const Duration(milliseconds: 100),
-                  child: BlocBuilder<MonitoringBloc, MonitoringState>(
+                  child: BlocBuilder<MonitoringHubBloc, MonitoringHubState>(
                     builder: (context, state) {
                       double downloadMbps = 0;
                       double uploadMbps = 0;
-                      bool isActive = false;
+                      double latencyMs = 0;
+                      bool isRunning = false;
+                      String phaseLabel = l10n.startTest;
 
-                      if (state is MonitoringActive) {
-                        final sample = state.latestBandwidth;
-                        if (sample != null) {
-                          downloadMbps = (sample.rxBps * 8) / 1000000;
-                          uploadMbps = (sample.txBps * 8) / 1000000;
-                        }
-                        isActive = true;
+                      if (state is SpeedTestRunning) {
+                        downloadMbps = state.progress.downloadMbps;
+                        uploadMbps = state.progress.uploadMbps;
+                        latencyMs = state.progress.latencyMs;
+                        isRunning = true;
+                        phaseLabel = _phaseLabel(state.progress.phase, l10n);
+                      } else if (state is SpeedTestSuccess) {
+                        downloadMbps = state.progress.downloadMbps;
+                        uploadMbps = state.progress.uploadMbps;
+                        latencyMs = state.progress.latencyMs;
+                        phaseLabel = l10n.testAgain;
+                      } else if (state is SpeedTestFailure) {
+                        phaseLabel = l10n.retry;
                       }
 
                       return NeonCard(
                         glowColor: AppColors.neonCyan,
                         glowIntensity: 0.1,
-                        onTap: () {
-                          if (isActive) {
-                            _bloc.add(StopMonitoring());
-                          } else {
-                            _bloc.add(const StartBandwidthMonitoring('wlan0'));
-                          }
-                        },
+                        onTap: isRunning
+                            ? null
+                            : () => context
+                                .read<MonitoringHubBloc>()
+                                .add(RunSpeedTest()),
                         padding: const EdgeInsets.all(20),
                         child: Column(
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  isActive
-                                      ? l10n.deactivate
-                                      : l10n.initializeLink,
-                                  style: GoogleFonts.orbitron(
-                                    color:
-                                        isActive
-                                            ? AppColors.neonRed
-                                            : AppColors.neonCyan,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1,
+                                Flexible(
+                                  child: Text(
+                                    phaseLabel,
+                                    style: GoogleFonts.orbitron(
+                                      color: isRunning
+                                          ? AppColors.neonOrange
+                                          : AppColors.neonCyan,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 1,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                if (isActive) const PulsingDot(),
+                                if (isRunning) const PulsingDot(),
+                                if (!isRunning && latencyMs > 0) ...[
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '${latencyMs.toStringAsFixed(0)} ms',
+                                    style: GoogleFonts.rajdhani(
+                                      color: AppColors.neonGreen,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ],
                             ),
                             SizedBox(
@@ -216,6 +229,21 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
         ),
       ),
     );
+  }
+
+  String _phaseLabel(SpeedTestPhase phase, AppLocalizations l10n) {
+    switch (phase) {
+      case SpeedTestPhase.latency:
+        return l10n.phasePing;
+      case SpeedTestPhase.download:
+        return l10n.phaseDownload;
+      case SpeedTestPhase.upload:
+        return l10n.phaseUpload;
+      case SpeedTestPhase.done:
+        return l10n.phaseDone;
+      case SpeedTestPhase.idle:
+        return l10n.startTest;
+    }
   }
 
   Widget _buildAdvancedTools() {
@@ -347,28 +375,33 @@ class _ToolTile extends StatelessWidget {
               child: Icon(icon, color: color, size: 18),
             ),
             const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: GoogleFonts.orbitron(
-                    color: AppColors.textPrimary,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: GoogleFonts.orbitron(
+                      color: AppColors.textPrimary,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                Text(
-                  AppLocalizations.of(context)!.interactiveSimulation,
-                  style: GoogleFonts.shareTechMono(
-                    color: color.withValues(alpha: 0.4),
-                    fontSize: 8,
+                  Text(
+                    AppLocalizations.of(context)!.interactiveSimulation,
+                    style: GoogleFonts.shareTechMono(
+                      color: color.withValues(alpha: 0.4),
+                      fontSize: 8,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            const Spacer(),
             Icon(
               Icons.chevron_right_rounded,
               color: color.withValues(alpha: 0.5),

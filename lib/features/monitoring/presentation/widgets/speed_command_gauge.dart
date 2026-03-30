@@ -290,5 +290,9 @@ class _GaugePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _GaugePainter oldDelegate) => true;
+  bool shouldRepaint(covariant _GaugePainter oldDelegate) =>
+      oldDelegate.download != download ||
+      oldDelegate.upload != upload ||
+      oldDelegate.maxSpeed != maxSpeed ||
+      oldDelegate.animationValue != animationValue;
 }

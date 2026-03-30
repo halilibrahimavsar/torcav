@@ -28,7 +28,18 @@ class _NetworkScannerRadarState extends State<NetworkScannerRadar>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 4),
-    )..repeat();
+    );
+    if (widget.isScanning) _controller.repeat();
+  }
+
+  @override
+  void didUpdateWidget(NetworkScannerRadar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isScanning && !oldWidget.isScanning) {
+      _controller.repeat();
+    } else if (!widget.isScanning && oldWidget.isScanning) {
+      _controller.stop();
+    }
   }
 
   @override
@@ -179,5 +190,9 @@ class _NetworkRadarPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _NetworkRadarPainter oldDelegate) => true;
+  bool shouldRepaint(covariant _NetworkRadarPainter oldDelegate) =>
+      oldDelegate.scanProgress != scanProgress ||
+      oldDelegate.nodeCount != nodeCount ||
+      oldDelegate.isScanning != isScanning ||
+      oldDelegate.color != color;
 }

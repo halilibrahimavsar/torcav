@@ -9,8 +9,7 @@ class AppLocalizationsKu extends AppLocalizations {
   AppLocalizationsKu([String locale = 'ku']) : super(locale);
 
   @override
-  String get activeOperationsBlockedMsg =>
-      'Operasyonên aktîf hatine astengkirin heta ku polîtîka û lîsteya destûrdayînê werin pejirandin.';
+  String get activeOperationsBlockedMsg => 'Operasyonên aktîf hatine astengkirin heta ku polîtîka û lîsteya destûrdayînê werin pejirandin.';
 
   @override
   String get authorizedTargets => 'Hedefên Destûrdayî';
@@ -55,7 +54,7 @@ class AppLocalizationsKu extends AppLocalizations {
   String get save => 'Tomar bike';
 
   @override
-  String get confirm => 'Confirm';
+  String get confirm => 'Piştrast bike';
 
   @override
   String get legalDisclaimerAccepted => 'Daxuyaniya yasayî hate qebûlkirin';
@@ -67,8 +66,7 @@ class AppLocalizationsKu extends AppLocalizations {
   String get strictAllowlist => 'Lîsteya destûrdayînê ya hişk';
 
   @override
-  String get blockActiveOpsUnknown =>
-      'Operasyonên aktîf ji bo hedefên nenas asteng bike';
+  String get blockActiveOpsUnknown => 'Operasyonên aktîf ji bo hedefên nenas asteng bike';
 
   @override
   String get rateLimitActiveOps => 'Sînora lezê navbera operasyonên aktîf';
@@ -80,8 +78,7 @@ class AppLocalizationsKu extends AppLocalizations {
   String get settingsLanguage => 'Ziman';
 
   @override
-  String get settingsScanBehavior =>
-      'Tevgera taranê ya xwerû, stratejiya backend û rewşa ewlekariyê kontrol bike.';
+  String get settingsScanBehavior => 'Tevgera taranê ya xwerû, stratejiya backend û rewşa ewlekariyê kontrol bike.';
 
   @override
   String get settingsDefaultScanPasses => 'Derbasbûnên taranê yên xwerû';
@@ -99,8 +96,7 @@ class AppLocalizationsKu extends AppLocalizations {
   String get settingsStrictSafety => 'Moda ewlekariya hişk';
 
   @override
-  String get settingsStrictSafetyDesc =>
-      'Ji bo operasyonên aktîf destûr û lîsteya destûrdayînê pêwîst e';
+  String get settingsStrictSafetyDesc => 'Ji bo operasyonên aktîf destûr û lîsteya destûrdayînê pêwîst e';
 
   @override
   String get navDashboard => 'Dashboard';
@@ -112,10 +108,10 @@ class AppLocalizationsKu extends AppLocalizations {
   String get navLan => 'LAN';
 
   @override
-  String get navDiscovery => 'Discovery';
+  String get navDiscovery => 'Vedîtin';
 
   @override
-  String get navOperations => 'Operations';
+  String get navOperations => 'Operasyon';
 
   @override
   String get navMore => 'Zêdetir';
@@ -136,8 +132,7 @@ class AppLocalizationsKu extends AppLocalizations {
   String get securityCenterTitle => 'Navenda Ewlekariyê';
 
   @override
-  String get securityCenterDesc =>
-      'Puanlama rîskê, lîsteyên destûrdayînê û kontrolên polîtîkayê';
+  String get securityCenterDesc => 'Puanlama rîskê, lîsteyên destûrdayînê û kontrolên polîtîkayê';
 
   @override
   String get reportsTitle => 'Raport';
@@ -158,8 +153,7 @@ class AppLocalizationsKu extends AppLocalizations {
   String get monitoringTitle => 'Şopandin';
 
   @override
-  String get monitoringSubtitle =>
-      'Berfirehiya bandê, tespîta anomalî û herikîna nexşeya germê.';
+  String get monitoringSubtitle => 'Berfirehiya bandê, tespîta anomalî û herikîna nexşeya germê.';
 
   @override
   String get comingSoon => 'DÊ ZÛ BÊ';
@@ -297,12 +291,10 @@ class AppLocalizationsKu extends AppLocalizations {
   }
 
   @override
-  String get reportsSubtitle =>
-      'Danişîna taranê ya dawî wek JSON, HTML an PDF derxe.';
+  String get reportsSubtitle => 'Danişîna taranê ya dawî wek JSON, HTML an PDF derxe.';
 
   @override
-  String get noSnapshotAvailable =>
-      'Hîn wêneya taranê tune. Pêşî taranek Wi-Fi pêk bîne.';
+  String get noSnapshotAvailable => 'Hîn wêneya taranê tune. Pêşî taranek Wi-Fi pêk bîne.';
 
   @override
   String latestSnapshot(Object count, Object backend) {
@@ -325,13 +317,13 @@ class AppLocalizationsKu extends AppLocalizations {
   String get saveReportDialog => 'Raportê tomar bike';
 
   @override
-  String get sectionStatus => 'STATUS';
+  String get sectionStatus => 'REWŞ';
 
   @override
-  String get exportOptionsTitle => 'EXPORT OPTIONS';
+  String get exportOptionsTitle => 'VEBIJARKÊN DERXISTINÊ';
 
   @override
-  String get latestSnapshotTitle => 'LATEST SNAPSHOT';
+  String get latestSnapshotTitle => 'WÊNEYÊ HERÎ DAWÎ';
 
   @override
   String get backendLabel => 'Backend';
@@ -365,8 +357,7 @@ class AppLocalizationsKu extends AppLocalizations {
   }
 
   @override
-  String get noVulnerabilities =>
-      'Li gorî daneyên taranê yên niha ti qelisî nehatin dîtin.';
+  String get noVulnerabilities => 'Li gorî daneyên taranê yên niha ti qelisî nehatin dîtin.';
 
   @override
   String get bssId => 'BSSID';
@@ -450,284 +441,279 @@ class AppLocalizationsKu extends AppLocalizations {
   }
 
   @override
-  String get networkStatusLabel => 'NETWORK STATUS';
+  String get networkStatusLabel => 'REWŞA TORÊ';
 
   @override
-  String get activeSessionLabel => 'ACTIVE SESSION';
+  String get activeSessionLabel => 'DANIŞÎNA AKTÎF';
 
   @override
   String get gatewayLabel => 'GATEWAY';
 
   @override
-  String get ipLabel => 'IP ADDRESS';
+  String get ipLabel => 'NAVNÎŞANA IP';
 
   @override
-  String get connectedStatusCaps => 'CONNECTED';
+  String get connectedStatusCaps => 'GIRÊDAYÎ';
 
   @override
-  String get disconnectedStatusCaps => 'DISCONNECTED';
+  String get disconnectedStatusCaps => 'QUTKIRÎ';
 
   @override
-  String get quickActionsTitle => 'QUICK ACTIONS';
+  String get quickActionsTitle => 'ÇALAKIYÊN BILEZ';
 
   @override
-  String get lastScanTitle => 'LAST SCAN';
+  String get lastScanTitle => 'TARA DAWÎ';
 
   @override
-  String get viewDetailsAction => 'VIEW DETAILS';
+  String get viewDetailsAction => 'HÛRGULÎ BIBÎNE';
 
   @override
-  String get scanning => 'SCANNING…';
+  String get scanning => 'TARAN DIKE…';
 
   @override
-  String get secure => 'SECURE';
+  String get secure => 'EWLE';
 
   @override
-  String get blockUnknownAP => 'Block Unknown APs';
+  String get blockUnknownAP => 'AP-yên Nenas Asteng Bike';
 
   @override
-  String get automaticBlockMsg =>
-      'Automatically drops connections to rogue APs';
+  String get automaticBlockMsg => 'Girêdanên bi AP-yên neqanûnî bixweber diqete';
 
   @override
-  String get activeProbingEnabled => 'Active Probing';
+  String get activeProbingEnabled => 'Testa Aktîf';
 
   @override
-  String get activeProbingMsg =>
-      'Periodically tests connected AP for anomalies';
+  String get activeProbingMsg => 'AP-ya girêdayî bi rêkûpêk ji bo anomalî tê ceribandin';
 
   @override
-  String get requireConsentForDeauth => 'Require Consent';
+  String get requireConsentForDeauth => 'Destûr Pêwîst e';
 
   @override
-  String get manualAuthorizationMsg =>
-      'Manually authorize deauth/active defense';
+  String get manualAuthorizationMsg => 'Deauth/parastina aktîf bi destan destûr bide';
 
   @override
-  String get defensePolicy => 'Defense Policy';
+  String get defensePolicy => 'Polîtîkaya Parastinê';
 
   @override
-  String get shieldActive => 'Shield Active';
+  String get shieldActive => 'Mertal Aktîf';
 
   @override
-  String get activeProtection => 'Active Protection';
+  String get activeProtection => 'Parastina Aktîf';
 
   @override
-  String get riskScore => 'Risk Score';
+  String get riskScore => 'Puanê Rîskê';
 
   @override
-  String get securityRadar => 'Security Radar';
+  String get securityRadar => 'Radarê Ewlekariyê';
 
   @override
-  String get profileTitle => 'AGENT PROFILE';
+  String get profileTitle => 'PROFÎLA AJANÊ';
 
   @override
   String agentId(Object id) {
-    return 'AGENT_ID: $id';
+    return 'AJAN_ID: $id';
   }
 
   @override
-  String get sessionInformation => 'SESSION INFORMATION';
+  String get sessionInformation => 'ZANYARIYÊN DANIŞÎNÊ';
 
   @override
-  String get subscriptionStatus => 'SUBSCRIPTION STATUS';
+  String get subscriptionStatus => 'REWŞA ABONEYÊ';
 
   @override
-  String get activeSession => 'ACTIVE SESSION';
+  String get activeSession => 'DANIŞÎNA AKTÎF';
 
   @override
-  String get logout => 'LOGOUT';
+  String get logout => 'DERKEVE';
 
   @override
-  String get logoutConfirmation => 'DISCONNECT SESSION';
+  String get logoutConfirmation => 'DANIŞÎNÊ QEBÛL BIKE';
 
   @override
-  String get logoutConfirmMessage =>
-      'Are you sure you want to terminate the current session? All active monitoring will be paused.';
+  String get logoutConfirmMessage => 'Tu dixwazî danişîna niha biqedînî? Hemû şopandina aktîf dê raweste.';
 
   @override
-  String get livePulse => 'LIVE PULSE';
+  String get livePulse => 'NEBZA ZINDÎ';
 
   @override
-  String get operationsLabel => 'OPERATIONS';
+  String get operationsLabel => 'OPERASYON';
 
   @override
-  String get topologyLabel => 'TOPOLOGY';
+  String get topologyLabel => 'TOPOLOJÎ';
 
   @override
-  String get accessEngine => 'ACCESS ENGINE';
+  String get accessEngine => 'MOTORA GIHÎŞTINÊ';
 
   @override
-  String get networkLogs => 'NETWORK LOGS';
+  String get networkLogs => 'LOG-YÊTORÊ';
 
   @override
-  String get strictSafetyEnabled => 'STRICT SAFETY ENABLED';
+  String get strictSafetyEnabled => 'MODA EWLEKARIYA HIŞK ÇALAK E';
 
   @override
-  String get activeMonitoringProgress => 'Active monitoring in progress';
+  String get activeMonitoringProgress => 'Şopandina aktîf berdewam dike';
 
   @override
-  String get topologyMapTitle => 'TOPOLOGY MAP';
+  String get topologyMapTitle => 'NEXŞEYA TOPOLOJIYÊ';
 
   @override
-  String get trafficLabel => 'TRAFFIC';
+  String get trafficLabel => 'TRAFÎK';
 
   @override
-  String get forceLabel => 'FORCE';
+  String get forceLabel => 'HÊZ';
 
   @override
   String get normalSpeed => 'NORMAL';
 
   @override
-  String get fastSpeed => 'FAST';
+  String get fastSpeed => 'BILEZ';
 
   @override
   String get overdriveSpeed => 'OVERDRIVE';
 
   @override
-  String get noTopologyData => 'No topology data';
+  String get noTopologyData => 'Daneyên topolojiyê tune';
 
   @override
-  String get runScanFirst => 'Run a Wi-Fi and LAN scan first';
+  String get runScanFirst => 'Pêşî taranek Wi-Fi û LAN pêk bîne';
 
   @override
-  String get thisDevice => 'This Device';
+  String get thisDevice => 'Ev Amûr';
 
   @override
   String get gatewayDevice => 'Gateway';
 
   @override
-  String get mobileDevice => 'Mobile';
+  String get mobileDevice => 'Mobîl';
 
   @override
-  String get deviceLabel => 'Device';
+  String get deviceLabel => 'Amûr';
 
   @override
   String get iotDevice => 'IoT';
 
   @override
-  String get analyzingNode => 'ANALYZING NODE...';
+  String get analyzingNode => 'GIRÊK ANALÎZ DIKE...';
 
   @override
   String failedLoadTopology(Object error) {
-    return 'Failed to load topology: $error';
+    return 'Topolojî nayê barkirin: $error';
   }
 
   @override
   String get neuralCoreTitle => 'NEURAL_CORE_AI';
 
   @override
-  String get simulatedLabel => 'SIMULATED';
+  String get simulatedLabel => 'SÎMÛLE';
 
   @override
-  String get activeAnomalies => 'ACTIVE ANOMALIES';
+  String get activeAnomalies => 'ANOMALIYÊN AKTÎF';
 
   @override
-  String get predictiveHealth => 'PREDICTIVE HEALTH';
+  String get predictiveHealth => 'TENDURISTIYA PÊŞBÎNÎ';
 
   @override
-  String get aiStrategyReport => 'AI STRATEGY REPORT';
+  String get aiStrategyReport => 'RAPORTA STRATEJIYA AI';
 
   @override
-  String get engineStability => 'ENGINE_STABILITY: OPTIMAL';
+  String get engineStability => 'ARAMIYA_MOTORÊ: BAŞ';
 
   @override
-  String get aiStrategyText =>
-      'Current network topology suggests a stable signature. No immediate horizontal movement detected in subnets. Recommend enabling Stealth Mode on public access points to mitigate passive node discovery.';
+  String get aiStrategyText => 'Topolojiya torê ya niha nîşaneya aram nîşan dide. Di subnet-an de tevgereke horizontî ya tavilê nehat dîtin. Tê pêşniyar kirin ku li xalên gihîştina giştî Moda Veşartî çalak bibe.';
 
   @override
-  String get packetSnifferTitle => 'PACKET_SNIFFER';
+  String get packetSnifferTitle => 'PAKET_SNIFFER';
 
   @override
-  String get simulatedLogStream => 'SIMULATED_LOG_STREAM';
+  String get simulatedLogStream => 'HERIKÎNA_LOG_SÎMÛLKIRÎ';
 
   @override
-  String get streamPaused => 'STREAM_PAUSED';
+  String get streamPaused => 'HERIKÎN_RAWESTIYAYE';
 
   @override
-  String get filterNone => 'FILTER: NONE';
+  String get filterNone => 'FÎLTER: TUNE';
 
   @override
-  String get totalPackets => 'TOTAL_PKTS';
+  String get totalPackets => 'GIŞTÎ_PAKÊT';
 
   @override
-  String get droppedLabel => 'DROPPED';
+  String get droppedLabel => 'AVÊTÎ';
 
   @override
-  String get bufferLabel => 'BUFFER';
+  String get bufferLabel => 'TAMPON';
 
   @override
-  String get latencyLabel => 'LATENCY';
+  String get latencyLabel => 'DERENGÎ';
 
   @override
-  String get activeMonitoring => 'ACTIVE MONITORING';
+  String get activeMonitoring => 'ŞOPANDINA AKTÎF';
 
   @override
-  String get deactivate => 'DEACTIVATE';
+  String get deactivate => 'NEÇALAK BIKE';
 
   @override
-  String get initializeLink => 'INITIALIZE LINK';
+  String get initializeLink => 'GIRÊDANÊ DESTPÊBIKE';
 
   @override
-  String get commandCenters => 'COMMAND CENTERS';
+  String get commandCenters => 'NAVENDÊN FERMANDEHIYÊ';
 
   @override
-  String get defenseTitle => 'DEFENSE';
+  String get defenseTitle => 'PARASTIN';
 
   @override
-  String get activeShielding => 'Active Shielding';
+  String get activeShielding => 'Mertalkirina Aktîf';
 
   @override
-  String get logisticsTitle => 'LOGISTICS';
+  String get logisticsTitle => 'LOJÎSTÎK';
 
   @override
-  String get intelMetrics => 'Intel & Metrics';
+  String get intelMetrics => 'Intel û Metrîk';
 
   @override
-  String get networkMesh => 'Network Mesh';
+  String get networkMesh => 'Tora Mesh';
 
   @override
-  String get tuningTitle => 'TUNING';
+  String get tuningTitle => 'MÎHENGKIRIN';
 
   @override
-  String get systemConfig => 'System Config';
+  String get systemConfig => 'Mîhengên Sîstemê';
 
   @override
-  String get technicalTools => 'TECHNICAL TOOLS';
+  String get technicalTools => 'AMÛRÊN TEKNÎKÎ';
 
   @override
-  String get packetLogs => 'PACKET LOGS';
+  String get packetLogs => 'LOG-YÊPAKÊTAN';
 
   @override
-  String get aiInsights => 'AI INSIGHTS';
+  String get aiInsights => 'TÊGIHÎŞTINÊN AI';
 
   @override
-  String get interactiveSimulation => 'INTERACTIVE_SIMULATION';
+  String get interactiveSimulation => 'SÎMÛLASYONA_ÎNTERAKTÎF';
 
   @override
-  String get appearance => 'APPEARANCE';
+  String get appearance => 'XUYANGÊ';
 
   @override
-  String get theme => 'Theme';
+  String get theme => 'Tema';
 
   @override
-  String get darkTheme => 'Dark';
+  String get darkTheme => 'Tarî';
 
   @override
-  String get lightTheme => 'Light';
+  String get lightTheme => 'Ronî';
 
   @override
-  String get systemTheme => 'System';
+  String get systemTheme => 'Sîstem';
 
   @override
-  String get biometricData => 'BIOMETRIC DATA';
+  String get biometricData => 'DANEYÊN BIYOMETRÎKÎ';
 
   @override
-  String get neuralSync => 'Neural Sync';
+  String get neuralSync => 'Hevdengiya Neural';
 
   @override
-  String get encryptionKey => 'Encryption Key';
+  String get encryptionKey => 'Kilîda Şîfrekirinê';
 
   @override
-  String get systemStatus => 'SYSTEM STATUS';
+  String get systemStatus => 'REWŞA SÎSTEMÊ';
 }

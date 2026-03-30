@@ -38,7 +38,7 @@ class _TopologyPageState extends State<TopologyPage>
     super.initState();
     _pulseController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 3),
     )..repeat();
     _loadTopology();
   }
@@ -331,21 +331,23 @@ class _TopologyPageState extends State<TopologyPage>
                 onTapUp:
                     (details) =>
                         _handleTap(details.localPosition, constraints.biggest),
-                child: AnimatedBuilder(
-                  animation: _pulseController,
-                  builder: (context, child) {
-                    return CustomPaint(
-                      size: constraints.biggest,
-                      painter: TopologyGraphPainter(
-                        topology: _topology!,
-                        selectedNodeId: _selectedNodeId,
-                        pulseValue: _pulseController.value,
-                        showTraffic: _showTraffic,
-                        forceView: _forceView,
-                        flowSpeed: _flowSpeed,
-                      ),
-                    );
-                  },
+                child: RepaintBoundary(
+                  child: AnimatedBuilder(
+                    animation: _pulseController,
+                    builder: (context, child) {
+                      return CustomPaint(
+                        size: constraints.biggest,
+                        painter: TopologyGraphPainter(
+                          topology: _topology!,
+                          selectedNodeId: _selectedNodeId,
+                          pulseValue: _pulseController.value,
+                          showTraffic: _showTraffic,
+                          forceView: _forceView,
+                          flowSpeed: _flowSpeed,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               );
             },

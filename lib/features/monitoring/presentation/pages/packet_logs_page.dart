@@ -51,7 +51,7 @@ class _PacketLogsPageState extends State<PacketLogsPage> {
   }
 
   void _startSimulation() {
-    _timer = Timer.periodic(const Duration(milliseconds: 300), (timer) {
+    _timer = Timer.periodic(const Duration(milliseconds: 800), (timer) {
       if (!_isCapturing) return;
       if (mounted) {
         setState(() {
@@ -66,10 +66,8 @@ class _PacketLogsPageState extends State<PacketLogsPage> {
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
-        _scrollController.animateTo(
+        _scrollController.jumpTo(
           _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeOut,
         );
       }
     });

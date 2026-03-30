@@ -205,6 +205,8 @@ class NeonText extends StatelessWidget {
   final TextStyle? style;
   final Color? glowColor;
   final double glowRadius;
+  final TextOverflow? overflow;
+  final int? maxLines;
 
   const NeonText(
     this.text, {
@@ -212,6 +214,8 @@ class NeonText extends StatelessWidget {
     this.style,
     this.glowColor,
     this.glowRadius = 12,
+    this.overflow,
+    this.maxLines,
   });
 
   @override
@@ -223,6 +227,8 @@ class NeonText extends StatelessWidget {
 
     return Text(
       text,
+      overflow: overflow,
+      maxLines: maxLines,
       style: effectiveStyle.copyWith(
         shadows: [
           Shadow(color: effectiveGlow.withValues(alpha: 0.8), blurRadius: 2),
@@ -513,13 +519,16 @@ class NeonSectionHeader extends StatelessWidget {
           Icon(icon, color: color, size: 16),
           const SizedBox(width: 8),
         ],
-        Text(
-          label.toUpperCase(),
-          style: GoogleFonts.orbitron(
-            color: color.withValues(alpha: 0.7),
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 2,
+        Flexible(
+          child: Text(
+            label.toUpperCase(),
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.orbitron(
+              color: color.withValues(alpha: 0.7),
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 2,
+            ),
           ),
         ),
         const SizedBox(width: 12),

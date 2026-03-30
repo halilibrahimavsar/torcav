@@ -542,6 +542,8 @@ class _WifiNetworkCard extends StatelessWidget {
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),

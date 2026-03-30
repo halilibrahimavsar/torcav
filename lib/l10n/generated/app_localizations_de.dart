@@ -9,8 +9,7 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
-  String get activeOperationsBlockedMsg =>
-      'Aktive Operationen sind blockiert, bis Richtlinien und Zulassungslisten erfüllt sind.';
+  String get activeOperationsBlockedMsg => 'Aktive Operationen sind blockiert, bis Richtlinien und Zulassungslisten erfüllt sind.';
 
   @override
   String get authorizedTargets => 'Autorisierte Ziele';
@@ -55,7 +54,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get save => 'Speichern';
 
   @override
-  String get confirm => 'Confirm';
+  String get confirm => 'Bestätigen';
 
   @override
   String get legalDisclaimerAccepted => 'Rechtlicher Hinweis akzeptiert';
@@ -67,8 +66,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get strictAllowlist => 'Strenge Zulassungsliste';
 
   @override
-  String get blockActiveOpsUnknown =>
-      'Aktive Operationen für unbekannte Ziele blockieren';
+  String get blockActiveOpsUnknown => 'Aktive Operationen für unbekannte Ziele blockieren';
 
   @override
   String get rateLimitActiveOps => 'Ratenbegrenzung zwischen aktiven Ops';
@@ -80,8 +78,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsLanguage => 'Sprache';
 
   @override
-  String get settingsScanBehavior =>
-      'Standard-Scanverhalten, Backend-Strategie und Sicherheitslage steuern.';
+  String get settingsScanBehavior => 'Standard-Scanverhalten, Backend-Strategie und Sicherheitslage steuern.';
 
   @override
   String get settingsDefaultScanPasses => 'Standard-Scan-Durchgänge';
@@ -93,15 +90,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsBackendPreference => 'Standard-Backend-Präferenz';
 
   @override
-  String get settingsIncludeHidden =>
-      'Versteckte SSIDs standardmäßig einbeziehen';
+  String get settingsIncludeHidden => 'Versteckte SSIDs standardmäßig einbeziehen';
 
   @override
   String get settingsStrictSafety => 'Strenger Sicherheitsmodus';
 
   @override
-  String get settingsStrictSafetyDesc =>
-      'Zustimmung + Zulassungsliste für aktive Ops erforderlich';
+  String get settingsStrictSafetyDesc => 'Zustimmung + Zulassungsliste für aktive Ops erforderlich';
 
   @override
   String get navDashboard => 'Dashboard';
@@ -113,10 +108,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get navLan => 'LAN';
 
   @override
-  String get navDiscovery => 'Discovery';
+  String get navDiscovery => 'Entdeckung';
 
   @override
-  String get navOperations => 'Operations';
+  String get navOperations => 'Operationen';
 
   @override
   String get navMore => 'Mehr';
@@ -137,8 +132,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get securityCenterTitle => 'Sicherheitszentrum';
 
   @override
-  String get securityCenterDesc =>
-      'Risikobewertung, Zulassungslisten und Richtlinienkontrollen';
+  String get securityCenterDesc => 'Risikobewertung, Zulassungslisten und Richtlinienkontrollen';
 
   @override
   String get reportsTitle => 'Berichte';
@@ -159,8 +153,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get monitoringTitle => 'Überwachung';
 
   @override
-  String get monitoringSubtitle =>
-      'Bandbreite, Anomalieerkennung und Heatmap-Streams.';
+  String get monitoringSubtitle => 'Bandbreite, Anomalieerkennung und Heatmap-Streams.';
 
   @override
   String get comingSoon => 'DEMNÄCHST';
@@ -178,8 +171,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get speedTestHeader => 'GESCHWINDIGKEITSTEST';
 
   @override
-  String get testConnectionSpeed =>
-      'Testen Sie Ihre Verbindungsgeschwindigkeit';
+  String get testConnectionSpeed => 'Testen Sie Ihre Verbindungsgeschwindigkeit';
 
   @override
   String get testing => 'TESTEN…';
@@ -299,12 +291,10 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get reportsSubtitle =>
-      'Letzte Scan-Sitzung als JSON, HTML oder PDF exportieren.';
+  String get reportsSubtitle => 'Letzte Scan-Sitzung als JSON, HTML oder PDF exportieren.';
 
   @override
-  String get noSnapshotAvailable =>
-      'Noch kein Scan-Schnappschuss verfügbar. Führen Sie zuerst einen WLAN-Scan durch.';
+  String get noSnapshotAvailable => 'Noch kein Scan-Schnappschuss verfügbar. Führen Sie zuerst einen WLAN-Scan durch.';
 
   @override
   String latestSnapshot(Object count, Object backend) {
@@ -330,10 +320,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get sectionStatus => 'STATUS';
 
   @override
-  String get exportOptionsTitle => 'EXPORT OPTIONS';
+  String get exportOptionsTitle => 'EXPORTOPTIONEN';
 
   @override
-  String get latestSnapshotTitle => 'LATEST SNAPSHOT';
+  String get latestSnapshotTitle => 'NEUESTER SCHNAPPSCHUSS';
 
   @override
   String get backendLabel => 'Backend';
@@ -367,8 +357,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get noVulnerabilities =>
-      'Keine bekannten Schwachstellen basierend auf aktuellen Scandaten erkannt.';
+  String get noVulnerabilities => 'Keine bekannten Schwachstellen basierend auf aktuellen Scandaten erkannt.';
 
   @override
   String get bssId => 'BSSID';
@@ -452,76 +441,73 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get networkStatusLabel => 'NETWORK STATUS';
+  String get networkStatusLabel => 'NETZWERKSTATUS';
 
   @override
-  String get activeSessionLabel => 'ACTIVE SESSION';
+  String get activeSessionLabel => 'AKTIVE SITZUNG';
 
   @override
   String get gatewayLabel => 'GATEWAY';
 
   @override
-  String get ipLabel => 'IP ADDRESS';
+  String get ipLabel => 'IP-ADRESSE';
 
   @override
-  String get connectedStatusCaps => 'CONNECTED';
+  String get connectedStatusCaps => 'VERBUNDEN';
 
   @override
-  String get disconnectedStatusCaps => 'DISCONNECTED';
+  String get disconnectedStatusCaps => 'GETRENNT';
 
   @override
-  String get quickActionsTitle => 'QUICK ACTIONS';
+  String get quickActionsTitle => 'SCHNELLAKTIONEN';
 
   @override
-  String get lastScanTitle => 'LAST SCAN';
+  String get lastScanTitle => 'LETZTER SCAN';
 
   @override
-  String get viewDetailsAction => 'VIEW DETAILS';
+  String get viewDetailsAction => 'DETAILS ANZEIGEN';
 
   @override
-  String get scanning => 'SCANNING…';
+  String get scanning => 'SCANNEN…';
 
   @override
-  String get secure => 'SECURE';
+  String get secure => 'SICHER';
 
   @override
-  String get blockUnknownAP => 'Block Unknown APs';
+  String get blockUnknownAP => 'Unbekannte APs blockieren';
 
   @override
-  String get automaticBlockMsg =>
-      'Automatically drops connections to rogue APs';
+  String get automaticBlockMsg => 'Verbindungen zu unautorisierten APs automatisch trennen';
 
   @override
-  String get activeProbingEnabled => 'Active Probing';
+  String get activeProbingEnabled => 'Aktives Testen';
 
   @override
-  String get activeProbingMsg =>
-      'Periodically tests connected AP for anomalies';
+  String get activeProbingMsg => 'Verbundene APs regelmäßig auf Anomalien prüfen';
 
   @override
-  String get requireConsentForDeauth => 'Require Consent';
+  String get requireConsentForDeauth => 'Zustimmung erforderlich';
 
   @override
-  String get manualAuthorizationMsg =>
-      'Manually authorize deauth/active defense';
+  String get manualAuthorizationMsg => 'Deauth/aktive Verteidigung manuell autorisieren';
 
   @override
-  String get defensePolicy => 'Defense Policy';
+  String get defensePolicy => 'Verteidigungsrichtlinie';
 
   @override
-  String get shieldActive => 'Shield Active';
+  String get shieldActive => 'Schutz aktiv';
 
   @override
-  String get activeProtection => 'Active Protection';
+  String get activeProtection => 'Aktiver Schutz';
 
   @override
-  String get riskScore => 'Risk Score';
+  String get riskScore => 'Risikobewertung';
 
   @override
-  String get securityRadar => 'Security Radar';
+  String get securityRadar => 'Sicherheitsradar';
 
   @override
-  String get profileTitle => 'AGENT PROFILE';
+  String get profileTitle => 'AGENT-PROFIL';
 
   @override
   String agentId(Object id) {
@@ -529,47 +515,46 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get sessionInformation => 'SESSION INFORMATION';
+  String get sessionInformation => 'SITZUNGSINFORMATIONEN';
 
   @override
-  String get subscriptionStatus => 'SUBSCRIPTION STATUS';
+  String get subscriptionStatus => 'ABONNEMENTSTATUS';
 
   @override
-  String get activeSession => 'ACTIVE SESSION';
+  String get activeSession => 'AKTIVE SITZUNG';
 
   @override
-  String get logout => 'LOGOUT';
+  String get logout => 'ABMELDEN';
 
   @override
-  String get logoutConfirmation => 'DISCONNECT SESSION';
+  String get logoutConfirmation => 'SITZUNG TRENNEN';
 
   @override
-  String get logoutConfirmMessage =>
-      'Are you sure you want to terminate the current session? All active monitoring will be paused.';
+  String get logoutConfirmMessage => 'Möchten Sie die aktuelle Sitzung wirklich beenden? Alle aktiven Überwachungen werden pausiert.';
 
   @override
-  String get livePulse => 'LIVE PULSE';
+  String get livePulse => 'LIVE-PULS';
 
   @override
-  String get operationsLabel => 'OPERATIONS';
+  String get operationsLabel => 'OPERATIONEN';
 
   @override
-  String get topologyLabel => 'TOPOLOGY';
+  String get topologyLabel => 'TOPOLOGIE';
 
   @override
-  String get accessEngine => 'ACCESS ENGINE';
+  String get accessEngine => 'ZUGANGS-ENGINE';
 
   @override
-  String get networkLogs => 'NETWORK LOGS';
+  String get networkLogs => 'NETZWERK-LOGS';
 
   @override
-  String get strictSafetyEnabled => 'STRICT SAFETY ENABLED';
+  String get strictSafetyEnabled => 'STRENGER SICHERHEITSMODUS AKTIV';
 
   @override
-  String get activeMonitoringProgress => 'Active monitoring in progress';
+  String get activeMonitoringProgress => 'Aktive Überwachung läuft';
 
   @override
-  String get topologyMapTitle => 'TOPOLOGY MAP';
+  String get topologyMapTitle => 'TOPOLOGIE-KARTE';
 
   @override
   String get trafficLabel => 'TRAFFIC';
@@ -581,155 +566,154 @@ class AppLocalizationsDe extends AppLocalizations {
   String get normalSpeed => 'NORMAL';
 
   @override
-  String get fastSpeed => 'FAST';
+  String get fastSpeed => 'SCHNELL';
 
   @override
   String get overdriveSpeed => 'OVERDRIVE';
 
   @override
-  String get noTopologyData => 'No topology data';
+  String get noTopologyData => 'Keine Topologiedaten';
 
   @override
-  String get runScanFirst => 'Run a Wi-Fi and LAN scan first';
+  String get runScanFirst => 'Zuerst einen WLAN- und LAN-Scan durchführen';
 
   @override
-  String get thisDevice => 'This Device';
+  String get thisDevice => 'Dieses Gerät';
 
   @override
   String get gatewayDevice => 'Gateway';
 
   @override
-  String get mobileDevice => 'Mobile';
+  String get mobileDevice => 'Mobil';
 
   @override
-  String get deviceLabel => 'Device';
+  String get deviceLabel => 'Gerät';
 
   @override
   String get iotDevice => 'IoT';
 
   @override
-  String get analyzingNode => 'ANALYZING NODE...';
+  String get analyzingNode => 'KNOTEN ANALYSIEREN...';
 
   @override
   String failedLoadTopology(Object error) {
-    return 'Failed to load topology: $error';
+    return 'Topologie konnte nicht geladen werden: $error';
   }
 
   @override
   String get neuralCoreTitle => 'NEURAL_CORE_AI';
 
   @override
-  String get simulatedLabel => 'SIMULATED';
+  String get simulatedLabel => 'SIMULIERT';
 
   @override
-  String get activeAnomalies => 'ACTIVE ANOMALIES';
+  String get activeAnomalies => 'AKTIVE ANOMALIEN';
 
   @override
-  String get predictiveHealth => 'PREDICTIVE HEALTH';
+  String get predictiveHealth => 'VORAUSSCHAUENDE GESUNDHEIT';
 
   @override
-  String get aiStrategyReport => 'AI STRATEGY REPORT';
+  String get aiStrategyReport => 'KI-STRATEGIEBERICHT';
 
   @override
-  String get engineStability => 'ENGINE_STABILITY: OPTIMAL';
+  String get engineStability => 'ENGINE_STABILITÄT: OPTIMAL';
 
   @override
-  String get aiStrategyText =>
-      'Current network topology suggests a stable signature. No immediate horizontal movement detected in subnets. Recommend enabling Stealth Mode on public access points to mitigate passive node discovery.';
+  String get aiStrategyText => 'Die aktuelle Netzwerktopologie deutet auf eine stabile Signatur hin. Keine unmittelbare horizontale Bewegung in Subnetzen erkannt. Empfehle Aktivierung des Stealth-Modus an öffentlichen Zugangspunkten.';
 
   @override
-  String get packetSnifferTitle => 'PACKET_SNIFFER';
+  String get packetSnifferTitle => 'PAKET_SNIFFER';
 
   @override
-  String get simulatedLogStream => 'SIMULATED_LOG_STREAM';
+  String get simulatedLogStream => 'SIMULIERTER_LOG_STREAM';
 
   @override
-  String get streamPaused => 'STREAM_PAUSED';
+  String get streamPaused => 'STREAM_PAUSIERT';
 
   @override
-  String get filterNone => 'FILTER: NONE';
+  String get filterNone => 'FILTER: KEINER';
 
   @override
-  String get totalPackets => 'TOTAL_PKTS';
+  String get totalPackets => 'GESAMT_PAKETE';
 
   @override
-  String get droppedLabel => 'DROPPED';
+  String get droppedLabel => 'VERWORFEN';
 
   @override
-  String get bufferLabel => 'BUFFER';
+  String get bufferLabel => 'PUFFER';
 
   @override
-  String get latencyLabel => 'LATENCY';
+  String get latencyLabel => 'LATENZ';
 
   @override
-  String get activeMonitoring => 'ACTIVE MONITORING';
+  String get activeMonitoring => 'AKTIVE ÜBERWACHUNG';
 
   @override
-  String get deactivate => 'DEACTIVATE';
+  String get deactivate => 'DEAKTIVIEREN';
 
   @override
-  String get initializeLink => 'INITIALIZE LINK';
+  String get initializeLink => 'VERBINDUNG INITIALISIEREN';
 
   @override
-  String get commandCenters => 'COMMAND CENTERS';
+  String get commandCenters => 'BEFEHLSZENTRALEN';
 
   @override
-  String get defenseTitle => 'DEFENSE';
+  String get defenseTitle => 'VERTEIDIGUNG';
 
   @override
-  String get activeShielding => 'Active Shielding';
+  String get activeShielding => 'Aktiver Schutz';
 
   @override
-  String get logisticsTitle => 'LOGISTICS';
+  String get logisticsTitle => 'LOGISTIK';
 
   @override
-  String get intelMetrics => 'Intel & Metrics';
+  String get intelMetrics => 'Intel & Metriken';
 
   @override
-  String get networkMesh => 'Network Mesh';
+  String get networkMesh => 'Netzwerk-Mesh';
 
   @override
-  String get tuningTitle => 'TUNING';
+  String get tuningTitle => 'OPTIMIERUNG';
 
   @override
-  String get systemConfig => 'System Config';
+  String get systemConfig => 'Systemkonfiguration';
 
   @override
-  String get technicalTools => 'TECHNICAL TOOLS';
+  String get technicalTools => 'TECHNISCHE WERKZEUGE';
 
   @override
-  String get packetLogs => 'PACKET LOGS';
+  String get packetLogs => 'PAKET-LOGS';
 
   @override
-  String get aiInsights => 'AI INSIGHTS';
+  String get aiInsights => 'KI-EINBLICKE';
 
   @override
-  String get interactiveSimulation => 'INTERACTIVE_SIMULATION';
+  String get interactiveSimulation => 'INTERAKTIVE_SIMULATION';
 
   @override
-  String get appearance => 'APPEARANCE';
+  String get appearance => 'ERSCHEINUNGSBILD';
 
   @override
-  String get theme => 'Theme';
+  String get theme => 'Design';
 
   @override
-  String get darkTheme => 'Dark';
+  String get darkTheme => 'Dunkel';
 
   @override
-  String get lightTheme => 'Light';
+  String get lightTheme => 'Hell';
 
   @override
   String get systemTheme => 'System';
 
   @override
-  String get biometricData => 'BIOMETRIC DATA';
+  String get biometricData => 'BIOMETRISCHE DATEN';
 
   @override
-  String get neuralSync => 'Neural Sync';
+  String get neuralSync => 'Neural-Sync';
 
   @override
-  String get encryptionKey => 'Encryption Key';
+  String get encryptionKey => 'Verschlüsselungsschlüssel';
 
   @override
-  String get systemStatus => 'SYSTEM STATUS';
+  String get systemStatus => 'SYSTEMSTATUS';
 }
