@@ -8,6 +8,7 @@ abstract class SecurityRepository {
   Future<List<SecurityEvent>> getSecurityEvents();
   Future<void> saveSecurityEvent(SecurityEvent event);
   Future<void> saveSecurityEvents(List<SecurityEvent> events);
+  Future<void> markSecurityEventAsRead(int id);
 
   /// Compares current scan results with known networks to identify Rogue APs.
   Future<List<SecurityEvent>> analyzeNetworks(List<WifiNetwork> networks);

@@ -156,6 +156,12 @@ class AppLocalizationsKu extends AppLocalizations {
   String get monitoringSubtitle => 'Berfirehiya bandê, tespîta anomalî û herikîna nexşeya germê.';
 
   @override
+  String get packetsPerSecondLabel => 'Packets Per Second';
+
+  @override
+  String get throughputLabel => 'Throughput';
+
+  @override
   String get comingSoon => 'DÊ ZÛ BÊ';
 
   @override

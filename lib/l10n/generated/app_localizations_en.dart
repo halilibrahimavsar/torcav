@@ -156,6 +156,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get monitoringSubtitle => 'Bandwidth, anomaly detection, and heatmap streams.';
 
   @override
+  String get packetsPerSecondLabel => 'Packets Per Second';
+
+  @override
+  String get throughputLabel => 'Throughput';
+
+  @override
   String get comingSoon => 'COMING SOON';
 
   @override

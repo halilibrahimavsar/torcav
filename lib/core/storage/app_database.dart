@@ -117,7 +117,27 @@ class AppDatabase {
         severity TEXT NOT NULL,
         ssid TEXT NOT NULL,
         bssid TEXT NOT NULL,
-        evidence TEXT NOT NULL
+        evidence TEXT NOT NULL,
+        is_read INTEGER NOT NULL DEFAULT 0
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE known_networks (
+        bssid TEXT PRIMARY KEY,
+        ssid TEXT NOT NULL,
+        security TEXT NOT NULL,
+        first_seen TEXT NOT NULL,
+        last_seen TEXT NOT NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE channel_rating_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        channel INTEGER NOT NULL,
+        rating REAL NOT NULL,
+        timestamp TEXT NOT NULL
       )
     ''');
 

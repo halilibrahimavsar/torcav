@@ -113,7 +113,6 @@ import '../../features/wifi_scan/domain/usecases/get_historical_best_channel.dar
 import '../../features/wifi_scan/domain/usecases/scan_wifi.dart' as _i451;
 import '../../features/wifi_scan/presentation/bloc/wifi_scan_bloc.dart'
     as _i968;
-import '../data/database_helper.dart' as _i941;
 import '../i18n/locale_cubit.dart' as _i734;
 import '../services/notification_service.dart' as _i941;
 import '../services/privilege_service.dart' as _i286;
@@ -139,7 +138,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i941.NotificationService(),
     );
     gh.lazySingleton<_i690.AppDatabase>(() => _i690.AppDatabase());
-    gh.lazySingleton<_i941.DatabaseHelper>(() => _i941.DatabaseHelper());
     gh.lazySingleton<_i797.ScanSessionStore>(() => _i797.ScanSessionStore());
     gh.lazySingleton<_i969.ChannelRatingEngine>(
       () => _i969.ChannelRatingEngine(),
@@ -153,6 +151,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1066.ArpDataSource>(() => _i1066.ArpDataSource());
     gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
     gh.lazySingleton<_i552.AppSettingsStore>(() => _i552.AppSettingsStore());
+    gh.lazySingleton<_i494.HeatmapRepository>(
+      () => _i335.HeatmapRepositoryImpl(gh<_i690.AppDatabase>()),
+    );
     gh.lazySingleton<_i522.ProcessRunner>(() => _i522.ProcessRunnerImpl());
     gh.singleton<_i734.LocaleCubit>(
       () => _i734.LocaleCubit(gh<_i460.SharedPreferences>()),
@@ -163,8 +164,26 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i119.ReportExportRepository>(
       () => _i953.ReportExportRepositoryImpl(),
     );
-    gh.lazySingleton<_i494.HeatmapRepository>(
-      () => _i335.HeatmapRepositoryImpl(),
+    gh.lazySingleton<_i890.SpeedTestRepository>(
+      () => _i528.SpeedTestRepositoryImpl(
+        gh<_i522.ProcessRunner>(),
+        gh<_i690.AppDatabase>(),
+      ),
+    );
+    gh.lazySingleton<_i305.ChannelRatingLocalDataSource>(
+      () => _i305.ChannelRatingLocalDataSourceImpl(gh<_i690.AppDatabase>()),
+    );
+    gh.lazySingleton<_i102.LogHeatmapPointUseCase>(
+      () => _i102.LogHeatmapPointUseCase(gh<_i494.HeatmapRepository>()),
+    );
+    gh.lazySingleton<_i725.GetZoneAveragesUseCase>(
+      () => _i725.GetZoneAveragesUseCase(gh<_i494.HeatmapRepository>()),
+    );
+    gh.factory<_i573.HeatmapBloc>(
+      () => _i573.HeatmapBloc(
+        gh<_i725.GetZoneAveragesUseCase>(),
+        gh<_i102.LogHeatmapPointUseCase>(),
+      ),
     );
     gh.lazySingleton<_i790.ScanPersistenceDataSource>(
       () => _i790.ScanPersistenceDataSource(gh<_i690.AppDatabase>()),
@@ -174,7 +193,7 @@ extension GetItInjectableX on _i174.GetIt {
       instanceName: 'android',
     );
     gh.lazySingleton<_i499.SecurityLocalDataSource>(
-      () => _i499.SecurityLocalDataSourceImpl(gh<_i941.DatabaseHelper>()),
+      () => _i499.SecurityLocalDataSourceImpl(gh<_i690.AppDatabase>()),
     );
     gh.lazySingleton<_i286.PrivilegeService>(
       () => _i286.PrivilegeServiceImpl(gh<_i522.ProcessRunner>()),
@@ -182,11 +201,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i367.GenerateReportUseCase>(
       () => _i367.GenerateReportUseCase(gh<_i119.ReportExportRepository>()),
     );
-    gh.lazySingleton<_i305.ChannelRatingLocalDataSource>(
-      () => _i305.ChannelRatingLocalDataSourceImpl(gh<_i941.DatabaseHelper>()),
-    );
-    gh.lazySingleton<_i890.SpeedTestRepository>(
-      () => _i528.SpeedTestRepositoryImpl(gh<_i522.ProcessRunner>()),
+    gh.lazySingleton<_i578.SecurityRepository>(
+      () => _i997.SecurityRepositoryImpl(
+        gh<_i499.SecurityLocalDataSource>(),
+        gh<_i941.NotificationService>(),
+      ),
     );
     gh.lazySingleton<_i508.ActiveSecurityRepository>(
       () => _i586.ActiveSecurityRepositoryImpl(
@@ -210,24 +229,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i305.ChannelRatingLocalDataSource>(),
       ),
     );
-    gh.lazySingleton<_i102.LogHeatmapPointUseCase>(
-      () => _i102.LogHeatmapPointUseCase(gh<_i494.HeatmapRepository>()),
-    );
-    gh.lazySingleton<_i725.GetZoneAveragesUseCase>(
-      () => _i725.GetZoneAveragesUseCase(gh<_i494.HeatmapRepository>()),
-    );
     gh.lazySingleton<_i1012.WifiDataSource>(
       () => _i653.LinuxWifiDataSource(
         gh<_i522.ProcessRunner>(),
         gh<_i286.PrivilegeService>(),
       ),
       instanceName: 'linux',
-    );
-    gh.factory<_i573.HeatmapBloc>(
-      () => _i573.HeatmapBloc(
-        gh<_i725.GetZoneAveragesUseCase>(),
-        gh<_i102.LogHeatmapPointUseCase>(),
-      ),
     );
     gh.lazySingleton<_i424.NmapDataSource>(
       () => _i424.LinuxNmapDataSource(gh<_i286.PrivilegeService>()),
@@ -246,14 +253,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i508.ActiveSecurityRepository>(),
       ),
     );
+    gh.lazySingleton<_i1073.NetworkScanRepository>(
+      () => _i551.NetworkScanRepositoryImpl(
+        gh<_i424.NmapDataSource>(),
+        gh<_i1066.ArpDataSource>(),
+        gh<_i690.AppDatabase>(),
+      ),
+    );
     gh.lazySingleton<_i519.GetBestHistoricalChannel>(
       () => _i519.GetBestHistoricalChannel(gh<_i332.ChannelRatingRepository>()),
     );
     gh.factory<_i554.ReportsBloc>(
       () => _i554.ReportsBloc(gh<_i367.GenerateReportUseCase>()),
-    );
-    gh.lazySingleton<_i578.SecurityRepository>(
-      () => _i997.SecurityRepositoryImpl(gh<_i499.SecurityLocalDataSource>()),
     );
     gh.lazySingleton<_i87.AnalyzeNetworkSecurityUseCase>(
       () => _i87.AnalyzeNetworkSecurityUseCase(gh<_i578.SecurityRepository>()),
@@ -277,12 +288,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i365.MonitoringRepository>(
       () => _i592.MonitoringRepositoryImpl(gh<_i1027.WifiRepository>()),
-    );
-    gh.lazySingleton<_i1073.NetworkScanRepository>(
-      () => _i551.NetworkScanRepositoryImpl(
-        gh<_i424.NmapDataSource>(),
-        gh<_i1066.ArpDataSource>(),
-      ),
     );
     gh.lazySingleton<_i451.ScanWifi>(
       () => _i451.ScanWifi(gh<_i1027.WifiRepository>()),

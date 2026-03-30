@@ -196,6 +196,14 @@
     "@monitoringSubtitle": {
         "description": "Subtitle for monitoring feature set."
     },
+    "packetsPerSecondLabel": "Packets Per Second",
+    "@packetsPerSecondLabel": {
+        "description": "Label for real-time packets per second metric."
+    },
+    "throughputLabel": "Throughput",
+    "@throughputLabel": {
+        "description": "Label for real-time throughput metric."
+    },
     "comingSoon": "COMING SOON",
     "@comingSoon": {
         "description": "Label for features under development."

@@ -13,6 +13,7 @@ import 'core/i18n/locale_cubit.dart';
 
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'dart:io';
+import 'core/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +24,7 @@ void main() async {
   }
 
   await configureDependencies();
+  await getIt<NotificationService>().initialize();
   runApp(const TorcavApp());
 }
 

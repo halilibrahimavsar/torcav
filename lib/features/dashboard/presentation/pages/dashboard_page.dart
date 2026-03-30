@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
@@ -6,8 +7,10 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../l10n/generated/app_localizations.dart';
+import '../../../security/presentation/bloc/notification/notification_bloc.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
 import '../widgets/security_core.dart';
+import 'notification_sheet.dart';
 
 /// Dashboard — neon-styled status overview with animated bento-grid layout.
 class DashboardPage extends StatefulWidget {
@@ -67,132 +70,202 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        leading: IconButton(
-          icon: Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.neonCyan.withValues(alpha: 0.3),
-              ),
-            ),
-            child: const Icon(Icons.menu_rounded, size: 18),
+    return BlocProvider(
+      create: (context) => getIt<NotificationBloc>()..add(LoadNotifications()),
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          leading: Builder(
+            builder:
+                (context) => IconButton(
+                  icon: Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: AppColors.neonCyan.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: const Icon(Icons.menu_rounded, size: 18),
+                  ),
+                  onPressed: () => Scaffold.of(context).openDrawer(),
+                ),
           ),
-          onPressed: () => Scaffold.of(context).openDrawer(),
-        ),
-        title: NeonText(
-          'TORCAV',
-          style: GoogleFonts.orbitron(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-            letterSpacing: 4,
-            color: AppColors.neonCyan,
+          title: NeonText(
+            'TORCAV',
+            style: GoogleFonts.orbitron(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              letterSpacing: 4,
+              color: AppColors.neonCyan,
+            ),
+            glowRadius: 15,
           ),
-          glowRadius: 15,
-        ),
-        actions: [
-          NeonIconButton(
-            icon: Icons.notifications_none_rounded,
-            onTap: () {},
-            color: AppColors.textSecondary,
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: RefreshIndicator(
-        color: AppColors.neonCyan,
-        backgroundColor: AppColors.darkSurface,
-        onRefresh: _loadNetworkInfo,
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 120),
-          children: [
-            // ── Dynamic Bento Header: Security Core & Primary Stats ──
-            StaggeredEntry(
-              delay: const Duration(milliseconds: 100),
-              child: _SecurityBentoHeader(
-                ssid: _ssid,
-                ip: _ip,
-                gateway: _gateway,
-                loading: _loading,
-              ),
+          actions: [
+            BlocConsumer<NotificationBloc, NotificationState>(
+              listener: (context, state) {
+                if (state is NotificationError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                      backgroundColor: Colors.redAccent,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                int unreadCount = 0;
+                if (state is NotificationLoaded) {
+                  unreadCount = state.unreadCount;
+                }
+
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    NeonIconButton(
+                      icon: Icons.notifications_none_rounded,
+                      onTap: () => _showNotificationSheet(context),
+                      tooltip: 'Security Alerts',
+                    ),
+                    if (unreadCount > 0)
+                      Positioned(
+                        right: 8,
+                        top: 8,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
+                            color: Colors.redAccent,
+                            shape: BoxShape.circle,
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 16,
+                            minHeight: 16,
+                          ),
+                          child: Text(
+                            unreadCount > 9 ? '9+' : unreadCount.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
             ),
-
-            const SizedBox(height: 32),
-
-            // ── System Metrics Strip ──
-            StaggeredEntry(
-              delay: const Duration(milliseconds: 300),
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: NeonSectionHeader(
-                  label: l10n.livePulse,
-                  color: AppColors.neonCyan,
-                  icon: Icons.monitor_heart_rounded,
-                ),
-              ),
-            ),
-
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              mainAxisSpacing: 16,
-              crossAxisSpacing: 16,
-              childAspectRatio: 1.2,
-              children: [
-                _QuickAction(
-                  index: 0,
-                  icon: Icons.hub_rounded,
-                  label: l10n.operationsLabel,
-                  color: AppColors.neonPurple,
-                  onTap: () => widget.onNavigate('operations'),
-                ),
-                _QuickAction(
-                  index: 1,
-                  icon: Icons.device_hub_rounded,
-                  label: l10n.topologyLabel,
-                  color: AppColors.neonGreen,
-                  onTap: () => widget.onNavigate('monitor/topology'),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 32),
-
-            // ── Recent Activity Section ──
-            StaggeredEntry(
-              delay: const Duration(milliseconds: 700),
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: NeonSectionHeader(
-                  label: l10n.networkLogs,
-                  color: AppColors.neonGreen,
-                ),
-              ),
-            ),
-
-            StaggeredEntry(
-              delay: const Duration(milliseconds: 800),
-              child: _LastScanStrip(
-                networkCount: _networkCount,
-                onViewDetails: () => widget.onNavigate('wifi'),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            StaggeredEntry(
-              delay: const Duration(milliseconds: 900),
-              child: _SafetyBadge(onTap: () => widget.onNavigate('security')),
-            ),
+            const SizedBox(width: 8),
           ],
         ),
+        body: RefreshIndicator(
+          color: AppColors.neonCyan,
+          backgroundColor: AppColors.darkSurface,
+          onRefresh: _loadNetworkInfo,
+          child: ListView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 120),
+            children: [
+              // ── Dynamic Bento Header: Security Core & Primary Stats ──
+              StaggeredEntry(
+                delay: const Duration(milliseconds: 100),
+                child: _SecurityBentoHeader(
+                  ssid: _ssid,
+                  ip: _ip,
+                  gateway: _gateway,
+                  loading: _loading,
+                ),
+              ),
+
+              const SizedBox(height: 32),
+
+              // ── System Metrics Strip ──
+              StaggeredEntry(
+                delay: const Duration(milliseconds: 300),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: NeonSectionHeader(
+                    label: l10n.livePulse,
+                    color: AppColors.neonCyan,
+                    icon: Icons.monitor_heart_rounded,
+                  ),
+                ),
+              ),
+
+              GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                childAspectRatio: 1.2,
+                children: [
+                  _QuickAction(
+                    index: 0,
+                    icon: Icons.hub_rounded,
+                    label: l10n.operationsLabel,
+                    color: AppColors.neonPurple,
+                    onTap: () => widget.onNavigate('operations'),
+                  ),
+                  _QuickAction(
+                    index: 1,
+                    icon: Icons.device_hub_rounded,
+                    label: l10n.topologyLabel,
+                    color: AppColors.neonGreen,
+                    onTap: () => widget.onNavigate('monitor/topology'),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 32),
+
+              // ── Recent Activity Section ──
+              StaggeredEntry(
+                delay: const Duration(milliseconds: 700),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: NeonSectionHeader(
+                    label: l10n.networkLogs,
+                    color: AppColors.neonGreen,
+                  ),
+                ),
+              ),
+
+              StaggeredEntry(
+                delay: const Duration(milliseconds: 800),
+                child: _LastScanStrip(
+                  networkCount: _networkCount,
+                  onViewDetails: () => widget.onNavigate('wifi'),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              StaggeredEntry(
+                delay: const Duration(milliseconds: 900),
+                child: _SafetyBadge(onTap: () => widget.onNavigate('security')),
+              ),
+            ],
+          ),
+        ),
       ),
+    );
+  }
+
+  void _showNotificationSheet(BuildContext context) {
+    final notificationBloc = context.read<NotificationBloc>();
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder:
+          (sheetContext) => BlocProvider.value(
+            value: notificationBloc,
+            child: const NotificationSheet(),
+          ),
     );
   }
 }

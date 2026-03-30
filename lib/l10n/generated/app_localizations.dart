@@ -393,6 +393,18 @@ abstract class AppLocalizations {
   /// **'Bandwidth, anomaly detection, and heatmap streams.'**
   String get monitoringSubtitle;
 
+  /// Label for real-time packets per second metric.
+  ///
+  /// In en, this message translates to:
+  /// **'Packets Per Second'**
+  String get packetsPerSecondLabel;
+
+  /// Label for real-time throughput metric.
+  ///
+  /// In en, this message translates to:
+  /// **'Throughput'**
+  String get throughputLabel;
+
   /// Label for features under development.
   ///
   /// In en, this message translates to:

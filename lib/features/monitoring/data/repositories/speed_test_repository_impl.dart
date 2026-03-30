@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:injectable/injectable.dart';
-
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/process_runner.dart';
+import '../../../../core/storage/app_database.dart';
 import '../../domain/entities/speed_test_progress.dart';
 import '../../domain/repositories/speed_test_repository.dart';
 
@@ -35,25 +35,39 @@ const _kUploadUrl = 'https://speed.cloudflare.com/__up';
 @LazySingleton(as: SpeedTestRepository)
 class SpeedTestRepositoryImpl implements SpeedTestRepository {
   final ProcessRunner _processRunner;
+  final AppDatabase _appDatabase;
 
-  SpeedTestRepositoryImpl(this._processRunner);
+  SpeedTestRepositoryImpl(this._processRunner, this._appDatabase);
 
   @override
   Stream<SpeedTestProgress> runSpeedTest() async* {
+    Stream<SpeedTestProgress> stream;
+    String backend = 'http';
+
     if (Platform.isLinux) {
-      var cliSuccess = false;
-      try {
-        await for (final progress in _runLinuxCli()) {
-          yield progress;
-          if (progress.phase == SpeedTestPhase.done) cliSuccess = true;
-        }
-      } catch (_) {
-        // Fall through to HTTP
-      }
-      if (cliSuccess) return;
+      backend = 'cli';
+      stream = _runLinuxCli();
+    } else {
+      stream = _runHttpSpeedTest();
     }
 
-    yield* _runHttpSpeedTest();
+    await for (final progress in stream) {
+      yield progress;
+      if (progress.phase == SpeedTestPhase.done) {
+        await _saveResult(progress, backend);
+      }
+    }
+  }
+
+  Future<void> _saveResult(SpeedTestProgress result, String backend) async {
+    final db = await _appDatabase.database;
+    await db.insert('speedtest_results', {
+      'created_at': DateTime.now().toIso8601String(),
+      'backend': backend,
+      'download_mbps': result.downloadMbps,
+      'upload_mbps': result.uploadMbps,
+      'latency_ms': result.latencyMs,
+    });
   }
 
   // ── Linux CLI path ────────────────────────────────────────────────────────

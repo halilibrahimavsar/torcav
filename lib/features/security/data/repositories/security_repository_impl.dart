@@ -1,4 +1,6 @@
 import 'package:injectable/injectable.dart';
+import '../../../../core/services/notification_service.dart';
+import '../../../../core/utils/oui_lookup.dart';
 import '../datasources/security_local_data_source.dart';
 import '../../domain/entities/known_network.dart';
 import '../../domain/entities/security_event.dart';
@@ -8,8 +10,9 @@ import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 @LazySingleton(as: SecurityRepository)
 class SecurityRepositoryImpl implements SecurityRepository {
   final SecurityLocalDataSource _localDataSource;
+  final NotificationService _notificationService;
 
-  SecurityRepositoryImpl(this._localDataSource);
+  SecurityRepositoryImpl(this._localDataSource, this._notificationService);
 
   @override
   Future<List<KnownNetwork>> getKnownNetworks() =>
@@ -30,6 +33,10 @@ class SecurityRepositoryImpl implements SecurityRepository {
   @override
   Future<void> saveSecurityEvents(List<SecurityEvent> events) =>
       _localDataSource.saveSecurityEvents(events);
+
+  @override
+  Future<void> markSecurityEventAsRead(int id) =>
+      _localDataSource.markSecurityEventAsRead(id);
 
   @override
   Future<List<SecurityEvent>> analyzeNetworks(
@@ -58,27 +65,31 @@ class SecurityRepositoryImpl implements SecurityRepository {
               'BSSID mismatch! Expected: ${known.bssid}, Found: ${network.bssid}. Possible Evil Twin attack.';
         }
 
-        // 2. Security Downgrade check
-        // (Simple string comparison for now, can be improved with security level weights)
+        // 2. Randomized MAC Detection (Suspicious for fixed APs)
+        if (OuiLookup.isSuspicious(network.bssid)) {
+          isRogue = true;
+          evidence += ' Randomized/LAA MAC detected on known network! This is highly unusual for legitimate Access Points.';
+        }
+
+        // 3. Security Downgrade check
         if (known.security != network.security.toString()) {
-          // If the current security is weaker than known, it's suspicious
-          // For now, any change is flagged
           isRogue = true;
           evidence +=
               ' Security profile changed! Expected: ${known.security}, Found: ${network.security}.';
         }
 
         if (isRogue) {
-          alerts.add(
-            SecurityEvent(
-              type: SecurityEventType.rogueApSuspected,
-              severity: SecurityEventSeverity.critical,
-              ssid: network.ssid,
-              bssid: network.bssid,
-              timestamp: DateTime.now(),
-              evidence: evidence,
-            ),
+          final event = SecurityEvent(
+            type: SecurityEventType.rogueApSuspected,
+            severity: SecurityEventSeverity.critical,
+            ssid: network.ssid,
+            bssid: network.bssid,
+            timestamp: DateTime.now(),
+            evidence: evidence,
           );
+          alerts.add(event);
+          // Trigger local notification
+          await _notificationService.showSecurityAlert(event);
         }
       }
     }

@@ -1,5 +1,5 @@
 import 'package:injectable/injectable.dart';
-import '../../../../core/data/database_helper.dart';
+import '../../../../core/storage/app_database.dart';
 import '../../domain/entities/channel_rating_sample.dart';
 
 abstract class ChannelRatingLocalDataSource {
@@ -9,28 +9,33 @@ abstract class ChannelRatingLocalDataSource {
 
 @LazySingleton(as: ChannelRatingLocalDataSource)
 class ChannelRatingLocalDataSourceImpl implements ChannelRatingLocalDataSource {
-  final DatabaseHelper _dbHelper;
+  final AppDatabase _appDatabase;
 
-  ChannelRatingLocalDataSourceImpl(this._dbHelper);
+  ChannelRatingLocalDataSourceImpl(this._appDatabase);
 
   @override
   Future<void> saveRatingSamples(List<ChannelRatingSample> samples) async {
-    final db = await _dbHelper.database;
+    final db = await _appDatabase.database;
     await db.transaction((txn) async {
       for (final sample in samples) {
-        await txn.insert('channel_rating_history', sample.toMap());
+        await txn.insert('channel_rating_history', {
+          if (sample.id != null) 'id': sample.id,
+          'channel': sample.channel,
+          'rating': sample.rating,
+          'timestamp': sample.timestamp.toIso8601String(),
+        });
       }
     });
   }
 
   @override
   Future<List<ChannelRatingSample>> getHistory({Duration? limit}) async {
-    final db = await _dbHelper.database;
+    final db = await _appDatabase.database;
     String? where;
     List<dynamic>? whereArgs;
 
     if (limit != null) {
-      final cutoff = DateTime.now().subtract(limit).millisecondsSinceEpoch;
+      final cutoff = DateTime.now().subtract(limit).toIso8601String();
       where = 'timestamp >= ?';
       whereArgs = [cutoff];
     }
@@ -42,6 +47,13 @@ class ChannelRatingLocalDataSourceImpl implements ChannelRatingLocalDataSource {
       orderBy: 'timestamp DESC',
     );
 
-    return maps.map((map) => ChannelRatingSample.fromMap(map)).toList();
+    return maps.map((map) {
+      return ChannelRatingSample(
+        id: map['id'] as int?,
+        channel: map['channel'] as int,
+        rating: map['rating'] as double,
+        timestamp: DateTime.parse(map['timestamp'] as String),
+      );
+    }).toList();
   }
 }

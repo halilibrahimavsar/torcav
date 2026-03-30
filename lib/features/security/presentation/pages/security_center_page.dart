@@ -646,8 +646,11 @@ class _EventCard extends StatelessWidget {
         return AppColors.neonRed;
       case domain_event.SecurityEventSeverity.high:
         return AppColors.neonOrange;
+      case domain_event.SecurityEventSeverity.medium:
+        return AppColors.neonCyan;
       case domain_event.SecurityEventSeverity.warning:
         return const Color(0xFFFFE066);
+      case domain_event.SecurityEventSeverity.low:
       case domain_event.SecurityEventSeverity.info:
         return AppColors.neonCyan;
     }
@@ -656,9 +659,12 @@ class _EventCard extends StatelessWidget {
   IconData get _icon {
     switch (event.type) {
       case domain_event.SecurityEventType.rogueApSuspected:
+      case domain_event.SecurityEventType.evilTwinDetected:
         return Icons.warning_amber_rounded;
+      case domain_event.SecurityEventType.deauthAttackSuspected:
       case domain_event.SecurityEventType.deauthBurstDetected:
         return Icons.wifi_off_rounded;
+      case domain_event.SecurityEventType.encryptionDowngraded:
       case domain_event.SecurityEventType.handshakeCaptureStarted:
         return Icons.lock_open_rounded;
       case domain_event.SecurityEventType.handshakeCaptureCompleted:

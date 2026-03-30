@@ -85,35 +85,45 @@ class NotificationService {
     final channelId = switch (severity) {
       SecurityEventSeverity.critical => 'security_critical',
       SecurityEventSeverity.high => 'security_high',
+      SecurityEventSeverity.medium => 'security_medium',
       SecurityEventSeverity.warning => 'security_warning',
+      SecurityEventSeverity.low => 'security_low',
       SecurityEventSeverity.info => 'security_info',
     };
 
     final channelName = switch (severity) {
       SecurityEventSeverity.critical => 'Critical Alerts',
       SecurityEventSeverity.high => 'High Priority',
+      SecurityEventSeverity.medium => 'Medium Priority',
       SecurityEventSeverity.warning => 'Warnings',
+      SecurityEventSeverity.low => 'Low Priority',
       SecurityEventSeverity.info => 'Information',
     };
 
     final importance = switch (severity) {
       SecurityEventSeverity.critical => Importance.max,
       SecurityEventSeverity.high => Importance.high,
+      SecurityEventSeverity.medium => Importance.defaultImportance,
       SecurityEventSeverity.warning => Importance.defaultImportance,
+      SecurityEventSeverity.low => Importance.low,
       SecurityEventSeverity.info => Importance.low,
     };
 
     final priority = switch (severity) {
       SecurityEventSeverity.critical => Priority.max,
       SecurityEventSeverity.high => Priority.high,
+      SecurityEventSeverity.medium => Priority.defaultPriority,
       SecurityEventSeverity.warning => Priority.defaultPriority,
+      SecurityEventSeverity.low => Priority.low,
       SecurityEventSeverity.info => Priority.low,
     };
 
     final color = switch (severity) {
       SecurityEventSeverity.critical => const Color(0xFFFF0000),
       SecurityEventSeverity.high => const Color(0xFFFF6B6B),
+      SecurityEventSeverity.medium => const Color(0xFF00E5FF),
       SecurityEventSeverity.warning => const Color(0xFFFFAB40),
+      SecurityEventSeverity.low => const Color(0xFF32E6A1),
       SecurityEventSeverity.info => const Color(0xFF32E6A1),
     };
 
@@ -145,9 +155,11 @@ class NotificationService {
   String _getTitleForEvent(SecurityEventType type) {
     return switch (type) {
       SecurityEventType.rogueApSuspected => '🚨 Rogue AP Detected',
-      SecurityEventType.deauthBurstDetected => '⚡ Deauth Attack Detected',
-      SecurityEventType.handshakeCaptureStarted =>
-        '🔐 Handshake Capture Started',
+      SecurityEventType.evilTwinDetected => '👯 Evil Twin Detected',
+      SecurityEventType.deauthAttackSuspected => '📡 Deauth Attack Detected',
+      SecurityEventType.encryptionDowngraded => '🔓 Encryption Downgraded',
+      SecurityEventType.deauthBurstDetected => '⚡ Deauth Burst Detected',
+      SecurityEventType.handshakeCaptureStarted => '🔐 Handshake Capture Started',
       SecurityEventType.handshakeCaptureCompleted => '✅ Handshake Captured',
       SecurityEventType.captivePortalDetected => '🌐 Captive Portal Detected',
       SecurityEventType.unsupportedOperation => '⚠️ Operation Not Supported',
