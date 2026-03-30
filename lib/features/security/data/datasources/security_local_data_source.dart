@@ -52,7 +52,7 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
     final db = await _database.database;
     final List<Map<String, dynamic>> maps = await db.query(
       'security_events',
-      orderBy: 'timestamp DESC',
+      orderBy: 'created_at DESC',
     );
     return List.generate(maps.length, (i) => _mapToEvent(maps[i]));
   }

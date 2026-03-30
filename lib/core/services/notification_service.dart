@@ -22,10 +22,14 @@ class NotificationService {
       requestBadgePermission: true,
       requestSoundPermission: true,
     );
+    const linuxSettings = LinuxInitializationSettings(
+      defaultActionName: 'Open notification',
+    );
 
     const initSettings = InitializationSettings(
       android: androidSettings,
       iOS: iosSettings,
+      linux: linuxSettings,
     );
 
     await _plugin.initialize(
@@ -147,6 +151,16 @@ class NotificationService {
           SecurityEventSeverity.critical => InterruptionLevel.critical,
           SecurityEventSeverity.high => InterruptionLevel.timeSensitive,
           _ => InterruptionLevel.active,
+        },
+      ),
+      linux: LinuxNotificationDetails(
+        urgency: switch (severity) {
+          SecurityEventSeverity.critical => LinuxNotificationUrgency.critical,
+          SecurityEventSeverity.high => LinuxNotificationUrgency.critical,
+          SecurityEventSeverity.medium => LinuxNotificationUrgency.normal,
+          SecurityEventSeverity.warning => LinuxNotificationUrgency.normal,
+          SecurityEventSeverity.low => LinuxNotificationUrgency.low,
+          SecurityEventSeverity.info => LinuxNotificationUrgency.low,
         },
       ),
     );

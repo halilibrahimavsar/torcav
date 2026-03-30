@@ -174,10 +174,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i953.ReportExportRepositoryImpl(),
     );
     gh.lazySingleton<_i890.SpeedTestRepository>(
-      () => _i528.SpeedTestRepositoryImpl(
-        gh<_i522.ProcessRunner>(),
-        gh<_i690.AppDatabase>(),
-      ),
+      () => _i528.SpeedTestRepositoryImpl(gh<_i690.AppDatabase>()),
+    );
+    gh.lazySingleton<_i1024.RunSpeedTestUseCase>(
+      () => _i1024.RunSpeedTestUseCase(gh<_i890.SpeedTestRepository>()),
     );
     gh.lazySingleton<_i305.ChannelRatingLocalDataSource>(
       () => _i305.ChannelRatingLocalDataSourceImpl(gh<_i690.AppDatabase>()),
@@ -210,6 +210,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i367.GenerateReportUseCase>(
       () => _i367.GenerateReportUseCase(gh<_i119.ReportExportRepository>()),
     );
+    gh.factory<_i374.MonitoringHubBloc>(
+      () => _i374.MonitoringHubBloc(gh<_i1024.RunSpeedTestUseCase>()),
+    );
     gh.lazySingleton<_i578.SecurityRepository>(
       () => _i997.SecurityRepositoryImpl(
         gh<_i499.SecurityLocalDataSource>(),
@@ -232,9 +235,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i242.PacketSnifferBloc>(
       () => _i242.PacketSnifferBloc(gh<_i919.PacketSnifferService>()),
-    );
-    gh.lazySingleton<_i1024.RunSpeedTestUseCase>(
-      () => _i1024.RunSpeedTestUseCase(gh<_i890.SpeedTestRepository>()),
     );
     gh.lazySingleton<_i332.ChannelRatingRepository>(
       () => _i671.ChannelRatingRepositoryImpl(
@@ -297,9 +297,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i467.CaptureHandshakeUseCase>(),
         gh<_i809.RunActiveDefenseCheckUseCase>(),
       ),
-    );
-    gh.factory<_i374.MonitoringHubBloc>(
-      () => _i374.MonitoringHubBloc(gh<_i1024.RunSpeedTestUseCase>()),
     );
     gh.lazySingleton<_i365.MonitoringRepository>(
       () => _i592.MonitoringRepositoryImpl(

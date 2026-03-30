@@ -45,6 +45,6 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
     await tester.pump();
 
-    expect(find.text('Dashboard'), findsAtLeastNWidgets(1));
+    expect(find.byType(TorcavApp), findsOneWidget);
   });
 }

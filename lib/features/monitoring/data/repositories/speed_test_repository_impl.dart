@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:injectable/injectable.dart';
-import '../../../../core/error/failures.dart';
-import '../../../../core/services/process_runner.dart';
 import '../../../../core/storage/app_database.dart';
 import '../../domain/entities/speed_test_progress.dart';
 import '../../domain/repositories/speed_test_repository.dart';
@@ -34,27 +31,18 @@ const _kUploadUrl = 'https://speed.cloudflare.com/__up';
 
 @LazySingleton(as: SpeedTestRepository)
 class SpeedTestRepositoryImpl implements SpeedTestRepository {
-  final ProcessRunner _processRunner;
   final AppDatabase _appDatabase;
 
-  SpeedTestRepositoryImpl(this._processRunner, this._appDatabase);
+  SpeedTestRepositoryImpl(this._appDatabase);
 
   @override
   Stream<SpeedTestProgress> runSpeedTest() async* {
-    Stream<SpeedTestProgress> stream;
-    String backend = 'http';
-
-    if (Platform.isLinux) {
-      backend = 'cli';
-      stream = _runLinuxCli();
-    } else {
-      stream = _runHttpSpeedTest();
-    }
+    final stream = _runHttpSpeedTest();
 
     await for (final progress in stream) {
       yield progress;
       if (progress.phase == SpeedTestPhase.done) {
-        await _saveResult(progress, backend);
+        await _saveResult(progress, 'http');
       }
     }
   }
@@ -68,23 +56,6 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
       'upload_mbps': result.uploadMbps,
       'latency_ms': result.latencyMs,
     });
-  }
-
-  // ── Linux CLI path ────────────────────────────────────────────────────────
-
-  Stream<SpeedTestProgress> _runLinuxCli() async* {
-    yield const SpeedTestProgress(phase: SpeedTestPhase.latency);
-    final result = await _processRunner.run('speedtest-cli', ['--json']);
-    if (result.exitCode != 0) throw const ScanFailure('CLI failed');
-
-    final decoded =
-        jsonDecode(result.stdout.toString()) as Map<String, dynamic>;
-    yield SpeedTestProgress(
-      phase: SpeedTestPhase.done,
-      downloadMbps: ((decoded['download'] as num?)?.toDouble() ?? 0) / 1e6,
-      uploadMbps: ((decoded['upload'] as num?)?.toDouble() ?? 0) / 1e6,
-      latencyMs: (decoded['ping'] as num?)?.toDouble() ?? 0,
-    );
   }
 
   // ── HTTP path ─────────────────────────────────────────────────────────────
