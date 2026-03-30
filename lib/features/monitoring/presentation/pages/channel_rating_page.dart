@@ -20,8 +20,14 @@ class ChannelRatingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => GetIt.I<MonitoringBloc>()..add(AnalyzeChannels(networks)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) =>
+              GetIt.I<MonitoringBloc>()..add(AnalyzeChannels(networks)),
+        ),
+        BlocProvider.value(value: GetIt.I<WifiScanBloc>()),
+      ],
       child: _ChannelRatingView(request: request),
     );
   }
