@@ -31,7 +31,8 @@ class GlassmorphicContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveBorder = borderColor ?? AppColors.neonCyan;
-    final effectiveBg = backgroundColor ?? AppColors.darkSurfaceLight.withValues(alpha: 0.1);
+    final effectiveBg =
+        backgroundColor ?? AppColors.darkSurfaceLight.withValues(alpha: 0.1);
 
     return ClipRRect(
       borderRadius: borderRadius,
@@ -89,10 +90,7 @@ class NeonCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.darkSurfaceLight,
         borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(
-          color: glowColor.withValues(alpha: 0.2),
-          width: 1,
-        ),
+        border: Border.all(color: glowColor.withValues(alpha: 0.2), width: 1),
         boxShadow: AppColors.glowTiers[GlowTier.low]!(glowColor),
       ),
       child: child,
@@ -150,9 +148,7 @@ class _NeonGlowBoxState extends State<NeonGlowBox>
     _animation = Tween<double>(
       begin: widget.minOpacity,
       end: widget.maxOpacity,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
     _controller.repeat(reverse: true);
   }
 
@@ -222,24 +218,16 @@ class NeonText extends StatelessWidget {
   Widget build(BuildContext context) {
     final effectiveStyle =
         style ?? GoogleFonts.orbitron(color: AppColors.neonCyan, fontSize: 18);
-    final effectiveGlow = glowColor ?? effectiveStyle.color ?? AppColors.neonCyan;
+    final effectiveGlow =
+        glowColor ?? effectiveStyle.color ?? AppColors.neonCyan;
 
     return Text(
       text,
       style: effectiveStyle.copyWith(
         shadows: [
-          Shadow(
-            color: effectiveGlow.withValues(alpha: 0.8),
-            blurRadius: 2,
-          ),
-          Shadow(
-            color: effectiveGlow.withValues(alpha: 0.4),
-            blurRadius: 10,
-          ),
-          Shadow(
-            color: effectiveGlow.withValues(alpha: 0.2),
-            blurRadius: 24,
-          ),
+          Shadow(color: effectiveGlow.withValues(alpha: 0.8), blurRadius: 2),
+          Shadow(color: effectiveGlow.withValues(alpha: 0.4), blurRadius: 10),
+          Shadow(color: effectiveGlow.withValues(alpha: 0.2), blurRadius: 24),
         ],
       ),
     );
@@ -289,10 +277,7 @@ class _PulsingDotState extends State<PulsingDot>
       return Container(
         width: widget.size,
         height: widget.size,
-        decoration: BoxDecoration(
-          color: widget.color,
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: widget.color, shape: BoxShape.circle),
       );
     }
 
@@ -420,15 +405,13 @@ class NeonChip extends StatelessWidget {
         color: color.withValues(alpha: 0.1),
         border: Border.all(color: color.withValues(alpha: 0.35)),
         boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.08),
-            blurRadius: 8,
-          ),
+          BoxShadow(color: color.withValues(alpha: 0.08), blurRadius: 8),
         ],
       ),
       child: Text(
         label,
-        style: textStyle ??
+        style:
+            textStyle ??
             GoogleFonts.outfit(
               color: color.withValues(alpha: 0.9),
               fontSize: 12,
@@ -469,10 +452,7 @@ class _StaggeredEntryState extends State<StaggeredEntry>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.duration,
-    );
+    _controller = AnimationController(vsync: this, duration: widget.duration);
     _fade = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
     _slide = Tween<Offset>(
       begin: Offset(0, widget.slideOffset),
@@ -502,10 +482,7 @@ class _StaggeredEntryState extends State<StaggeredEntry>
       builder: (context, child) {
         return Opacity(
           opacity: _fade.value,
-          child: Transform.translate(
-            offset: _slide.value,
-            child: child,
-          ),
+          child: Transform.translate(offset: _slide.value, child: child),
         );
       },
       child: widget.child,
@@ -648,10 +625,7 @@ class NeonButton extends StatelessWidget {
           height: height,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: color.withValues(alpha: 0.5),
-              width: 1.5,
-            ),
+            border: Border.all(color: color.withValues(alpha: 0.5), width: 1.5),
             boxShadow: [
               BoxShadow(
                 color: color.withValues(alpha: 0.15),
@@ -688,24 +662,17 @@ class HolographicCard extends StatelessWidget {
   final Widget child;
   final Color? color;
 
-  const HolographicCard({
-    super.key,
-    required this.child,
-    this.color,
-  });
+  const HolographicCard({super.key, required this.child, this.color});
 
   @override
   Widget build(BuildContext context) {
     final themeColor = color ?? AppColors.neonCyan;
-    
+
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xE60A0E14),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: themeColor.withValues(alpha: 0.2),
-          width: 1,
-        ),
+        border: Border.all(color: themeColor.withValues(alpha: 0.2), width: 1),
         boxShadow: [
           BoxShadow(
             color: themeColor.withValues(alpha: 0.1),
@@ -737,9 +704,10 @@ class ScanlinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1;
+    final paint =
+        Paint()
+          ..color = color
+          ..strokeWidth = 1;
 
     for (double y = 0; y < size.height; y += 4) {
       canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);

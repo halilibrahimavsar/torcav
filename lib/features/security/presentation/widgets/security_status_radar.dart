@@ -2,7 +2,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 
-
 class SecurityStatusRadar extends StatefulWidget {
   final double score;
   final bool isScanning;
@@ -98,7 +97,8 @@ class _RadarPainter extends CustomPainter {
     final segmentLength = (2 * math.pi / segments) - segmentGap;
 
     for (int i = 0; i < segments; i++) {
-      final startAngle = rotation * 2 * math.pi + (i * (segmentLength + segmentGap));
+      final startAngle =
+          rotation * 2 * math.pi + (i * (segmentLength + segmentGap));
       canvas.drawArc(
         Rect.fromCircle(center: center, radius: radius - 5),
         startAngle,

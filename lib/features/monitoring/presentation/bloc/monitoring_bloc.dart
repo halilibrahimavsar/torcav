@@ -91,7 +91,12 @@ class MonitoringActive extends MonitoringState {
   });
 
   @override
-  List<Object?> get props => [currentData, signalHistory, latestBandwidth, interface];
+  List<Object?> get props => [
+    currentData,
+    signalHistory,
+    latestBandwidth,
+    interface,
+  ];
 }
 
 class ChannelAnalysisReady extends MonitoringState {

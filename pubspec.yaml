@@ -61,6 +61,7 @@ dependencies:
   sqflite: ^2.4.2
   flutter_local_notifications: ^17.2.4
   vector_math: ^2.1.4
+  share_plus: ^12.0.2
 
 
 dev_dependencies:

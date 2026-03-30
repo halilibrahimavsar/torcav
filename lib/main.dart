@@ -32,9 +32,7 @@ class TorcavApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => getIt<LocaleCubit>()),
-      ],
+      providers: [BlocProvider(create: (_) => getIt<LocaleCubit>())],
       child: BlocBuilder<LocaleCubit, Locale>(
         builder: (context, locale) {
           return ValueListenableBuilder<ThemeMode>(

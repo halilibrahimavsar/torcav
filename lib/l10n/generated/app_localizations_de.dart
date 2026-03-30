@@ -9,7 +9,8 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
-  String get activeOperationsBlockedMsg => 'Aktive Operationen sind blockiert, bis Richtlinien und Zulassungslisten erfüllt sind.';
+  String get activeOperationsBlockedMsg =>
+      'Aktive Operationen sind blockiert, bis Richtlinien und Zulassungslisten erfüllt sind.';
 
   @override
   String get authorizedTargets => 'Autorisierte Ziele';
@@ -66,7 +67,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get strictAllowlist => 'Strenge Zulassungsliste';
 
   @override
-  String get blockActiveOpsUnknown => 'Aktive Operationen für unbekannte Ziele blockieren';
+  String get blockActiveOpsUnknown =>
+      'Aktive Operationen für unbekannte Ziele blockieren';
 
   @override
   String get rateLimitActiveOps => 'Ratenbegrenzung zwischen aktiven Ops';
@@ -78,7 +80,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsLanguage => 'Sprache';
 
   @override
-  String get settingsScanBehavior => 'Standard-Scanverhalten, Backend-Strategie und Sicherheitslage steuern.';
+  String get settingsScanBehavior =>
+      'Standard-Scanverhalten, Backend-Strategie und Sicherheitslage steuern.';
 
   @override
   String get settingsDefaultScanPasses => 'Standard-Scan-Durchgänge';
@@ -90,13 +93,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsBackendPreference => 'Standard-Backend-Präferenz';
 
   @override
-  String get settingsIncludeHidden => 'Versteckte SSIDs standardmäßig einbeziehen';
+  String get settingsIncludeHidden =>
+      'Versteckte SSIDs standardmäßig einbeziehen';
 
   @override
   String get settingsStrictSafety => 'Strenger Sicherheitsmodus';
 
   @override
-  String get settingsStrictSafetyDesc => 'Zustimmung + Zulassungsliste für aktive Ops erforderlich';
+  String get settingsStrictSafetyDesc =>
+      'Zustimmung + Zulassungsliste für aktive Ops erforderlich';
 
   @override
   String get navDashboard => 'Dashboard';
@@ -132,7 +137,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get securityCenterTitle => 'Sicherheitszentrum';
 
   @override
-  String get securityCenterDesc => 'Risikobewertung, Zulassungslisten und Richtlinienkontrollen';
+  String get securityCenterDesc =>
+      'Risikobewertung, Zulassungslisten und Richtlinienkontrollen';
 
   @override
   String get reportsTitle => 'Berichte';
@@ -153,7 +159,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get monitoringTitle => 'Überwachung';
 
   @override
-  String get monitoringSubtitle => 'Bandbreite, Anomalieerkennung und Heatmap-Streams.';
+  String get monitoringSubtitle =>
+      'Bandbreite, Anomalieerkennung und Heatmap-Streams.';
 
   @override
   String get comingSoon => 'DEMNÄCHST';
@@ -171,7 +178,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get speedTestHeader => 'GESCHWINDIGKEITSTEST';
 
   @override
-  String get testConnectionSpeed => 'Testen Sie Ihre Verbindungsgeschwindigkeit';
+  String get testConnectionSpeed =>
+      'Testen Sie Ihre Verbindungsgeschwindigkeit';
 
   @override
   String get testing => 'TESTEN…';
@@ -291,10 +299,12 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get reportsSubtitle => 'Letzte Scan-Sitzung als JSON, HTML oder PDF exportieren.';
+  String get reportsSubtitle =>
+      'Letzte Scan-Sitzung als JSON, HTML oder PDF exportieren.';
 
   @override
-  String get noSnapshotAvailable => 'Noch kein Scan-Schnappschuss verfügbar. Führen Sie zuerst einen WLAN-Scan durch.';
+  String get noSnapshotAvailable =>
+      'Noch kein Scan-Schnappschuss verfügbar. Führen Sie zuerst einen WLAN-Scan durch.';
 
   @override
   String latestSnapshot(Object count, Object backend) {
@@ -357,7 +367,8 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get noVulnerabilities => 'Keine bekannten Schwachstellen basierend auf aktuellen Scandaten erkannt.';
+  String get noVulnerabilities =>
+      'Keine bekannten Schwachstellen basierend auf aktuellen Scandaten erkannt.';
 
   @override
   String get bssId => 'BSSID';
@@ -477,19 +488,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get blockUnknownAP => 'Block Unknown APs';
 
   @override
-  String get automaticBlockMsg => 'Automatically drops connections to rogue APs';
+  String get automaticBlockMsg =>
+      'Automatically drops connections to rogue APs';
 
   @override
   String get activeProbingEnabled => 'Active Probing';
 
   @override
-  String get activeProbingMsg => 'Periodically tests connected AP for anomalies';
+  String get activeProbingMsg =>
+      'Periodically tests connected AP for anomalies';
 
   @override
   String get requireConsentForDeauth => 'Require Consent';
 
   @override
-  String get manualAuthorizationMsg => 'Manually authorize deauth/active defense';
+  String get manualAuthorizationMsg =>
+      'Manually authorize deauth/active defense';
 
   @override
   String get defensePolicy => 'Defense Policy';
@@ -530,7 +544,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get logoutConfirmation => 'DISCONNECT SESSION';
 
   @override
-  String get logoutConfirmMessage => 'Are you sure you want to terminate the current session? All active monitoring will be paused.';
+  String get logoutConfirmMessage =>
+      'Are you sure you want to terminate the current session? All active monitoring will be paused.';
 
   @override
   String get livePulse => 'LIVE PULSE';
@@ -619,7 +634,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get engineStability => 'ENGINE_STABILITY: OPTIMAL';
 
   @override
-  String get aiStrategyText => 'Current network topology suggests a stable signature. No immediate horizontal movement detected in subnets. Recommend enabling Stealth Mode on public access points to mitigate passive node discovery.';
+  String get aiStrategyText =>
+      'Current network topology suggests a stable signature. No immediate horizontal movement detected in subnets. Recommend enabling Stealth Mode on public access points to mitigate passive node discovery.';
 
   @override
   String get packetSnifferTitle => 'PACKET_SNIFFER';

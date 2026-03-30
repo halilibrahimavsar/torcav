@@ -99,25 +99,25 @@ class _AppShellPageState extends State<AppShellPage> {
         _onTabSelected(2);
       case 'monitor/topology':
         _onTabSelected(2);
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const TopologyPage()),
-        );
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (context) => const TopologyPage()));
       case 'security':
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => const SecurityCenterPage()),
         );
       case 'reports':
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const ReportsPage()),
-        );
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (context) => const ReportsPage()));
       case 'settings':
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const SettingsPage()),
-        );
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (context) => const SettingsPage()));
       case 'profile':
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const ProfileHubPage()),
-        );
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (context) => const ProfileHubPage()));
     }
   }
 }
@@ -233,15 +233,11 @@ class _DiscoveryTabPageState extends State<_DiscoveryTabPage>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [
-          WifiScanPage(),
-          NetworkScanPage(),
-        ],
+        children: const [WifiScanPage(), NetworkScanPage()],
       ),
     );
   }
 }
-
 
 // ── Neon Bottom Bar ──────────────────────────────────────────────────
 
@@ -376,11 +372,7 @@ class _NeonBarButton extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              color: color,
-              size: isSelected ? 24 : 22,
-            ),
+            Icon(icon, color: color, size: isSelected ? 24 : 22),
             const SizedBox(height: 4),
             AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 200),

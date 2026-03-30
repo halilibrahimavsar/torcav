@@ -100,8 +100,16 @@ class _WifiRadarPainter extends CustomPainter {
 
     // ── Axis Lines ──
     paint.color = color.withValues(alpha: 0.1);
-    canvas.drawLine(Offset(center.dx - radius, center.dy), Offset(center.dx + radius, center.dy), paint);
-    canvas.drawLine(Offset(center.dx, center.dy - radius), Offset(center.dx, center.dy + radius), paint);
+    canvas.drawLine(
+      Offset(center.dx - radius, center.dy),
+      Offset(center.dx + radius, center.dy),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(center.dx, center.dy - radius),
+      Offset(center.dx, center.dy + radius),
+      paint,
+    );
 
     // ── Scanner Sweep ──
     if (isScanning) {
@@ -139,12 +147,13 @@ class _WifiRadarPainter extends CustomPainter {
 
     // ── Blips (Detected Networks) ──
     final blipPaint = Paint()..style = PaintingStyle.fill;
-    
+
     for (int i = 0; i < blips.length; i++) {
       // Deterministic but "random" position for each blip based on index
-      final blipAngle = (i * 137.5) * (math.pi / 180); // Golden angle for distribution
+      final blipAngle =
+          (i * 137.5) * (math.pi / 180); // Golden angle for distribution
       final blipDistance = blips[i] * radius;
-      
+
       final blipPos = Offset(
         center.dx + math.cos(blipAngle) * blipDistance,
         center.dy + math.sin(blipAngle) * blipDistance,
@@ -161,7 +170,7 @@ class _WifiRadarPainter extends CustomPainter {
 
       blipPaint.color = color.withValues(alpha: alpha);
       canvas.drawCircle(blipPos, 4, blipPaint);
-      
+
       // Draw a subtle outer ring for the blip
       paint.color = color.withValues(alpha: alpha * 0.5);
       canvas.drawCircle(blipPos, 8 * (1.1 - alpha), paint);

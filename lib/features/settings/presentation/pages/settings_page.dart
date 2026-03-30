@@ -120,9 +120,10 @@ class _SettingsPageState extends State<SettingsPage> {
                   return Row(
                     children: [
                       _NeonIconCircle(
-                        icon: mode == ThemeMode.dark
-                            ? Icons.dark_mode_rounded
-                            : Icons.light_mode_rounded,
+                        icon:
+                            mode == ThemeMode.dark
+                                ? Icons.dark_mode_rounded
+                                : Icons.light_mode_rounded,
                         color: AppColors.neonCyan,
                       ),
                       const SizedBox(width: 12),
@@ -190,10 +191,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       );
                     },
                   ),
-                  const Divider(
-                    color: AppColors.glassWhite,
-                    height: 24,
-                  ),
+                  const Divider(color: AppColors.glassWhite, height: 24),
                   // Interval Slider
                   _NeonSliderTile(
                     label: l10n.settingsMonitoringInterval,
@@ -205,16 +203,11 @@ class _SettingsPageState extends State<SettingsPage> {
                     color: AppColors.neonPurple,
                     onChanged: (value) {
                       _update(
-                        settings.copyWith(
-                          scanIntervalSeconds: value.round(),
-                        ),
+                        settings.copyWith(scanIntervalSeconds: value.round()),
                       );
                     },
                   ),
-                  const Divider(
-                    color: AppColors.glassWhite,
-                    height: 24,
-                  ),
+                  const Divider(color: AppColors.glassWhite, height: 24),
                   // Backend
                   DropdownButtonFormField<WifiBackendPreference>(
                     value: settings.defaultBackendPreference,
@@ -331,18 +324,17 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.neonCyan
-              : Colors.transparent,
+          color: isSelected ? AppColors.neonCyan : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: AppColors.neonCyan.withValues(alpha: 0.3),
-                    blurRadius: 8,
-                  ),
-                ]
-              : [],
+          boxShadow:
+              isSelected
+                  ? [
+                    BoxShadow(
+                      color: AppColors.neonCyan.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                    ),
+                  ]
+                  : [],
         ),
         child: Icon(
           icon,
@@ -402,14 +394,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 label: 'English 🇺🇸',
                 locale: const Locale('en'),
               ),
-              _LanguageOption(
-                label: 'Türkçe 🇹🇷',
-                locale: const Locale('tr'),
-              ),
-              _LanguageOption(
-                label: 'Kurdî ☀️',
-                locale: const Locale('ku'),
-              ),
+              _LanguageOption(label: 'Türkçe 🇹🇷', locale: const Locale('tr')),
+              _LanguageOption(label: 'Kurdî ☀️', locale: const Locale('ku')),
               _LanguageOption(
                 label: 'Deutsch 🇩🇪',
                 locale: const Locale('de'),
@@ -443,10 +429,7 @@ class _NeonIconCircle extends StatelessWidget {
         shape: BoxShape.circle,
         color: color.withValues(alpha: 0.1),
         boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.12),
-            blurRadius: 10,
-          ),
+          BoxShadow(color: color.withValues(alpha: 0.12), blurRadius: 10),
         ],
       ),
       child: Icon(icon, color: color, size: 18),
@@ -544,26 +527,28 @@ class _LanguageOption extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              color: isSelected
-                  ? AppColors.neonPurple.withValues(alpha: 0.1)
-                  : Colors.transparent,
-              border: isSelected
-                  ? Border.all(
-                      color: AppColors.neonPurple.withValues(alpha: 0.3),
-                    )
-                  : null,
+              color:
+                  isSelected
+                      ? AppColors.neonPurple.withValues(alpha: 0.1)
+                      : Colors.transparent,
+              border:
+                  isSelected
+                      ? Border.all(
+                        color: AppColors.neonPurple.withValues(alpha: 0.3),
+                      )
+                      : null,
             ),
             child: Row(
               children: [
                 Text(
                   label,
                   style: GoogleFonts.rajdhani(
-                    color: isSelected
-                        ? AppColors.neonPurple
-                        : AppColors.textPrimary,
+                    color:
+                        isSelected
+                            ? AppColors.neonPurple
+                            : AppColors.textPrimary,
                     fontSize: 16,
-                    fontWeight:
-                        isSelected ? FontWeight.bold : FontWeight.w600,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                   ),
                 ),
                 const Spacer(),

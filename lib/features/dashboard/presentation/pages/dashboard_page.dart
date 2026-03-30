@@ -76,7 +76,9 @@ class _DashboardPageState extends State<DashboardPage> {
             height: 32,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.3)),
+              border: Border.all(
+                color: AppColors.neonCyan.withValues(alpha: 0.3),
+              ),
             ),
             child: const Icon(Icons.menu_rounded, size: 18),
           ),
@@ -119,7 +121,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 loading: _loading,
               ),
             ),
-            
+
             const SizedBox(height: 32),
 
             // ── System Metrics Strip ──
@@ -159,7 +161,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 32),
 
             // ── Recent Activity Section ──
@@ -173,7 +175,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
               ),
             ),
-            
+
             StaggeredEntry(
               delay: const Duration(milliseconds: 800),
               child: _LastScanStrip(
@@ -183,7 +185,7 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
 
             const SizedBox(height: 20),
-            
+
             StaggeredEntry(
               delay: const Duration(milliseconds: 900),
               child: _SafetyBadge(onTap: () => widget.onNavigate('security')),
@@ -215,9 +217,8 @@ class _SecurityBentoHeader extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final isConnected = ssid != '—' && ssid.isNotEmpty;
     final accentColor = isConnected ? AppColors.neonCyan : AppColors.neonRed;
-    final statusLabel = isConnected
-        ? l10n.connectedStatusCaps
-        : l10n.disconnectedStatusCaps;
+    final statusLabel =
+        isConnected ? l10n.connectedStatusCaps : l10n.disconnectedStatusCaps;
 
     return Column(
       children: [
@@ -372,7 +373,10 @@ class _QuickAction extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 20,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -382,7 +386,9 @@ class _QuickAction extends StatelessWidget {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: color.withValues(alpha: 0.1),
-                            border: Border.all(color: color.withValues(alpha: 0.2)),
+                            border: Border.all(
+                              color: color.withValues(alpha: 0.2),
+                            ),
                           ),
                           child: Icon(icon, color: color, size: 20),
                         ),
@@ -445,9 +451,15 @@ class _LastScanStrip extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: AppColors.neonGreen.withValues(alpha: 0.1),
-              border: Border.all(color: AppColors.neonGreen.withValues(alpha: 0.2)),
+              border: Border.all(
+                color: AppColors.neonGreen.withValues(alpha: 0.2),
+              ),
             ),
-            child: const Icon(Icons.radar_rounded, color: AppColors.neonGreen, size: 20),
+            child: const Icon(
+              Icons.radar_rounded,
+              color: AppColors.neonGreen,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -464,7 +476,9 @@ class _LastScanStrip extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  networkCount == 0 ? l10n.noSnapshotAvailable : l10n.networksCount(networkCount),
+                  networkCount == 0
+                      ? l10n.noSnapshotAvailable
+                      : l10n.networksCount(networkCount),
                   style: GoogleFonts.rajdhani(
                     color: AppColors.textPrimary,
                     fontSize: 16,
@@ -474,7 +488,11 @@ class _LastScanStrip extends StatelessWidget {
               ],
             ),
           ),
-          Icon(Icons.arrow_forward_ios_rounded, color: AppColors.neonGreen.withValues(alpha: 0.5), size: 14),
+          Icon(
+            Icons.arrow_forward_ios_rounded,
+            color: AppColors.neonGreen.withValues(alpha: 0.5),
+            size: 14,
+          ),
         ],
       ),
     );
@@ -504,7 +522,11 @@ class _SafetyBadge extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: AppColors.neonGreen.withValues(alpha: 0.1),
               ),
-              child: const Icon(Icons.verified_user_rounded, color: AppColors.neonGreen, size: 16),
+              child: const Icon(
+                Icons.verified_user_rounded,
+                color: AppColors.neonGreen,
+                size: 16,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(

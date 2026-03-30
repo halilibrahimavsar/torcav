@@ -57,7 +57,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 ),
               ),
               const SizedBox(height: 16),
-              
+
               StaggeredEntry(
                 delay: const Duration(milliseconds: 100),
                 child: _ScanControlPanel(
@@ -65,8 +65,8 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                   isScanning: state is NetworkScanLoading,
                   onScan: () {
                     context.read<NetworkScanBloc>().add(
-                          StartNetworkScan(target: _targetController.text),
-                        );
+                      StartNetworkScan(target: _targetController.text),
+                    );
                   },
                 ),
               ),
@@ -91,7 +91,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                
+
                 _NetworkBentoHeader(
                   devices: state.devices,
                   hosts: state.hosts,
@@ -109,31 +109,30 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                
-                ...state.devices.asMap().entries.map(
-                  (entry) {
-                    final device = entry.value;
-                    final hostResult = state.hosts.firstWhere(
-                      (h) => h.ip == device.ip,
-                      orElse: () => HostScanResult(
-                        ip: device.ip,
-                        mac: device.mac,
-                        vendor: device.vendor,
-                        hostName: device.hostName,
-                        osGuess: 'Unknown',
-                        latency: device.latency,
-                        services: const [],
-                        vulnerabilities: const [],
-                        exposureScore: 0,
-                        deviceType: 'Unknown',
-                      ),
-                    );
-                    return StaggeredEntry(
-                      delay: Duration(milliseconds: 250 + entry.key * 50),
-                      child: _DeviceCard(host: hostResult),
-                    );
-                  },
-                ),
+
+                ...state.devices.asMap().entries.map((entry) {
+                  final device = entry.value;
+                  final hostResult = state.hosts.firstWhere(
+                    (h) => h.ip == device.ip,
+                    orElse:
+                        () => HostScanResult(
+                          ip: device.ip,
+                          mac: device.mac,
+                          vendor: device.vendor,
+                          hostName: device.hostName,
+                          osGuess: 'Unknown',
+                          latency: device.latency,
+                          services: const [],
+                          vulnerabilities: const [],
+                          exposureScore: 0,
+                          deviceType: 'Unknown',
+                        ),
+                  );
+                  return StaggeredEntry(
+                    delay: Duration(milliseconds: 250 + entry.key * 50),
+                    child: _DeviceCard(host: hostResult),
+                  );
+                }),
               ],
 
               if (state is NetworkScanError) ...[
@@ -210,9 +209,10 @@ class _ScanControlPanel extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: isScanning
-                        ? AppColors.glassWhite
-                        : AppColors.neonCyan.withValues(alpha: 0.12),
+                    color:
+                        isScanning
+                            ? AppColors.glassWhite
+                            : AppColors.neonCyan.withValues(alpha: 0.12),
                     border: Border.all(
                       color: AppColors.neonCyan.withValues(
                         alpha: isScanning ? 0.1 : 0.3,
@@ -335,11 +335,15 @@ class _NetworkBentoHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final avgRisk = hosts.isEmpty 
-        ? 0.0 
-        : hosts.map((h) => h.exposureScore).reduce((a, b) => a + b) / hosts.length;
-    
-    final totalServices = hosts.map((h) => h.services.length).fold(0, (a, b) => a + b);
+    final avgRisk =
+        hosts.isEmpty
+            ? 0.0
+            : hosts.map((h) => h.exposureScore).reduce((a, b) => a + b) /
+                hosts.length;
+
+    final totalServices = hosts
+        .map((h) => h.services.length)
+        .fold(0, (a, b) => a + b);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -391,7 +395,10 @@ class _NetworkBentoHeader extends StatelessWidget {
                               label: 'Risk Avg',
                               value: avgRisk.toStringAsFixed(1),
                               icon: Icons.gpp_maybe_rounded,
-                              color: avgRisk > 5 ? AppColors.neonRed : AppColors.neonGreen,
+                              color:
+                                  avgRisk > 5
+                                      ? AppColors.neonRed
+                                      : AppColors.neonGreen,
                             ),
                           ),
                         ],
@@ -414,9 +421,10 @@ class _NetworkBentoHeader extends StatelessWidget {
                           Expanded(
                             child: BentoStatTile(
                               label: 'Subnet',
-                              value: target.split('.').last == '0/24' 
-                                  ? target.replaceAll('.0/24', '') 
-                                  : target,
+                              value:
+                                  target.split('.').last == '0/24'
+                                      ? target.replaceAll('.0/24', '')
+                                      : target,
                               icon: Icons.lan_rounded,
                               color: AppColors.neonOrange,
                               subValue: 'CIDR TARGET',
@@ -446,7 +454,8 @@ class _PulseRing extends StatefulWidget {
   State<_PulseRing> createState() => _PulseRingState();
 }
 
-class _PulseRingState extends State<_PulseRing> with SingleTickerProviderStateMixin {
+class _PulseRingState extends State<_PulseRing>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _opacity;
   late Animation<double> _scale;
@@ -459,16 +468,21 @@ class _PulseRingState extends State<_PulseRing> with SingleTickerProviderStateMi
       duration: const Duration(seconds: 3),
     );
 
-    _opacity = Tween<double>(begin: 0.5, end: 0.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
-    _scale = Tween<double>(begin: 0.8, end: 2.5).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _opacity = Tween<double>(
+      begin: 0.5,
+      end: 0.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _scale = Tween<double>(
+      begin: 0.8,
+      end: 2.5,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
-    Future.delayed(Duration(milliseconds: (widget.delaySeconds * 1000).toInt()), () {
-      if (mounted) _controller.repeat();
-    });
+    Future.delayed(
+      Duration(milliseconds: (widget.delaySeconds * 1000).toInt()),
+      () {
+        if (mounted) _controller.repeat();
+      },
+    );
   }
 
   @override
@@ -515,12 +529,29 @@ class _DeviceCard extends StatelessWidget {
   IconData get _deviceIcon {
     final name = host.hostName.toLowerCase();
     final vendor = host.vendor.toLowerCase();
-    if (name.contains('phone') || name.contains('android') || name.contains('iphone')) return Icons.smartphone_rounded;
-    if (name.contains('tablet') || name.contains('ipad')) return Icons.tablet_mac_rounded;
-    if (name.contains('laptop') || name.contains('macbook')) return Icons.laptop_chromebook_rounded;
-    if (name.contains('tv') || name.contains('television')) return Icons.tv_rounded;
-    if (name.contains('router') || name.contains('gateway') || vendor.contains('tp-link') || vendor.contains('asus')) return Icons.router_rounded;
-    if (name.contains('watch')) return Icons.watch_rounded;
+    if (name.contains('phone') ||
+        name.contains('android') ||
+        name.contains('iphone')) {
+      return Icons.smartphone_rounded;
+    }
+    if (name.contains('tablet') || name.contains('ipad')) {
+      return Icons.tablet_mac_rounded;
+    }
+    if (name.contains('laptop') || name.contains('macbook')) {
+      return Icons.laptop_chromebook_rounded;
+    }
+    if (name.contains('tv') || name.contains('television')) {
+      return Icons.tv_rounded;
+    }
+    if (name.contains('router') ||
+        name.contains('gateway') ||
+        vendor.contains('tp-link') ||
+        vendor.contains('asus')) {
+      return Icons.router_rounded;
+    }
+    if (name.contains('watch')) {
+      return Icons.watch_rounded;
+    }
     return Icons.settings_input_component_rounded;
   }
 
@@ -548,11 +579,7 @@ class _DeviceCard extends StatelessWidget {
                       width: 1,
                     ),
                   ),
-                  child: Icon(
-                    _deviceIcon,
-                    color: _riskColor,
-                    size: 20,
-                  ),
+                  child: Icon(_deviceIcon, color: _riskColor, size: 20),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -560,7 +587,9 @@ class _DeviceCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        host.hostName.isEmpty ? 'ANONYMOUS NODE' : host.hostName.toUpperCase(),
+                        host.hostName.isEmpty
+                            ? 'ANONYMOUS NODE'
+                            : host.hostName.toUpperCase(),
                         style: GoogleFonts.orbitron(
                           color: AppColors.textPrimary,
                           fontSize: 14,
@@ -612,11 +641,16 @@ class _DeviceCard extends StatelessWidget {
                 if (host.services.isNotEmpty) ...[
                   const SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: _riskColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: _riskColor.withValues(alpha: 0.3)),
+                      border: Border.all(
+                        color: _riskColor.withValues(alpha: 0.3),
+                      ),
                     ),
                     child: Text(
                       '${host.services.length} PORTS',
@@ -644,7 +678,10 @@ class _RiskIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = score > 7 ? AppColors.neonRed : (score > 3 ? AppColors.neonOrange : AppColors.neonGreen);
+    final color =
+        score > 7
+            ? AppColors.neonRed
+            : (score > 3 ? AppColors.neonOrange : AppColors.neonGreen);
     return Column(
       children: [
         NeonText(
@@ -719,11 +756,7 @@ class _ErrorCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          Icon(
-            Icons.error_outline_rounded,
-            color: AppColors.neonRed,
-            size: 24,
-          ),
+          Icon(Icons.error_outline_rounded, color: AppColors.neonRed, size: 24),
           const SizedBox(width: 12),
           Expanded(
             child: Text(

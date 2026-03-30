@@ -19,7 +19,15 @@ class _PacketLogsPageState extends State<PacketLogsPage> {
   Timer? _timer;
   bool _isCapturing = true;
 
-  final List<String> _protocols = ['TCP', 'UDP', 'ICMP', 'HTTP', 'HTTPS', 'DNS', 'ARP'];
+  final List<String> _protocols = [
+    'TCP',
+    'UDP',
+    'ICMP',
+    'HTTP',
+    'HTTPS',
+    'DNS',
+    'ARP',
+  ];
   final List<String> _ips = [
     '192.168.1.1',
     '192.168.1.45',
@@ -74,10 +82,13 @@ class _PacketLogsPageState extends State<PacketLogsPage> {
     final dst = _ips[random.nextInt(_ips.length)];
     final port = random.nextInt(65535);
     final size = random.nextInt(1500);
-    
+
     // Generate hex data
     final hexChars = '0123456789ABCDEF';
-    final hex = List.generate(16, (_) => hexChars[random.nextInt(16)] + hexChars[random.nextInt(16)]).join(' ');
+    final hex = List.generate(
+      16,
+      (_) => hexChars[random.nextInt(16)] + hexChars[random.nextInt(16)],
+    ).join(' ');
 
     return _PacketLogEntry(
       timestamp: DateTime.now(),
@@ -104,7 +115,9 @@ class _PacketLogsPageState extends State<PacketLogsPage> {
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
                 color: AppColors.neonOrange.withValues(alpha: 0.1),
-                border: Border.all(color: AppColors.neonOrange.withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: AppColors.neonOrange.withValues(alpha: 0.3),
+                ),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
@@ -128,13 +141,18 @@ class _PacketLogsPageState extends State<PacketLogsPage> {
           IconButton(
             onPressed: () => setState(() => _isCapturing = !_isCapturing),
             icon: Icon(
-              _isCapturing ? Icons.pause_circle_filled_rounded : Icons.play_circle_filled_rounded,
+              _isCapturing
+                  ? Icons.pause_circle_filled_rounded
+                  : Icons.play_circle_filled_rounded,
               color: _isCapturing ? AppColors.neonRed : AppColors.neonGreen,
             ),
           ),
           IconButton(
             onPressed: () => setState(() => _logs.clear()),
-            icon: const Icon(Icons.delete_sweep_rounded, color: AppColors.textMuted),
+            icon: const Icon(
+              Icons.delete_sweep_rounded,
+              color: AppColors.textMuted,
+            ),
           ),
         ],
       ),
@@ -142,7 +160,7 @@ class _PacketLogsPageState extends State<PacketLogsPage> {
         children: [
           // ── Capture Status Bar ──
           _buildStatusBar(),
-          
+
           // ── Terminal Output ──
           Expanded(
             child: Container(
@@ -150,17 +168,20 @@ class _PacketLogsPageState extends State<PacketLogsPage> {
               decoration: BoxDecoration(
                 color: Colors.black.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.1)),
+                border: Border.all(
+                  color: AppColors.neonCyan.withValues(alpha: 0.1),
+                ),
               ),
               child: ListView.builder(
                 controller: _scrollController,
                 padding: const EdgeInsets.all(12),
                 itemCount: _logs.length,
-                itemBuilder: (context, index) => _PacketLogTile(entry: _logs[index]),
+                itemBuilder:
+                    (context, index) => _PacketLogTile(entry: _logs[index]),
               ),
             ),
           ),
-          
+
           // ── Bottom HUD Metrics ──
           _buildBottomHUD(),
         ],
@@ -263,19 +284,25 @@ class _PacketLogTile extends StatelessWidget {
 
   Color get _protocolColor {
     switch (entry.protocol) {
-      case 'TCP': return AppColors.neonCyan;
-      case 'UDP': return AppColors.neonPurple;
-      case 'ICMP': return AppColors.neonOrange;
+      case 'TCP':
+        return AppColors.neonCyan;
+      case 'UDP':
+        return AppColors.neonPurple;
+      case 'ICMP':
+        return AppColors.neonOrange;
       case 'HTTP':
-      case 'HTTPS': return AppColors.neonGreen;
-      default: return AppColors.textSecondary;
+      case 'HTTPS':
+        return AppColors.neonGreen;
+      default:
+        return AppColors.textSecondary;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final timeStr = "${entry.timestamp.hour.toString().padLeft(2, '0')}:${entry.timestamp.minute.toString().padLeft(2, '0')}:${entry.timestamp.second.toString().padLeft(2, '0')}.${entry.timestamp.millisecond.toString().padLeft(3, '0')}";
-    
+    final timeStr =
+        "${entry.timestamp.hour.toString().padLeft(2, '0')}:${entry.timestamp.minute.toString().padLeft(2, '0')}:${entry.timestamp.second.toString().padLeft(2, '0')}.${entry.timestamp.millisecond.toString().padLeft(3, '0')}";
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Column(

@@ -9,7 +9,8 @@ class AppLocalizationsKu extends AppLocalizations {
   AppLocalizationsKu([String locale = 'ku']) : super(locale);
 
   @override
-  String get activeOperationsBlockedMsg => 'Operasyonên aktîf hatine astengkirin heta ku polîtîka û lîsteya destûrdayînê werin pejirandin.';
+  String get activeOperationsBlockedMsg =>
+      'Operasyonên aktîf hatine astengkirin heta ku polîtîka û lîsteya destûrdayînê werin pejirandin.';
 
   @override
   String get authorizedTargets => 'Hedefên Destûrdayî';
@@ -66,7 +67,8 @@ class AppLocalizationsKu extends AppLocalizations {
   String get strictAllowlist => 'Lîsteya destûrdayînê ya hişk';
 
   @override
-  String get blockActiveOpsUnknown => 'Operasyonên aktîf ji bo hedefên nenas asteng bike';
+  String get blockActiveOpsUnknown =>
+      'Operasyonên aktîf ji bo hedefên nenas asteng bike';
 
   @override
   String get rateLimitActiveOps => 'Sînora lezê navbera operasyonên aktîf';
@@ -78,7 +80,8 @@ class AppLocalizationsKu extends AppLocalizations {
   String get settingsLanguage => 'Ziman';
 
   @override
-  String get settingsScanBehavior => 'Tevgera taranê ya xwerû, stratejiya backend û rewşa ewlekariyê kontrol bike.';
+  String get settingsScanBehavior =>
+      'Tevgera taranê ya xwerû, stratejiya backend û rewşa ewlekariyê kontrol bike.';
 
   @override
   String get settingsDefaultScanPasses => 'Derbasbûnên taranê yên xwerû';
@@ -96,7 +99,8 @@ class AppLocalizationsKu extends AppLocalizations {
   String get settingsStrictSafety => 'Moda ewlekariya hişk';
 
   @override
-  String get settingsStrictSafetyDesc => 'Ji bo operasyonên aktîf destûr û lîsteya destûrdayînê pêwîst e';
+  String get settingsStrictSafetyDesc =>
+      'Ji bo operasyonên aktîf destûr û lîsteya destûrdayînê pêwîst e';
 
   @override
   String get navDashboard => 'Dashboard';
@@ -132,7 +136,8 @@ class AppLocalizationsKu extends AppLocalizations {
   String get securityCenterTitle => 'Navenda Ewlekariyê';
 
   @override
-  String get securityCenterDesc => 'Puanlama rîskê, lîsteyên destûrdayînê û kontrolên polîtîkayê';
+  String get securityCenterDesc =>
+      'Puanlama rîskê, lîsteyên destûrdayînê û kontrolên polîtîkayê';
 
   @override
   String get reportsTitle => 'Raport';
@@ -153,7 +158,8 @@ class AppLocalizationsKu extends AppLocalizations {
   String get monitoringTitle => 'Şopandin';
 
   @override
-  String get monitoringSubtitle => 'Berfirehiya bandê, tespîta anomalî û herikîna nexşeya germê.';
+  String get monitoringSubtitle =>
+      'Berfirehiya bandê, tespîta anomalî û herikîna nexşeya germê.';
 
   @override
   String get comingSoon => 'DÊ ZÛ BÊ';
@@ -291,10 +297,12 @@ class AppLocalizationsKu extends AppLocalizations {
   }
 
   @override
-  String get reportsSubtitle => 'Danişîna taranê ya dawî wek JSON, HTML an PDF derxe.';
+  String get reportsSubtitle =>
+      'Danişîna taranê ya dawî wek JSON, HTML an PDF derxe.';
 
   @override
-  String get noSnapshotAvailable => 'Hîn wêneya taranê tune. Pêşî taranek Wi-Fi pêk bîne.';
+  String get noSnapshotAvailable =>
+      'Hîn wêneya taranê tune. Pêşî taranek Wi-Fi pêk bîne.';
 
   @override
   String latestSnapshot(Object count, Object backend) {
@@ -357,7 +365,8 @@ class AppLocalizationsKu extends AppLocalizations {
   }
 
   @override
-  String get noVulnerabilities => 'Li gorî daneyên taranê yên niha ti qelisî nehatin dîtin.';
+  String get noVulnerabilities =>
+      'Li gorî daneyên taranê yên niha ti qelisî nehatin dîtin.';
 
   @override
   String get bssId => 'BSSID';
@@ -477,19 +486,22 @@ class AppLocalizationsKu extends AppLocalizations {
   String get blockUnknownAP => 'Block Unknown APs';
 
   @override
-  String get automaticBlockMsg => 'Automatically drops connections to rogue APs';
+  String get automaticBlockMsg =>
+      'Automatically drops connections to rogue APs';
 
   @override
   String get activeProbingEnabled => 'Active Probing';
 
   @override
-  String get activeProbingMsg => 'Periodically tests connected AP for anomalies';
+  String get activeProbingMsg =>
+      'Periodically tests connected AP for anomalies';
 
   @override
   String get requireConsentForDeauth => 'Require Consent';
 
   @override
-  String get manualAuthorizationMsg => 'Manually authorize deauth/active defense';
+  String get manualAuthorizationMsg =>
+      'Manually authorize deauth/active defense';
 
   @override
   String get defensePolicy => 'Defense Policy';
@@ -530,7 +542,8 @@ class AppLocalizationsKu extends AppLocalizations {
   String get logoutConfirmation => 'DISCONNECT SESSION';
 
   @override
-  String get logoutConfirmMessage => 'Are you sure you want to terminate the current session? All active monitoring will be paused.';
+  String get logoutConfirmMessage =>
+      'Are you sure you want to terminate the current session? All active monitoring will be paused.';
 
   @override
   String get livePulse => 'LIVE PULSE';
@@ -619,7 +632,8 @@ class AppLocalizationsKu extends AppLocalizations {
   String get engineStability => 'ENGINE_STABILITY: OPTIMAL';
 
   @override
-  String get aiStrategyText => 'Current network topology suggests a stable signature. No immediate horizontal movement detected in subnets. Recommend enabling Stealth Mode on public access points to mitigate passive node discovery.';
+  String get aiStrategyText =>
+      'Current network topology suggests a stable signature. No immediate horizontal movement detected in subnets. Recommend enabling Stealth Mode on public access points to mitigate passive node discovery.';
 
   @override
   String get packetSnifferTitle => 'PACKET_SNIFFER';

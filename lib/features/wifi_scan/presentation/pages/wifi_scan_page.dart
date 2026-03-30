@@ -139,51 +139,6 @@ class _WifiScanViewState extends State<_WifiScanView> {
           );
         },
       ),
-      floatingActionButton: _NeonFAB(
-        onPressed: () {
-          context.read<WifiScanBloc>().add(
-            WifiScanRefreshed(request: _currentRequest),
-          );
-        },
-        label: l10n.scanButton,
-      ),
-    );
-  }
-}
-
-// ── Neon Floating Action Button ─────────────────────────────────────
-
-class _NeonFAB extends StatelessWidget {
-  final VoidCallback onPressed;
-  final String label;
-
-  const _NeonFAB({required this.onPressed, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.neonCyan.withValues(alpha: 0.25),
-            blurRadius: 20,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: FloatingActionButton.extended(
-        onPressed: onPressed,
-        icon: const Icon(Icons.wifi_tethering_rounded),
-        label: Text(
-          label.toUpperCase(),
-          style: GoogleFonts.orbitron(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1,
-          ),
-        ),
-      ),
     );
   }
 }
@@ -194,10 +149,7 @@ class _SnapshotView extends StatelessWidget {
   final ScanSnapshot snapshot;
   final ScanRequest currentRequest;
 
-  const _SnapshotView({
-    required this.snapshot,
-    required this.currentRequest,
-  });
+  const _SnapshotView({required this.snapshot, required this.currentRequest});
 
   @override
   Widget build(BuildContext context) {
@@ -268,9 +220,9 @@ class _SnapshotView extends StatelessWidget {
 
           // ── Network Count Header ──
           NeonSectionHeader(
-            label: AppLocalizations.of(context)!.networksCount(
-              snapshot.networks.length,
-            ),
+            label: AppLocalizations.of(
+              context,
+            )!.networksCount(snapshot.networks.length),
             icon: Icons.wifi_rounded,
             color: AppColors.neonCyan,
           ),
@@ -278,14 +230,14 @@ class _SnapshotView extends StatelessWidget {
 
           // ── Network Grid ──
           ...snapshot.networks.asMap().entries.map(
-                (entry) => StaggeredEntry(
-                  delay: Duration(milliseconds: 100 + entry.key * 40),
-                  child: _WifiNetworkCard(
-                    network: entry.value,
-                    interfaceName: snapshot.interfaceName,
-                  ),
-                ),
+            (entry) => StaggeredEntry(
+              delay: Duration(milliseconds: 100 + entry.key * 40),
+              child: _WifiNetworkCard(
+                network: entry.value,
+                interfaceName: snapshot.interfaceName,
               ),
+            ),
+          ),
         ],
       ),
     );
@@ -302,9 +254,12 @@ class _WifiBentoHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Calculate band-specific blips for the radar
-    final blips = snapshot.networks
-        .map((n) => (n.avgSignalDbm + 100) / 70.0) // Normalize signal to 0..1
-        .toList();
+    final blips =
+        snapshot.networks
+            .map(
+              (n) => (n.avgSignalDbm + 100) / 70.0,
+            ) // Normalize signal to 0..1
+            .toList();
 
     return Column(
       children: [
@@ -357,10 +312,12 @@ class _WifiBentoHeader extends StatelessWidget {
                               Expanded(
                                 child: BentoStatTile(
                                   label: 'Security',
-                                  value: '${snapshot.networks.where((n) => n.security != SecurityType.open).length}',
+                                  value:
+                                      '${snapshot.networks.where((n) => n.security != SecurityType.open).length}',
                                   icon: Icons.security_rounded,
                                   color: AppColors.neonGreen,
-                                  subValue: '${snapshot.networks.where((n) => n.security == SecurityType.open).length} OPEN',
+                                  subValue:
+                                      '${snapshot.networks.where((n) => n.security == SecurityType.open).length} OPEN',
                                 ),
                               ),
                             ],
@@ -373,9 +330,10 @@ class _WifiBentoHeader extends StatelessWidget {
                               Expanded(
                                 child: BentoStatTile(
                                   label: 'Avg Signal',
-                                  value: snapshot.networks.isEmpty
-                                      ? 'N/A'
-                                      : '${(snapshot.networks.map((n) => n.avgSignalDbm).reduce((a, b) => a + b) / snapshot.networks.length).round()}',
+                                  value:
+                                      snapshot.networks.isEmpty
+                                          ? 'N/A'
+                                          : '${(snapshot.networks.map((n) => n.avgSignalDbm).reduce((a, b) => a + b) / snapshot.networks.length).round()}',
                                   icon: Icons.signal_wifi_4_bar_rounded,
                                   color: AppColors.neonPurple,
                                   subValue: 'DBM',
@@ -407,41 +365,45 @@ class _WifiBentoHeader extends StatelessWidget {
           SizedBox(
             height: 80,
             child: Row(
-              children: snapshot.bandStats.map((band) {
-                final isLast = snapshot.bandStats.last == band;
-                return Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(right: isLast ? 0 : 8),
-                    child: NeonCard(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      glowColor: _getBandColor(band.band),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            band.label,
-                            style: GoogleFonts.orbitron(
-                              color: _getBandColor(band.band),
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
+              children:
+                  snapshot.bandStats.map((band) {
+                    final isLast = snapshot.bandStats.last == band;
+                    return Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(right: isLast ? 0 : 8),
+                        child: NeonCard(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
                           ),
-                          const Spacer(),
-                          Text(
-                            '${band.networkCount} NETWORKS',
-                            style: GoogleFonts.rajdhani(
-                              color: AppColors.textPrimary,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          glowColor: _getBandColor(band.band),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                band.label,
+                                style: GoogleFonts.orbitron(
+                                  color: _getBandColor(band.band),
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Spacer(),
+                              Text(
+                                '${band.networkCount} NETWORKS',
+                                style: GoogleFonts.rajdhani(
+                                  color: AppColors.textPrimary,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              }).toList(),
+                    );
+                  }).toList(),
             ),
           ),
       ],
@@ -487,10 +449,11 @@ class _WifiNetworkCard extends StatelessWidget {
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => WifiDetailsPage(
-                network: network.toWifiNetwork(),
-                interfaceName: interfaceName,
-              ),
+              builder:
+                  (_) => WifiDetailsPage(
+                    network: network.toWifiNetwork(),
+                    interfaceName: interfaceName,
+                  ),
             ),
           );
         },
@@ -515,33 +478,36 @@ class _WifiNetworkCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Icon(
-                      Icons.wifi_rounded,
-                      color: _signalColor,
-                      size: 20,
-                    ),
+                    Icon(Icons.wifi_rounded, color: _signalColor, size: 20),
                     // High-tech signal bars
                     Positioned(
                       bottom: 4,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: List.generate(4, (index) {
-                          final isActive = (network.avgSignalDbm + 100) / 40 > (index / 4);
+                          final isActive =
+                              (network.avgSignalDbm + 100) / 40 > (index / 4);
                           return Container(
                             width: 3,
                             height: 4 + (index * 2),
                             margin: const EdgeInsets.symmetric(horizontal: 1),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(1),
-                              color: isActive 
-                                  ? _signalColor 
-                                  : _signalColor.withValues(alpha: 0.1),
-                              boxShadow: isActive ? [
-                                BoxShadow(
-                                  color: _signalColor.withValues(alpha: 0.5),
-                                  blurRadius: 4,
-                                )
-                              ] : null,
+                              color:
+                                  isActive
+                                      ? _signalColor
+                                      : _signalColor.withValues(alpha: 0.1),
+                              boxShadow:
+                                  isActive
+                                      ? [
+                                        BoxShadow(
+                                          color: _signalColor.withValues(
+                                            alpha: 0.5,
+                                          ),
+                                          blurRadius: 4,
+                                        ),
+                                      ]
+                                      : null,
                             ),
                           );
                         }),
@@ -555,7 +521,10 @@ class _WifiNetworkCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        (network.ssid.isEmpty ? l10n.hiddenNetwork : network.ssid).toUpperCase(),
+                        (network.ssid.isEmpty
+                                ? l10n.hiddenNetwork
+                                : network.ssid)
+                            .toUpperCase(),
                         style: GoogleFonts.orbitron(
                           color: AppColors.textPrimary,
                           fontWeight: FontWeight.bold,
@@ -625,12 +594,14 @@ class _WifiNetworkCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 _MiniTechTag(
                   label: network.security.name.toUpperCase(),
-                  icon: network.security == SecurityType.open 
-                      ? Icons.lock_open_rounded 
-                      : Icons.lock_rounded,
-                  color: network.security == SecurityType.open
-                      ? AppColors.neonRed
-                      : AppColors.neonGreen,
+                  icon:
+                      network.security == SecurityType.open
+                          ? Icons.lock_open_rounded
+                          : Icons.lock_rounded,
+                  color:
+                      network.security == SecurityType.open
+                          ? AppColors.neonRed
+                          : AppColors.neonGreen,
                 ),
                 const Spacer(),
                 Text(
@@ -668,10 +639,7 @@ class _MiniTechTag extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(
-          color: color.withValues(alpha: 0.2),
-          width: 0.5,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 0.5),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -765,10 +733,12 @@ class _ChannelRatingLink extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => ChannelRatingPage(
-              networks: snapshot.networks.map((n) => n.toWifiNetwork()).toList(),
-              request: request,
-            ),
+            builder:
+                (context) => ChannelRatingPage(
+                  networks:
+                      snapshot.networks.map((n) => n.toWifiNetwork()).toList(),
+                  request: request,
+                ),
           ),
         );
       },
@@ -812,13 +782,9 @@ class _ChannelRatingLink extends StatelessWidget {
               ],
             ),
           ),
-          const Icon(
-            Icons.chevron_right_rounded,
-            color: AppColors.textMuted,
-          ),
+          const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
         ],
       ),
     );
   }
 }
-

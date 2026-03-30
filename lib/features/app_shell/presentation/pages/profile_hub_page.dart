@@ -187,10 +187,7 @@ class ProfileHubPage extends StatelessWidget {
         const SizedBox(width: 12),
         Text(
           label,
-          style: GoogleFonts.outfit(
-            color: AppColors.textMuted,
-            fontSize: 14,
-          ),
+          style: GoogleFonts.outfit(color: AppColors.textMuted, fontSize: 14),
         ),
         const Spacer(),
         Text(
@@ -204,5 +201,4 @@ class ProfileHubPage extends StatelessWidget {
       ],
     );
   }
-
 }

@@ -27,24 +27,25 @@ class TopologyGraphPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // ── Isometric Transformation ─────────────────────────────────────
     final center = Offset(size.width / 2, size.height / 2);
-    
+
     canvas.save();
     canvas.translate(center.dx, center.dy);
-    
+
     // Slight Isometric Tilt
-    var matrix = Matrix4.identity()
-      ..setEntry(3, 2, 0.001) // perspective
-      ..rotateX(-0.5); // Tilt back
-    
+    var matrix =
+        Matrix4.identity()
+          ..setEntry(3, 2, 0.001) // perspective
+          ..rotateX(-0.5); // Tilt back
+
     canvas.transform(matrix.storage);
     canvas.translate(-center.dx, -center.dy);
 
     final nodePositions = _calculatePositions(size);
     _drawEdges(canvas, nodePositions, size);
     _drawNodes(canvas, nodePositions, size);
-    
+
     _drawScanlines(canvas, size);
-    
+
     canvas.restore();
   }
 
@@ -61,7 +62,7 @@ class TopologyGraphPainter extends CustomPainter {
       // Repulsion-based Circle Layout for "Force View"
       final nodes = topology.nodes;
       final radius = math.min(size.width, size.height) * 0.4;
-      
+
       // Initial circle positions
       for (int i = 0; i < nodes.length; i++) {
         final angle = (i * 2 * math.pi) / nodes.length;
@@ -79,11 +80,11 @@ class TopologyGraphPainter extends CustomPainter {
             final idB = nodes[j].id;
             var posA = positions[idA]!;
             var posB = positions[idB]!;
-            
+
             final delta = posB - posA;
             final dist = delta.distance;
             const minAllowed = 60.0;
-            
+
             if (dist < minAllowed && dist > 0.1) {
               final force = (minAllowed - dist) / dist * 0.5;
               positions[idA] = posA - delta * force;
@@ -145,10 +146,11 @@ class TopologyGraphPainter extends CustomPainter {
       final avgY = (sourcePos.dy + targetPos.dy) / 2;
       final depthOpacity = (1.0 - (avgY / size.height)).clamp(0.2, 0.8);
 
-      final edgePaint = Paint()
-        ..color = baseColor.withValues(alpha: depthOpacity * 0.3)
-        ..strokeWidth = 2
-        ..style = PaintingStyle.stroke;
+      final edgePaint =
+          Paint()
+            ..color = baseColor.withValues(alpha: depthOpacity * 0.3)
+            ..strokeWidth = 2
+            ..style = PaintingStyle.stroke;
 
       if (edge.type == EdgeType.wireless) {
         _drawDashedLine(canvas, sourcePos, targetPos, edgePaint);
@@ -182,33 +184,47 @@ class TopologyGraphPainter extends CustomPainter {
     }
   }
 
-  void _drawDataFlow(Canvas canvas, Offset start, Offset end, Color color, double opacity) {
+  void _drawDataFlow(
+    Canvas canvas,
+    Offset start,
+    Offset end,
+    Color color,
+    double opacity,
+  ) {
     final direction = end - start;
     final distance = direction.distance;
     final unit = direction / distance;
 
     for (int i = 0; i < 2; i++) {
-        // Variable speed based on index and flowSpeed
+      // Variable speed based on index and flowSpeed
       final speed = (0.5 + (i * 0.2)) * flowSpeed;
       final t = (pulseValue * speed + (i * 0.5)) % 1.0;
       final pos = start + (unit * (distance * t));
-      
-      final pPaint = Paint()
-        ..color = color.withValues(alpha: opacity)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
-      
+
+      final pPaint =
+          Paint()
+            ..color = color.withValues(alpha: opacity)
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
+
       // Draw rectangular "data packet"
       canvas.save();
       canvas.translate(pos.dx, pos.dy);
       canvas.rotate(math.atan2(direction.dy, direction.dx));
-      canvas.drawRect(Rect.fromCenter(center: Offset.zero, width: 6, height: 2), pPaint);
-      
+      canvas.drawRect(
+        Rect.fromCenter(center: Offset.zero, width: 6, height: 2),
+        pPaint,
+      );
+
       // Glow trailing effect
-      final trailPaint = Paint()
-        ..shader = LinearGradient(
-          colors: [color.withValues(alpha: 0), color.withValues(alpha: opacity * 0.5)],
-        ).createShader(Rect.fromLTWH(-15, -1, 15, 2));
-      
+      final trailPaint =
+          Paint()
+            ..shader = LinearGradient(
+              colors: [
+                color.withValues(alpha: 0),
+                color.withValues(alpha: opacity * 0.5),
+              ],
+            ).createShader(Rect.fromLTWH(-15, -1, 15, 2));
+
       canvas.drawRect(Rect.fromLTWH(-15, -1, 15, 2), trailPaint);
       canvas.restore();
     }
@@ -229,25 +245,40 @@ class TopologyGraphPainter extends CustomPainter {
       if (isSelected) {
         for (int i = 0; i < 2; i++) {
           final ringT = (pulseValue + (i * 0.5)) % 1.0;
-          final ringPaint = Paint()
-            ..color = color.withValues(alpha: 0.5 * (1.0 - ringT))
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 1.5;
+          final ringPaint =
+              Paint()
+                ..color = color.withValues(alpha: 0.5 * (1.0 - ringT))
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 1.5;
           canvas.drawCircle(pos, radius + (30 * ringT), ringPaint);
         }
       }
 
       // Draw Base Glow
       canvas.drawCircle(
-        pos, 
-        radius * 1.5, 
+        pos,
+        radius * 1.5,
         Paint()
           ..color = color.withValues(alpha: 0.15 * depthOpacity)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10),
       );
 
-      _drawHexNode(canvas, pos, radius, color.withValues(alpha: depthOpacity), isSelected);
-      _drawNodeIcon(canvas, pos, radius * 0.55, color.withValues(alpha: depthOpacity), node.type, node.isCurrentDevice, node.isGateway);
+      _drawHexNode(
+        canvas,
+        pos,
+        radius,
+        color.withValues(alpha: depthOpacity),
+        isSelected,
+      );
+      _drawNodeIcon(
+        canvas,
+        pos,
+        radius * 0.55,
+        color.withValues(alpha: depthOpacity),
+        node.type,
+        node.isCurrentDevice,
+        node.isGateway,
+      );
 
       // Text Labels
       final labelPainter = TextPainter(
@@ -264,11 +295,20 @@ class TopologyGraphPainter extends CustomPainter {
         textDirection: TextDirection.ltr,
         textAlign: TextAlign.center,
       )..layout();
-      labelPainter.paint(canvas, Offset(pos.dx - labelPainter.width / 2, pos.dy + radius + 12));
+      labelPainter.paint(
+        canvas,
+        Offset(pos.dx - labelPainter.width / 2, pos.dy + radius + 12),
+      );
     }
   }
 
-  void _drawHexNode(Canvas canvas, Offset center, double radius, Color color, bool isSelected) {
+  void _drawHexNode(
+    Canvas canvas,
+    Offset center,
+    double radius,
+    Color color,
+    bool isSelected,
+  ) {
     final path = Path();
     for (int i = 0; i < 6; i++) {
       final angle = (i * 60 - 30) * math.pi / 180;
@@ -278,8 +318,13 @@ class TopologyGraphPainter extends CustomPainter {
     }
     path.close();
 
-    canvas.drawPath(path, Paint()..color = const Color(0xFF0F1219)..style = PaintingStyle.fill);
-    
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = const Color(0xFF0F1219)
+        ..style = PaintingStyle.fill,
+    );
+
     // Cyberpunk Border with Accent
     canvas.drawPath(
       path,
@@ -290,14 +335,18 @@ class TopologyGraphPainter extends CustomPainter {
     );
 
     if (isSelected) {
-        // Highlighting Corners
-        final highlightPaint = Paint()..color = color..strokeWidth = 3..style = PaintingStyle.stroke;
-        for (int i = 0; i < 6; i++) {
-            final angle = (i * 60 - 30) * math.pi / 180;
-            final x = center.dx + radius * math.cos(angle);
-            final y = center.dy + radius * math.sin(angle);
-            canvas.drawCircle(Offset(x, y), 2, highlightPaint);
-        }
+      // Highlighting Corners
+      final highlightPaint =
+          Paint()
+            ..color = color
+            ..strokeWidth = 3
+            ..style = PaintingStyle.stroke;
+      for (int i = 0; i < 6; i++) {
+        final angle = (i * 60 - 30) * math.pi / 180;
+        final x = center.dx + radius * math.cos(angle);
+        final y = center.dy + radius * math.sin(angle);
+        canvas.drawCircle(Offset(x, y), 2, highlightPaint);
+      }
     }
   }
 
@@ -319,42 +368,94 @@ class TopologyGraphPainter extends CustomPainter {
     return 22;
   }
 
-  void _drawNodeIcon(Canvas canvas, Offset center, double size, Color color, TopologyNodeType type, bool isCurrent, bool isGateway) {
-    final paint = Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 1.8;
-    
+  void _drawNodeIcon(
+    Canvas canvas,
+    Offset center,
+    double size,
+    Color color,
+    TopologyNodeType type,
+    bool isCurrent,
+    bool isGateway,
+  ) {
+    final paint =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.8;
+
     if (isGateway) {
       // Technical Router Icon
       canvas.drawCircle(center, size * 0.8, paint);
       canvas.drawCircle(center, size * 0.4, paint);
-      for(int i=0; i<4; i++) {
-          final a = i * math.pi / 2;
-          canvas.drawLine(center + Offset.fromDirection(a, size * 0.4), center + Offset.fromDirection(a, size * 0.8), paint);
+      for (int i = 0; i < 4; i++) {
+        final a = i * math.pi / 2;
+        canvas.drawLine(
+          center + Offset.fromDirection(a, size * 0.4),
+          center + Offset.fromDirection(a, size * 0.8),
+          paint,
+        );
       }
       return;
     }
 
     if (isCurrent) {
       // Tech Mobile Icon
-      final rrect = RRect.fromRectAndRadius(Rect.fromCenter(center: center, width: size * 1.1, height: size * 1.8), const Radius.circular(3));
+      final rrect = RRect.fromRectAndRadius(
+        Rect.fromCenter(center: center, width: size * 1.1, height: size * 1.8),
+        const Radius.circular(3),
+      );
       canvas.drawRRect(rrect, paint);
-      canvas.drawLine(center + Offset(-size * 0.3, -size * 0.5), center + Offset(size * 0.3, -size * 0.5), paint);
+      canvas.drawLine(
+        center + Offset(-size * 0.3, -size * 0.5),
+        center + Offset(size * 0.3, -size * 0.5),
+        paint,
+      );
       return;
     }
 
     switch (type) {
       case TopologyNodeType.router:
-        canvas.drawRect(Rect.fromCenter(center: center, width: size * 1.8, height: size * 0.6), paint);
-        canvas.drawLine(center + Offset(-size * 0.4, -size * 0.3), center + Offset(-size * 0.4, -size * 0.8), paint);
-        canvas.drawLine(center + Offset(size * 0.4, -size * 0.3), center + Offset(size * 0.4, -size * 0.8), paint);
+        canvas.drawRect(
+          Rect.fromCenter(
+            center: center,
+            width: size * 1.8,
+            height: size * 0.6,
+          ),
+          paint,
+        );
+        canvas.drawLine(
+          center + Offset(-size * 0.4, -size * 0.3),
+          center + Offset(-size * 0.4, -size * 0.8),
+          paint,
+        );
+        canvas.drawLine(
+          center + Offset(size * 0.4, -size * 0.3),
+          center + Offset(size * 0.4, -size * 0.8),
+          paint,
+        );
         break;
       case TopologyNodeType.mobile:
-        canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromCenter(center: center, width: size * 1.0, height: size * 1.6), const Radius.circular(3)), paint);
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromCenter(
+              center: center,
+              width: size * 1.0,
+              height: size * 1.6,
+            ),
+            const Radius.circular(3),
+          ),
+          paint,
+        );
         break;
       case TopologyNodeType.iot:
         canvas.drawCircle(center, size * 0.4, paint);
-        for(int i=0; i<6; i++) {
-            final a = (i * 60) * math.pi / 180;
-            canvas.drawCircle(center + Offset.fromDirection(a, size * 0.9), 1.5, paint);
+        for (int i = 0; i < 6; i++) {
+          final a = (i * 60) * math.pi / 180;
+          canvas.drawCircle(
+            center + Offset.fromDirection(a, size * 0.9),
+            1.5,
+            paint,
+          );
         }
         break;
       default:
@@ -373,20 +474,25 @@ class TopologyGraphPainter extends CustomPainter {
   }
 
   void _drawScanlines(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.03)
-      ..strokeWidth = 1.0;
+    final paint =
+        Paint()
+          ..color = Colors.white.withValues(alpha: 0.03)
+          ..strokeWidth = 1.0;
 
     for (double i = 0; i < size.height; i += 4) {
       canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
     }
-    
+
     // Subtle CRT Vignette
-    final vignettePaint = Paint()
-      ..shader = RadialGradient(
-        colors: [Colors.transparent, Colors.black.withValues(alpha: 0.2)],
-        stops: const [0.6, 1.0],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), vignettePaint);
+    final vignettePaint =
+        Paint()
+          ..shader = RadialGradient(
+            colors: [Colors.transparent, Colors.black.withValues(alpha: 0.2)],
+            stops: const [0.6, 1.0],
+          ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      vignettePaint,
+    );
   }
 }

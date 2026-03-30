@@ -42,78 +42,100 @@ class _SpeedCommandGaugeState extends State<SpeedCommandGauge>
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // ── Gauge Background & Arcs ──
-          CustomPaint(
-            size: Size.infinite,
-            painter: _GaugePainter(
-              download: widget.download,
-              upload: widget.upload,
-              maxSpeed: widget.maxSpeed,
-              animationValue: _controller.value,
-            ),
-          ),
-
-          // ── Central Stats ──
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              NeonText(
-                widget.download.toStringAsFixed(1),
-                style: GoogleFonts.orbitron(
-                  fontSize: 42,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.white,
-                ),
-                glowRadius: 10,
-              ),
-              Text(
-                'MBPS DOWNLOAD',
-                style: GoogleFonts.orbitron(
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.neonCyan.withValues(alpha: 0.7),
-                  letterSpacing: 2,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppColors.neonPurple.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(4),
-                  border: Border.all(
-                    color: AppColors.neonPurple.withValues(alpha: 0.3),
+    return TweenAnimationBuilder<double>(
+      duration: const Duration(milliseconds: 600),
+      curve: Curves.easeOutCubic,
+      tween: Tween<double>(begin: 0, end: widget.download),
+      builder: (context, dlValue, _) {
+        return TweenAnimationBuilder<double>(
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeOutCubic,
+          tween: Tween<double>(begin: 0, end: widget.upload),
+          builder: (context, ulValue, _) {
+            return AspectRatio(
+              aspectRatio: 1,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // ── Gauge Background & Arcs ──
+                  AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, _) {
+                      return CustomPaint(
+                        size: Size.infinite,
+                        painter: _GaugePainter(
+                          download: dlValue,
+                          upload: ulValue,
+                          maxSpeed: widget.maxSpeed,
+                          animationValue: _controller.value,
+                        ),
+                      );
+                    },
                   ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.upload_rounded,
-                      size: 12,
-                      color: AppColors.neonPurple,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${widget.upload.toStringAsFixed(1)} UP',
-                      style: GoogleFonts.sourceCodePro(
-                        color: AppColors.neonPurple,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+
+                  // ── Central Stats ──
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      NeonText(
+                        dlValue.toStringAsFixed(1),
+                        style: GoogleFonts.orbitron(
+                          fontSize: 42,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                        ),
+                        glowRadius: 10,
                       ),
-                    ),
-                  ],
-                ),
+                      Text(
+                        'MBPS DOWNLOAD',
+                        style: GoogleFonts.orbitron(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.neonCyan.withValues(alpha: 0.7),
+                          letterSpacing: 2,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.neonPurple.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(
+                            color: AppColors.neonPurple.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.upload_rounded,
+                              size: 12,
+                              color: AppColors.neonPurple,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '${ulValue.toStringAsFixed(1)} UP',
+                              style: GoogleFonts.sourceCodePro(
+                                color: AppColors.neonPurple,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
-        ],
-      ),
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -142,11 +164,12 @@ class _GaugePainter extends CustomPainter {
     final ulPercent = (upload / maxSpeed).clamp(0.0, 1.0);
 
     // ── Background Rails ──
-    final railPaint = Paint()
-      ..color = AppColors.glassWhite.withValues(alpha: 0.05)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 14
-      ..strokeCap = StrokeCap.round;
+    final railPaint =
+        Paint()
+          ..color = AppColors.glassWhite.withValues(alpha: 0.05)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 14
+          ..strokeCap = StrokeCap.round;
 
     // Download rail
     canvas.drawArc(
@@ -168,19 +191,17 @@ class _GaugePainter extends CustomPainter {
 
     // ── Download Neon Arc ──
     final dlGradient = SweepGradient(
-      colors: [
-        AppColors.neonCyan.withValues(alpha: 0.2),
-        AppColors.neonCyan,
-      ],
+      colors: [AppColors.neonCyan.withValues(alpha: 0.2), AppColors.neonCyan],
       stops: const [0.0, 1.0],
       transform: GradientRotation(startAngle),
     ).createShader(Rect.fromCircle(center: center, radius: radius));
 
-    final dlPaint = Paint()
-      ..shader = dlGradient
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 16
-      ..strokeCap = StrokeCap.round;
+    final dlPaint =
+        Paint()
+          ..shader = dlGradient
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 16
+          ..strokeCap = StrokeCap.round;
 
     // Outer glow for DL
     canvas.drawArc(
@@ -213,11 +234,12 @@ class _GaugePainter extends CustomPainter {
       transform: GradientRotation(startAngle),
     ).createShader(Rect.fromCircle(center: center, radius: radius));
 
-    final ulPaint = Paint()
-      ..shader = ulGradient
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 8
-      ..strokeCap = StrokeCap.round;
+    final ulPaint =
+        Paint()
+          ..shader = ulGradient
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 8
+          ..strokeCap = StrokeCap.round;
 
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius - 35),
@@ -228,9 +250,10 @@ class _GaugePainter extends CustomPainter {
     );
 
     // ── Tick Marks & Technical Indicators ──
-    final tickPaint = Paint()
-      ..color = AppColors.textMuted.withValues(alpha: 0.4)
-      ..strokeWidth = 1;
+    final tickPaint =
+        Paint()
+          ..color = AppColors.textMuted.withValues(alpha: 0.4)
+          ..strokeWidth = 1;
 
     for (int i = 0; i <= 20; i++) {
       final angle = startAngle + (sweepAngle * (i / 20));
@@ -248,18 +271,19 @@ class _GaugePainter extends CustomPainter {
 
     // ── Animated "Bit-flow" Particles ──
     final particlePaint = Paint()..style = PaintingStyle.fill;
-    
+
     for (int i = 0; i < 8; i++) {
-      final pAngle = startAngle + (sweepAngle * ((animationValue + i / 8) % 1.0));
+      final pAngle =
+          startAngle + (sweepAngle * ((animationValue + i / 8) % 1.0));
       final pRadius = radius - 10;
       final pPos = Offset(
         center.dx + pRadius * math.cos(pAngle),
         center.dy + pRadius * math.sin(pAngle),
       );
-      
+
       canvas.drawCircle(
-        pPos, 
-        2, 
+        pPos,
+        2,
         particlePaint..color = AppColors.neonCyan.withValues(alpha: 0.8),
       );
     }

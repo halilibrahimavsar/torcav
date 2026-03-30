@@ -1,15 +1,17 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:printing/printing.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
@@ -42,9 +44,7 @@ class ReportsView extends StatelessWidget {
         if (state is ReportGenerated) {
           _handleGeneratedReport(context, state);
         } else if (state is ReportsFailure) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: AppColors.neonRed.withValues(alpha: 0.8),
               content: Text(
@@ -237,7 +237,9 @@ class ReportsView extends StatelessWidget {
 
   Future<void> _printPdf(BuildContext context) async {
     final snapshot = getIt<ScanSessionStore>().latest;
-    if (snapshot == null) return;
+    if (snapshot == null) {
+      return;
+    }
 
     await Printing.layoutPdf(
       onLayout: (_) async {
@@ -253,16 +255,22 @@ class ReportsView extends StatelessWidget {
     required String suggestedName,
     required String contents,
   }) async {
-    final l10n = AppLocalizations.of(context)!;
-    final path = await FilePicker.platform.saveFile(
-      dialogTitle: l10n.saveReportDialog,
-      fileName: suggestedName,
-    );
-    if (path == null) return;
-
-    await File(path).writeAsString(contents);
-    if (!context.mounted) return;
-    _toast(context, l10n.savedToast(path));
+    final l10n = context.l10n;
+    try {
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/$suggestedName');
+      await file.writeAsString(contents);
+      await SharePlus.instance.share(
+        ShareParams(files: [XFile(file.path)], subject: l10n.saveReportDialog),
+      );
+      if (context.mounted) {
+        _toast(context, l10n.savedToast(file.path));
+      }
+    } catch (e) {
+      if (context.mounted) {
+        _toast(context, '${l10n.errorLabel}: $e');
+      }
+    }
   }
 
   Future<void> _savePdfFile({
@@ -270,24 +278,29 @@ class ReportsView extends StatelessWidget {
     required String suggestedName,
     required Uint8List bytes,
   }) async {
-    final l10n = AppLocalizations.of(context)!;
-    final path = await FilePicker.platform.saveFile(
-      dialogTitle: l10n.savePdfReportDialog,
-      fileName: suggestedName,
-      type: FileType.custom,
-      allowedExtensions: const ['pdf'],
-    );
-    if (path == null) return;
-
-    await File(path).writeAsBytes(bytes);
-    if (!context.mounted) return;
-    _toast(context, l10n.savedToast(path));
+    final l10n = context.l10n;
+    try {
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/$suggestedName');
+      await file.writeAsBytes(bytes);
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(file.path)],
+          subject: l10n.savePdfReportDialog,
+        ),
+      );
+      if (context.mounted) {
+        _toast(context, l10n.savedToast(file.path));
+      }
+    } catch (e) {
+      if (context.mounted) {
+        _toast(context, '${l10n.errorLabel}: $e');
+      }
+    }
   }
 
   void _toast(BuildContext context, String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: AppColors.neonGreen.withValues(alpha: 0.8),
         content: Text(
@@ -533,10 +546,7 @@ class _NeonIconCircle extends StatelessWidget {
         shape: BoxShape.circle,
         color: color.withValues(alpha: 0.1),
         boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.15),
-            blurRadius: 12,
-          ),
+          BoxShadow(color: color.withValues(alpha: 0.15), blurRadius: 12),
         ],
       ),
       child: Icon(icon, color: color, size: 20),

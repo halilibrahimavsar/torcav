@@ -279,9 +279,9 @@ class WifiDetailsPage extends StatelessWidget {
           Text(
             v.description,
             style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface.withValues(
-                alpha: 0.82,
-              ),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.82),
             ),
           ),
           const SizedBox(height: 8),

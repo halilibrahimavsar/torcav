@@ -21,7 +21,9 @@ class AIInsightsPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
                 color: AppColors.neonPurple.withValues(alpha: 0.1),
-                border: Border.all(color: AppColors.neonPurple.withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: AppColors.neonPurple.withValues(alpha: 0.3),
+                ),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
@@ -48,7 +50,7 @@ class AIInsightsPage extends StatelessWidget {
           // ── AI Engine Status ──
           _buildEngineStatus(context),
           const SizedBox(height: 24),
-          
+
           // ── Active Anomalies ──
           NeonSectionHeader(
             label: l10n.activeAnomalies,
@@ -71,9 +73,9 @@ class AIInsightsPage extends StatelessWidget {
             timestamp: '15m ago',
             color: AppColors.neonOrange,
           ),
-          
+
           const SizedBox(height: 32),
-          
+
           // ── Network Health ──
           NeonSectionHeader(
             label: l10n.predictiveHealth,
@@ -98,9 +100,9 @@ class AIInsightsPage extends StatelessWidget {
             value: 0.08,
             color: AppColors.neonGreen,
           ),
-          
+
           const SizedBox(height: 40),
-          
+
           // ── AI Insight Text ──
           NeonCard(
             glowColor: AppColors.neonPurple,
@@ -110,7 +112,11 @@ class AIInsightsPage extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.psychology_rounded, color: AppColors.neonPurple, size: 20),
+                    const Icon(
+                      Icons.psychology_rounded,
+                      color: AppColors.neonPurple,
+                      size: 20,
+                    ),
                     const SizedBox(width: 10),
                     Text(
                       l10n.aiStrategyReport,

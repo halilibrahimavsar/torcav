@@ -39,18 +39,19 @@ class ConsentPolicy extends Equatable {
       blockUnknownAPs: blockUnknownAPs ?? this.blockUnknownAPs,
       activeProbingEnabled: activeProbingEnabled ?? this.activeProbingEnabled,
       requireExplicitConsentForDeauth:
-          requireExplicitConsentForDeauth ?? this.requireExplicitConsentForDeauth,
+          requireExplicitConsentForDeauth ??
+          this.requireExplicitConsentForDeauth,
     );
   }
 
   @override
   List<Object?> get props => [
-        legalDisclaimerAccepted,
-        strictAllowlistEnabled,
-        logCommandsEnabled,
-        minSecondsBetweenActiveOps,
-        blockUnknownAPs,
-        activeProbingEnabled,
-        requireExplicitConsentForDeauth,
-      ];
+    legalDisclaimerAccepted,
+    strictAllowlistEnabled,
+    logCommandsEnabled,
+    minSecondsBetweenActiveOps,
+    blockUnknownAPs,
+    activeProbingEnabled,
+    requireExplicitConsentForDeauth,
+  ];
 }

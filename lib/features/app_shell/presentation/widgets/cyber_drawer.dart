@@ -7,10 +7,7 @@ import '../../../../core/theme/neon_widgets.dart';
 class CyberDrawer extends StatelessWidget {
   final Function(String) onNavigate;
 
-  const CyberDrawer({
-    super.key,
-    required this.onNavigate,
-  });
+  const CyberDrawer({super.key, required this.onNavigate});
 
   @override
   Widget build(BuildContext context) {

@@ -9,7 +9,8 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get activeOperationsBlockedMsg => 'Active operations are blocked unless policy and allowlist conditions pass.';
+  String get activeOperationsBlockedMsg =>
+      'Active operations are blocked unless policy and allowlist conditions pass.';
 
   @override
   String get authorizedTargets => 'Authorized Targets';
@@ -66,7 +67,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get strictAllowlist => 'Strict allowlist';
 
   @override
-  String get blockActiveOpsUnknown => 'Block active operations for unknown targets';
+  String get blockActiveOpsUnknown =>
+      'Block active operations for unknown targets';
 
   @override
   String get rateLimitActiveOps => 'Rate limit between active ops';
@@ -78,7 +80,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguage => 'Language';
 
   @override
-  String get settingsScanBehavior => 'Control default scan behavior, backend strategy, and safety posture.';
+  String get settingsScanBehavior =>
+      'Control default scan behavior, backend strategy, and safety posture.';
 
   @override
   String get settingsDefaultScanPasses => 'Default scan passes';
@@ -96,7 +99,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsStrictSafety => 'Strict safety mode';
 
   @override
-  String get settingsStrictSafetyDesc => 'Require consent + allowlist for active ops';
+  String get settingsStrictSafetyDesc =>
+      'Require consent + allowlist for active ops';
 
   @override
   String get navDashboard => 'Dashboard';
@@ -132,7 +136,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get securityCenterTitle => 'Security Center';
 
   @override
-  String get securityCenterDesc => 'Risk scoring, allowlists, and policy controls';
+  String get securityCenterDesc =>
+      'Risk scoring, allowlists, and policy controls';
 
   @override
   String get reportsTitle => 'Reports';
@@ -153,7 +158,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get monitoringTitle => 'Monitoring';
 
   @override
-  String get monitoringSubtitle => 'Bandwidth, anomaly detection, and heatmap streams.';
+  String get monitoringSubtitle =>
+      'Bandwidth, anomaly detection, and heatmap streams.';
 
   @override
   String get comingSoon => 'COMING SOON';
@@ -291,10 +297,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get reportsSubtitle => 'Export the latest scan session as JSON, HTML, or PDF.';
+  String get reportsSubtitle =>
+      'Export the latest scan session as JSON, HTML, or PDF.';
 
   @override
-  String get noSnapshotAvailable => 'No scan snapshot is available yet. Run a Wi-Fi scan first.';
+  String get noSnapshotAvailable =>
+      'No scan snapshot is available yet. Run a Wi-Fi scan first.';
 
   @override
   String latestSnapshot(Object count, Object backend) {
@@ -357,7 +365,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get noVulnerabilities => 'No known vulnerabilities detected based on current scan data.';
+  String get noVulnerabilities =>
+      'No known vulnerabilities detected based on current scan data.';
 
   @override
   String get bssId => 'BSSID';
@@ -477,19 +486,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get blockUnknownAP => 'Block Unknown APs';
 
   @override
-  String get automaticBlockMsg => 'Automatically drops connections to rogue APs';
+  String get automaticBlockMsg =>
+      'Automatically drops connections to rogue APs';
 
   @override
   String get activeProbingEnabled => 'Active Probing';
 
   @override
-  String get activeProbingMsg => 'Periodically tests connected AP for anomalies';
+  String get activeProbingMsg =>
+      'Periodically tests connected AP for anomalies';
 
   @override
   String get requireConsentForDeauth => 'Require Consent';
 
   @override
-  String get manualAuthorizationMsg => 'Manually authorize deauth/active defense';
+  String get manualAuthorizationMsg =>
+      'Manually authorize deauth/active defense';
 
   @override
   String get defensePolicy => 'Defense Policy';
@@ -530,7 +542,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logoutConfirmation => 'DISCONNECT SESSION';
 
   @override
-  String get logoutConfirmMessage => 'Are you sure you want to terminate the current session? All active monitoring will be paused.';
+  String get logoutConfirmMessage =>
+      'Are you sure you want to terminate the current session? All active monitoring will be paused.';
 
   @override
   String get livePulse => 'LIVE PULSE';
@@ -619,7 +632,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get engineStability => 'ENGINE_STABILITY: OPTIMAL';
 
   @override
-  String get aiStrategyText => 'Current network topology suggests a stable signature. No immediate horizontal movement detected in subnets. Recommend enabling Stealth Mode on public access points to mitigate passive node discovery.';
+  String get aiStrategyText =>
+      'Current network topology suggests a stable signature. No immediate horizontal movement detected in subnets. Recommend enabling Stealth Mode on public access points to mitigate passive node discovery.';
 
   @override
   String get packetSnifferTitle => 'PACKET_SNIFFER';

@@ -34,14 +34,16 @@ class AppColors {
 
   // ── Glow Tiers ──
   static final Map<GlowTier, List<BoxShadow> Function(Color)> glowTiers = {
-    GlowTier.low: (Color color) => [
+    GlowTier.low:
+        (Color color) => [
           BoxShadow(
             color: color.withValues(alpha: 0.15),
             blurRadius: 12,
             spreadRadius: 0,
           ),
         ],
-    GlowTier.med: (Color color) => [
+    GlowTier.med:
+        (Color color) => [
           BoxShadow(
             color: color.withValues(alpha: 0.3),
             blurRadius: 24,
@@ -53,7 +55,8 @@ class AppColors {
             spreadRadius: -1,
           ),
         ],
-    GlowTier.high: (Color color) => [
+    GlowTier.high:
+        (Color color) => [
           BoxShadow(
             color: color.withValues(alpha: 0.5),
             blurRadius: 40,
@@ -137,17 +140,13 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
-          side: BorderSide(
-            color: AppColors.neonCyan.withValues(alpha: 0.15),
-          ),
+          side: BorderSide(color: AppColors.neonCyan.withValues(alpha: 0.15)),
         ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: AppColors.neonCyan,
         foregroundColor: AppColors.deepBlack,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         elevation: 12,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -155,9 +154,7 @@ class AppTheme {
           backgroundColor: AppColors.neonCyan.withValues(alpha: 0.1),
           foregroundColor: AppColors.neonCyan,
           elevation: 0,
-          side: BorderSide(
-            color: AppColors.neonCyan.withValues(alpha: 0.3),
-          ),
+          side: BorderSide(color: AppColors.neonCyan.withValues(alpha: 0.3)),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
@@ -244,9 +241,7 @@ class AppTheme {
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        side: BorderSide(
-          color: AppColors.neonCyan.withValues(alpha: 0.12),
-        ),
+        side: BorderSide(color: AppColors.neonCyan.withValues(alpha: 0.12)),
       ),
     );
   }
@@ -254,15 +249,10 @@ class AppTheme {
   static SnackBarThemeData _snackBarTheme() {
     return SnackBarThemeData(
       backgroundColor: AppColors.darkSurfaceLight,
-      contentTextStyle: GoogleFonts.outfit(
-        color: Colors.white,
-        fontSize: 16,
-      ),
+      contentTextStyle: GoogleFonts.outfit(color: Colors.white, fontSize: 16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(
-          color: AppColors.neonCyan.withValues(alpha: 0.2),
-        ),
+        side: BorderSide(color: AppColors.neonCyan.withValues(alpha: 0.2)),
       ),
       behavior: SnackBarBehavior.floating,
     );
@@ -296,9 +286,7 @@ class AppTheme {
   static InputDecorationTheme _inputDecorationTheme() {
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: BorderSide(
-        color: AppColors.neonCyan.withValues(alpha: 0.15),
-      ),
+      borderSide: BorderSide(color: AppColors.neonCyan.withValues(alpha: 0.15)),
     );
 
     return InputDecorationTheme(
@@ -312,12 +300,8 @@ class AppTheme {
           width: 1.5,
         ),
       ),
-      labelStyle: GoogleFonts.outfit(
-        color: AppColors.textSecondary,
-      ),
-      hintStyle: GoogleFonts.outfit(
-        color: AppColors.textMuted,
-      ),
+      labelStyle: GoogleFonts.outfit(color: AppColors.textSecondary),
+      hintStyle: GoogleFonts.outfit(color: AppColors.textMuted),
     );
   }
 
@@ -368,10 +352,7 @@ class AppTheme {
         color: AppColors.textSecondary,
         height: 1.5,
       ),
-      bodySmall: GoogleFonts.outfit(
-        fontSize: 14,
-        color: AppColors.textMuted,
-      ),
+      bodySmall: GoogleFonts.outfit(fontSize: 14, color: AppColors.textMuted),
       labelLarge: GoogleFonts.orbitron(
         fontSize: 13,
         fontWeight: FontWeight.bold,
@@ -387,4 +368,3 @@ class AppTheme {
     );
   }
 }
-

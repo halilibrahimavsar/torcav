@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 
-/// A dynamic, animated "Security Core" that represents the real-time 
+/// A dynamic, animated "Security Core" that represents the real-time
 /// security state with rotation, pulse, and glow effects.
 class SecurityCore extends StatefulWidget {
   final Color statusColor;
@@ -60,33 +60,37 @@ class _SecurityCoreState extends State<SecurityCore>
           // Outer Glow
           AnimatedBuilder(
             animation: _pulseController,
-            builder: (context, _) => Container(
-              width: 220 + (_pulseController.value * 20),
-              height: 220 + (_pulseController.value * 20),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: widget.statusColor.withValues(alpha: 0.1 * (1 - _pulseController.value)),
-                    blurRadius: 40,
-                    spreadRadius: 10,
+            builder:
+                (context, _) => Container(
+                  width: 220 + (_pulseController.value * 20),
+                  height: 220 + (_pulseController.value * 20),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: widget.statusColor.withValues(
+                          alpha: 0.1 * (1 - _pulseController.value),
+                        ),
+                        blurRadius: 40,
+                        spreadRadius: 10,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                ),
           ),
 
           // Custom Painted Rings
           AnimatedBuilder(
             animation: _rotationController,
-            builder: (context, _) => CustomPaint(
-              size: const Size(260, 260),
-              painter: _CorePainter(
-                rotation: _rotationController.value,
-                pulse: _pulseController.value,
-                color: widget.statusColor,
-              ),
-            ),
+            builder:
+                (context, _) => CustomPaint(
+                  size: const Size(260, 260),
+                  painter: _CorePainter(
+                    rotation: _rotationController.value,
+                    pulse: _pulseController.value,
+                    color: widget.statusColor,
+                  ),
+                ),
           ),
 
           // Inner Glassy Core
@@ -174,23 +178,40 @@ class _CorePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+    final paint =
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
 
     // ── Outer Dashed Ring ──────────────────────────────────────────────
     paint.strokeWidth = 1.5;
     paint.color = color.withValues(alpha: 0.2 + (pulse * 0.1));
     final outerRadius = size.width / 2 - 10;
-    
-    _drawDashedArc(canvas, center, outerRadius, 0 + (rotation * 2 * math.pi), 0.8 * math.pi, paint, 12);
-    _drawDashedArc(canvas, center, outerRadius, math.pi + (rotation * 2 * math.pi), 0.8 * math.pi, paint, 12);
+
+    _drawDashedArc(
+      canvas,
+      center,
+      outerRadius,
+      0 + (rotation * 2 * math.pi),
+      0.8 * math.pi,
+      paint,
+      12,
+    );
+    _drawDashedArc(
+      canvas,
+      center,
+      outerRadius,
+      math.pi + (rotation * 2 * math.pi),
+      0.8 * math.pi,
+      paint,
+      12,
+    );
 
     // ── Middle Solid Accent Ring ───────────────────────────────────────
     paint.strokeWidth = 3;
     paint.color = color.withValues(alpha: 0.4);
     final midRadius = size.width / 2 - 30;
-    
+
     // Rotating accent arcs
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: midRadius),
@@ -211,19 +232,33 @@ class _CorePainter extends CustomPainter {
     paint.strokeWidth = 1;
     paint.color = color.withValues(alpha: 0.6);
     final innerRadius = size.width / 2 - 45;
-    
+
     final scannerX = center.dx + math.cos(rotation * 8 * math.pi) * innerRadius;
     final scannerY = center.dy + math.sin(rotation * 8 * math.pi) * innerRadius;
-    
+
     canvas.drawLine(
       center,
       Offset(scannerX, scannerY),
       paint..color = color.withValues(alpha: 0.3),
     );
-    canvas.drawCircle(Offset(scannerX, scannerY), 3, paint..style = PaintingStyle.fill..color = color);
+    canvas.drawCircle(
+      Offset(scannerX, scannerY),
+      3,
+      paint
+        ..style = PaintingStyle.fill
+        ..color = color,
+    );
   }
 
-  void _drawDashedArc(Canvas canvas, Offset center, double radius, double startAngle, double sweepAngle, Paint paint, int dashCount) {
+  void _drawDashedArc(
+    Canvas canvas,
+    Offset center,
+    double radius,
+    double startAngle,
+    double sweepAngle,
+    Paint paint,
+    int dashCount,
+  ) {
     final dashSweep = sweepAngle / (dashCount * 2 - 1);
     for (int i = 0; i < dashCount; i++) {
       canvas.drawArc(
@@ -237,6 +272,6 @@ class _CorePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _CorePainter oldDelegate) => 
-    oldDelegate.rotation != rotation || oldDelegate.pulse != pulse;
+  bool shouldRepaint(covariant _CorePainter oldDelegate) =>
+      oldDelegate.rotation != rotation || oldDelegate.pulse != pulse;
 }

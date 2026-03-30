@@ -69,9 +69,9 @@ void main() {
     });
 
     test('should start monitoring successfully when tool exists', () async {
-      when(
-        () => mockProcessRunner.run('which', ['airodump-ng']),
-      ).thenAnswer((_) async => ProcessResult(0, 0, '/usr/bin/airodump-ng', ''));
+      when(() => mockProcessRunner.run('which', ['airodump-ng'])).thenAnswer(
+        (_) async => ProcessResult(0, 0, '/usr/bin/airodump-ng', ''),
+      );
 
       when(
         () => mockPrivilegeService.startAsRoot(any(), any()),
@@ -81,10 +81,11 @@ void main() {
       expect(result, true);
 
       verify(
-        () => mockPrivilegeService.startAsRoot(
-          'airodump-ng',
-          ['wlan0', '--berlin', '60'],
-        ),
+        () => mockPrivilegeService.startAsRoot('airodump-ng', [
+          'wlan0',
+          '--berlin',
+          '60',
+        ]),
       ).called(1);
     });
   });
