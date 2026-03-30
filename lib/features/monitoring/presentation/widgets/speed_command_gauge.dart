@@ -85,15 +85,11 @@ class _SpeedCommandGaugeState extends State<SpeedCommandGauge>
                       final isDone = widget.phase == SpeedTestPhase.done;
 
                       // During upload phase, highlight upload speed in center
-                      final centerValue = isUpload
-                          ? ulValue
-                          : dlValue;
-                      final centerColor = isUpload
-                          ? AppColors.neonPurple
-                          : AppColors.neonCyan;
-                      final centerLabel = isUpload
-                          ? 'MBPS UPLOAD'
-                          : 'MBPS DOWNLOAD';
+                      final centerValue = isUpload ? ulValue : dlValue;
+                      final centerColor =
+                          isUpload ? AppColors.neonPurple : AppColors.neonCyan;
+                      final centerLabel =
+                          isUpload ? 'MBPS UPLOAD' : 'MBPS DOWNLOAD';
 
                       if (isIdle) {
                         return Column(
@@ -109,7 +105,9 @@ class _SpeedCommandGaugeState extends State<SpeedCommandGauge>
                               'TAP TO TEST',
                               style: GoogleFonts.orbitron(
                                 fontSize: 9,
-                                color: AppColors.neonCyan.withValues(alpha: 0.4),
+                                color: AppColors.neonCyan.withValues(
+                                  alpha: 0.4,
+                                ),
                                 letterSpacing: 2,
                               ),
                             ),
@@ -147,10 +145,14 @@ class _SpeedCommandGaugeState extends State<SpeedCommandGauge>
                                 vertical: 3,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.neonPurple.withValues(alpha: 0.1),
+                                color: AppColors.neonPurple.withValues(
+                                  alpha: 0.1,
+                                ),
                                 borderRadius: BorderRadius.circular(4),
                                 border: Border.all(
-                                  color: AppColors.neonPurple.withValues(alpha: 0.3),
+                                  color: AppColors.neonPurple.withValues(
+                                    alpha: 0.3,
+                                  ),
                                 ),
                               ),
                               child: Row(
@@ -180,10 +182,14 @@ class _SpeedCommandGaugeState extends State<SpeedCommandGauge>
                                 vertical: 3,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.neonCyan.withValues(alpha: 0.1),
+                                color: AppColors.neonCyan.withValues(
+                                  alpha: 0.1,
+                                ),
                                 borderRadius: BorderRadius.circular(4),
                                 border: Border.all(
-                                  color: AppColors.neonCyan.withValues(alpha: 0.3),
+                                  color: AppColors.neonCyan.withValues(
+                                    alpha: 0.3,
+                                  ),
                                 ),
                               ),
                               child: Row(
@@ -273,7 +279,7 @@ class _GaugePainter extends CustomPainter {
 
     // ── Download Neon Arc ──
     final dlGradient = SweepGradient(
-      colors: [AppColors.neonCyan.withValues(alpha: 0.2), AppColors.neonCyan],
+      colors: [AppColors.neonCyan.withValues(alpha: 0.9), AppColors.neonCyan],
       stops: const [0.0, 1.0],
       transform: GradientRotation(startAngle),
     ).createShader(Rect.fromCircle(center: center, radius: radius));
@@ -309,7 +315,7 @@ class _GaugePainter extends CustomPainter {
     // ── Upload Neon Arc ──
     final ulGradient = SweepGradient(
       colors: [
-        AppColors.neonPurple.withValues(alpha: 0.2),
+        AppColors.neonPurple.withValues(alpha: 0.9),
         AppColors.neonPurple,
       ],
       stops: const [0.0, 1.0],
@@ -354,8 +360,7 @@ class _GaugePainter extends CustomPainter {
     // ── Animated "Bit-flow" Particles ──
     // During upload, particles flow on the inner (upload) arc
     final isUpload = phase == SpeedTestPhase.upload;
-    final particleColor =
-        isUpload ? AppColors.neonPurple : AppColors.neonCyan;
+    final particleColor = isUpload ? AppColors.neonPurple : AppColors.neonCyan;
     final particleRadius = isUpload ? radius - 35 : radius - 10;
     final particlePaint = Paint()..style = PaintingStyle.fill;
 
