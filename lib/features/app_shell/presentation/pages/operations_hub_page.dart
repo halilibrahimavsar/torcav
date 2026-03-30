@@ -26,7 +26,13 @@ class OperationsHubPage extends StatefulWidget {
 }
 
 class _OperationsHubPageState extends State<OperationsHubPage> {
-  final MonitoringHubBloc _hubBloc = getIt<MonitoringHubBloc>();
+  late final MonitoringHubBloc _hubBloc = getIt<MonitoringHubBloc>();
+
+  @override
+  void dispose() {
+    _hubBloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,18 +65,23 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       double uploadMbps = 0;
                       double latencyMs = 0;
                       bool isRunning = false;
+                      bool isDone = false;
                       String phaseLabel = l10n.startTest;
+                      SpeedTestPhase phase = SpeedTestPhase.idle;
 
                       if (state is SpeedTestRunning) {
                         downloadMbps = state.progress.downloadMbps;
                         uploadMbps = state.progress.uploadMbps;
                         latencyMs = state.progress.latencyMs;
                         isRunning = true;
-                        phaseLabel = _phaseLabel(state.progress.phase, l10n);
+                        phase = state.progress.phase;
+                        phaseLabel = _phaseLabel(phase, l10n);
                       } else if (state is SpeedTestSuccess) {
                         downloadMbps = state.progress.downloadMbps;
                         uploadMbps = state.progress.uploadMbps;
                         latencyMs = state.progress.latencyMs;
+                        phase = SpeedTestPhase.done;
+                        isDone = true;
                         phaseLabel = l10n.testAgain;
                       } else if (state is SpeedTestFailure) {
                         phaseLabel = l10n.retry;
@@ -78,7 +89,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
 
                       return NeonCard(
                         glowColor: AppColors.neonCyan,
-                        glowIntensity: 0.1,
+                        glowIntensity: isDone ? 0.18 : 0.1,
                         onTap: isRunning
                             ? null
                             : () => context
@@ -87,6 +98,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                         padding: const EdgeInsets.all(20),
                         child: Column(
                           children: [
+                            // ── Header row ──
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -96,7 +108,9 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                                     style: GoogleFonts.orbitron(
                                       color: isRunning
                                           ? AppColors.neonOrange
-                                          : AppColors.neonCyan,
+                                          : isDone
+                                              ? AppColors.neonGreen
+                                              : AppColors.neonCyan,
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,
                                       letterSpacing: 1,
@@ -105,28 +119,66 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                if (isRunning) const PulsingDot(),
-                                if (!isRunning && latencyMs > 0) ...[
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    '${latencyMs.toStringAsFixed(0)} ms',
-                                    style: GoogleFonts.rajdhani(
-                                      color: AppColors.neonGreen,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                if (isRunning)
+                                  const PulsingDot()
+                                else if (isDone)
+                                  Icon(
+                                    Icons.check_circle_rounded,
+                                    size: 14,
+                                    color: AppColors.neonGreen.withValues(alpha: 0.8),
                                   ),
-                                ],
                               ],
                             ),
+
+                            // ── Phase progress indicator while running ──
+                            if (isRunning) ...[
+                              const SizedBox(height: 8),
+                              _PhaseSteps(phase: phase),
+                            ],
+
+                            const SizedBox(height: 4),
+
+                            // ── Gauge ──
                             SizedBox(
                               height: 180,
                               child: SpeedCommandGauge(
                                 download: downloadMbps,
                                 upload: uploadMbps,
                                 maxSpeed: math.max(100.0, downloadMbps * 1.5),
+                                phase: phase,
                               ),
                             ),
+
+                            // ── Results panel (only after completion) ──
+                            AnimatedSize(
+                              duration: const Duration(milliseconds: 400),
+                              curve: Curves.easeOutCubic,
+                              child: isDone
+                                  ? Column(
+                                      children: [
+                                        const SizedBox(height: 16),
+                                        _ResultsRow(
+                                          downloadMbps: downloadMbps,
+                                          uploadMbps: uploadMbps,
+                                          latencyMs: latencyMs,
+                                        ),
+                                      ],
+                                    )
+                                  : const SizedBox.shrink(),
+                            ),
+
+                            // ── Error state ──
+                            if (state is SpeedTestFailure) ...[
+                              const SizedBox(height: 12),
+                              Text(
+                                state.message,
+                                style: GoogleFonts.rajdhani(
+                                  color: Colors.redAccent,
+                                  fontSize: 12,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
                           ],
                         ),
                       );
@@ -160,12 +212,11 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       subtitle: l10n.activeShielding,
                       icon: Icons.shield_rounded,
                       color: AppColors.neonRed,
-                      onTap:
-                          () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const SecurityCenterPage(),
-                            ),
-                          ),
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const SecurityCenterPage(),
+                        ),
+                      ),
                       delay: 300,
                     ),
                     _OperationCard(
@@ -173,12 +224,11 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       subtitle: l10n.intelMetrics,
                       icon: Icons.analytics_outlined,
                       color: AppColors.neonOrange,
-                      onTap:
-                          () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const ReportsPage(),
-                            ),
-                          ),
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ReportsPage(),
+                        ),
+                      ),
                       delay: 400,
                     ),
                     _OperationCard(
@@ -186,12 +236,11 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       subtitle: l10n.networkMesh,
                       icon: Icons.device_hub_rounded,
                       color: AppColors.neonGreen,
-                      onTap:
-                          () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const TopologyPage(),
-                            ),
-                          ),
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const TopologyPage(),
+                        ),
+                      ),
                       delay: 500,
                     ),
                     _OperationCard(
@@ -199,12 +248,11 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       subtitle: l10n.systemConfig,
                       icon: Icons.settings_suggest_rounded,
                       color: AppColors.neonCyan,
-                      onTap:
-                          () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const SettingsPage(),
-                            ),
-                          ),
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const SettingsPage(),
+                        ),
+                      ),
                       delay: 600,
                     ),
                   ],
@@ -255,10 +303,9 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
           icon: Icons.list_alt_rounded,
           color: AppColors.neonPurple,
           delay: 750,
-          onTap:
-              () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const PacketLogsPage()),
-              ),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const PacketLogsPage()),
+          ),
         ),
         const SizedBox(height: 12),
         _ToolTile(
@@ -266,15 +313,188 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
           icon: Icons.psychology_rounded,
           color: AppColors.neonGreen,
           delay: 850,
-          onTap:
-              () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const AIInsightsPage()),
-              ),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const AIInsightsPage()),
+          ),
         ),
       ],
     );
   }
 }
+
+// ── Phase step indicator shown during active test ──────────────────────────
+
+class _PhaseSteps extends StatelessWidget {
+  final SpeedTestPhase phase;
+
+  const _PhaseSteps({required this.phase});
+
+  @override
+  Widget build(BuildContext context) {
+    final phases = [
+      (SpeedTestPhase.latency, Icons.network_ping_rounded, 'PING'),
+      (SpeedTestPhase.download, Icons.download_rounded, 'DL'),
+      (SpeedTestPhase.upload, Icons.upload_rounded, 'UL'),
+    ];
+
+    final currentIndex =
+        phases.indexWhere((p) => p.$1 == phase).clamp(0, phases.length - 1);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(phases.length * 2 - 1, (i) {
+        if (i.isOdd) {
+          final stepIndex = i ~/ 2;
+          return Expanded(
+            child: Container(
+              height: 1,
+              color: stepIndex < currentIndex
+                  ? AppColors.neonCyan.withValues(alpha: 0.6)
+                  : AppColors.glassWhite.withValues(alpha: 0.1),
+            ),
+          );
+        }
+        final stepIndex = i ~/ 2;
+        final (_, icon, label) = phases[stepIndex];
+        final isActive = stepIndex == currentIndex;
+        final isDone = stepIndex < currentIndex;
+        final color = isDone
+            ? AppColors.neonCyan
+            : isActive
+                ? AppColors.neonOrange
+                : AppColors.textMuted.withValues(alpha: 0.3);
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 14, color: color),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: GoogleFonts.orbitron(
+                fontSize: 7,
+                color: color,
+                fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+          ],
+        );
+      }),
+    );
+  }
+}
+
+// ── Results row shown after completion ─────────────────────────────────────
+
+class _ResultsRow extends StatelessWidget {
+  final double downloadMbps;
+  final double uploadMbps;
+  final double latencyMs;
+
+  const _ResultsRow({
+    required this.downloadMbps,
+    required this.uploadMbps,
+    required this.latencyMs,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _MetricTile(
+            label: 'DOWNLOAD',
+            value: downloadMbps.toStringAsFixed(1),
+            unit: 'Mbps',
+            icon: Icons.download_rounded,
+            color: AppColors.neonCyan,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _MetricTile(
+            label: 'UPLOAD',
+            value: uploadMbps.toStringAsFixed(1),
+            unit: 'Mbps',
+            icon: Icons.upload_rounded,
+            color: AppColors.neonPurple,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _MetricTile(
+            label: 'PING',
+            value: latencyMs.toStringAsFixed(0),
+            unit: 'ms',
+            icon: Icons.network_ping_rounded,
+            color: AppColors.neonGreen,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _MetricTile extends StatelessWidget {
+  final String label;
+  final String value;
+  final String unit;
+  final IconData icon;
+  final Color color;
+
+  const _MetricTile({
+    required this.label,
+    required this.value,
+    required this.unit,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: color),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: GoogleFonts.orbitron(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+          Text(
+            unit,
+            style: GoogleFonts.rajdhani(
+              fontSize: 10,
+              color: color.withValues(alpha: 0.6),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: GoogleFonts.orbitron(
+              fontSize: 7,
+              color: AppColors.textMuted,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Existing widgets ────────────────────────────────────────────────────────
 
 class _OperationCard extends StatelessWidget {
   final String title;

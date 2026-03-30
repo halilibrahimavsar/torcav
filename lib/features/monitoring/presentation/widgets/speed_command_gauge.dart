@@ -3,17 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
+import '../../domain/entities/speed_test_progress.dart';
 
 class SpeedCommandGauge extends StatefulWidget {
   final double download;
   final double upload;
   final double maxSpeed;
+  final SpeedTestPhase phase;
 
   const SpeedCommandGauge({
     super.key,
     required this.download,
     required this.upload,
     this.maxSpeed = 100.0,
+    this.phase = SpeedTestPhase.idle,
   });
 
   @override
@@ -68,67 +71,144 @@ class _SpeedCommandGaugeState extends State<SpeedCommandGauge>
                           upload: ulValue,
                           maxSpeed: widget.maxSpeed,
                           animationValue: _controller.value,
+                          phase: widget.phase,
                         ),
                       );
                     },
                   ),
 
                   // ── Central Stats ──
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      NeonText(
-                        dlValue.toStringAsFixed(1),
-                        style: GoogleFonts.orbitron(
-                          fontSize: 42,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                        ),
-                        glowRadius: 10,
-                      ),
-                      Text(
-                        'MBPS DOWNLOAD',
-                        style: GoogleFonts.orbitron(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.neonCyan.withValues(alpha: 0.7),
-                          letterSpacing: 2,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.neonPurple.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(
-                            color: AppColors.neonPurple.withValues(alpha: 0.3),
-                          ),
-                        ),
-                        child: Row(
+                  Builder(
+                    builder: (context) {
+                      final isIdle = widget.phase == SpeedTestPhase.idle;
+                      final isUpload = widget.phase == SpeedTestPhase.upload;
+                      final isDone = widget.phase == SpeedTestPhase.done;
+
+                      // During upload phase, highlight upload speed in center
+                      final centerValue = isUpload
+                          ? ulValue
+                          : dlValue;
+                      final centerColor = isUpload
+                          ? AppColors.neonPurple
+                          : AppColors.neonCyan;
+                      final centerLabel = isUpload
+                          ? 'MBPS UPLOAD'
+                          : 'MBPS DOWNLOAD';
+
+                      if (isIdle) {
+                        return Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
-                              Icons.upload_rounded,
-                              size: 12,
-                              color: AppColors.neonPurple,
+                            Icon(
+                              Icons.play_circle_outline_rounded,
+                              size: 32,
+                              color: AppColors.neonCyan.withValues(alpha: 0.5),
                             ),
-                            const SizedBox(width: 4),
+                            const SizedBox(height: 4),
                             Text(
-                              '${ulValue.toStringAsFixed(1)} UP',
-                              style: GoogleFonts.sourceCodePro(
-                                color: AppColors.neonPurple,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                              'TAP TO TEST',
+                              style: GoogleFonts.orbitron(
+                                fontSize: 9,
+                                color: AppColors.neonCyan.withValues(alpha: 0.4),
+                                letterSpacing: 2,
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                    ],
+                        );
+                      }
+
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          NeonText(
+                            centerValue.toStringAsFixed(1),
+                            style: GoogleFonts.orbitron(
+                              fontSize: 38,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                            ),
+                            glowRadius: isDone ? 14 : 10,
+                          ),
+                          Text(
+                            centerLabel,
+                            style: GoogleFonts.orbitron(
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                              color: centerColor.withValues(alpha: 0.7),
+                              letterSpacing: 2,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          // Show the other metric as a small badge
+                          if (!isUpload)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 3,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.neonPurple.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(
+                                  color: AppColors.neonPurple.withValues(alpha: 0.3),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.upload_rounded,
+                                    size: 11,
+                                    color: AppColors.neonPurple,
+                                  ),
+                                  const SizedBox(width: 3),
+                                  Text(
+                                    '${ulValue.toStringAsFixed(1)} UP',
+                                    style: GoogleFonts.sourceCodePro(
+                                      color: AppColors.neonPurple,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          else
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 3,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.neonCyan.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(
+                                  color: AppColors.neonCyan.withValues(alpha: 0.3),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.download_rounded,
+                                    size: 11,
+                                    color: AppColors.neonCyan,
+                                  ),
+                                  const SizedBox(width: 3),
+                                  Text(
+                                    '${dlValue.toStringAsFixed(1)} DL',
+                                    style: GoogleFonts.sourceCodePro(
+                                      color: AppColors.neonCyan,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),
@@ -145,12 +225,14 @@ class _GaugePainter extends CustomPainter {
   final double upload;
   final double maxSpeed;
   final double animationValue;
+  final SpeedTestPhase phase;
 
   _GaugePainter({
     required this.download,
     required this.upload,
     required this.maxSpeed,
     required this.animationValue,
+    required this.phase,
   });
 
   @override
@@ -270,21 +352,24 @@ class _GaugePainter extends CustomPainter {
     }
 
     // ── Animated "Bit-flow" Particles ──
+    // During upload, particles flow on the inner (upload) arc
+    final isUpload = phase == SpeedTestPhase.upload;
+    final particleColor =
+        isUpload ? AppColors.neonPurple : AppColors.neonCyan;
+    final particleRadius = isUpload ? radius - 35 : radius - 10;
     final particlePaint = Paint()..style = PaintingStyle.fill;
 
     for (int i = 0; i < 8; i++) {
       final pAngle =
           startAngle + (sweepAngle * ((animationValue + i / 8) % 1.0));
-      final pRadius = radius - 10;
       final pPos = Offset(
-        center.dx + pRadius * math.cos(pAngle),
-        center.dy + pRadius * math.sin(pAngle),
+        center.dx + particleRadius * math.cos(pAngle),
+        center.dy + particleRadius * math.sin(pAngle),
       );
-
       canvas.drawCircle(
         pPos,
         2,
-        particlePaint..color = AppColors.neonCyan.withValues(alpha: 0.8),
+        particlePaint..color = particleColor.withValues(alpha: 0.8),
       );
     }
   }
@@ -294,5 +379,6 @@ class _GaugePainter extends CustomPainter {
       oldDelegate.download != download ||
       oldDelegate.upload != upload ||
       oldDelegate.maxSpeed != maxSpeed ||
-      oldDelegate.animationValue != animationValue;
+      oldDelegate.animationValue != animationValue ||
+      oldDelegate.phase != phase;
 }
