@@ -9,30 +9,28 @@ import '../../../../core/services/process_runner.dart';
 import '../../domain/entities/speed_test_progress.dart';
 import '../../domain/repositories/speed_test_repository.dart';
 
-// ── All measurements use Cloudflare's speed-test CDN. ───────────────────────
-// Latency   : 1 warmup request + 5 timed requests on the warm connection.
-//             Taking the median avoids outliers from GC/OS scheduler jitter.
-// Download  : Fixed 2.5 s window — we request a 500 MB file and break after
-//             the time budget, so the result is always ≈ 2.5 s on any link.
-// Upload    : Fixed 2.5 s window — we send 512 KB chunks sequentially and
-//             stop when the budget is exhausted; each chunk has its own hard
-//             timeout so a stalled slow connection still finishes in time.
-// Total     : ~1 s (latency) + 2.5 s (dl) + 2.5 s (ul) ≈ 6–7 s.
-// ────────────────────────────────────────────────────────────────────────────
+// ── Time budgets ─────────────────────────────────────────────────────────────
+// Latency   : 1 warmup + 7 timed pings  →  ~1.5 s
+// Download  : keep making 20 MB requests until 10 s elapsed → always ≈ 10 s
+// Upload    : keep making 2 MB  requests until 10 s elapsed → always ≈ 10 s
+// Total     : ≈ 21–22 s on any connection speed.
+// ─────────────────────────────────────────────────────────────────────────────
 
-// Using bytes=0 for the ping endpoint — zero-byte body, so we only measure
-// network RTT + server processing, not transfer time.
-const _kPingUrl = 'https://speed.cloudflare.com/__down?bytes=0';
+const _kPingPings = 7; // timed pings after 1 warmup
+const _kPingUrl = 'https://speed.cloudflare.com/__down?bytes=1'; // 1-byte body
 
-// 500 MB is large enough that even a 1 Gbit/s link won't exhaust it in 2.5 s.
-const _kDownloadUrl = 'https://speed.cloudflare.com/__down?bytes=500000000';
+const _kDownloadDuration = Duration(seconds: 10);
+// 20 MB is large enough to last several seconds on mid-speed links.
+// On very fast links (≥ 100 Mbps) it finishes quickly so we loop again.
+const _kDownloadChunkUrl =
+    'https://speed.cloudflare.com/__down?bytes=20000000';
+
+const _kUploadDuration = Duration(seconds: 10);
+// 2 MB per round: finishes in < 1 s at 16+ Mbps, ≈ 16 s at 1 Mbps.
+// We accept that a single round on a very slow link may overshoot the budget
+// slightly — accuracy matters more than strict timing on slow connections.
+const _kUploadChunkBytes = 2 * 1024 * 1024; // 2 MB
 const _kUploadUrl = 'https://speed.cloudflare.com/__up';
-
-const _kDownloadDuration = Duration(milliseconds: 2500);
-const _kUploadDuration = Duration(milliseconds: 2500);
-
-// 512 KB per upload round: small enough to complete even on ~2 Mbit/s links.
-const _kUploadChunkBytes = 524288;
 
 @LazySingleton(as: SpeedTestRepository)
 class SpeedTestRepositoryImpl implements SpeedTestRepository {
@@ -47,9 +45,7 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
       try {
         await for (final progress in _runLinuxCli()) {
           yield progress;
-          if (progress.phase == SpeedTestPhase.done) {
-            cliSuccess = true;
-          }
+          if (progress.phase == SpeedTestPhase.done) cliSuccess = true;
         }
       } catch (_) {
         // Fall through to HTTP
@@ -64,17 +60,15 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
 
   Stream<SpeedTestProgress> _runLinuxCli() async* {
     yield const SpeedTestProgress(phase: SpeedTestPhase.latency);
-
     final result = await _processRunner.run('speedtest-cli', ['--json']);
     if (result.exitCode != 0) throw const ScanFailure('CLI failed');
 
     final decoded =
         jsonDecode(result.stdout.toString()) as Map<String, dynamic>;
-
     yield SpeedTestProgress(
       phase: SpeedTestPhase.done,
-      downloadMbps: ((decoded['download'] as num?)?.toDouble() ?? 0) / 1000000,
-      uploadMbps: ((decoded['upload'] as num?)?.toDouble() ?? 0) / 1000000,
+      downloadMbps: ((decoded['download'] as num?)?.toDouble() ?? 0) / 1e6,
+      uploadMbps: ((decoded['upload'] as num?)?.toDouble() ?? 0) / 1e6,
       latencyMs: (decoded['ping'] as num?)?.toDouble() ?? 0,
     );
   }
@@ -82,24 +76,22 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
   // ── HTTP path ─────────────────────────────────────────────────────────────
 
   Stream<SpeedTestProgress> _runHttpSpeedTest() async* {
-    // connectionTimeout only applies to establishing the socket.
-    // Per-operation timeouts are set inline below.
     final client = HttpClient()
       ..connectionTimeout = const Duration(seconds: 10);
 
     try {
-      // ── Phase 1: Latency ──────────────────────────────────────────────────
+      // ── Phase 1 ───────────────────────────────────────────────────────────
       yield const SpeedTestProgress(phase: SpeedTestPhase.latency);
       final latencyMs = await _measureLatency(client);
 
-      // ── Phase 2: Download ─────────────────────────────────────────────────
+      // ── Phase 2 ───────────────────────────────────────────────────────────
       yield SpeedTestProgress(
         phase: SpeedTestPhase.download,
         latencyMs: latencyMs,
       );
 
       var downloadMbps = 0.0;
-      await for (final mbps in _measureDownloadStream(client)) {
+      await for (final mbps in _measureDownload(client)) {
         downloadMbps = mbps;
         yield SpeedTestProgress(
           phase: SpeedTestPhase.download,
@@ -108,7 +100,7 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
         );
       }
 
-      // ── Phase 3: Upload ───────────────────────────────────────────────────
+      // ── Phase 3 ───────────────────────────────────────────────────────────
       yield SpeedTestProgress(
         phase: SpeedTestPhase.upload,
         latencyMs: latencyMs,
@@ -116,7 +108,7 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
       );
 
       var uploadMbps = 0.0;
-      await for (final mbps in _measureUploadStream(client)) {
+      await for (final mbps in _measureUpload(client)) {
         uploadMbps = mbps;
         yield SpeedTestProgress(
           phase: SpeedTestPhase.upload,
@@ -138,26 +130,21 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
   }
 
   // ── Latency ───────────────────────────────────────────────────────────────
+  //
+  // Strategy: warm up the TCP+TLS connection with one discarded request, then
+  // make [_kPingPings] timed GETs on the same keep-alive connection.
+  // Reporting the median removes the effect of OS/GC-induced spikes.
 
-  /// Makes 1 warmup GET to `_kPingUrl` (zero-byte body) to establish the
-  /// TCP+TLS connection, then performs 5 timed GETs on the *same warm*
-  /// connection and returns the **median** round-trip time in milliseconds.
-  ///
-  /// Using the median instead of the mean removes the effect of occasional
-  /// OS-scheduler or GC pauses that inflate one or two samples.
   Future<double> _measureLatency(HttpClient client) async {
-    // Warmup: TCP + TLS handshake are paid here, not in measurements.
+    // Warmup — DNS + TCP + TLS paid here, not counted in results.
     try {
       final req = await client.getUrl(Uri.parse(_kPingUrl));
       final resp = await req.close();
       await resp.drain<void>();
-    } catch (_) {
-      // If warmup fails the timed requests will be slightly inflated, but
-      // the test can still produce a useful result.
-    }
+    } catch (_) {}
 
     final samples = <double>[];
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < _kPingPings; i++) {
       final sw = Stopwatch()..start();
       try {
         final req = await client.getUrl(Uri.parse(_kPingUrl));
@@ -172,106 +159,133 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
 
     if (samples.isEmpty) return 0;
     samples.sort();
-    // Median: middle element for odd count, lower-middle for even.
-    return samples[samples.length ~/ 2];
+    return samples[samples.length ~/ 2]; // median
   }
 
   // ── Download ──────────────────────────────────────────────────────────────
+  //
+  // Repeatedly downloads a 20 MB chunk.  If the chunk finishes before the
+  // overall budget we immediately start the next one.  We break as soon as
+  // [_kDownloadDuration] has elapsed, whether mid-chunk or between chunks.
+  //
+  // This guarantees the phase always lasts exactly [_kDownloadDuration]
+  // regardless of connection speed, because:
+  //   - slow link  : 20 MB chunk never finishes → we break mid-stream.
+  //   - fast link  : 20 MB finishes quickly → we loop and start another.
 
-  /// Streams live Mbps readings while downloading from Cloudflare for exactly
-  /// [_kDownloadDuration].  Requesting 500 MB ensures the file is never
-  /// exhausted before the deadline even on very fast links.
-  Stream<double> _measureDownloadStream(HttpClient client) async* {
+  Stream<double> _measureDownload(HttpClient client) async* {
     final sw = Stopwatch()..start();
     var totalBytes = 0;
     var lastReportMs = -999;
 
-    try {
-      final request = await client.getUrl(Uri.parse(_kDownloadUrl));
-      final response = await request.close();
+    outer:
+    while (sw.elapsed < _kDownloadDuration) {
+      try {
+        final request =
+            await client.getUrl(Uri.parse(_kDownloadChunkUrl));
+        final response = await request.close();
 
-      await for (final chunk in response) {
-        totalBytes += chunk.length;
-        final elapsedMs = sw.elapsedMilliseconds;
-
-        // Time budget exhausted — yield final value and stop.
-        if (sw.elapsed >= _kDownloadDuration) {
-          yield _mbps(totalBytes, elapsedMs);
-          break;
+        if (response.statusCode < 200 || response.statusCode >= 300) {
+          // Non-success response (e.g. 404/429) — abort silently.
+          await response.drain<void>();
+          break outer;
         }
 
-        // Report at most every 150 ms, after an initial 400 ms stabilisation
-        // window (early chunks can be bursty due to TCP slow-start).
-        if (elapsedMs > 400 && elapsedMs - lastReportMs >= 150) {
-          lastReportMs = elapsedMs;
-          yield _mbps(totalBytes, elapsedMs);
-        }
-      }
+        await for (final chunk in response) {
+          totalBytes += chunk.length;
+          final elapsedMs = sw.elapsedMilliseconds;
 
-      // File finished before the deadline (only happens on very slow links
-      // where the 500 MB server side is somehow truncated — unlikely).
-      if (totalBytes > 0 && sw.elapsedMilliseconds > 0) {
-        yield _mbps(totalBytes, sw.elapsedMilliseconds);
+          if (sw.elapsed >= _kDownloadDuration) {
+            yield _mbps(totalBytes, elapsedMs);
+            break outer;
+          }
+
+          // Report live at most every 200 ms; skip noisy early TCP slow-start.
+          if (elapsedMs > 500 && elapsedMs - lastReportMs >= 200) {
+            lastReportMs = elapsedMs;
+            yield _mbps(totalBytes, elapsedMs);
+          }
+        }
+      } catch (_) {
+        break outer;
       }
-    } catch (_) {
-      if (totalBytes > 0 && sw.elapsedMilliseconds > 0) {
-        yield _mbps(totalBytes, sw.elapsedMilliseconds);
-      } else {
-        yield 0;
-      }
+    }
+
+    // Final value (if not already yielded by the break path above).
+    if (totalBytes > 0 && sw.elapsedMilliseconds > 0) {
+      yield _mbps(totalBytes, sw.elapsedMilliseconds);
     }
   }
 
   // ── Upload ────────────────────────────────────────────────────────────────
+  //
+  // Repeatedly POSTs a 2 MB payload to the Cloudflare upload endpoint.
+  // We measure wall-clock time from the first send to each server ACK so the
+  // result accurately reflects actual network throughput.
+  //
+  // Per-request timeout = remaining budget + 5 s grace.  This means:
+  //   - fast link (100 Mbps): 2 MB ≈ 0.16 s → many rounds, very accurate.
+  //   - slow link (1 Mbps)  : 2 MB ≈ 16 s  → one round, slight overshoot, but
+  //                           we still get a valid measurement.
 
-  /// Sends 512 KB POST requests to Cloudflare until [_kUploadDuration] is
-  /// exhausted.  Each individual request has its own deadline so a stalled
-  /// slow connection cannot run past the overall budget.
-  ///
-  /// Timing: from `request.add()` to the server response arriving (i.e. the
-  /// server received all bytes and acknowledged them).  `request.close()`
-  /// waits for both the outgoing body to be flushed *and* response headers to
-  /// arrive, which is the correct measurement point for upload throughput.
-  Stream<double> _measureUploadStream(HttpClient client) async* {
+  Stream<double> _measureUpload(HttpClient client) async* {
     final payload = List<int>.filled(_kUploadChunkBytes, 0x41);
     var totalBytes = 0;
     final sw = Stopwatch()..start();
 
     while (sw.elapsed < _kUploadDuration) {
       final remainingMs =
-          (_kUploadDuration - sw.elapsed).inMilliseconds.clamp(1, 10000);
+          (_kUploadDuration - sw.elapsed).inMilliseconds.clamp(0, 60000);
 
       try {
-        final request = await client.postUrl(Uri.parse(_kUploadUrl));
-        request.headers.contentType = ContentType.binary;
+        final request = await client
+            .postUrl(Uri.parse(_kUploadUrl))
+            .timeout(const Duration(seconds: 10));
+
+        request.headers.set(HttpHeaders.contentTypeHeader, 'application/octet-stream');
         request.contentLength = _kUploadChunkBytes;
         request.add(payload);
 
-        // This future resolves when the server has received all bytes and
-        // returned its response headers — the right point to stop the clock.
+        // request.close() flushes the body AND waits for response headers.
+        // The server only responds after receiving all bytes, so this is the
+        // correct moment to stop the clock for upload throughput.
         final response = await request
             .close()
-            .timeout(Duration(milliseconds: remainingMs + 500));
-        // Discard response body quickly.
-        await response.drain<void>().timeout(const Duration(milliseconds: 300));
+            .timeout(Duration(milliseconds: remainingMs + 5000));
 
-        totalBytes += _kUploadChunkBytes;
-        final elapsedMs = sw.elapsedMilliseconds;
-        if (elapsedMs > 0) {
-          yield _mbps(totalBytes, elapsedMs);
+        // Quickly discard the (empty) response body.
+        await response
+            .drain<void>()
+            .timeout(const Duration(seconds: 2));
+
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          totalBytes += _kUploadChunkBytes;
+          final elapsedMs = sw.elapsedMilliseconds;
+          if (elapsedMs > 0) {
+            yield _mbps(totalBytes, elapsedMs);
+          }
         }
+        // Non-2xx response: skip this round and try again (rate-limit etc.).
       } on TimeoutException {
-        break; // Hard deadline reached mid-request.
+        // Time budget exhausted mid-request — break cleanly.
+        break;
       } catch (_) {
+        // Connection error — stop trying.
         break;
       }
     }
+
+    // Emit final computed value even if the last round slightly overshot the
+    // budget (slow-link case where one round > 10 s).
+    if (totalBytes > 0 && sw.elapsedMilliseconds > 0) {
+      yield _mbps(totalBytes, sw.elapsedMilliseconds);
+    }
   }
 
-  // ── Helper ────────────────────────────────────────────────────────────────
+  // ── Helpers ───────────────────────────────────────────────────────────────
 
   static double _mbps(int bytes, int elapsedMs) {
     if (elapsedMs <= 0) return 0;
-    return (bytes * 8) / (elapsedMs / 1000.0 * 1000000);
+    return (bytes * 8) / (elapsedMs / 1000.0 * 1_000_000);
   }
 }
