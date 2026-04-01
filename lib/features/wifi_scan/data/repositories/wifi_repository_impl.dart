@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 
@@ -14,11 +12,9 @@ import '../datasources/wifi_data_source.dart';
 
 @LazySingleton(as: WifiRepository)
 class WifiRepositoryImpl implements WifiRepository {
-  final WifiDataSource _linuxDataSource;
   final WifiDataSource _androidDataSource;
 
   WifiRepositoryImpl(
-    @Named('linux') this._linuxDataSource,
     @Named('android') this._androidDataSource,
   );
 
@@ -33,17 +29,9 @@ class WifiRepositoryImpl implements WifiRepository {
     ScanRequest request,
   ) async {
     try {
-      if (Platform.isLinux) {
-        final snapshot = await _linuxDataSource.scanSnapshot(request);
-        await _persistSnapshot(snapshot);
-        return Right(snapshot);
-      } else if (Platform.isAndroid) {
-        final snapshot = await _androidDataSource.scanSnapshot(request);
-        await _persistSnapshot(snapshot);
-        return Right(snapshot);
-      } else {
-        return Left(const ScanFailure('Platform not supported'));
-      }
+      final snapshot = await _androidDataSource.scanSnapshot(request);
+      await _persistSnapshot(snapshot);
+      return Right(snapshot);
     } on Failure catch (e) {
       return Left(e);
     } catch (e) {

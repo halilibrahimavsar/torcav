@@ -12,12 +12,10 @@ import 'temporal_heatmap_page.dart';
 
 class SignalGraphPage extends StatelessWidget {
   final WifiNetwork network;
-  final String interfaceName;
 
   const SignalGraphPage({
     super.key,
     required this.network,
-    this.interfaceName = 'wlo1',
   });
 
   @override
@@ -28,8 +26,7 @@ class SignalGraphPage extends StatelessWidget {
           create:
               (_) =>
                   GetIt.I<MonitoringBloc>()
-                    ..add(StartMonitoring(network.bssid))
-                    ..add(StartBandwidthMonitoring(interfaceName)),
+                    ..add(StartMonitoring(network.bssid)),
         ),
         BlocProvider(create: (_) => GetIt.I<HeatmapBloc>()),
       ],
@@ -100,16 +97,6 @@ class SignalGraphPage extends StatelessWidget {
                 ),
                 _buildStatItem('CHANNEL', '${state.currentData.channel}'),
                 _buildStatItem('FREQ', '${state.currentData.frequency} MHz'),
-                if (state.latestBandwidth != null)
-                  _buildStatItem(
-                    'RX',
-                    '${(state.latestBandwidth!.rxBps / 1024).toStringAsFixed(1)} KB/s',
-                  ),
-                if (state.latestBandwidth != null)
-                  _buildStatItem(
-                    'TX',
-                    '${(state.latestBandwidth!.txBps / 1024).toStringAsFixed(1)} KB/s',
-                  ),
               ],
             ),
           );

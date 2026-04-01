@@ -12,8 +12,6 @@ import '../../../reports/presentation/pages/reports_page.dart';
 import '../../../security/presentation/pages/security_center_page.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
 import '../../../monitoring/presentation/pages/topology_page.dart';
-import '../../../monitoring/presentation/pages/packet_logs_page.dart';
-import '../../../monitoring/presentation/pages/ai_insights_page.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 
 class OperationsHubPage extends StatefulWidget {
@@ -258,19 +256,6 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                   ],
                 ),
 
-                const SizedBox(height: 32),
-
-                // ── Section 3: ADVANCED TOOLS ──
-                StaggeredEntry(
-                  delay: const Duration(milliseconds: 700),
-                  child: NeonSectionHeader(
-                    label: l10n.technicalTools,
-                    icon: Icons.terminal_rounded,
-                    color: AppColors.neonCyan.withValues(alpha: 0.5),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                _buildAdvancedTools(),
               ],
             );
           },
@@ -294,32 +279,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
     }
   }
 
-  Widget _buildAdvancedTools() {
-    final l10n = AppLocalizations.of(context)!;
-    return Column(
-      children: [
-        _ToolTile(
-          label: l10n.packetLogs,
-          icon: Icons.list_alt_rounded,
-          color: AppColors.neonPurple,
-          delay: 750,
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const PacketLogsPage()),
-          ),
-        ),
-        const SizedBox(height: 12),
-        _ToolTile(
-          label: l10n.aiInsights,
-          icon: Icons.psychology_rounded,
-          color: AppColors.neonGreen,
-          delay: 850,
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const AIInsightsPage()),
-          ),
-        ),
-      ],
-    );
-  }
+
 }
 
 // ── Phase step indicator shown during active test ──────────────────────────
@@ -550,82 +510,6 @@ class _OperationCard extends StatelessWidget {
                 fontSize: 9,
                 fontWeight: FontWeight.w600,
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ToolTile extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final Color color;
-  final int delay;
-  final VoidCallback onTap;
-
-  const _ToolTile({
-    required this.label,
-    required this.icon,
-    required this.color,
-    required this.delay,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return StaggeredEntry(
-      delay: Duration(milliseconds: delay),
-      slideOffset: 10,
-      child: NeonCard(
-        onTap: onTap,
-        glowColor: color,
-        glowIntensity: 0.05,
-        padding: const EdgeInsets.all(14),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: color.withValues(alpha: 0.2)),
-              ),
-              child: Icon(icon, color: color, size: 18),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: GoogleFonts.orbitron(
-                      color: AppColors.textPrimary,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.interactiveSimulation,
-                    style: GoogleFonts.shareTechMono(
-                      color: color.withValues(alpha: 0.4),
-                      fontSize: 8,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.chevron_right_rounded,
-              color: color.withValues(alpha: 0.5),
-              size: 16,
             ),
           ],
         ),

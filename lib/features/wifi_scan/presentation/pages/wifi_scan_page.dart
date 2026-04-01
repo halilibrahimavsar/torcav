@@ -452,7 +452,6 @@ class _WifiNetworkCard extends StatelessWidget {
               builder:
                   (_) => WifiDetailsPage(
                     network: network.toWifiNetwork(),
-                    interfaceName: interfaceName,
                   ),
             ),
           );

@@ -12,12 +12,10 @@ import '../bloc/wifi_details_bloc.dart';
 
 class WifiDetailsPage extends StatelessWidget {
   final WifiNetwork network;
-  final String interfaceName;
 
   const WifiDetailsPage({
     super.key,
     required this.network,
-    required this.interfaceName,
   });
 
   @override
@@ -33,24 +31,6 @@ class WifiDetailsPage extends StatelessWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
           actions: [
-            Builder(
-              builder: (context) {
-                return IconButton(
-                  icon: const Icon(Icons.handshake_outlined),
-                  tooltip: l10n.handshakeCaptureCheck,
-                  onPressed: () => _runHandshakeCheck(context),
-                );
-              },
-            ),
-            Builder(
-              builder: (context) {
-                return IconButton(
-                  icon: const Icon(Icons.gpp_good_outlined),
-                  tooltip: l10n.activeDefenseReadiness,
-                  onPressed: () => _runActiveDefenseCheck(context),
-                );
-              },
-            ),
             IconButton(
               icon: const Icon(Icons.show_chart),
               tooltip: l10n.signalGraph,
@@ -60,7 +40,6 @@ class WifiDetailsPage extends StatelessWidget {
                     builder:
                         (context) => SignalGraphPage(
                           network: network,
-                          interfaceName: interfaceName,
                         ),
                   ),
                 );
@@ -68,15 +47,7 @@ class WifiDetailsPage extends StatelessWidget {
             ),
           ],
         ),
-        body: BlocConsumer<WifiDetailsBloc, WifiDetailsState>(
-          listener: (context, state) {
-            if (state is WifiDetailsLoaded &&
-                state.lastSecurityMessage != null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.lastSecurityMessage!)),
-              );
-            }
-          },
+        body: BlocBuilder<WifiDetailsBloc, WifiDetailsState>(
           builder: (context, state) {
             if (state is WifiDetailsLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -329,15 +300,5 @@ class WifiDetailsPage extends StatelessWidget {
     );
   }
 
-  void _runHandshakeCheck(BuildContext context) {
-    context.read<WifiDetailsBloc>().add(
-      CaptureHandshake(network, interfaceName),
-    );
-  }
 
-  void _runActiveDefenseCheck(BuildContext context) {
-    context.read<WifiDetailsBloc>().add(
-      RunActiveDefense(network, interfaceName),
-    );
-  }
 }

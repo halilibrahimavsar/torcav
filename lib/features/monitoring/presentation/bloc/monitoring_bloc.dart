@@ -9,7 +9,6 @@ import '../../../../features/wifi_scan/domain/services/channel_rating_engine.dar
 import '../../../../features/wifi_scan/domain/entities/channel_rating_sample.dart';
 import '../../../../features/wifi_scan/domain/usecases/get_historical_best_channel.dart';
 import '../../../../features/wifi_scan/domain/repositories/channel_rating_repository.dart';
-import '../../domain/entities/bandwidth_sample.dart';
 import '../../domain/repositories/monitoring_repository.dart';
 
 // Events
@@ -27,14 +26,6 @@ class StartMonitoring extends MonitoringEvent {
 class StopMonitoring extends MonitoringEvent {
   @override
   List<Object?> get props => [];
-}
-
-class StartBandwidthMonitoring extends MonitoringEvent {
-  final String interfaceName;
-  const StartBandwidthMonitoring(this.interfaceName);
-
-  @override
-  List<Object?> get props => [interfaceName];
 }
 
 class AnalyzeChannels extends MonitoringEvent {
@@ -58,14 +49,6 @@ class _MonitoringError extends MonitoringEvent {
   List<Object?> get props => [message];
 }
 
-class _UpdateBandwidth extends MonitoringEvent {
-  final BandwidthSample sample;
-  const _UpdateBandwidth(this.sample);
-
-  @override
-  List<Object?> get props => [sample];
-}
-
 // State
 abstract class MonitoringState extends Equatable {
   const MonitoringState();
@@ -80,23 +63,11 @@ class MonitoringLoading extends MonitoringState {}
 class MonitoringActive extends MonitoringState {
   final WifiNetwork currentData;
   final List<int> signalHistory;
-  final BandwidthSample? latestBandwidth;
-  final String? interface;
 
-  const MonitoringActive(
-    this.currentData,
-    this.signalHistory, {
-    this.latestBandwidth,
-    this.interface,
-  });
+  const MonitoringActive(this.currentData, this.signalHistory);
 
   @override
-  List<Object?> get props => [
-    currentData,
-    signalHistory,
-    latestBandwidth,
-    interface,
-  ];
+  List<Object?> get props => [currentData, signalHistory];
 }
 
 class ChannelAnalysisReady extends MonitoringState {
@@ -130,13 +101,9 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
   final GetBestHistoricalChannel _getHistory;
 
   StreamSubscription? _networkSubscription;
-  StreamSubscription? _bandwidthSubscription;
   StreamSubscription? _channelSubscription;
 
   List<int> _history = [];
-  WifiNetwork? _latestNetwork;
-  BandwidthSample? _latestBandwidth;
-  String? _activeInterface;
 
   MonitoringBloc(
     this._repository,
@@ -147,9 +114,7 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
   ) : super(MonitoringInitial()) {
     on<StartMonitoring>(_onStartMonitoring);
     on<StopMonitoring>(_onStopMonitoring);
-    on<StartBandwidthMonitoring>(_onStartBandwidthMonitoring);
     on<_UpdateNetwork>(_onUpdateNetwork);
-    on<_UpdateBandwidth>(_onUpdateBandwidth);
     on<AnalyzeChannels>(_onAnalyzeChannels);
     on<_UpdateRatings>(_onUpdateRatings);
     on<_MonitoringError>(_onMonitoringError);
@@ -161,7 +126,6 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
   ) async {
     emit(MonitoringLoading());
     _history = [];
-    _latestNetwork = null;
     await _networkSubscription?.cancel();
 
     _networkSubscription = _repository
@@ -179,62 +143,16 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
     Emitter<MonitoringState> emit,
   ) async {
     await _networkSubscription?.cancel();
-    await _bandwidthSubscription?.cancel();
     await _channelSubscription?.cancel();
     emit(MonitoringInitial());
   }
 
   void _onUpdateNetwork(_UpdateNetwork event, Emitter<MonitoringState> emit) {
-    _latestNetwork = event.network;
     _history.add(event.network.signalStrength);
     if (_history.length > 20) {
       _history.removeAt(0);
     }
-    emit(
-      MonitoringActive(
-        event.network,
-        List.from(_history),
-        latestBandwidth: _latestBandwidth,
-        interface: _activeInterface,
-      ),
-    );
-  }
-
-  Future<void> _onStartBandwidthMonitoring(
-    StartBandwidthMonitoring event,
-    Emitter<MonitoringState> emit,
-  ) async {
-    _activeInterface = event.interfaceName;
-    _bandwidthSubscription = _repository
-        .monitorBandwidth(
-          event.interfaceName,
-          interval: const Duration(seconds: 2),
-        )
-        .listen((result) {
-          result.fold(
-            (failure) => add(_MonitoringError(failure.message)),
-            (sample) => add(_UpdateBandwidth(sample)),
-          );
-        });
-  }
-
-  void _onUpdateBandwidth(
-    _UpdateBandwidth event,
-    Emitter<MonitoringState> emit,
-  ) {
-    _latestBandwidth = event.sample;
-    final network = _latestNetwork;
-    if (network == null) {
-      return;
-    }
-    emit(
-      MonitoringActive(
-        network,
-        List.from(_history),
-        latestBandwidth: event.sample,
-        interface: _activeInterface,
-      ),
-    );
+    emit(MonitoringActive(event.network, List.from(_history)));
   }
 
   Future<void> _onAnalyzeChannels(
@@ -300,7 +218,6 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
   @override
   Future<void> close() {
     _networkSubscription?.cancel();
-    _bandwidthSubscription?.cancel();
     _channelSubscription?.cancel();
     return super.close();
   }

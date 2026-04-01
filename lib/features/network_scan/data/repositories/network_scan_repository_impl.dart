@@ -8,16 +8,13 @@ import '../../domain/entities/network_device.dart';
 import '../../domain/entities/network_scan_profile.dart';
 import '../../domain/repositories/network_scan_repository.dart';
 import '../datasources/arp_data_source.dart';
-import '../datasources/nmap_data_source.dart';
 
 @LazySingleton(as: NetworkScanRepository)
 class NetworkScanRepositoryImpl implements NetworkScanRepository {
-  final NmapDataSource _dataSource;
   final ArpDataSource _arpDataSource;
   final AppDatabase _appDatabase;
 
   NetworkScanRepositoryImpl(
-    this._dataSource,
     this._arpDataSource,
     this._appDatabase,
   );
@@ -27,22 +24,18 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
     String subnet,
   ) async {
     try {
-      final devices = await _dataSource.scanSubnet(subnet);
-      final results = devices.isNotEmpty
-          ? devices
-          : (await _arpDataSource.discoverHosts(targetSubnet: subnet))
-              .map(
-                (h) => NetworkDevice(
-                  ip: h.ip,
-                  mac: h.mac,
-                  vendor: h.vendor,
-                  hostName: h.hostName,
-                  latency: h.latency,
-                ),
-              )
-              .toList();
+      final results = (await _arpDataSource.discoverHosts(targetSubnet: subnet))
+          .map(
+            (h) => NetworkDevice(
+              ip: h.ip,
+              mac: h.mac,
+              vendor: h.vendor,
+              hostName: h.hostName,
+              latency: h.latency,
+            ),
+          )
+          .toList();
 
-      // Persist results (basic mapping to NetworkDevice)
       await _persistNetworkDevices(results, subnet);
 
       return Right(results);
@@ -60,20 +53,11 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
     PortScanMethod method = PortScanMethod.auto,
   }) async {
     try {
-      final hosts = await _dataSource.scanTarget(
-        target,
+      final results = await _arpDataSource.discoverHosts(
+        targetSubnet: target,
         profile: profile,
-        method: method,
       );
 
-      final results = hosts.isNotEmpty
-          ? hosts
-          : await _arpDataSource.discoverHosts(
-              targetSubnet: target,
-              profile: profile,
-            );
-
-      // Persist full HostScanResults
       await _persistHostScanResults(results, target);
 
       return Right(results);
@@ -89,7 +73,7 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
     String target,
   ) async {
     final db = await _appDatabase.database;
-    final sessionId = await _createSession(db, 'arp/nmap', target);
+    final sessionId = await _createSession(db, 'arp', target);
 
     await db.transaction((txn) async {
       for (final device in devices) {
@@ -111,7 +95,7 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
     String target,
   ) async {
     final db = await _appDatabase.database;
-    final sessionId = await _createSession(db, 'nmap', target);
+    final sessionId = await _createSession(db, 'arp', target);
 
     await db.transaction((txn) async {
       for (final host in results) {

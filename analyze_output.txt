@@ -1,0 +1,12 @@
+Analyzing torcav...                                             
+
+warning • Unused import: 'dart:io' • lib/features/monitoring/data/services/deauth_detection_service.dart:2:8 • unused_import
+warning • The value of the field '_random' isn't used • lib/features/network_scan/data/datasources/nmap_data_source.dart:25:16 • unused_field
+  error • Target of URI doesn't exist: 'package:torcav/core/services/privilege_service.dart' • test/features/network_scan/data/datasources/nmap_data_source_test.dart:6:8 • uri_does_not_exist
+  error • Classes and mixins can only implement other classes and mixins • test/features/network_scan/data/datasources/nmap_data_source_test.dart:10:52 • implements_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • test/features/network_scan/data/datasources/nmap_data_source_test.dart:18:38 • extra_positional_arguments
+  error • The method 'runAsRoot' isn't defined for the type 'MockPrivilegeService' • test/features/network_scan/data/datasources/nmap_data_source_test.dart:46:34 • undefined_method
+  error • The method 'runAsRoot' isn't defined for the type 'MockPrivilegeService' • test/features/network_scan/data/datasources/nmap_data_source_test.dart:61:34 • undefined_method
+  error • The method 'runAsRoot' isn't defined for the type 'MockPrivilegeService' • test/features/network_scan/data/datasources/nmap_data_source_test.dart:77:34 • undefined_method
+
+8 issues found. (ran in 1.5s)
