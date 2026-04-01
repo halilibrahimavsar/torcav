@@ -569,12 +569,16 @@ class BentoStatTile extends StatelessWidget {
             children: [
               Icon(icon, color: color.withValues(alpha: 0.7), size: 18),
               if (subValue != null)
-                Text(
-                  subValue!,
-                  style: GoogleFonts.rajdhani(
-                    color: color.withValues(alpha: 0.5),
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
+                Flexible(
+                  child: Text(
+                    subValue!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.rajdhani(
+                      color: color.withValues(alpha: 0.5),
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
             ],

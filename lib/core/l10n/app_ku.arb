@@ -46,6 +46,8 @@
     "settingsDesc": "Tevgera taranê, backend û moda ewlekariyê",
     "monitoringTitle": "Şopandin",
     "monitoringSubtitle": "Berfirehiya bandê, tespîta anomalî û herikîna nexşeya germê.",
+    "packetsPerSecondLabel": "Pakêt Di Her Çirkeyê De",
+    "throughputLabel": "Hecima Daneyan",
     "comingSoon": "DÊ ZÛ BÊ",
     "signalTrends": "Trendên Sînyalê",
     "topologyMesh": "Topolojî & Mesh",

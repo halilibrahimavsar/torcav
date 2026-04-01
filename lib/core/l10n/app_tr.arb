@@ -192,6 +192,14 @@
     "@monitoringSubtitle": {
         "description": "Description for monitoringSubtitle"
     },
+    "packetsPerSecondLabel": "Saniyelik Paket Sayısı",
+    "@packetsPerSecondLabel": {
+        "description": "Description for packetsPerSecondLabel"
+    },
+    "throughputLabel": "Veri Akışı",
+    "@throughputLabel": {
+        "description": "Description for throughputLabel"
+    },
     "comingSoon": "ÇOK YAKINDA",
     "@comingSoon": {
         "description": "Description for comingSoon"

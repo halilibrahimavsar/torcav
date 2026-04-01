@@ -156,10 +156,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get monitoringSubtitle => 'Bant genişliği, anomali tespiti ve ısı haritası akışları.';
 
   @override
-  String get packetsPerSecondLabel => 'Packets Per Second';
+  String get packetsPerSecondLabel => 'Saniyelik Paket Sayısı';
 
   @override
-  String get throughputLabel => 'Throughput';
+  String get throughputLabel => 'Veri Akışı';
 
   @override
   String get comingSoon => 'ÇOK YAKINDA';

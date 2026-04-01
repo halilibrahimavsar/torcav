@@ -46,6 +46,8 @@
     "settingsDesc": "Scanverhalten, Backends und Sicherheitsmodus",
     "monitoringTitle": "Überwachung",
     "monitoringSubtitle": "Bandbreite, Anomalieerkennung und Heatmap-Streams.",
+    "packetsPerSecondLabel": "Pakete pro Sekunde",
+    "throughputLabel": "Durchsatz",
     "comingSoon": "DEMNÄCHST",
     "signalTrends": "Signal-Trends",
     "topologyMesh": "Topologie & Mesh",
