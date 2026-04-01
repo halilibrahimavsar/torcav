@@ -23,8 +23,8 @@ class ChannelRatingPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) =>
-              GetIt.I<MonitoringBloc>()..add(AnalyzeChannels(networks)),
+          create:
+              (_) => GetIt.I<MonitoringBloc>()..add(AnalyzeChannels(networks)),
         ),
         BlocProvider.value(value: GetIt.I<WifiScanBloc>()),
       ],

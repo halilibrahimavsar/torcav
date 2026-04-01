@@ -12,6 +12,7 @@ abstract class NotificationEvent extends Equatable {
 }
 
 class LoadNotifications extends NotificationEvent {}
+
 class MarkNotificationAsRead extends NotificationEvent {
   final int id;
   const MarkNotificationAsRead(this.id);
@@ -27,7 +28,9 @@ abstract class NotificationState extends Equatable {
 }
 
 class NotificationInitial extends NotificationState {}
+
 class NotificationLoading extends NotificationState {}
+
 class NotificationLoaded extends NotificationState {
   final List<SecurityEvent> notifications;
   final int unreadCount;
@@ -40,6 +43,7 @@ class NotificationLoaded extends NotificationState {
   @override
   List<Object?> get props => [notifications, unreadCount];
 }
+
 class NotificationError extends NotificationState {
   final String message;
   const NotificationError(this.message);
@@ -66,10 +70,12 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       // Only show events that are mapped to "notifications"
       // For now, all security events are notifications
       final unreadCount = events.where((e) => !e.isRead).length;
-      emit(NotificationLoaded(
-        notifications: events.reversed.toList(), // Latest first
-        unreadCount: unreadCount,
-      ));
+      emit(
+        NotificationLoaded(
+          notifications: events.reversed.toList(), // Latest first
+          unreadCount: unreadCount,
+        ),
+      );
     } catch (e) {
       emit(NotificationError(e.toString()));
     }

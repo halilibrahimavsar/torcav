@@ -632,22 +632,6 @@
     "@profileTitle": {
         "description": "Description for profileTitle"
     },
-    "agentId": "AJAN_KİMLİĞİ: {id}",
-    "@agentId": {
-        "description": "Description for agentId"
-    },
-    "sessionInformation": "OTURUM BİLGİLERİ",
-    "@sessionInformation": {
-        "description": "Description for sessionInformation"
-    },
-    "subscriptionStatus": "ABONELİK DURUMU",
-    "@subscriptionStatus": {
-        "description": "Description for subscriptionStatus"
-    },
-    "activeSession": "AKTİF OTURUM",
-    "@activeSession": {
-        "description": "Description for activeSession"
-    },
     "logout": "OTURUMU KAPAT",
     "@logout": {
         "description": "Description for logout"
@@ -756,10 +740,6 @@
     "@neuralCoreTitle": {
         "description": "Description for neuralCoreTitle"
     },
-    "simulatedLabel": "SİMÜLASYON",
-    "@simulatedLabel": {
-        "description": "Description for simulatedLabel"
-    },
     "activeAnomalies": "AKTİF ANOMALİLER",
     "@activeAnomalies": {
         "description": "Description for activeAnomalies"
@@ -783,10 +763,6 @@
     "packetSnifferTitle": "PAKET_YAKALAYICI",
     "@packetSnifferTitle": {
         "description": "Description for packetSnifferTitle"
-    },
-    "simulatedLogStream": "SİMÜLE_KAYIT_AKIŞI",
-    "@simulatedLogStream": {
-        "description": "Description for simulatedLogStream"
     },
     "streamPaused": "AKIŞ_DURAKLATILDI",
     "@streamPaused": {
@@ -891,18 +867,6 @@
     "systemTheme": "Sistem",
     "@systemTheme": {
         "description": "Description for systemTheme"
-    },
-    "biometricData": "BİYOMETRİK VERİ",
-    "@biometricData": {
-        "description": "Description for biometricData"
-    },
-    "neuralSync": "Sinirsel Senkron",
-    "@neuralSync": {
-        "description": "Description for neuralSync"
-    },
-    "encryptionKey": "Şifreleme Anahtarı",
-    "@encryptionKey": {
-        "description": "Description for encryptionKey"
     },
     "systemStatus": "SİSTEM DURUMU",
     "@systemStatus": {

@@ -147,7 +147,9 @@ class NotificationTile extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       onTap: () {
         if (isUnread && event.id != null) {
-          context.read<NotificationBloc>().add(MarkNotificationAsRead(event.id!));
+          context.read<NotificationBloc>().add(
+            MarkNotificationAsRead(event.id!),
+          );
         }
       },
       child: Column(

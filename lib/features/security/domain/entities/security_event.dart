@@ -58,6 +58,14 @@ class SecurityEvent extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [id, type, severity, ssid, bssid, timestamp, evidence, isRead];
+  List<Object?> get props => [
+    id,
+    type,
+    severity,
+    ssid,
+    bssid,
+    timestamp,
+    evidence,
+    isRead,
+  ];
 }

@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/error/failures.dart';
+import '../../../../core/errors/failures.dart';
 import '../entities/scan_request.dart';
 import '../entities/scan_snapshot.dart';
 import '../repositories/wifi_repository.dart';

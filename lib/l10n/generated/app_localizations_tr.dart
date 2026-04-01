@@ -516,20 +516,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get profileTitle => 'AJAN PROFİLİ';
 
   @override
-  String agentId(Object id) {
-    return 'AJAN_KİMLİĞİ: $id';
-  }
-
-  @override
-  String get sessionInformation => 'OTURUM BİLGİLERİ';
-
-  @override
-  String get subscriptionStatus => 'ABONELİK DURUMU';
-
-  @override
-  String get activeSession => 'AKTİF OTURUM';
-
-  @override
   String get logout => 'OTURUMU KAPAT';
 
   @override
@@ -610,9 +596,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get neuralCoreTitle => 'SİNİRSEL_ÇEKİRDEK_AI';
 
   @override
-  String get simulatedLabel => 'SİMÜLASYON';
-
-  @override
   String get activeAnomalies => 'AKTİF ANOMALİLER';
 
   @override
@@ -629,9 +612,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get packetSnifferTitle => 'PAKET_YAKALAYICI';
-
-  @override
-  String get simulatedLogStream => 'SİMÜLE_KAYIT_AKIŞI';
 
   @override
   String get streamPaused => 'AKIŞ_DURAKLATILDI';
@@ -710,15 +690,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get systemTheme => 'Sistem';
-
-  @override
-  String get biometricData => 'BİYOMETRİK VERİ';
-
-  @override
-  String get neuralSync => 'Sinirsel Senkron';
-
-  @override
-  String get encryptionKey => 'Şifreleme Anahtarı';
 
   @override
   String get systemStatus => 'SİSTEM DURUMU';

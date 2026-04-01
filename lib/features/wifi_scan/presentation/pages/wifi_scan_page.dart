@@ -71,73 +71,96 @@ class _WifiScanViewState extends State<_WifiScanView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      body: BlocBuilder<WifiScanBloc, WifiScanState>(
-        builder: (context, state) {
-          if (state is WifiScanLoading) {
-            return Container(
-              width: double.infinity,
-              height: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const WifiScannerRadar(isScanning: true),
-                  const SizedBox(height: 48),
-                  StaggeredEntry(
-                    child: Column(
-                      children: [
-                        Text(
-                          'INITIATING SPECTRUM SCAN',
-                          style: GoogleFonts.orbitron(
-                            color: AppColors.neonCyan,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2,
-                          ),
+      body: Stack(
+        children: [
+          // ── Loading state: radar always in tree, shown via Visibility ──
+          // Keeping WifiScannerRadar permanently mounted prevents Flutter from
+          // disposing its AnimationController when BLoC emits mid-scan, which
+          // was the cause of the radar animation freezing.
+          BlocBuilder<WifiScanBloc, WifiScanState>(
+            buildWhen: (prev, next) =>
+                (prev is WifiScanLoading) != (next is WifiScanLoading),
+            builder: (context, state) {
+              final isLoading = state is WifiScanLoading;
+              return Visibility(
+                visible: isLoading,
+                maintainState: true,
+                maintainAnimation: true,
+                maintainSize: false,
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const WifiScannerRadar(isScanning: true),
+                      const SizedBox(height: 48),
+                      StaggeredEntry(
+                        child: Column(
+                          children: [
+                            Text(
+                              'INITIATING SPECTRUM SCAN',
+                              style: GoogleFonts.orbitron(
+                                color: AppColors.neonCyan,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 2,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'BROADCASTING PROBE REQUESTS...',
+                              style: GoogleFonts.rajdhani(
+                                color: AppColors.textMuted,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                letterSpacing: 1,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'BROADCASTING PROBE REQUESTS...',
-                          style: GoogleFonts.rajdhani(
-                            color: AppColors.textMuted,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            );
-          }
-          if (state is WifiScanError) {
-            return _ErrorView(
-              message: state.message,
-              onRetry: () {
-                context.read<WifiScanBloc>().add(
-                  WifiScanStarted(request: _currentRequest),
+                ),
+              );
+            },
+          ),
+
+          // ── Non-loading states ──
+          BlocBuilder<WifiScanBloc, WifiScanState>(
+            buildWhen: (prev, next) => next is! WifiScanLoading,
+            builder: (context, state) {
+              if (state is WifiScanLoading) return const SizedBox.shrink();
+              if (state is WifiScanError) {
+                return _ErrorView(
+                  message: state.message,
+                  onRetry: () {
+                    context.read<WifiScanBloc>().add(
+                      WifiScanStarted(request: _currentRequest),
+                    );
+                  },
                 );
-              },
-            );
-          }
-          if (state is WifiScanLoaded) {
-            return _SnapshotView(
-              snapshot: state.snapshot,
-              currentRequest: _currentRequest,
-            );
-          }
-          return Center(
-            child: NeonText(
-              l10n.readyToScan,
-              style: GoogleFonts.rajdhani(
-                color: AppColors.textMuted,
-                fontSize: 18,
-              ),
-            ),
-          );
-        },
+              }
+              if (state is WifiScanLoaded) {
+                return _SnapshotView(
+                  snapshot: state.snapshot,
+                  currentRequest: _currentRequest,
+                );
+              }
+              return Center(
+                child: NeonText(
+                  l10n.readyToScan,
+                  style: GoogleFonts.rajdhani(
+                    color: AppColors.textMuted,
+                    fontSize: 18,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
@@ -449,10 +472,7 @@ class _WifiNetworkCard extends StatelessWidget {
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder:
-                  (_) => WifiDetailsPage(
-                    network: network.toWifiNetwork(),
-                  ),
+              builder: (_) => WifiDetailsPage(network: network.toWifiNetwork()),
             ),
           );
         },

@@ -5,7 +5,7 @@ import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 
-import '../../../../core/error/failures.dart';
+import '../../../../core/errors/failures.dart';
 import '../../domain/entities/scan_request.dart';
 import '../../domain/entities/scan_snapshot.dart';
 import '../../domain/entities/wifi_network.dart';

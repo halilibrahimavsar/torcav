@@ -670,24 +670,6 @@
     "@profileTitle": {
         "description": "Description for profileTitle"
     },
-    "agentId": "AGENT_ID: {id}",
-    "@agentId": {
-        "placeholders": {
-            "id": {}
-        }
-    },
-    "sessionInformation": "SESSION INFORMATION",
-    "@sessionInformation": {
-        "description": "Description for sessionInformation"
-    },
-    "subscriptionStatus": "SUBSCRIPTION STATUS",
-    "@subscriptionStatus": {
-        "description": "Description for subscriptionStatus"
-    },
-    "activeSession": "ACTIVE SESSION",
-    "@activeSession": {
-        "description": "Description for activeSession"
-    },
     "logout": "LOGOUT",
     "@logout": {
         "description": "Description for logout"
@@ -794,10 +776,6 @@
     "@neuralCoreTitle": {
         "description": "Description for neuralCoreTitle"
     },
-    "simulatedLabel": "SIMULATED",
-    "@simulatedLabel": {
-        "description": "Description for simulatedLabel"
-    },
     "activeAnomalies": "ACTIVE ANOMALIES",
     "@activeAnomalies": {
         "description": "Description for activeAnomalies"
@@ -821,10 +799,6 @@
     "packetSnifferTitle": "PACKET_SNIFFER",
     "@packetSnifferTitle": {
         "description": "Description for packetSnifferTitle"
-    },
-    "simulatedLogStream": "SIMULATED_LOG_STREAM",
-    "@simulatedLogStream": {
-        "description": "Description for simulatedLogStream"
     },
     "streamPaused": "STREAM_PAUSED",
     "@streamPaused": {
@@ -929,18 +903,6 @@
     "systemTheme": "System",
     "@systemTheme": {
         "description": "Description for systemTheme"
-    },
-    "biometricData": "BIOMETRIC DATA",
-    "@biometricData": {
-        "description": "Description for biometricData"
-    },
-    "neuralSync": "Neural Sync",
-    "@neuralSync": {
-        "description": "Description for neuralSync"
-    },
-    "encryptionKey": "Encryption Key",
-    "@encryptionKey": {
-        "description": "Description for encryptionKey"
     },
     "systemStatus": "SYSTEM STATUS",
     "@systemStatus": {

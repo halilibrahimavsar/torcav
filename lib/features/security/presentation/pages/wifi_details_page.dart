@@ -13,10 +13,7 @@ import '../bloc/wifi_details_bloc.dart';
 class WifiDetailsPage extends StatelessWidget {
   final WifiNetwork network;
 
-  const WifiDetailsPage({
-    super.key,
-    required this.network,
-  });
+  const WifiDetailsPage({super.key, required this.network});
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +34,7 @@ class WifiDetailsPage extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder:
-                        (context) => SignalGraphPage(
-                          network: network,
-                        ),
+                    builder: (context) => SignalGraphPage(network: network),
                   ),
                 );
               },
@@ -299,6 +293,4 @@ class WifiDetailsPage extends StatelessWidget {
       ),
     );
   }
-
-
 }

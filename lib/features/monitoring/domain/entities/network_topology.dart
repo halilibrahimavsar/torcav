@@ -82,7 +82,14 @@ class NetworkTopology extends Equatable {
       nodes.where((n) => n.type == TopologyNodeType.accessPoint).toList();
 
   List<TopologyNode> get connectedDevices =>
-      nodes.where((n) => n.type == TopologyNodeType.device).toList();
+      nodes
+          .where(
+            (n) =>
+                !n.isCurrentDevice &&
+                !n.isGateway &&
+                n.type != TopologyNodeType.accessPoint,
+          )
+          .toList();
 
   @override
   List<Object?> get props => [nodes, edges, timestamp, currentDeviceIp];

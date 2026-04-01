@@ -173,7 +173,8 @@ class NotificationService {
       SecurityEventType.deauthAttackSuspected => '📡 Deauth Attack Detected',
       SecurityEventType.encryptionDowngraded => '🔓 Encryption Downgraded',
       SecurityEventType.deauthBurstDetected => '⚡ Deauth Burst Detected',
-      SecurityEventType.handshakeCaptureStarted => '🔐 Handshake Capture Started',
+      SecurityEventType.handshakeCaptureStarted =>
+        '🔐 Handshake Capture Started',
       SecurityEventType.handshakeCaptureCompleted => '✅ Handshake Captured',
       SecurityEventType.captivePortalDetected => '🌐 Captive Portal Detected',
       SecurityEventType.unsupportedOperation => '⚠️ Operation Not Supported',

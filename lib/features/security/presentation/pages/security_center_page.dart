@@ -103,7 +103,10 @@ class _SecurityCenterView extends StatelessWidget {
     );
   }
 
-  Widget _buildKnownNetworks(List<KnownNetwork> networks, AppLocalizations l10n) {
+  Widget _buildKnownNetworks(
+    List<KnownNetwork> networks,
+    AppLocalizations l10n,
+  ) {
     if (networks.isEmpty) {
       return _emptyBox(l10n.noKnownNetworksYet);
     }
@@ -397,14 +400,17 @@ class _SecurityCenterBentoHeader extends StatelessWidget {
                     child: SecurityStatusRadar(
                       score: 0.94,
                       isScanning: state is SecurityLoading,
-                      color: isSecure ? AppColors.neonCyan : AppColors.neonOrange,
+                      color:
+                          isSecure ? AppColors.neonCyan : AppColors.neonOrange,
                     ),
                   ),
                   const SizedBox(height: 16),
                   NeonText(
-                    (isSecure ? l10n.shieldActive : l10n.scanning).toUpperCase(),
+                    (isSecure ? l10n.shieldActive : l10n.scanning)
+                        .toUpperCase(),
                     style: GoogleFonts.orbitron(
-                      color: isSecure ? AppColors.neonCyan : AppColors.neonOrange,
+                      color:
+                          isSecure ? AppColors.neonCyan : AppColors.neonOrange,
                       fontSize: 14,
                       fontWeight: FontWeight.w900,
                       letterSpacing: 3,

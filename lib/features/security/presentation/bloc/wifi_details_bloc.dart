@@ -33,10 +33,7 @@ class WifiDetailsLoaded extends WifiDetailsState {
   final SecurityReport report;
   final SecurityAssessment assessment;
 
-  const WifiDetailsLoaded({
-    required this.report,
-    required this.assessment,
-  });
+  const WifiDetailsLoaded({required this.report, required this.assessment});
 
   @override
   List<Object?> get props => [report, assessment];

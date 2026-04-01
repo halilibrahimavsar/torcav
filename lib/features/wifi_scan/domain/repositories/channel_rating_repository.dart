@@ -1,5 +1,5 @@
 import 'package:fpdart/fpdart.dart';
-import '../../../../core/error/failures.dart';
+import '../../../../core/errors/failures.dart';
 import '../entities/channel_rating_sample.dart';
 
 abstract class ChannelRatingRepository {

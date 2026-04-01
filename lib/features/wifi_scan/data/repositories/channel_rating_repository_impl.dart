@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
-import '../../../../core/error/failures.dart';
+import '../../../../core/errors/failures.dart';
 import '../datasources/channel_rating_local_data_source.dart';
 import '../../domain/entities/channel_rating_sample.dart';
 import '../../domain/repositories/channel_rating_repository.dart';

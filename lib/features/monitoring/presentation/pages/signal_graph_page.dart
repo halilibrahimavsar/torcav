@@ -13,10 +13,7 @@ import 'temporal_heatmap_page.dart';
 class SignalGraphPage extends StatelessWidget {
   final WifiNetwork network;
 
-  const SignalGraphPage({
-    super.key,
-    required this.network,
-  });
+  const SignalGraphPage({super.key, required this.network});
 
   @override
   Widget build(BuildContext context) {

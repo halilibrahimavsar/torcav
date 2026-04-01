@@ -4,7 +4,7 @@ import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/di/injection.dart';
-import '../../../../core/i18n/locale_cubit.dart';
+import '../../../../core/l10n/locale_cubit.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/theme/theme_cubit.dart';

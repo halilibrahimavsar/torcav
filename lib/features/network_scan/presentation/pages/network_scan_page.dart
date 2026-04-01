@@ -44,6 +44,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
     return Scaffold(
       body: BlocBuilder<NetworkScanBloc, NetworkScanState>(
         builder: (context, state) {
+          final isLoading = state is NetworkScanLoading;
           return ListView(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
             children: [
@@ -62,7 +63,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 delay: const Duration(milliseconds: 100),
                 child: _ScanControlPanel(
                   controller: _targetController,
-                  isScanning: state is NetworkScanLoading,
+                  isScanning: isLoading,
                   onScan: () {
                     context.read<NetworkScanBloc>().add(
                       StartNetworkScan(target: _targetController.text),
@@ -72,13 +73,18 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
               ),
               const SizedBox(height: 32),
 
-              // ── Results ──
-              if (state is NetworkScanLoading) ...[
-                const StaggeredEntry(
-                  delay: Duration(milliseconds: 200),
-                  child: _ScanningIndicator(),
-                ),
-              ],
+              // ── Scanning Indicator ──
+              // Keep this widget permanently in the tree (never conditionally
+              // inserted/removed from the list) so Flutter never disposes its
+              // AnimationController mid-animation. Visibility preserves the
+              // element while hiding it, keeping the radar sweep running.
+              Visibility(
+                visible: isLoading,
+                maintainState: true,
+                maintainAnimation: true,
+                maintainSize: false,
+                child: const _ScanningIndicator(),
+              ),
 
               if (state is NetworkScanLoaded) ...[
                 // ── Section 2: SCAN ANALYTICS ──
@@ -360,7 +366,6 @@ class _NetworkBentoHeader extends StatelessWidget {
                 children: [
                   NetworkScannerRadar(
                     isScanning: false,
-                    nodeCount: devices.length,
                     color: AppColors.neonCyan,
                   ),
                   Icon(

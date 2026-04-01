@@ -60,8 +60,6 @@ import '../../features/security/data/repositories/security_repository_impl.dart'
     as _i997;
 import '../../features/security/domain/repositories/security_repository.dart'
     as _i578;
-import '../../features/security/domain/services/security_event_store.dart'
-    as _i1048;
 import '../../features/security/domain/usecases/analyze_network_security_usecase.dart'
     as _i87;
 import '../../features/security/domain/usecases/security_analyzer.dart'
@@ -77,8 +75,6 @@ import '../../features/wifi_scan/data/datasources/android_wifi_data_source.dart'
     as _i672;
 import '../../features/wifi_scan/data/datasources/channel_rating_local_data_source.dart'
     as _i305;
-import '../../features/wifi_scan/data/datasources/scan_persistence_data_source.dart'
-    as _i790;
 import '../../features/wifi_scan/data/datasources/wifi_data_source.dart'
     as _i1012;
 import '../../features/wifi_scan/data/repositories/channel_rating_repository_impl.dart'
@@ -91,8 +87,6 @@ import '../../features/wifi_scan/domain/repositories/wifi_repository.dart'
     as _i1027;
 import '../../features/wifi_scan/domain/services/channel_rating_engine.dart'
     as _i969;
-import '../../features/wifi_scan/domain/services/scan_diff_engine.dart'
-    as _i557;
 import '../../features/wifi_scan/domain/services/scan_session_store.dart'
     as _i797;
 import '../../features/wifi_scan/domain/usecases/get_historical_best_channel.dart'
@@ -127,14 +121,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i969.ChannelRatingEngine>(
       () => _i969.ChannelRatingEngine(),
     );
-    gh.lazySingleton<_i557.ScanDiffEngine>(() => _i557.ScanDiffEngine());
     gh.lazySingleton<_i471.SecurityAnalyzer>(() => _i471.SecurityAnalyzer());
-    gh.lazySingleton<_i1048.SecurityEventStore>(
-      () => _i1048.SecurityEventStore(),
-    );
     gh.lazySingleton<_i1066.ArpDataSource>(() => _i1066.ArpDataSource());
     gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
-    gh.lazySingleton<_i552.AppSettingsStore>(() => _i552.AppSettingsStore());
     gh.lazySingleton<_i494.HeatmapRepository>(
       () => _i335.HeatmapRepositoryImpl(gh<_i690.AppDatabase>()),
     );
@@ -147,14 +136,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i611.ThemeCubit>(
       () => _i611.ThemeCubit(gh<_i460.SharedPreferences>()),
     );
+    gh.lazySingleton<_i552.AppSettingsStore>(
+      () => _i552.AppSettingsStore(gh<_i460.SharedPreferences>()),
+    );
     gh.lazySingleton<_i119.ReportExportRepository>(
       () => _i953.ReportExportRepositoryImpl(),
-    );
-    gh.lazySingleton<_i890.SpeedTestRepository>(
-      () => _i528.SpeedTestRepositoryImpl(gh<_i690.AppDatabase>()),
-    );
-    gh.lazySingleton<_i1024.RunSpeedTestUseCase>(
-      () => _i1024.RunSpeedTestUseCase(gh<_i890.SpeedTestRepository>()),
     );
     gh.lazySingleton<_i305.ChannelRatingLocalDataSource>(
       () => _i305.ChannelRatingLocalDataSourceImpl(gh<_i690.AppDatabase>()),
@@ -171,27 +157,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i102.LogHeatmapPointUseCase>(),
       ),
     );
-    gh.lazySingleton<_i1073.NetworkScanRepository>(
-      () => _i551.NetworkScanRepositoryImpl(
-        gh<_i1066.ArpDataSource>(),
-        gh<_i690.AppDatabase>(),
-      ),
-    );
-    gh.lazySingleton<_i790.ScanPersistenceDataSource>(
-      () => _i790.ScanPersistenceDataSource(gh<_i690.AppDatabase>()),
-    );
-    gh.factory<_i739.NetworkScanBloc>(
-      () => _i739.NetworkScanBloc(gh<_i1073.NetworkScanRepository>()),
+    gh.lazySingleton<_i890.SpeedTestRepository>(
+      () => const _i528.SpeedTestRepositoryImpl(),
     );
     gh.lazySingleton<_i1012.WifiDataSource>(
       () => _i672.AndroidWifiDataSource(),
       instanceName: 'android',
     );
+    gh.lazySingleton<_i1073.NetworkScanRepository>(
+      () => _i551.NetworkScanRepositoryImpl(gh<_i1066.ArpDataSource>()),
+    );
     gh.lazySingleton<_i367.GenerateReportUseCase>(
       () => _i367.GenerateReportUseCase(gh<_i119.ReportExportRepository>()),
-    );
-    gh.factory<_i374.MonitoringHubBloc>(
-      () => _i374.MonitoringHubBloc(gh<_i1024.RunSpeedTestUseCase>()),
     );
     gh.factory<_i361.WifiDetailsBloc>(
       () => _i361.WifiDetailsBloc(gh<_i471.SecurityAnalyzer>()),
@@ -202,10 +179,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i941.NotificationService>(),
       ),
     );
+    gh.lazySingleton<_i1024.RunSpeedTestUseCase>(
+      () => _i1024.RunSpeedTestUseCase(gh<_i890.SpeedTestRepository>()),
+    );
     gh.lazySingleton<_i332.ChannelRatingRepository>(
       () => _i671.ChannelRatingRepositoryImpl(
         gh<_i305.ChannelRatingLocalDataSource>(),
       ),
+    );
+    gh.factory<_i739.NetworkScanBloc>(
+      () => _i739.NetworkScanBloc(gh<_i1073.NetworkScanRepository>()),
     );
     gh.lazySingleton<_i1027.WifiRepository>(
       () => _i433.WifiRepositoryImpl(
@@ -230,6 +213,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i87.AnalyzeNetworkSecurityUseCase>(),
         gh<_i797.ScanSessionStore>(),
       ),
+    );
+    gh.factory<_i374.MonitoringHubBloc>(
+      () => _i374.MonitoringHubBloc(gh<_i1024.RunSpeedTestUseCase>()),
     );
     gh.lazySingleton<_i365.MonitoringRepository>(
       () => _i592.MonitoringRepositoryImpl(gh<_i1027.WifiRepository>()),

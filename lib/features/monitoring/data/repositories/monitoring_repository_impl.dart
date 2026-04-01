@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
-import '../../../../core/error/failures.dart';
+import '../../../../core/errors/failures.dart';
 import '../../../../features/wifi_scan/domain/entities/wifi_network.dart';
 import '../../../../features/wifi_scan/domain/repositories/wifi_repository.dart';
 import '../../domain/repositories/monitoring_repository.dart';

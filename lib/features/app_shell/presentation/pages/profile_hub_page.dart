@@ -1,145 +1,252 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 import 'package:torcav/l10n/generated/app_localizations.dart';
 
+import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
+import '../../../../core/theme/theme_cubit.dart';
+import '../../../wifi_scan/domain/entities/scan_snapshot.dart';
+import '../../../wifi_scan/domain/services/scan_session_store.dart';
 
-/// A cybernetic profile hub for the agent.
-class ProfileHubPage extends StatelessWidget {
+class ProfileHubPage extends StatefulWidget {
   const ProfileHubPage({super.key});
+
+  @override
+  State<ProfileHubPage> createState() => _ProfileHubPageState();
+}
+
+class _ProfileHubPageState extends State<ProfileHubPage> {
+  _NetworkStatus _networkStatus = const _NetworkStatus();
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNetworkStatus();
+  }
+
+  Future<void> _loadNetworkStatus() async {
+    try {
+      final info = getIt<NetworkInfo>();
+      final results = await Future.wait([
+        info.getWifiName(),
+        info.getWifiIP(),
+        info.getWifiGatewayIP(),
+      ]);
+
+      if (!mounted) return;
+      setState(() {
+        _networkStatus = _NetworkStatus(
+          ssid: _cleanSsid(results[0]),
+          ip: _cleanValue(results[1]),
+          gateway: _cleanValue(results[2]),
+        );
+        _loading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _loading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context);
+    final latestSnapshot = getIt<ScanSessionStore>().latest;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: NeonText(
-          l10n.profileTitle.toUpperCase(),
-          style: GoogleFonts.orbitron(
-            color: AppColors.neonCyan,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 2,
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: getIt<ThemeCubit>(),
+      builder: (context, themeMode, _) {
+        final statusLabel =
+            _loading
+                ? l10n.loading
+                : _networkStatus.isConnected
+                ? l10n.connectedStatusCaps
+                : l10n.disconnectedStatusCaps;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: NeonText(
+              l10n.profileTitle.toUpperCase(),
+              style: GoogleFonts.orbitron(
+                color: AppColors.neonCyan,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2,
+              ),
+              glowRadius: 8,
+            ),
           ),
-          glowRadius: 8,
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Agent Identity Header
-            Center(
-              child: Column(
-                children: [
-                  Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.neonCyan.withValues(alpha: 0.5),
-                        width: 2,
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppColors.neonCyan.withValues(alpha: 0.5),
+                            width: 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.neonCyan.withValues(alpha: 0.2),
+                              blurRadius: 20,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.account_circle_outlined,
+                          size: 80,
+                          color: AppColors.neonCyan,
+                        ),
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.neonCyan.withValues(alpha: 0.2),
-                          blurRadius: 20,
-                          spreadRadius: 2,
+                      const SizedBox(height: 16),
+                      NeonText(
+                        'TORCAV',
+                        style: GoogleFonts.orbitron(
+                          color: AppColors.neonCyan,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 3,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        statusLabel,
+                        style: GoogleFonts.outfit(
+                          color: AppColors.textMuted,
+                          fontSize: 12,
+                          letterSpacing: 1.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 40),
+                _buildSectionHeader(context, l10n.sectionStatus),
+                const SizedBox(height: 16),
+                HolographicCard(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        _buildInfoRow(
+                          context,
+                          l10n.activeSessionLabel,
+                          statusLabel,
+                          Icons.monitor_heart_outlined,
+                        ),
+                        const Divider(height: 24),
+                        _buildInfoRow(
+                          context,
+                          l10n.settingsLanguage,
+                          _languageName(locale.languageCode),
+                          Icons.language_outlined,
+                        ),
+                        const Divider(height: 24),
+                        _buildInfoRow(
+                          context,
+                          l10n.theme,
+                          _themeName(themeMode, l10n),
+                          Icons.palette_outlined,
                         ),
                       ],
                     ),
-                    child: const Icon(
-                      Icons.account_circle_outlined,
-                      size: 80,
-                      color: AppColors.neonCyan,
-                    ),
                   ),
-                  const SizedBox(height: 16),
-                  NeonText(
-                    'OPERATOR_01',
-                    style: GoogleFonts.orbitron(
-                      color: AppColors.neonCyan,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    l10n.agentId('TR-9982-CX'),
-                    style: GoogleFonts.outfit(
-                      color: AppColors.textMuted,
-                      fontSize: 12,
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 40),
-
-            // Session Information
-            _buildSectionHeader(context, l10n.sessionInformation),
-            const SizedBox(height: 16),
-            HolographicCard(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    _buildInfoRow(
-                      context,
-                      l10n.activeSession,
-                      '2h 45m',
-                      Icons.timer_outlined,
-                    ),
-                    const Divider(height: 24),
-                    _buildInfoRow(
-                      context,
-                      l10n.subscriptionStatus,
-                      'ENTERPRISE_ELITE',
-                      Icons.verified_user_outlined,
-                      valueColor: AppColors.neonCyan,
-                    ),
-                  ],
                 ),
-              ),
-            ),
-
-            const SizedBox(height: 32),
-
-            // Security Posture / Bio-metrics placeholder
-            _buildSectionHeader(context, l10n.biometricData),
-            const SizedBox(height: 16),
-            HolographicCard(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    _buildInfoRow(
-                      context,
-                      l10n.neuralSync,
-                      '98.2%',
-                      Icons.psychology_outlined,
+                const SizedBox(height: 32),
+                _buildSectionHeader(context, l10n.networkStatusLabel),
+                const SizedBox(height: 16),
+                HolographicCard(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        _buildInfoRow(
+                          context,
+                          l10n.ssid,
+                          _networkStatus.ssid ?? '—',
+                          Icons.wifi_outlined,
+                        ),
+                        const Divider(height: 24),
+                        _buildInfoRow(
+                          context,
+                          l10n.ipLabel,
+                          _networkStatus.ip ?? '—',
+                          Icons.lan_outlined,
+                        ),
+                        const Divider(height: 24),
+                        _buildInfoRow(
+                          context,
+                          l10n.gatewayLabel,
+                          _networkStatus.gateway ?? '—',
+                          Icons.router_outlined,
+                        ),
+                      ],
                     ),
-                    const Divider(height: 24),
-                    _buildInfoRow(
-                      context,
-                      l10n.encryptionKey,
-                      'AES-256-GCM',
-                      Icons.vpn_key_outlined,
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+                const SizedBox(height: 32),
+                _buildSectionHeader(context, l10n.lastScanTitle),
+                const SizedBox(height: 16),
+                HolographicCard(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: _buildSnapshotSummary(context, latestSnapshot),
+                  ),
+                ),
+                const SizedBox(height: 40),
+              ],
             ),
+          ),
+        );
+      },
+    );
+  }
 
-            const SizedBox(height: 40),
-          ],
+  Widget _buildSnapshotSummary(
+    BuildContext context,
+    ScanSnapshot? latestSnapshot,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
+    if (latestSnapshot == null) {
+      return Text(
+        l10n.noSnapshotAvailable,
+        style: GoogleFonts.outfit(color: AppColors.textMuted, fontSize: 14),
+      );
+    }
+
+    final locale = Localizations.localeOf(context);
+    return Column(
+      children: [
+        _buildInfoRow(
+          context,
+          l10n.lastSnapshot,
+          DateFormat.yMMMd(
+            locale.languageCode,
+          ).add_Hm().format(latestSnapshot.timestamp),
+          Icons.history_rounded,
         ),
-      ),
+        const Divider(height: 24),
+        _buildInfoRow(
+          context,
+          l10n.networksCount(latestSnapshot.networks.length),
+          latestSnapshot.backendUsed.toUpperCase(),
+          Icons.radar_outlined,
+        ),
+      ],
     );
   }
 
@@ -178,27 +285,73 @@ class ProfileHubPage extends StatelessWidget {
     BuildContext context,
     String label,
     String value,
-    IconData icon, {
-    Color? valueColor,
-  }) {
+    IconData icon,
+  ) {
     return Row(
       children: [
         Icon(icon, size: 18, color: AppColors.textMuted),
         const SizedBox(width: 12),
-        Text(
-          label,
-          style: GoogleFonts.outfit(color: AppColors.textMuted, fontSize: 14),
+        Expanded(
+          child: Text(
+            label,
+            style: GoogleFonts.outfit(color: AppColors.textMuted, fontSize: 14),
+          ),
         ),
-        const Spacer(),
-        Text(
-          value,
-          style: GoogleFonts.outfit(
-            color: valueColor ?? Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
+        const SizedBox(width: 12),
+        Flexible(
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            style: GoogleFonts.outfit(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ],
     );
   }
+
+  String _languageName(String code) {
+    return switch (code) {
+      'tr' => 'Turkce',
+      'ku' => 'Kurdi',
+      'de' => 'Deutsch',
+      _ => 'English',
+    };
+  }
+
+  String _themeName(ThemeMode mode, AppLocalizations l10n) {
+    return switch (mode) {
+      ThemeMode.dark => l10n.darkTheme,
+      ThemeMode.light => l10n.lightTheme,
+      ThemeMode.system => l10n.systemTheme,
+    };
+  }
+
+  String? _cleanSsid(String? raw) {
+    final cleaned = _cleanValue(raw)?.replaceAll('"', '');
+    if (cleaned == null) return null;
+    if (cleaned.toLowerCase() == '<unknown ssid>') {
+      return null;
+    }
+    return cleaned;
+  }
+
+  String? _cleanValue(String? raw) {
+    if (raw == null) return null;
+    final cleaned = raw.trim();
+    return cleaned.isEmpty ? null : cleaned;
+  }
+}
+
+class _NetworkStatus {
+  final String? ssid;
+  final String? ip;
+  final String? gateway;
+
+  const _NetworkStatus({this.ssid, this.ip, this.gateway});
+
+  bool get isConnected => ssid != null || ip != null || gateway != null;
 }

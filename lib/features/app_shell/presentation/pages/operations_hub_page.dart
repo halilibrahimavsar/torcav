@@ -88,11 +88,12 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       return NeonCard(
                         glowColor: AppColors.neonCyan,
                         glowIntensity: isDone ? 0.18 : 0.1,
-                        onTap: isRunning
-                            ? null
-                            : () => context
-                                .read<MonitoringHubBloc>()
-                                .add(RunSpeedTest()),
+                        onTap:
+                            isRunning
+                                ? null
+                                : () => context.read<MonitoringHubBloc>().add(
+                                  RunSpeedTest(),
+                                ),
                         padding: const EdgeInsets.all(20),
                         child: Column(
                           children: [
@@ -104,9 +105,10 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                                   child: Text(
                                     phaseLabel,
                                     style: GoogleFonts.orbitron(
-                                      color: isRunning
-                                          ? AppColors.neonOrange
-                                          : isDone
+                                      color:
+                                          isRunning
+                                              ? AppColors.neonOrange
+                                              : isDone
                                               ? AppColors.neonGreen
                                               : AppColors.neonCyan,
                                       fontSize: 10,
@@ -123,7 +125,9 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                                   Icon(
                                     Icons.check_circle_rounded,
                                     size: 14,
-                                    color: AppColors.neonGreen.withValues(alpha: 0.8),
+                                    color: AppColors.neonGreen.withValues(
+                                      alpha: 0.8,
+                                    ),
                                   ),
                               ],
                             ),
@@ -151,18 +155,19 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                             AnimatedSize(
                               duration: const Duration(milliseconds: 400),
                               curve: Curves.easeOutCubic,
-                              child: isDone
-                                  ? Column(
-                                      children: [
-                                        const SizedBox(height: 16),
-                                        _ResultsRow(
-                                          downloadMbps: downloadMbps,
-                                          uploadMbps: uploadMbps,
-                                          latencyMs: latencyMs,
-                                        ),
-                                      ],
-                                    )
-                                  : const SizedBox.shrink(),
+                              child:
+                                  isDone
+                                      ? Column(
+                                        children: [
+                                          const SizedBox(height: 16),
+                                          _ResultsRow(
+                                            downloadMbps: downloadMbps,
+                                            uploadMbps: uploadMbps,
+                                            latencyMs: latencyMs,
+                                          ),
+                                        ],
+                                      )
+                                      : const SizedBox.shrink(),
                             ),
 
                             // ── Error state ──
@@ -210,11 +215,12 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       subtitle: l10n.activeShielding,
                       icon: Icons.shield_rounded,
                       color: AppColors.neonRed,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const SecurityCenterPage(),
-                        ),
-                      ),
+                      onTap:
+                          () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const SecurityCenterPage(),
+                            ),
+                          ),
                       delay: 300,
                     ),
                     _OperationCard(
@@ -222,11 +228,12 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       subtitle: l10n.intelMetrics,
                       icon: Icons.analytics_outlined,
                       color: AppColors.neonOrange,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const ReportsPage(),
-                        ),
-                      ),
+                      onTap:
+                          () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const ReportsPage(),
+                            ),
+                          ),
                       delay: 400,
                     ),
                     _OperationCard(
@@ -234,11 +241,12 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       subtitle: l10n.networkMesh,
                       icon: Icons.device_hub_rounded,
                       color: AppColors.neonGreen,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const TopologyPage(),
-                        ),
-                      ),
+                      onTap:
+                          () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const TopologyPage(),
+                            ),
+                          ),
                       delay: 500,
                     ),
                     _OperationCard(
@@ -246,16 +254,16 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       subtitle: l10n.systemConfig,
                       icon: Icons.settings_suggest_rounded,
                       color: AppColors.neonCyan,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const SettingsPage(),
-                        ),
-                      ),
+                      onTap:
+                          () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const SettingsPage(),
+                            ),
+                          ),
                       delay: 600,
                     ),
                   ],
                 ),
-
               ],
             );
           },
@@ -278,8 +286,6 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
         return l10n.startTest;
     }
   }
-
-
 }
 
 // ── Phase step indicator shown during active test ──────────────────────────
@@ -297,8 +303,9 @@ class _PhaseSteps extends StatelessWidget {
       (SpeedTestPhase.upload, Icons.upload_rounded, 'UL'),
     ];
 
-    final currentIndex =
-        phases.indexWhere((p) => p.$1 == phase).clamp(0, phases.length - 1);
+    final currentIndex = phases
+        .indexWhere((p) => p.$1 == phase)
+        .clamp(0, phases.length - 1);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -308,9 +315,10 @@ class _PhaseSteps extends StatelessWidget {
           return Expanded(
             child: Container(
               height: 1,
-              color: stepIndex < currentIndex
-                  ? AppColors.neonCyan.withValues(alpha: 0.6)
-                  : AppColors.glassWhite.withValues(alpha: 0.1),
+              color:
+                  stepIndex < currentIndex
+                      ? AppColors.neonCyan.withValues(alpha: 0.6)
+                      : AppColors.glassWhite.withValues(alpha: 0.1),
             ),
           );
         }
@@ -318,9 +326,10 @@ class _PhaseSteps extends StatelessWidget {
         final (_, icon, label) = phases[stepIndex];
         final isActive = stepIndex == currentIndex;
         final isDone = stepIndex < currentIndex;
-        final color = isDone
-            ? AppColors.neonCyan
-            : isActive
+        final color =
+            isDone
+                ? AppColors.neonCyan
+                : isActive
                 ? AppColors.neonOrange
                 : AppColors.textMuted.withValues(alpha: 0.3);
         return Column(

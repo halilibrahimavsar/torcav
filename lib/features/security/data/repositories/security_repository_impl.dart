@@ -52,7 +52,8 @@ class SecurityRepositoryImpl implements SecurityRepository {
     for (final network in networks) {
       if (network.ssid.isEmpty) continue;
 
-      final known = knownNetworks.where((kn) => kn.ssid == network.ssid).firstOrNull;
+      final known =
+          knownNetworks.where((kn) => kn.ssid == network.ssid).firstOrNull;
 
       if (known != null) {
         // 1. Evil Twin detection (BSSID mismatch for same SSID)
@@ -69,7 +70,6 @@ class SecurityRepositoryImpl implements SecurityRepository {
           alerts.add(event);
           await _notificationService.showSecurityAlert(event);
         }
-
         // 2. Randomized MAC Detection (Suspicious for fixed APs)
         else if (OuiLookup.isSuspicious(network.bssid)) {
           final event = SecurityEvent(
@@ -87,10 +87,16 @@ class SecurityRepositoryImpl implements SecurityRepository {
 
         // 3. Security Downgrade check
         if (known.security != network.security.toString()) {
-          final isDowngrade = _isDowngrade(known.security, network.security.toString());
+          final isDowngrade = _isDowngrade(
+            known.security,
+            network.security.toString(),
+          );
           final event = SecurityEvent(
             type: SecurityEventType.encryptionDowngraded,
-            severity: isDowngrade ? SecurityEventSeverity.high : SecurityEventSeverity.medium,
+            severity:
+                isDowngrade
+                    ? SecurityEventSeverity.high
+                    : SecurityEventSeverity.medium,
             ssid: network.ssid,
             bssid: network.bssid,
             timestamp: DateTime.now(),

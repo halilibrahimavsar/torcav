@@ -30,13 +30,15 @@ class HeatmapRepositoryImpl implements HeatmapRepository {
       orderBy: 'created_at ASC',
     );
 
-    return maps.map((map) {
-      return HeatmapPoint(
-        timestamp: DateTime.parse(map['created_at'] as String),
-        bssid: map['bssid'] as String,
-        zoneTag: map['zone_tag'] as String,
-        signalDbm: map['signal_dbm'] as int,
-      );
-    }).toList(growable: false);
+    return maps
+        .map((map) {
+          return HeatmapPoint(
+            timestamp: DateTime.parse(map['created_at'] as String),
+            bssid: map['bssid'] as String,
+            zoneTag: map['zone_tag'] as String,
+            signalDbm: map['signal_dbm'] as int,
+          );
+        })
+        .toList(growable: false);
   }
 }

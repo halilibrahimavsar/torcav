@@ -4,13 +4,11 @@ import '../../../../core/theme/app_theme.dart';
 
 class NetworkScannerRadar extends StatefulWidget {
   final bool isScanning;
-  final int nodeCount;
   final Color color;
 
   const NetworkScannerRadar({
     super.key,
     required this.isScanning,
-    this.nodeCount = 0,
     this.color = AppColors.neonCyan,
   });
 
@@ -57,7 +55,6 @@ class _NetworkScannerRadarState extends State<NetworkScannerRadar>
           size: Size.infinite,
           painter: _NetworkRadarPainter(
             scanProgress: _controller.value,
-            nodeCount: widget.nodeCount,
             color: widget.color,
             isScanning: widget.isScanning,
           ),
@@ -69,13 +66,11 @@ class _NetworkScannerRadarState extends State<NetworkScannerRadar>
 
 class _NetworkRadarPainter extends CustomPainter {
   final double scanProgress;
-  final int nodeCount;
   final Color color;
   final bool isScanning;
 
   _NetworkRadarPainter({
     required this.scanProgress,
-    required this.nodeCount,
     required this.color,
     required this.isScanning,
   });
@@ -143,56 +138,11 @@ class _NetworkRadarPainter extends CustomPainter {
           ..maskFilter = const MaskFilter.blur(BlurStyle.solid, 2),
       );
     }
-
-    // ── Pseudo-Nodes ──
-    final Random random = Random(42); // Deterministic nodes
-    final int displayNodes =
-        isScanning ? (nodeCount + 3).clamp(5, 12) : nodeCount;
-
-    for (int i = 0; i < displayNodes; i++) {
-      final distance = (0.2 + random.nextDouble() * 0.7) * radius;
-      final initialAngle = random.nextDouble() * 2 * pi;
-
-      // Calculate discovery status based on sweep
-      final currentSweepAngle = scanProgress * 2 * pi;
-      final nodeAngle = initialAngle % (2 * pi);
-
-      double opacity = 0.1;
-      if (isScanning) {
-        final angleDiff = (currentSweepAngle - nodeAngle) % (2 * pi);
-        if (angleDiff < 0.5) {
-          opacity = 0.8 * (1.0 - (angleDiff / 0.5));
-        }
-      } else {
-        opacity = 0.4;
-      }
-
-      final nodePos = Offset(
-        center.dx + cos(initialAngle) * distance,
-        center.dy + sin(initialAngle) * distance,
-      );
-
-      // Draw Node
-      canvas.drawCircle(
-        nodePos,
-        3,
-        Paint()
-          ..color = color.withValues(alpha: opacity)
-          ..maskFilter = MaskFilter.blur(BlurStyle.normal, opacity * 4),
-      );
-
-      canvas.drawCircle(
-        nodePos,
-        1.5,
-        Paint()..color = color.withValues(alpha: opacity + 0.2),
-      );
-    }
   }
 
   @override
   bool shouldRepaint(covariant _NetworkRadarPainter oldDelegate) =>
       oldDelegate.scanProgress != scanProgress ||
-      oldDelegate.nodeCount != nodeCount ||
       oldDelegate.isScanning != isScanning ||
       oldDelegate.color != color;
 }

@@ -42,4 +42,47 @@ class AppSettings extends Equatable {
     includeHiddenSsids,
     strictSafetyMode,
   ];
+
+  Map<String, dynamic> toJson() {
+    return {
+      'scanIntervalSeconds': scanIntervalSeconds,
+      'defaultScanPasses': defaultScanPasses,
+      'defaultBackendPreference': defaultBackendPreference.name,
+      'includeHiddenSsids': includeHiddenSsids,
+      'strictSafetyMode': strictSafetyMode,
+    };
+  }
+
+  factory AppSettings.fromJson(Map<String, dynamic> json) {
+    final backendName = json['defaultBackendPreference'] as String?;
+
+    return AppSettings(
+      scanIntervalSeconds: _readInt(json['scanIntervalSeconds'], fallback: 5),
+      defaultScanPasses: _readInt(json['defaultScanPasses'], fallback: 3),
+      defaultBackendPreference: _parseBackendPreference(backendName),
+      includeHiddenSsids: _readBool(json['includeHiddenSsids'], fallback: true),
+      strictSafetyMode: _readBool(json['strictSafetyMode'], fallback: true),
+    );
+  }
+
+  static int _readInt(Object? raw, {required int fallback}) {
+    return switch (raw) {
+      final int value => value,
+      final num value => value.round(),
+      _ => fallback,
+    };
+  }
+
+  static bool _readBool(Object? raw, {required bool fallback}) {
+    return raw is bool ? raw : fallback;
+  }
+
+  static WifiBackendPreference _parseBackendPreference(String? name) {
+    for (final value in WifiBackendPreference.values) {
+      if (value.name == name) {
+        return value;
+      }
+    }
+    return WifiBackendPreference.auto;
+  }
 }

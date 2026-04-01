@@ -1065,30 +1065,6 @@ abstract class AppLocalizations {
   /// **'AGENT PROFILE'**
   String get profileTitle;
 
-  /// No description provided for @agentId.
-  ///
-  /// In en, this message translates to:
-  /// **'AGENT_ID: {id}'**
-  String agentId(Object id);
-
-  /// Description for sessionInformation
-  ///
-  /// In en, this message translates to:
-  /// **'SESSION INFORMATION'**
-  String get sessionInformation;
-
-  /// Description for subscriptionStatus
-  ///
-  /// In en, this message translates to:
-  /// **'SUBSCRIPTION STATUS'**
-  String get subscriptionStatus;
-
-  /// Description for activeSession
-  ///
-  /// In en, this message translates to:
-  /// **'ACTIVE SESSION'**
-  String get activeSession;
-
   /// Description for logout
   ///
   /// In en, this message translates to:
@@ -1245,12 +1221,6 @@ abstract class AppLocalizations {
   /// **'NEURAL_CORE_AI'**
   String get neuralCoreTitle;
 
-  /// Description for simulatedLabel
-  ///
-  /// In en, this message translates to:
-  /// **'SIMULATED'**
-  String get simulatedLabel;
-
   /// Description for activeAnomalies
   ///
   /// In en, this message translates to:
@@ -1286,12 +1256,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'PACKET_SNIFFER'**
   String get packetSnifferTitle;
-
-  /// Description for simulatedLogStream
-  ///
-  /// In en, this message translates to:
-  /// **'SIMULATED_LOG_STREAM'**
-  String get simulatedLogStream;
 
   /// Description for streamPaused
   ///
@@ -1448,24 +1412,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'System'**
   String get systemTheme;
-
-  /// Description for biometricData
-  ///
-  /// In en, this message translates to:
-  /// **'BIOMETRIC DATA'**
-  String get biometricData;
-
-  /// Description for neuralSync
-  ///
-  /// In en, this message translates to:
-  /// **'Neural Sync'**
-  String get neuralSync;
-
-  /// Description for encryptionKey
-  ///
-  /// In en, this message translates to:
-  /// **'Encryption Key'**
-  String get encryptionKey;
 
   /// Description for systemStatus
   ///

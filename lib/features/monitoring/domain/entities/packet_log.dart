@@ -65,31 +65,30 @@ class PacketLog extends Equatable {
     String? flags,
     String? method,
     String? info,
-  }) =>
-      PacketLog(
-        timestamp: timestamp ?? this.timestamp,
-        protocol: protocol ?? this.protocol,
-        source: source ?? this.source,
-        destination: destination ?? this.destination,
-        port: port ?? this.port,
-        size: size ?? this.size,
-        hexData: hexData ?? this.hexData,
-        flags: flags ?? this.flags,
-        method: method ?? this.method,
-        info: info ?? this.info,
-      );
+  }) => PacketLog(
+    timestamp: timestamp ?? this.timestamp,
+    protocol: protocol ?? this.protocol,
+    source: source ?? this.source,
+    destination: destination ?? this.destination,
+    port: port ?? this.port,
+    size: size ?? this.size,
+    hexData: hexData ?? this.hexData,
+    flags: flags ?? this.flags,
+    method: method ?? this.method,
+    info: info ?? this.info,
+  );
 
   @override
   List<Object?> get props => [
-        timestamp,
-        protocol,
-        source,
-        destination,
-        port,
-        size,
-        hexData,
-        flags,
-        method,
-        info,
-      ];
+    timestamp,
+    protocol,
+    source,
+    destination,
+    port,
+    size,
+    hexData,
+    flags,
+    method,
+    info,
+  ];
 }

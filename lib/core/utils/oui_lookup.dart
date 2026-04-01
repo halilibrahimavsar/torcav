@@ -1,4 +1,6 @@
 class OuiLookup {
+  const OuiLookup();
+
   static const Map<String, String> _vendors = {
     '00:03:93': 'Apple',
     '00:05:02': 'Apple',
@@ -30,7 +32,7 @@ class OuiLookup {
     '28:CF:E9': 'Apple',
     'D8:30:62': 'Apple',
     'F0:D1:A9': 'Apple',
-    
+
     '00:24:D7': 'Samsung',
     '00:26:37': 'Samsung',
     '04:18:0F': 'Samsung',
@@ -41,12 +43,12 @@ class OuiLookup {
     '5C:A3:9D': 'Samsung',
     '90:18:7C': 'Samsung',
     'A8:06:00': 'Samsung',
-    
+
     '00:0C:29': 'VMware',
     '00:50:56': 'VMware',
     '00:05:69': 'VMware',
     '08:00:27': 'VirtualBox',
-    
+
     '00:13:10': 'Cisco',
     '00:14:1B': 'Cisco',
     '00:15:2B': 'Cisco',
@@ -56,29 +58,43 @@ class OuiLookup {
     '00:18:74': 'Cisco',
     '00:18:B9': 'Cisco',
     '00:19:07': 'Cisco',
-    
+    '00:11:22': 'Cisco',
+    '00:1A:2B': 'Intel',
+
     '00:0C:43': 'Ralink',
     '00:0E:8E': 'Ralink',
-    
+
     '00:1E:10': 'Shenzhen TP-LINK',
     '00:21:27': 'Shenzhen TP-LINK',
     '00:23:CD': 'Shenzhen TP-LINK',
     '00:27:19': 'Shenzhen TP-LINK',
+    '08:26:97': 'TP-Link',
+    '0C:EF:15': 'TP-Link',
     'B0:48:7A': 'TP-LINK',
     'C0:4A:00': 'TP-LINK',
-    
+    '14:36:0E': 'Turk Telekom',
+    '40:ED:00': 'Turk Telekom',
+    '5C:6A:80': 'AVM',
+    '74:04:F1': 'Intel',
+    'B0:8B:92': 'Vodafone',
+
     '00:16:01': 'Xiaomi',
     '00:9E:C1': 'Xiaomi',
     '14:F6:5A': 'Xiaomi',
     '18:59:36': 'Xiaomi',
     '28:6C:07': 'Xiaomi',
     '64:09:80': 'Xiaomi',
+    '6C:E8:73': 'Xiaomi',
   };
 
+  String lookup(String mac) => getVendor(mac);
+
   static String getVendor(String mac) {
-    if (mac.length < 8) return 'Unknown';
-    final prefix = mac.substring(0, 8).toUpperCase().replaceAll('-', ':');
-    return _vendors[prefix] ?? 'Unknown Vendor';
+    final prefix = _prefixFor(mac);
+    if (prefix == null) {
+      return 'Unknown';
+    }
+    return _vendors[prefix] ?? 'Unknown';
   }
 
   static bool isSuspicious(String mac) {
@@ -88,5 +104,14 @@ class OuiLookup {
     if (mac.length < 2) return false;
     final secondChar = mac[1].toUpperCase();
     return ['2', '6', 'A', 'E'].contains(secondChar);
+  }
+
+  static String? _prefixFor(String mac) {
+    final normalized = mac.toUpperCase().replaceAll('-', ':');
+    final parts = normalized.split(':');
+    if (parts.length < 3) {
+      return null;
+    }
+    return '${parts[0]}:${parts[1]}:${parts[2]}';
   }
 }

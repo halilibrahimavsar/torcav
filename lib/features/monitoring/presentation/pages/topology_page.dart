@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:network_info_plus/network_info_plus.dart';
@@ -7,6 +6,7 @@ import 'package:vector_math/vector_math_64.dart' hide Colors;
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../widgets/topology_graph_painter.dart';
+import '../widgets/topology_view_data.dart';
 import '../../../network_scan/domain/entities/network_device.dart';
 import '../../../network_scan/domain/repositories/network_scan_repository.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
@@ -502,48 +502,12 @@ class _TopologyPageState extends State<TopologyPage>
   }
 
   Offset _getNodePosition(TopologyNode node, Size size) {
-    if (_forceView) {
-      final nodes = _topology!.nodes;
-      final index = nodes.indexOf(node);
-      final radius = math.min(size.width, size.height) * 0.4;
-      final angle = (index * 2 * math.pi) / nodes.length;
-      return Offset(
-        size.width / 2 + radius * math.cos(angle),
-        size.height / 2 + radius * math.sin(angle),
-      );
-    }
-
-    final center = Offset(size.width / 2, size.height / 2);
-    final accessPoints = _topology!.accessPoints;
-    final otherDevices = _topology!.connectedDevices;
-
-    double currentY = size.height - 100;
-    double gatewayY = 100;
-    double middleY = center.dy;
-
-    if (node.isCurrentDevice) return Offset(center.dx, currentY);
-    if (node.isGateway) return Offset(center.dx, gatewayY);
-
-    final apIndex = accessPoints.indexWhere((n) => n.id == node.id);
-    if (apIndex != -1) {
-      final radius = size.width * 0.35;
-      final x = center.dx + radius * (apIndex % 2 == 0 ? -0.6 : 0.6);
-      final y = middleY - 40 + (apIndex ~/ 2) * 100;
-      return Offset(x, y);
-    }
-
-    final devIndex = otherDevices.indexWhere((n) => n.id == node.id);
-    if (devIndex != -1) {
-      const cols = 2;
-      final col = devIndex % cols;
-      final row = devIndex ~/ cols;
-      final spacingX = size.width * 0.4;
-      final x = center.dx + (col - 0.5) * spacingX;
-      final y = middleY + 100 + row * 90;
-      return Offset(x, y);
-    }
-
-    return center;
+    final positions = TopologyViewData.calculatePositions(
+      _topology!,
+      size,
+      forceView: _forceView,
+    );
+    return positions[node.id] ?? Offset(size.width / 2, size.height / 2);
   }
 
   Widget _buildNodeInspector() {
@@ -558,7 +522,7 @@ class _TopologyPageState extends State<TopologyPage>
       child: StaggeredEntry(
         delay: Duration.zero,
         child: HolographicCard(
-          color: _getNodeColor(node),
+          color: TopologyViewData.nodeColor(node),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -614,16 +578,18 @@ class _TopologyPageState extends State<TopologyPage>
               width: 54,
               height: 54,
               decoration: BoxDecoration(
-                color: _getNodeColor(node).withValues(alpha: 0.1),
+                color: TopologyViewData.nodeColor(node).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(
-                  color: _getNodeColor(node).withValues(alpha: 0.3),
+                  color: TopologyViewData.nodeColor(
+                    node,
+                  ).withValues(alpha: 0.3),
                 ),
               ),
               child: Center(
                 child: Icon(
-                  _getNodeIcon(node),
-                  color: _getNodeColor(node),
+                  TopologyViewData.materialIcon(node),
+                  color: TopologyViewData.nodeColor(node),
                   size: 28,
                 ),
               ),
@@ -646,7 +612,9 @@ class _TopologyPageState extends State<TopologyPage>
                         ? 'AUTH_LOCAL_SYSTEM'
                         : 'REMOTE_NODE_ID: ${node.id.substring(0, 8)}',
                     style: GoogleFonts.shareTechMono(
-                      color: _getNodeColor(node).withValues(alpha: 0.7),
+                      color: TopologyViewData.nodeColor(
+                        node,
+                      ).withValues(alpha: 0.7),
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                     ),
@@ -667,7 +635,7 @@ class _TopologyPageState extends State<TopologyPage>
             color: Colors.black.withValues(alpha: 0.4),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: _getNodeColor(node).withValues(alpha: 0.1),
+              color: TopologyViewData.nodeColor(node).withValues(alpha: 0.1),
             ),
           ),
           child: Column(
@@ -682,25 +650,6 @@ class _TopologyPageState extends State<TopologyPage>
         ),
       ],
     );
-  }
-
-  Color _getNodeColor(TopologyNode node) {
-    if (node.isCurrentDevice) return const Color(0xFF00FF9F);
-    if (node.isGateway) return const Color(0xFF00D1FF);
-    return const Color(0xFFFF0060);
-  }
-
-  IconData _getNodeIcon(TopologyNode node) {
-    if (node.isCurrentDevice) {
-      return Icons.computer;
-    }
-    if (node.isGateway) {
-      return Icons.router;
-    }
-    if (node.type == TopologyNodeType.accessPoint) {
-      return Icons.settings_input_antenna;
-    }
-    return Icons.device_hub;
   }
 
   Widget _infoRow(String label, String value, IconData icon) {

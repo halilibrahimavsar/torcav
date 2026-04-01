@@ -1,5 +1,5 @@
 import 'package:fpdart/fpdart.dart';
-import '../../../../core/error/failures.dart';
+import '../../../../core/errors/failures.dart';
 import '../entities/scan_request.dart';
 import '../entities/scan_snapshot.dart';
 import '../entities/wifi_network.dart';

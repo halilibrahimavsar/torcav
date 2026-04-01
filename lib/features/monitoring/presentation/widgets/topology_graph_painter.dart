@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../domain/entities/network_topology.dart';
+import 'topology_view_data.dart';
 
 class TopologyGraphPainter extends CustomPainter {
   final NetworkTopology topology;
@@ -40,93 +41,17 @@ class TopologyGraphPainter extends CustomPainter {
     canvas.transform(matrix.storage);
     canvas.translate(-center.dx, -center.dy);
 
-    final nodePositions = _calculatePositions(size);
+    final nodePositions = TopologyViewData.calculatePositions(
+      topology,
+      size,
+      forceView: forceView,
+    );
     _drawEdges(canvas, nodePositions, size);
     _drawNodes(canvas, nodePositions, size);
 
     _drawScanlines(canvas, size);
 
     canvas.restore();
-  }
-
-  Map<String, Offset> _calculatePositions(Size size) {
-    final positions = <String, Offset>{};
-    final center = Offset(size.width / 2, size.height / 2);
-
-    final currentDevice = topology.currentDevice;
-    final gateway = topology.gateway;
-    final accessPoints = topology.accessPoints;
-    final otherDevices = topology.connectedDevices;
-
-    if (forceView) {
-      // Repulsion-based Circle Layout for "Force View"
-      final nodes = topology.nodes;
-      final radius = math.min(size.width, size.height) * 0.4;
-
-      // Initial circle positions
-      for (int i = 0; i < nodes.length; i++) {
-        final angle = (i * 2 * math.pi) / nodes.length;
-        positions[nodes[i].id] = Offset(
-          center.dx + radius * math.cos(angle),
-          center.dy + radius * math.sin(angle),
-        );
-      }
-
-      // Simple repulsion iteration to spread them out if they are too close
-      for (int step = 0; step < 5; step++) {
-        for (int i = 0; i < nodes.length; i++) {
-          for (int j = i + 1; j < nodes.length; j++) {
-            final idA = nodes[i].id;
-            final idB = nodes[j].id;
-            var posA = positions[idA]!;
-            var posB = positions[idB]!;
-
-            final delta = posB - posA;
-            final dist = delta.distance;
-            const minAllowed = 60.0;
-
-            if (dist < minAllowed && dist > 0.1) {
-              final force = (minAllowed - dist) / dist * 0.5;
-              positions[idA] = posA - delta * force;
-              positions[idB] = posB + delta * force;
-            }
-          }
-        }
-      }
-      return positions;
-    }
-
-    // Default Hierarchical Isometric Layout
-    double currentY = size.height - 100;
-    double gatewayY = 100;
-    double middleY = center.dy;
-
-    if (currentDevice != null) {
-      positions[currentDevice.id] = Offset(center.dx, currentY);
-    }
-
-    if (gateway != null) {
-      positions[gateway.id] = Offset(center.dx, gatewayY);
-    }
-
-    for (var i = 0; i < accessPoints.length; i++) {
-      final radius = size.width * 0.35;
-      final x = center.dx + radius * (i % 2 == 0 ? -0.6 : 0.6);
-      final y = middleY - 40 + (i ~/ 2) * 100;
-      positions[accessPoints[i].id] = Offset(x, y);
-    }
-
-    for (var i = 0; i < otherDevices.length; i++) {
-      const cols = 2;
-      final col = i % cols;
-      final row = i ~/ cols;
-      final spacingX = size.width * 0.4;
-      final x = center.dx + (col - 0.5) * spacingX;
-      final y = middleY + 100 + row * 90;
-      positions[otherDevices[i].id] = Offset(x, y);
-    }
-
-    return positions;
   }
 
   void _drawEdges(Canvas canvas, Map<String, Offset> positions, Size size) {
@@ -236,8 +161,8 @@ class TopologyGraphPainter extends CustomPainter {
       if (pos == null) continue;
 
       final isSelected = node.id == selectedNodeId;
-      final color = _getNodeColor(node);
-      final radius = _getNodeRadius(node);
+      final color = TopologyViewData.nodeColor(node);
+      final radius = TopologyViewData.nodeRadius(node);
 
       // Depth Fade
       final depthOpacity = (1.0 - (pos.dy / size.height)).clamp(0.4, 1.0);
@@ -275,9 +200,7 @@ class TopologyGraphPainter extends CustomPainter {
         pos,
         radius * 0.55,
         color.withValues(alpha: depthOpacity),
-        node.type,
-        node.isCurrentDevice,
-        node.isGateway,
+        TopologyViewData.visualKindFor(node),
       );
 
       // Text Labels
@@ -350,32 +273,12 @@ class TopologyGraphPainter extends CustomPainter {
     }
   }
 
-  Color _getNodeColor(TopologyNode node) {
-    if (node.isCurrentDevice) return const Color(0xFF00FF9F); // Cyber Green
-    if (node.isGateway) return const Color(0xFF00D1FF); // Cyber Blue
-    return switch (node.type) {
-      TopologyNodeType.router => const Color(0xFF00D1FF),
-      TopologyNodeType.accessPoint => const Color(0xFF00FF9F),
-      TopologyNodeType.mobile => const Color(0xFFFF0060), // Cyber Pink/Orange
-      TopologyNodeType.iot => const Color(0xFFB5179E),
-      TopologyNodeType.device => const Color(0xFF7209B7),
-      TopologyNodeType.unknown => const Color(0xFF4361EE),
-    };
-  }
-
-  double _getNodeRadius(TopologyNode node) {
-    if (node.isCurrentDevice || node.isGateway) return 30;
-    return 22;
-  }
-
   void _drawNodeIcon(
     Canvas canvas,
     Offset center,
     double size,
     Color color,
-    TopologyNodeType type,
-    bool isCurrent,
-    bool isGateway,
+    TopologyNodeVisualKind kind,
   ) {
     final paint =
         Paint()
@@ -383,7 +286,7 @@ class TopologyGraphPainter extends CustomPainter {
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1.8;
 
-    if (isGateway) {
+    if (kind == TopologyNodeVisualKind.gateway) {
       // Technical Router Icon
       canvas.drawCircle(center, size * 0.8, paint);
       canvas.drawCircle(center, size * 0.4, paint);
@@ -398,7 +301,7 @@ class TopologyGraphPainter extends CustomPainter {
       return;
     }
 
-    if (isCurrent) {
+    if (kind == TopologyNodeVisualKind.currentDevice) {
       // Tech Mobile Icon
       final rrect = RRect.fromRectAndRadius(
         Rect.fromCenter(center: center, width: size * 1.1, height: size * 1.8),
@@ -413,8 +316,8 @@ class TopologyGraphPainter extends CustomPainter {
       return;
     }
 
-    switch (type) {
-      case TopologyNodeType.router:
+    switch (kind) {
+      case TopologyNodeVisualKind.router:
         canvas.drawRect(
           Rect.fromCenter(
             center: center,
@@ -434,7 +337,7 @@ class TopologyGraphPainter extends CustomPainter {
           paint,
         );
         break;
-      case TopologyNodeType.mobile:
+      case TopologyNodeVisualKind.mobile:
         canvas.drawRRect(
           RRect.fromRectAndRadius(
             Rect.fromCenter(
@@ -447,7 +350,7 @@ class TopologyGraphPainter extends CustomPainter {
           paint,
         );
         break;
-      case TopologyNodeType.iot:
+      case TopologyNodeVisualKind.iot:
         canvas.drawCircle(center, size * 0.4, paint);
         for (int i = 0; i < 6; i++) {
           final a = (i * 60) * math.pi / 180;
@@ -458,7 +361,39 @@ class TopologyGraphPainter extends CustomPainter {
           );
         }
         break;
-      default:
+      case TopologyNodeVisualKind.accessPoint:
+        canvas.drawArc(
+          Rect.fromCenter(
+            center: center,
+            width: size * 1.8,
+            height: size * 1.8,
+          ),
+          math.pi,
+          math.pi,
+          false,
+          paint,
+        );
+        canvas.drawArc(
+          Rect.fromCenter(
+            center: center,
+            width: size * 1.2,
+            height: size * 1.2,
+          ),
+          math.pi,
+          math.pi,
+          false,
+          paint,
+        );
+        canvas.drawCircle(
+          center + Offset(0, size * 0.35),
+          1.5,
+          Paint()..color = color,
+        );
+        break;
+      case TopologyNodeVisualKind.currentDevice:
+      case TopologyNodeVisualKind.gateway:
+      case TopologyNodeVisualKind.device:
+      case TopologyNodeVisualKind.unknown:
         canvas.drawCircle(center, size * 0.6, paint);
     }
   }

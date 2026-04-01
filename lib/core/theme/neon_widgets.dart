@@ -560,10 +560,9 @@ class BentoStatTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return NeonCard(
       glowColor: color,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -581,16 +580,23 @@ class BentoStatTile extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          Text(
-            value,
-            style: GoogleFonts.orbitron(
-              color: color,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              maxLines: 1,
+              style: GoogleFonts.orbitron(
+                color: color,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           Text(
             label.toUpperCase(),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: GoogleFonts.rajdhani(
               color: AppColors.textMuted,
               fontSize: 10,

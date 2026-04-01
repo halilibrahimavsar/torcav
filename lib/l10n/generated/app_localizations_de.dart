@@ -516,20 +516,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get profileTitle => 'AGENT-PROFIL';
 
   @override
-  String agentId(Object id) {
-    return 'AGENT_ID: $id';
-  }
-
-  @override
-  String get sessionInformation => 'SITZUNGSINFORMATIONEN';
-
-  @override
-  String get subscriptionStatus => 'ABONNEMENTSTATUS';
-
-  @override
-  String get activeSession => 'AKTIVE SITZUNG';
-
-  @override
   String get logout => 'ABMELDEN';
 
   @override
@@ -610,9 +596,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get neuralCoreTitle => 'NEURAL_CORE_AI';
 
   @override
-  String get simulatedLabel => 'SIMULIERT';
-
-  @override
   String get activeAnomalies => 'AKTIVE ANOMALIEN';
 
   @override
@@ -629,9 +612,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get packetSnifferTitle => 'PAKET_SNIFFER';
-
-  @override
-  String get simulatedLogStream => 'SIMULIERTER_LOG_STREAM';
 
   @override
   String get streamPaused => 'STREAM_PAUSIERT';
@@ -710,15 +690,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get systemTheme => 'System';
-
-  @override
-  String get biometricData => 'BIOMETRISCHE DATEN';
-
-  @override
-  String get neuralSync => 'Neural-Sync';
-
-  @override
-  String get encryptionKey => 'Verschlüsselungsschlüssel';
 
   @override
   String get systemStatus => 'SYSTEMSTATUS';

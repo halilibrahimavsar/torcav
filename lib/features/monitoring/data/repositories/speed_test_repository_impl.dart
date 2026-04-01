@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:injectable/injectable.dart';
-import '../../../../core/storage/app_database.dart';
 import '../../domain/entities/speed_test_progress.dart';
 import '../../domain/repositories/speed_test_repository.dart';
 
@@ -19,8 +18,7 @@ const _kPingUrl = 'https://speed.cloudflare.com/__down?bytes=1'; // 1-byte body
 const _kDownloadDuration = Duration(seconds: 10);
 // 20 MB is large enough to last several seconds on mid-speed links.
 // On very fast links (≥ 100 Mbps) it finishes quickly so we loop again.
-const _kDownloadChunkUrl =
-    'https://speed.cloudflare.com/__down?bytes=20000000';
+const _kDownloadChunkUrl = 'https://speed.cloudflare.com/__down?bytes=20000000';
 
 const _kUploadDuration = Duration(seconds: 10);
 // 2 MB per round: finishes in < 1 s at 16+ Mbps, ≈ 16 s at 1 Mbps.
@@ -31,38 +29,18 @@ const _kUploadUrl = 'https://speed.cloudflare.com/__up';
 
 @LazySingleton(as: SpeedTestRepository)
 class SpeedTestRepositoryImpl implements SpeedTestRepository {
-  final AppDatabase _appDatabase;
-
-  SpeedTestRepositoryImpl(this._appDatabase);
+  const SpeedTestRepositoryImpl();
 
   @override
   Stream<SpeedTestProgress> runSpeedTest() async* {
-    final stream = _runHttpSpeedTest();
-
-    await for (final progress in stream) {
-      yield progress;
-      if (progress.phase == SpeedTestPhase.done) {
-        await _saveResult(progress, 'http');
-      }
-    }
-  }
-
-  Future<void> _saveResult(SpeedTestProgress result, String backend) async {
-    final db = await _appDatabase.database;
-    await db.insert('speedtest_results', {
-      'created_at': DateTime.now().toIso8601String(),
-      'backend': backend,
-      'download_mbps': result.downloadMbps,
-      'upload_mbps': result.uploadMbps,
-      'latency_ms': result.latencyMs,
-    });
+    yield* _runHttpSpeedTest();
   }
 
   // ── HTTP path ─────────────────────────────────────────────────────────────
 
   Stream<SpeedTestProgress> _runHttpSpeedTest() async* {
-    final client = HttpClient()
-      ..connectionTimeout = const Duration(seconds: 10);
+    final client =
+        HttpClient()..connectionTimeout = const Duration(seconds: 10);
 
     try {
       // ── Phase 1 ───────────────────────────────────────────────────────────
@@ -166,8 +144,7 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
     outer:
     while (sw.elapsed < _kDownloadDuration) {
       try {
-        final request =
-            await client.getUrl(Uri.parse(_kDownloadChunkUrl));
+        final request = await client.getUrl(Uri.parse(_kDownloadChunkUrl));
         final response = await request.close();
 
         if (response.statusCode < 200 || response.statusCode >= 300) {
@@ -219,29 +196,32 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
     final sw = Stopwatch()..start();
 
     while (sw.elapsed < _kUploadDuration) {
-      final remainingMs =
-          (_kUploadDuration - sw.elapsed).inMilliseconds.clamp(0, 60000);
+      final remainingMs = (_kUploadDuration - sw.elapsed).inMilliseconds.clamp(
+        0,
+        60000,
+      );
 
       try {
         final request = await client
             .postUrl(Uri.parse(_kUploadUrl))
             .timeout(const Duration(seconds: 10));
 
-        request.headers.set(HttpHeaders.contentTypeHeader, 'application/octet-stream');
+        request.headers.set(
+          HttpHeaders.contentTypeHeader,
+          'application/octet-stream',
+        );
         request.contentLength = _kUploadChunkBytes;
         request.add(payload);
 
         // request.close() flushes the body AND waits for response headers.
         // The server only responds after receiving all bytes, so this is the
         // correct moment to stop the clock for upload throughput.
-        final response = await request
-            .close()
-            .timeout(Duration(milliseconds: remainingMs + 5000));
+        final response = await request.close().timeout(
+          Duration(milliseconds: remainingMs + 5000),
+        );
 
         // Quickly discard the (empty) response body.
-        await response
-            .drain<void>()
-            .timeout(const Duration(seconds: 2));
+        await response.drain<void>().timeout(const Duration(seconds: 2));
 
         if (response.statusCode >= 200 && response.statusCode < 300) {
           totalBytes += _kUploadChunkBytes;

@@ -516,20 +516,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get profileTitle => 'PROFÎLA AJANÊ';
 
   @override
-  String agentId(Object id) {
-    return 'AJAN_ID: $id';
-  }
-
-  @override
-  String get sessionInformation => 'ZANYARIYÊN DANIŞÎNÊ';
-
-  @override
-  String get subscriptionStatus => 'REWŞA ABONEYÊ';
-
-  @override
-  String get activeSession => 'DANIŞÎNA AKTÎF';
-
-  @override
   String get logout => 'DERKEVE';
 
   @override
@@ -610,9 +596,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get neuralCoreTitle => 'NEURAL_CORE_AI';
 
   @override
-  String get simulatedLabel => 'SÎMÛLE';
-
-  @override
   String get activeAnomalies => 'ANOMALIYÊN AKTÎF';
 
   @override
@@ -629,9 +612,6 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get packetSnifferTitle => 'PAKET_SNIFFER';
-
-  @override
-  String get simulatedLogStream => 'HERIKÎNA_LOG_SÎMÛLKIRÎ';
 
   @override
   String get streamPaused => 'HERIKÎN_RAWESTIYAYE';
@@ -710,15 +690,6 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get systemTheme => 'Sîstem';
-
-  @override
-  String get biometricData => 'DANEYÊN BIYOMETRÎKÎ';
-
-  @override
-  String get neuralSync => 'Hevdengiya Neural';
-
-  @override
-  String get encryptionKey => 'Kilîda Şîfrekirinê';
 
   @override
   String get systemStatus => 'REWŞA SÎSTEMÊ';
