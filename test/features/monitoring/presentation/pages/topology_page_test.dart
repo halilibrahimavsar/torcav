@@ -7,7 +7,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:torcav/core/di/injection.dart';
-import 'package:torcav/core/error/failures.dart';
+import 'package:torcav/core/errors/failures.dart';
 import 'package:torcav/features/monitoring/domain/entities/network_topology.dart';
 import 'package:torcav/features/monitoring/domain/services/topology_builder.dart';
 import 'package:torcav/features/monitoring/presentation/pages/topology_page.dart';
@@ -18,7 +18,8 @@ import 'package:torcav/features/wifi_scan/domain/entities/scan_snapshot.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_observation.dart';
 import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
-import 'package:torcav/l10n/generated/app_localizations.dart';
+import 'package:torcav/core/l10n/app_localizations.dart';
+
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 
 class MockNetworkInfo extends Mock implements NetworkInfo {}

@@ -94,11 +94,11 @@ import '../../features/wifi_scan/domain/usecases/get_historical_best_channel.dar
 import '../../features/wifi_scan/domain/usecases/scan_wifi.dart' as _i451;
 import '../../features/wifi_scan/presentation/bloc/wifi_scan_bloc.dart'
     as _i968;
-import '../i18n/locale_cubit.dart' as _i734;
+import '../l10n/locale_cubit.dart' as _i171;
 import '../services/notification_service.dart' as _i941;
 import '../storage/app_database.dart' as _i690;
 import '../theme/theme_cubit.dart' as _i611;
-import 'app_module.dart' as _i460;
+import 'di_module.dart' as _i211;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -130,8 +130,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i499.SecurityLocalDataSource>(
       () => _i499.SecurityLocalDataSourceImpl(gh<_i690.AppDatabase>()),
     );
-    gh.singleton<_i734.LocaleCubit>(
-      () => _i734.LocaleCubit(gh<_i460.SharedPreferences>()),
+    gh.singleton<_i171.LocaleCubit>(
+      () => _i171.LocaleCubit(gh<_i460.SharedPreferences>()),
     );
     gh.lazySingleton<_i611.ThemeCubit>(
       () => _i611.ThemeCubit(gh<_i460.SharedPreferences>()),
@@ -239,4 +239,4 @@ extension GetItInjectableX on _i174.GetIt {
   }
 }
 
-class _$AppModule extends _i460.AppModule {}
+class _$AppModule extends _i211.AppModule {}

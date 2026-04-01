@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:injectable/injectable.dart';
 
@@ -15,6 +16,21 @@ import '../../domain/entities/service_fingerprint.dart';
 class ArpDataSource {
   /// Discovers hosts via the ARP table and optional port probing.
   Future<List<HostScanResult>> discoverHosts({
+    String? targetSubnet,
+    NetworkScanProfile profile = NetworkScanProfile.fast,
+  }) async {
+    // Offload the heavy process spawning and port probing to a background isolate
+    // so the main UI thread never freezes.
+    return Isolate.run(() async {
+      final source = ArpDataSource();
+      return source._discoverHostsInternal(
+        targetSubnet: targetSubnet,
+        profile: profile,
+      );
+    });
+  }
+
+  Future<List<HostScanResult>> _discoverHostsInternal({
     String? targetSubnet,
     NetworkScanProfile profile = NetworkScanProfile.fast,
   }) async {

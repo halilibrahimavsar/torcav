@@ -3,7 +3,8 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:torcav/core/error/failures.dart';
+import 'package:torcav/core/errors/failures.dart';
+
 import 'package:torcav/features/monitoring/domain/repositories/monitoring_repository.dart';
 import 'package:torcav/features/monitoring/presentation/bloc/monitoring_bloc.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
