@@ -90,6 +90,46 @@ class SecurityAnalyzer {
       score -= 5;
     }
 
+    // WPS vulnerability (A3)
+    if (network.hasWps == true) {
+      vulnerabilities.add(
+        const Vulnerability(
+          title: 'WPS Enabled',
+          description:
+              'Wi-Fi Protected Setup (WPS) is enabled. The WPS PIN mode '
+              'can be brute-forced in hours using publicly available tools '
+              '(Pixie Dust attack), effectively bypassing any password.',
+          severity: VulnerabilitySeverity.high,
+          recommendation:
+              'Disable WPS in your router admin panel. Use WPA2/WPA3 passphrase '
+              'only.',
+        ),
+      );
+      riskFactors.add('WPS PIN attack surface exposed');
+      score -= 30;
+    }
+
+    // PMF (Protected Management Frames) check (B1)
+    final isWpa2OrBetter = network.security == SecurityType.wpa2 ||
+        network.security == SecurityType.wpa3;
+    if (isWpa2OrBetter && network.hasPmf == false) {
+      vulnerabilities.add(
+        const Vulnerability(
+          title: 'Management Frames Unprotected',
+          description:
+              'This access point does not enforce Protected Management Frames '
+              '(PMF / 802.11w). Unprotected management frames allow an attacker '
+              'to forge deauthentication packets and disconnect clients.',
+          severity: VulnerabilitySeverity.medium,
+          recommendation:
+              'Enable PMF in your router settings (often labelled "802.11w" '
+              'or "Management Frame Protection"). WPA3 requires PMF by default.',
+        ),
+      );
+      riskFactors.add('PMF not enforced — deauth spoofing possible');
+      score -= 10;
+    }
+
     if (_isPotentialEvilTwin(network, localBaseline)) {
       vulnerabilities.add(
         const Vulnerability(

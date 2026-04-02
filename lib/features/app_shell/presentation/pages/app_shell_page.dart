@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/di/injection.dart';
 import '../../../../core/theme/neon_widgets.dart';
+import '../../../../core/theme/theme_cubit.dart';
 import '../../../dashboard/presentation/pages/dashboard_page.dart';
 import '../../../network_scan/presentation/pages/network_scan_page.dart';
 import '../../../reports/presentation/pages/reports_page.dart';
@@ -162,6 +164,22 @@ class _DiscoveryTabPageState extends State<_DiscoveryTabPage>
           ),
           glowRadius: 8,
         ),
+        actions: [
+          ValueListenableBuilder<ThemeMode>(
+            valueListenable: getIt<ThemeCubit>(),
+            builder: (context, mode, _) {
+              final isDark = mode == ThemeMode.dark;
+              return IconButton(
+                icon: Icon(
+                  isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                tooltip: isDark ? 'Light mode' : 'Dark mode',
+                onPressed: () => getIt<ThemeCubit>().toggle(),
+              );
+            },
+          ),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(48),
           child: Container(

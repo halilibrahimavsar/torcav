@@ -6,4 +6,5 @@ abstract class ReportExportRepository {
   Future<String> generateJson(ScanSnapshot snapshot);
   Future<String> generateHtml(ScanSnapshot snapshot);
   Future<Uint8List> generatePdf(ScanSnapshot snapshot);
+  Future<String> generateCsv(ScanSnapshot snapshot);
 }

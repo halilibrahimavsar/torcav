@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import '../../../wifi_scan/domain/entities/scan_snapshot.dart';
 import '../repositories/report_export_repository.dart';
 
-enum ReportFormat { json, html, pdf }
+enum ReportFormat { json, html, pdf, csv }
 
 @lazySingleton
 class GenerateReportUseCase {
@@ -19,6 +19,8 @@ class GenerateReportUseCase {
         return _repository.generateHtml(snapshot);
       case ReportFormat.pdf:
         return _repository.generatePdf(snapshot);
+      case ReportFormat.csv:
+        return _repository.generateCsv(snapshot);
     }
   }
 }

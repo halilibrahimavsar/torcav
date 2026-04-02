@@ -56,6 +56,12 @@ class ScanSnapshotBuilder {
                 vendor: _ouiLookup.lookup(entry.bssid),
                 isHidden: entry.isHidden || entry.ssid.isEmpty,
                 seenCount: entry.samples.length,
+                channelWidthMhz: entry.channelWidthMhz,
+                wifiStandard: entry.wifiStandard,
+                hasWps: entry.hasWps,
+                hasPmf: entry.hasPmf,
+                rawCapabilities: entry.rawCapabilities,
+                apMldMac: entry.apMldMac,
               ),
             )
             .toList();
@@ -216,6 +222,12 @@ class _ObservationAccumulator {
   int frequency;
   SecurityType security;
   bool isHidden;
+  int? channelWidthMhz;
+  WifiStandard? wifiStandard;
+  bool? hasWps;
+  bool? hasPmf;
+  String? rawCapabilities;
+  String? apMldMac;
 
   _ObservationAccumulator(WifiNetwork network)
     : ssid = network.ssid,
@@ -223,7 +235,13 @@ class _ObservationAccumulator {
       channel = network.channel,
       frequency = network.frequency,
       security = network.security,
-      isHidden = network.isHidden;
+      isHidden = network.isHidden,
+      channelWidthMhz = network.channelWidthMhz,
+      wifiStandard = network.wifiStandard,
+      hasWps = network.hasWps,
+      hasPmf = network.hasPmf,
+      rawCapabilities = network.rawCapabilities,
+      apMldMac = network.apMldMac;
 
   void addSample(int signalDbm) {
     samples.add(signalDbm);
@@ -241,6 +259,13 @@ class _ObservationAccumulator {
     }
     security = network.security;
     isHidden = isHidden || network.isHidden;
+    // Keep extended fields from first pass that provided them.
+    channelWidthMhz ??= network.channelWidthMhz;
+    wifiStandard ??= network.wifiStandard;
+    hasWps ??= network.hasWps;
+    hasPmf ??= network.hasPmf;
+    rawCapabilities ??= network.rawCapabilities;
+    apMldMac ??= network.apMldMac;
   }
 }
 

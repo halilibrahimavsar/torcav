@@ -17,6 +17,14 @@ class WifiObservation extends Equatable {
   final bool isHidden;
   final int seenCount;
 
+  // Extended fields from Android ScanResult (null when not available)
+  final int? channelWidthMhz;
+  final WifiStandard? wifiStandard;
+  final bool? hasWps;
+  final bool? hasPmf;
+  final String? rawCapabilities;
+  final String? apMldMac;
+
   const WifiObservation({
     required this.ssid,
     required this.bssid,
@@ -29,6 +37,12 @@ class WifiObservation extends Equatable {
     required this.vendor,
     required this.isHidden,
     required this.seenCount,
+    this.channelWidthMhz,
+    this.wifiStandard,
+    this.hasWps,
+    this.hasPmf,
+    this.rawCapabilities,
+    this.apMldMac,
   });
 
   factory WifiObservation.fromSingleNetwork(
@@ -47,6 +61,12 @@ class WifiObservation extends Equatable {
       vendor: vendor ?? network.vendor,
       isHidden: network.isHidden,
       seenCount: 1,
+      channelWidthMhz: network.channelWidthMhz,
+      wifiStandard: network.wifiStandard,
+      hasWps: network.hasWps,
+      hasPmf: network.hasPmf,
+      rawCapabilities: network.rawCapabilities,
+      apMldMac: network.apMldMac,
     );
   }
 
@@ -60,6 +80,12 @@ class WifiObservation extends Equatable {
     required String vendor,
     required bool isHidden,
     required int seenCount,
+    int? channelWidthMhz,
+    WifiStandard? wifiStandard,
+    bool? hasWps,
+    bool? hasPmf,
+    String? rawCapabilities,
+    String? apMldMac,
   }) {
     final safeSamples = samples.isEmpty ? const <int>[-100] : samples;
     final average =
@@ -82,6 +108,12 @@ class WifiObservation extends Equatable {
       vendor: vendor,
       isHidden: isHidden,
       seenCount: seenCount,
+      channelWidthMhz: channelWidthMhz,
+      wifiStandard: wifiStandard,
+      hasWps: hasWps,
+      hasPmf: hasPmf,
+      rawCapabilities: rawCapabilities,
+      apMldMac: apMldMac,
     );
   }
 
@@ -95,6 +127,12 @@ class WifiObservation extends Equatable {
       security: security,
       vendor: vendor,
       isHidden: isHidden,
+      channelWidthMhz: channelWidthMhz,
+      wifiStandard: wifiStandard,
+      hasWps: hasWps,
+      hasPmf: hasPmf,
+      rawCapabilities: rawCapabilities,
+      apMldMac: apMldMac,
     );
   }
 
@@ -111,5 +149,11 @@ class WifiObservation extends Equatable {
     vendor,
     isHidden,
     seenCount,
+    channelWidthMhz,
+    wifiStandard,
+    hasWps,
+    hasPmf,
+    rawCapabilities,
+    apMldMac,
   ];
 }

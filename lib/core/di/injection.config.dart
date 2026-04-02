@@ -60,6 +60,8 @@ import '../../features/security/data/repositories/security_repository_impl.dart'
     as _i997;
 import '../../features/security/domain/repositories/security_repository.dart'
     as _i578;
+import '../../features/security/domain/services/captive_portal_detector.dart'
+    as _i888;
 import '../../features/security/domain/usecases/analyze_network_security_usecase.dart'
     as _i87;
 import '../../features/security/domain/usecases/security_analyzer.dart'
@@ -122,6 +124,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i969.ChannelRatingEngine(),
     );
     gh.lazySingleton<_i471.SecurityAnalyzer>(() => _i471.SecurityAnalyzer());
+    gh.lazySingleton<_i888.CaptivePortalDetector>(
+      () => _i888.CaptivePortalDetector(gh<_i846.NetworkInfo>()),
+    );
     gh.lazySingleton<_i1066.ArpDataSource>(() => _i1066.ArpDataSource());
     gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
     gh.lazySingleton<_i494.HeatmapRepository>(

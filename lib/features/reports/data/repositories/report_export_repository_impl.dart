@@ -143,4 +143,31 @@ class ReportExportRepositoryImpl implements ReportExportRepository {
     );
     return document.save();
   }
+
+  @override
+  Future<String> generateCsv(ScanSnapshot snapshot) async {
+    final buffer = StringBuffer();
+    buffer.writeln('SSID,BSSID,dBm,StdDev,Channel,Frequency,Security,Vendor,Hidden');
+    for (final network in snapshot.networks) {
+      buffer.writeln([
+        _csvEscape(network.ssid.isEmpty ? 'Hidden' : network.ssid),
+        network.bssid,
+        network.avgSignalDbm,
+        network.signalStdDev.toStringAsFixed(1),
+        network.channel,
+        network.frequency,
+        network.security.name.toUpperCase(),
+        _csvEscape(network.vendor),
+        network.isHidden,
+      ].join(','));
+    }
+    return buffer.toString();
+  }
+
+  String _csvEscape(String value) {
+    if (value.contains(',') || value.contains('"') || value.contains('\n')) {
+      return '"${value.replaceAll('"', '""')}"';
+    }
+    return value;
+  }
 }

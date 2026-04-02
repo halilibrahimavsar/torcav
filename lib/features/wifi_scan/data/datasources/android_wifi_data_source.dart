@@ -6,6 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 
 import '../../../../core/errors/failures.dart';
+import '../../../../core/platform/wifi_extended_channel.dart';
 import '../../domain/entities/scan_request.dart';
 import '../../domain/entities/scan_snapshot.dart';
 import '../../domain/entities/wifi_network.dart';
@@ -80,19 +81,43 @@ class AndroidWifiDataSource implements WifiDataSource {
         );
       }
 
+      // Fetch extended fields (channel width, WiFi standard, WPS, PMF)
+      // from the native method channel. Failures here are non-fatal.
+      final extended = await WifiExtendedChannel.getExtendedResults();
+
       final networks =
           results
-              .map(
-                (result) => WifiNetwork(
+              .map((result) {
+                final bssid = result.bssid.toUpperCase();
+                final ext = extended[bssid];
+                final capabilities = ext?['capabilities'] as String?;
+
+                return WifiNetwork(
                   ssid: result.ssid,
-                  bssid: result.bssid.toUpperCase(),
+                  bssid: bssid,
                   signalStrength: result.level,
                   channel: _frequencyToChannel(result.frequency),
                   frequency: result.frequency,
-                  security: _mapCapabilitiesToSecurity(result.capabilities),
+                  security: _mapCapabilitiesToSecurity(
+                    capabilities ?? result.capabilities,
+                  ),
                   isHidden: result.ssid.isEmpty,
-                ),
-              )
+                  channelWidthMhz: WifiExtendedChannel.channelWidthToMhz(
+                    ext?['channelWidth'] as int?,
+                  ),
+                  wifiStandard: wifiStandardFromInt(
+                    ext?['wifiStandard'] as int?,
+                  ),
+                  hasWps: ext != null
+                      ? WifiExtendedChannel.hasWps(capabilities)
+                      : null,
+                  hasPmf: ext != null
+                      ? WifiExtendedChannel.hasPmf(capabilities)
+                      : null,
+                  rawCapabilities: capabilities,
+                  apMldMac: ext?['apMldMac'] as String?,
+                );
+              })
               .where(
                 (network) => request.includeHidden || network.ssid.isNotEmpty,
               )

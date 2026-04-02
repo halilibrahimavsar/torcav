@@ -190,12 +190,23 @@ class ReportsView extends StatelessWidget {
                         delay: const Duration(milliseconds: 500),
                       ),
                       _ExportActionCard(
-                        icon: Icons.print_rounded,
-                        label: l10n.printPdf,
+                        icon: Icons.table_chart_rounded,
+                        label: 'Export CSV',
                         color: Theme.of(context).colorScheme.tertiary,
                         isLoading: isLoading,
-                        onTap: () => _printPdf(context),
+                        onTap:
+                            () => context.read<ReportsBloc>().add(
+                              GenerateReport(latest, ReportFormat.csv),
+                            ),
                         delay: const Duration(milliseconds: 550),
+                      ),
+                      _ExportActionCard(
+                        icon: Icons.print_rounded,
+                        label: l10n.printPdf,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        isLoading: isLoading,
+                        onTap: () => _printPdf(context),
+                        delay: const Duration(milliseconds: 600),
                       ),
                     ],
                   );
@@ -230,6 +241,12 @@ class ReportsView extends StatelessWidget {
         context: context,
         suggestedName: 'torcav_scan_$timestamp.pdf',
         bytes: state.content as Uint8List,
+      );
+    } else if (state.format == ReportFormat.csv) {
+      await _saveTextFile(
+        context: context,
+        suggestedName: 'torcav_scan_$timestamp.csv',
+        contents: state.content as String,
       );
     }
   }

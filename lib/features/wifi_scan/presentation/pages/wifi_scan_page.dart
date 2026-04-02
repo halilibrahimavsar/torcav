@@ -166,17 +166,96 @@ class _WifiScanViewState extends State<_WifiScanView> {
   }
 }
 
-// ── Snapshot View ───────────────────────────────────────────────────
+// ── Scan filter state ────────────────────────────────────────────────
 
-class _SnapshotView extends StatelessWidget {
+enum _SortBy { signal, ssid, channel, security }
+
+class _FilterState {
+  final String query;
+  final _SortBy sortBy;
+  final WifiBand? band; // null = all bands
+
+  const _FilterState({
+    this.query = '',
+    this.sortBy = _SortBy.signal,
+    this.band,
+  });
+
+  _FilterState copyWith({String? query, _SortBy? sortBy, Object? band = _sentinel}) {
+    return _FilterState(
+      query: query ?? this.query,
+      sortBy: sortBy ?? this.sortBy,
+      band: band == _sentinel ? this.band : band as WifiBand?,
+    );
+  }
+}
+
+const _sentinel = Object();
+
+List<WifiObservation> _applyFilter(
+  List<WifiObservation> networks,
+  _FilterState filter,
+) {
+  var result = networks.where((n) {
+    final q = filter.query.trim().toLowerCase();
+    if (q.isNotEmpty) {
+      if (!n.ssid.toLowerCase().contains(q) &&
+          !n.bssid.toLowerCase().contains(q) &&
+          !n.vendor.toLowerCase().contains(q)) {
+        return false;
+      }
+    }
+    if (filter.band != null) {
+      final freq = n.frequency;
+      final networkBand = freq >= 5925
+          ? WifiBand.ghz6
+          : freq >= 5000
+              ? WifiBand.ghz5
+              : WifiBand.ghz24;
+      if (networkBand != filter.band) return false;
+    }
+    return true;
+  }).toList();
+
+  switch (filter.sortBy) {
+    case _SortBy.signal:
+      result.sort((a, b) => b.avgSignalDbm.compareTo(a.avgSignalDbm));
+    case _SortBy.ssid:
+      result.sort((a, b) => a.ssid.toLowerCase().compareTo(b.ssid.toLowerCase()));
+    case _SortBy.channel:
+      result.sort((a, b) => a.channel.compareTo(b.channel));
+    case _SortBy.security:
+      result.sort((a, b) => a.security.index.compareTo(b.security.index));
+  }
+
+  return result;
+}
+
+// ── Snapshot View ────────────────────────────────────────────────────
+
+class _SnapshotView extends StatefulWidget {
   final ScanSnapshot snapshot;
   final ScanRequest currentRequest;
 
   const _SnapshotView({required this.snapshot, required this.currentRequest});
 
   @override
+  State<_SnapshotView> createState() => _SnapshotViewState();
+}
+
+class _SnapshotViewState extends State<_SnapshotView> {
+  _FilterState _filter = const _FilterState();
+  final _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (snapshot.networks.isEmpty) {
+    if (widget.snapshot.networks.isEmpty) {
       final l10n = AppLocalizations.of(context)!;
       return Center(
         child: Column(
@@ -214,6 +293,8 @@ class _SnapshotView extends StatelessWidget {
       );
     }
 
+    final filtered = _applyFilter(widget.snapshot.networks, _filter);
+
     return RefreshIndicator(
       color: Theme.of(context).colorScheme.primary,
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -224,7 +305,7 @@ class _SnapshotView extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
         children: [
           // ── Bento Header ──
-          _WifiBentoHeader(snapshot: snapshot),
+          _WifiBentoHeader(snapshot: widget.snapshot),
           const SizedBox(height: 24),
 
           // ── Channel Rating Quick Link ──
@@ -234,34 +315,284 @@ class _SnapshotView extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: _ChannelRatingLink(
-                  snapshot: snapshot,
-                  request: currentRequest,
+                  snapshot: widget.snapshot,
+                  request: widget.currentRequest,
                 ),
               );
             },
           ),
 
+          // ── Search & Filter Bar ──
+          _SearchFilterBar(
+            controller: _searchController,
+            filter: _filter,
+            onFilterChanged: (f) => setState(() => _filter = f),
+          ),
+          const SizedBox(height: 12),
+
           // ── Network Count Header ──
           NeonSectionHeader(
-            label: AppLocalizations.of(
-              context,
-            )!.networksCount(snapshot.networks.length),
+            label: filtered.length == widget.snapshot.networks.length
+                ? AppLocalizations.of(context)!.networksCount(filtered.length)
+                : '${filtered.length} / ${widget.snapshot.networks.length} NETWORKS',
             icon: Icons.wifi_rounded,
             color: Theme.of(context).colorScheme.primary,
           ),
           const SizedBox(height: 12),
 
           // ── Network Grid ──
-          ...snapshot.networks.asMap().entries.map(
-            (entry) => StaggeredEntry(
-              delay: Duration(milliseconds: 100 + entry.key * 40),
-              child: _WifiNetworkCard(
-                network: entry.value,
-                interfaceName: snapshot.interfaceName,
+          if (filtered.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 32),
+              child: Center(
+                child: Text(
+                  'No networks match your filter',
+                  style: GoogleFonts.rajdhani(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+            )
+          else
+            ...filtered.asMap().entries.map(
+              (entry) => StaggeredEntry(
+                delay: Duration(milliseconds: 40 * entry.key.clamp(0, 20)),
+                child: _WifiNetworkCard(
+                  network: entry.value,
+                  interfaceName: widget.snapshot.interfaceName,
+                ),
               ),
             ),
-          ),
         ],
+      ),
+    );
+  }
+}
+
+// ── Search + Filter Bar ──────────────────────────────────────────────
+
+class _SearchFilterBar extends StatelessWidget {
+  final TextEditingController controller;
+  final _FilterState filter;
+  final ValueChanged<_FilterState> onFilterChanged;
+
+  const _SearchFilterBar({
+    required this.controller,
+    required this.filter,
+    required this.onFilterChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    final surface = Theme.of(context).colorScheme.surfaceContainer;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Search field
+        Container(
+          height: 40,
+          decoration: BoxDecoration(
+            color: surface.withValues(alpha: 0.8),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: primary.withValues(alpha: 0.2),
+              width: 1,
+            ),
+          ),
+          child: TextField(
+            controller: controller,
+            style: GoogleFonts.rajdhani(
+              color: Theme.of(context).colorScheme.onSurface,
+              fontSize: 14,
+            ),
+            decoration: InputDecoration(
+              hintText: 'Search SSID, BSSID, vendor\u2026',
+              hintStyle: GoogleFonts.rajdhani(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontSize: 14,
+              ),
+              prefixIcon: Icon(Icons.search_rounded, color: primary, size: 18),
+              suffixIcon: controller.text.isNotEmpty
+                  ? IconButton(
+                      icon: Icon(Icons.clear_rounded, size: 16, color: primary),
+                      onPressed: () {
+                        controller.clear();
+                        onFilterChanged(filter.copyWith(query: ''));
+                      },
+                    )
+                  : null,
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(vertical: 10),
+            ),
+            onChanged: (v) => onFilterChanged(filter.copyWith(query: v)),
+          ),
+        ),
+        const SizedBox(height: 8),
+        // Sort + Band filter chips
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              _ScanChip(
+                label: 'Sort: ${_sortLabel(filter.sortBy)}',
+                icon: Icons.sort_rounded,
+                color: primary,
+                onTap: () => _showSortMenu(context),
+              ),
+              const SizedBox(width: 8),
+              for (final band in [null, WifiBand.ghz24, WifiBand.ghz5, WifiBand.ghz6])
+                Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: _ScanChip(
+                    label: band == null ? 'All' : _bandLabel(band),
+                    icon: band == null ? Icons.cell_tower_rounded : Icons.wifi_rounded,
+                    color: filter.band == band ? primary : Theme.of(context).colorScheme.outline,
+                    selected: filter.band == band,
+                    onTap: () => onFilterChanged(filter.copyWith(band: band)),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _sortLabel(_SortBy sortBy) {
+    switch (sortBy) {
+      case _SortBy.signal:
+        return 'Signal';
+      case _SortBy.ssid:
+        return 'Name';
+      case _SortBy.channel:
+        return 'Channel';
+      case _SortBy.security:
+        return 'Security';
+    }
+  }
+
+  String _bandLabel(WifiBand band) {
+    switch (band) {
+      case WifiBand.ghz24:
+        return '2.4 GHz';
+      case WifiBand.ghz5:
+        return '5 GHz';
+      case WifiBand.ghz6:
+        return '6 GHz';
+    }
+  }
+
+  void _showSortMenu(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+          ),
+        ),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.4),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'SORT BY',
+              style: GoogleFonts.orbitron(
+                color: Theme.of(context).colorScheme.primary,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2,
+              ),
+            ),
+            const SizedBox(height: 12),
+            for (final sort in _SortBy.values)
+              ListTile(
+                title: Text(
+                  _sortLabel(sort).toUpperCase(),
+                  style: GoogleFonts.rajdhani(
+                    color: filter.sortBy == sort
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.onSurface,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                trailing: filter.sortBy == sort
+                    ? Icon(Icons.check_rounded, color: Theme.of(context).colorScheme.primary)
+                    : null,
+                onTap: () {
+                  Navigator.pop(context);
+                  onFilterChanged(filter.copyWith(sortBy: sort));
+                },
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ScanChip extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Color color;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _ScanChip({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+    this.selected = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: selected
+              ? color.withValues(alpha: 0.15)
+              : Theme.of(context).colorScheme.surfaceContainer.withValues(alpha: 0.8),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: color.withValues(alpha: selected ? 0.6 : 0.2),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 13, color: color),
+            const SizedBox(width: 5),
+            Text(
+              label,
+              style: GoogleFonts.rajdhani(
+                color: color,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
