@@ -30,9 +30,12 @@ class GlassmorphicContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveBorder = borderColor ?? AppColors.neonCyan;
-    final effectiveBg =
-        backgroundColor ?? AppColors.darkSurfaceLight.withValues(alpha: 0.1);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveBorder = borderColor ?? Theme.of(context).colorScheme.primary;
+    final effectiveBg = backgroundColor ??
+        (isDark
+            ? Theme.of(context).colorScheme.surfaceContainerLow.withValues(alpha: 0.1)
+            : Theme.of(context).colorScheme.surfaceContainerHigh.withValues(alpha: 0.2));
 
     return ClipRRect(
       borderRadius: borderRadius,
@@ -68,7 +71,7 @@ class GlassmorphicContainer extends StatelessWidget {
 class NeonCard extends StatelessWidget {
   final Widget child;
   final EdgeInsets padding;
-  final Color glowColor;
+  final Color? glowColor;
   final double glowIntensity;
   final double borderRadius;
   final VoidCallback? onTap;
@@ -77,7 +80,7 @@ class NeonCard extends StatelessWidget {
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(16),
-    this.glowColor = const Color(0xFF00F5FF),
+    this.glowColor,
     this.glowIntensity = 0.15,
     this.borderRadius = 16,
     this.onTap,
@@ -85,13 +88,17 @@ class NeonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final effectiveGlowColor = glowColor ?? Theme.of(context).colorScheme.primary;
     final card = Container(
       padding: padding,
       decoration: BoxDecoration(
-        color: AppColors.darkSurfaceLight,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(color: glowColor.withValues(alpha: 0.2), width: 1),
-        boxShadow: AppColors.glowTiers[GlowTier.low]!(glowColor),
+        border: Border.all(
+          color: effectiveGlowColor.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: AppColors.glowTiers[GlowTier.low]!(effectiveGlowColor),
       ),
       child: child,
     );
@@ -102,8 +109,8 @@ class NeonCard extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(borderRadius),
-          splashColor: glowColor.withValues(alpha: 0.1),
-          highlightColor: glowColor.withValues(alpha: 0.05),
+          splashColor: effectiveGlowColor.withValues(alpha: 0.1),
+          highlightColor: effectiveGlowColor.withValues(alpha: 0.05),
           child: card,
         ),
       );
@@ -118,7 +125,7 @@ class NeonCard extends StatelessWidget {
 /// Wraps any child with a subtle pulsating neon glow.
 class NeonGlowBox extends StatefulWidget {
   final Widget child;
-  final Color glowColor;
+  final Color? glowColor;
   final double minOpacity;
   final double maxOpacity;
   final Duration duration;
@@ -126,7 +133,7 @@ class NeonGlowBox extends StatefulWidget {
   const NeonGlowBox({
     super.key,
     required this.child,
-    this.glowColor = const Color(0xFF00F5FF),
+    this.glowColor,
     this.minOpacity = 0.06,
     this.maxOpacity = 0.2,
     this.duration = const Duration(milliseconds: 2000),
@@ -160,13 +167,16 @@ class _NeonGlowBoxState extends State<NeonGlowBox>
 
   @override
   Widget build(BuildContext context) {
+    final effectiveGlowColor =
+        widget.glowColor ?? Theme.of(context).colorScheme.primary;
+
     // Static glow when reduced motion is preferred
     if (MediaQuery.of(context).disableAnimations) {
       return Container(
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: widget.glowColor.withValues(alpha: widget.minOpacity),
+              color: effectiveGlowColor.withValues(alpha: widget.minOpacity),
               blurRadius: 30,
               spreadRadius: 4,
             ),
@@ -183,7 +193,7 @@ class _NeonGlowBoxState extends State<NeonGlowBox>
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: widget.glowColor.withValues(alpha: _animation.value),
+                color: effectiveGlowColor.withValues(alpha: _animation.value),
                 blurRadius: 30,
                 spreadRadius: 4,
               ),
@@ -220,10 +230,14 @@ class NeonText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveStyle =
-        style ?? GoogleFonts.orbitron(color: AppColors.neonCyan, fontSize: 18);
-    final effectiveGlow =
-        glowColor ?? effectiveStyle.color ?? AppColors.neonCyan;
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveStyle = style ??
+        GoogleFonts.orbitron(
+          color: isDark ? scheme.primary : scheme.onSurface,
+          fontSize: 18,
+        );
+    final effectiveGlow = glowColor ?? (isDark ? scheme.primary : scheme.primary.withValues(alpha: 0.5));
 
     return Text(
       text,
@@ -244,12 +258,12 @@ class NeonText extends StatelessWidget {
 
 /// A small dot that gently pulses; used to indicate live status.
 class PulsingDot extends StatefulWidget {
-  final Color color;
+  final Color? color;
   final double size;
 
   const PulsingDot({
     super.key,
-    this.color = const Color(0xFF39FF14),
+    this.color,
     this.size = 10,
   });
 
@@ -278,12 +292,17 @@ class _PulsingDotState extends State<PulsingDot>
 
   @override
   Widget build(BuildContext context) {
+    final effectiveColor = widget.color ?? Theme.of(context).colorScheme.tertiary;
+
     // Static dot when reduced motion is preferred
     if (MediaQuery.of(context).disableAnimations) {
       return Container(
         width: widget.size,
         height: widget.size,
-        decoration: BoxDecoration(color: widget.color, shape: BoxShape.circle),
+        decoration: BoxDecoration(
+          color: effectiveColor,
+          shape: BoxShape.circle,
+        ),
       );
     }
 
@@ -296,11 +315,11 @@ class _PulsingDotState extends State<PulsingDot>
           width: widget.size,
           height: widget.size,
           decoration: BoxDecoration(
-            color: widget.color.withValues(alpha: opacity),
+            color: effectiveColor.withValues(alpha: opacity),
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: widget.color.withValues(alpha: opacity * 0.5),
+                color: effectiveColor.withValues(alpha: opacity * 0.5),
                 blurRadius: glowRadius,
                 spreadRadius: 1,
               ),
@@ -317,7 +336,7 @@ class _PulsingDotState extends State<PulsingDot>
 /// An icon with neon glow that intensifies on tap.
 class NeonIconButton extends StatelessWidget {
   final IconData icon;
-  final Color color;
+  final Color? color;
   final double size;
   final VoidCallback? onTap;
   final String? tooltip;
@@ -325,7 +344,7 @@ class NeonIconButton extends StatelessWidget {
   const NeonIconButton({
     super.key,
     required this.icon,
-    this.color = const Color(0xFF00F5FF),
+    this.color,
     this.size = 24,
     this.onTap,
     this.tooltip,
@@ -333,11 +352,12 @@ class NeonIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final effectiveColor = color ?? Theme.of(context).colorScheme.primary;
     final button = IconButton(
       onPressed: onTap,
-      icon: Icon(icon, color: color, size: size),
-      splashColor: color.withValues(alpha: 0.2),
-      highlightColor: color.withValues(alpha: 0.1),
+      icon: Icon(icon, color: effectiveColor, size: size),
+      splashColor: effectiveColor.withValues(alpha: 0.2),
+      highlightColor: effectiveColor.withValues(alpha: 0.1),
     );
 
     if (tooltip != null) {
@@ -352,32 +372,33 @@ class NeonIconButton extends StatelessWidget {
 
 /// A horizontal divider with neon gradient glow.
 class NeonDivider extends StatelessWidget {
-  final Color color;
+  final Color? color;
   final double height;
 
   const NeonDivider({
     super.key,
-    this.color = const Color(0xFF00F5FF),
+    this.color,
     this.height = 1,
   });
 
   @override
   Widget build(BuildContext context) {
+    final effectiveColor = color ?? Theme.of(context).colorScheme.primary;
     return Container(
       height: height,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
             Colors.transparent,
-            color.withValues(alpha: 0.5),
-            color.withValues(alpha: 0.8),
-            color.withValues(alpha: 0.5),
+            effectiveColor.withValues(alpha: 0.5),
+            effectiveColor.withValues(alpha: 0.8),
+            effectiveColor.withValues(alpha: 0.5),
             Colors.transparent,
           ],
         ),
         boxShadow: [
           BoxShadow(
-            color: color.withValues(alpha: 0.3),
+            color: effectiveColor.withValues(alpha: 0.3),
             blurRadius: 8,
             spreadRadius: 0,
           ),
@@ -392,26 +413,30 @@ class NeonDivider extends StatelessWidget {
 /// A small pill-shaped label with neon border.
 class NeonChip extends StatelessWidget {
   final String label;
-  final Color color;
+  final Color? color;
   final TextStyle? textStyle;
 
   const NeonChip({
     super.key,
     required this.label,
-    this.color = const Color(0xFF00F5FF),
+    this.color,
     this.textStyle,
   });
 
   @override
   Widget build(BuildContext context) {
+    final effectiveColor = color ?? Theme.of(context).colorScheme.primary;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: color.withValues(alpha: 0.1),
-        border: Border.all(color: color.withValues(alpha: 0.35)),
+        color: effectiveColor.withValues(alpha: 0.1),
+        border: Border.all(color: effectiveColor.withValues(alpha: 0.35)),
         boxShadow: [
-          BoxShadow(color: color.withValues(alpha: 0.08), blurRadius: 8),
+          BoxShadow(
+            color: effectiveColor.withValues(alpha: 0.08),
+            blurRadius: 8,
+          ),
         ],
       ),
       child: Text(
@@ -419,7 +444,7 @@ class NeonChip extends StatelessWidget {
         style:
             textStyle ??
             GoogleFonts.outfit(
-              color: color.withValues(alpha: 0.9),
+              color: effectiveColor.withValues(alpha: 0.9),
               fontSize: 12,
               fontWeight: FontWeight.w600,
             ),
@@ -502,21 +527,22 @@ class _StaggeredEntryState extends State<StaggeredEntry>
 class NeonSectionHeader extends StatelessWidget {
   final String label;
   final IconData? icon;
-  final Color color;
+  final Color? color;
 
   const NeonSectionHeader({
     super.key,
     required this.label,
     this.icon,
-    this.color = const Color(0xFF00F5FF),
+    this.color,
   });
 
   @override
   Widget build(BuildContext context) {
+    final effectiveColor = color ?? Theme.of(context).colorScheme.primary;
     return Row(
       children: [
         if (icon != null) ...[
-          Icon(icon, color: color, size: 16),
+          Icon(icon, color: effectiveColor, size: 16),
           const SizedBox(width: 8),
         ],
         Flexible(
@@ -524,7 +550,7 @@ class NeonSectionHeader extends StatelessWidget {
             label.toUpperCase(),
             overflow: TextOverflow.ellipsis,
             style: GoogleFonts.orbitron(
-              color: color.withValues(alpha: 0.7),
+              color: effectiveColor.withValues(alpha: 0.7),
               fontSize: 12,
               fontWeight: FontWeight.bold,
               letterSpacing: 2,
@@ -532,7 +558,7 @@ class NeonSectionHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 12),
-        Expanded(child: NeonDivider(color: color)),
+        Expanded(child: NeonDivider(color: effectiveColor)),
       ],
     );
   }
@@ -544,7 +570,7 @@ class BentoStatTile extends StatelessWidget {
   final String label;
   final String value;
   final IconData icon;
-  final Color color;
+  final Color? color;
   final String? subValue;
 
   const BentoStatTile({
@@ -552,14 +578,15 @@ class BentoStatTile extends StatelessWidget {
     required this.label,
     required this.value,
     required this.icon,
-    this.color = AppColors.neonCyan,
+    this.color,
     this.subValue,
   });
 
   @override
   Widget build(BuildContext context) {
+    final effectiveColor = color ?? Theme.of(context).colorScheme.primary;
     return NeonCard(
-      glowColor: color,
+      glowColor: effectiveColor,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -567,7 +594,7 @@ class BentoStatTile extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(icon, color: color.withValues(alpha: 0.7), size: 18),
+              Icon(icon, color: effectiveColor.withValues(alpha: 0.7), size: 18),
               if (subValue != null)
                 Flexible(
                   child: Text(
@@ -575,7 +602,7 @@ class BentoStatTile extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.rajdhani(
-                      color: color.withValues(alpha: 0.5),
+                      color: effectiveColor.withValues(alpha: 0.5),
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
                     ),
@@ -591,7 +618,7 @@ class BentoStatTile extends StatelessWidget {
               value,
               maxLines: 1,
               style: GoogleFonts.orbitron(
-                color: color,
+                color: effectiveColor,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -602,7 +629,7 @@ class BentoStatTile extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: GoogleFonts.rajdhani(
-              color: AppColors.textMuted,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontSize: 10,
               fontWeight: FontWeight.bold,
               letterSpacing: 1,
@@ -620,7 +647,7 @@ class NeonButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String label;
   final IconData? icon;
-  final Color color;
+  final Color? color;
   final double height;
 
   const NeonButton({
@@ -628,26 +655,35 @@ class NeonButton extends StatelessWidget {
     required this.onPressed,
     required this.label,
     this.icon,
-    this.color = AppColors.neonCyan,
+    this.color,
     this.height = 50,
   });
 
   @override
   Widget build(BuildContext context) {
+    final effectiveColor = color ?? Theme.of(context).colorScheme.primary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onPressed,
         borderRadius: BorderRadius.circular(12),
-        splashColor: color.withValues(alpha: 0.2),
+        splashColor: effectiveColor.withValues(alpha: 0.2),
         child: Container(
           height: height,
           decoration: BoxDecoration(
+            color: isDark
+                ? Colors.transparent
+                : Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.9),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: color.withValues(alpha: 0.5), width: 1.5),
+            border: Border.all(
+              color: isDark ? effectiveColor.withValues(alpha: 0.5) : Colors.transparent,
+              width: 1.5,
+            ),
             boxShadow: [
               BoxShadow(
-                color: color.withValues(alpha: 0.15),
+                color: effectiveColor.withValues(alpha: 0.15),
                 blurRadius: 10,
                 spreadRadius: 1,
               ),
@@ -657,13 +693,17 @@ class NeonButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (icon != null) ...[
-                Icon(icon, color: color, size: 20),
+                Icon(
+                  icon,
+                  color: isDark ? effectiveColor : Theme.of(context).colorScheme.onPrimaryContainer,
+                  size: 20,
+                ),
                 const SizedBox(width: 10),
               ],
               Text(
                 label.toUpperCase(),
                 style: GoogleFonts.orbitron(
-                  color: color,
+                  color: isDark ? effectiveColor : Theme.of(context).colorScheme.onPrimaryContainer,
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.5,
@@ -685,16 +725,16 @@ class HolographicCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeColor = color ?? AppColors.neonCyan;
+    final effectiveColor = color ?? Theme.of(context).colorScheme.primary;
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xE60A0E14),
+        color: Theme.of(context).colorScheme.surfaceContainer.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: themeColor.withValues(alpha: 0.2), width: 1),
+        border: Border.all(color: effectiveColor.withValues(alpha: 0.2), width: 1),
         boxShadow: [
           BoxShadow(
-            color: themeColor.withValues(alpha: 0.1),
+            color: effectiveColor.withValues(alpha: 0.1),
             blurRadius: 20,
             spreadRadius: -5,
           ),
@@ -706,7 +746,7 @@ class HolographicCard extends StatelessWidget {
           Positioned.fill(
             child: CustomPaint(
               painter: ScanlinePainter(
-                color: themeColor.withValues(alpha: 0.05),
+                color: effectiveColor.withValues(alpha: 0.05),
               ),
             ),
           ),
@@ -746,7 +786,7 @@ class NeonConfirmDialog extends StatelessWidget {
   final String confirmLabel;
   final String cancelLabel;
   final VoidCallback onConfirm;
-  final Color confirmColor;
+  final Color? confirmColor;
 
   const NeonConfirmDialog({
     super.key,
@@ -755,11 +795,15 @@ class NeonConfirmDialog extends StatelessWidget {
     required this.confirmLabel,
     required this.cancelLabel,
     required this.onConfirm,
-    this.confirmColor = Colors.redAccent,
+    this.confirmColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final scheme = Theme.of(context).colorScheme;
+    final effectiveConfirmColor = confirmColor ?? scheme.error;
+
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
       child: Center(
@@ -767,19 +811,19 @@ class NeonConfirmDialog extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 32),
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: AppColors.darkSurface.withValues(alpha: 0.95),
+            color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.95),
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: AppColors.neonCyan.withValues(alpha: 0.2),
+              color: scheme.primary.withValues(alpha: 0.2),
               width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.5),
+                color: Colors.black.withValues(alpha: isDark ? 0.5 : 0.2),
                 blurRadius: 50,
               ),
               BoxShadow(
-                color: AppColors.neonCyan.withValues(alpha: 0.05),
+                color: scheme.primary.withValues(alpha: 0.05),
                 blurRadius: 20,
               ),
             ],
@@ -791,14 +835,14 @@ class NeonConfirmDialog extends StatelessWidget {
               children: [
                 Icon(
                   Icons.warning_amber_rounded,
-                  color: confirmColor.withValues(alpha: 0.8),
+                  color: effectiveConfirmColor.withValues(alpha: 0.8),
                   size: 48,
                 ),
                 const SizedBox(height: 16),
                 NeonText(
                   title.toUpperCase(),
                   style: GoogleFonts.orbitron(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -808,7 +852,7 @@ class NeonConfirmDialog extends StatelessWidget {
                   message,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.outfit(
-                    color: AppColors.textMuted,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 14,
                     height: 1.5,
                   ),
@@ -820,7 +864,7 @@ class NeonConfirmDialog extends StatelessWidget {
                       child: NeonButton(
                         onPressed: () => Navigator.of(context).pop(),
                         label: cancelLabel,
-                        color: AppColors.textMuted,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -828,7 +872,7 @@ class NeonConfirmDialog extends StatelessWidget {
                       child: NeonButton(
                         onPressed: onConfirm,
                         label: confirmLabel,
-                        color: confirmColor,
+                        color: effectiveConfirmColor,
                       ),
                     ),
                   ],

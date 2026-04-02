@@ -1,17 +1,17 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_theme.dart';
+
 
 class SecurityStatusRadar extends StatefulWidget {
   final double score;
   final bool isScanning;
-  final Color color;
+  final Color? color;
 
   const SecurityStatusRadar({
     super.key,
     required this.score,
     this.isScanning = false,
-    this.color = AppColors.neonCyan,
+    this.color,
   });
 
   @override
@@ -48,7 +48,7 @@ class _SecurityStatusRadarState extends State<SecurityStatusRadar>
             rotation: _controller.value,
             score: widget.score,
             isScanning: widget.isScanning,
-            color: widget.color,
+            color: widget.color ?? Theme.of(context).colorScheme.primary,
           ),
         );
       },

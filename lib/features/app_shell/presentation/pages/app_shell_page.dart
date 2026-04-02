@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../dashboard/presentation/pages/dashboard_page.dart';
 import '../../../network_scan/presentation/pages/network_scan_page.dart';
@@ -156,7 +155,7 @@ class _DiscoveryTabPageState extends State<_DiscoveryTabPage>
         title: NeonText(
           'DISCOVERY',
           style: GoogleFonts.orbitron(
-            color: AppColors.neonCyan,
+            color: Theme.of(context).colorScheme.primary,
             fontSize: 16,
             fontWeight: FontWeight.bold,
             letterSpacing: 2,
@@ -169,10 +168,10 @@ class _DiscoveryTabPageState extends State<_DiscoveryTabPage>
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.darkSurface.withValues(alpha: 0.9),
+              color: Theme.of(context).colorScheme.surfaceContainer.withValues(alpha: 0.9),
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: AppColors.neonCyan.withValues(alpha: 0.1),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                 width: 1,
               ),
             ),
@@ -183,19 +182,19 @@ class _DiscoveryTabPageState extends State<_DiscoveryTabPage>
               indicator: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.neonCyan.withValues(alpha: 0.2),
-                    AppColors.neonCyan.withValues(alpha: 0.05),
+                    Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                    Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
-                  color: AppColors.neonCyan.withValues(alpha: 0.4),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
                   width: 1,
                 ),
               ),
               dividerColor: Colors.transparent,
-              labelColor: AppColors.neonCyan,
-              unselectedLabelColor: AppColors.textMuted,
+              labelColor: Theme.of(context).colorScheme.primary,
+              unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
               labelStyle: GoogleFonts.orbitron(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
@@ -275,14 +274,14 @@ class _NeonBottomBar extends StatelessWidget {
           child: Container(
             height: 68,
             decoration: BoxDecoration(
-              color: AppColors.darkSurface.withValues(alpha: 0.85),
+              color: Theme.of(context).colorScheme.surfaceContainer.withValues(alpha: 0.85),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: AppColors.neonCyan.withValues(alpha: 0.12),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.neonCyan.withValues(alpha: 0.05),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
                   blurRadius: 24,
                   offset: const Offset(0, -4),
                 ),
@@ -303,15 +302,15 @@ class _NeonBottomBar extends StatelessWidget {
                         width: itemWidth * 0.8,
                         height: 48,
                         decoration: BoxDecoration(
-                          color: AppColors.neonCyan.withValues(alpha: 0.08),
+                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: AppColors.neonCyan.withValues(alpha: 0.2),
+                            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
                             width: 1,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.neonCyan.withValues(alpha: 0.12),
+                              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
                               blurRadius: 15,
                               spreadRadius: 1,
                             ),
@@ -362,7 +361,8 @@ class _NeonBarButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isSelected ? AppColors.neonCyan : AppColors.textMuted;
+    final scheme = Theme.of(context).colorScheme;
+    final color = isSelected ? scheme.primary : scheme.onSurfaceVariant;
 
     return GestureDetector(
       onTap: onTap,

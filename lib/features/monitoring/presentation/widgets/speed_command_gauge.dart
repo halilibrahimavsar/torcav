@@ -10,6 +10,8 @@ class SpeedCommandGauge extends StatefulWidget {
   final double upload;
   final double maxSpeed;
   final SpeedTestPhase phase;
+  final Color? downloadColor;
+  final Color? uploadColor;
 
   const SpeedCommandGauge({
     super.key,
@@ -17,6 +19,8 @@ class SpeedCommandGauge extends StatefulWidget {
     required this.upload,
     this.maxSpeed = 100.0,
     this.phase = SpeedTestPhase.idle,
+    this.downloadColor,
+    this.uploadColor,
   });
 
   @override
@@ -45,6 +49,10 @@ class _SpeedCommandGaugeState extends State<SpeedCommandGauge>
 
   @override
   Widget build(BuildContext context) {
+    final dlColor = widget.downloadColor ?? Theme.of(context).colorScheme.primary;
+    final ulColor =
+        widget.uploadColor ?? Theme.of(context).colorScheme.secondary;
+
     return TweenAnimationBuilder<double>(
       duration: const Duration(milliseconds: 600),
       curve: Curves.easeOutCubic,
@@ -72,6 +80,8 @@ class _SpeedCommandGaugeState extends State<SpeedCommandGauge>
                           maxSpeed: widget.maxSpeed,
                           animationValue: _controller.value,
                           phase: widget.phase,
+                          downloadColor: dlColor,
+                          uploadColor: ulColor,
                         ),
                       );
                     },
@@ -86,8 +96,7 @@ class _SpeedCommandGaugeState extends State<SpeedCommandGauge>
 
                       // During upload phase, highlight upload speed in center
                       final centerValue = isUpload ? ulValue : dlValue;
-                      final centerColor =
-                          isUpload ? AppColors.neonPurple : AppColors.neonCyan;
+                      final centerColor = isUpload ? ulColor : dlColor;
                       final centerLabel =
                           isUpload ? 'MBPS UPLOAD' : 'MBPS DOWNLOAD';
 
@@ -98,16 +107,14 @@ class _SpeedCommandGaugeState extends State<SpeedCommandGauge>
                             Icon(
                               Icons.play_circle_outline_rounded,
                               size: 32,
-                              color: AppColors.neonCyan.withValues(alpha: 0.5),
+                              color: dlColor.withValues(alpha: 0.5),
                             ),
                             const SizedBox(height: 4),
                             Text(
                               'TAP TO TEST',
                               style: GoogleFonts.orbitron(
                                 fontSize: 9,
-                                color: AppColors.neonCyan.withValues(
-                                  alpha: 0.4,
-                                ),
+                                color: dlColor.withValues(alpha: 0.4),
                                 letterSpacing: 2,
                               ),
                             ),
@@ -126,6 +133,7 @@ class _SpeedCommandGaugeState extends State<SpeedCommandGauge>
                               color: Colors.white,
                             ),
                             glowRadius: isDone ? 14 : 10,
+                            glowColor: centerColor,
                           ),
                           Text(
                             centerLabel,
@@ -145,29 +153,25 @@ class _SpeedCommandGaugeState extends State<SpeedCommandGauge>
                                 vertical: 3,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.neonPurple.withValues(
-                                  alpha: 0.1,
-                                ),
+                                color: ulColor.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(4),
                                 border: Border.all(
-                                  color: AppColors.neonPurple.withValues(
-                                    alpha: 0.3,
-                                  ),
+                                  color: ulColor.withValues(alpha: 0.3),
                                 ),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.upload_rounded,
                                     size: 11,
-                                    color: AppColors.neonPurple,
+                                    color: ulColor,
                                   ),
                                   const SizedBox(width: 3),
                                   Text(
                                     '${ulValue.toStringAsFixed(1)} UP',
                                     style: GoogleFonts.sourceCodePro(
-                                      color: AppColors.neonPurple,
+                                      color: ulColor,
                                       fontSize: 11,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -182,29 +186,25 @@ class _SpeedCommandGaugeState extends State<SpeedCommandGauge>
                                 vertical: 3,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.neonCyan.withValues(
-                                  alpha: 0.1,
-                                ),
+                                color: dlColor.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(4),
                                 border: Border.all(
-                                  color: AppColors.neonCyan.withValues(
-                                    alpha: 0.3,
-                                  ),
+                                  color: dlColor.withValues(alpha: 0.3),
                                 ),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.download_rounded,
                                     size: 11,
-                                    color: AppColors.neonCyan,
+                                    color: dlColor,
                                   ),
                                   const SizedBox(width: 3),
                                   Text(
                                     '${dlValue.toStringAsFixed(1)} DL',
                                     style: GoogleFonts.sourceCodePro(
-                                      color: AppColors.neonCyan,
+                                      color: dlColor,
                                       fontSize: 11,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -232,6 +232,8 @@ class _GaugePainter extends CustomPainter {
   final double maxSpeed;
   final double animationValue;
   final SpeedTestPhase phase;
+  final Color downloadColor;
+  final Color uploadColor;
 
   _GaugePainter({
     required this.download,
@@ -239,6 +241,8 @@ class _GaugePainter extends CustomPainter {
     required this.maxSpeed,
     required this.animationValue,
     required this.phase,
+    required this.downloadColor,
+    required this.uploadColor,
   });
 
   @override
@@ -279,7 +283,7 @@ class _GaugePainter extends CustomPainter {
 
     // ── Download Neon Arc ──
     final dlGradient = SweepGradient(
-      colors: [AppColors.neonCyan.withValues(alpha: 0.9), AppColors.neonCyan],
+      colors: [downloadColor.withValues(alpha: 0.9), downloadColor],
       stops: const [0.0, 1.0],
       transform: GradientRotation(startAngle),
     ).createShader(Rect.fromCircle(center: center, radius: radius));
@@ -298,7 +302,7 @@ class _GaugePainter extends CustomPainter {
       sweepAngle * dlPercent,
       false,
       Paint()
-        ..color = AppColors.neonCyan.withValues(alpha: 0.3)
+        ..color = downloadColor.withValues(alpha: 0.3)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 20
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12),
@@ -315,8 +319,8 @@ class _GaugePainter extends CustomPainter {
     // ── Upload Neon Arc ──
     final ulGradient = SweepGradient(
       colors: [
-        AppColors.neonPurple.withValues(alpha: 0.9),
-        AppColors.neonPurple,
+        uploadColor.withValues(alpha: 0.9),
+        uploadColor,
       ],
       stops: const [0.0, 1.0],
       transform: GradientRotation(startAngle),
@@ -360,7 +364,7 @@ class _GaugePainter extends CustomPainter {
     // ── Animated "Bit-flow" Particles ──
     // During upload, particles flow on the inner (upload) arc
     final isUpload = phase == SpeedTestPhase.upload;
-    final particleColor = isUpload ? AppColors.neonPurple : AppColors.neonCyan;
+    final particleColor = isUpload ? uploadColor : downloadColor;
     final particleRadius = isUpload ? radius - 35 : radius - 10;
     final particlePaint = Paint()..style = PaintingStyle.fill;
 
@@ -385,5 +389,7 @@ class _GaugePainter extends CustomPainter {
       oldDelegate.upload != upload ||
       oldDelegate.maxSpeed != maxSpeed ||
       oldDelegate.animationValue != animationValue ||
-      oldDelegate.phase != phase;
+      oldDelegate.phase != phase ||
+      oldDelegate.downloadColor != downloadColor ||
+      oldDelegate.uploadColor != uploadColor;
 }

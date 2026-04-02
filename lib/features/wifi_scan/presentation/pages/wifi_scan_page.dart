@@ -94,25 +94,25 @@ class _WifiScanViewState extends State<_WifiScanView> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const WifiScannerRadar(isScanning: true),
+                      WifiScannerRadar(isScanning: true),
                       const SizedBox(height: 48),
                       StaggeredEntry(
                         child: Column(
                           children: [
-                            Text(
-                              'INITIATING SPECTRUM SCAN',
-                              style: GoogleFonts.orbitron(
-                                color: AppColors.neonCyan,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 2,
+                              Text(
+                                'INITIATING SPECTRUM SCAN',
+                                style: GoogleFonts.orbitron(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 2,
+                                ),
                               ),
-                            ),
                             const SizedBox(height: 8),
                             Text(
                               'BROADCASTING PROBE REQUESTS...',
                               style: GoogleFonts.rajdhani(
-                                color: AppColors.textMuted,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
                                 letterSpacing: 1,
@@ -153,7 +153,7 @@ class _WifiScanViewState extends State<_WifiScanView> {
                 child: NeonText(
                   l10n.readyToScan,
                   style: GoogleFonts.rajdhani(
-                    color: AppColors.textMuted,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 18,
                   ),
                 ),
@@ -183,18 +183,18 @@ class _SnapshotView extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             NeonGlowBox(
-              glowColor: AppColors.neonCyan,
+              glowColor: Theme.of(context).colorScheme.primary,
               child: Icon(
                 Icons.wifi_off_rounded,
                 size: 64,
-                color: AppColors.neonCyan,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
             const SizedBox(height: 24),
             Text(
               l10n.noSignalsDetected.toUpperCase(),
               style: GoogleFonts.orbitron(
-                color: AppColors.textPrimary,
+                color: Theme.of(context).colorScheme.onSurface,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 2,
@@ -204,7 +204,7 @@ class _SnapshotView extends StatelessWidget {
             Text(
               "NO RADIOS EMITTING IN RANGE",
               style: GoogleFonts.rajdhani(
-                color: AppColors.textMuted,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
@@ -215,8 +215,8 @@ class _SnapshotView extends StatelessWidget {
     }
 
     return RefreshIndicator(
-      color: AppColors.neonCyan,
-      backgroundColor: AppColors.darkSurface,
+      color: Theme.of(context).colorScheme.primary,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       onRefresh: () async {
         context.read<WifiScanBloc>().add(const WifiScanRefreshed());
       },
@@ -247,7 +247,7 @@ class _SnapshotView extends StatelessWidget {
               context,
             )!.networksCount(snapshot.networks.length),
             icon: Icons.wifi_rounded,
-            color: AppColors.neonCyan,
+            color: Theme.of(context).colorScheme.primary,
           ),
           const SizedBox(height: 12),
 
@@ -276,14 +276,6 @@ class _WifiBentoHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Calculate band-specific blips for the radar
-    final blips =
-        snapshot.networks
-            .map(
-              (n) => (n.avgSignalDbm + 100) / 70.0,
-            ) // Normalize signal to 0..1
-            .toList();
-
     return Column(
       children: [
         LayoutBuilder(
@@ -299,15 +291,14 @@ class _WifiBentoHeader extends StatelessWidget {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      WifiScannerRadar(
-                        isScanning: false,
-                        blips: blips,
-                        color: AppColors.neonCyan,
-                      ),
+                      const WifiScannerRadar(isScanning: true),
                       // Center Icon
                       Icon(
                         Icons.settings_input_antenna_rounded,
-                        color: AppColors.neonCyan.withValues(alpha: 0.5),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withValues(alpha: 0.5),
                         size: 24,
                       ),
                     ],
@@ -328,7 +319,7 @@ class _WifiBentoHeader extends StatelessWidget {
                                   label: 'Networks',
                                   value: '${snapshot.networks.length}',
                                   icon: Icons.wifi_find_rounded,
-                                  color: AppColors.neonCyan,
+                                  color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
                               const SizedBox(width: 8),
@@ -399,7 +390,7 @@ class _WifiBentoHeader extends StatelessWidget {
                             horizontal: 12,
                             vertical: 8,
                           ),
-                          glowColor: _getBandColor(band.band),
+                          glowColor: _getBandColor(context, band.band),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -407,7 +398,7 @@ class _WifiBentoHeader extends StatelessWidget {
                               Text(
                                 band.label,
                                 style: GoogleFonts.orbitron(
-                                  color: _getBandColor(band.band),
+                                  color: _getBandColor(context, band.band),
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -416,7 +407,8 @@ class _WifiBentoHeader extends StatelessWidget {
                               Text(
                                 '${band.networkCount} NETWORKS',
                                 style: GoogleFonts.rajdhani(
-                                  color: AppColors.textPrimary,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -433,10 +425,10 @@ class _WifiBentoHeader extends StatelessWidget {
     );
   }
 
-  Color _getBandColor(WifiBand band) {
+  Color _getBandColor(BuildContext context, WifiBand band) {
     switch (band) {
       case WifiBand.ghz24:
-        return AppColors.neonCyan;
+        return Theme.of(context).colorScheme.primary;
       case WifiBand.ghz5:
         return AppColors.neonPurple;
       case WifiBand.ghz6:
@@ -453,9 +445,9 @@ class _WifiNetworkCard extends StatelessWidget {
 
   const _WifiNetworkCard({required this.network, required this.interfaceName});
 
-  Color get _signalColor {
+  Color getSignalColor(BuildContext context) {
     if (network.avgSignalDbm > -55) return AppColors.neonGreen;
-    if (network.avgSignalDbm > -70) return AppColors.neonCyan;
+    if (network.avgSignalDbm > -70) return Theme.of(context).colorScheme.primary;
     if (network.avgSignalDbm > -85) return AppColors.neonOrange;
     return AppColors.neonRed;
   }
@@ -464,10 +456,12 @@ class _WifiNetworkCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
+    final signalColor = getSignalColor(context);
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: NeonCard(
-        glowColor: _signalColor,
+        glowColor: signalColor,
         glowIntensity: 0.08,
         onTap: () {
           Navigator.of(context).push(
@@ -490,14 +484,14 @@ class _WifiNetworkCard extends StatelessWidget {
                       height: 42,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: _signalColor.withValues(alpha: 0.1),
+                        color: signalColor.withValues(alpha: 0.1),
                         border: Border.all(
-                          color: _signalColor.withValues(alpha: 0.2),
+                          color: signalColor.withValues(alpha: 0.2),
                           width: 1,
                         ),
                       ),
                     ),
-                    Icon(Icons.wifi_rounded, color: _signalColor, size: 20),
+                    Icon(Icons.wifi_rounded, color: signalColor, size: 20),
                     // High-tech signal bars
                     Positioned(
                       bottom: 4,
@@ -514,13 +508,13 @@ class _WifiNetworkCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(1),
                               color:
                                   isActive
-                                      ? _signalColor
-                                      : _signalColor.withValues(alpha: 0.1),
+                                      ? signalColor
+                                      : signalColor.withValues(alpha: 0.1),
                               boxShadow:
                                   isActive
                                       ? [
                                         BoxShadow(
-                                          color: _signalColor.withValues(
+                                          color: signalColor.withValues(
                                             alpha: 0.5,
                                           ),
                                           blurRadius: 4,
@@ -545,7 +539,7 @@ class _WifiNetworkCard extends StatelessWidget {
                                 : network.ssid)
                             .toUpperCase(),
                         style: GoogleFonts.orbitron(
-                          color: AppColors.textPrimary,
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                           letterSpacing: 1,
@@ -557,7 +551,7 @@ class _WifiNetworkCard extends StatelessWidget {
                       Text(
                         '${network.vendor.toUpperCase()} • ${network.bssid}',
                         style: GoogleFonts.rajdhani(
-                          color: AppColors.textMuted,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
@@ -573,17 +567,17 @@ class _WifiNetworkCard extends StatelessWidget {
                     NeonText(
                       '${network.avgSignalDbm}',
                       style: GoogleFonts.orbitron(
-                        color: _signalColor,
+                        color: signalColor,
                         fontWeight: FontWeight.w900,
                         fontSize: 18,
                       ),
-                      glowColor: _signalColor,
+                      glowColor: signalColor,
                       glowRadius: 6,
                     ),
                     Text(
                       'dBm',
                       style: GoogleFonts.rajdhani(
-                        color: _signalColor.withValues(alpha: 0.7),
+                        color: signalColor.withValues(alpha: 0.7),
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                       ),
@@ -596,7 +590,7 @@ class _WifiNetworkCard extends StatelessWidget {
             Container(
               height: 1,
               width: double.infinity,
-              color: AppColors.glassWhite.withValues(alpha: 0.05),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
             ),
             const SizedBox(height: 12),
             Row(
@@ -604,7 +598,7 @@ class _WifiNetworkCard extends StatelessWidget {
                 _MiniTechTag(
                   label: 'CH ${network.channel}',
                   icon: Icons.tag_rounded,
-                  color: AppColors.neonCyan,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 const SizedBox(width: 8),
                 _MiniTechTag(
@@ -628,7 +622,7 @@ class _WifiNetworkCard extends StatelessWidget {
                 Text(
                   'σ ${network.signalStdDev.toStringAsFixed(1)}',
                   style: GoogleFonts.rajdhani(
-                    color: AppColors.textMuted,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 11,
                     letterSpacing: 0.5,
                   ),
@@ -721,7 +715,7 @@ class _ErrorView extends StatelessWidget {
               message,
               textAlign: TextAlign.center,
               style: GoogleFonts.rajdhani(
-                color: AppColors.textSecondary,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 16,
               ),
             ),
@@ -786,7 +780,7 @@ class _ChannelRatingLink extends StatelessWidget {
                 Text(
                   'SPECTRUM OPTIMIZATION',
                   style: GoogleFonts.orbitron(
-                    color: AppColors.textPrimary,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1,
@@ -795,7 +789,7 @@ class _ChannelRatingLink extends StatelessWidget {
                 Text(
                   'Analyze channel congestion & interference',
                   style: GoogleFonts.rajdhani(
-                    color: AppColors.textMuted,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
                   ),
@@ -803,7 +797,7 @@ class _ChannelRatingLink extends StatelessWidget {
               ],
             ),
           ),
-          const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
+          const Icon(Icons.chevron_right_rounded, color: AppColors.neonPurple),
         ],
       ),
     );

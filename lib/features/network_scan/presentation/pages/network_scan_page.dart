@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/l10n/generated/app_localizations.dart';
 
 import '../../../../core/di/injection.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../domain/entities/host_scan_result.dart';
 
@@ -54,7 +53,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 child: NeonSectionHeader(
                   label: 'NETWORK RECON',
                   icon: Icons.radar_rounded,
-                  color: AppColors.neonCyan,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
               const SizedBox(height: 16),
@@ -93,7 +92,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                   child: NeonSectionHeader(
                     label: 'INTELLIGENCE REPORT',
                     icon: Icons.analytics_outlined,
-                    color: AppColors.neonPurple,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -111,7 +110,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                   child: NeonSectionHeader(
                     label: 'DISCOVERED ENDPOINTS',
                     icon: Icons.devices_rounded,
-                    color: AppColors.neonGreen,
+                    color: Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -170,8 +169,10 @@ class _ScanControlPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
+    final scheme = Theme.of(context).colorScheme;
+
     return NeonCard(
-      glowColor: AppColors.neonCyan,
+      glowColor: scheme.primary,
       glowIntensity: 0.06,
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -180,7 +181,7 @@ class _ScanControlPanel extends StatelessWidget {
           NeonText(
             l10n.lanReconTitle,
             style: GoogleFonts.orbitron(
-              color: AppColors.neonCyan,
+              color: scheme.primary,
               fontSize: 14,
               fontWeight: FontWeight.bold,
               letterSpacing: 2,
@@ -191,14 +192,14 @@ class _ScanControlPanel extends StatelessWidget {
           TextField(
             controller: controller,
             style: GoogleFonts.sourceCodePro(
-              color: AppColors.textPrimary,
+              color: Theme.of(context).colorScheme.onSurface,
               fontSize: 15,
             ),
             decoration: InputDecoration(
               labelText: l10n.targetSubnet,
               prefixIcon: Icon(
                 Icons.network_check_rounded,
-                color: AppColors.neonCyan.withValues(alpha: 0.6),
+                color: scheme.primary.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -210,17 +211,17 @@ class _ScanControlPanel extends StatelessWidget {
               child: InkWell(
                 onTap: isScanning ? null : onScan,
                 borderRadius: BorderRadius.circular(12),
-                splashColor: AppColors.neonCyan.withValues(alpha: 0.1),
+                splashColor: scheme.primary.withValues(alpha: 0.1),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     color:
                         isScanning
-                            ? AppColors.glassWhite
-                            : AppColors.neonCyan.withValues(alpha: 0.12),
+                            ? scheme.surfaceContainerHighest
+                            : scheme.primary.withValues(alpha: 0.12),
                     border: Border.all(
-                      color: AppColors.neonCyan.withValues(
+                      color: scheme.primary.withValues(
                         alpha: isScanning ? 0.1 : 0.3,
                       ),
                     ),
@@ -229,18 +230,18 @@ class _ScanControlPanel extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       if (isScanning)
-                        const SizedBox(
+                        SizedBox(
                           width: 16,
                           height: 16,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: AppColors.neonCyan,
+                            color: scheme.primary,
                           ),
                         )
                       else
-                        const Icon(
+                        Icon(
                           Icons.radar_rounded,
-                          color: AppColors.neonCyan,
+                          color: scheme.primary,
                           size: 20,
                         ),
                       const SizedBox(width: 10),
@@ -249,7 +250,7 @@ class _ScanControlPanel extends StatelessWidget {
                             ? l10n.analyzing.toUpperCase()
                             : l10n.scanAllCaps,
                         style: GoogleFonts.orbitron(
-                          color: AppColors.neonCyan,
+                          color: scheme.primary,
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 1.5,
@@ -272,6 +273,7 @@ class _ScanningIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24),
       alignment: Alignment.center,
@@ -285,16 +287,16 @@ class _ScanningIndicator extends StatelessWidget {
               children: [
                 const NetworkScannerRadar(isScanning: true),
                 NeonGlowBox(
-                  glowColor: AppColors.neonCyan,
+                  glowColor: scheme.primary,
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.neonCyan.withValues(alpha: 0.1),
+                      color: scheme.primary.withValues(alpha: 0.1),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.router_rounded,
-                      color: AppColors.neonCyan,
+                      color: scheme.primary,
                       size: 32,
                     ),
                   ),
@@ -306,7 +308,7 @@ class _ScanningIndicator extends StatelessWidget {
           Text(
             'ACTIVE NODE RECONNAISSANCE'.toUpperCase(),
             style: GoogleFonts.orbitron(
-              color: AppColors.neonCyan,
+              color: scheme.primary,
               fontSize: 14,
               fontWeight: FontWeight.bold,
               letterSpacing: 2,
@@ -316,7 +318,7 @@ class _ScanningIndicator extends StatelessWidget {
           Text(
             'Interrogating subnet for responsive hosts...',
             style: GoogleFonts.rajdhani(
-              color: AppColors.textMuted,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontSize: 14,
             ),
           ),
@@ -353,6 +355,7 @@ class _NetworkBentoHeader extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
+        final scheme = Theme.of(context).colorScheme;
         final double radarSize = constraints.maxWidth * 0.45;
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -366,11 +369,11 @@ class _NetworkBentoHeader extends StatelessWidget {
                 children: [
                   NetworkScannerRadar(
                     isScanning: false,
-                    color: AppColors.neonCyan,
+                    color: scheme.primary,
                   ),
                   Icon(
                     Icons.hub_rounded,
-                    color: AppColors.neonCyan.withValues(alpha: 0.5),
+                    color: scheme.primary.withValues(alpha: 0.5),
                     size: 24,
                   ),
                 ],
@@ -391,7 +394,7 @@ class _NetworkBentoHeader extends StatelessWidget {
                               label: 'Nodes',
                               value: '${devices.length}',
                               icon: Icons.devices_other_rounded,
-                              color: AppColors.neonCyan,
+                              color: scheme.primary,
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -402,8 +405,8 @@ class _NetworkBentoHeader extends StatelessWidget {
                               icon: Icons.gpp_maybe_rounded,
                               color:
                                   avgRisk > 5
-                                      ? AppColors.neonRed
-                                      : AppColors.neonGreen,
+                                      ? scheme.error
+                                      : scheme.tertiary,
                             ),
                           ),
                         ],
@@ -418,7 +421,7 @@ class _NetworkBentoHeader extends StatelessWidget {
                               label: 'Services',
                               value: '$totalServices',
                               icon: Icons.dns_rounded,
-                              color: AppColors.neonPurple,
+                              color: scheme.secondary,
                               subValue: 'OPEN PORTS',
                             ),
                           ),
@@ -431,7 +434,7 @@ class _NetworkBentoHeader extends StatelessWidget {
                                       ? target.replaceAll('.0/24', '')
                                       : target,
                               icon: Icons.lan_rounded,
-                              color: AppColors.neonOrange,
+                              color: scheme.outline,
                               subValue: 'CIDR TARGET',
                             ),
                           ),
@@ -525,10 +528,10 @@ class _DeviceCard extends StatelessWidget {
 
   const _DeviceCard({required this.host});
 
-  Color get _riskColor {
-    if (host.exposureScore > 7) return AppColors.neonRed;
-    if (host.exposureScore > 3) return AppColors.neonOrange;
-    return AppColors.neonGreen;
+  Color getRiskColor(BuildContext context) {
+    if (host.exposureScore > 7) return Theme.of(context).colorScheme.error;
+    if (host.exposureScore > 3) return Theme.of(context).colorScheme.outline;
+    return Theme.of(context).colorScheme.tertiary;
   }
 
   IconData get _deviceIcon {
@@ -562,10 +565,13 @@ class _DeviceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final riskColor = getRiskColor(context);
+    final scheme = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: NeonCard(
-        glowColor: _riskColor,
+        glowColor: riskColor,
         glowIntensity: 0.08,
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -578,13 +584,13 @@ class _DeviceCard extends StatelessWidget {
                   height: 44,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _riskColor.withValues(alpha: 0.1),
+                    color: riskColor.withValues(alpha: 0.1),
                     border: Border.all(
-                      color: _riskColor.withValues(alpha: 0.2),
+                      color: riskColor.withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),
-                  child: Icon(_deviceIcon, color: _riskColor, size: 20),
+                  child: Icon(_deviceIcon, color: riskColor, size: 20),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -596,7 +602,7 @@ class _DeviceCard extends StatelessWidget {
                             ? 'ANONYMOUS NODE'
                             : host.hostName.toUpperCase(),
                         style: GoogleFonts.orbitron(
-                          color: AppColors.textPrimary,
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 1,
@@ -608,7 +614,7 @@ class _DeviceCard extends StatelessWidget {
                       Text(
                         host.ip,
                         style: GoogleFonts.sourceCodePro(
-                          color: AppColors.neonCyan,
+                          color: scheme.primary,
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                         ),
@@ -623,7 +629,10 @@ class _DeviceCard extends StatelessWidget {
             Container(
               height: 1,
               width: double.infinity,
-              color: AppColors.glassWhite.withValues(alpha: 0.05),
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurface
+                  .withValues(alpha: 0.1),
             ),
             const SizedBox(height: 12),
             Row(
@@ -631,7 +640,7 @@ class _DeviceCard extends StatelessWidget {
                 _TechDetail(
                   label: host.mac.toUpperCase(),
                   icon: Icons.fingerprint_rounded,
-                  color: AppColors.textMuted,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 if (host.vendor.isNotEmpty) ...[
                   const SizedBox(width: 12),
@@ -639,7 +648,7 @@ class _DeviceCard extends StatelessWidget {
                     child: _TechDetail(
                       label: host.vendor.toUpperCase(),
                       icon: Icons.factory_rounded,
-                      color: AppColors.neonPurple,
+                      color: scheme.secondary,
                     ),
                   ),
                 ],
@@ -651,16 +660,16 @@ class _DeviceCard extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: _riskColor.withValues(alpha: 0.1),
+                      color: riskColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(4),
                       border: Border.all(
-                        color: _riskColor.withValues(alpha: 0.3),
+                        color: riskColor.withValues(alpha: 0.3),
                       ),
                     ),
                     child: Text(
                       '${host.services.length} PORTS',
                       style: GoogleFonts.orbitron(
-                        color: _riskColor,
+                        color: riskColor,
                         fontSize: 10,
                         fontWeight: FontWeight.w900,
                       ),
@@ -683,10 +692,13 @@ class _RiskIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final color =
         score > 7
-            ? AppColors.neonRed
-            : (score > 3 ? AppColors.neonOrange : AppColors.neonGreen);
+            ? scheme.error
+            : (score > 3
+                ? scheme.outline
+                : scheme.tertiary);
     return Column(
       children: [
         NeonText(
@@ -755,19 +767,20 @@ class _ErrorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return NeonCard(
-      glowColor: AppColors.neonRed,
+      glowColor: scheme.error,
       glowIntensity: 0.08,
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          Icon(Icons.error_outline_rounded, color: AppColors.neonRed, size: 24),
+          Icon(Icons.error_outline_rounded, color: scheme.error, size: 24),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               message,
               style: GoogleFonts.rajdhani(
-                color: AppColors.textSecondary,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 14,
               ),
             ),

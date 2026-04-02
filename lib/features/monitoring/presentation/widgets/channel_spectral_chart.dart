@@ -25,7 +25,7 @@ class ChannelSpectralChart extends StatelessWidget {
         color:
             isDark
                 ? const Color(0xFF0F172A)
-                : Theme.of(context).colorScheme.surface,
+                : Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: onSurface.withValues(alpha: 0.12)),
       ),
@@ -36,13 +36,17 @@ class ChannelSpectralChart extends StatelessWidget {
           minY: 0,
           barTouchData: BarTouchData(
             touchTooltipData: BarTouchTooltipData(
-              getTooltipColor: (_) => const Color(0xFF1E293B),
+              getTooltipColor:
+                  (_) =>
+                      isDark
+                          ? const Color(0xFF1E293B)
+                          : Theme.of(context).colorScheme.surface,
               getTooltipItem: (group, groupIndex, rod, rodIndex) {
                 final rating = ratings[groupIndex];
                 return BarTooltipItem(
                   'CH ${rating.channel}\n',
-                  const TextStyle(
-                    color: Colors.white,
+                  TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.bold,
                   ),
                   children: [

@@ -1,15 +1,14 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_theme.dart';
 
 class NetworkScannerRadar extends StatefulWidget {
   final bool isScanning;
-  final Color color;
+  final Color? color;
 
   const NetworkScannerRadar({
     super.key,
     required this.isScanning,
-    this.color = AppColors.neonCyan,
+    this.color,
   });
 
   @override
@@ -48,6 +47,8 @@ class _NetworkScannerRadarState extends State<NetworkScannerRadar>
 
   @override
   Widget build(BuildContext context) {
+    final effectiveColor = widget.color ?? Theme.of(context).colorScheme.primary;
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -55,7 +56,7 @@ class _NetworkScannerRadarState extends State<NetworkScannerRadar>
           size: Size.infinite,
           painter: _NetworkRadarPainter(
             scanProgress: _controller.value,
-            color: widget.color,
+            color: effectiveColor,
             isScanning: widget.isScanning,
           ),
         );

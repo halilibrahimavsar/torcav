@@ -32,6 +32,17 @@ class AppColors {
   static const Color textSecondary = Color(0xFF98A2B3);
   static const Color textMuted = Color(0xFF667085);
 
+  // ── Light Mode Tokens (Solar-Aero Aesthetic) ──
+  static const Color lightBg = Color(0xFFF5F7FA);
+  static const Color lightSurface = Color(0xFFFFFFFF);
+  static const Color lightSurfaceSecondary = Color(0xFFE9F0F6);
+  static const Color lightSurfaceTertiary = Color(0xFFD3DFEA);
+  static const Color lightGlassBorder = Color(0x3300F5FF); // Hint of Cyan glow
+  
+  static const Color textPrimaryLight = Color(0xFF0F172A);
+  static const Color textSecondaryLight = Color(0xFF334155);
+  static const Color textMutedLight = Color(0xFF64748B);
+
   // ── Glow Tiers ──
   static final Map<GlowTier, List<BoxShadow> Function(Color)> glowTiers = {
     GlowTier.low:
@@ -104,7 +115,7 @@ class AppTheme {
   static const Color errorColor = AppColors.neonRed;
 
   // ─────────────────────────────────────────────────────────────────
-  //  DARK THEME (only theme — neon UI is dark-only)
+  //  DARK THEME
   // ─────────────────────────────────────────────────────────────────
   static ThemeData get darkTheme {
     const scheme = ColorScheme.dark(
@@ -124,13 +135,13 @@ class AppTheme {
       colorScheme: scheme,
       brightness: Brightness.dark,
       scaffoldBackgroundColor: AppColors.deepBlack,
-      textTheme: _textTheme(),
+      textTheme: _textTheme(scheme),
       fontFamily: GoogleFonts.outfit().fontFamily,
-      appBarTheme: _appBarTheme(),
-      inputDecorationTheme: _inputDecorationTheme(),
-      cardTheme: _cardTheme(),
-      snackBarTheme: _snackBarTheme(),
-      navigationBarTheme: _navigationBarTheme(),
+      appBarTheme: _appBarTheme(scheme),
+      inputDecorationTheme: _inputDecorationTheme(scheme),
+      cardTheme: _cardTheme(scheme),
+      snackBarTheme: _snackBarTheme(scheme),
+      navigationBarTheme: _navigationBarTheme(scheme),
       dividerTheme: const DividerThemeData(
         color: AppColors.glassWhiteBorder,
         thickness: 0.5,
@@ -208,73 +219,181 @@ class AppTheme {
     );
   }
 
-  // Keep lightTheme returning dark as well — neon is dark-only.
-  static ThemeData get lightTheme => darkTheme;
+  // ─────────────────────────────────────────────────────────────────
+  //  LIGHT THEME
+  // ─────────────────────────────────────────────────────────────────
+  static ThemeData get lightTheme {
+    const scheme = ColorScheme.light(
+      primary: AppColors.neonCyan,
+      secondary: AppColors.neonPurple,
+      tertiary: AppColors.neonGreen,
+      surface: AppColors.lightSurface,
+      error: AppColors.neonRed,
+      onPrimary: Colors.white,
+      onSecondary: Colors.white,
+      onSurface: AppColors.textPrimaryLight,
+      onError: Colors.white,
+      surfaceContainerHighest: AppColors.lightSurfaceSecondary,
+    );
+
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: scheme,
+      brightness: Brightness.light,
+      scaffoldBackgroundColor: AppColors.lightBg,
+      textTheme: _textTheme(scheme),
+      fontFamily: GoogleFonts.outfit().fontFamily,
+      appBarTheme: _appBarTheme(scheme),
+      inputDecorationTheme: _inputDecorationTheme(scheme),
+      cardTheme: _cardTheme(scheme),
+      snackBarTheme: _snackBarTheme(scheme),
+      navigationBarTheme: _navigationBarTheme(scheme),
+      dividerTheme: const DividerThemeData(
+        color: AppColors.lightGlassBorder,
+        thickness: 0.5,
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: AppColors.lightSurface,
+        elevation: 20,
+        shadowColor: AppColors.neonCyan.withValues(alpha: 0.1),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+          side: BorderSide(color: AppColors.neonCyan.withValues(alpha: 0.15)),
+        ),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: AppColors.neonCyan,
+        foregroundColor: AppColors.deepBlack,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        elevation: 8,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.neonCyan,
+          foregroundColor: Colors.white,
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          textStyle: GoogleFonts.orbitron(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+            letterSpacing: 1,
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.neonCyan,
+          textStyle: GoogleFonts.outfit(
+            fontWeight: FontWeight.w600,
+            fontSize: 15,
+          ),
+        ),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          return states.contains(WidgetState.selected)
+              ? AppColors.neonCyan
+              : AppColors.textMutedLight;
+        }),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          return states.contains(WidgetState.selected)
+              ? AppColors.neonCyan.withValues(alpha: 0.3)
+              : Colors.black12;
+        }),
+      ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: AppColors.neonCyan,
+        linearTrackColor: Colors.black12,
+      ),
+      tabBarTheme: TabBarThemeData(
+        indicatorColor: AppColors.neonCyan,
+        labelColor: AppColors.neonCyan,
+        unselectedLabelColor: AppColors.textMutedLight,
+        dividerColor: Colors.transparent,
+        labelStyle: GoogleFonts.orbitron(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1.2,
+        ),
+        unselectedLabelStyle: GoogleFonts.orbitron(
+          fontSize: 12,
+          letterSpacing: 1,
+        ),
+      ),
+    );
+  }
 
   // ─────────────────────────────────────────────────────────────────
   //  Sub-Themes
   // ─────────────────────────────────────────────────────────────────
 
-  static AppBarTheme _appBarTheme() {
+  static AppBarTheme _appBarTheme(ColorScheme scheme) {
     return AppBarTheme(
       backgroundColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
-      foregroundColor: AppColors.neonCyan,
+      foregroundColor: scheme.primary,
       centerTitle: true,
       titleTextStyle: GoogleFonts.orbitron(
-        color: AppColors.neonCyan,
+        color: scheme.primary,
         fontSize: 18,
         fontWeight: FontWeight.w800,
         letterSpacing: 4,
       ),
       iconTheme: IconThemeData(
-        color: AppColors.neonCyan.withValues(alpha: 0.9),
+        color: scheme.primary.withValues(alpha: 0.9),
       ),
     );
   }
 
-  static CardThemeData _cardTheme() {
+  static CardThemeData _cardTheme(ColorScheme scheme) {
+    final isDark = scheme.brightness == Brightness.dark;
     return CardThemeData(
-      color: AppColors.darkSurface,
+      color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
       elevation: 0,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        side: BorderSide(color: AppColors.neonCyan.withValues(alpha: 0.12)),
+        side: BorderSide(color: scheme.primary.withValues(alpha: 0.12)),
       ),
     );
   }
 
-  static SnackBarThemeData _snackBarTheme() {
+  static SnackBarThemeData _snackBarTheme(ColorScheme scheme) {
+    final isDark = scheme.brightness == Brightness.dark;
     return SnackBarThemeData(
-      backgroundColor: AppColors.darkSurfaceLight,
-      contentTextStyle: GoogleFonts.outfit(color: Colors.white, fontSize: 16),
+      backgroundColor: isDark ? AppColors.darkSurfaceLight : AppColors.lightSurfaceSecondary,
+      contentTextStyle: GoogleFonts.outfit(color: scheme.onSurface, fontSize: 16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: AppColors.neonCyan.withValues(alpha: 0.2)),
+        side: BorderSide(color: scheme.primary.withValues(alpha: 0.2)),
       ),
       behavior: SnackBarBehavior.floating,
     );
   }
 
-  static NavigationBarThemeData _navigationBarTheme() {
+  static NavigationBarThemeData _navigationBarTheme(ColorScheme scheme) {
+    final isDark = scheme.brightness == Brightness.dark;
+    final mutedText = isDark ? AppColors.textMuted : AppColors.textMutedLight;
+
     return NavigationBarThemeData(
       backgroundColor: Colors.transparent,
       elevation: 0,
       height: 72,
-      indicatorColor: AppColors.neonCyan.withValues(alpha: 0.08),
+      indicatorColor: scheme.primary.withValues(alpha: 0.08),
       iconTheme: WidgetStateProperty.resolveWith((states) {
         final selected = states.contains(WidgetState.selected);
         return IconThemeData(
-          color: selected ? AppColors.neonCyan : AppColors.textMuted,
+          color: selected ? scheme.primary : mutedText,
           size: selected ? 28 : 24,
         );
       }),
       labelTextStyle: WidgetStateProperty.resolveWith((states) {
         final selected = states.contains(WidgetState.selected);
         return GoogleFonts.orbitron(
-          color: selected ? AppColors.neonCyan : AppColors.textMuted,
+          color: selected ? scheme.primary : mutedText,
           fontSize: 10,
           fontWeight: selected ? FontWeight.bold : FontWeight.w500,
           letterSpacing: 1,
@@ -283,86 +402,96 @@ class AppTheme {
     );
   }
 
-  static InputDecorationTheme _inputDecorationTheme() {
+  static InputDecorationTheme _inputDecorationTheme(ColorScheme scheme) {
+    final isDark = scheme.brightness == Brightness.dark;
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: BorderSide(color: AppColors.neonCyan.withValues(alpha: 0.15)),
+      borderSide: BorderSide(color: scheme.primary.withValues(alpha: 0.15)),
     );
 
     return InputDecorationTheme(
       filled: true,
-      fillColor: AppColors.darkSurface,
+      fillColor: isDark ? AppColors.darkSurface : AppColors.lightBg,
       border: border,
       enabledBorder: border,
       focusedBorder: border.copyWith(
         borderSide: BorderSide(
-          color: AppColors.neonCyan.withValues(alpha: 0.5),
+          color: scheme.primary.withValues(alpha: 0.5),
           width: 1.5,
         ),
       ),
-      labelStyle: GoogleFonts.outfit(color: AppColors.textSecondary),
-      hintStyle: GoogleFonts.outfit(color: AppColors.textMuted),
+      labelStyle: GoogleFonts.outfit(
+        color: isDark ? AppColors.textSecondary : AppColors.textSecondaryLight,
+      ),
+      hintStyle: GoogleFonts.outfit(
+        color: isDark ? AppColors.textMuted : AppColors.textMutedLight,
+      ),
     );
   }
 
   // ─────────────────────────────────────────────────────────────────
   //  Text Theme (Modernizing with Orbitron + Outfit)
   // ─────────────────────────────────────────────────────────────────
-  static TextTheme _textTheme() {
+  static TextTheme _textTheme(ColorScheme scheme) {
+    final isDark = scheme.brightness == Brightness.dark;
+    final primaryText = isDark ? AppColors.textPrimary : AppColors.textPrimaryLight;
+    final secondaryText = isDark ? AppColors.textSecondary : AppColors.textSecondaryLight;
+    final mutedText = isDark ? AppColors.textMuted : AppColors.textMutedLight;
+
     return TextTheme(
       headlineLarge: GoogleFonts.orbitron(
         fontSize: 32,
         fontWeight: FontWeight.w900,
-        color: AppColors.textPrimary,
+        color: primaryText,
         letterSpacing: -0.5,
       ),
       headlineMedium: GoogleFonts.orbitron(
         fontSize: 24,
         fontWeight: FontWeight.w800,
-        color: AppColors.textPrimary,
+        color: primaryText,
       ),
       headlineSmall: GoogleFonts.orbitron(
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        color: AppColors.textPrimary,
+        color: primaryText,
       ),
       titleLarge: GoogleFonts.orbitron(
         fontSize: 18,
         fontWeight: FontWeight.w700,
-        color: AppColors.neonCyan,
+        color: scheme.primary,
         letterSpacing: 1.5,
       ),
       titleMedium: GoogleFonts.outfit(
         fontSize: 18,
         fontWeight: FontWeight.w700,
-        color: AppColors.textPrimary,
+        color: primaryText,
       ),
       titleSmall: GoogleFonts.outfit(
         fontSize: 16,
         fontWeight: FontWeight.w600,
-        color: AppColors.textPrimary,
+        color: primaryText,
       ),
       bodyLarge: GoogleFonts.outfit(
         fontSize: 18,
-        color: AppColors.textPrimary,
+        color: primaryText,
         height: 1.5,
       ),
       bodyMedium: GoogleFonts.outfit(
         fontSize: 16,
-        color: AppColors.textSecondary,
+        color: secondaryText,
         height: 1.5,
       ),
-      bodySmall: GoogleFonts.outfit(fontSize: 14, color: AppColors.textMuted),
+      bodySmall: GoogleFonts.outfit(fontSize: 14, color: mutedText),
       labelLarge: GoogleFonts.orbitron(
         fontSize: 13,
         fontWeight: FontWeight.bold,
-        color: AppColors.neonCyan,
+        color: scheme.primary,
         letterSpacing: 2,
       ),
       labelSmall: GoogleFonts.outfit(
         fontSize: 11,
         fontWeight: FontWeight.w600,
-        color: AppColors.textMuted,
+        color: mutedText,
         letterSpacing: 1,
       ),
     );

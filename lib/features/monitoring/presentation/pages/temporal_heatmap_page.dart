@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../core/theme/app_theme.dart';
 import '../bloc/heatmap_bloc.dart';
 
 class TemporalHeatmapPage extends StatelessWidget {
@@ -49,8 +48,8 @@ class TemporalHeatmapPage extends StatelessWidget {
                     final normalized = ((strength + 100) / 70).clamp(0.0, 1.0);
                     final color =
                         Color.lerp(
-                          Colors.redAccent,
-                          AppTheme.primaryColor,
+                          Theme.of(context).colorScheme.error,
+                          Theme.of(context).colorScheme.primary,
                           normalized,
                         )!;
 

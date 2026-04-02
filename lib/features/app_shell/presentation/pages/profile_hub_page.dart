@@ -5,7 +5,6 @@ import 'package:network_info_plus/network_info_plus.dart';
 import 'package:torcav/l10n/generated/app_localizations.dart';
 
 import '../../../../core/di/injection.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/theme/theme_cubit.dart';
 import '../../../wifi_scan/domain/entities/scan_snapshot.dart';
@@ -73,7 +72,7 @@ class _ProfileHubPageState extends State<ProfileHubPage> {
             title: NeonText(
               l10n.profileTitle.toUpperCase(),
               style: GoogleFonts.orbitron(
-                color: AppColors.neonCyan,
+                color: Theme.of(context).colorScheme.primary,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 2,
@@ -95,28 +94,28 @@ class _ProfileHubPageState extends State<ProfileHubPage> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: AppColors.neonCyan.withValues(alpha: 0.5),
+                            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
                             width: 2,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.neonCyan.withValues(alpha: 0.2),
+                              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
                               blurRadius: 20,
                               spreadRadius: 2,
                             ),
                           ],
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.account_circle_outlined,
                           size: 80,
-                          color: AppColors.neonCyan,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                       const SizedBox(height: 16),
                       NeonText(
                         'TORCAV',
                         style: GoogleFonts.orbitron(
-                          color: AppColors.neonCyan,
+                          color: Theme.of(context).colorScheme.primary,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 3,
@@ -126,7 +125,7 @@ class _ProfileHubPageState extends State<ProfileHubPage> {
                       Text(
                         statusLabel,
                         style: GoogleFonts.outfit(
-                          color: AppColors.textMuted,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontSize: 12,
                           letterSpacing: 1.5,
                         ),
@@ -224,7 +223,10 @@ class _ProfileHubPageState extends State<ProfileHubPage> {
     if (latestSnapshot == null) {
       return Text(
         l10n.noSnapshotAvailable,
-        style: GoogleFonts.outfit(color: AppColors.textMuted, fontSize: 14),
+        style: GoogleFonts.outfit(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          fontSize: 14,
+        ),
       );
     }
 
@@ -257,11 +259,11 @@ class _ProfileHubPageState extends State<ProfileHubPage> {
           width: 4,
           height: 16,
           decoration: BoxDecoration(
-            color: AppColors.neonCyan,
+            color: Theme.of(context).colorScheme.primary,
             borderRadius: BorderRadius.circular(2),
             boxShadow: [
               BoxShadow(
-                color: AppColors.neonCyan.withValues(alpha: 0.5),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
                 blurRadius: 4,
               ),
             ],
@@ -271,7 +273,7 @@ class _ProfileHubPageState extends State<ProfileHubPage> {
         Text(
           title.toUpperCase(),
           style: GoogleFonts.orbitron(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.onSurface,
             fontSize: 13,
             fontWeight: FontWeight.bold,
             letterSpacing: 1.5,
@@ -287,14 +289,15 @@ class _ProfileHubPageState extends State<ProfileHubPage> {
     String value,
     IconData icon,
   ) {
+    final mutedColor = Theme.of(context).colorScheme.onSurfaceVariant;
     return Row(
       children: [
-        Icon(icon, size: 18, color: AppColors.textMuted),
+        Icon(icon, size: 18, color: mutedColor),
         const SizedBox(width: 12),
         Expanded(
           child: Text(
             label,
-            style: GoogleFonts.outfit(color: AppColors.textMuted, fontSize: 14),
+            style: GoogleFonts.outfit(color: mutedColor, fontSize: 14),
           ),
         ),
         const SizedBox(width: 12),
@@ -303,7 +306,7 @@ class _ProfileHubPageState extends State<ProfileHubPage> {
             value,
             textAlign: TextAlign.end,
             style: GoogleFonts.outfit(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onSurface,
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),

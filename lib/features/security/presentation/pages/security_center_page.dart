@@ -4,7 +4,6 @@ import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/di/injection.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../bloc/security_bloc.dart';
 import '../../domain/entities/known_network.dart';
@@ -58,16 +57,16 @@ class _SecurityCenterView extends StatelessWidget {
                 child: NeonSectionHeader(
                   label: l10n.knownNetworks,
                   icon: Icons.verified_user_rounded,
-                  color: AppColors.neonGreen,
+                  color: Theme.of(context).colorScheme.tertiary,
                 ),
               ),
               const SizedBox(height: 12),
               if (state is SecurityLoaded)
-                _buildKnownNetworks(state.knownNetworks, l10n)
+                _buildKnownNetworks(context, state.knownNetworks, l10n)
               else if (state is SecurityLoading)
-                _buildLoading()
+                _buildLoading(context)
               else
-                _emptyBox(l10n.noKnownNetworksYet),
+                _emptyBox(context, l10n.noKnownNetworksYet),
               const SizedBox(height: 24),
 
               // ── Security Timeline ──
@@ -76,14 +75,14 @@ class _SecurityCenterView extends StatelessWidget {
                 child: NeonSectionHeader(
                   label: l10n.securityTimeline,
                   icon: Icons.history_rounded,
-                  color: AppColors.neonCyan,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
               const SizedBox(height: 12),
               if (state is SecurityLoaded)
-                _buildSecurityTimeline(state.recentEvents, l10n)
+                _buildSecurityTimeline(context, state.recentEvents, l10n)
               else
-                _emptyBox(l10n.noSecurityEvents),
+                _emptyBox(context, l10n.noSecurityEvents),
             ],
           );
         },
@@ -91,24 +90,25 @@ class _SecurityCenterView extends StatelessWidget {
     );
   }
 
-  Widget _buildLoading() {
-    return const Padding(
-      padding: EdgeInsets.all(20),
+  Widget _buildLoading(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20),
       child: Center(
         child: CircularProgressIndicator(
           strokeWidth: 2,
-          color: AppColors.neonCyan,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
     );
   }
 
   Widget _buildKnownNetworks(
+    BuildContext context,
     List<KnownNetwork> networks,
     AppLocalizations l10n,
   ) {
     if (networks.isEmpty) {
-      return _emptyBox(l10n.noKnownNetworksYet);
+      return _emptyBox(context, l10n.noKnownNetworksYet);
     }
     return Column(
       children: networks.map((net) => _NetworkCard(network: net)).toList(),
@@ -116,10 +116,11 @@ class _SecurityCenterView extends StatelessWidget {
   }
 
   Widget _buildSecurityTimeline(
+    BuildContext context,
     List<domain_event.SecurityEvent> events,
     AppLocalizations l10n,
   ) {
-    if (events.isEmpty) return _emptyBox(l10n.noSecurityEvents);
+    if (events.isEmpty) return _emptyBox(context, l10n.noSecurityEvents);
     return Column(
       children:
           events.reversed
@@ -129,15 +130,18 @@ class _SecurityCenterView extends StatelessWidget {
     );
   }
 
-  Widget _emptyBox(String text) {
+  Widget _emptyBox(BuildContext context, String text) {
     return NeonCard(
-      glowColor: AppColors.neonCyan,
+      glowColor: Theme.of(context).colorScheme.primary,
       glowIntensity: 0.02,
       padding: const EdgeInsets.all(20),
       child: Center(
         child: Text(
           text,
-          style: GoogleFonts.rajdhani(color: AppColors.textMuted, fontSize: 14),
+          style: GoogleFonts.rajdhani(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            fontSize: 14,
+          ),
         ),
       ),
     );
@@ -152,10 +156,11 @@ class _NetworkCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tertiaryColor = Theme.of(context).colorScheme.tertiary;
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: NeonCard(
-        glowColor: AppColors.neonGreen,
+        glowColor: tertiaryColor,
         glowIntensity: 0.04,
         padding: const EdgeInsets.all(12),
         child: Row(
@@ -165,20 +170,20 @@ class _NetworkCard extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.neonGreen.withValues(alpha: 0.1),
+                color: tertiaryColor.withValues(alpha: 0.1),
                 border: Border.all(
-                  color: AppColors.neonGreen.withValues(alpha: 0.2),
+                  color: tertiaryColor.withValues(alpha: 0.2),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.neonGreen.withValues(alpha: 0.15),
+                    color: tertiaryColor.withValues(alpha: 0.15),
                     blurRadius: 12,
                   ),
                 ],
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.verified_user_rounded,
-                color: AppColors.neonGreen,
+                color: tertiaryColor,
                 size: 20,
               ),
             ),
@@ -190,7 +195,7 @@ class _NetworkCard extends StatelessWidget {
                   Text(
                     network.ssid.toUpperCase(),
                     style: GoogleFonts.orbitron(
-                      color: AppColors.textPrimary,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
                       letterSpacing: 1,
@@ -200,7 +205,7 @@ class _NetworkCard extends StatelessWidget {
                   Text(
                     network.bssid,
                     style: GoogleFonts.sourceCodePro(
-                      color: AppColors.textMuted,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       fontSize: 11,
                     ),
                   ),
@@ -212,16 +217,16 @@ class _NetworkCard extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(
-                  color: AppColors.neonGreen.withValues(alpha: 0.3),
+                  color: tertiaryColor.withValues(alpha: 0.3),
                 ),
-                color: AppColors.neonGreen.withValues(alpha: 0.05),
+                color: tertiaryColor.withValues(alpha: 0.05),
               ),
               child: Text(
                 'TRUSTED',
                 style: GoogleFonts.orbitron(
                   fontSize: 10,
                   fontWeight: FontWeight.w900,
-                  color: AppColors.neonGreen,
+                  color: tertiaryColor,
                   letterSpacing: 0.5,
                 ),
               ),
@@ -240,19 +245,20 @@ class _EventCard extends StatelessWidget {
   final AppLocalizations l10n;
   const _EventCard({required this.event, required this.l10n});
 
-  Color get _severityColor {
+  Color _severityColor(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     switch (event.severity) {
       case domain_event.SecurityEventSeverity.critical:
-        return AppColors.neonRed;
+        return scheme.error;
       case domain_event.SecurityEventSeverity.high:
-        return AppColors.neonOrange;
+        return scheme.outline;
       case domain_event.SecurityEventSeverity.medium:
-        return AppColors.neonCyan;
+        return scheme.primary;
       case domain_event.SecurityEventSeverity.warning:
-        return const Color(0xFFFFE066);
+        return const Color(0xFFFFB300); // Amber 600 for visibility
       case domain_event.SecurityEventSeverity.low:
       case domain_event.SecurityEventSeverity.info:
-        return AppColors.neonCyan;
+        return scheme.primary;
     }
   }
 
@@ -278,10 +284,11 @@ class _EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final severityColor = _severityColor(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: NeonCard(
-        glowColor: _severityColor,
+        glowColor: severityColor,
         glowIntensity: 0.04,
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -289,18 +296,18 @@ class _EventCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(_icon, color: _severityColor, size: 16),
+                Icon(_icon, color: severityColor, size: 16),
                 const SizedBox(width: 8),
                 Flexible(
                   child: NeonText(
                     '${event.type.name.replaceAll(RegExp(r'(?=[A-Z])'), ' ').toUpperCase()} • ${event.severity.name.toUpperCase()}',
                     style: GoogleFonts.orbitron(
-                      color: _severityColor,
+                      color: severityColor,
                       fontSize: 9,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.5,
                     ),
-                    glowColor: _severityColor,
+                    glowColor: severityColor,
                     glowRadius: 3,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
@@ -310,7 +317,7 @@ class _EventCard extends StatelessWidget {
                 Text(
                   '${event.timestamp.hour.toString().padLeft(2, '0')}:${event.timestamp.minute.toString().padLeft(2, '0')}',
                   style: GoogleFonts.rajdhani(
-                    color: AppColors.textMuted,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                   ),
@@ -324,11 +331,11 @@ class _EventCard extends StatelessWidget {
                   width: 2,
                   height: 30,
                   decoration: BoxDecoration(
-                    color: _severityColor,
+                    color: severityColor,
                     borderRadius: BorderRadius.circular(2),
                     boxShadow: [
                       BoxShadow(
-                        color: _severityColor.withValues(alpha: 0.5),
+                        color: severityColor.withValues(alpha: 0.5),
                         blurRadius: 4,
                       ),
                     ],
@@ -342,7 +349,7 @@ class _EventCard extends StatelessWidget {
                       Text(
                         '${event.ssid.isEmpty ? l10n.hiddenNetwork : event.ssid} (${event.bssid})',
                         style: GoogleFonts.rajdhani(
-                          color: AppColors.textPrimary,
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
                         ),
@@ -352,7 +359,7 @@ class _EventCard extends StatelessWidget {
                       Text(
                         event.evidence,
                         style: GoogleFonts.rajdhani(
-                          color: AppColors.textSecondary,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontSize: 12,
                         ),
                         maxLines: 2,
@@ -381,6 +388,9 @@ class _SecurityCenterBentoHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isSecure = state is! SecurityLoading;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final outlineColor = Theme.of(context).colorScheme.outline;
+    final activeColor = isSecure ? primaryColor : outlineColor;
 
     return SizedBox(
       height: 200,
@@ -391,7 +401,7 @@ class _SecurityCenterBentoHeader extends StatelessWidget {
           Expanded(
             flex: 6,
             child: NeonCard(
-              glowColor: isSecure ? AppColors.neonCyan : AppColors.neonOrange,
+              glowColor: activeColor,
               glowIntensity: 0.12,
               padding: const EdgeInsets.all(24),
               child: Column(
@@ -400,17 +410,14 @@ class _SecurityCenterBentoHeader extends StatelessWidget {
                     child: SecurityStatusRadar(
                       score: 0.94,
                       isScanning: state is SecurityLoading,
-                      color:
-                          isSecure ? AppColors.neonCyan : AppColors.neonOrange,
+                      color: activeColor,
                     ),
                   ),
                   const SizedBox(height: 16),
                   NeonText(
-                    (isSecure ? l10n.shieldActive : l10n.scanning)
-                        .toUpperCase(),
+                    (isSecure ? l10n.shieldActive : l10n.scanning).toUpperCase(),
                     style: GoogleFonts.orbitron(
-                      color:
-                          isSecure ? AppColors.neonCyan : AppColors.neonOrange,
+                      color: activeColor,
                       fontSize: 14,
                       fontWeight: FontWeight.w900,
                       letterSpacing: 3,
@@ -429,7 +436,7 @@ class _SecurityCenterBentoHeader extends StatelessWidget {
               label: l10n.riskScore.toUpperCase(),
               value: '94%',
               icon: Icons.speed_rounded,
-              color: AppColors.neonCyan,
+              color: primaryColor,
             ),
           ),
         ],
@@ -466,7 +473,7 @@ class _BentoStatTile extends StatelessWidget {
           Text(
             label,
             style: GoogleFonts.rajdhani(
-              color: AppColors.textMuted,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontSize: 10,
               fontWeight: FontWeight.bold,
               letterSpacing: 1,

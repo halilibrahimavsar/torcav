@@ -33,7 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
         title: NeonText(
           l10n.settingsTitle,
           style: GoogleFonts.orbitron(
-            color: AppColors.neonCyan,
+            color: Theme.of(context).colorScheme.primary,
             fontSize: 16,
             fontWeight: FontWeight.bold,
             letterSpacing: 2,
@@ -50,7 +50,7 @@ class _SettingsPageState extends State<SettingsPage> {
             child: NeonSectionHeader(
               label: l10n.appearance,
               icon: Icons.palette_rounded,
-              color: AppColors.neonPurple,
+              color: Theme.of(context).colorScheme.secondary,
             ),
           ),
           const SizedBox(height: 12),
@@ -61,7 +61,7 @@ class _SettingsPageState extends State<SettingsPage> {
             child: BlocBuilder<LocaleCubit, Locale>(
               builder: (context, locale) {
                 return NeonCard(
-                  glowColor: AppColors.neonPurple,
+                  glowColor: Theme.of(context).colorScheme.secondary,
                   glowIntensity: 0.04,
                   onTap: () => _showLanguageDialog(context),
                   padding: const EdgeInsets.all(14),
@@ -69,7 +69,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     children: [
                       _NeonIconCircle(
                         icon: Icons.language_rounded,
-                        color: AppColors.neonPurple,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -79,7 +79,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             Text(
                               l10n.settingsLanguage,
                               style: GoogleFonts.rajdhani(
-                                color: AppColors.textPrimary,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -87,7 +87,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             Text(
                               _getLanguageName(locale.languageCode),
                               style: GoogleFonts.rajdhani(
-                                color: AppColors.textMuted,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 fontSize: 13,
                               ),
                             ),
@@ -96,7 +96,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       Icon(
                         Icons.chevron_right_rounded,
-                        color: AppColors.neonPurple.withValues(alpha: 0.4),
+                        color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.4),
                         size: 20,
                       ),
                     ],
@@ -111,7 +111,7 @@ class _SettingsPageState extends State<SettingsPage> {
           StaggeredEntry(
             delay: const Duration(milliseconds: 200),
             child: NeonCard(
-              glowColor: AppColors.neonCyan,
+              glowColor: Theme.of(context).colorScheme.primary,
               glowIntensity: 0.04,
               padding: const EdgeInsets.all(14),
               child: ValueListenableBuilder<ThemeMode>(
@@ -124,7 +124,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             mode == ThemeMode.dark
                                 ? Icons.dark_mode_rounded
                                 : Icons.light_mode_rounded,
-                        color: AppColors.neonCyan,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -134,7 +134,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             Text(
                               l10n.theme,
                               style: GoogleFonts.rajdhani(
-                                color: AppColors.textPrimary,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -142,7 +142,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             Text(
                               _getThemeName(mode, l10n),
                               style: GoogleFonts.rajdhani(
-                                color: AppColors.textMuted,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 fontSize: 13,
                               ),
                             ),
@@ -164,14 +164,14 @@ class _SettingsPageState extends State<SettingsPage> {
             child: NeonSectionHeader(
               label: l10n.settingsScanBehavior.toUpperCase(),
               icon: Icons.tune_rounded,
-              color: AppColors.neonGreen,
+              color: Theme.of(context).colorScheme.tertiary,
             ),
           ),
           const SizedBox(height: 12),
           StaggeredEntry(
             delay: const Duration(milliseconds: 350),
             child: NeonCard(
-              glowColor: AppColors.neonGreen,
+              glowColor: Theme.of(context).colorScheme.tertiary,
               glowIntensity: 0.04,
               padding: const EdgeInsets.all(14),
               child: Column(
@@ -184,14 +184,17 @@ class _SettingsPageState extends State<SettingsPage> {
                     max: 6,
                     divisions: 5,
                     displayValue: '${settings.defaultScanPasses}',
-                    color: AppColors.neonCyan,
+                    color: Theme.of(context).colorScheme.primary,
                     onChanged: (value) {
                       _update(
                         settings.copyWith(defaultScanPasses: value.round()),
                       );
                     },
                   ),
-                  const Divider(color: AppColors.glassWhite, height: 24),
+                  Divider(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                    height: 24,
+                  ),
                   // Interval Slider
                   _NeonSliderTile(
                     label: l10n.settingsMonitoringInterval,
@@ -200,18 +203,21 @@ class _SettingsPageState extends State<SettingsPage> {
                     max: 30,
                     divisions: 14,
                     displayValue: '${settings.scanIntervalSeconds}s',
-                    color: AppColors.neonPurple,
+                    color: Theme.of(context).colorScheme.secondary,
                     onChanged: (value) {
                       _update(
                         settings.copyWith(scanIntervalSeconds: value.round()),
                       );
                     },
                   ),
-                  const Divider(color: AppColors.glassWhite, height: 24),
+                  Divider(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                    height: 24,
+                  ),
                   // Backend
                   DropdownButtonFormField<WifiBackendPreference>(
                     value: settings.defaultBackendPreference,
-                    dropdownColor: AppColors.darkSurface,
+                    dropdownColor: Theme.of(context).colorScheme.surfaceContainerHigh,
                     decoration: InputDecoration(
                       labelText: l10n.settingsBackendPreference,
                     ),
@@ -222,9 +228,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                 value: backend,
                                 child: Text(
                                   backend.name.toUpperCase(),
-                                  style: GoogleFonts.rajdhani(
-                                    color: AppColors.textPrimary,
-                                  ),
+                                    style: GoogleFonts.rajdhani(
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                    ),
                                 ),
                               ),
                             )
@@ -240,11 +246,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   // Hidden SSIDs
                   SwitchListTile(
                     value: settings.includeHiddenSsids,
-                    activeColor: AppColors.neonGreen,
+                    activeColor: Theme.of(context).colorScheme.tertiary,
                     title: Text(
                       l10n.settingsIncludeHidden,
                       style: GoogleFonts.rajdhani(
-                        color: AppColors.textPrimary,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -256,11 +262,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   // Safety Mode
                   SwitchListTile(
                     value: settings.strictSafetyMode,
-                    activeColor: AppColors.neonOrange,
+                    activeColor: Theme.of(context).colorScheme.error,
                     title: Text(
                       l10n.settingsStrictSafety,
                       style: GoogleFonts.rajdhani(
-                        color: AppColors.textPrimary,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -268,7 +274,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     subtitle: Text(
                       l10n.settingsStrictSafetyDesc,
                       style: GoogleFonts.rajdhani(
-                        color: AppColors.textMuted,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 12,
                       ),
                     ),
@@ -288,7 +294,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _buildThemeToggle(ThemeCubit themeCubit) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.glassWhite,
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -324,13 +330,13 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.neonCyan : Colors.transparent,
+          color: isSelected ? Theme.of(context).colorScheme.primary : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
           boxShadow:
               isSelected
                   ? [
                     BoxShadow(
-                      color: AppColors.neonCyan.withValues(alpha: 0.3),
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                       blurRadius: 8,
                     ),
                   ]
@@ -339,7 +345,7 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Icon(
           icon,
           size: 18,
-          color: isSelected ? AppColors.darkBg : AppColors.textMuted,
+          color: isSelected ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurfaceVariant,
         ),
       ),
     );
@@ -372,18 +378,18 @@ class _SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: AppColors.darkSurface,
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
             side: BorderSide(
-              color: AppColors.neonPurple.withValues(alpha: 0.15),
+              color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.15),
             ),
           ),
           title: NeonText(
             AppLocalizations.of(context)!.settingsLanguage,
             style: GoogleFonts.orbitron(
               fontSize: 14,
-              color: AppColors.neonPurple,
+              color: Theme.of(context).colorScheme.secondary,
             ),
             glowRadius: 4,
           ),
@@ -471,7 +477,7 @@ class _NeonSliderTile extends StatelessWidget {
               child: Text(
                 label,
                 style: GoogleFonts.rajdhani(
-                  color: AppColors.textPrimary,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
@@ -543,10 +549,9 @@ class _LanguageOption extends StatelessWidget {
                 Text(
                   label,
                   style: GoogleFonts.rajdhani(
-                    color:
-                        isSelected
+                        color: isSelected
                             ? AppColors.neonPurple
-                            : AppColors.textPrimary,
+                            : Theme.of(context).colorScheme.onSurface,
                     fontSize: 16,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                   ),

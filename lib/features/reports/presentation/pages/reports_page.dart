@@ -12,7 +12,6 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
 import '../../domain/usecases/generate_report_usecase.dart';
@@ -46,7 +45,7 @@ class ReportsView extends StatelessWidget {
         } else if (state is ReportsFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              backgroundColor: AppColors.neonRed.withValues(alpha: 0.8),
+              backgroundColor: Theme.of(context).colorScheme.error.withValues(alpha: 0.8),
               content: Text(
                 '${l10n.errorLabel}: ${state.message}',
                 style: GoogleFonts.rajdhani(
@@ -63,7 +62,7 @@ class ReportsView extends StatelessWidget {
           title: NeonText(
             l10n.reportsTitle.toUpperCase(),
             style: GoogleFonts.orbitron(
-              color: AppColors.neonCyan,
+              color: Theme.of(context).colorScheme.primary,
               fontSize: 16,
               fontWeight: FontWeight.bold,
               letterSpacing: 2,
@@ -80,7 +79,7 @@ class ReportsView extends StatelessWidget {
               child: NeonSectionHeader(
                 label: l10n.sectionStatus,
                 icon: Icons.analytics_outlined,
-                color: AppColors.neonCyan,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
             const SizedBox(height: 12),
@@ -89,7 +88,7 @@ class ReportsView extends StatelessWidget {
               child: Text(
                 l10n.reportsSubtitle,
                 style: GoogleFonts.rajdhani(
-                  color: AppColors.textSecondary,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontSize: 15,
                 ),
               ),
@@ -101,21 +100,21 @@ class ReportsView extends StatelessWidget {
               StaggeredEntry(
                 delay: const Duration(milliseconds: 200),
                 child: NeonCard(
-                  glowColor: AppColors.neonOrange,
+                  glowColor: Theme.of(context).colorScheme.outline,
                   glowIntensity: 0.04,
                   padding: const EdgeInsets.all(20),
                   child: Row(
                     children: [
                       _NeonIconCircle(
                         icon: Icons.info_outline_rounded,
-                        color: AppColors.neonOrange,
+                        color: Theme.of(context).colorScheme.outline,
                       ),
                       const SizedBox(width: 14),
                       Expanded(
                         child: Text(
                           l10n.noSnapshotAvailable,
                           style: GoogleFonts.rajdhani(
-                            color: AppColors.textSecondary,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
@@ -142,7 +141,7 @@ class ReportsView extends StatelessWidget {
                 child: NeonSectionHeader(
                   label: l10n.exportOptionsTitle,
                   icon: Icons.ios_share_rounded,
-                  color: AppColors.neonPurple,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
               const SizedBox(height: 16),
@@ -160,7 +159,7 @@ class ReportsView extends StatelessWidget {
                       _ExportActionCard(
                         icon: Icons.data_object_rounded,
                         label: l10n.exportJson,
-                        color: AppColors.neonCyan,
+                        color: Theme.of(context).colorScheme.primary,
                         isLoading: isLoading,
                         onTap:
                             () => context.read<ReportsBloc>().add(
@@ -171,7 +170,7 @@ class ReportsView extends StatelessWidget {
                       _ExportActionCard(
                         icon: Icons.html_rounded,
                         label: l10n.exportHtml,
-                        color: AppColors.neonPurple,
+                        color: Theme.of(context).colorScheme.secondary,
                         isLoading: isLoading,
                         onTap:
                             () => context.read<ReportsBloc>().add(
@@ -182,7 +181,7 @@ class ReportsView extends StatelessWidget {
                       _ExportActionCard(
                         icon: Icons.picture_as_pdf_rounded,
                         label: l10n.exportPdf,
-                        color: AppColors.neonRed,
+                        color: Theme.of(context).colorScheme.error,
                         isLoading: isLoading,
                         onTap:
                             () => context.read<ReportsBloc>().add(
@@ -193,7 +192,7 @@ class ReportsView extends StatelessWidget {
                       _ExportActionCard(
                         icon: Icons.print_rounded,
                         label: l10n.printPdf,
-                        color: AppColors.neonGreen,
+                        color: Theme.of(context).colorScheme.tertiary,
                         isLoading: isLoading,
                         onTap: () => _printPdf(context),
                         delay: const Duration(milliseconds: 550),
@@ -302,7 +301,7 @@ class ReportsView extends StatelessWidget {
   void _toast(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: AppColors.neonGreen.withValues(alpha: 0.8),
+        backgroundColor: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.8),
         content: Text(
           message,
           style: GoogleFonts.rajdhani(
@@ -333,7 +332,7 @@ class _SessionSummaryCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return NeonCard(
-      glowColor: AppColors.neonCyan,
+      glowColor: Theme.of(context).colorScheme.primary,
       glowIntensity: 0.08,
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -343,7 +342,7 @@ class _SessionSummaryCard extends StatelessWidget {
             children: [
               _NeonIconCircle(
                 icon: Icons.inventory_2_outlined,
-                color: AppColors.neonCyan,
+                color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -353,7 +352,7 @@ class _SessionSummaryCard extends StatelessWidget {
                     Text(
                       l10n.latestSnapshotTitle,
                       style: GoogleFonts.rajdhani(
-                        color: AppColors.neonCyan,
+                        color: Theme.of(context).colorScheme.primary,
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1.5,
@@ -362,7 +361,7 @@ class _SessionSummaryCard extends StatelessWidget {
                     Text(
                       '${timestamp.day}/${timestamp.month}/${timestamp.year} ${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}',
                       style: GoogleFonts.rajdhani(
-                        color: AppColors.textPrimary,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -380,13 +379,13 @@ class _SessionSummaryCard extends StatelessWidget {
                   label: l10n.navWifi.toUpperCase(),
                   value: '$networksCount',
                   icon: Icons.wifi_tethering_rounded,
-                  color: AppColors.neonCyan,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
               Container(
                 width: 1,
                 height: 40,
-                color: AppColors.glassWhite,
+                color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.2),
                 margin: const EdgeInsets.symmetric(horizontal: 16),
               ),
               Expanded(
@@ -394,7 +393,7 @@ class _SessionSummaryCard extends StatelessWidget {
                   label: l10n.backendLabel.toUpperCase(),
                   value: backend.toUpperCase(),
                   icon: Icons.dns_rounded,
-                  color: AppColors.neonPurple,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
             ],
@@ -430,7 +429,7 @@ class _SummaryMetric extends StatelessWidget {
             Text(
               label,
               style: GoogleFonts.rajdhani(
-                color: AppColors.textMuted,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 1,

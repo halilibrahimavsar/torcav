@@ -4,7 +4,6 @@ import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../core/theme/app_theme.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 import '../../../../features/monitoring/presentation/pages/signal_graph_page.dart';
 import '../../domain/entities/vulnerability.dart';
@@ -63,7 +62,7 @@ class WifiDetailsPage extends StatelessWidget {
                       Text(
                         l10n.riskFactors,
                         style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(color: AppTheme.secondaryColor),
+                            ?.copyWith(color: Theme.of(context).colorScheme.secondary),
                       ),
                       const SizedBox(height: 8),
                       ...state.assessment.riskFactors.map(
@@ -74,7 +73,7 @@ class WifiDetailsPage extends StatelessWidget {
                     Text(
                       l10n.vulnerabilities,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: AppTheme.primaryColor,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -97,10 +96,10 @@ class WifiDetailsPage extends StatelessWidget {
   Widget _buildSecurityScore(BuildContext context, int score, String status) {
     final color =
         score > 80
-            ? AppTheme.primaryColor
+            ? Theme.of(context).colorScheme.tertiary
             : score > 40
             ? Colors.orange
-            : Colors.red;
+            : Theme.of(context).colorScheme.error;
 
     return Center(
       child: Container(
@@ -147,15 +146,11 @@ class WifiDetailsPage extends StatelessWidget {
 
   Widget _buildNetworkDetails(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color:
-            isDark
-                ? const Color(0xFF0F172A)
-                : Theme.of(context).colorScheme.surface,
-        border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.3)),
+        color: Theme.of(context).colorScheme.surfaceContainer,
+        border: Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -190,12 +185,15 @@ class WifiDetailsPage extends StatelessWidget {
         children: [
           Text(
             label,
-            style: GoogleFonts.rajdhani(color: Colors.grey, fontSize: 16),
+            style: GoogleFonts.rajdhani(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              fontSize: 16,
+            ),
           ),
           Text(
             value,
             style: GoogleFonts.orbitron(
-              color: AppTheme.secondaryColor,
+              color: Theme.of(context).colorScheme.secondary,
               fontSize: 16,
             ),
           ),
@@ -253,7 +251,7 @@ class WifiDetailsPage extends StatelessWidget {
           Text(
             l10n.recommendationLabel(v.recommendation),
             style: GoogleFonts.rajdhani(
-              color: AppTheme.secondaryColor,
+              color: Theme.of(context).colorScheme.secondary,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -267,15 +265,17 @@ class WifiDetailsPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.primaryColor.withValues(alpha: 0.1),
-        border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.5)),
+        color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.1),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.5),
+        ),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
-          const Icon(
+          Icon(
             Icons.check_circle_outline,
-            color: AppTheme.primaryColor,
+            color: Theme.of(context).colorScheme.tertiary,
             size: 32,
           ),
           const SizedBox(width: 16),
@@ -283,7 +283,7 @@ class WifiDetailsPage extends StatelessWidget {
             child: Text(
               l10n.noVulnerabilities,
               style: GoogleFonts.rajdhani(
-                color: AppTheme.primaryColor,
+                color: Theme.of(context).colorScheme.tertiary,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),

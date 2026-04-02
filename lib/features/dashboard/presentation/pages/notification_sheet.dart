@@ -15,32 +15,32 @@ class NotificationSheet extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).size.height * 0.75,
       decoration: BoxDecoration(
-        color: AppColors.darkSurface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
         border: Border.all(
-          color: AppColors.neonCyan.withValues(alpha: 0.2),
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
           width: 1.5,
         ),
       ),
       child: Column(
         children: [
-          _buildHandle(),
+          _buildHandle(context),
           _buildHeader(context),
-          const NeonDivider(color: AppColors.neonCyan),
+          NeonDivider(color: Theme.of(context).colorScheme.primary),
           Expanded(child: _buildList()),
         ],
       ),
     );
   }
 
-  Widget _buildHandle() {
+  Widget _buildHandle(BuildContext context) {
     return Center(
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 12),
         width: 40,
         height: 4,
         decoration: BoxDecoration(
-          color: AppColors.textMuted.withValues(alpha: 0.3),
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(2),
         ),
       ),
@@ -55,12 +55,12 @@ class NotificationSheet extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.security, color: AppColors.neonCyan, size: 20),
+              Icon(Icons.security, color: Theme.of(context).colorScheme.primary, size: 20),
               const SizedBox(width: 12),
               Text(
                 'SECURITY ALERTS',
                 style: GoogleFonts.orbitron(
-                  color: AppColors.textPrimary,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 2,
@@ -69,7 +69,7 @@ class NotificationSheet extends StatelessWidget {
             ],
           ),
           IconButton(
-            icon: const Icon(Icons.close, color: AppColors.textMuted),
+            icon: Icon(Icons.close, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
             onPressed: () => Navigator.pop(context),
           ),
         ],
@@ -81,8 +81,8 @@ class NotificationSheet extends StatelessWidget {
     return BlocBuilder<NotificationBloc, NotificationState>(
       builder: (context, state) {
         if (state is NotificationLoading) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColors.neonCyan),
+          return Center(
+            child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
           );
         }
 
@@ -95,13 +95,13 @@ class NotificationSheet extends StatelessWidget {
                   Icon(
                     Icons.security_update_good_rounded,
                     size: 48,
-                    color: AppColors.neonGreen.withValues(alpha: 0.5),
+                    color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.5),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     'All systems clear',
                     style: GoogleFonts.rajdhani(
-                      color: AppColors.textMuted,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                       fontSize: 16,
                     ),
                   ),
@@ -138,7 +138,7 @@ class NotificationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = _getSeverityColor(event.severity);
+    final color = _getSeverityColor(context, event.severity);
     final isUnread = !event.isRead;
 
     return NeonCard(
@@ -176,7 +176,7 @@ class NotificationTile extends StatelessWidget {
               Text(
                 DateFormat('HH:mm').format(event.timestamp),
                 style: GoogleFonts.rajdhani(
-                  color: AppColors.textMuted,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                   fontSize: 12,
                 ),
               ),
@@ -186,7 +186,7 @@ class NotificationTile extends StatelessWidget {
           Text(
             event.ssid,
             style: GoogleFonts.rajdhani(
-              color: AppColors.textPrimary,
+              color: Theme.of(context).colorScheme.onSurface,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -195,7 +195,7 @@ class NotificationTile extends StatelessWidget {
           Text(
             event.evidence,
             style: GoogleFonts.outfit(
-              color: AppColors.textSecondary,
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
               fontSize: 13,
               height: 1.4,
             ),
@@ -208,7 +208,7 @@ class NotificationTile extends StatelessWidget {
                 Text(
                   'MARK AS READ',
                   style: GoogleFonts.orbitron(
-                    color: AppColors.neonCyan,
+                    color: Theme.of(context).colorScheme.primary,
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                   ),
@@ -221,18 +221,18 @@ class NotificationTile extends StatelessWidget {
     );
   }
 
-  Color _getSeverityColor(SecurityEventSeverity severity) {
+   Color _getSeverityColor(BuildContext context, SecurityEventSeverity severity) {
     switch (severity) {
       case SecurityEventSeverity.critical:
         return AppColors.neonRed;
       case SecurityEventSeverity.high:
         return Colors.orangeAccent;
       case SecurityEventSeverity.medium:
-        return AppColors.neonCyan;
+        return Theme.of(context).colorScheme.primary;
       case SecurityEventSeverity.low:
-        return AppColors.neonGreen;
+        return Theme.of(context).colorScheme.tertiary;
       case SecurityEventSeverity.info:
-        return AppColors.neonGreen;
+        return Theme.of(context).colorScheme.tertiary;
       case SecurityEventSeverity.warning:
         return Colors.yellowAccent;
     }

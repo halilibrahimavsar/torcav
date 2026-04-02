@@ -1,17 +1,16 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_theme.dart';
 
 class WifiScannerRadar extends StatefulWidget {
   final bool isScanning;
   final List<double> blips; // normalized distances (0.0 to 1.0)
-  final Color color;
+  final Color? color;
 
   const WifiScannerRadar({
     super.key,
     this.isScanning = true,
     this.blips = const [],
-    this.color = AppColors.neonCyan,
+    this.color,
   });
 
   @override
@@ -61,7 +60,7 @@ class _WifiScannerRadarState extends State<WifiScannerRadar>
             rotation: _controller.value,
             isScanning: widget.isScanning,
             blips: widget.blips,
-            color: widget.color,
+            color: widget.color ?? Theme.of(context).colorScheme.primary,
           ),
         );
       },

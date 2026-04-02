@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/di/injection.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../monitoring/presentation/bloc/monitoring_hub_bloc.dart';
 import '../../../monitoring/domain/entities/speed_test_progress.dart';
@@ -50,7 +49,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                   child: NeonSectionHeader(
                     label: l10n.speedTestHeader,
                     icon: Icons.speed_rounded,
-                    color: AppColors.neonCyan,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -86,7 +85,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       }
 
                       return NeonCard(
-                        glowColor: AppColors.neonCyan,
+                        glowColor: Theme.of(context).colorScheme.primary,
                         glowIntensity: isDone ? 0.18 : 0.1,
                         onTap:
                             isRunning
@@ -107,10 +106,10 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                                     style: GoogleFonts.orbitron(
                                       color:
                                           isRunning
-                                              ? AppColors.neonOrange
+                                              ? Theme.of(context).colorScheme.outline
                                               : isDone
-                                              ? AppColors.neonGreen
-                                              : AppColors.neonCyan,
+                                              ? Theme.of(context).colorScheme.tertiary
+                                              : Theme.of(context).colorScheme.primary,
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,
                                       letterSpacing: 1,
@@ -125,7 +124,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                                   Icon(
                                     Icons.check_circle_rounded,
                                     size: 14,
-                                    color: AppColors.neonGreen.withValues(
+                                    color: Theme.of(context).colorScheme.tertiary.withValues(
                                       alpha: 0.8,
                                     ),
                                   ),
@@ -197,7 +196,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                   child: NeonSectionHeader(
                     label: l10n.commandCenters,
                     icon: Icons.hub_rounded,
-                    color: AppColors.neonPurple,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -214,7 +213,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       title: l10n.defenseTitle,
                       subtitle: l10n.activeShielding,
                       icon: Icons.shield_rounded,
-                      color: AppColors.neonRed,
+                      color: Theme.of(context).colorScheme.error,
                       onTap:
                           () => Navigator.of(context).push(
                             MaterialPageRoute(
@@ -227,7 +226,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       title: l10n.logisticsTitle,
                       subtitle: l10n.intelMetrics,
                       icon: Icons.analytics_outlined,
-                      color: AppColors.neonOrange,
+                      color: Theme.of(context).colorScheme.outline,
                       onTap:
                           () => Navigator.of(context).push(
                             MaterialPageRoute(
@@ -240,7 +239,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       title: l10n.topologyLabel,
                       subtitle: l10n.networkMesh,
                       icon: Icons.device_hub_rounded,
-                      color: AppColors.neonGreen,
+                      color: Theme.of(context).colorScheme.tertiary,
                       onTap:
                           () => Navigator.of(context).push(
                             MaterialPageRoute(
@@ -253,7 +252,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       title: l10n.tuningTitle,
                       subtitle: l10n.systemConfig,
                       icon: Icons.settings_suggest_rounded,
-                      color: AppColors.neonCyan,
+                      color: Theme.of(context).colorScheme.primary,
                       onTap:
                           () => Navigator.of(context).push(
                             MaterialPageRoute(
@@ -317,8 +316,8 @@ class _PhaseSteps extends StatelessWidget {
               height: 1,
               color:
                   stepIndex < currentIndex
-                      ? AppColors.neonCyan.withValues(alpha: 0.6)
-                      : AppColors.glassWhite.withValues(alpha: 0.1),
+                      ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.6)
+                      : Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.1),
             ),
           );
         }
@@ -328,10 +327,10 @@ class _PhaseSteps extends StatelessWidget {
         final isDone = stepIndex < currentIndex;
         final color =
             isDone
-                ? AppColors.neonCyan
+                ? Theme.of(context).colorScheme.primary
                 : isActive
-                ? AppColors.neonOrange
-                : AppColors.textMuted.withValues(alpha: 0.3);
+                ? Theme.of(context).colorScheme.outline
+                : Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.3);
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -375,7 +374,7 @@ class _ResultsRow extends StatelessWidget {
             value: downloadMbps.toStringAsFixed(1),
             unit: 'Mbps',
             icon: Icons.download_rounded,
-            color: AppColors.neonCyan,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         const SizedBox(width: 8),
@@ -385,7 +384,7 @@ class _ResultsRow extends StatelessWidget {
             value: uploadMbps.toStringAsFixed(1),
             unit: 'Mbps',
             icon: Icons.upload_rounded,
-            color: AppColors.neonPurple,
+            color: Theme.of(context).colorScheme.secondary,
           ),
         ),
         const SizedBox(width: 8),
@@ -395,7 +394,7 @@ class _ResultsRow extends StatelessWidget {
             value: latencyMs.toStringAsFixed(0),
             unit: 'ms',
             icon: Icons.network_ping_rounded,
-            color: AppColors.neonGreen,
+            color: Theme.of(context).colorScheme.tertiary,
           ),
         ),
       ],
@@ -453,7 +452,7 @@ class _MetricTile extends StatelessWidget {
             label,
             style: GoogleFonts.orbitron(
               fontSize: 7,
-              color: AppColors.textMuted,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               letterSpacing: 0.5,
             ),
           ),
@@ -515,7 +514,7 @@ class _OperationCard extends StatelessWidget {
             Text(
               subtitle,
               style: GoogleFonts.rajdhani(
-                color: AppColors.textMuted,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 9,
                 fontWeight: FontWeight.w600,
               ),

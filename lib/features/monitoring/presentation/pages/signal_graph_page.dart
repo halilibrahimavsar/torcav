@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../core/theme/app_theme.dart';
 import '../../../../features/wifi_scan/domain/entities/wifi_network.dart';
 import '../bloc/heatmap_bloc.dart';
 import '../bloc/monitoring_bloc.dart';
@@ -74,26 +73,25 @@ class SignalGraphPage extends StatelessWidget {
     return BlocBuilder<MonitoringBloc, MonitoringState>(
       builder: (context, state) {
         if (state is MonitoringActive) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
           return Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color:
-                  isDark
-                      ? const Color(0xFF0F172A)
-                      : Theme.of(context).colorScheme.surface,
+              color: Theme.of(context).colorScheme.surfaceContainerLow,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppTheme.primaryColor),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+              ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildStatItem(
+                  context,
                   'SIGNAL',
                   '${state.currentData.signalStrength} dBm',
                 ),
-                _buildStatItem('CHANNEL', '${state.currentData.channel}'),
-                _buildStatItem('FREQ', '${state.currentData.frequency} MHz'),
+                _buildStatItem(context, 'CHANNEL', '${state.currentData.channel}'),
+                _buildStatItem(context, 'FREQ', '${state.currentData.frequency} MHz'),
               ],
             ),
           );
@@ -103,7 +101,7 @@ class SignalGraphPage extends StatelessWidget {
     );
   }
 
-  Widget _buildStatItem(String label, String value) {
+  Widget _buildStatItem(BuildContext context, String label, String value) {
     return Column(
       children: [
         Text(
@@ -116,7 +114,7 @@ class SignalGraphPage extends StatelessWidget {
         Text(
           value,
           style: GoogleFonts.orbitron(
-            color: AppTheme.primaryColor,
+            color: Theme.of(context).colorScheme.primary,
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
@@ -255,7 +253,9 @@ class _SignalChart extends StatelessWidget {
               ),
               borderData: FlBorderData(
                 show: true,
-                border: Border.all(color: const Color(0xff37434d)),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12),
+                ),
               ),
               minX: 0,
               maxX: 20, // Display last 20 points
@@ -268,13 +268,13 @@ class _SignalChart extends StatelessWidget {
                         return FlSpot(e.key.toDouble(), e.value.toDouble());
                       }).toList(),
                   isCurved: true,
-                  color: AppTheme.primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                   barWidth: 3,
                   isStrokeCapRound: true,
-                  dotData: FlDotData(show: true),
+                  dotData: const FlDotData(show: true),
                   belowBarData: BarAreaData(
                     show: true,
-                    color: AppTheme.primaryColor.withValues(alpha: 0.2),
+                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
                   ),
                 ),
               ],

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../../../../core/theme/app_theme.dart';
+import 'package:torcav/l10n/generated/app_localizations.dart';
 import '../../../../features/wifi_scan/domain/entities/scan_request.dart';
 import '../../../../features/wifi_scan/domain/entities/wifi_network.dart';
 import '../../../../features/wifi_scan/domain/entities/channel_rating.dart';
@@ -59,15 +57,15 @@ class _ChannelRatingView extends StatelessWidget {
             BlocBuilder<WifiScanBloc, WifiScanState>(
               builder: (context, state) {
                 if (state is WifiScanLoading) {
-                  return const Center(
+                  return Center(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: SizedBox(
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: AppTheme.primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                     ),
@@ -88,8 +86,8 @@ class _ChannelRatingView extends StatelessWidget {
             ),
           ],
           bottom: TabBar(
-            indicatorColor: AppTheme.primaryColor,
-            labelColor: AppTheme.primaryColor,
+            indicatorColor: Theme.of(context).colorScheme.primary,
+            labelColor: Theme.of(context).colorScheme.primary,
             unselectedLabelColor: onSurface.withValues(alpha: 0.5),
             labelStyle: GoogleFonts.orbitron(
               fontSize: 12,
@@ -412,19 +410,16 @@ class _ChannelTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final onSurface = Theme.of(context).colorScheme.onSurface;
-    final color = _getColorForRating(rating.rating);
+    final primary = Theme.of(context).colorScheme.primary;
+    final color = _getColorForRating(rating.rating, primary);
     final fraction = (rating.rating / 10).clamp(0.0, 1.0);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
       decoration: BoxDecoration(
-        color:
-            isDark
-                ? const Color(0xFF0F172A)
-                : Theme.of(context).colorScheme.surface,
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: color.withValues(alpha: 0.35)),
       ),
@@ -497,8 +492,8 @@ class _ChannelTile extends StatelessWidget {
     );
   }
 
-  Color _getColorForRating(double r) {
-    if (r >= 8) return AppTheme.primaryColor;
+  Color _getColorForRating(double r, Color primary) {
+    if (r >= 8) return primary;
     if (r >= 5) return Colors.orange;
     return Colors.red;
   }

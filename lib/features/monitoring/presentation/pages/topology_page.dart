@@ -10,7 +10,6 @@ import '../widgets/topology_view_data.dart';
 import '../../../network_scan/domain/entities/network_device.dart';
 import '../../../network_scan/domain/repositories/network_scan_repository.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/di/injection.dart';
 import '../../domain/entities/network_topology.dart';
 import '../../domain/services/topology_builder.dart';
@@ -111,14 +110,14 @@ class _TopologyPageState extends State<TopologyPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF06090D),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
         children: [
           // Cyberpunk Grid Background
           Positioned.fill(
             child: CustomPaint(
               painter: _GridPainter(
-                color: AppColors.neonCyan.withValues(alpha: 0.05),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
               ),
             ),
           ),
@@ -192,7 +191,11 @@ class _TopologyPageState extends State<TopologyPage>
     required VoidCallback onTap,
     required String label,
   }) {
-    final color = active ? AppColors.neonCyan : Colors.white24;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final color =
+        active
+            ? Theme.of(context).colorScheme.primary
+            : (isDark ? Colors.white24 : Colors.black12);
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -238,24 +241,24 @@ class _TopologyPageState extends State<TopologyPage>
           children: [
             IconButton(
               onPressed: () => Navigator.of(context).pop(),
-              icon: const Icon(
+              icon: Icon(
                 Icons.arrow_back_ios_rounded,
-                color: AppColors.neonCyan,
+                color: Theme.of(context).colorScheme.primary,
                 size: 18,
               ),
               style: IconButton.styleFrom(
-                backgroundColor: AppColors.neonCyan.withValues(alpha: 0.1),
+                backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                   side: BorderSide(
-                    color: AppColors.neonCyan.withValues(alpha: 0.3),
+                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
                   ),
                 ),
               ),
             ),
             const SizedBox(width: 8),
             HolographicCard(
-              color: AppColors.neonCyan,
+              color: Theme.of(context).colorScheme.primary,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -264,16 +267,16 @@ class _TopologyPageState extends State<TopologyPage>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.hub_outlined,
-                      color: AppColors.neonCyan,
+                      color: Theme.of(context).colorScheme.primary,
                       size: 18,
                     ),
                     const SizedBox(width: 10),
                     Text(
                       AppLocalizations.of(context)!.topologyMapTitle,
                       style: GoogleFonts.orbitron(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 2,
@@ -286,9 +289,9 @@ class _TopologyPageState extends State<TopologyPage>
             const Spacer(),
             IconButton(
               onPressed: _loadTopology,
-              icon: const Icon(Icons.refresh, color: AppColors.neonCyan),
+              icon: Icon(Icons.refresh, color: Theme.of(context).colorScheme.primary),
               style: IconButton.styleFrom(
-                backgroundColor: AppColors.neonCyan.withValues(alpha: 0.1),
+                backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               ),
             ),
           ],
@@ -305,13 +308,13 @@ class _TopologyPageState extends State<TopologyPage>
           Icon(
             Icons.device_hub,
             size: 64,
-            color: Colors.white.withValues(alpha: 0.1),
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
           ),
           const SizedBox(height: 16),
           Text(
             AppLocalizations.of(context)!.noTopologyData,
             style: GoogleFonts.rajdhani(
-              color: Colors.white.withValues(alpha: 0.6),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -320,16 +323,16 @@ class _TopologyPageState extends State<TopologyPage>
           Text(
             AppLocalizations.of(context)!.runScanFirst,
             style: GoogleFonts.rajdhani(
-              color: Colors.white.withValues(alpha: 0.4),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
               fontSize: 14,
             ),
           ),
           const SizedBox(height: 24),
-          NeonButton(
+            NeonButton(
             onPressed: _loadTopology,
             label: AppLocalizations.of(context)!.retry,
             icon: Icons.refresh_rounded,
-            color: AppColors.neonCyan,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ],
       ),
@@ -362,6 +365,7 @@ class _TopologyPageState extends State<TopologyPage>
                           showTraffic: _showTraffic,
                           forceView: _forceView,
                           flowSpeed: _flowSpeed,
+                          colorScheme: Theme.of(context).colorScheme,
                         ),
                       );
                     },
@@ -394,11 +398,11 @@ class _TopologyPageState extends State<TopologyPage>
           runSpacing: 8,
           children: [
             _legendItem(
-              const Color(0xFF00FF9F),
+              Theme.of(context).colorScheme.tertiary,
               AppLocalizations.of(context)!.thisDevice,
             ),
             _legendItem(
-              const Color(0xFF00D1FF),
+              Theme.of(context).colorScheme.primary,
               AppLocalizations.of(context)!.gatewayDevice,
             ),
             _legendItem(
@@ -406,7 +410,7 @@ class _TopologyPageState extends State<TopologyPage>
               AppLocalizations.of(context)!.mobileDevice,
             ),
             _legendItem(
-              const Color(0xFF7209B7),
+              Theme.of(context).colorScheme.secondary,
               AppLocalizations.of(context)!.deviceLabel,
             ),
             _legendItem(
@@ -442,7 +446,7 @@ class _TopologyPageState extends State<TopologyPage>
         Text(
           label,
           style: GoogleFonts.rajdhani(
-            color: Colors.white.withValues(alpha: 0.7),
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
             fontSize: 11,
             fontWeight: FontWeight.w500,
           ),
@@ -522,7 +526,7 @@ class _TopologyPageState extends State<TopologyPage>
       child: StaggeredEntry(
         delay: Duration.zero,
         child: HolographicCard(
-          color: TopologyViewData.nodeColor(node),
+          color: TopologyViewData.nodeColor(node, Theme.of(context).colorScheme),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -549,15 +553,15 @@ class _TopologyPageState extends State<TopologyPage>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const CircularProgressIndicator(
+            CircularProgressIndicator(
               strokeWidth: 2,
-              color: AppColors.neonCyan,
+              color: Theme.of(context).colorScheme.primary,
             ),
             const SizedBox(height: 16),
-            Text(
+              Text(
               AppLocalizations.of(context)!.analyzingNode,
               style: GoogleFonts.orbitron(
-                color: AppColors.neonCyan,
+                color: Theme.of(context).colorScheme.primary,
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 2,
@@ -578,18 +582,19 @@ class _TopologyPageState extends State<TopologyPage>
               width: 54,
               height: 54,
               decoration: BoxDecoration(
-                color: TopologyViewData.nodeColor(node).withValues(alpha: 0.1),
+                color: TopologyViewData.nodeColor(node, Theme.of(context).colorScheme).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(
                   color: TopologyViewData.nodeColor(
                     node,
+                    Theme.of(context).colorScheme,
                   ).withValues(alpha: 0.3),
                 ),
               ),
               child: Center(
                 child: Icon(
                   TopologyViewData.materialIcon(node),
-                  color: TopologyViewData.nodeColor(node),
+                  color: TopologyViewData.nodeColor(node, Theme.of(context).colorScheme),
                   size: 28,
                 ),
               ),
@@ -602,7 +607,7 @@ class _TopologyPageState extends State<TopologyPage>
                   Text(
                     node.label.toUpperCase(),
                     style: GoogleFonts.orbitron(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -614,6 +619,7 @@ class _TopologyPageState extends State<TopologyPage>
                     style: GoogleFonts.shareTechMono(
                       color: TopologyViewData.nodeColor(
                         node,
+                        Theme.of(context).colorScheme,
                       ).withValues(alpha: 0.7),
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
@@ -624,7 +630,11 @@ class _TopologyPageState extends State<TopologyPage>
             ),
             IconButton(
               onPressed: () => setState(() => _selectedNodeId = null),
-              icon: const Icon(Icons.close, color: Colors.white38, size: 20),
+              icon: Icon(
+                Icons.close,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
+                size: 20,
+              ),
             ),
           ],
         ),
@@ -632,10 +642,10 @@ class _TopologyPageState extends State<TopologyPage>
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.4),
+            color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.4),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: TopologyViewData.nodeColor(node).withValues(alpha: 0.1),
+              color: TopologyViewData.nodeColor(node, Theme.of(context).colorScheme).withValues(alpha: 0.1),
             ),
           ),
           child: Column(
@@ -660,13 +670,13 @@ class _TopologyPageState extends State<TopologyPage>
           Icon(
             icon,
             size: 14,
-            color: AppColors.neonCyan.withValues(alpha: 0.5),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
           ),
           const SizedBox(width: 12),
           Text(
             label,
             style: GoogleFonts.shareTechMono(
-              color: Colors.white38,
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
               fontSize: 10,
               letterSpacing: 1,
             ),
@@ -675,7 +685,7 @@ class _TopologyPageState extends State<TopologyPage>
           Text(
             value,
             style: GoogleFonts.shareTechMono(
-              color: Colors.white.withValues(alpha: 0.9),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
               fontSize: 13,
             ),
           ),

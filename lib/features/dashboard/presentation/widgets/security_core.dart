@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 
@@ -99,7 +100,10 @@ class _SecurityCoreState extends State<SecurityCore>
             padding: EdgeInsets.zero,
             blurSigma: 15,
             borderColor: widget.statusColor.withValues(alpha: 0.3),
-            backgroundColor: AppColors.darkSurface.withValues(alpha: 0.4),
+            backgroundColor: Theme.of(context)
+                .colorScheme
+                .surfaceContainerHigh
+                .withValues(alpha: 0.4),
             child: Container(
               width: 160,
               height: 160,
@@ -130,8 +134,7 @@ class _SecurityCoreState extends State<SecurityCore>
                   Text(
                     widget.label.toUpperCase(),
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Orbitron',
+                    style: GoogleFonts.orbitron(
                       color: widget.statusColor,
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
@@ -146,9 +149,8 @@ class _SecurityCoreState extends State<SecurityCore>
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontFamily: 'Orbitron',
-                        color: Colors.white,
+                      style: GoogleFonts.orbitron(
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                       ),

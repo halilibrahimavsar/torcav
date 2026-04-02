@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/l10n/generated/app_localizations.dart';
-import '../../../../core/theme/app_theme.dart';
+import 'package:get_it/get_it.dart';
 import '../../../../core/theme/neon_widgets.dart';
+import '../../../../core/theme/theme_cubit.dart';
 
 class CyberDrawer extends StatelessWidget {
   final Function(String) onNavigate;
@@ -14,7 +15,7 @@ class CyberDrawer extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Drawer(
-      backgroundColor: AppColors.darkBackground,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(30),
@@ -25,7 +26,7 @@ class CyberDrawer extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border(
             right: BorderSide(
-              color: AppColors.neonCyan.withValues(alpha: 0.2),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
               width: 1.5,
             ),
           ),
@@ -40,7 +41,7 @@ class CyberDrawer extends StatelessWidget {
                 onNavigate('profile');
               },
               borderRadius: BorderRadius.circular(16),
-              child: _buildProfileSection(),
+              child: _buildProfileSection(context),
             ),
             const SizedBox(height: 40),
 
@@ -50,16 +51,31 @@ class CyberDrawer extends StatelessWidget {
               child: NeonSectionHeader(
                 label: l10n.systemStatus,
                 icon: Icons.monitor_heart_rounded,
-                color: AppColors.neonCyan,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
             const SizedBox(height: 16),
-            _buildStatusCard(l10n),
+            _buildStatusCard(context, l10n),
+            const SizedBox(height: 32),
+
+            // ── Theme Selection ──
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: NeonSectionHeader(
+                label: 'Interace Theme', // TODO: Localize
+                icon: Icons.palette_outlined,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            _buildThemeSelector(context),
 
             const Spacer(),
 
             // ── Actions Section ──
-            const Divider(color: Colors.white10),
+            Divider(
+              color: Theme.of(context).dividerColor.withValues(alpha: 0.2),
+            ),
             const SizedBox(height: 40),
           ],
         ),
@@ -67,7 +83,7 @@ class CyberDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileSection() {
+  Widget _buildProfileSection(BuildContext context) {
     return Column(
       children: [
         Container(
@@ -76,25 +92,25 @@ class CyberDrawer extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-              color: AppColors.neonCyan.withValues(alpha: 0.5),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
               width: 2,
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.neonCyan.withValues(alpha: 0.2),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
                 blurRadius: 15,
                 spreadRadius: 2,
               ),
             ],
           ),
-          child: const Padding(
-            padding: EdgeInsets.all(4),
+          child: Padding(
+            padding: const EdgeInsets.all(4),
             child: CircleAvatar(
-              backgroundColor: AppColors.darkSurface,
+              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
               child: Icon(
                 Icons.person_outline_rounded,
                 size: 40,
-                color: AppColors.neonCyan,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
           ),
@@ -105,7 +121,7 @@ class CyberDrawer extends StatelessWidget {
           style: GoogleFonts.orbitron(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
+            color: Theme.of(context).colorScheme.onSurface,
             letterSpacing: 2,
           ),
         ),
@@ -113,7 +129,7 @@ class CyberDrawer extends StatelessWidget {
           'CYBERNETIC_ID: 0x8FA2',
           style: GoogleFonts.shareTechMono(
             fontSize: 10,
-            color: AppColors.neonCyan.withValues(alpha: 0.8),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
             letterSpacing: 1,
           ),
         ),
@@ -121,24 +137,28 @@ class CyberDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusCard(AppLocalizations l10n) {
+  Widget _buildStatusCard(BuildContext context, AppLocalizations l10n) {
+    final color = Theme.of(context).colorScheme.tertiary;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: GlassmorphicContainer(
         padding: const EdgeInsets.all(16),
-        borderColor: AppColors.neonGreen.withValues(alpha: 0.2),
-        backgroundColor: AppColors.darkSurface.withValues(alpha: 0.5),
+        borderColor: color.withValues(alpha: 0.2),
+        backgroundColor: Theme.of(context)
+            .colorScheme
+            .surfaceContainerHighest
+            .withValues(alpha: 0.5),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.neonGreen.withValues(alpha: 0.1),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.verified_user_rounded,
-                color: AppColors.neonGreen,
+                color: color,
                 size: 20,
               ),
             ),
@@ -152,14 +172,14 @@ class CyberDrawer extends StatelessWidget {
                     style: GoogleFonts.orbitron(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.neonGreen,
+                      color: color,
                     ),
                   ),
                   Text(
                     'Sub: Premium',
                     style: GoogleFonts.rajdhani(
                       fontSize: 10,
-                      color: AppColors.textSecondary,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -167,6 +187,77 @@ class CyberDrawer extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildThemeSelector(BuildContext context) {
+    final themeCubit = GetIt.I<ThemeCubit>();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ValueListenableBuilder<ThemeMode>(
+        valueListenable: themeCubit,
+        builder: (context, currentMode, _) {
+          return Row(
+            children: [
+              _ThemeOption(
+                icon: Icons.light_mode_outlined,
+                isSelected: currentMode == ThemeMode.light,
+                onTap: () => themeCubit.setTheme(ThemeMode.light),
+              ),
+              const SizedBox(width: 12),
+              _ThemeOption(
+                icon: Icons.dark_mode_outlined,
+                isSelected: currentMode == ThemeMode.dark,
+                onTap: () => themeCubit.setTheme(ThemeMode.dark),
+              ),
+              const SizedBox(width: 12),
+              _ThemeOption(
+                icon: Icons.settings_brightness_outlined,
+                isSelected: currentMode == ThemeMode.system,
+                onTap: () => themeCubit.setTheme(ThemeMode.system),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ThemeOption extends StatelessWidget {
+  final IconData icon;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _ThemeOption({
+    required this.icon,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color =
+        isSelected
+            ? Theme.of(context).colorScheme.secondary
+            : Theme.of(context).colorScheme.outline;
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          height: 48,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: color.withValues(alpha: isSelected ? 0.8 : 0.2),
+              width: isSelected ? 2 : 1,
+            ),
+            color: isSelected ? color.withValues(alpha: 0.1) : null,
+          ),
+          child: Icon(icon, color: color),
         ),
       ),
     );

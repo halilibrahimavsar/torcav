@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
 import '../../../../core/di/injection.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../security/presentation/bloc/notification/notification_bloc.dart';
@@ -84,7 +83,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: AppColors.neonCyan.withValues(alpha: 0.3),
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                       ),
                     ),
                     child: const Icon(Icons.menu_rounded, size: 18),
@@ -98,7 +97,7 @@ class _DashboardPageState extends State<DashboardPage> {
               fontWeight: FontWeight.bold,
               fontSize: 20,
               letterSpacing: 4,
-              color: AppColors.neonCyan,
+              color: Theme.of(context).colorScheme.primary,
             ),
             glowRadius: 15,
           ),
@@ -135,8 +134,8 @@ class _DashboardPageState extends State<DashboardPage> {
                         top: 8,
                         child: Container(
                           padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
-                            color: Colors.redAccent,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.error,
                             shape: BoxShape.circle,
                           ),
                           constraints: const BoxConstraints(
@@ -145,8 +144,8 @@ class _DashboardPageState extends State<DashboardPage> {
                           ),
                           child: Text(
                             unreadCount > 9 ? '9+' : unreadCount.toString(),
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: GoogleFonts.rajdhani(
+                              color: Theme.of(context).colorScheme.onError,
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
                             ),
@@ -162,8 +161,8 @@ class _DashboardPageState extends State<DashboardPage> {
           ],
         ),
         body: RefreshIndicator(
-          color: AppColors.neonCyan,
-          backgroundColor: AppColors.darkSurface,
+          color: Theme.of(context).colorScheme.primary,
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
           onRefresh: _loadNetworkInfo,
           child: ListView(
             physics: const BouncingScrollPhysics(),
@@ -189,7 +188,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   padding: const EdgeInsets.only(bottom: 16),
                   child: NeonSectionHeader(
                     label: l10n.livePulse,
-                    color: AppColors.neonCyan,
+                    color: Theme.of(context).colorScheme.primary,
                     icon: Icons.monitor_heart_rounded,
                   ),
                 ),
@@ -207,14 +206,14 @@ class _DashboardPageState extends State<DashboardPage> {
                     index: 0,
                     icon: Icons.hub_rounded,
                     label: l10n.operationsLabel,
-                    color: AppColors.neonPurple,
+                    color: Theme.of(context).colorScheme.secondary,
                     onTap: () => widget.onNavigate('operations'),
                   ),
                   _QuickAction(
                     index: 1,
                     icon: Icons.device_hub_rounded,
                     label: l10n.topologyLabel,
-                    color: AppColors.neonGreen,
+                    color: Theme.of(context).colorScheme.tertiary,
                     onTap: () => widget.onNavigate('monitor/topology'),
                   ),
                 ],
@@ -229,7 +228,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   padding: const EdgeInsets.only(bottom: 16),
                   child: NeonSectionHeader(
                     label: l10n.networkLogs,
-                    color: AppColors.neonGreen,
+                    color: Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
               ),
@@ -289,7 +288,8 @@ class _SecurityBentoHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isConnected = ssid != '—' && ssid.isNotEmpty;
-    final accentColor = isConnected ? AppColors.neonCyan : AppColors.neonRed;
+    final scheme = Theme.of(context).colorScheme;
+    final accentColor = isConnected ? scheme.primary : scheme.error;
     final statusLabel =
         isConnected ? l10n.connectedStatusCaps : l10n.disconnectedStatusCaps;
 
@@ -309,7 +309,7 @@ class _SecurityBentoHeader extends StatelessWidget {
                 label: l10n.ipLabel,
                 value: ip,
                 icon: Icons.lan_outlined,
-                color: AppColors.neonCyan,
+                color: Theme.of(context).colorScheme.primary,
                 delay: const Duration(milliseconds: 400),
               ),
             ),
@@ -319,7 +319,7 @@ class _SecurityBentoHeader extends StatelessWidget {
                 label: l10n.gatewayLabel,
                 value: gateway,
                 icon: Icons.router_outlined,
-                color: AppColors.neonPurple,
+                color: Theme.of(context).colorScheme.secondary,
                 delay: const Duration(milliseconds: 500),
               ),
             ),
@@ -363,7 +363,7 @@ class _BentoStatTile extends StatelessWidget {
                 Text(
                   label.toUpperCase(),
                   style: GoogleFonts.orbitron(
-                    color: color.withValues(alpha: 0.7),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 9,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1,
@@ -375,7 +375,7 @@ class _BentoStatTile extends StatelessWidget {
             Text(
               value,
               style: GoogleFonts.rajdhani(
-                color: AppColors.textPrimary,
+                color: Theme.of(context).colorScheme.onSurface,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -419,7 +419,7 @@ class _QuickAction extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color: AppColors.darkSurfaceLight,
+              color: Theme.of(context).colorScheme.surfaceContainerLow,
               border: Border.all(
                 color: color.withValues(alpha: 0.2),
                 width: 1.5,
@@ -469,7 +469,7 @@ class _QuickAction extends StatelessWidget {
                         Text(
                           label,
                           style: GoogleFonts.rajdhani(
-                            color: AppColors.textPrimary,
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
                           ),
@@ -511,8 +511,10 @@ class _LastScanStrip extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
+    final tertiary = Theme.of(context).colorScheme.tertiary;
+
     return NeonCard(
-      glowColor: AppColors.neonGreen,
+      glowColor: tertiary,
       glowIntensity: 0.08,
       onTap: onViewDetails,
       padding: const EdgeInsets.all(16),
@@ -523,14 +525,14 @@ class _LastScanStrip extends StatelessWidget {
             height: 44,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.neonGreen.withValues(alpha: 0.1),
+              color: tertiary.withValues(alpha: 0.1),
               border: Border.all(
-                color: AppColors.neonGreen.withValues(alpha: 0.2),
+                color: tertiary.withValues(alpha: 0.2),
               ),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.radar_rounded,
-              color: AppColors.neonGreen,
+              color: tertiary,
               size: 20,
             ),
           ),
@@ -542,7 +544,7 @@ class _LastScanStrip extends StatelessWidget {
                 Text(
                   l10n.latestSnapshotTitle,
                   style: GoogleFonts.orbitron(
-                    color: AppColors.neonGreen.withValues(alpha: 0.7),
+                    color: tertiary.withValues(alpha: 0.7),
                     fontSize: 8,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1,
@@ -553,7 +555,7 @@ class _LastScanStrip extends StatelessWidget {
                       ? l10n.noSnapshotAvailable
                       : l10n.networksCount(networkCount),
                   style: GoogleFonts.rajdhani(
-                    color: AppColors.textPrimary,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                   ),
@@ -563,7 +565,7 @@ class _LastScanStrip extends StatelessWidget {
           ),
           Icon(
             Icons.arrow_forward_ios_rounded,
-            color: AppColors.neonGreen.withValues(alpha: 0.5),
+            color: tertiary.withValues(alpha: 0.5),
             size: 14,
           ),
         ],
@@ -581,8 +583,10 @@ class _SafetyBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tertiary = Theme.of(context).colorScheme.tertiary;
+
     return GlassmorphicContainer(
-      borderColor: AppColors.neonGreen.withValues(alpha: 0.3),
+      borderColor: tertiary.withValues(alpha: 0.3),
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
       child: InkWell(
         onTap: onTap,
@@ -593,11 +597,11 @@ class _SafetyBadge extends StatelessWidget {
               height: 32,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.neonGreen.withValues(alpha: 0.1),
+                color: tertiary.withValues(alpha: 0.1),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.verified_user_rounded,
-                color: AppColors.neonGreen,
+                color: tertiary,
                 size: 16,
               ),
             ),
@@ -609,7 +613,7 @@ class _SafetyBadge extends StatelessWidget {
                   Text(
                     AppLocalizations.of(context)!.strictSafetyEnabled,
                     style: GoogleFonts.orbitron(
-                      color: AppColors.textPrimary,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
                     ),
@@ -617,7 +621,7 @@ class _SafetyBadge extends StatelessWidget {
                   Text(
                     AppLocalizations.of(context)!.activeMonitoringProgress,
                     style: GoogleFonts.rajdhani(
-                      color: AppColors.textMuted,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       fontSize: 12,
                     ),
                   ),

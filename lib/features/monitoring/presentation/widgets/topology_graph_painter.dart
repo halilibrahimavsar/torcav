@@ -12,6 +12,7 @@ class TopologyGraphPainter extends CustomPainter {
   final bool showTraffic;
   final bool forceView;
   final double flowSpeed;
+  final ColorScheme colorScheme;
   final VoidCallback? onRepaint;
 
   TopologyGraphPainter({
@@ -21,6 +22,7 @@ class TopologyGraphPainter extends CustomPainter {
     this.showTraffic = true,
     this.forceView = false,
     this.flowSpeed = 1.0,
+    required this.colorScheme,
     this.onRepaint,
   });
 
@@ -62,9 +64,9 @@ class TopologyGraphPainter extends CustomPainter {
       if (sourcePos == null || targetPos == null) continue;
 
       final baseColor = switch (edge.type) {
-        EdgeType.wired => const Color(0xFF5AD4FF),
-        EdgeType.wireless => const Color(0xFF32E6A1),
-        EdgeType.unknown => Colors.white,
+        EdgeType.wired => colorScheme.primary,
+        EdgeType.wireless => colorScheme.tertiary,
+        EdgeType.unknown => colorScheme.onSurface.withValues(alpha: 0.5),
       };
 
       // Depth Fade based on average Y position
@@ -161,7 +163,7 @@ class TopologyGraphPainter extends CustomPainter {
       if (pos == null) continue;
 
       final isSelected = node.id == selectedNodeId;
-      final color = TopologyViewData.nodeColor(node);
+      final color = TopologyViewData.nodeColor(node, colorScheme);
       final radius = TopologyViewData.nodeRadius(node);
 
       // Depth Fade
@@ -208,11 +210,16 @@ class TopologyGraphPainter extends CustomPainter {
         text: TextSpan(
           text: node.label.toUpperCase(),
           style: GoogleFonts.orbitron(
-            color: Colors.white.withValues(alpha: 0.8 * depthOpacity),
+            color: colorScheme.onSurface.withValues(alpha: 0.8 * depthOpacity),
             fontSize: 9,
             fontWeight: FontWeight.w600,
             letterSpacing: 1,
-            shadows: [const Shadow(color: Colors.black, blurRadius: 2)],
+            shadows: [
+              Shadow(
+                color: colorScheme.surface,
+                blurRadius: 2,
+              ),
+            ],
           ),
         ),
         textDirection: TextDirection.ltr,
@@ -244,7 +251,7 @@ class TopologyGraphPainter extends CustomPainter {
     canvas.drawPath(
       path,
       Paint()
-        ..color = const Color(0xFF0F1219)
+        ..color = colorScheme.surface
         ..style = PaintingStyle.fill,
     );
 
@@ -411,7 +418,7 @@ class TopologyGraphPainter extends CustomPainter {
   void _drawScanlines(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = Colors.white.withValues(alpha: 0.03)
+          ..color = colorScheme.onSurface.withValues(alpha: 0.03)
           ..strokeWidth = 1.0;
 
     for (double i = 0; i < size.height; i += 4) {
@@ -422,7 +429,12 @@ class TopologyGraphPainter extends CustomPainter {
     final vignettePaint =
         Paint()
           ..shader = RadialGradient(
-            colors: [Colors.transparent, Colors.black.withValues(alpha: 0.2)],
+            colors: [
+              Colors.transparent,
+              colorScheme.brightness == Brightness.dark
+                  ? Colors.black.withValues(alpha: 0.2)
+                  : colorScheme.onSurface.withValues(alpha: 0.1),
+            ],
             stops: const [0.6, 1.0],
           ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
     canvas.drawRect(

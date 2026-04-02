@@ -110,16 +110,16 @@ class TopologyViewData {
     };
   }
 
-  static Color nodeColor(TopologyNode node) {
+  static Color nodeColor(TopologyNode node, ColorScheme colorScheme) {
     return switch (visualKindFor(node)) {
-      TopologyNodeVisualKind.currentDevice => const Color(0xFF00FF9F),
-      TopologyNodeVisualKind.gateway => const Color(0xFF00D1FF),
-      TopologyNodeVisualKind.router => const Color(0xFF00D1FF),
-      TopologyNodeVisualKind.accessPoint => const Color(0xFF00FF9F),
-      TopologyNodeVisualKind.mobile => const Color(0xFFFF0060),
-      TopologyNodeVisualKind.iot => const Color(0xFFB5179E),
-      TopologyNodeVisualKind.device => const Color(0xFF7209B7),
-      TopologyNodeVisualKind.unknown => const Color(0xFF4361EE),
+      TopologyNodeVisualKind.currentDevice => colorScheme.tertiary, // Neon Green
+      TopologyNodeVisualKind.gateway => colorScheme.primary, // Neon Cyan
+      TopologyNodeVisualKind.router => colorScheme.primary,
+      TopologyNodeVisualKind.accessPoint => colorScheme.tertiary,
+      TopologyNodeVisualKind.mobile => const Color(0xFFFF0060), // Cyber Red
+      TopologyNodeVisualKind.iot => const Color(0xFFB5179E), // Cyber Pink
+      TopologyNodeVisualKind.device => colorScheme.secondary, // Neon Purple
+      TopologyNodeVisualKind.unknown => colorScheme.onSurface.withValues(alpha: 0.5),
     };
   }
 
