@@ -50,7 +50,7 @@ class ReportsView extends StatelessWidget {
               content: Text(
                 '${l10n.errorLabel}: ${state.message}',
                 style: GoogleFonts.rajdhani(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onError,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -344,7 +344,7 @@ class ReportsView extends StatelessWidget {
         content: Text(
           message,
           style: GoogleFonts.rajdhani(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.onTertiary,
             fontWeight: FontWeight.bold,
           ),
         ),

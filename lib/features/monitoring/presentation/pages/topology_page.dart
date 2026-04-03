@@ -191,11 +191,10 @@ class _TopologyPageState extends State<TopologyPage>
     required VoidCallback onTap,
     required String label,
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final color =
         active
             ? Theme.of(context).colorScheme.primary
-            : (isDark ? Colors.white24 : Colors.black12);
+            : Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.2);
     return GestureDetector(
       onTap: onTap,
       child: Column(

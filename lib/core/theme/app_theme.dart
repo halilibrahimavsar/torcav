@@ -19,6 +19,12 @@ class AppColors {
   static const Color neonYellow = Color(0xFFEEFF41);
   static const Color neonBlue = Color(0xFF448AFF);
 
+  // ── High Contrast Ink (For Light Theme) ──
+  static const Color inkCyan = Color(0xFF006064);
+  static const Color inkPurple = Color(0xFF4A148C);
+  static const Color inkGreen = Color(0xFF1B5E20);
+  static const Color inkRed = Color(0xFFB71C1C);
+
   // ── Surfaces & Depth ──
   static const Color deepBlack = Color(0xFF020206);
   static const Color darkSurface = Color(0xFF0A0F1E);
@@ -32,12 +38,13 @@ class AppColors {
   static const Color textSecondary = Color(0xFF98A2B3);
   static const Color textMuted = Color(0xFF667085);
 
-  // ── Light Mode Tokens (Solar-Aero Aesthetic) ──
-  static const Color lightBg = Color(0xFFF5F7FA);
-  static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightSurfaceSecondary = Color(0xFFE9F0F6);
-  static const Color lightSurfaceTertiary = Color(0xFFD3DFEA);
-  static const Color lightGlassBorder = Color(0x3300F5FF); // Hint of Cyan glow
+  // ── Light Mode Tokens (Clean & High Contrast) ──
+  static const Color lightBg = Color(0xFFF1F5F9); // Slate-100 base
+  static const Color lightSurface = Color(0xFFF8FAFC); // Slate-50 soft surface
+  static const Color lightSurfaceSecondary = Color(0xFFE2E8F0); // Slate-200
+  static const Color lightSurfaceTertiary = Color(0xFFCBD5E1); // Slate-300
+  static const Color softWhite = Color(0xFFFFFFFF); // Pure white fallback
+  static const Color lightGlassBorder = Color(0x33006064); // Hint of Ink Cyan
   
   static const Color textPrimaryLight = Color(0xFF0F172A);
   static const Color textSecondaryLight = Color(0xFF334155);
@@ -224,15 +231,15 @@ class AppTheme {
   // ─────────────────────────────────────────────────────────────────
   static ThemeData get lightTheme {
     const scheme = ColorScheme.light(
-      primary: AppColors.neonCyan,
-      secondary: AppColors.neonPurple,
-      tertiary: AppColors.neonGreen,
+      primary: AppColors.inkCyan,
+      secondary: AppColors.inkPurple,
+      tertiary: AppColors.inkGreen,
       surface: AppColors.lightSurface,
-      error: AppColors.neonRed,
-      onPrimary: Colors.white,
-      onSecondary: Colors.white,
+      error: AppColors.inkRed,
+      onPrimary: AppColors.softWhite,
+      onSecondary: AppColors.softWhite,
       onSurface: AppColors.textPrimaryLight,
-      onError: Colors.white,
+      onError: AppColors.softWhite,
       surfaceContainerHighest: AppColors.lightSurfaceSecondary,
     );
 
@@ -254,23 +261,23 @@ class AppTheme {
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.lightSurface,
-        elevation: 20,
-        shadowColor: AppColors.neonCyan.withValues(alpha: 0.1),
+        elevation: 8,
+        shadowColor: AppColors.inkCyan.withValues(alpha: 0.1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
-          side: BorderSide(color: AppColors.neonCyan.withValues(alpha: 0.15)),
+          side: BorderSide(color: AppColors.inkCyan.withValues(alpha: 0.15)),
         ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: AppColors.neonCyan,
-        foregroundColor: AppColors.deepBlack,
+        backgroundColor: AppColors.inkCyan,
+        foregroundColor: AppColors.softWhite,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         elevation: 8,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.neonCyan,
-          foregroundColor: Colors.white,
+          backgroundColor: AppColors.inkCyan,
+          foregroundColor: AppColors.softWhite,
           elevation: 2,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
@@ -294,22 +301,22 @@ class AppTheme {
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith((states) {
           return states.contains(WidgetState.selected)
-              ? AppColors.neonCyan
+              ? AppColors.inkCyan
               : AppColors.textMutedLight;
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {
           return states.contains(WidgetState.selected)
-              ? AppColors.neonCyan.withValues(alpha: 0.3)
-              : Colors.black12;
+              ? AppColors.inkCyan.withValues(alpha: 0.2)
+              : AppColors.lightSurfaceSecondary;
         }),
       ),
       progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: AppColors.neonCyan,
-        linearTrackColor: Colors.black12,
+        color: AppColors.inkCyan,
+        linearTrackColor: AppColors.lightSurfaceSecondary,
       ),
       tabBarTheme: TabBarThemeData(
-        indicatorColor: AppColors.neonCyan,
-        labelColor: AppColors.neonCyan,
+        indicatorColor: AppColors.inkCyan,
+        labelColor: AppColors.inkCyan,
         unselectedLabelColor: AppColors.textMutedLight,
         dividerColor: Colors.transparent,
         labelStyle: GoogleFonts.orbitron(

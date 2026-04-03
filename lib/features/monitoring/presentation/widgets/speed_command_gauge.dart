@@ -130,7 +130,7 @@ class _SpeedCommandGaugeState extends State<SpeedCommandGauge>
                             style: GoogleFonts.orbitron(
                               fontSize: 38,
                               fontWeight: FontWeight.w900,
-                              color: Colors.white,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                             glowRadius: isDone ? 14 : 10,
                             glowColor: centerColor,

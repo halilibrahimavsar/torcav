@@ -866,7 +866,7 @@ class _LineView extends StatelessWidget {
                           'CH $ch: ${spot.y.toStringAsFixed(0)}'
                           '${time.isNotEmpty ? '\n$time' : ''}',
                           GoogleFonts.rajdhani(
-                            color: spot.bar.color ?? Colors.white,
+                            color: spot.bar.color ?? Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
                           ),
