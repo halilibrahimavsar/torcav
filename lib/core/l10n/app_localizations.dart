@@ -291,19 +291,19 @@ abstract class AppLocalizations {
   /// **'CHANGED ({count})'**
   String changedNetworksCountLabel(int count);
 
-  /// No description provided for @plusNewLabel.
+  /// Plus New Label
   ///
   /// In en, this message translates to:
   /// **'+ NEW'**
   String get plusNewLabel;
 
-  /// No description provided for @goneLabel.
+  /// Gone Label
   ///
   /// In en, this message translates to:
   /// **'GONE'**
   String get goneLabel;
 
-  /// No description provided for @hiddenLabel.
+  /// Hidden Label
   ///
   /// In en, this message translates to:
   /// **'[Hidden]'**
@@ -315,1117 +315,1117 @@ abstract class AppLocalizations {
   /// **'CH {channel}'**
   String channelLabel(int channel);
 
-  /// No description provided for @securityLabel.
+  /// Security Label
   ///
   /// In en, this message translates to:
   /// **'SECURITY'**
   String get securityLabel;
 
-  /// No description provided for @initiatingSpectrumScan.
+  /// Initiating Spectrum Scan
   ///
   /// In en, this message translates to:
   /// **'INITIATING SPECTRUM SCAN...'**
   String get initiatingSpectrumScan;
 
-  /// No description provided for @broadcastingProbeRequests.
+  /// Broadcasting Probe Requests
   ///
   /// In en, this message translates to:
   /// **'BROADCASTING PROBE REQUESTS...'**
   String get broadcastingProbeRequests;
 
-  /// No description provided for @noRadiosInRange.
+  /// No Radios In Range
   ///
   /// In en, this message translates to:
   /// **'No radios in range'**
   String get noRadiosInRange;
 
-  /// No description provided for @noNetworksMatchFilter.
+  /// No Networks Match Filter
   ///
   /// In en, this message translates to:
   /// **'No networks match your filter'**
   String get noNetworksMatchFilter;
 
-  /// No description provided for @searchSsidBssidVendor.
+  /// Search Ssid Bssid Vendor
   ///
   /// In en, this message translates to:
   /// **'Search SSID, BSSID or Vendor...'**
   String get searchSsidBssidVendor;
 
-  /// No description provided for @sortPrefix.
+  /// Sort Prefix
   ///
   /// In en, this message translates to:
   /// **'Sort: {option}'**
   String sortPrefix(String option);
 
-  /// No description provided for @bandAll.
+  /// Band All
   ///
   /// In en, this message translates to:
   /// **'ALL BANDS'**
   String get bandAll;
 
-  /// No description provided for @sortSignal.
+  /// Sort Signal
   ///
   /// In en, this message translates to:
   /// **'Signal'**
   String get sortSignal;
 
-  /// No description provided for @sortName.
+  /// Sort Name
   ///
   /// In en, this message translates to:
   /// **'Name'**
   String get sortName;
 
-  /// No description provided for @sortChannel.
+  /// Sort Channel
   ///
   /// In en, this message translates to:
   /// **'Channel'**
   String get sortChannel;
 
-  /// No description provided for @sortSecurity.
+  /// Sort Security
   ///
   /// In en, this message translates to:
   /// **'Security'**
   String get sortSecurity;
 
-  /// No description provided for @sortByTitle.
+  /// Sort By Title
   ///
   /// In en, this message translates to:
   /// **'SORT BY'**
   String get sortByTitle;
 
-  /// No description provided for @recommendationTip.
+  /// Recommendation Tip
   ///
   /// In en, this message translates to:
   /// **'Optimum channels on {band}: {channels}'**
   String recommendationTip(String channels, String band);
 
-  /// No description provided for @channelInterferenceTitle.
+  /// Channel Interference Title
   ///
   /// In en, this message translates to:
   /// **'Channel Interference'**
   String get channelInterferenceTitle;
 
-  /// No description provided for @networksLabel.
+  /// Networks Label
   ///
   /// In en, this message translates to:
   /// **'NETWORKS'**
   String get networksLabel;
 
-  /// No description provided for @openCount.
+  /// Open Count
   ///
   /// In en, this message translates to:
   /// **'{count} OPEN'**
   String openCount(int count);
 
-  /// No description provided for @avgSignalLabel.
+  /// Avg Signal Label
   ///
   /// In en, this message translates to:
   /// **'AVG SIGNAL'**
   String get avgSignalLabel;
 
-  /// No description provided for @notAvailable.
+  /// Not Available
   ///
   /// In en, this message translates to:
   /// **'N/A'**
   String get notAvailable;
 
-  /// No description provided for @dbmCaps.
+  /// Dbm Caps
   ///
   /// In en, this message translates to:
   /// **'DBM'**
   String get dbmCaps;
 
-  /// No description provided for @interfaceLabel.
+  /// Interface Label
   ///
   /// In en, this message translates to:
   /// **'INTERFACE'**
   String get interfaceLabel;
 
-  /// No description provided for @frequencyLabel.
+  /// Frequency Label
   ///
   /// In en, this message translates to:
   /// **'{freq} MHz'**
   String frequencyLabel(int freq);
 
-  /// No description provided for @reportsTitle.
+  /// Reports Title
   ///
   /// In en, this message translates to:
   /// **'REPORTS'**
   String get reportsTitle;
 
-  /// No description provided for @saveReportDialog.
+  /// Save Report Dialog
   ///
   /// In en, this message translates to:
   /// **'Save Report'**
   String get saveReportDialog;
 
-  /// No description provided for @savedToast.
+  /// Saved Toast
   ///
   /// In en, this message translates to:
   /// **'Report saved to {path}'**
   String savedToast(String path);
 
-  /// No description provided for @errorLabel.
+  /// Error Label
   ///
   /// In en, this message translates to:
   /// **'Error'**
   String get errorLabel;
 
-  /// No description provided for @savePdfReportDialog.
+  /// Save Pdf Report Dialog
   ///
   /// In en, this message translates to:
   /// **'Save PDF Report'**
   String get savePdfReportDialog;
 
-  /// No description provided for @scanning.
+  /// Scanning
   ///
   /// In en, this message translates to:
   /// **'Scanning...'**
   String get scanning;
 
-  /// No description provided for @shieldActive.
+  /// Shield Active
   ///
   /// In en, this message translates to:
   /// **'Shield Active'**
   String get shieldActive;
 
-  /// No description provided for @threatsDetected.
+  /// Threats Detected
   ///
   /// In en, this message translates to:
   /// **'Threats Detected'**
   String get threatsDetected;
 
-  /// No description provided for @trustedLabel.
+  /// Trusted Label
   ///
   /// In en, this message translates to:
   /// **'TRUSTED'**
   String get trustedLabel;
 
-  /// No description provided for @securityEventTitle.
+  /// Security Event Title
   ///
   /// In en, this message translates to:
   /// **'Security Event'**
   String get securityEventTitle;
 
-  /// No description provided for @networkReconTitle.
+  /// Network Recon Title
   ///
   /// In en, this message translates to:
   /// **'NETWORK RECON'**
   String get networkReconTitle;
 
-  /// No description provided for @intelligenceReportTitle.
+  /// Intelligence Report Title
   ///
   /// In en, this message translates to:
   /// **'INTELLIGENCE REPORT'**
   String get intelligenceReportTitle;
 
-  /// No description provided for @discoveredEndpointsTitle.
+  /// Discovered Endpoints Title
   ///
   /// In en, this message translates to:
   /// **'DISCOVERED ENDPOINTS'**
   String get discoveredEndpointsTitle;
 
-  /// No description provided for @newDeviceFound.
+  /// New Device Found
   ///
   /// In en, this message translates to:
   /// **'1 new device: {ip}'**
   String newDeviceFound(String ip);
 
-  /// No description provided for @newDevicesFound.
+  /// New Devices Found
   ///
   /// In en, this message translates to:
   /// **'{count} new devices on your network'**
   String newDevicesFound(int count);
 
-  /// No description provided for @targetIpSubnet.
+  /// Target Ip Subnet
   ///
   /// In en, this message translates to:
   /// **'Target IP / Subnet'**
   String get targetIpSubnet;
 
-  /// No description provided for @scanProfileFast.
+  /// Scan Profile Fast
   ///
   /// In en, this message translates to:
   /// **'Fast'**
   String get scanProfileFast;
 
-  /// No description provided for @scanProfileBalanced.
+  /// Scan Profile Balanced
   ///
   /// In en, this message translates to:
   /// **'Balanced'**
   String get scanProfileBalanced;
 
-  /// No description provided for @scanProfileAggressive.
+  /// Scan Profile Aggressive
   ///
   /// In en, this message translates to:
   /// **'Aggressive'**
   String get scanProfileAggressive;
 
-  /// No description provided for @scanProfileNormal.
+  /// Scan Profile Normal
   ///
   /// In en, this message translates to:
   /// **'Normal'**
   String get scanProfileNormal;
 
-  /// No description provided for @scanProfileIntense.
+  /// Scan Profile Intense
   ///
   /// In en, this message translates to:
   /// **'Intense'**
   String get scanProfileIntense;
 
-  /// No description provided for @vulnOnlyLabel.
+  /// Vuln Only Label
   ///
   /// In en, this message translates to:
   /// **'Vulnerabilities Only'**
   String get vulnOnlyLabel;
 
-  /// No description provided for @lanReconTitle.
+  /// Lan Recon Title
   ///
   /// In en, this message translates to:
   /// **'LAN RECON'**
   String get lanReconTitle;
 
-  /// No description provided for @targetSubnet.
+  /// Target Subnet
   ///
   /// In en, this message translates to:
   /// **'Target IP / Subnet'**
   String get targetSubnet;
 
-  /// No description provided for @scanAllCaps.
+  /// Scan All Caps
   ///
   /// In en, this message translates to:
   /// **'SCAN'**
   String get scanAllCaps;
 
-  /// No description provided for @channelRatingTitle.
+  /// Channel Rating Title
   ///
   /// In en, this message translates to:
   /// **'CHANNEL RATING'**
   String get channelRatingTitle;
 
-  /// No description provided for @refreshScanTooltip.
+  /// Refresh Scan Tooltip
   ///
   /// In en, this message translates to:
   /// **'Refresh Scan'**
   String get refreshScanTooltip;
 
-  /// No description provided for @band24Ghz.
+  /// Band24 Ghz
   ///
   /// In en, this message translates to:
   /// **'2.4 GHz'**
   String get band24Ghz;
 
-  /// No description provided for @band5Ghz.
+  /// Band5 Ghz
   ///
   /// In en, this message translates to:
   /// **'5 GHz'**
   String get band5Ghz;
 
-  /// No description provided for @band6Ghz.
+  /// Band6 Ghz
   ///
   /// In en, this message translates to:
   /// **'6 GHz'**
   String get band6Ghz;
 
-  /// No description provided for @no24GhzChannels.
+  /// No24 Ghz Channels
   ///
   /// In en, this message translates to:
   /// **'No 2.4 GHz channels found.'**
   String get no24GhzChannels;
 
-  /// No description provided for @no5GhzChannels.
+  /// No5 Ghz Channels
   ///
   /// In en, this message translates to:
   /// **'No 5 GHz channels found.'**
   String get no5GhzChannels;
 
-  /// No description provided for @no6GhzChannels.
+  /// No6 Ghz Channels
   ///
   /// In en, this message translates to:
   /// **'No 6 GHz channels found.'**
   String get no6GhzChannels;
 
-  /// No description provided for @analyzing.
+  /// Analyzing
   ///
   /// In en, this message translates to:
   /// **'Analyzing...'**
   String get analyzing;
 
-  /// No description provided for @historyLabel.
+  /// History Label
   ///
   /// In en, this message translates to:
   /// **'HISTORY'**
   String get historyLabel;
 
-  /// No description provided for @failedLoadTopology.
+  /// Failed Load Topology
   ///
   /// In en, this message translates to:
   /// **'Failed to load topology: {error}'**
   String failedLoadTopology(String error);
 
-  /// No description provided for @trafficLabel.
+  /// Traffic Label
   ///
   /// In en, this message translates to:
   /// **'TRAFFIC'**
   String get trafficLabel;
 
-  /// No description provided for @forceLabel.
+  /// Force Label
   ///
   /// In en, this message translates to:
   /// **'FORCE'**
   String get forceLabel;
 
-  /// No description provided for @normalSpeed.
+  /// Normal Speed
   ///
   /// In en, this message translates to:
   /// **'NORMAL'**
   String get normalSpeed;
 
-  /// No description provided for @fastSpeed.
+  /// Fast Speed
   ///
   /// In en, this message translates to:
   /// **'FAST'**
   String get fastSpeed;
 
-  /// No description provided for @overdriveSpeed.
+  /// Overdrive Speed
   ///
   /// In en, this message translates to:
   /// **'OVERDRIVE'**
   String get overdriveSpeed;
 
-  /// No description provided for @topologyMapTitle.
+  /// Topology Map Title
   ///
   /// In en, this message translates to:
   /// **'TOPOLOGY MAP'**
   String get topologyMapTitle;
 
-  /// No description provided for @noTopologyData.
+  /// No Topology Data
   ///
   /// In en, this message translates to:
   /// **'No Topology Data'**
   String get noTopologyData;
 
-  /// No description provided for @runScanFirst.
+  /// Run Scan First
   ///
   /// In en, this message translates to:
   /// **'Run a scan first to build the network map'**
   String get runScanFirst;
 
-  /// No description provided for @retry.
+  /// Retry
   ///
   /// In en, this message translates to:
   /// **'RETRY'**
   String get retry;
 
-  /// No description provided for @thisDevice.
+  /// This Device
   ///
   /// In en, this message translates to:
   /// **'THIS DEVICE'**
   String get thisDevice;
 
-  /// No description provided for @gatewayDevice.
+  /// Gateway Device
   ///
   /// In en, this message translates to:
   /// **'GATEWAY'**
   String get gatewayDevice;
 
-  /// No description provided for @mobileDevice.
+  /// Mobile Device
   ///
   /// In en, this message translates to:
   /// **'MOBILE'**
   String get mobileDevice;
 
-  /// No description provided for @deviceLabel.
+  /// Device Label
   ///
   /// In en, this message translates to:
   /// **'DEVICE'**
   String get deviceLabel;
 
-  /// No description provided for @iotDevice.
+  /// Iot Device
   ///
   /// In en, this message translates to:
   /// **'IOT'**
   String get iotDevice;
 
-  /// No description provided for @analyzingNode.
+  /// Analyzing Node
   ///
   /// In en, this message translates to:
   /// **'ANALYZING NODE'**
   String get analyzingNode;
 
-  /// No description provided for @settingsTitle.
+  /// Settings Title
   ///
   /// In en, this message translates to:
   /// **'SETTINGS'**
   String get settingsTitle;
 
-  /// No description provided for @appearance.
+  /// Appearance
   ///
   /// In en, this message translates to:
   /// **'Appearance'**
   String get appearance;
 
-  /// No description provided for @settingsLanguage.
+  /// Settings Language
   ///
   /// In en, this message translates to:
   /// **'Language'**
   String get settingsLanguage;
 
-  /// No description provided for @theme.
+  /// Theme
   ///
   /// In en, this message translates to:
   /// **'Theme'**
   String get theme;
 
-  /// No description provided for @settingsScanBehavior.
+  /// Settings Scan Behavior
   ///
   /// In en, this message translates to:
   /// **'Scan Behavior'**
   String get settingsScanBehavior;
 
-  /// No description provided for @settingsDefaultScanPasses.
+  /// Settings Default Scan Passes
   ///
   /// In en, this message translates to:
   /// **'Default Scan Passes'**
   String get settingsDefaultScanPasses;
 
-  /// No description provided for @settingsMonitoringInterval.
+  /// Settings Monitoring Interval
   ///
   /// In en, this message translates to:
   /// **'Monitoring Interval'**
   String get settingsMonitoringInterval;
 
-  /// No description provided for @settingsBackendPreference.
+  /// Settings Backend Preference
   ///
   /// In en, this message translates to:
   /// **'Backend Preference'**
   String get settingsBackendPreference;
 
-  /// No description provided for @settingsIncludeHidden.
+  /// Settings Include Hidden
   ///
   /// In en, this message translates to:
   /// **'Include Hidden SSIDs'**
   String get settingsIncludeHidden;
 
-  /// No description provided for @settingsStrictSafety.
+  /// Settings Strict Safety
   ///
   /// In en, this message translates to:
   /// **'Strict Safety Mode'**
   String get settingsStrictSafety;
 
-  /// No description provided for @settingsStrictSafetyDesc.
+  /// Settings Strict Safety Desc
   ///
   /// In en, this message translates to:
   /// **'Restrict dangerous operations'**
   String get settingsStrictSafetyDesc;
 
-  /// No description provided for @darkTheme.
+  /// Dark Theme
   ///
   /// In en, this message translates to:
   /// **'Dark'**
   String get darkTheme;
 
-  /// No description provided for @lightTheme.
+  /// Light Theme
   ///
   /// In en, this message translates to:
   /// **'Light'**
   String get lightTheme;
 
-  /// No description provided for @systemTheme.
+  /// System Theme
   ///
   /// In en, this message translates to:
   /// **'System'**
   String get systemTheme;
 
-  /// No description provided for @sectionStatus.
+  /// Section Status
   ///
   /// In en, this message translates to:
   /// **'Status'**
   String get sectionStatus;
 
-  /// No description provided for @reportsSubtitle.
+  /// Reports Subtitle
   ///
   /// In en, this message translates to:
   /// **'Network Scan & Security Intelligence'**
   String get reportsSubtitle;
 
-  /// No description provided for @exportOptionsTitle.
+  /// Export Options Title
   ///
   /// In en, this message translates to:
   /// **'EXPORT OPTIONS'**
   String get exportOptionsTitle;
 
-  /// No description provided for @exportJson.
+  /// Export Json
   ///
   /// In en, this message translates to:
   /// **'Export JSON'**
   String get exportJson;
 
-  /// No description provided for @exportHtml.
+  /// Export Html
   ///
   /// In en, this message translates to:
   /// **'Export HTML'**
   String get exportHtml;
 
-  /// No description provided for @exportPdf.
+  /// Export Pdf
   ///
   /// In en, this message translates to:
   /// **'Export PDF'**
   String get exportPdf;
 
-  /// No description provided for @printPdf.
+  /// Print Pdf
   ///
   /// In en, this message translates to:
   /// **'Print PDF'**
   String get printPdf;
 
-  /// No description provided for @navWifi.
+  /// Nav Wifi
   ///
   /// In en, this message translates to:
   /// **'WIFI'**
   String get navWifi;
 
-  /// No description provided for @backendLabel.
+  /// Backend Label
   ///
   /// In en, this message translates to:
   /// **'BACKEND'**
   String get backendLabel;
 
-  /// No description provided for @defenseTitle.
+  /// Defense Title
   ///
   /// In en, this message translates to:
   /// **'DEFENSE'**
   String get defenseTitle;
 
-  /// No description provided for @knownNetworks.
+  /// Known Networks
   ///
   /// In en, this message translates to:
   /// **'Known Networks'**
   String get knownNetworks;
 
-  /// No description provided for @noKnownNetworksYet.
+  /// No Known Networks Yet
   ///
   /// In en, this message translates to:
   /// **'No known networks yet'**
   String get noKnownNetworksYet;
 
-  /// No description provided for @securityTimeline.
+  /// Security Timeline
   ///
   /// In en, this message translates to:
   /// **'Security Timeline'**
   String get securityTimeline;
 
-  /// No description provided for @noSecurityEvents.
+  /// No Security Events
   ///
   /// In en, this message translates to:
   /// **'No security events recorded'**
   String get noSecurityEvents;
 
-  /// No description provided for @authLocalSystem.
+  /// Auth Local System
   ///
   /// In en, this message translates to:
   /// **'AUTH_LOCAL_SYSTEM'**
   String get authLocalSystem;
 
-  /// No description provided for @remoteNodeIdLabel.
+  /// Remote Node Id Label
   ///
   /// In en, this message translates to:
   /// **'REMOTE_NODE_ID: {id}'**
   String remoteNodeIdLabel(String id);
 
-  /// No description provided for @ipAddrLabel.
+  /// Ip Addr Label
   ///
   /// In en, this message translates to:
   /// **'IP_ADDR'**
   String get ipAddrLabel;
 
-  /// No description provided for @macValLabel.
+  /// Mac Val Label
   ///
   /// In en, this message translates to:
   /// **'MAC_VAL'**
   String get macValLabel;
 
-  /// No description provided for @mnfrLabel.
+  /// Mnfr Label
   ///
   /// In en, this message translates to:
   /// **'MNFR'**
   String get mnfrLabel;
 
-  /// No description provided for @hiddenNetwork.
+  /// Hidden Network
   ///
   /// In en, this message translates to:
   /// **'Hidden Network'**
   String get hiddenNetwork;
 
-  /// No description provided for @signalGraph.
+  /// Signal Graph
   ///
   /// In en, this message translates to:
   /// **'Signal Graph'**
   String get signalGraph;
 
-  /// No description provided for @riskFactors.
+  /// Risk Factors
   ///
   /// In en, this message translates to:
   /// **'Risk Factors'**
   String get riskFactors;
 
-  /// No description provided for @vulnerabilities.
+  /// Vulnerabilities
   ///
   /// In en, this message translates to:
   /// **'Vulnerabilities'**
   String get vulnerabilities;
 
-  /// No description provided for @bssId.
+  /// Bss Id
   ///
   /// In en, this message translates to:
   /// **'BSSID'**
   String get bssId;
 
-  /// No description provided for @channel.
+  /// Channel
   ///
   /// In en, this message translates to:
   /// **'Channel'**
   String get channel;
 
-  /// No description provided for @security.
+  /// Security
   ///
   /// In en, this message translates to:
   /// **'Security'**
   String get security;
 
-  /// No description provided for @signal.
+  /// Signal
   ///
   /// In en, this message translates to:
   /// **'Signal'**
   String get signal;
 
-  /// No description provided for @recommendationLabel.
+  /// Recommendation Label
   ///
   /// In en, this message translates to:
   /// **'RECO: {text}'**
   String recommendationLabel(String text);
 
-  /// No description provided for @noVulnerabilities.
+  /// No Vulnerabilities
   ///
   /// In en, this message translates to:
   /// **'No vulnerabilities detected.'**
   String get noVulnerabilities;
 
-  /// No description provided for @securityScoreTitle.
+  /// Security Score Title
   ///
   /// In en, this message translates to:
   /// **'Security Score'**
   String get securityScoreTitle;
 
-  /// No description provided for @securityScoreDesc.
+  /// Security Score Desc
   ///
   /// In en, this message translates to:
   /// **'The security score (0–100) rates how well this network is protected. Higher is better. It considers encryption type, WPS status, and other security features.'**
   String get securityScoreDesc;
 
-  /// No description provided for @capabilitiesLabel.
+  /// Capabilities Label
   ///
   /// In en, this message translates to:
   /// **'CAPABILITIES'**
   String get capabilitiesLabel;
 
-  /// No description provided for @wifi7MldLabel.
+  /// Wifi7 Mld Label
   ///
   /// In en, this message translates to:
   /// **'Wi-Fi 7 MLD'**
   String get wifi7MldLabel;
 
-  /// No description provided for @tagWpa3Desc.
+  /// Tag Wpa3 Desc
   ///
   /// In en, this message translates to:
   /// **'WPA3 is the latest Wi-Fi security standard — highly secure.'**
   String get tagWpa3Desc;
 
-  /// No description provided for @tagWpa2Desc.
+  /// Tag Wpa2 Desc
   ///
   /// In en, this message translates to:
   /// **'WPA2 is a strong security standard — safe for everyday use.'**
   String get tagWpa2Desc;
 
-  /// No description provided for @tagWpaDesc.
+  /// Tag Wpa Desc
   ///
   /// In en, this message translates to:
   /// **'WPA is an older security standard with known weaknesses.'**
   String get tagWpaDesc;
 
-  /// No description provided for @tagWpsDesc.
+  /// Tag Wps Desc
   ///
   /// In en, this message translates to:
   /// **'WPS (Wi-Fi Protected Setup) has known security vulnerabilities. It can allow attackers to brute-force the PIN and gain access.'**
   String get tagWpsDesc;
 
-  /// No description provided for @tagPmfDesc.
+  /// Tag Pmf Desc
   ///
   /// In en, this message translates to:
   /// **'Protected Management Frames (PMF/MFP) protects against deauthentication attacks.'**
   String get tagPmfDesc;
 
-  /// No description provided for @tagEssDesc.
+  /// Tag Ess Desc
   ///
   /// In en, this message translates to:
   /// **'ESS (Extended Service Set) means this is a standard access point network.'**
   String get tagEssDesc;
 
-  /// No description provided for @tagCcmpDesc.
+  /// Tag Ccmp Desc
   ///
   /// In en, this message translates to:
   /// **'CCMP (AES) is a strong encryption cipher used with WPA2/WPA3.'**
   String get tagCcmpDesc;
 
-  /// No description provided for @tagTkipDesc.
+  /// Tag Tkip Desc
   ///
   /// In en, this message translates to:
   /// **'TKIP is an older, weaker encryption cipher. CCMP/AES is preferred.'**
   String get tagTkipDesc;
 
-  /// No description provided for @tagUnknownDesc.
+  /// Tag Unknown Desc
   ///
   /// In en, this message translates to:
   /// **'Network capability flag from the beacon frame.'**
   String get tagUnknownDesc;
 
-  /// No description provided for @scanProfileLabel.
+  /// Scan Profile Label
   ///
   /// In en, this message translates to:
   /// **'SCAN PROFILE'**
   String get scanProfileLabel;
 
-  /// No description provided for @infoScanProfilesTitle.
+  /// Info Scan Profiles Title
   ///
   /// In en, this message translates to:
   /// **'Scan Profiles'**
   String get infoScanProfilesTitle;
 
-  /// No description provided for @infoScanProfileFastDesc.
+  /// Info Scan Profile Fast Desc
   ///
   /// In en, this message translates to:
   /// **'Fast: Quick ping sweep — finds devices in seconds.'**
   String get infoScanProfileFastDesc;
 
-  /// No description provided for @infoScanProfileBalancedDesc.
+  /// Info Scan Profile Balanced Desc
   ///
   /// In en, this message translates to:
   /// **'Balanced: Ping + common ports — finds more detail.'**
   String get infoScanProfileBalancedDesc;
 
-  /// No description provided for @infoScanProfileAggressiveDesc.
+  /// Info Scan Profile Aggressive Desc
   ///
   /// In en, this message translates to:
   /// **'Aggressive: Full port scan — most thorough but slowest.'**
   String get infoScanProfileAggressiveDesc;
 
-  /// No description provided for @activeNodeRecon.
+  /// Active Node Recon
   ///
   /// In en, this message translates to:
   /// **'ACTIVE NODE RECONNAISSANCE'**
   String get activeNodeRecon;
 
-  /// No description provided for @interrogatingSubnet.
+  /// Interrogating Subnet
   ///
   /// In en, this message translates to:
   /// **'Interrogating subnet for responsive hosts...'**
   String get interrogatingSubnet;
 
-  /// No description provided for @nodesLabel.
+  /// Nodes Label
   ///
   /// In en, this message translates to:
   /// **'Nodes'**
   String get nodesLabel;
 
-  /// No description provided for @riskAvgLabel.
+  /// Risk Avg Label
   ///
   /// In en, this message translates to:
   /// **'Risk Avg'**
   String get riskAvgLabel;
 
-  /// No description provided for @servicesLabel.
+  /// Services Label
   ///
   /// In en, this message translates to:
   /// **'Services'**
   String get servicesLabel;
 
-  /// No description provided for @openPortsLabel.
+  /// Open Ports Label
   ///
   /// In en, this message translates to:
   /// **'OPEN PORTS'**
   String get openPortsLabel;
 
-  /// No description provided for @subnetLabel.
+  /// Subnet Label
   ///
   /// In en, this message translates to:
   /// **'Subnet'**
   String get subnetLabel;
 
-  /// No description provided for @cidrTargetLabel.
+  /// Cidr Target Label
   ///
   /// In en, this message translates to:
   /// **'CIDR TARGET'**
   String get cidrTargetLabel;
 
-  /// No description provided for @anonymousNode.
+  /// Anonymous Node
   ///
   /// In en, this message translates to:
   /// **'ANONYMOUS NODE'**
   String get anonymousNode;
 
-  /// No description provided for @portsCountLabel.
+  /// Ports Count Label
   ///
   /// In en, this message translates to:
   /// **'{count} PORTS'**
   String portsCountLabel(int count);
 
-  /// No description provided for @riskLabel.
+  /// Risk Label
   ///
   /// In en, this message translates to:
   /// **'RISK'**
   String get riskLabel;
 
-  /// No description provided for @searchLanPlaceholder.
+  /// Search Lan Placeholder
   ///
   /// In en, this message translates to:
   /// **'Search by IP, hostname, or vendor...'**
   String get searchLanPlaceholder;
 
-  /// No description provided for @hasVulnerabilitiesLabel.
+  /// Has Vulnerabilities Label
   ///
   /// In en, this message translates to:
   /// **'Has Vulnerabilities'**
   String get hasVulnerabilitiesLabel;
 
-  /// No description provided for @securityStatusSecure.
+  /// Security Status Secure
   ///
   /// In en, this message translates to:
   /// **'Secure'**
   String get securityStatusSecure;
 
-  /// No description provided for @securityStatusModerate.
+  /// Security Status Moderate
   ///
   /// In en, this message translates to:
   /// **'Moderate'**
   String get securityStatusModerate;
 
-  /// No description provided for @securityStatusAtRisk.
+  /// Security Status At Risk
   ///
   /// In en, this message translates to:
   /// **'At Risk'**
   String get securityStatusAtRisk;
 
-  /// No description provided for @securityStatusCritical.
+  /// Security Status Critical
   ///
   /// In en, this message translates to:
   /// **'Critical'**
   String get securityStatusCritical;
 
-  /// No description provided for @securitySummarySecure.
+  /// Security Summary Secure
   ///
   /// In en, this message translates to:
   /// **'Your connection looks good! This network uses strong encryption and is well protected against common attacks.'**
   String get securitySummarySecure;
 
-  /// No description provided for @securitySummaryModerate.
+  /// Security Summary Moderate
   ///
   /// In en, this message translates to:
   /// **'This network has decent security but some potential weaknesses. It is safe for everyday use, but avoid sensitive transactions.'**
   String get securitySummaryModerate;
 
-  /// No description provided for @securitySummaryAtRisk.
+  /// Security Summary At Risk
   ///
   /// In en, this message translates to:
   /// **'This network has security issues that put your data at risk. Avoid entering passwords or personal information while connected.'**
   String get securitySummaryAtRisk;
 
-  /// No description provided for @securitySummaryCritical.
+  /// Security Summary Critical
   ///
   /// In en, this message translates to:
   /// **'Warning: This network is not secure. Anyone nearby may be able to see your internet traffic. Use a VPN or switch networks.'**
   String get securitySummaryCritical;
 
-  /// No description provided for @vulnerabilityOpenNetworkTitle.
+  /// Vulnerability Open Network Title
   ///
   /// In en, this message translates to:
   /// **'Open Network'**
   String get vulnerabilityOpenNetworkTitle;
 
-  /// No description provided for @vulnerabilityOpenNetworkDesc.
+  /// Vulnerability Open Network Desc
   ///
   /// In en, this message translates to:
   /// **'No encryption detected. All traffic can be sniffed in plaintext.'**
   String get vulnerabilityOpenNetworkDesc;
 
-  /// No description provided for @vulnerabilityOpenNetworkRec.
+  /// Vulnerability Open Network Rec
   ///
   /// In en, this message translates to:
   /// **'Avoid sensitive activity. Prefer trusted VPN or different network.'**
   String get vulnerabilityOpenNetworkRec;
 
-  /// No description provided for @vulnerabilityWepTitle.
+  /// Vulnerability Wep Title
   ///
   /// In en, this message translates to:
   /// **'WEP Encryption'**
   String get vulnerabilityWepTitle;
 
-  /// No description provided for @vulnerabilityWepDesc.
+  /// Vulnerability Wep Desc
   ///
   /// In en, this message translates to:
   /// **'WEP is deprecated and can be cracked quickly.'**
   String get vulnerabilityWepDesc;
 
-  /// No description provided for @vulnerabilityWepRec.
+  /// Vulnerability Wep Rec
   ///
   /// In en, this message translates to:
   /// **'Reconfigure AP to WPA2 or WPA3 immediately.'**
   String get vulnerabilityWepRec;
 
-  /// No description provided for @vulnerabilityLegacyWpaTitle.
+  /// Vulnerability Legacy Wpa Title
   ///
   /// In en, this message translates to:
   /// **'Legacy WPA'**
   String get vulnerabilityLegacyWpaTitle;
 
-  /// No description provided for @vulnerabilityLegacyWpaDesc.
+  /// Vulnerability Legacy Wpa Desc
   ///
   /// In en, this message translates to:
   /// **'WPA/TKIP is older and weaker against modern attack techniques.'**
   String get vulnerabilityLegacyWpaDesc;
 
-  /// No description provided for @vulnerabilityLegacyWpaRec.
+  /// Vulnerability Legacy Wpa Rec
   ///
   /// In en, this message translates to:
   /// **'Upgrade AP and clients to WPA2/WPA3.'**
   String get vulnerabilityLegacyWpaRec;
 
-  /// No description provided for @vulnerabilityHiddenSsidTitle.
+  /// Vulnerability Hidden Ssid Title
   ///
   /// In en, this message translates to:
   /// **'Hidden SSID'**
   String get vulnerabilityHiddenSsidTitle;
 
-  /// No description provided for @vulnerabilityHiddenSsidDesc.
+  /// Vulnerability Hidden Ssid Desc
   ///
   /// In en, this message translates to:
   /// **'Hidden SSIDs are still discoverable and may hurt compatibility.'**
   String get vulnerabilityHiddenSsidDesc;
 
-  /// No description provided for @vulnerabilityHiddenSsidRec.
+  /// Vulnerability Hidden Ssid Rec
   ///
   /// In en, this message translates to:
   /// **'Hidden SSID alone is not protection. Focus on strong encryption.'**
   String get vulnerabilityHiddenSsidRec;
 
-  /// No description provided for @vulnerabilityWeakSignalTitle.
+  /// Vulnerability Weak Signal Title
   ///
   /// In en, this message translates to:
   /// **'Very Weak Signal'**
   String get vulnerabilityWeakSignalTitle;
 
-  /// No description provided for @vulnerabilityWeakSignalDesc.
+  /// Vulnerability Weak Signal Desc
   ///
   /// In en, this message translates to:
   /// **'Weak signal can indicate unstable links and spoofing susceptibility.'**
   String get vulnerabilityWeakSignalDesc;
 
-  /// No description provided for @vulnerabilityWeakSignalRec.
+  /// Vulnerability Weak Signal Rec
   ///
   /// In en, this message translates to:
   /// **'Move closer to AP or validate BSSID consistency.'**
   String get vulnerabilityWeakSignalRec;
 
-  /// No description provided for @vulnerabilityWpsTitle.
+  /// Vulnerability Wps Title
   ///
   /// In en, this message translates to:
   /// **'WPS Enabled'**
   String get vulnerabilityWpsTitle;
 
-  /// No description provided for @vulnerabilityWpsDesc.
+  /// Vulnerability Wps Desc
   ///
   /// In en, this message translates to:
   /// **'Wi-Fi Protected Setup (WPS) is enabled. The WPS PIN mode can be brute-forced in hours using Pixie Dust attack, effectively bypassing any password.'**
   String get vulnerabilityWpsDesc;
 
-  /// No description provided for @vulnerabilityWpsRec.
+  /// Vulnerability Wps Rec
   ///
   /// In en, this message translates to:
   /// **'Disable WPS in your router admin panel. Use WPA2/WPA3 passphrase only.'**
   String get vulnerabilityWpsRec;
 
-  /// No description provided for @vulnerabilityPmfTitle.
+  /// Vulnerability Pmf Title
   ///
   /// In en, this message translates to:
   /// **'Management Frames Unprotected'**
   String get vulnerabilityPmfTitle;
 
-  /// No description provided for @vulnerabilityPmfDesc.
+  /// Vulnerability Pmf Desc
   ///
   /// In en, this message translates to:
   /// **'This access point does not enforce Protected Management Frames (PMF / 802.11w). Unprotected management frames allow an attacker to forge deauthentication packets and disconnect clients.'**
   String get vulnerabilityPmfDesc;
 
-  /// No description provided for @vulnerabilityPmfRec.
+  /// Vulnerability Pmf Rec
   ///
   /// In en, this message translates to:
   /// **'Enable PMF in router settings (often labelled \'802.11w\' or \'Management Frame Protection\'). WPA3 requires PMF by default.'**
   String get vulnerabilityPmfRec;
 
-  /// No description provided for @vulnerabilityEvilTwinTitle.
+  /// Vulnerability Evil Twin Title
   ///
   /// In en, this message translates to:
   /// **'Potential Evil Twin'**
   String get vulnerabilityEvilTwinTitle;
 
-  /// No description provided for @vulnerabilityEvilTwinDesc.
+  /// Vulnerability Evil Twin Desc
   ///
   /// In en, this message translates to:
   /// **'SSID appears with conflicting security/channel fingerprint nearby.'**
   String get vulnerabilityEvilTwinDesc;
 
-  /// No description provided for @vulnerabilityEvilTwinRec.
+  /// Vulnerability Evil Twin Rec
   ///
   /// In en, this message translates to:
   /// **'Verify BSSID and certificate before authentication or data exchange.'**
   String get vulnerabilityEvilTwinRec;
 
-  /// No description provided for @riskFactorNoEncryption.
+  /// Risk Factor No Encryption
   ///
   /// In en, this message translates to:
   /// **'No encryption in use'**
   String get riskFactorNoEncryption;
 
-  /// No description provided for @riskFactorDeprecatedEncryption.
+  /// Risk Factor Deprecated Encryption
   ///
   /// In en, this message translates to:
   /// **'Deprecated encryption (WEP)'**
   String get riskFactorDeprecatedEncryption;
 
-  /// No description provided for @riskFactorLegacyWpa.
+  /// Risk Factor Legacy Wpa
   ///
   /// In en, this message translates to:
   /// **'Legacy WPA in use'**
   String get riskFactorLegacyWpa;
 
-  /// No description provided for @riskFactorHiddenSsid.
+  /// Risk Factor Hidden Ssid
   ///
   /// In en, this message translates to:
   /// **'Hidden SSID behavior'**
   String get riskFactorHiddenSsid;
 
-  /// No description provided for @riskFactorWeakSignal.
+  /// Risk Factor Weak Signal
   ///
   /// In en, this message translates to:
   /// **'Weak signal environment'**
   String get riskFactorWeakSignal;
 
-  /// No description provided for @riskFactorWpsEnabled.
+  /// Risk Factor Wps Enabled
   ///
   /// In en, this message translates to:
   /// **'WPS PIN attack surface exposed'**
   String get riskFactorWpsEnabled;
 
-  /// No description provided for @riskFactorPmfNotEnforced.
+  /// Risk Factor Pmf Not Enforced
   ///
   /// In en, this message translates to:
   /// **'PMF not enforced — deauth spoofing possible'**
@@ -1467,403 +1467,403 @@ abstract class AppLocalizations {
   /// **'Temporal Heatmap'**
   String get temporalHeatmap;
 
-  /// No description provided for @failedToSaveHeatmapPoint.
+  /// Failed To Save Heatmap Point
   ///
   /// In en, this message translates to:
   /// **'Failed to save heatmap point'**
   String get failedToSaveHeatmapPoint;
 
-  /// No description provided for @signalMonitoringTitle.
+  /// Signal Monitoring Title
   ///
   /// In en, this message translates to:
   /// **'SIGNAL MONITORING: {ssid}'**
   String signalMonitoringTitle(String ssid);
 
-  /// No description provided for @heatmapTooltip.
+  /// Heatmap Tooltip
   ///
   /// In en, this message translates to:
   /// **'Heatmap'**
   String get heatmapTooltip;
 
-  /// No description provided for @tagCurrentPointTooltip.
+  /// Tag Current Point Tooltip
   ///
   /// In en, this message translates to:
   /// **'Tag current point'**
   String get tagCurrentPointTooltip;
 
-  /// No description provided for @signalCaps.
+  /// Signal Caps
   ///
   /// In en, this message translates to:
   /// **'SIGNAL'**
   String get signalCaps;
 
-  /// No description provided for @channelCaps.
+  /// Channel Caps
   ///
   /// In en, this message translates to:
   /// **'CHANNEL'**
   String get channelCaps;
 
-  /// No description provided for @frequencyCaps.
+  /// Frequency Caps
   ///
   /// In en, this message translates to:
   /// **'FREQ'**
   String get frequencyCaps;
 
-  /// No description provided for @heatmapPointAdded.
+  /// Heatmap Point Added
   ///
   /// In en, this message translates to:
   /// **'Heatmap point added for {zone}'**
   String heatmapPointAdded(String zone);
 
-  /// No description provided for @zoneTagLabel.
+  /// Zone Tag Label
   ///
   /// In en, this message translates to:
   /// **'Zone tag (e.g. Kitchen)'**
   String get zoneTagLabel;
 
-  /// No description provided for @errorPrefix.
+  /// Error Prefix
   ///
   /// In en, this message translates to:
   /// **'Error: {message}'**
   String errorPrefix(String message);
 
-  /// No description provided for @noHeatmapPointsYet.
+  /// No Heatmap Points Yet
   ///
   /// In en, this message translates to:
   /// **'No heatmap points yet for {bssid}'**
   String noHeatmapPointsYet(String bssid);
 
-  /// No description provided for @averageSignalByZone.
+  /// Average Signal By Zone
   ///
   /// In en, this message translates to:
   /// **'Average signal by zone'**
   String get averageSignalByZone;
 
-  /// No description provided for @bandChannels.
+  /// Band Channels
   ///
   /// In en, this message translates to:
   /// **'{band} CHANNELS'**
   String bandChannels(String band);
 
-  /// No description provided for @recommendedChannel.
+  /// Recommended Channel
   ///
   /// In en, this message translates to:
   /// **'RECOMMENDED CHANNEL'**
   String get recommendedChannel;
 
-  /// No description provided for @channelInfo.
+  /// Channel Info
   ///
   /// In en, this message translates to:
   /// **'Channel {ch} · {freq} MHz'**
   String channelInfo(int ch, int freq);
 
-  /// No description provided for @riskFactorFingerprintDrift.
+  /// Risk Factor Fingerprint Drift
   ///
   /// In en, this message translates to:
   /// **'SSID fingerprint drift detected'**
   String get riskFactorFingerprintDrift;
 
-  /// No description provided for @historyCaps.
+  /// History Caps
   ///
   /// In en, this message translates to:
   /// **'HISTORY'**
   String get historyCaps;
 
-  /// No description provided for @consistentlyBestChannel.
+  /// Consistently Best Channel
   ///
   /// In en, this message translates to:
   /// **'CONSISTENTLY BEST CHANNEL'**
   String get consistentlyBestChannel;
 
-  /// No description provided for @avgScore.
+  /// Avg Score
   ///
   /// In en, this message translates to:
   /// **'Avg Score'**
   String get avgScore;
 
-  /// No description provided for @channelBondingTitle.
+  /// Channel Bonding Title
   ///
   /// In en, this message translates to:
   /// **'Channel Bonding'**
   String get channelBondingTitle;
 
-  /// No description provided for @channelBondingDesc.
+  /// Channel Bonding Desc
   ///
   /// In en, this message translates to:
   /// **'Channel bonding combines 2 or more adjacent channels to increase bandwidth (40 MHz = 2×, 80 MHz = 4×, 160 MHz = 8×). Wider channels deliver faster speeds but may interfere with more neighboring networks.'**
   String get channelBondingDesc;
 
-  /// No description provided for @spectrumOptimizationCaps.
+  /// Spectrum Optimization Caps
   ///
   /// In en, this message translates to:
   /// **'SPECTRUM OPTIMIZATION'**
   String get spectrumOptimizationCaps;
 
-  /// No description provided for @spectrumOptimizationDesc.
+  /// Spectrum Optimization Desc
   ///
   /// In en, this message translates to:
   /// **'Analyze channel congestion & interference'**
   String get spectrumOptimizationDesc;
 
-  /// No description provided for @qualityExcellent.
+  /// Quality Excellent
   ///
   /// In en, this message translates to:
   /// **'Excellent'**
   String get qualityExcellent;
 
-  /// No description provided for @qualityVeryGood.
+  /// Quality Very Good
   ///
   /// In en, this message translates to:
   /// **'Very Good'**
   String get qualityVeryGood;
 
-  /// No description provided for @qualityGood.
+  /// Quality Good
   ///
   /// In en, this message translates to:
   /// **'Good'**
   String get qualityGood;
 
-  /// No description provided for @qualityFair.
+  /// Quality Fair
   ///
   /// In en, this message translates to:
   /// **'Fair'**
   String get qualityFair;
 
-  /// No description provided for @qualityCongested.
+  /// Quality Congested
   ///
   /// In en, this message translates to:
   /// **'Congested'**
   String get qualityCongested;
 
-  /// No description provided for @channelBondingHeader.
+  /// Channel Bonding Header
   ///
   /// In en, this message translates to:
   /// **'CHANNEL BONDING ({count} APs)'**
   String channelBondingHeader(int count);
 
-  /// No description provided for @hiddenSsidLabel.
+  /// Hidden Ssid Label
   ///
   /// In en, this message translates to:
   /// **'[Hidden]'**
   String get hiddenSsidLabel;
 
-  /// No description provided for @noHistoryPlaceholder.
+  /// No History Placeholder
   ///
   /// In en, this message translates to:
   /// **'No history yet.\nChannel ratings are recorded each time you open this screen.'**
   String get noHistoryPlaceholder;
 
-  /// No description provided for @currentSessionInfo.
+  /// Current Session Info
   ///
   /// In en, this message translates to:
   /// **'Current session — higher score = less congested.'**
   String get currentSessionInfo;
 
-  /// No description provided for @historySummaryInfo.
+  /// History Summary Info
   ///
   /// In en, this message translates to:
   /// **'{sessions} sessions · {samples} samples · higher = less congested'**
   String historySummaryInfo(int sessions, int samples);
 
-  /// No description provided for @scanReportTitle.
+  /// Scan Report Title
   ///
   /// In en, this message translates to:
   /// **'Torcav Wi-Fi Scan Report'**
   String get scanReportTitle;
 
-  /// No description provided for @reportTime.
+  /// Report Time
   ///
   /// In en, this message translates to:
   /// **'Time'**
   String get reportTime;
 
-  /// No description provided for @ssidHeader.
+  /// Ssid Header
   ///
   /// In en, this message translates to:
   /// **'SSID'**
   String get ssidHeader;
 
-  /// No description provided for @bssidHeader.
+  /// Bssid Header
   ///
   /// In en, this message translates to:
   /// **'BSSID'**
   String get bssidHeader;
 
-  /// No description provided for @dbmHeader.
+  /// Dbm Header
   ///
   /// In en, this message translates to:
   /// **'dBm'**
   String get dbmHeader;
 
-  /// No description provided for @channelHeader.
+  /// Channel Header
   ///
   /// In en, this message translates to:
   /// **'CH'**
   String get channelHeader;
 
-  /// No description provided for @navDashboard.
+  /// Nav Dashboard
   ///
   /// In en, this message translates to:
   /// **'DASHBOARD'**
   String get navDashboard;
 
-  /// No description provided for @navDiscovery.
+  /// Nav Discovery
   ///
   /// In en, this message translates to:
   /// **'DISCOVERY'**
   String get navDiscovery;
 
-  /// No description provided for @navOperations.
+  /// Nav Operations
   ///
   /// In en, this message translates to:
   /// **'OPERATIONS'**
   String get navOperations;
 
-  /// No description provided for @navLan.
+  /// Nav Lan
   ///
   /// In en, this message translates to:
   /// **'LAN'**
   String get navLan;
 
-  /// No description provided for @systemStatus.
+  /// System Status
   ///
   /// In en, this message translates to:
   /// **'System Status'**
   String get systemStatus;
 
-  /// No description provided for @interfaceTheme.
+  /// Interface Theme
   ///
   /// In en, this message translates to:
   /// **'Interface Theme'**
   String get interfaceTheme;
 
-  /// No description provided for @speedTestHeader.
+  /// Speed Test Header
   ///
   /// In en, this message translates to:
   /// **'SPEED TEST'**
   String get speedTestHeader;
 
-  /// No description provided for @startTest.
+  /// Start Test
   ///
   /// In en, this message translates to:
   /// **'START TEST'**
   String get startTest;
 
-  /// No description provided for @testAgain.
+  /// Test Again
   ///
   /// In en, this message translates to:
   /// **'TEST AGAIN'**
   String get testAgain;
 
-  /// No description provided for @commandCenters.
+  /// Command Centers
   ///
   /// In en, this message translates to:
   /// **'COMMAND CENTERS'**
   String get commandCenters;
 
-  /// No description provided for @activeShielding.
+  /// Active Shielding
   ///
   /// In en, this message translates to:
   /// **'Active Shielding'**
   String get activeShielding;
 
-  /// No description provided for @logisticsTitle.
+  /// Logistics Title
   ///
   /// In en, this message translates to:
   /// **'LOGISTICS'**
   String get logisticsTitle;
 
-  /// No description provided for @intelMetrics.
+  /// Intel Metrics
   ///
   /// In en, this message translates to:
   /// **'Intel Metrics'**
   String get intelMetrics;
 
-  /// No description provided for @networkMesh.
+  /// Network Mesh
   ///
   /// In en, this message translates to:
   /// **'Network Mesh'**
   String get networkMesh;
 
-  /// No description provided for @tuningTitle.
+  /// Tuning Title
   ///
   /// In en, this message translates to:
   /// **'TUNING'**
   String get tuningTitle;
 
-  /// No description provided for @systemConfig.
+  /// System Config
   ///
   /// In en, this message translates to:
   /// **'System Config'**
   String get systemConfig;
 
-  /// No description provided for @phasePing.
+  /// Phase Ping
   ///
   /// In en, this message translates to:
   /// **'PHASE: PING'**
   String get phasePing;
 
-  /// No description provided for @phaseDownload.
+  /// Phase Download
   ///
   /// In en, this message translates to:
   /// **'PHASE: DOWNLOAD'**
   String get phaseDownload;
 
-  /// No description provided for @phaseUpload.
+  /// Phase Upload
   ///
   /// In en, this message translates to:
   /// **'PHASE: UPLOAD'**
   String get phaseUpload;
 
-  /// No description provided for @phaseDone.
+  /// Phase Done
   ///
   /// In en, this message translates to:
   /// **'PHASE: DONE'**
   String get phaseDone;
 
-  /// No description provided for @riskScore.
+  /// Risk Score
   ///
   /// In en, this message translates to:
   /// **'Risk Score'**
   String get riskScore;
 
-  /// No description provided for @loading.
+  /// Loading
   ///
   /// In en, this message translates to:
   /// **'Loading...'**
   String get loading;
 
-  /// No description provided for @profileTitle.
+  /// Profile Title
   ///
   /// In en, this message translates to:
   /// **'PROFILE HUB'**
   String get profileTitle;
 
-  /// No description provided for @activeSessionLabel.
+  /// Active Session Label
   ///
   /// In en, this message translates to:
   /// **'Active Session'**
   String get activeSessionLabel;
 
-  /// No description provided for @networkStatusLabel.
+  /// Network Status Label
   ///
   /// In en, this message translates to:
   /// **'NETWORK STATUS'**
   String get networkStatusLabel;
 
-  /// No description provided for @ssid.
+  /// Ssid
   ///
   /// In en, this message translates to:
   /// **'SSID'**
   String get ssid;
 
-  /// No description provided for @lastScanTitle.
+  /// Last Scan Title
   ///
   /// In en, this message translates to:
   /// **'LAST SCAN'**
   String get lastScanTitle;
 
-  /// No description provided for @lastSnapshot.
+  /// Last Snapshot
   ///
   /// In en, this message translates to:
   /// **'Last Snapshot'**

@@ -14,8 +14,9 @@ import 'notification_sheet.dart';
 /// Dashboard — neon-styled status overview with animated bento-grid layout.
 class DashboardPage extends StatefulWidget {
   final void Function(String destination) onNavigate;
+  final VoidCallback? onOpenDrawer;
 
-  const DashboardPage({super.key, required this.onNavigate});
+  const DashboardPage({super.key, required this.onNavigate, this.onOpenDrawer});
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -88,7 +89,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                     child: const Icon(Icons.menu_rounded, size: 18),
                   ),
-                  onPressed: () => Scaffold.of(context).openDrawer(),
+                  onPressed: widget.onOpenDrawer ?? () => Scaffold.of(context).openDrawer(),
                 ),
           ),
           title: NeonText(

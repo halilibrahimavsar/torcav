@@ -33,6 +33,7 @@ class AppShellPage extends StatefulWidget {
 class _AppShellPageState extends State<AppShellPage> {
   int _index = 0;
   final PageController _pageController = PageController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void dispose() {
@@ -54,12 +55,16 @@ class _AppShellPageState extends State<AppShellPage> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
+      key: _scaffoldKey,
       drawer: CyberDrawer(onNavigate: _navigateTo),
       body: PageView(
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),
         children: [
-          DashboardPage(onNavigate: _navigateTo),
+          DashboardPage(
+            onNavigate: _navigateTo,
+            onOpenDrawer: () => _scaffoldKey.currentState?.openDrawer(),
+          ),
           const _DiscoveryTabPage(),
           OperationsHubPage(onNavigate: _navigateTo),
         ],

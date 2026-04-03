@@ -157,8 +157,17 @@
         }
     },
     "plusNewLabel": "+ NEW",
+    "@plusNewLabel": {
+        "description": "Plus New Label"
+    },
     "goneLabel": "GONE",
+    "@goneLabel": {
+        "description": "Gone Label"
+    },
     "hiddenLabel": "[Hidden]",
+    "@hiddenLabel": {
+        "description": "Hidden Label"
+    },
     "channelLabel": "CH {channel}",
     "@channelLabel": {
         "description": "Wifi channel.",
@@ -169,13 +178,32 @@
         }
     },
     "securityLabel": "SECURITY",
+    "@securityLabel": {
+        "description": "Security Label"
+    },
     "initiatingSpectrumScan": "INITIATING SPECTRUM SCAN...",
+    "@initiatingSpectrumScan": {
+        "description": "Initiating Spectrum Scan"
+    },
     "broadcastingProbeRequests": "BROADCASTING PROBE REQUESTS...",
+    "@broadcastingProbeRequests": {
+        "description": "Broadcasting Probe Requests"
+    },
     "noRadiosInRange": "No radios in range",
+    "@noRadiosInRange": {
+        "description": "No Radios In Range"
+    },
     "noNetworksMatchFilter": "No networks match your filter",
+    "@noNetworksMatchFilter": {
+        "description": "No Networks Match Filter"
+    },
     "searchSsidBssidVendor": "Search SSID, BSSID or Vendor...",
+    "@searchSsidBssidVendor": {
+        "description": "Search Ssid Bssid Vendor"
+    },
     "sortPrefix": "Sort: {option}",
     "@sortPrefix": {
+        "description": "Sort Prefix",
         "placeholders": {
             "option": {
                 "type": "String"
@@ -183,13 +211,32 @@
         }
     },
     "bandAll": "ALL BANDS",
+    "@bandAll": {
+        "description": "Band All"
+    },
     "sortSignal": "Signal",
+    "@sortSignal": {
+        "description": "Sort Signal"
+    },
     "sortName": "Name",
+    "@sortName": {
+        "description": "Sort Name"
+    },
     "sortChannel": "Channel",
+    "@sortChannel": {
+        "description": "Sort Channel"
+    },
     "sortSecurity": "Security",
+    "@sortSecurity": {
+        "description": "Sort Security"
+    },
     "sortByTitle": "SORT BY",
+    "@sortByTitle": {
+        "description": "Sort By Title"
+    },
     "recommendationTip": "Optimum channels on {band}: {channels}",
     "@recommendationTip": {
+        "description": "Recommendation Tip",
         "placeholders": {
             "channels": {
                 "type": "String"
@@ -200,9 +247,16 @@
         }
     },
     "channelInterferenceTitle": "Channel Interference",
+    "@channelInterferenceTitle": {
+        "description": "Channel Interference Title"
+    },
     "networksLabel": "NETWORKS",
+    "@networksLabel": {
+        "description": "Networks Label"
+    },
     "openCount": "{count} OPEN",
     "@openCount": {
+        "description": "Open Count",
         "placeholders": {
             "count": {
                 "type": "int"
@@ -210,11 +264,24 @@
         }
     },
     "avgSignalLabel": "AVG SIGNAL",
+    "@avgSignalLabel": {
+        "description": "Avg Signal Label"
+    },
     "notAvailable": "N/A",
+    "@notAvailable": {
+        "description": "Not Available"
+    },
     "dbmCaps": "DBM",
+    "@dbmCaps": {
+        "description": "Dbm Caps"
+    },
     "interfaceLabel": "INTERFACE",
+    "@interfaceLabel": {
+        "description": "Interface Label"
+    },
     "frequencyLabel": "{freq} MHz",
     "@frequencyLabel": {
+        "description": "Frequency Label",
         "placeholders": {
             "freq": {
                 "type": "int"
@@ -222,9 +289,16 @@
         }
     },
     "reportsTitle": "REPORTS",
+    "@reportsTitle": {
+        "description": "Reports Title"
+    },
     "saveReportDialog": "Save Report",
+    "@saveReportDialog": {
+        "description": "Save Report Dialog"
+    },
     "savedToast": "Report saved to {path}",
     "@savedToast": {
+        "description": "Saved Toast",
         "placeholders": {
             "path": {
                 "type": "String"
@@ -232,17 +306,48 @@
         }
     },
     "errorLabel": "Error",
+    "@errorLabel": {
+        "description": "Error Label"
+    },
     "savePdfReportDialog": "Save PDF Report",
+    "@savePdfReportDialog": {
+        "description": "Save Pdf Report Dialog"
+    },
     "scanning": "Scanning...",
+    "@scanning": {
+        "description": "Scanning"
+    },
     "shieldActive": "Shield Active",
+    "@shieldActive": {
+        "description": "Shield Active"
+    },
     "threatsDetected": "Threats Detected",
+    "@threatsDetected": {
+        "description": "Threats Detected"
+    },
     "trustedLabel": "TRUSTED",
+    "@trustedLabel": {
+        "description": "Trusted Label"
+    },
     "securityEventTitle": "Security Event",
+    "@securityEventTitle": {
+        "description": "Security Event Title"
+    },
     "networkReconTitle": "NETWORK RECON",
+    "@networkReconTitle": {
+        "description": "Network Recon Title"
+    },
     "intelligenceReportTitle": "INTELLIGENCE REPORT",
+    "@intelligenceReportTitle": {
+        "description": "Intelligence Report Title"
+    },
     "discoveredEndpointsTitle": "DISCOVERED ENDPOINTS",
+    "@discoveredEndpointsTitle": {
+        "description": "Discovered Endpoints Title"
+    },
     "newDeviceFound": "1 new device: {ip}",
     "@newDeviceFound": {
+        "description": "New Device Found",
         "placeholders": {
             "ip": {
                 "type": "String"
@@ -251,6 +356,7 @@
     },
     "newDevicesFound": "{count} new devices on your network",
     "@newDevicesFound": {
+        "description": "New Devices Found",
         "placeholders": {
             "count": {
                 "type": "int"
@@ -258,27 +364,88 @@
         }
     },
     "targetIpSubnet": "Target IP / Subnet",
+    "@targetIpSubnet": {
+        "description": "Target Ip Subnet"
+    },
     "scanProfileFast": "Fast",
+    "@scanProfileFast": {
+        "description": "Scan Profile Fast"
+    },
     "scanProfileBalanced": "Balanced",
+    "@scanProfileBalanced": {
+        "description": "Scan Profile Balanced"
+    },
     "scanProfileAggressive": "Aggressive",
+    "@scanProfileAggressive": {
+        "description": "Scan Profile Aggressive"
+    },
     "scanProfileNormal": "Normal",
+    "@scanProfileNormal": {
+        "description": "Scan Profile Normal"
+    },
     "scanProfileIntense": "Intense",
+    "@scanProfileIntense": {
+        "description": "Scan Profile Intense"
+    },
     "vulnOnlyLabel": "Vulnerabilities Only",
+    "@vulnOnlyLabel": {
+        "description": "Vuln Only Label"
+    },
     "lanReconTitle": "LAN RECON",
+    "@lanReconTitle": {
+        "description": "Lan Recon Title"
+    },
     "targetSubnet": "Target IP / Subnet",
+    "@targetSubnet": {
+        "description": "Target Subnet"
+    },
     "scanAllCaps": "SCAN",
+    "@scanAllCaps": {
+        "description": "Scan All Caps"
+    },
     "channelRatingTitle": "CHANNEL RATING",
+    "@channelRatingTitle": {
+        "description": "Channel Rating Title"
+    },
     "refreshScanTooltip": "Refresh Scan",
+    "@refreshScanTooltip": {
+        "description": "Refresh Scan Tooltip"
+    },
     "band24Ghz": "2.4 GHz",
+    "@band24Ghz": {
+        "description": "Band24 Ghz"
+    },
     "band5Ghz": "5 GHz",
+    "@band5Ghz": {
+        "description": "Band5 Ghz"
+    },
     "band6Ghz": "6 GHz",
+    "@band6Ghz": {
+        "description": "Band6 Ghz"
+    },
     "no24GhzChannels": "No 2.4 GHz channels found.",
+    "@no24GhzChannels": {
+        "description": "No24 Ghz Channels"
+    },
     "no5GhzChannels": "No 5 GHz channels found.",
+    "@no5GhzChannels": {
+        "description": "No5 Ghz Channels"
+    },
     "no6GhzChannels": "No 6 GHz channels found.",
+    "@no6GhzChannels": {
+        "description": "No6 Ghz Channels"
+    },
     "analyzing": "Analyzing...",
+    "@analyzing": {
+        "description": "Analyzing"
+    },
     "historyLabel": "HISTORY",
+    "@historyLabel": {
+        "description": "History Label"
+    },
     "failedLoadTopology": "Failed to load topology: {error}",
     "@failedLoadTopology": {
+        "description": "Failed Load Topology",
         "placeholders": {
             "error": {
                 "type": "String"
@@ -286,51 +453,184 @@
         }
     },
     "trafficLabel": "TRAFFIC",
+    "@trafficLabel": {
+        "description": "Traffic Label"
+    },
     "forceLabel": "FORCE",
+    "@forceLabel": {
+        "description": "Force Label"
+    },
     "normalSpeed": "NORMAL",
+    "@normalSpeed": {
+        "description": "Normal Speed"
+    },
     "fastSpeed": "FAST",
+    "@fastSpeed": {
+        "description": "Fast Speed"
+    },
     "overdriveSpeed": "OVERDRIVE",
+    "@overdriveSpeed": {
+        "description": "Overdrive Speed"
+    },
     "topologyMapTitle": "TOPOLOGY MAP",
+    "@topologyMapTitle": {
+        "description": "Topology Map Title"
+    },
     "noTopologyData": "No Topology Data",
+    "@noTopologyData": {
+        "description": "No Topology Data"
+    },
     "runScanFirst": "Run a scan first to build the network map",
+    "@runScanFirst": {
+        "description": "Run Scan First"
+    },
     "retry": "RETRY",
+    "@retry": {
+        "description": "Retry"
+    },
     "thisDevice": "THIS DEVICE",
+    "@thisDevice": {
+        "description": "This Device"
+    },
     "gatewayDevice": "GATEWAY",
+    "@gatewayDevice": {
+        "description": "Gateway Device"
+    },
     "mobileDevice": "MOBILE",
+    "@mobileDevice": {
+        "description": "Mobile Device"
+    },
     "deviceLabel": "DEVICE",
+    "@deviceLabel": {
+        "description": "Device Label"
+    },
     "iotDevice": "IOT",
+    "@iotDevice": {
+        "description": "Iot Device"
+    },
     "analyzingNode": "ANALYZING NODE",
+    "@analyzingNode": {
+        "description": "Analyzing Node"
+    },
     "settingsTitle": "SETTINGS",
+    "@settingsTitle": {
+        "description": "Settings Title"
+    },
     "appearance": "Appearance",
+    "@appearance": {
+        "description": "Appearance"
+    },
     "settingsLanguage": "Language",
+    "@settingsLanguage": {
+        "description": "Settings Language"
+    },
     "theme": "Theme",
+    "@theme": {
+        "description": "Theme"
+    },
     "settingsScanBehavior": "Scan Behavior",
+    "@settingsScanBehavior": {
+        "description": "Settings Scan Behavior"
+    },
     "settingsDefaultScanPasses": "Default Scan Passes",
+    "@settingsDefaultScanPasses": {
+        "description": "Settings Default Scan Passes"
+    },
     "settingsMonitoringInterval": "Monitoring Interval",
+    "@settingsMonitoringInterval": {
+        "description": "Settings Monitoring Interval"
+    },
     "settingsBackendPreference": "Backend Preference",
+    "@settingsBackendPreference": {
+        "description": "Settings Backend Preference"
+    },
     "settingsIncludeHidden": "Include Hidden SSIDs",
+    "@settingsIncludeHidden": {
+        "description": "Settings Include Hidden"
+    },
     "settingsStrictSafety": "Strict Safety Mode",
+    "@settingsStrictSafety": {
+        "description": "Settings Strict Safety"
+    },
     "settingsStrictSafetyDesc": "Restrict dangerous operations",
+    "@settingsStrictSafetyDesc": {
+        "description": "Settings Strict Safety Desc"
+    },
     "darkTheme": "Dark",
+    "@darkTheme": {
+        "description": "Dark Theme"
+    },
     "lightTheme": "Light",
+    "@lightTheme": {
+        "description": "Light Theme"
+    },
     "systemTheme": "System",
+    "@systemTheme": {
+        "description": "System Theme"
+    },
     "sectionStatus": "Status",
+    "@sectionStatus": {
+        "description": "Section Status"
+    },
     "reportsSubtitle": "Network Scan & Security Intelligence",
+    "@reportsSubtitle": {
+        "description": "Reports Subtitle"
+    },
     "exportOptionsTitle": "EXPORT OPTIONS",
+    "@exportOptionsTitle": {
+        "description": "Export Options Title"
+    },
     "exportJson": "Export JSON",
+    "@exportJson": {
+        "description": "Export Json"
+    },
     "exportHtml": "Export HTML",
+    "@exportHtml": {
+        "description": "Export Html"
+    },
     "exportPdf": "Export PDF",
+    "@exportPdf": {
+        "description": "Export Pdf"
+    },
     "printPdf": "Print PDF",
+    "@printPdf": {
+        "description": "Print Pdf"
+    },
     "navWifi": "WIFI",
+    "@navWifi": {
+        "description": "Nav Wifi"
+    },
     "backendLabel": "BACKEND",
+    "@backendLabel": {
+        "description": "Backend Label"
+    },
     "defenseTitle": "DEFENSE",
+    "@defenseTitle": {
+        "description": "Defense Title"
+    },
     "knownNetworks": "Known Networks",
+    "@knownNetworks": {
+        "description": "Known Networks"
+    },
     "noKnownNetworksYet": "No known networks yet",
+    "@noKnownNetworksYet": {
+        "description": "No Known Networks Yet"
+    },
     "securityTimeline": "Security Timeline",
+    "@securityTimeline": {
+        "description": "Security Timeline"
+    },
     "noSecurityEvents": "No security events recorded",
+    "@noSecurityEvents": {
+        "description": "No Security Events"
+    },
     "authLocalSystem": "AUTH_LOCAL_SYSTEM",
+    "@authLocalSystem": {
+        "description": "Auth Local System"
+    },
     "remoteNodeIdLabel": "REMOTE_NODE_ID: {id}",
     "@remoteNodeIdLabel": {
+        "description": "Remote Node Id Label",
         "placeholders": {
             "id": {
                 "type": "String"
@@ -338,18 +638,52 @@
         }
     },
     "ipAddrLabel": "IP_ADDR",
+    "@ipAddrLabel": {
+        "description": "Ip Addr Label"
+    },
     "macValLabel": "MAC_VAL",
+    "@macValLabel": {
+        "description": "Mac Val Label"
+    },
     "mnfrLabel": "MNFR",
+    "@mnfrLabel": {
+        "description": "Mnfr Label"
+    },
     "hiddenNetwork": "Hidden Network",
+    "@hiddenNetwork": {
+        "description": "Hidden Network"
+    },
     "signalGraph": "Signal Graph",
+    "@signalGraph": {
+        "description": "Signal Graph"
+    },
     "riskFactors": "Risk Factors",
+    "@riskFactors": {
+        "description": "Risk Factors"
+    },
     "vulnerabilities": "Vulnerabilities",
+    "@vulnerabilities": {
+        "description": "Vulnerabilities"
+    },
     "bssId": "BSSID",
+    "@bssId": {
+        "description": "Bss Id"
+    },
     "channel": "Channel",
+    "@channel": {
+        "description": "Channel"
+    },
     "security": "Security",
+    "@security": {
+        "description": "Security"
+    },
     "signal": "Signal",
+    "@signal": {
+        "description": "Signal"
+    },
     "recommendationLabel": "RECO: {text}",
     "@recommendationLabel": {
+        "description": "Recommendation Label",
         "placeholders": {
             "text": {
                 "type": "String"
@@ -357,35 +691,120 @@
         }
     },
     "noVulnerabilities": "No vulnerabilities detected.",
+    "@noVulnerabilities": {
+        "description": "No Vulnerabilities"
+    },
     "securityScoreTitle": "Security Score",
+    "@securityScoreTitle": {
+        "description": "Security Score Title"
+    },
     "securityScoreDesc": "The security score (0–100) rates how well this network is protected. Higher is better. It considers encryption type, WPS status, and other security features.",
+    "@securityScoreDesc": {
+        "description": "Security Score Desc"
+    },
     "capabilitiesLabel": "CAPABILITIES",
+    "@capabilitiesLabel": {
+        "description": "Capabilities Label"
+    },
     "wifi7MldLabel": "Wi-Fi 7 MLD",
+    "@wifi7MldLabel": {
+        "description": "Wifi7 Mld Label"
+    },
     "tagWpa3Desc": "WPA3 is the latest Wi-Fi security standard — highly secure.",
+    "@tagWpa3Desc": {
+        "description": "Tag Wpa3 Desc"
+    },
     "tagWpa2Desc": "WPA2 is a strong security standard — safe for everyday use.",
+    "@tagWpa2Desc": {
+        "description": "Tag Wpa2 Desc"
+    },
     "tagWpaDesc": "WPA is an older security standard with known weaknesses.",
+    "@tagWpaDesc": {
+        "description": "Tag Wpa Desc"
+    },
     "tagWpsDesc": "WPS (Wi-Fi Protected Setup) has known security vulnerabilities. It can allow attackers to brute-force the PIN and gain access.",
+    "@tagWpsDesc": {
+        "description": "Tag Wps Desc"
+    },
     "tagPmfDesc": "Protected Management Frames (PMF/MFP) protects against deauthentication attacks.",
+    "@tagPmfDesc": {
+        "description": "Tag Pmf Desc"
+    },
     "tagEssDesc": "ESS (Extended Service Set) means this is a standard access point network.",
+    "@tagEssDesc": {
+        "description": "Tag Ess Desc"
+    },
     "tagCcmpDesc": "CCMP (AES) is a strong encryption cipher used with WPA2/WPA3.",
+    "@tagCcmpDesc": {
+        "description": "Tag Ccmp Desc"
+    },
     "tagTkipDesc": "TKIP is an older, weaker encryption cipher. CCMP/AES is preferred.",
+    "@tagTkipDesc": {
+        "description": "Tag Tkip Desc"
+    },
     "tagUnknownDesc": "Network capability flag from the beacon frame.",
+    "@tagUnknownDesc": {
+        "description": "Tag Unknown Desc"
+    },
     "scanProfileLabel": "SCAN PROFILE",
+    "@scanProfileLabel": {
+        "description": "Scan Profile Label"
+    },
     "infoScanProfilesTitle": "Scan Profiles",
+    "@infoScanProfilesTitle": {
+        "description": "Info Scan Profiles Title"
+    },
     "infoScanProfileFastDesc": "Fast: Quick ping sweep — finds devices in seconds.",
+    "@infoScanProfileFastDesc": {
+        "description": "Info Scan Profile Fast Desc"
+    },
     "infoScanProfileBalancedDesc": "Balanced: Ping + common ports — finds more detail.",
+    "@infoScanProfileBalancedDesc": {
+        "description": "Info Scan Profile Balanced Desc"
+    },
     "infoScanProfileAggressiveDesc": "Aggressive: Full port scan — most thorough but slowest.",
+    "@infoScanProfileAggressiveDesc": {
+        "description": "Info Scan Profile Aggressive Desc"
+    },
     "activeNodeRecon": "ACTIVE NODE RECONNAISSANCE",
+    "@activeNodeRecon": {
+        "description": "Active Node Recon"
+    },
     "interrogatingSubnet": "Interrogating subnet for responsive hosts...",
+    "@interrogatingSubnet": {
+        "description": "Interrogating Subnet"
+    },
     "nodesLabel": "Nodes",
+    "@nodesLabel": {
+        "description": "Nodes Label"
+    },
     "riskAvgLabel": "Risk Avg",
+    "@riskAvgLabel": {
+        "description": "Risk Avg Label"
+    },
     "servicesLabel": "Services",
+    "@servicesLabel": {
+        "description": "Services Label"
+    },
     "openPortsLabel": "OPEN PORTS",
+    "@openPortsLabel": {
+        "description": "Open Ports Label"
+    },
     "subnetLabel": "Subnet",
+    "@subnetLabel": {
+        "description": "Subnet Label"
+    },
     "cidrTargetLabel": "CIDR TARGET",
+    "@cidrTargetLabel": {
+        "description": "Cidr Target Label"
+    },
     "anonymousNode": "ANONYMOUS NODE",
+    "@anonymousNode": {
+        "description": "Anonymous Node"
+    },
     "portsCountLabel": "{count} PORTS",
     "@portsCountLabel": {
+        "description": "Ports Count Label",
         "placeholders": {
             "count": {
                 "type": "int"
@@ -393,47 +812,173 @@
         }
     },
     "riskLabel": "RISK",
+    "@riskLabel": {
+        "description": "Risk Label"
+    },
     "searchLanPlaceholder": "Search by IP, hostname, or vendor...",
+    "@searchLanPlaceholder": {
+        "description": "Search Lan Placeholder"
+    },
     "hasVulnerabilitiesLabel": "Has Vulnerabilities",
+    "@hasVulnerabilitiesLabel": {
+        "description": "Has Vulnerabilities Label"
+    },
     "securityStatusSecure": "Secure",
+    "@securityStatusSecure": {
+        "description": "Security Status Secure"
+    },
     "securityStatusModerate": "Moderate",
+    "@securityStatusModerate": {
+        "description": "Security Status Moderate"
+    },
     "securityStatusAtRisk": "At Risk",
+    "@securityStatusAtRisk": {
+        "description": "Security Status At Risk"
+    },
     "securityStatusCritical": "Critical",
+    "@securityStatusCritical": {
+        "description": "Security Status Critical"
+    },
     "securitySummarySecure": "Your connection looks good! This network uses strong encryption and is well protected against common attacks.",
+    "@securitySummarySecure": {
+        "description": "Security Summary Secure"
+    },
     "securitySummaryModerate": "This network has decent security but some potential weaknesses. It is safe for everyday use, but avoid sensitive transactions.",
+    "@securitySummaryModerate": {
+        "description": "Security Summary Moderate"
+    },
     "securitySummaryAtRisk": "This network has security issues that put your data at risk. Avoid entering passwords or personal information while connected.",
+    "@securitySummaryAtRisk": {
+        "description": "Security Summary At Risk"
+    },
     "securitySummaryCritical": "Warning: This network is not secure. Anyone nearby may be able to see your internet traffic. Use a VPN or switch networks.",
+    "@securitySummaryCritical": {
+        "description": "Security Summary Critical"
+    },
     "vulnerabilityOpenNetworkTitle": "Open Network",
+    "@vulnerabilityOpenNetworkTitle": {
+        "description": "Vulnerability Open Network Title"
+    },
     "vulnerabilityOpenNetworkDesc": "No encryption detected. All traffic can be sniffed in plaintext.",
+    "@vulnerabilityOpenNetworkDesc": {
+        "description": "Vulnerability Open Network Desc"
+    },
     "vulnerabilityOpenNetworkRec": "Avoid sensitive activity. Prefer trusted VPN or different network.",
+    "@vulnerabilityOpenNetworkRec": {
+        "description": "Vulnerability Open Network Rec"
+    },
     "vulnerabilityWepTitle": "WEP Encryption",
+    "@vulnerabilityWepTitle": {
+        "description": "Vulnerability Wep Title"
+    },
     "vulnerabilityWepDesc": "WEP is deprecated and can be cracked quickly.",
+    "@vulnerabilityWepDesc": {
+        "description": "Vulnerability Wep Desc"
+    },
     "vulnerabilityWepRec": "Reconfigure AP to WPA2 or WPA3 immediately.",
+    "@vulnerabilityWepRec": {
+        "description": "Vulnerability Wep Rec"
+    },
     "vulnerabilityLegacyWpaTitle": "Legacy WPA",
+    "@vulnerabilityLegacyWpaTitle": {
+        "description": "Vulnerability Legacy Wpa Title"
+    },
     "vulnerabilityLegacyWpaDesc": "WPA/TKIP is older and weaker against modern attack techniques.",
+    "@vulnerabilityLegacyWpaDesc": {
+        "description": "Vulnerability Legacy Wpa Desc"
+    },
     "vulnerabilityLegacyWpaRec": "Upgrade AP and clients to WPA2/WPA3.",
+    "@vulnerabilityLegacyWpaRec": {
+        "description": "Vulnerability Legacy Wpa Rec"
+    },
     "vulnerabilityHiddenSsidTitle": "Hidden SSID",
+    "@vulnerabilityHiddenSsidTitle": {
+        "description": "Vulnerability Hidden Ssid Title"
+    },
     "vulnerabilityHiddenSsidDesc": "Hidden SSIDs are still discoverable and may hurt compatibility.",
+    "@vulnerabilityHiddenSsidDesc": {
+        "description": "Vulnerability Hidden Ssid Desc"
+    },
     "vulnerabilityHiddenSsidRec": "Hidden SSID alone is not protection. Focus on strong encryption.",
+    "@vulnerabilityHiddenSsidRec": {
+        "description": "Vulnerability Hidden Ssid Rec"
+    },
     "vulnerabilityWeakSignalTitle": "Very Weak Signal",
+    "@vulnerabilityWeakSignalTitle": {
+        "description": "Vulnerability Weak Signal Title"
+    },
     "vulnerabilityWeakSignalDesc": "Weak signal can indicate unstable links and spoofing susceptibility.",
+    "@vulnerabilityWeakSignalDesc": {
+        "description": "Vulnerability Weak Signal Desc"
+    },
     "vulnerabilityWeakSignalRec": "Move closer to AP or validate BSSID consistency.",
+    "@vulnerabilityWeakSignalRec": {
+        "description": "Vulnerability Weak Signal Rec"
+    },
     "vulnerabilityWpsTitle": "WPS Enabled",
+    "@vulnerabilityWpsTitle": {
+        "description": "Vulnerability Wps Title"
+    },
     "vulnerabilityWpsDesc": "Wi-Fi Protected Setup (WPS) is enabled. The WPS PIN mode can be brute-forced in hours using Pixie Dust attack, effectively bypassing any password.",
+    "@vulnerabilityWpsDesc": {
+        "description": "Vulnerability Wps Desc"
+    },
     "vulnerabilityWpsRec": "Disable WPS in your router admin panel. Use WPA2/WPA3 passphrase only.",
+    "@vulnerabilityWpsRec": {
+        "description": "Vulnerability Wps Rec"
+    },
     "vulnerabilityPmfTitle": "Management Frames Unprotected",
+    "@vulnerabilityPmfTitle": {
+        "description": "Vulnerability Pmf Title"
+    },
     "vulnerabilityPmfDesc": "This access point does not enforce Protected Management Frames (PMF / 802.11w). Unprotected management frames allow an attacker to forge deauthentication packets and disconnect clients.",
+    "@vulnerabilityPmfDesc": {
+        "description": "Vulnerability Pmf Desc"
+    },
     "vulnerabilityPmfRec": "Enable PMF in router settings (often labelled '802.11w' or 'Management Frame Protection'). WPA3 requires PMF by default.",
+    "@vulnerabilityPmfRec": {
+        "description": "Vulnerability Pmf Rec"
+    },
     "vulnerabilityEvilTwinTitle": "Potential Evil Twin",
+    "@vulnerabilityEvilTwinTitle": {
+        "description": "Vulnerability Evil Twin Title"
+    },
     "vulnerabilityEvilTwinDesc": "SSID appears with conflicting security/channel fingerprint nearby.",
+    "@vulnerabilityEvilTwinDesc": {
+        "description": "Vulnerability Evil Twin Desc"
+    },
     "vulnerabilityEvilTwinRec": "Verify BSSID and certificate before authentication or data exchange.",
+    "@vulnerabilityEvilTwinRec": {
+        "description": "Vulnerability Evil Twin Rec"
+    },
     "riskFactorNoEncryption": "No encryption in use",
+    "@riskFactorNoEncryption": {
+        "description": "Risk Factor No Encryption"
+    },
     "riskFactorDeprecatedEncryption": "Deprecated encryption (WEP)",
+    "@riskFactorDeprecatedEncryption": {
+        "description": "Risk Factor Deprecated Encryption"
+    },
     "riskFactorLegacyWpa": "Legacy WPA in use",
+    "@riskFactorLegacyWpa": {
+        "description": "Risk Factor Legacy Wpa"
+    },
     "riskFactorHiddenSsid": "Hidden SSID behavior",
+    "@riskFactorHiddenSsid": {
+        "description": "Risk Factor Hidden Ssid"
+    },
     "riskFactorWeakSignal": "Weak signal environment",
+    "@riskFactorWeakSignal": {
+        "description": "Risk Factor Weak Signal"
+    },
     "riskFactorWpsEnabled": "WPS PIN attack surface exposed",
+    "@riskFactorWpsEnabled": {
+        "description": "Risk Factor Wps Enabled"
+    },
     "riskFactorPmfNotEnforced": "PMF not enforced — deauth spoofing possible",
+    "@riskFactorPmfNotEnforced": {
+        "description": "Risk Factor Pmf Not Enforced"
+    },
     "refresh": "Refresh",
     "@refresh": {
         "description": "Label for refresh button."
@@ -459,8 +1004,12 @@
         "description": "Title for the temporal heatmap screen."
     },
     "failedToSaveHeatmapPoint": "Failed to save heatmap point",
+    "@failedToSaveHeatmapPoint": {
+        "description": "Failed To Save Heatmap Point"
+    },
     "signalMonitoringTitle": "SIGNAL MONITORING: {ssid}",
     "@signalMonitoringTitle": {
+        "description": "Signal Monitoring Title",
         "placeholders": {
             "ssid": {
                 "type": "String"
@@ -468,12 +1017,28 @@
         }
     },
     "heatmapTooltip": "Heatmap",
+    "@heatmapTooltip": {
+        "description": "Heatmap Tooltip"
+    },
     "tagCurrentPointTooltip": "Tag current point",
+    "@tagCurrentPointTooltip": {
+        "description": "Tag Current Point Tooltip"
+    },
     "signalCaps": "SIGNAL",
+    "@signalCaps": {
+        "description": "Signal Caps"
+    },
     "channelCaps": "CHANNEL",
+    "@channelCaps": {
+        "description": "Channel Caps"
+    },
     "frequencyCaps": "FREQ",
+    "@frequencyCaps": {
+        "description": "Frequency Caps"
+    },
     "heatmapPointAdded": "Heatmap point added for {zone}",
     "@heatmapPointAdded": {
+        "description": "Heatmap Point Added",
         "placeholders": {
             "zone": {
                 "type": "String"
@@ -481,8 +1046,12 @@
         }
     },
     "zoneTagLabel": "Zone tag (e.g. Kitchen)",
+    "@zoneTagLabel": {
+        "description": "Zone Tag Label"
+    },
     "errorPrefix": "Error: {message}",
     "@errorPrefix": {
+        "description": "Error Prefix",
         "placeholders": {
             "message": {
                 "type": "String"
@@ -491,6 +1060,7 @@
     },
     "noHeatmapPointsYet": "No heatmap points yet for {bssid}",
     "@noHeatmapPointsYet": {
+        "description": "No Heatmap Points Yet",
         "placeholders": {
             "bssid": {
                 "type": "String"
@@ -498,8 +1068,12 @@
         }
     },
     "averageSignalByZone": "Average signal by zone",
+    "@averageSignalByZone": {
+        "description": "Average Signal By Zone"
+    },
     "bandChannels": "{band} CHANNELS",
     "@bandChannels": {
+        "description": "Band Channels",
         "placeholders": {
             "band": {
                 "type": "String"
@@ -507,8 +1081,12 @@
         }
     },
     "recommendedChannel": "RECOMMENDED CHANNEL",
+    "@recommendedChannel": {
+        "description": "Recommended Channel"
+    },
     "channelInfo": "Channel {ch} · {freq} MHz",
     "@channelInfo": {
+        "description": "Channel Info",
         "placeholders": {
             "ch": {
                 "type": "int"
@@ -519,20 +1097,60 @@
         }
     },
     "riskFactorFingerprintDrift": "SSID fingerprint drift detected",
+    "@riskFactorFingerprintDrift": {
+        "description": "Risk Factor Fingerprint Drift"
+    },
     "historyCaps": "HISTORY",
+    "@historyCaps": {
+        "description": "History Caps"
+    },
     "consistentlyBestChannel": "CONSISTENTLY BEST CHANNEL",
+    "@consistentlyBestChannel": {
+        "description": "Consistently Best Channel"
+    },
     "avgScore": "Avg Score",
+    "@avgScore": {
+        "description": "Avg Score"
+    },
     "channelBondingTitle": "Channel Bonding",
+    "@channelBondingTitle": {
+        "description": "Channel Bonding Title"
+    },
     "channelBondingDesc": "Channel bonding combines 2 or more adjacent channels to increase bandwidth (40 MHz = 2×, 80 MHz = 4×, 160 MHz = 8×). Wider channels deliver faster speeds but may interfere with more neighboring networks.",
+    "@channelBondingDesc": {
+        "description": "Channel Bonding Desc"
+    },
     "spectrumOptimizationCaps": "SPECTRUM OPTIMIZATION",
+    "@spectrumOptimizationCaps": {
+        "description": "Spectrum Optimization Caps"
+    },
     "spectrumOptimizationDesc": "Analyze channel congestion & interference",
+    "@spectrumOptimizationDesc": {
+        "description": "Spectrum Optimization Desc"
+    },
     "qualityExcellent": "Excellent",
+    "@qualityExcellent": {
+        "description": "Quality Excellent"
+    },
     "qualityVeryGood": "Very Good",
+    "@qualityVeryGood": {
+        "description": "Quality Very Good"
+    },
     "qualityGood": "Good",
+    "@qualityGood": {
+        "description": "Quality Good"
+    },
     "qualityFair": "Fair",
+    "@qualityFair": {
+        "description": "Quality Fair"
+    },
     "qualityCongested": "Congested",
+    "@qualityCongested": {
+        "description": "Quality Congested"
+    },
     "channelBondingHeader": "CHANNEL BONDING ({count} APs)",
     "@channelBondingHeader": {
+        "description": "Channel Bonding Header",
         "placeholders": {
             "count": {
                 "type": "int"
@@ -540,10 +1158,20 @@
         }
     },
     "hiddenSsidLabel": "[Hidden]",
+    "@hiddenSsidLabel": {
+        "description": "Hidden Ssid Label"
+    },
     "noHistoryPlaceholder": "No history yet.\nChannel ratings are recorded each time you open this screen.",
+    "@noHistoryPlaceholder": {
+        "description": "No History Placeholder"
+    },
     "currentSessionInfo": "Current session — higher score = less congested.",
+    "@currentSessionInfo": {
+        "description": "Current Session Info"
+    },
     "historySummaryInfo": "{sessions} sessions · {samples} samples · higher = less congested",
     "@historySummaryInfo": {
+        "description": "History Summary Info",
         "placeholders": {
             "sessions": {
                 "type": "int"
@@ -554,37 +1182,139 @@
         }
     },
     "scanReportTitle": "Torcav Wi-Fi Scan Report",
+    "@scanReportTitle": {
+        "description": "Scan Report Title"
+    },
     "reportTime": "Time",
+    "@reportTime": {
+        "description": "Report Time"
+    },
     "ssidHeader": "SSID",
+    "@ssidHeader": {
+        "description": "Ssid Header"
+    },
     "bssidHeader": "BSSID",
+    "@bssidHeader": {
+        "description": "Bssid Header"
+    },
     "dbmHeader": "dBm",
+    "@dbmHeader": {
+        "description": "Dbm Header"
+    },
     "channelHeader": "CH",
+    "@channelHeader": {
+        "description": "Channel Header"
+    },
     "navDashboard": "DASHBOARD",
+    "@navDashboard": {
+        "description": "Nav Dashboard"
+    },
     "navDiscovery": "DISCOVERY",
+    "@navDiscovery": {
+        "description": "Nav Discovery"
+    },
     "navOperations": "OPERATIONS",
+    "@navOperations": {
+        "description": "Nav Operations"
+    },
     "navLan": "LAN",
+    "@navLan": {
+        "description": "Nav Lan"
+    },
     "systemStatus": "System Status",
+    "@systemStatus": {
+        "description": "System Status"
+    },
     "interfaceTheme": "Interface Theme",
+    "@interfaceTheme": {
+        "description": "Interface Theme"
+    },
     "speedTestHeader": "SPEED TEST",
+    "@speedTestHeader": {
+        "description": "Speed Test Header"
+    },
     "startTest": "START TEST",
+    "@startTest": {
+        "description": "Start Test"
+    },
     "testAgain": "TEST AGAIN",
+    "@testAgain": {
+        "description": "Test Again"
+    },
     "commandCenters": "COMMAND CENTERS",
+    "@commandCenters": {
+        "description": "Command Centers"
+    },
     "activeShielding": "Active Shielding",
+    "@activeShielding": {
+        "description": "Active Shielding"
+    },
     "logisticsTitle": "LOGISTICS",
+    "@logisticsTitle": {
+        "description": "Logistics Title"
+    },
     "intelMetrics": "Intel Metrics",
+    "@intelMetrics": {
+        "description": "Intel Metrics"
+    },
     "networkMesh": "Network Mesh",
+    "@networkMesh": {
+        "description": "Network Mesh"
+    },
     "tuningTitle": "TUNING",
+    "@tuningTitle": {
+        "description": "Tuning Title"
+    },
     "systemConfig": "System Config",
+    "@systemConfig": {
+        "description": "System Config"
+    },
     "phasePing": "PHASE: PING",
+    "@phasePing": {
+        "description": "Phase Ping"
+    },
     "phaseDownload": "PHASE: DOWNLOAD",
+    "@phaseDownload": {
+        "description": "Phase Download"
+    },
     "phaseUpload": "PHASE: UPLOAD",
+    "@phaseUpload": {
+        "description": "Phase Upload"
+    },
     "phaseDone": "PHASE: DONE",
+    "@phaseDone": {
+        "description": "Phase Done"
+    },
     "riskScore": "Risk Score",
+    "@riskScore": {
+        "description": "Risk Score"
+    },
     "loading": "Loading...",
+    "@loading": {
+        "description": "Loading"
+    },
     "profileTitle": "PROFILE HUB",
+    "@profileTitle": {
+        "description": "Profile Title"
+    },
     "activeSessionLabel": "Active Session",
+    "@activeSessionLabel": {
+        "description": "Active Session Label"
+    },
     "networkStatusLabel": "NETWORK STATUS",
+    "@networkStatusLabel": {
+        "description": "Network Status Label"
+    },
     "ssid": "SSID",
+    "@ssid": {
+        "description": "Ssid"
+    },
     "lastScanTitle": "LAST SCAN",
-    "lastSnapshot": "Last Snapshot"
+    "@lastScanTitle": {
+        "description": "Last Scan Title"
+    },
+    "lastSnapshot": "Last Snapshot",
+    "@lastSnapshot": {
+        "description": "Last Snapshot"
+    }
 }
