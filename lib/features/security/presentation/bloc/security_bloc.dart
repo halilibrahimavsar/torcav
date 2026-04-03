@@ -58,6 +58,16 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
   ) async {
     emit(SecurityLoading());
     try {
+      // If a scan happened before this page was opened, analyse it immediately.
+      // SecurityBloc is a factory — it misses broadcast events emitted before
+      // subscription. We recover by checking the session store's cached latest.
+      final latest = _sessionStore.latest;
+      if (latest != null && _lastNetworks.isEmpty) {
+        _lastNetworks =
+            latest.networks.map((n) => n.toWifiNetwork()).toList();
+        await _analyzeUseCase(_lastNetworks);
+      }
+
       final known = await _repository.getKnownNetworks();
       final events = await _repository.getSecurityEvents();
       final score = _computeScore(_lastNetworks);

@@ -160,21 +160,53 @@ class _ChannelRatingView extends StatelessWidget {
   }
 }
 
-class _HistoryView extends StatelessWidget {
+class _HistoryView extends StatefulWidget {
+  @override
+  State<_HistoryView> createState() => _HistoryViewState();
+}
+
+class _HistoryViewState extends State<_HistoryView> {
+  late Future<List<ChannelRatingSample>> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _reload();
+  }
+
+  void _reload() {
+    final repo = GetIt.I<ChannelRatingRepository>();
+    setState(() {
+      _future = repo
+          .getHistory(limit: const Duration(days: 7))
+          .then((e) => e.getOrElse((_) => []));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final repo = GetIt.I<ChannelRatingRepository>();
     return FutureBuilder<List<ChannelRatingSample>>(
-      future: repo
-          .getHistory(limit: const Duration(days: 7))
-          .then((e) => e.getOrElse((_) => [])),
+      future: _future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
-          child: ChannelHistoryChart(samples: snapshot.data ?? []),
+          child: Column(
+            children: [
+              ChannelHistoryChart(samples: snapshot.data ?? []),
+              if (snapshot.data != null && snapshot.data!.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: TextButton.icon(
+                    onPressed: _reload,
+                    icon: const Icon(Icons.refresh, size: 16),
+                    label: const Text('Refresh'),
+                  ),
+                ),
+            ],
+          ),
         );
       },
     );

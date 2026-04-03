@@ -174,25 +174,23 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
       ),
     );
 
-    // Save initial ratings so the History tab is populated on first open
+    // Save initial ratings synchronously so DB is populated before the
+    // History tab's FutureBuilder runs.
     if (initialRatings.isNotEmpty) {
-      final initTs = DateTime.now();
-      unawaited(
-        _historyRepo
-            .saveRatings(
-              initialRatings
-                  .map(
-                    (r) => ChannelRatingSample(
-                      channel: r.channel,
-                      rating: r.rating,
-                      timestamp: initTs,
-                    ),
-                  )
-                  .toList(),
-            )
-            .then((_) {})
-            .catchError((_) {}),
-      );
+      await _historyRepo
+          .saveRatings(
+            initialRatings
+                .map(
+                  (r) => ChannelRatingSample(
+                    channel: r.channel,
+                    rating: r.rating,
+                    timestamp: DateTime.now(),
+                  ),
+                )
+                .toList(),
+          )
+          .then((_) {})
+          .catchError((_) {});
     }
 
     // Start real-time updates
