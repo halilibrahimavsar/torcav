@@ -3,6 +3,7 @@ import 'dart:isolate';
 
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/utils/oui_lookup.dart';
 import '../../domain/entities/host_scan_result.dart';
 import '../../domain/entities/network_scan_profile.dart';
 import '../../domain/entities/service_fingerprint.dart';
@@ -160,9 +161,8 @@ class ArpDataSource {
   }
 
   String _guessVendor(String mac) {
-    // Simple OUI-based vendor guessing from the first 3 octets.
-    final oui = mac.substring(0, 8).replaceAll(':', '-');
-    return _knownOuis[oui] ?? '';
+    // Delegate to the centralised OUI table in core/utils.
+    return OuiLookup.getVendor(mac);
   }
 
   String _guessDeviceType({
@@ -181,40 +181,7 @@ class ArpDataSource {
     return 'Unknown';
   }
 
-  static const _knownOuis = <String, String>{
-    'DC-A6-32': 'Raspberry Pi',
-    'B8-27-EB': 'Raspberry Pi',
-    'E4-5F-01': 'Raspberry Pi',
-    '00-50-56': 'VMware',
-    '00-0C-29': 'VMware',
-    '08-00-27': 'Oracle VirtualBox',
-    'AA-BB-CC': 'TP-Link',
-    '00-1A-2B': 'Cisco',
-    'F8-1A-67': 'TP-Link',
-    'AC-84-C6': 'TP-Link',
-    '50-C7-BF': 'TP-Link',
-    '00-17-88': 'Philips Hue',
-    '3C-22-FB': 'Apple',
-    'A4-83-E7': 'Apple',
-    'F0-18-98': 'Apple',
-    '78-CA-39': 'Apple',
-    'DC-56-E7': 'Apple',
-    'B0-BE-76': 'Samsung',
-    '8C-F5-A3': 'Samsung',
-    'C0-97-27': 'Samsung',
-    '28-6C-07': 'Xiaomi',
-    '64-CE-38': 'Xiaomi',
-    '78-11-DC': 'Xiaomi',
-    'FC-EC-DA': 'Amazon',
-    '44-65-0D': 'Amazon',
-    '68-54-FD': 'Amazon',
-    '94-B4-0F': 'Google',
-    '30-FD-38': 'Google',
-    'F4-F5-D8': 'Google',
-    'BC-DD-C2': 'Huawei',
-    '00-46-4B': 'Huawei',
-    '48-46-FB': 'Huawei',
-  };
+  // Vendor guessing is now fully delegated to OuiLookup in core/utils.
 
   Future<List<_ArpEntry>> _pingScanSubnet(String ipWithMask) async {
     final parts = ipWithMask.split('/');

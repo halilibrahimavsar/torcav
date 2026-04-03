@@ -5,14 +5,20 @@ import '../datasources/security_local_data_source.dart';
 import '../../domain/entities/known_network.dart';
 import '../../domain/entities/security_event.dart';
 import '../../domain/repositories/security_repository.dart';
+import '../../domain/usecases/deauth_detector.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 
 @LazySingleton(as: SecurityRepository)
 class SecurityRepositoryImpl implements SecurityRepository {
   final SecurityLocalDataSource _localDataSource;
   final NotificationService _notificationService;
+  final DeauthDetector _deauthDetector;
 
-  SecurityRepositoryImpl(this._localDataSource, this._notificationService);
+  SecurityRepositoryImpl(
+    this._localDataSource,
+    this._notificationService,
+    this._deauthDetector,
+  );
 
   @override
   Future<List<KnownNetwork>> getKnownNetworks() =>
@@ -111,6 +117,14 @@ class SecurityRepositoryImpl implements SecurityRepository {
 
     if (alerts.isNotEmpty) {
       await saveSecurityEvents(alerts);
+    }
+
+    // 4. Deauth burst detection (heuristic — no raw frame capture needed).
+    final deauthEvent = _deauthDetector.evaluate(networks);
+    if (deauthEvent != null) {
+      alerts.add(deauthEvent);
+      await saveSecurityEvent(deauthEvent);
+      await _notificationService.showSecurityAlert(deauthEvent);
     }
 
     // Auto-learn: upsert every scanned network into known_networks.

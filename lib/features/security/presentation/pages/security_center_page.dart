@@ -4,7 +4,9 @@ import 'package:torcav/core/l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
+import '../../../heatmap/presentation/pages/heatmap_page.dart';
 import '../bloc/security_bloc.dart';
 import '../../domain/entities/known_network.dart';
 import '../../domain/entities/security_event.dart' as domain_event;
@@ -93,6 +95,13 @@ class _SecurityCenterView extends StatelessWidget {
                 _buildSecurityTimeline(context, state.recentEvents, l10n)
               else
                 _emptyBox(context, l10n.noSecurityEvents),
+              const SizedBox(height: 24),
+
+              // ── Signal Heatmap shortcut ──
+              StaggeredEntry(
+                delay: const Duration(milliseconds: 320),
+                child: _HeatmapShortcutCard(),
+              ),
             ],
           );
         },
@@ -627,6 +636,88 @@ class _BentoStatTile extends StatelessWidget {
             glowRadius: 4,
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ── Heatmap shortcut card ─────────────────────────────────────────────
+
+class _HeatmapShortcutCard extends StatelessWidget {
+  const _HeatmapShortcutCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute<void>(builder: (_) => const HeatmapPage()),
+      ),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.neonCyan.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: AppColors.neonCyan.withValues(alpha: 0.2),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    AppColors.neonCyan.withValues(alpha: 0.2),
+                    AppColors.neonCyan.withValues(alpha: 0.0),
+                  ],
+                ),
+                border: Border.all(
+                  color: AppColors.neonCyan.withValues(alpha: 0.4),
+                ),
+              ),
+              child: const Icon(
+                Icons.thermostat_rounded,
+                color: AppColors.neonCyan,
+                size: 22,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'SIGNAL HEATMAP',
+                    style: GoogleFonts.orbitron(
+                      color: AppColors.neonCyan,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Map signal strength across your space by tapping points.',
+                    style: GoogleFonts.outfit(
+                      color: AppColors.textSecondary,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.neonCyan.withValues(alpha: 0.6),
+            ),
+          ],
+        ),
       ),
     );
   }

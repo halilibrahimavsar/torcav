@@ -14,6 +14,17 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:network_info_plus/network_info_plus.dart' as _i846;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
+import '../../features/heatmap/data/datasources/heatmap_local_data_source.dart'
+    as _i652;
+import '../../features/heatmap/data/repositories/heatmap_repository_impl.dart'
+    as _i531;
+import '../../features/heatmap/domain/repositories/heatmap_repository.dart'
+    as _i747;
+import '../../features/heatmap/domain/usecases/get_heatmap_sessions_usecase.dart'
+    as _i716;
+import '../../features/heatmap/domain/usecases/record_heatmap_point_usecase.dart'
+    as _i737;
+import '../../features/heatmap/presentation/bloc/heatmap_bloc.dart' as _i931;
 import '../../features/monitoring/data/repositories/heatmap_repository_impl.dart'
     as _i335;
 import '../../features/monitoring/data/repositories/monitoring_repository_impl.dart'
@@ -75,6 +86,7 @@ import '../../features/security/domain/services/captive_portal_detector.dart'
     as _i363;
 import '../../features/security/domain/usecases/analyze_network_security_usecase.dart'
     as _i87;
+import '../../features/security/domain/usecases/deauth_detector.dart' as _i363;
 import '../../features/security/domain/usecases/security_analyzer.dart'
     as _i471;
 import '../../features/security/presentation/bloc/notification/notification_bloc.dart'
@@ -138,6 +150,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i471.SecurityAnalyzer>(() => _i471.SecurityAnalyzer());
     gh.lazySingleton<_i1066.ArpDataSource>(() => _i1066.ArpDataSource());
     gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
+    gh.lazySingleton<_i363.DeauthDetector>(() => _i363.DeauthDetector());
     gh.lazySingleton<_i494.HeatmapRepository>(
       () => _i335.HeatmapRepositoryImpl(gh<_i690.AppDatabase>()),
     );
@@ -158,6 +171,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i552.AppSettingsStore>(
       () => _i552.AppSettingsStore(gh<_i460.SharedPreferences>()),
+    );
+    gh.lazySingleton<_i652.HeatmapLocalDataSource>(
+      () => _i652.HeatmapLocalDataSource(gh<_i460.SharedPreferences>()),
     );
     gh.lazySingleton<_i119.ReportExportRepository>(
       () => _i953.ReportExportRepositoryImpl(),
@@ -195,20 +211,24 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i361.WifiDetailsBloc>(
       () => _i361.WifiDetailsBloc(gh<_i471.SecurityAnalyzer>()),
     );
-    gh.lazySingleton<_i578.SecurityRepository>(
-      () => _i997.SecurityRepositoryImpl(
-        gh<_i499.SecurityLocalDataSource>(),
-        gh<_i941.NotificationService>(),
-      ),
-    );
     gh.lazySingleton<_i1027.WifiRepository>(
       () => _i433.WifiRepositoryImpl(gh<_i1012.WifiDataSource>()),
     );
     gh.factory<_i554.ReportsBloc>(
       () => _i554.ReportsBloc(gh<_i367.GenerateReportUseCase>()),
     );
+    gh.lazySingleton<_i747.HeatmapRepository>(
+      () => _i531.HeatmapRepositoryImpl(gh<_i652.HeatmapLocalDataSource>()),
+    );
     gh.lazySingleton<_i365.MonitoringRepository>(
       () => _i592.MonitoringRepositoryImpl(gh<_i1027.WifiRepository>()),
+    );
+    gh.lazySingleton<_i578.SecurityRepository>(
+      () => _i997.SecurityRepositoryImpl(
+        gh<_i499.SecurityLocalDataSource>(),
+        gh<_i941.NotificationService>(),
+        gh<_i363.DeauthDetector>(),
+      ),
     );
     gh.lazySingleton<_i244.TopologyRepository>(
       () => _i21.TopologyRepositoryImpl(
@@ -248,6 +268,12 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i968.WifiScanBloc(gh<_i451.ScanWifi>(), gh<_i696.FavoritesStore>()),
     );
+    gh.lazySingleton<_i737.RecordHeatmapPointUsecase>(
+      () => _i737.RecordHeatmapPointUsecase(gh<_i747.HeatmapRepository>()),
+    );
+    gh.lazySingleton<_i716.GetHeatmapSessionsUsecase>(
+      () => _i716.GetHeatmapSessionsUsecase(gh<_i747.HeatmapRepository>()),
+    );
     gh.factory<_i374.MonitoringHubBloc>(
       () => _i374.MonitoringHubBloc(gh<_i1024.RunSpeedTestUseCase>()),
     );
@@ -263,6 +289,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i87.AnalyzeNetworkSecurityUseCase>(),
         gh<_i797.ScanSessionStore>(),
         gh<_i471.SecurityAnalyzer>(),
+      ),
+    );
+    gh.factory<_i931.HeatmapBloc>(
+      () => _i931.HeatmapBloc(
+        gh<_i716.GetHeatmapSessionsUsecase>(),
+        gh<_i737.RecordHeatmapPointUsecase>(),
       ),
     );
     gh.factory<_i613.MonitoringBloc>(
