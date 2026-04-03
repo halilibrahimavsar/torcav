@@ -6,6 +6,8 @@ import '../../domain/entities/security_event.dart' as domain_event;
 import '../../domain/repositories/security_repository.dart';
 import '../../domain/usecases/analyze_network_security_usecase.dart';
 import '../../domain/usecases/security_analyzer.dart';
+import '../../domain/usecases/dns_leak_test_usecase.dart';
+import '../../domain/entities/dns_test_result.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
 import 'dart:async';
@@ -19,6 +21,7 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
   final AnalyzeNetworkSecurityUseCase _analyzeUseCase;
   final ScanSessionStore _sessionStore;
   final SecurityAnalyzer _analyzer;
+  final DnsLeakTestUsecase _dnsLeakTestUsecase;
   StreamSubscription? _scanSubscription;
 
   List<WifiNetwork> _lastNetworks = [];
@@ -28,10 +31,12 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
     this._analyzeUseCase,
     this._sessionStore,
     this._analyzer,
+    this._dnsLeakTestUsecase,
   ) : super(SecurityInitial()) {
     on<SecurityStarted>(_onStarted);
     on<SecurityAnalyzeRequested>(_onAnalyzeRequested);
     on<SecurityNetworkTrustChanged>(_onTrustChanged);
+    on<SecurityDnsTestRequested>(_onDnsTestRequested);
 
     // Auto-analyze on every new scan
     DateTime? lastTimestamp;
@@ -147,6 +152,29 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
           networks.where((n) => n.security == SecurityType.open).length,
       wepCount: networks.where((n) => n.security == SecurityType.wep).length,
       wpsCount: networks.where((n) => n.hasWps == true).length,
+    );
+  }
+
+  Future<void> _onDnsTestRequested(
+    SecurityDnsTestRequested event,
+    Emitter<SecurityState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is! SecurityLoaded) return;
+
+    emit(currentState.copyWith(isDnsLoading: true));
+
+    final result = await _dnsLeakTestUsecase(null);
+
+    result.fold(
+      (failure) => emit(currentState.copyWith(
+        isDnsLoading: false,
+        // We could emit an error here but let's just stop loading for now
+      )),
+      (dnsResult) => emit(currentState.copyWith(
+        isDnsLoading: false,
+        dnsResult: dnsResult,
+      )),
     );
   }
 }

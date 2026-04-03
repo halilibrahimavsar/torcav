@@ -2018,6 +2018,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Channel Ratings'**
   String get historyChannelRatings;
+
+  /// Title for the DNS security test card
+  ///
+  /// In en, this message translates to:
+  /// **'DNS SECURITY TEST'**
+  String get dnsSecurityTest;
+
+  /// Status label for secure DNS
+  ///
+  /// In en, this message translates to:
+  /// **'SECURE'**
+  String get dnsSecure;
+
+  /// Status label for DNS with warning
+  ///
+  /// In en, this message translates to:
+  /// **'WARNING'**
+  String get dnsWarning;
+
+  /// Status label for DNS leak detected
+  ///
+  /// In en, this message translates to:
+  /// **'LEAK DETECTED'**
+  String get dnsLeakDetected;
+
+  /// Status label for hijacked DNS
+  ///
+  /// In en, this message translates to:
+  /// **'HIJACKED'**
+  String get dnsHijacked;
+
+  /// Prompt for verifying DNS integrity
+  ///
+  /// In en, this message translates to:
+  /// **'Run a scan to verify DNS integrity'**
+  String get dnsVerifyIntegrity;
+
+  /// Last check time for DNS test
+  ///
+  /// In en, this message translates to:
+  /// **'Last check: {hour}:{minute}'**
+  String dnsLastCheck(String hour, String minute);
+
+  /// Button label for running DNS test
+  ///
+  /// In en, this message translates to:
+  /// **'TEST NOW'**
+  String get dnsTestNow;
+
+  /// Button label when DNS test is running
+  ///
+  /// In en, this message translates to:
+  /// **'TESTING...'**
+  String get dnsTesting;
+
+  /// Label for current DNS server
+  ///
+  /// In en, this message translates to:
+  /// **'CURRENT DNS'**
+  String get dnsCurrentDns;
+
+  /// Label for ISP provider in DNS test
+  ///
+  /// In en, this message translates to:
+  /// **'ISP PROVIDER'**
+  String get dnsIspProvider;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

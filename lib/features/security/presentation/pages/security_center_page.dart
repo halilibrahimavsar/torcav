@@ -9,6 +9,7 @@ import '../../../../core/theme/neon_widgets.dart';
 import '../../../heatmap/presentation/pages/heatmap_page.dart';
 import '../bloc/security_bloc.dart';
 import '../../domain/entities/known_network.dart';
+import '../../domain/entities/dns_test_result.dart';
 import '../../domain/entities/security_event.dart' as domain_event;
 import '../widgets/security_status_radar.dart';
 
@@ -97,9 +98,16 @@ class _SecurityCenterView extends StatelessWidget {
                 _emptyBox(context, l10n.noSecurityEvents),
               const SizedBox(height: 24),
 
+              // ── DNS Security Test ──
+              StaggeredEntry(
+                delay: const Duration(milliseconds: 300),
+                child: _DnsSecurityCard(state: state),
+              ),
+              const SizedBox(height: 24),
+
               // ── Signal Heatmap shortcut ──
               StaggeredEntry(
-                delay: const Duration(milliseconds: 320),
+                delay: const Duration(milliseconds: 350),
                 child: _HeatmapShortcutCard(),
               ),
             ],
@@ -636,6 +644,256 @@ class _BentoStatTile extends StatelessWidget {
             glowRadius: 4,
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ── DNS Security Card ─────────────────────────────────────────────
+
+class _DnsSecurityCard extends StatelessWidget {
+  final SecurityState state;
+
+  const _DnsSecurityCard({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final scheme = Theme.of(context).colorScheme;
+
+    final loaded = state is SecurityLoaded ? state as SecurityLoaded : null;
+    final dnsResult = loaded?.dnsResult;
+    final isLoading = loaded?.isDnsLoading ?? false;
+
+    Color statusColor = scheme.primary;
+    String statusText = l10n.dnsSecure;
+    IconData statusIcon = Icons.verified_user_rounded;
+
+    if (dnsResult != null) {
+      if (dnsResult.isHijacked || dnsResult.isLeaking) {
+        statusColor = scheme.error;
+        statusText = dnsResult.isLeaking ? l10n.dnsLeakDetected : l10n.dnsHijacked;
+        statusIcon = Icons.gpp_bad_rounded;
+      } else if (dnsResult.status == DnsSecurityStatus.warning) {
+        statusColor = const Color(0xFFFFB300);
+        statusText = l10n.dnsWarning;
+        statusIcon = Icons.warning_amber_rounded;
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        NeonSectionHeader(
+          label: l10n.dnsSecurityTest,
+          icon: Icons.dns_rounded,
+          color: scheme.secondary,
+        ),
+        const SizedBox(height: 12),
+        NeonCard(
+          glowColor: statusColor,
+          glowIntensity: 0.08,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: statusColor.withValues(alpha: 0.1),
+                      border: Border.all(
+                        color: statusColor.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: isLoading
+                        ? Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: statusColor,
+                          ),
+                        )
+                        : Icon(statusIcon, color: statusColor, size: 24),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        NeonText(
+                          statusText,
+                          style: GoogleFonts.orbitron(
+                            color: statusColor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1,
+                          ),
+                          glowColor: statusColor,
+                        ),
+                        Text(
+                          dnsResult == null
+                              ? l10n.dnsVerifyIntegrity
+                              : l10n.dnsLastCheck(
+                                DateTime.now().hour.toString().padLeft(2, '0'),
+                                DateTime.now().minute.toString().padLeft(2, '0'),
+                              ),
+                          style: GoogleFonts.rajdhani(
+                            color: scheme.onSurfaceVariant,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _CyberButton(
+                    onTap: isLoading
+                        ? null
+                        : () => context.read<SecurityBloc>().add(
+                          const SecurityDnsTestRequested(),
+                        ),
+                    label: isLoading ? l10n.dnsTesting : l10n.dnsTestNow,
+                    color: statusColor,
+                  ),
+                ],
+              ),
+              if (dnsResult != null) ...[
+                const SizedBox(height: 16),
+                const Divider(height: 1, thickness: 0.5),
+                const SizedBox(height: 16),
+                _DnsDetailRow(
+                  label: l10n.dnsCurrentDns,
+                  value: dnsResult.currentDns,
+                  icon: Icons.dns_outlined,
+                ),
+                const SizedBox(height: 8),
+                _DnsDetailRow(
+                  label: l10n.dnsIspProvider,
+                  value: dnsResult.ispName,
+                  icon: Icons.business_rounded,
+                ),
+                if (dnsResult.detectedServers.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children:
+                        dnsResult.detectedServers
+                            .map(
+                              (s) => Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(
+                                    color: scheme.onSurfaceVariant.withValues(
+                                      alpha: 0.2,
+                                    ),
+                                  ),
+                                ),
+                                child: Text(
+                                  s,
+                                  style: GoogleFonts.sourceCodePro(
+                                    fontSize: 10,
+                                    color: scheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                  ),
+                ],
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DnsDetailRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+
+  const _DnsDetailRow({
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Row(
+      children: [
+        Icon(icon, size: 14, color: scheme.onSurfaceVariant),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: GoogleFonts.rajdhani(
+            color: scheme.onSurfaceVariant,
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const Spacer(),
+        Text(
+          value,
+          style: GoogleFonts.sourceCodePro(
+            color: scheme.onSurface,
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CyberButton extends StatelessWidget {
+  final VoidCallback? onTap;
+  final String label;
+  final Color color;
+
+  const _CyberButton({this.onTap, required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Opacity(
+        opacity: onTap == null ? 0.5 : 1.0,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: color.withValues(alpha: 0.5)),
+            boxShadow: [
+              if (onTap != null)
+                BoxShadow(
+                  color: color.withValues(alpha: 0.2),
+                  blurRadius: 8,
+                  spreadRadius: -2,
+                ),
+            ],
+          ),
+          child: Text(
+            label,
+            style: GoogleFonts.orbitron(
+              color: color,
+              fontSize: 10,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1,
+            ),
+          ),
+        ),
       ),
     );
   }

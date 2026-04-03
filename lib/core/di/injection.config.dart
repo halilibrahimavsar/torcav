@@ -61,6 +61,10 @@ import '../../features/monitoring/presentation/bloc/monitoring_hub_bloc.dart'
 import '../../features/monitoring/presentation/bloc/topology_bloc.dart' as _i95;
 import '../../features/network_scan/data/datasources/arp_data_source.dart'
     as _i1066;
+import '../../features/network_scan/data/datasources/mdns_data_source.dart'
+    as _i165;
+import '../../features/network_scan/data/datasources/upnp_data_source.dart'
+    as _i119;
 import '../../features/network_scan/data/repositories/network_scan_repository_impl.dart'
     as _i551;
 import '../../features/network_scan/domain/repositories/network_scan_repository.dart'
@@ -76,6 +80,8 @@ import '../../features/reports/domain/repositories/report_export_repository.dart
 import '../../features/reports/domain/usecases/generate_report_usecase.dart'
     as _i367;
 import '../../features/reports/presentation/bloc/reports_bloc.dart' as _i554;
+import '../../features/security/data/datasources/dns_test_data_source.dart'
+    as _i991;
 import '../../features/security/data/datasources/security_local_data_source.dart'
     as _i499;
 import '../../features/security/data/repositories/security_repository_impl.dart'
@@ -87,6 +93,8 @@ import '../../features/security/domain/services/captive_portal_detector.dart'
 import '../../features/security/domain/usecases/analyze_network_security_usecase.dart'
     as _i87;
 import '../../features/security/domain/usecases/deauth_detector.dart' as _i363;
+import '../../features/security/domain/usecases/dns_leak_test_usecase.dart'
+    as _i315;
 import '../../features/security/domain/usecases/security_analyzer.dart'
     as _i471;
 import '../../features/security/presentation/bloc/notification/notification_bloc.dart'
@@ -148,9 +156,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i969.ChannelRatingEngine(),
     );
     gh.lazySingleton<_i471.SecurityAnalyzer>(() => _i471.SecurityAnalyzer());
-    gh.lazySingleton<_i1066.ArpDataSource>(() => _i1066.ArpDataSource());
-    gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
     gh.lazySingleton<_i363.DeauthDetector>(() => _i363.DeauthDetector());
+    gh.lazySingleton<_i1066.ArpDataSource>(() => _i1066.ArpDataSource());
+    gh.lazySingleton<_i165.MdnsDataSource>(() => _i165.MdnsDataSource());
+    gh.lazySingleton<_i119.UpnpDataSource>(() => _i119.UpnpDataSource());
+    gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
+    gh.lazySingleton<_i991.DnsDataSource>(() => _i991.DnsDataSource());
     gh.lazySingleton<_i494.HeatmapRepository>(
       () => _i335.HeatmapRepositoryImpl(gh<_i690.AppDatabase>()),
     );
@@ -175,6 +186,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i652.HeatmapLocalDataSource>(
       () => _i652.HeatmapLocalDataSource(gh<_i460.SharedPreferences>()),
     );
+    gh.lazySingleton<_i1073.NetworkScanRepository>(
+      () => _i551.NetworkScanRepositoryImpl(
+        gh<_i1066.ArpDataSource>(),
+        gh<_i165.MdnsDataSource>(),
+        gh<_i119.UpnpDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i119.ReportExportRepository>(
       () => _i953.ReportExportRepositoryImpl(),
     );
@@ -196,11 +214,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i890.SpeedTestRepository>(
       () => const _i528.SpeedTestRepositoryImpl(),
     );
+    gh.factory<_i739.NetworkScanBloc>(
+      () => _i739.NetworkScanBloc(
+        gh<_i1073.NetworkScanRepository>(),
+        gh<_i505.NewDeviceDetector>(),
+      ),
+    );
     gh.lazySingleton<_i1012.WifiDataSource>(
       () => _i672.AndroidWifiDataSource(),
-    );
-    gh.lazySingleton<_i1073.NetworkScanRepository>(
-      () => _i551.NetworkScanRepositoryImpl(gh<_i1066.ArpDataSource>()),
     );
     gh.lazySingleton<_i363.CaptivePortalDetector>(
       () => _i363.CaptivePortalDetector(gh<_i846.NetworkInfo>()),
@@ -219,6 +240,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i747.HeatmapRepository>(
       () => _i531.HeatmapRepositoryImpl(gh<_i652.HeatmapLocalDataSource>()),
+    );
+    gh.lazySingleton<_i315.DnsLeakTestUsecase>(
+      () => _i315.DnsLeakTestUsecase(gh<_i991.DnsDataSource>()),
     );
     gh.lazySingleton<_i365.MonitoringRepository>(
       () => _i592.MonitoringRepositoryImpl(gh<_i1027.WifiRepository>()),
@@ -249,12 +273,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i451.ScanWifi>(
       () => _i451.ScanWifi(gh<_i1027.WifiRepository>()),
     );
-    gh.factory<_i739.NetworkScanBloc>(
-      () => _i739.NetworkScanBloc(
-        gh<_i1073.NetworkScanRepository>(),
-        gh<_i505.NewDeviceDetector>(),
-      ),
-    );
     gh.lazySingleton<_i519.GetBestHistoricalChannel>(
       () => _i519.GetBestHistoricalChannel(gh<_i332.ChannelRatingRepository>()),
     );
@@ -267,6 +285,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i968.WifiScanBloc>(
       () =>
           _i968.WifiScanBloc(gh<_i451.ScanWifi>(), gh<_i696.FavoritesStore>()),
+    );
+    gh.factory<_i676.SecurityBloc>(
+      () => _i676.SecurityBloc(
+        gh<_i578.SecurityRepository>(),
+        gh<_i87.AnalyzeNetworkSecurityUseCase>(),
+        gh<_i797.ScanSessionStore>(),
+        gh<_i471.SecurityAnalyzer>(),
+        gh<_i315.DnsLeakTestUsecase>(),
+      ),
     );
     gh.lazySingleton<_i737.RecordHeatmapPointUsecase>(
       () => _i737.RecordHeatmapPointUsecase(gh<_i747.HeatmapRepository>()),
@@ -282,14 +309,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i534.PingNodeUseCase>(
       () => _i534.PingNodeUseCase(gh<_i244.TopologyRepository>()),
-    );
-    gh.factory<_i676.SecurityBloc>(
-      () => _i676.SecurityBloc(
-        gh<_i578.SecurityRepository>(),
-        gh<_i87.AnalyzeNetworkSecurityUseCase>(),
-        gh<_i797.ScanSessionStore>(),
-        gh<_i471.SecurityAnalyzer>(),
-      ),
     );
     gh.factory<_i931.HeatmapBloc>(
       () => _i931.HeatmapBloc(

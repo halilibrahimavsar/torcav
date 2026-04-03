@@ -641,6 +641,31 @@ class _DeviceCard extends StatelessWidget {
   }
 
   IconData get _deviceIcon {
+    final type = host.deviceType.toLowerCase();
+    
+    if (type.contains('router') || type.contains('gateway')) {
+      return Icons.router_rounded;
+    }
+    if (type.contains('smart tv')) {
+      return Icons.tv_rounded;
+    }
+    if (type.contains('audio') || type.contains('speaker')) {
+      return Icons.speaker_group_rounded;
+    }
+    if (type.contains('printer')) {
+      return Icons.print_rounded;
+    }
+    if (type.contains('workstation')) {
+      return Icons.computer_rounded;
+    }
+    if (type.contains('mobile') || type.contains('phone')) {
+      return Icons.smartphone_rounded;
+    }
+    if (type.contains('nas') || type.contains('storage')) {
+      return Icons.dns_rounded;
+    }
+    
+    // Fallback to name/vendor guessing if type is generic
     final name = host.hostName.toLowerCase();
     final vendor = host.vendor.toLowerCase();
     if (name.contains('phone') ||
@@ -651,20 +676,8 @@ class _DeviceCard extends StatelessWidget {
     if (name.contains('tablet') || name.contains('ipad')) {
       return Icons.tablet_mac_rounded;
     }
-    if (name.contains('laptop') || name.contains('macbook')) {
+    if (name.contains('laptop') || name.contains('macbook') || vendor.contains('apple')) {
       return Icons.laptop_chromebook_rounded;
-    }
-    if (name.contains('tv') || name.contains('television')) {
-      return Icons.tv_rounded;
-    }
-    if (name.contains('router') ||
-        name.contains('gateway') ||
-        vendor.contains('tp-link') ||
-        vendor.contains('asus')) {
-      return Icons.router_rounded;
-    }
-    if (name.contains('watch')) {
-      return Icons.watch_rounded;
     }
     return Icons.settings_input_component_rounded;
   }
@@ -703,27 +716,70 @@ class _DeviceCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        host.hostName.isEmpty
-                            ? context.l10n.anonymousNode
-                            : host.hostName.toUpperCase(),
-                        style: GoogleFonts.orbitron(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              host.hostName.isEmpty
+                                  ? context.l10n.anonymousNode
+                                  : host.hostName.toUpperCase(),
+                              style: GoogleFonts.orbitron(
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          if (host.deviceType != 'Unknown') ...[
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: scheme.primary.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(color: scheme.primary.withValues(alpha: 0.3)),
+                              ),
+                              child: Text(
+                                'IDENTIFIED',
+                                style: GoogleFonts.orbitron(
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w900,
+                                  color: scheme.primary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                       const SizedBox(height: 2),
-                      Text(
-                        host.ip,
-                        style: GoogleFonts.sourceCodePro(
-                          color: scheme.primary,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            host.ip,
+                            style: GoogleFonts.sourceCodePro(
+                              color: scheme.primary.withValues(alpha: 0.8),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          if (host.deviceType != 'Unknown') ...[
+                            Text(
+                              ' • ',
+                              style: TextStyle(color: scheme.onSurface.withValues(alpha: 0.3)),
+                            ),
+                            Text(
+                              host.deviceType.toUpperCase(),
+                              style: GoogleFonts.rajdhani(
+                                color: scheme.secondary,
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ],
                   ),

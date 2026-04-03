@@ -1054,4 +1054,39 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get historyChannelRatings => 'Kanalbewertungen';
+
+  @override
+  String get dnsSecurityTest => 'DNS SECURITY TEST';
+
+  @override
+  String get dnsSecure => 'SECURE';
+
+  @override
+  String get dnsWarning => 'WARNING';
+
+  @override
+  String get dnsLeakDetected => 'LEAK DETECTED';
+
+  @override
+  String get dnsHijacked => 'HIJACKED';
+
+  @override
+  String get dnsVerifyIntegrity => 'Run a scan to verify DNS integrity';
+
+  @override
+  String dnsLastCheck(String hour, String minute) {
+    return 'Last check: $hour:$minute';
+  }
+
+  @override
+  String get dnsTestNow => 'TEST NOW';
+
+  @override
+  String get dnsTesting => 'TESTING...';
+
+  @override
+  String get dnsCurrentDns => 'CURRENT DNS';
+
+  @override
+  String get dnsIspProvider => 'ISP PROVIDER';
 }

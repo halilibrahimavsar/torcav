@@ -30,4 +30,8 @@ class SecurityNetworkTrustChanged extends SecurityEvent {
   List<Object?> get props => [network, isTrusted];
 }
 
+class SecurityDnsTestRequested extends SecurityEvent {
+  const SecurityDnsTestRequested();
+}
+
 class SecurityAlertsCleared extends SecurityEvent {}

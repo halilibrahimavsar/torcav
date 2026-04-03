@@ -10,7 +10,18 @@
     "pathwaysDesc",
     "pingAction",
     "pingSuccess",
-    "pingFailure"
+    "pingFailure",
+    "dnsSecurityTest",
+    "dnsSecure",
+    "dnsWarning",
+    "dnsLeakDetected",
+    "dnsHijacked",
+    "dnsVerifyIntegrity",
+    "dnsLastCheck",
+    "dnsTestNow",
+    "dnsTesting",
+    "dnsCurrentDns",
+    "dnsIspProvider"
   ],
 
   "ku": [
@@ -24,7 +35,18 @@
     "pathwaysDesc",
     "pingAction",
     "pingSuccess",
-    "pingFailure"
+    "pingFailure",
+    "dnsSecurityTest",
+    "dnsSecure",
+    "dnsWarning",
+    "dnsLeakDetected",
+    "dnsHijacked",
+    "dnsVerifyIntegrity",
+    "dnsLastCheck",
+    "dnsTestNow",
+    "dnsTesting",
+    "dnsCurrentDns",
+    "dnsIspProvider"
   ],
 
   "tr": [
@@ -40,6 +62,17 @@
     "pathwaysDesc",
     "pingAction",
     "pingSuccess",
-    "pingFailure"
+    "pingFailure",
+    "dnsSecurityTest",
+    "dnsSecure",
+    "dnsWarning",
+    "dnsLeakDetected",
+    "dnsHijacked",
+    "dnsVerifyIntegrity",
+    "dnsLastCheck",
+    "dnsTestNow",
+    "dnsTesting",
+    "dnsCurrentDns",
+    "dnsIspProvider"
   ]
 }

@@ -27,3 +27,7 @@ class ScanFailure extends Failure {
 class PermissionFailure extends Failure {
   const PermissionFailure(super.message);
 }
+
+class SecurityFailure extends Failure {
+  const SecurityFailure(super.message);
+}

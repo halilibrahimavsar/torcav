@@ -1447,5 +1447,59 @@
     "historyChannelRatings": "Channel Ratings",
     "@historyChannelRatings": {
         "description": "Section header for channel ratings chart in history."
+    },
+    "dnsSecurityTest": "DNS SECURITY TEST",
+    "@dnsSecurityTest": {
+        "description": "Title for the DNS security test card"
+    },
+    "dnsSecure": "SECURE",
+    "@dnsSecure": {
+        "description": "Status label for secure DNS"
+    },
+    "dnsWarning": "WARNING",
+    "@dnsWarning": {
+        "description": "Status label for DNS with warning"
+    },
+    "dnsLeakDetected": "LEAK DETECTED",
+    "@dnsLeakDetected": {
+        "description": "Status label for DNS leak detected"
+    },
+    "dnsHijacked": "HIJACKED",
+    "@dnsHijacked": {
+        "description": "Status label for hijacked DNS"
+    },
+    "dnsVerifyIntegrity": "Run a scan to verify DNS integrity",
+    "@dnsVerifyIntegrity": {
+        "description": "Prompt for verifying DNS integrity"
+    },
+    "dnsLastCheck": "Last check: {hour}:{minute}",
+    "@dnsLastCheck": {
+        "description": "Last check time for DNS test",
+        "placeholders": {
+            "hour": {
+                "type": "String",
+                "description": "Hour of the check"
+            },
+            "minute": {
+                "type": "String",
+                "description": "Minute of the check"
+            }
+        }
+    },
+    "dnsTestNow": "TEST NOW",
+    "@dnsTestNow": {
+        "description": "Button label for running DNS test"
+    },
+    "dnsTesting": "TESTING...",
+    "@dnsTesting": {
+        "description": "Button label when DNS test is running"
+    },
+    "dnsCurrentDns": "CURRENT DNS",
+    "@dnsCurrentDns": {
+        "description": "Label for current DNS server"
+    },
+    "dnsIspProvider": "ISP PROVIDER",
+    "@dnsIspProvider": {
+        "description": "Label for ISP provider in DNS test"
     }
 }

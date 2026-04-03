@@ -33,13 +33,35 @@ class SecurityLoaded extends SecurityState {
   final List<domain_event.SecurityEvent> recentEvents;
   final int overallScore;
   final SecurityScanSummary? scanSummary;
+  final DnsTestResult? dnsResult;
+  final bool isDnsLoading;
 
   const SecurityLoaded({
     required this.knownNetworks,
     required this.recentEvents,
     this.overallScore = 100,
     this.scanSummary,
+    this.dnsResult,
+    this.isDnsLoading = false,
   });
+
+  SecurityLoaded copyWith({
+    List<KnownNetwork>? knownNetworks,
+    List<domain_event.SecurityEvent>? recentEvents,
+    int? overallScore,
+    SecurityScanSummary? scanSummary,
+    DnsTestResult? dnsResult,
+    bool? isDnsLoading,
+  }) {
+    return SecurityLoaded(
+      knownNetworks: knownNetworks ?? this.knownNetworks,
+      recentEvents: recentEvents ?? this.recentEvents,
+      overallScore: overallScore ?? this.overallScore,
+      scanSummary: scanSummary ?? this.scanSummary,
+      dnsResult: dnsResult ?? this.dnsResult,
+      isDnsLoading: isDnsLoading ?? this.isDnsLoading,
+    );
+  }
 
   @override
   List<Object?> get props => [
@@ -47,6 +69,8 @@ class SecurityLoaded extends SecurityState {
         recentEvents,
         overallScore,
         scanSummary,
+        dnsResult,
+        isDnsLoading,
       ];
 }
 
