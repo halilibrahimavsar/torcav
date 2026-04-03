@@ -8,13 +8,15 @@ class AppSettings extends Equatable {
   final WifiBackendPreference defaultBackendPreference;
   final bool includeHiddenSsids;
   final bool strictSafetyMode;
+  final bool autoScanEnabled;
 
   const AppSettings({
-    this.scanIntervalSeconds = 5,
+    this.scanIntervalSeconds = 30,
     this.defaultScanPasses = 3,
     this.defaultBackendPreference = WifiBackendPreference.auto,
     this.includeHiddenSsids = true,
     this.strictSafetyMode = true,
+    this.autoScanEnabled = false,
   });
 
   AppSettings copyWith({
@@ -23,6 +25,7 @@ class AppSettings extends Equatable {
     WifiBackendPreference? defaultBackendPreference,
     bool? includeHiddenSsids,
     bool? strictSafetyMode,
+    bool? autoScanEnabled,
   }) {
     return AppSettings(
       scanIntervalSeconds: scanIntervalSeconds ?? this.scanIntervalSeconds,
@@ -31,6 +34,7 @@ class AppSettings extends Equatable {
           defaultBackendPreference ?? this.defaultBackendPreference,
       includeHiddenSsids: includeHiddenSsids ?? this.includeHiddenSsids,
       strictSafetyMode: strictSafetyMode ?? this.strictSafetyMode,
+      autoScanEnabled: autoScanEnabled ?? this.autoScanEnabled,
     );
   }
 
@@ -41,6 +45,7 @@ class AppSettings extends Equatable {
     defaultBackendPreference,
     includeHiddenSsids,
     strictSafetyMode,
+    autoScanEnabled,
   ];
 
   Map<String, dynamic> toJson() {
@@ -50,6 +55,7 @@ class AppSettings extends Equatable {
       'defaultBackendPreference': defaultBackendPreference.name,
       'includeHiddenSsids': includeHiddenSsids,
       'strictSafetyMode': strictSafetyMode,
+      'autoScanEnabled': autoScanEnabled,
     };
   }
 
@@ -57,11 +63,12 @@ class AppSettings extends Equatable {
     final backendName = json['defaultBackendPreference'] as String?;
 
     return AppSettings(
-      scanIntervalSeconds: _readInt(json['scanIntervalSeconds'], fallback: 5),
+      scanIntervalSeconds: _readInt(json['scanIntervalSeconds'], fallback: 30),
       defaultScanPasses: _readInt(json['defaultScanPasses'], fallback: 3),
       defaultBackendPreference: _parseBackendPreference(backendName),
       includeHiddenSsids: _readBool(json['includeHiddenSsids'], fallback: true),
       strictSafetyMode: _readBool(json['strictSafetyMode'], fallback: true),
+      autoScanEnabled: _readBool(json['autoScanEnabled'], fallback: false),
     );
   }
 

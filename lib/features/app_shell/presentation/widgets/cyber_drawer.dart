@@ -62,7 +62,7 @@ class CyberDrawer extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: NeonSectionHeader(
-                label: 'Interace Theme', // TODO: Localize
+                label: l10n.interfaceTheme,
                 icon: Icons.palette_outlined,
                 color: Theme.of(context).colorScheme.secondary,
               ),

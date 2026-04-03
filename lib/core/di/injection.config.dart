@@ -9,6 +9,8 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'dart:io' show Platform;
+
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:network_info_plus/network_info_plus.dart' as _i846;
@@ -45,6 +47,8 @@ import '../../features/network_scan/data/repositories/network_scan_repository_im
     as _i551;
 import '../../features/network_scan/domain/repositories/network_scan_repository.dart'
     as _i1073;
+import '../../features/network_scan/domain/services/new_device_detector.dart'
+    as _i883;
 import '../../features/network_scan/presentation/bloc/network_scan_bloc.dart'
     as _i739;
 import '../../features/reports/data/repositories/report_export_repository_impl.dart'
@@ -73,8 +77,11 @@ import '../../features/security/presentation/bloc/wifi_details_bloc.dart'
     as _i361;
 import '../../features/settings/domain/services/app_settings_store.dart'
     as _i552;
+import '../../features/wifi_scan/data/services/favorites_store.dart' as _i121;
 import '../../features/wifi_scan/data/datasources/android_wifi_data_source.dart'
     as _i672;
+import '../../features/wifi_scan/data/datasources/linux_wifi_data_source.dart'
+    as _i673;
 import '../../features/wifi_scan/data/datasources/channel_rating_local_data_source.dart'
     as _i305;
 import '../../features/wifi_scan/data/datasources/wifi_data_source.dart'
@@ -144,6 +151,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i552.AppSettingsStore>(
       () => _i552.AppSettingsStore(gh<_i460.SharedPreferences>()),
     );
+    gh.lazySingleton<_i121.FavoritesStore>(
+      () => _i121.FavoritesStore(gh<_i460.SharedPreferences>()),
+    );
     gh.lazySingleton<_i119.ReportExportRepository>(
       () => _i953.ReportExportRepositoryImpl(),
     );
@@ -165,12 +175,28 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i890.SpeedTestRepository>(
       () => const _i528.SpeedTestRepositoryImpl(),
     );
-    gh.lazySingleton<_i1012.WifiDataSource>(
-      () => _i672.AndroidWifiDataSource(),
-      instanceName: 'android',
-    );
+    // Register the platform-appropriate Wi-Fi data source without a name,
+    // so WifiRepositoryImpl can receive it directly.
+    if (Platform.isAndroid) {
+      gh.lazySingleton<_i1012.WifiDataSource>(
+        () => _i672.AndroidWifiDataSource(),
+      );
+    } else if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+      gh.lazySingleton<_i1012.WifiDataSource>(
+        () => _i673.LinuxWifiDataSource(),
+      );
+    } else {
+      // Fallback for unsupported platforms — register Android source
+      // (it will throw a ScanFailure at runtime with a clear message).
+      gh.lazySingleton<_i1012.WifiDataSource>(
+        () => _i672.AndroidWifiDataSource(),
+      );
+    }
     gh.lazySingleton<_i1073.NetworkScanRepository>(
       () => _i551.NetworkScanRepositoryImpl(gh<_i1066.ArpDataSource>()),
+    );
+    gh.lazySingleton<_i883.NewDeviceDetector>(
+      () => _i883.NewDeviceDetector(gh<_i460.SharedPreferences>()),
     );
     gh.lazySingleton<_i367.GenerateReportUseCase>(
       () => _i367.GenerateReportUseCase(gh<_i119.ReportExportRepository>()),
@@ -193,12 +219,13 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.factory<_i739.NetworkScanBloc>(
-      () => _i739.NetworkScanBloc(gh<_i1073.NetworkScanRepository>()),
+      () => _i739.NetworkScanBloc(
+        gh<_i1073.NetworkScanRepository>(),
+        gh<_i883.NewDeviceDetector>(),
+      ),
     );
     gh.lazySingleton<_i1027.WifiRepository>(
-      () => _i433.WifiRepositoryImpl(
-        gh<_i1012.WifiDataSource>(instanceName: 'android'),
-      ),
+      () => _i433.WifiRepositoryImpl(gh<_i1012.WifiDataSource>()),
     );
     gh.lazySingleton<_i519.GetBestHistoricalChannel>(
       () => _i519.GetBestHistoricalChannel(gh<_i332.ChannelRatingRepository>()),
@@ -217,6 +244,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i578.SecurityRepository>(),
         gh<_i87.AnalyzeNetworkSecurityUseCase>(),
         gh<_i797.ScanSessionStore>(),
+        gh<_i471.SecurityAnalyzer>(),
       ),
     );
     gh.factory<_i374.MonitoringHubBloc>(
@@ -229,7 +257,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i451.ScanWifi(gh<_i1027.WifiRepository>()),
     );
     gh.factory<_i968.WifiScanBloc>(
-      () => _i968.WifiScanBloc(gh<_i451.ScanWifi>()),
+      () => _i968.WifiScanBloc(gh<_i451.ScanWifi>(), gh<_i121.FavoritesStore>()),
     );
     gh.factory<_i613.MonitoringBloc>(
       () => _i613.MonitoringBloc(

@@ -5,7 +5,10 @@ import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
+import '../../../../core/theme/neon_widgets.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../../features/monitoring/presentation/pages/signal_graph_page.dart';
+import '../../domain/entities/security_assessment.dart';
 import '../../domain/entities/vulnerability.dart';
 import '../bloc/wifi_details_bloc.dart';
 
@@ -55,8 +58,15 @@ class WifiDetailsPage extends StatelessWidget {
                       state.assessment.score,
                       state.assessment.statusLabel,
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
+                    _buildPlainSummaryCard(context, state.assessment),
+                    const SizedBox(height: 16),
                     _buildNetworkDetails(context),
+                    if (network.rawCapabilities != null &&
+                        network.rawCapabilities!.isNotEmpty) ...[
+                      const SizedBox(height: 16),
+                      _buildFingerprintSection(context),
+                    ],
                     if (state.assessment.riskFactors.isNotEmpty) ...[
                       const SizedBox(height: 16),
                       Text(
@@ -89,6 +99,76 @@ class WifiDetailsPage extends StatelessWidget {
             return const SizedBox.shrink();
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildPlainSummaryCard(
+    BuildContext context,
+    SecurityAssessment assessment,
+  ) {
+    final color = switch (assessment.status) {
+      SecurityStatus.secure => Theme.of(context).colorScheme.tertiary,
+      SecurityStatus.moderate => Colors.amber,
+      SecurityStatus.atRisk => Colors.orange,
+      SecurityStatus.critical => Theme.of(context).colorScheme.error,
+    };
+    final icon = switch (assessment.status) {
+      SecurityStatus.secure => Icons.shield_rounded,
+      SecurityStatus.moderate => Icons.shield_outlined,
+      SecurityStatus.atRisk => Icons.warning_amber_rounded,
+      SecurityStatus.critical => Icons.dangerous_rounded,
+    };
+
+    return NeonCard(
+      glowColor: color,
+      glowIntensity: 0.1,
+      padding: const EdgeInsets.all(14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: color, size: 24),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      assessment.statusLabel.toUpperCase(),
+                      style: GoogleFonts.orbitron(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: color,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    InfoIconButton(
+                      title: 'Security Score',
+                      body:
+                          'The security score (0–100) rates how well this '
+                          'network is protected. Higher is better. '
+                          'It considers encryption type, WPS status, '
+                          'and other security features.',
+                      color: color,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  assessment.plainSummary,
+                  style: GoogleFonts.rajdhani(
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.85),
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -257,6 +337,98 @@ class WifiDetailsPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildFingerprintSection(BuildContext context) {
+    final raw = network.rawCapabilities ?? '';
+    // Parse [TAG] blocks from the capabilities string.
+    final regex = RegExp(r'\[([^\]]+)\]');
+    final tags = regex.allMatches(raw).map((m) => m.group(1)!).toList();
+
+    Color tagColor(String tag) {
+      final t = tag.toUpperCase();
+      if (t.contains('WPA3') || t.contains('WPA2')) return AppColors.neonGreen;
+      if (t.contains('WPA')) return Colors.amber;
+      if (t == 'WPS') return Colors.orange;
+      if (t == 'ESS' || t == 'IBSS' || t == 'BSS') {
+        return Theme.of(context).colorScheme.primary;
+      }
+      if (t.contains('PMF') || t.contains('MFP')) return AppColors.neonGreen;
+      if (t.contains('WEP')) return AppColors.neonRed;
+      return Theme.of(context).colorScheme.onSurfaceVariant;
+    }
+
+    String tagInfo(String tag) {
+      final t = tag.toUpperCase();
+      if (t.contains('WPA3')) {
+        return 'WPA3 is the latest Wi-Fi security standard — highly secure.';
+      }
+      if (t.contains('WPA2')) {
+        return 'WPA2 is a strong security standard — safe for everyday use.';
+      }
+      if (t.contains('WPA')) {
+        return 'WPA is an older security standard with known weaknesses.';
+      }
+      if (t == 'WPS') {
+        return 'WPS (Wi-Fi Protected Setup) has known security vulnerabilities. '
+            'It can allow attackers to brute-force the PIN and gain access.';
+      }
+      if (t.contains('PMF') || t.contains('MFP')) {
+        return 'Protected Management Frames (PMF/MFP) protects against deauthentication attacks.';
+      }
+      if (t == 'ESS') {
+        return 'ESS (Extended Service Set) means this is a standard access point network.';
+      }
+      if (t.contains('CCMP')) {
+        return 'CCMP (AES) is a strong encryption cipher used with WPA2/WPA3.';
+      }
+      if (t.contains('TKIP')) {
+        return 'TKIP is an older, weaker encryption cipher. CCMP/AES is preferred.';
+      }
+      return 'Network capability flag from the beacon frame.';
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'CAPABILITIES',
+          style: GoogleFonts.orbitron(
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.primary,
+            letterSpacing: 1,
+          ),
+        ),
+        const SizedBox(height: 8),
+        if (network.apMldMac != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: NeonChip(
+              label: 'Wi-Fi 7 MLD',
+              color: Theme.of(context).colorScheme.tertiary,
+            ),
+          ),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: tags.map((tag) {
+            final color = tagColor(tag);
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                NeonChip(label: tag, color: color),
+                InfoIconButton(
+                  title: tag,
+                  body: tagInfo(tag),
+                  color: color,
+                ),
+              ],
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 

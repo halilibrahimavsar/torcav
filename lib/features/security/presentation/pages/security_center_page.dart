@@ -51,6 +51,16 @@ class _SecurityCenterView extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
+              // ── Scan Overview ──
+              if (state case SecurityLoaded(:final scanSummary?)
+                  when scanSummary.totalNetworks > 0) ...[
+                StaggeredEntry(
+                  delay: const Duration(milliseconds: 100),
+                  child: _ScanOverviewRow(summary: scanSummary),
+                ),
+                const SizedBox(height: 24),
+              ],
+
               // ── Known Networks ──
               StaggeredEntry(
                 delay: const Duration(milliseconds: 150),
@@ -387,10 +397,29 @@ class _SecurityCenterBentoHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isSecure = state is! SecurityLoading;
-    final primaryColor = Theme.of(context).colorScheme.primary;
-    final outlineColor = Theme.of(context).colorScheme.outline;
-    final activeColor = isSecure ? primaryColor : outlineColor;
+    final scheme = Theme.of(context).colorScheme;
+
+    final loaded = state is SecurityLoaded ? state as SecurityLoaded : null;
+    final score = loaded?.overallScore ?? 100;
+    final hasCritical = loaded?.recentEvents.any(
+          (e) => e.severity == domain_event.SecurityEventSeverity.critical,
+        ) ??
+        false;
+    final hasHigh = loaded?.recentEvents.any(
+          (e) => e.severity == domain_event.SecurityEventSeverity.high,
+        ) ??
+        false;
+
+    final isSecure = score >= 85 && !hasCritical;
+    final activeColor = hasCritical
+        ? scheme.error
+        : (hasHigh
+            ? const Color(0xFFFFB300)
+            : (score >= 85 ? scheme.primary : scheme.outline));
+
+    final statusLabel = state is SecurityLoading
+        ? l10n.scanning
+        : (isSecure ? l10n.shieldActive : 'THREATS DETECTED');
 
     return SizedBox(
       height: 200,
@@ -408,14 +437,14 @@ class _SecurityCenterBentoHeader extends StatelessWidget {
                 children: [
                   Expanded(
                     child: SecurityStatusRadar(
-                      score: 0.94,
+                      score: score / 100.0,
                       isScanning: state is SecurityLoading,
                       color: activeColor,
                     ),
                   ),
                   const SizedBox(height: 16),
                   NeonText(
-                    (isSecure ? l10n.shieldActive : l10n.scanning).toUpperCase(),
+                    statusLabel.toUpperCase(),
                     style: GoogleFonts.orbitron(
                       color: activeColor,
                       fontSize: 14,
@@ -434,9 +463,9 @@ class _SecurityCenterBentoHeader extends StatelessWidget {
             flex: 4,
             child: _BentoStatTile(
               label: l10n.riskScore.toUpperCase(),
-              value: '94%',
+              value: '$score%',
               icon: Icons.speed_rounded,
-              color: primaryColor,
+              color: activeColor,
             ),
           ),
         ],
@@ -444,6 +473,96 @@ class _SecurityCenterBentoHeader extends StatelessWidget {
     );
   }
 }
+
+// ── Scan Overview Row ───────────────────────────────────────────────
+
+class _ScanOverviewRow extends StatelessWidget {
+  final SecurityScanSummary summary;
+  const _ScanOverviewRow({required this.summary});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Row(
+      children: [
+        _MiniStatChip(
+          label: 'APs',
+          value: '${summary.totalNetworks}',
+          color: scheme.primary,
+        ),
+        const SizedBox(width: 8),
+        _MiniStatChip(
+          label: 'OPEN',
+          value: '${summary.openCount}',
+          color: summary.openCount > 0 ? scheme.error : scheme.tertiary,
+        ),
+        const SizedBox(width: 8),
+        _MiniStatChip(
+          label: 'WPS',
+          value: '${summary.wpsCount}',
+          color: summary.wpsCount > 0
+              ? const Color(0xFFFFB300)
+              : scheme.tertiary,
+        ),
+        const SizedBox(width: 8),
+        _MiniStatChip(
+          label: 'WEP',
+          value: '${summary.wepCount}',
+          color: summary.wepCount > 0 ? scheme.error : scheme.tertiary,
+        ),
+      ],
+    );
+  }
+}
+
+class _MiniStatChip extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+  const _MiniStatChip({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: NeonCard(
+        glowColor: color,
+        glowIntensity: 0.06,
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            NeonText(
+              value,
+              style: GoogleFonts.orbitron(
+                color: color,
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+              ),
+              glowColor: color,
+              glowRadius: 4,
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: GoogleFonts.rajdhani(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────
 
 class _BentoStatTile extends StatelessWidget {
   final String label;

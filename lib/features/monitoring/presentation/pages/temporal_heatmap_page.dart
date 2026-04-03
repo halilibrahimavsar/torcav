@@ -16,7 +16,16 @@ class TemporalHeatmapPage extends StatelessWidget {
       create: (_) => GetIt.I<HeatmapBloc>()..add(LoadHeatmap(bssid)),
       child: Scaffold(
         appBar: AppBar(title: const Text('Temporal Heatmap')),
-        body: BlocBuilder<HeatmapBloc, HeatmapState>(
+        body: BlocConsumer<HeatmapBloc, HeatmapState>(
+          listenWhen: (_, current) => current is HeatmapLogFailed,
+          listener: (context, state) {
+            if (state is HeatmapLogFailed) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Failed to save heatmap point')),
+              );
+            }
+          },
+          buildWhen: (_, current) => current is! HeatmapLogFailed,
           builder: (context, state) {
             if (state is HeatmapLoading) {
               return const Center(child: CircularProgressIndicator());

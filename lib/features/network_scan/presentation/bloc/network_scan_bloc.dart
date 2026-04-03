@@ -6,6 +6,7 @@ import '../../domain/entities/host_scan_result.dart';
 import '../../domain/entities/network_device.dart';
 import '../../domain/entities/network_scan_profile.dart';
 import '../../domain/repositories/network_scan_repository.dart';
+import '../../domain/services/new_device_detector.dart';
 
 // Events
 abstract class NetworkScanEvent extends Equatable {
@@ -41,11 +42,16 @@ class NetworkScanLoading extends NetworkScanState {}
 class NetworkScanLoaded extends NetworkScanState {
   final List<NetworkDevice> devices;
   final List<HostScanResult> hosts;
+  final List<HostScanResult> newDevices;
 
-  const NetworkScanLoaded({required this.devices, required this.hosts});
+  const NetworkScanLoaded({
+    required this.devices,
+    required this.hosts,
+    this.newDevices = const [],
+  });
 
   @override
-  List<Object?> get props => [devices, hosts];
+  List<Object?> get props => [devices, hosts, newDevices];
 }
 
 class NetworkScanError extends NetworkScanState {
@@ -58,8 +64,10 @@ class NetworkScanError extends NetworkScanState {
 @injectable
 class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
   final NetworkScanRepository _repository;
+  final NewDeviceDetector _newDeviceDetector;
 
-  NetworkScanBloc(this._repository) : super(NetworkScanInitial()) {
+  NetworkScanBloc(this._repository, this._newDeviceDetector)
+      : super(NetworkScanInitial()) {
     on<StartNetworkScan>(_onStartScan);
   }
 
@@ -89,7 +97,12 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
                   ),
                 )
                 .toList();
-        emit(NetworkScanLoaded(devices: devices, hosts: hosts));
+        final newDevices = _newDeviceDetector.detectNew(hosts);
+        emit(NetworkScanLoaded(
+          devices: devices,
+          hosts: hosts,
+          newDevices: newDevices,
+        ));
       },
     );
   }

@@ -6,6 +6,7 @@ import 'package:torcav/l10n/generated/app_localizations.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../domain/entities/host_scan_result.dart';
+import '../../domain/entities/network_scan_profile.dart';
 
 import '../../../../features/network_scan/presentation/widgets/network_scanner_radar.dart';
 import '../bloc/network_scan_bloc.dart';
@@ -31,17 +32,48 @@ class _NetworkScanView extends StatefulWidget {
 
 class _NetworkScanViewState extends State<_NetworkScanView> {
   final _targetController = TextEditingController(text: '192.168.1.0/24');
+  final _searchController = TextEditingController();
+  bool _vulnOnly = false;
+  String _searchQuery = '';
+  NetworkScanProfile _profile = NetworkScanProfile.fast;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(() {
+      setState(() => _searchQuery = _searchController.text.trim().toLowerCase());
+    });
+  }
 
   @override
   void dispose() {
     _targetController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<NetworkScanBloc, NetworkScanState>(
+      body: BlocConsumer<NetworkScanBloc, NetworkScanState>(
+        listenWhen: (_, next) =>
+            next is NetworkScanLoaded && next.newDevices.isNotEmpty,
+        listener: (context, state) {
+          if (state is NetworkScanLoaded && state.newDevices.isNotEmpty) {
+            final count = state.newDevices.length;
+            final label = count == 1
+                ? '1 new device: ${state.newDevices.first.ip}'
+                : '$count new devices on your network';
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(label),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                behavior: SnackBarBehavior.floating,
+                duration: const Duration(seconds: 4),
+              ),
+            );
+          }
+        },
         builder: (context, state) {
           final isLoading = state is NetworkScanLoading;
           return ListView(
@@ -63,9 +95,14 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 child: _ScanControlPanel(
                   controller: _targetController,
                   isScanning: isLoading,
+                  profile: _profile,
+                  onProfileChanged: (p) => setState(() => _profile = p),
                   onScan: () {
                     context.read<NetworkScanBloc>().add(
-                      StartNetworkScan(target: _targetController.text),
+                      StartNetworkScan(
+                        target: _targetController.text,
+                        profile: _profile,
+                      ),
                     );
                   },
                 ),
@@ -113,37 +150,47 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                     color: Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
 
-                ...state.devices.asMap().entries.map((entry) {
-                  final device = entry.value;
-                  final hostResult = state.hosts.firstWhere(
-                    (h) => h.ip == device.ip,
-                    orElse:
-                        () => HostScanResult(
-                          ip: device.ip,
-                          mac: device.mac,
-                          vendor: device.vendor,
-                          hostName: device.hostName,
-                          osGuess: 'Unknown',
-                          latency: device.latency,
-                          services: const [],
-                          vulnerabilities: const [],
-                          exposureScore: 0,
-                          deviceType: 'Unknown',
-                        ),
-                  );
-                  return StaggeredEntry(
-                    delay: Duration(milliseconds: 250 + entry.key * 50),
-                    child: _DeviceCard(host: hostResult),
-                  );
-                }),
+                // ── Search & Filter ──
+                _LanSearchBar(
+                  controller: _searchController,
+                  vulnOnly: _vulnOnly,
+                  onVulnFilterChanged: (v) => setState(() => _vulnOnly = v),
+                ),
+                const SizedBox(height: 12),
+
+                ...() {
+                  final hosts = state.hosts.where((h) {
+                    if (_vulnOnly && h.vulnerabilities.isEmpty) return false;
+                    if (_searchQuery.isNotEmpty) {
+                      if (!h.ip.contains(_searchQuery) &&
+                          !h.hostName.toLowerCase().contains(_searchQuery) &&
+                          !h.vendor.toLowerCase().contains(_searchQuery)) {
+                        return false;
+                      }
+                    }
+                    return true;
+                  }).toList();
+
+                  return hosts.asMap().entries.map((entry) {
+                    return StaggeredEntry(
+                      delay: Duration(milliseconds: 250 + entry.key * 50),
+                      child: _DeviceCard(host: entry.value),
+                    );
+                  });
+                }(),
               ],
 
               if (state is NetworkScanError) ...[
                 StaggeredEntry(
                   delay: const Duration(milliseconds: 200),
-                  child: _ErrorCard(message: state.message),
+                  child: NeonErrorCard(
+                    message: state.message,
+                    onRetry: () => context.read<NetworkScanBloc>().add(
+                      StartNetworkScan(target: _targetController.text),
+                    ),
+                  ),
                 ),
               ],
             ],
@@ -158,11 +205,15 @@ class _ScanControlPanel extends StatelessWidget {
   final TextEditingController controller;
   final bool isScanning;
   final VoidCallback onScan;
+  final NetworkScanProfile profile;
+  final ValueChanged<NetworkScanProfile> onProfileChanged;
 
   const _ScanControlPanel({
     required this.controller,
     required this.isScanning,
     required this.onScan,
+    required this.profile,
+    required this.onProfileChanged,
   });
 
   @override
@@ -202,6 +253,59 @@ class _ScanControlPanel extends StatelessWidget {
                 color: scheme.primary.withValues(alpha: 0.6),
               ),
             ),
+          ),
+          const SizedBox(height: 12),
+          // ── Scan Profile Selector ──
+          Row(
+            children: [
+              Icon(
+                Icons.tune_rounded,
+                size: 16,
+                color: scheme.primary.withValues(alpha: 0.6),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'SCAN PROFILE',
+                style: GoogleFonts.orbitron(
+                  fontSize: 11,
+                  color: scheme.primary.withValues(alpha: 0.7),
+                  letterSpacing: 1,
+                ),
+              ),
+              const SizedBox(width: 4),
+              InfoIconButton(
+                title: 'Scan Profiles',
+                body:
+                    'Fast: Quick ping sweep — finds devices in seconds.\n\n'
+                    'Balanced: Ping + common ports — finds more detail.\n\n'
+                    'Aggressive: Full port scan — most thorough but slowest.',
+                color: scheme.primary,
+              ),
+              const Spacer(),
+              DropdownButton<NetworkScanProfile>(
+                value: profile,
+                underline: const SizedBox.shrink(),
+                style: GoogleFonts.rajdhani(
+                  color: scheme.primary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+                dropdownColor: scheme.surfaceContainer,
+                items: NetworkScanProfile.values
+                    .map(
+                      (p) => DropdownMenuItem(
+                        value: p,
+                        child: Text(p.name.toUpperCase()),
+                      ),
+                    )
+                    .toList(),
+                onChanged: isScanning
+                    ? null
+                    : (p) {
+                        if (p != null) onProfileChanged(p);
+                      },
+              ),
+            ],
           ),
           const SizedBox(height: 14),
           SizedBox(
@@ -760,33 +864,72 @@ class _TechDetail extends StatelessWidget {
   }
 }
 
-class _ErrorCard extends StatelessWidget {
-  final String message;
+// ── LAN Search & Filter Bar ──────────────────────────────────────────
 
-  const _ErrorCard({required this.message});
+class _LanSearchBar extends StatelessWidget {
+  final TextEditingController controller;
+  final bool vulnOnly;
+  final ValueChanged<bool> onVulnFilterChanged;
+
+  const _LanSearchBar({
+    required this.controller,
+    required this.vulnOnly,
+    required this.onVulnFilterChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return NeonCard(
-      glowColor: scheme.error,
-      glowIntensity: 0.08,
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Icon(Icons.error_outline_rounded, color: scheme.error, size: 24),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              message,
-              style: GoogleFonts.rajdhani(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                fontSize: 14,
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: controller,
+          style: GoogleFonts.rajdhani(color: scheme.onSurface, fontSize: 15),
+          decoration: InputDecoration(
+            hintText: 'Search by IP, hostname, or vendor...',
+            hintStyle: GoogleFonts.rajdhani(
+              color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
+            ),
+            prefixIcon: Icon(Icons.search_rounded, color: scheme.primary, size: 20),
+            suffixIcon: controller.text.isNotEmpty
+                ? GestureDetector(
+                    onTap: () => controller.clear(),
+                    child: Icon(Icons.clear_rounded, color: scheme.onSurfaceVariant, size: 18),
+                  )
+                : null,
+            isDense: true,
+            contentPadding: const EdgeInsets.symmetric(vertical: 10),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: scheme.primary.withValues(alpha: 0.3)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: scheme.primary.withValues(alpha: 0.7)),
             ),
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 8),
+        FilterChip(
+          label: Text(
+            'Has Vulnerabilities',
+            style: GoogleFonts.rajdhani(
+              color: vulnOnly ? scheme.onError : scheme.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          selected: vulnOnly,
+          onSelected: onVulnFilterChanged,
+          selectedColor: scheme.error.withValues(alpha: 0.2),
+          checkmarkColor: scheme.error,
+          side: BorderSide(
+            color: vulnOnly
+                ? scheme.error.withValues(alpha: 0.6)
+                : scheme.outline.withValues(alpha: 0.3),
+          ),
+        ),
+      ],
     );
   }
 }

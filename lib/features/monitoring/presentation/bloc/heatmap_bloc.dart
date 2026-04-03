@@ -57,6 +57,13 @@ class HeatmapError extends HeatmapState {
   List<Object?> get props => [message];
 }
 
+class HeatmapLogFailed extends HeatmapState {
+  final String message;
+  const HeatmapLogFailed(this.message);
+  @override
+  List<Object?> get props => [message];
+}
+
 @injectable
 class HeatmapBloc extends Bloc<HeatmapEvent, HeatmapState> {
   final GetZoneAveragesUseCase _getZoneAverages;
@@ -86,8 +93,7 @@ class HeatmapBloc extends Bloc<HeatmapEvent, HeatmapState> {
           add(LoadHeatmap(event.bssid));
         }
       } catch (e) {
-        // Silent failure or emit error?
-        // Ideally we shouldn't disrupt the view state for a logging error unless critical.
+        emit(HeatmapLogFailed(e.toString()));
       }
     });
   }

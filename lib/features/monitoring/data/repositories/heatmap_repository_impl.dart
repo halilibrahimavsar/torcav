@@ -33,10 +33,12 @@ class HeatmapRepositoryImpl implements HeatmapRepository {
     return maps
         .map((map) {
           return HeatmapPoint(
-            timestamp: DateTime.parse(map['created_at'] as String),
-            bssid: map['bssid'] as String,
-            zoneTag: map['zone_tag'] as String,
-            signalDbm: map['signal_dbm'] as int,
+            timestamp:
+                DateTime.tryParse((map['created_at'] as String?) ?? '') ??
+                DateTime.fromMillisecondsSinceEpoch(0),
+            bssid: (map['bssid'] as String?) ?? '',
+            zoneTag: (map['zone_tag'] as String?) ?? '',
+            signalDbm: (map['signal_dbm'] as int?) ?? 0,
           );
         })
         .toList(growable: false);

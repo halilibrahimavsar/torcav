@@ -5,6 +5,177 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'app_theme.dart';
 
+// ── Info Icon Button ─────────────────────────────────────────────────
+//
+// A small ℹ️ icon that opens a bottom sheet explaining a technical term
+// in plain language. Use it next to any technical label so beginners
+// can understand what it means without cluttering the main UI.
+
+class InfoIconButton extends StatelessWidget {
+  final String title;
+  final String body;
+  final Color? color;
+
+  const InfoIconButton({
+    super.key,
+    required this.title,
+    required this.body,
+    this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final effectiveColor = color ?? Theme.of(context).colorScheme.primary;
+    return GestureDetector(
+      onTap: () => _showInfoSheet(context, effectiveColor),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Icon(
+          Icons.info_outline_rounded,
+          size: 16,
+          color: effectiveColor.withValues(alpha: 0.7),
+        ),
+      ),
+    );
+  }
+
+  void _showInfoSheet(BuildContext context, Color color) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _InfoSheet(title: title, body: body, color: color),
+    );
+  }
+}
+
+class _InfoSheet extends StatelessWidget {
+  final String title;
+  final String body;
+  final Color color;
+
+  const _InfoSheet({
+    required this.title,
+    required this.body,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassmorphicContainer(
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      borderColor: color,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.4),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Icon(Icons.info_outline_rounded, color: color, size: 22),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  title,
+                  style: GoogleFonts.orbitron(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text(
+            body,
+            style: GoogleFonts.rajdhani(
+              fontSize: 15,
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.85),
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Neon Error Card ──────────────────────────────────────────────────
+//
+// A styled error state widget with a red neon glow, error icon, message
+// text, and an optional retry button. Use this to replace plain Text
+// error widgets across the app for consistent, user-friendly error UX.
+
+class NeonErrorCard extends StatelessWidget {
+  final String message;
+  final VoidCallback? onRetry;
+
+  const NeonErrorCard({super.key, required this.message, this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    final errorColor = Theme.of(context).colorScheme.error;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: NeonCard(
+          glowColor: errorColor,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.error_outline_rounded, color: errorColor, size: 48),
+              const SizedBox(height: 12),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.rajdhani(
+                  fontSize: 15,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.85),
+                  height: 1.4,
+                ),
+              ),
+              if (onRetry != null) ...[
+                const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: onRetry,
+                  icon: Icon(Icons.refresh_rounded, color: errorColor, size: 18),
+                  label: Text(
+                    'RETRY',
+                    style: GoogleFonts.orbitron(
+                      fontSize: 12,
+                      color: errorColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: errorColor.withValues(alpha: 0.6)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 // ── Glassmorphic Container ──────────────────────────────────────────
 
 /// A frosted-glass container with optional neon border glow.

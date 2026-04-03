@@ -693,4 +693,40 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get systemStatus => 'SİSTEM DURUMU';
+
+  @override
+  String get interfaceTheme => 'Arayüz Teması';
+
+  @override
+  String get initiatingSpectrumScan => 'SPEKTRUM TARAMASI BAŞLATILIYOR';
+
+  @override
+  String get broadcastingProbeRequests => 'SONDAJ İSTEKLERİ YAYINLANIYOR...';
+
+  @override
+  String get noRadiosInRange => 'MENZILDE HİÇBİR RADYO YAYINI YOK';
+
+  @override
+  String get noNetworksMatchFilter => 'Filtrenize uyan ağ yok';
+
+  @override
+  String get searchSsidBssidVendor => 'SSID, BSSID, üretici ara\u2026';
+
+  @override
+  String get quickScan => 'Hızlı Tarama';
+
+  @override
+  String get deepScan => 'Derin Tarama';
+
+  @override
+  String get scanModesTitle => 'Tarama Modları';
+
+  @override
+  String get scanModesInfo =>
+      'Hızlı Tarama (1 geçiş) saniyeler içinde tamamlanır \u2014 hızlı kontrol için idealdir.\n\n'
+      'Derin Tarama (çoklu geçiş) daha uzun sürer ama daha fazla ağ yakalar '
+      've daha doğru sinyal okumaları sağlar.';
+
+  @override
+  String get channelInterferenceTitle => 'Kanal Girişimi';
 }

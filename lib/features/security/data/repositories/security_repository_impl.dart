@@ -113,6 +113,26 @@ class SecurityRepositoryImpl implements SecurityRepository {
       await saveSecurityEvents(alerts);
     }
 
+    // Auto-learn: upsert every scanned network into known_networks.
+    // On first scan this builds the baseline; on subsequent scans it updates
+    // last_seen. The table has BSSID as PRIMARY KEY with ConflictAlgorithm.replace
+    // so this is a safe upsert.
+    final now = DateTime.now();
+    for (final network in networks) {
+      if (network.ssid.isEmpty) continue;
+      final existing =
+          knownNetworks.where((kn) => kn.bssid == network.bssid).firstOrNull;
+      await saveKnownNetwork(
+        KnownNetwork(
+          ssid: network.ssid,
+          bssid: network.bssid,
+          security: network.security.toString(),
+          firstSeen: existing?.firstSeen ?? now,
+          lastSeen: now,
+        ),
+      );
+    }
+
     return alerts;
   }
 

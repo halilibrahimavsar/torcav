@@ -693,4 +693,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get systemStatus => 'SYSTEM STATUS';
+
+  @override
+  String get interfaceTheme => 'Interface Theme';
+
+  @override
+  String get initiatingSpectrumScan => 'INITIATING SPECTRUM SCAN';
+
+  @override
+  String get broadcastingProbeRequests => 'BROADCASTING PROBE REQUESTS...';
+
+  @override
+  String get noRadiosInRange => 'NO RADIOS EMITTING IN RANGE';
+
+  @override
+  String get noNetworksMatchFilter => 'No networks match your filter';
+
+  @override
+  String get searchSsidBssidVendor => 'Search SSID, BSSID, vendor\u2026';
+
+  @override
+  String get quickScan => 'Quick Scan';
+
+  @override
+  String get deepScan => 'Deep Scan';
+
+  @override
+  String get scanModesTitle => 'Scan Modes';
+
+  @override
+  String get scanModesInfo =>
+      'Quick Scan (1 pass) finishes in seconds \u2014 great for a fast check.\n\n'
+      'Deep Scan (multiple passes) takes longer but catches more networks '
+      'and gives more accurate signal readings.';
+
+  @override
+  String get channelInterferenceTitle => 'Channel Interference';
 }

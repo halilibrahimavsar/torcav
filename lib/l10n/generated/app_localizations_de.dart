@@ -693,4 +693,40 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get systemStatus => 'SYSTEMSTATUS';
+
+  @override
+  String get interfaceTheme => 'Interface-Thema';
+
+  @override
+  String get initiatingSpectrumScan => 'SPEKTRUM-SCAN WIRD GESTARTET';
+
+  @override
+  String get broadcastingProbeRequests => 'PROBE-ANFRAGEN WERDEN GESENDET...';
+
+  @override
+  String get noRadiosInRange => 'KEINE FUNKSIGNALE IN REICHWEITE';
+
+  @override
+  String get noNetworksMatchFilter => 'Keine Netzwerke entsprechen dem Filter';
+
+  @override
+  String get searchSsidBssidVendor => 'SSID, BSSID, Hersteller suchen\u2026';
+
+  @override
+  String get quickScan => 'Schnell-Scan';
+
+  @override
+  String get deepScan => 'Tiefen-Scan';
+
+  @override
+  String get scanModesTitle => 'Scan-Modi';
+
+  @override
+  String get scanModesInfo =>
+      'Schnell-Scan (1 Durchlauf) ist in Sekunden fertig \u2014 ideal für eine schnelle Prüfung.\n\n'
+      'Tiefen-Scan (mehrere Durchläufe) dauert länger, findet aber mehr Netzwerke '
+      'und liefert genauere Signalmessungen.';
+
+  @override
+  String get channelInterferenceTitle => 'Kanalstörung';
 }

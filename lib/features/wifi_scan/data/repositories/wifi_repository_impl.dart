@@ -10,9 +10,9 @@ import '../datasources/wifi_data_source.dart';
 
 @LazySingleton(as: WifiRepository)
 class WifiRepositoryImpl implements WifiRepository {
-  final WifiDataSource _androidDataSource;
+  final WifiDataSource _dataSource;
 
-  WifiRepositoryImpl(@Named('android') this._androidDataSource);
+  WifiRepositoryImpl(this._dataSource);
 
   @override
   Future<Either<Failure, List<WifiNetwork>>> scanNetworks() async {
@@ -25,7 +25,7 @@ class WifiRepositoryImpl implements WifiRepository {
     ScanRequest request,
   ) async {
     try {
-      final snapshot = await _androidDataSource.scanSnapshot(request);
+      final snapshot = await _dataSource.scanSnapshot(request);
       return Right(snapshot);
     } on Failure catch (e) {
       return Left(e);

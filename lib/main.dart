@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'core/l10n/delegates/fallback_localization_delegate.dart';
 
 import 'core/di/injection.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_cubit.dart';
 import 'features/app_shell/presentation/pages/app_shell_page.dart';
+import 'features/app_shell/presentation/pages/onboarding_page.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/l10n/locale_cubit.dart';
@@ -25,11 +27,17 @@ void main() async {
 
   await configureDependencies();
   await getIt<NotificationService>().initialize();
-  runApp(const TorcavApp());
+
+  final prefs = await SharedPreferences.getInstance();
+  final onboardingComplete = prefs.getBool('onboarding_complete') ?? false;
+
+  runApp(TorcavApp(showOnboarding: !onboardingComplete));
 }
 
 class TorcavApp extends StatelessWidget {
-  const TorcavApp({super.key});
+  final bool showOnboarding;
+
+  const TorcavApp({super.key, this.showOnboarding = false});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +64,9 @@ class TorcavApp extends StatelessWidget {
                   FallbackCupertinoLocalizationsDelegate(),
                 ],
                 supportedLocales: AppLocalizations.supportedLocales,
-                home: const AppShellPage(),
+                home: showOnboarding
+                    ? const OnboardingPage()
+                    : const AppShellPage(),
               );
             },
           );

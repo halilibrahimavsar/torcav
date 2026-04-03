@@ -25,31 +25,34 @@ class CaptivePortalDetector {
 
       final client = HttpClient()
         ..connectionTimeout = const Duration(seconds: 5);
-      final request = await client.getUrl(
-        Uri.parse('http://connectivitycheck.gstatic.com/generate_204'),
-      );
-      final response = await request.close().timeout(
-        const Duration(seconds: 5),
-      );
-      await response.drain<void>();
-      client.close();
+      try {
+        final request = await client.getUrl(
+          Uri.parse('http://connectivitycheck.gstatic.com/generate_204'),
+        );
+        final response = await request.close().timeout(
+          const Duration(seconds: 5),
+        );
+        await response.drain<void>();
 
-      if (response.statusCode == 204) {
-        return (status: CaptivePortalStatus.clean, event: null);
+        if (response.statusCode == 204) {
+          return (status: CaptivePortalStatus.clean, event: null);
+        }
+
+        // Any redirect or non-204 response indicates a captive portal.
+        final event = SecurityEvent(
+          type: SecurityEventType.captivePortalDetected,
+          severity: SecurityEventSeverity.warning,
+          ssid: ssid.replaceAll('"', ''),
+          bssid: bssid.toUpperCase(),
+          timestamp: DateTime.now(),
+          evidence:
+              'Connectivity check returned HTTP ${response.statusCode} '
+              '(expected 204). A captive portal is redirecting traffic.',
+        );
+        return (status: CaptivePortalStatus.detected, event: event);
+      } finally {
+        client.close();
       }
-
-      // Any redirect or non-204 response indicates a captive portal.
-      final event = SecurityEvent(
-        type: SecurityEventType.captivePortalDetected,
-        severity: SecurityEventSeverity.warning,
-        ssid: ssid.replaceAll('"', ''),
-        bssid: bssid.toUpperCase(),
-        timestamp: DateTime.now(),
-        evidence:
-            'Connectivity check returned HTTP ${response.statusCode} '
-            '(expected 204). A captive portal is redirecting traffic.',
-      );
-      return (status: CaptivePortalStatus.detected, event: event);
     } catch (_) {
       return (status: CaptivePortalStatus.unknown, event: null);
     }

@@ -130,12 +130,16 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
 
     _networkSubscription = _repository
         .monitorNetwork(event.bssid, interval: const Duration(seconds: 2))
-        .listen((result) {
-          result.fold(
-            (failure) => add(_MonitoringError(failure.message)),
-            (network) => add(_UpdateNetwork(network)),
-          );
-        });
+        .listen(
+          (result) {
+            result.fold(
+              (failure) => add(_MonitoringError(failure.message)),
+              (network) => add(_UpdateNetwork(network)),
+            );
+          },
+          onError: (Object error, StackTrace st) =>
+              add(_MonitoringError(error.toString())),
+        );
   }
 
   Future<void> _onStopMonitoring(
@@ -170,24 +174,50 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
       ),
     );
 
+    // Save initial ratings so the History tab is populated on first open
+    if (initialRatings.isNotEmpty) {
+      final initTs = DateTime.now();
+      unawaited(
+        _historyRepo
+            .saveRatings(
+              initialRatings
+                  .map(
+                    (r) => ChannelRatingSample(
+                      channel: r.channel,
+                      rating: r.rating,
+                      timestamp: initTs,
+                    ),
+                  )
+                  .toList(),
+            )
+            .then((_) {})
+            .catchError((_) {}),
+      );
+    }
+
     // Start real-time updates
     await _channelSubscription?.cancel();
     _channelSubscription = _sessionStore.snapshots.listen((snapshot) {
       final networks = snapshot.networks.map((o) => o.toWifiNetwork()).toList();
       final liveRatings = _channelEngine.calculateRatings(networks);
 
-      // Save to history asynchronously
+      // Save to history asynchronously — fire-and-forget.
       final timestamp = DateTime.now();
-      _historyRepo.saveRatings(
-        liveRatings
-            .map(
-              (r) => ChannelRatingSample(
-                channel: r.channel,
-                rating: r.rating,
-                timestamp: timestamp,
-              ),
+      unawaited(
+        _historyRepo
+            .saveRatings(
+              liveRatings
+                  .map(
+                    (r) => ChannelRatingSample(
+                      channel: r.channel,
+                      rating: r.rating,
+                      timestamp: timestamp,
+                    ),
+                  )
+                  .toList(),
             )
-            .toList(),
+            .then((_) {})
+            .catchError((_) {}),
       );
 
       add(_UpdateRatings(liveRatings));

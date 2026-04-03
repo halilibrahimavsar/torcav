@@ -259,6 +259,29 @@ class _SettingsPageState extends State<SettingsPage> {
                       _update(settings.copyWith(includeHiddenSsids: value));
                     },
                   ),
+                  // Auto-Scan
+                  SwitchListTile(
+                    value: settings.autoScanEnabled,
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    title: Text(
+                      'Auto-Scan',
+                      style: GoogleFonts.rajdhani(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Repeat scan every ${settings.scanIntervalSeconds}s automatically',
+                      style: GoogleFonts.rajdhani(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
+                    ),
+                    onChanged: (value) {
+                      _update(settings.copyWith(autoScanEnabled: value));
+                    },
+                  ),
                   // Safety Mode
                   SwitchListTile(
                     value: settings.strictSafetyMode,
@@ -406,6 +429,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 label: 'Deutsch 🇩🇪',
                 locale: const Locale('de'),
               ),
+              _SystemLanguageOption(),
             ],
           ),
         );
@@ -502,6 +526,48 @@ class _NeonSliderTile extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+// ── System Language Option ───────────────────────────────────────────
+
+class _SystemLanguageOption extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () {
+            context.read<LocaleCubit>().detectAndApplySystemLocale();
+            Navigator.pop(context);
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            child: Row(
+              children: [
+                Text(
+                  'System Default',
+                  style: GoogleFonts.rajdhani(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.phone_android_rounded,
+                  size: 16,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

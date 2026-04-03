@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:torcav/l10n/generated/app_localizations.dart';
@@ -7,6 +9,7 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../settings/domain/services/app_settings_store.dart';
+import '../../../settings/domain/entities/app_settings.dart';
 import '../../domain/entities/band_analysis_stat.dart';
 import '../../domain/entities/scan_request.dart';
 import '../../domain/entities/scan_snapshot.dart';
@@ -16,6 +19,8 @@ import '../bloc/wifi_scan_bloc.dart';
 import '../widgets/wifi_scanner_radar.dart';
 import '../../../../features/security/presentation/pages/wifi_details_page.dart';
 import '../../../../features/monitoring/presentation/pages/channel_rating_page.dart';
+import '../../domain/services/scan_session_store.dart';
+import 'scan_comparison_page.dart';
 
 /// Wrapper that provides the [WifiScanBloc] to the subtree.
 class WifiScanPage extends StatelessWidget {
@@ -51,14 +56,46 @@ class _WifiScanViewState extends State<_WifiScanView> {
   late int _passes;
   late bool _includeHidden;
   late WifiBackendPreference _backend;
+  Timer? _autoScanTimer;
+  StreamSubscription<AppSettings>? _settingsSub;
 
   @override
   void initState() {
     super.initState();
-    final defaults = getIt<AppSettingsStore>().value;
+    final store = getIt<AppSettingsStore>();
+    final defaults = store.value;
     _passes = defaults.defaultScanPasses;
     _includeHidden = defaults.includeHiddenSsids;
     _backend = defaults.defaultBackendPreference;
+    _setupAutoScan(defaults);
+    _settingsSub = store.changes.listen(_onSettingsChanged);
+  }
+
+  void _onSettingsChanged(AppSettings settings) {
+    _setupAutoScan(settings);
+  }
+
+  void _setupAutoScan(AppSettings settings) {
+    _autoScanTimer?.cancel();
+    if (settings.autoScanEnabled && settings.scanIntervalSeconds > 0) {
+      _autoScanTimer = Timer.periodic(
+        Duration(seconds: settings.scanIntervalSeconds),
+        (_) {
+          if (mounted) {
+            context.read<WifiScanBloc>().add(
+              WifiScanRefreshed(request: _currentRequest),
+            );
+          }
+        },
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _autoScanTimer?.cancel();
+    _settingsSub?.cancel();
+    super.dispose();
   }
 
   ScanRequest get _currentRequest => ScanRequest(
@@ -100,7 +137,7 @@ class _WifiScanViewState extends State<_WifiScanView> {
                         child: Column(
                           children: [
                               Text(
-                                'INITIATING SPECTRUM SCAN',
+                                AppLocalizations.of(context)!.initiatingSpectrumScan,
                                 style: GoogleFonts.orbitron(
                                   color: Theme.of(context).colorScheme.primary,
                                   fontSize: 14,
@@ -110,7 +147,7 @@ class _WifiScanViewState extends State<_WifiScanView> {
                               ),
                             const SizedBox(height: 8),
                             Text(
-                              'BROADCASTING PROBE REQUESTS...',
+                              AppLocalizations.of(context)!.broadcastingProbeRequests,
                               style: GoogleFonts.rajdhani(
                                 color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 fontSize: 12,
@@ -147,6 +184,7 @@ class _WifiScanViewState extends State<_WifiScanView> {
                 return _SnapshotView(
                   snapshot: state.snapshot,
                   currentRequest: _currentRequest,
+                  pinnedBssids: state.pinnedBssids,
                 );
               }
               return Center(
@@ -194,8 +232,9 @@ const _sentinel = Object();
 
 List<WifiObservation> _applyFilter(
   List<WifiObservation> networks,
-  _FilterState filter,
-) {
+  _FilterState filter, {
+  Set<String> pinned = const {},
+}) {
   var result = networks.where((n) {
     final q = filter.query.trim().toLowerCase();
     if (q.isNotEmpty) {
@@ -228,6 +267,15 @@ List<WifiObservation> _applyFilter(
       result.sort((a, b) => a.security.index.compareTo(b.security.index));
   }
 
+  // Float pinned networks to the top regardless of sort order.
+  if (pinned.isNotEmpty) {
+    result.sort((a, b) {
+      final ap = pinned.contains(a.bssid) ? 0 : 1;
+      final bp = pinned.contains(b.bssid) ? 0 : 1;
+      return ap.compareTo(bp);
+    });
+  }
+
   return result;
 }
 
@@ -236,8 +284,13 @@ List<WifiObservation> _applyFilter(
 class _SnapshotView extends StatefulWidget {
   final ScanSnapshot snapshot;
   final ScanRequest currentRequest;
+  final Set<String> pinnedBssids;
 
-  const _SnapshotView({required this.snapshot, required this.currentRequest});
+  const _SnapshotView({
+    required this.snapshot,
+    required this.currentRequest,
+    this.pinnedBssids = const {},
+  });
 
   @override
   State<_SnapshotView> createState() => _SnapshotViewState();
@@ -246,11 +299,23 @@ class _SnapshotView extends StatefulWidget {
 class _SnapshotViewState extends State<_SnapshotView> {
   _FilterState _filter = const _FilterState();
   final _searchController = TextEditingController();
+  bool _showRecommendation = true;
+  bool _quickScan = false;
 
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _triggerRescan(BuildContext context) {
+    final defaults = getIt<AppSettingsStore>().value;
+    final request = ScanRequest(
+      passes: _quickScan ? 1 : defaults.defaultScanPasses,
+      includeHidden: defaults.includeHiddenSsids,
+      backendPreference: defaults.defaultBackendPreference,
+    );
+    context.read<WifiScanBloc>().add(WifiScanStarted(request: request));
   }
 
   @override
@@ -281,7 +346,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
             ),
             const SizedBox(height: 8),
             Text(
-              "NO RADIOS EMITTING IN RANGE",
+              l10n.noRadiosInRange,
               style: GoogleFonts.rajdhani(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 14,
@@ -293,7 +358,11 @@ class _SnapshotViewState extends State<_SnapshotView> {
       );
     }
 
-    final filtered = _applyFilter(widget.snapshot.networks, _filter);
+    final filtered = _applyFilter(
+      widget.snapshot.networks,
+      _filter,
+      pinned: widget.pinnedBssids,
+    );
 
     return RefreshIndicator(
       color: Theme.of(context).colorScheme.primary,
@@ -306,7 +375,39 @@ class _SnapshotViewState extends State<_SnapshotView> {
         children: [
           // ── Bento Header ──
           _WifiBentoHeader(snapshot: widget.snapshot),
-          const SizedBox(height: 24),
+          const SizedBox(height: 12),
+
+          // ── Compare Button (shown when ≥2 scans available) ──
+          if (getIt<ScanSessionStore>().all.length >= 2)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: OutlinedButton.icon(
+                icon: const Icon(Icons.compare_arrows_rounded, size: 16),
+                label: Text(
+                  'COMPARE WITH PREVIOUS SCAN',
+                  style: GoogleFonts.orbitron(fontSize: 11, letterSpacing: 1),
+                ),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.primary,
+                  side: BorderSide(
+                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
+                  ),
+                ),
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const ScanComparisonPage(),
+                  ),
+                ),
+              ),
+            ),
+
+          // ── Auto-Recommendation Banner ──
+          if (_showRecommendation)
+            _RecommendationBanner(
+              snapshot: widget.snapshot,
+              onDismiss: () => setState(() => _showRecommendation = false),
+            ),
+          const SizedBox(height: 12),
 
           // ── Channel Rating Quick Link ──
           BlocBuilder<WifiScanBloc, WifiScanState>(
@@ -321,6 +422,16 @@ class _SnapshotViewState extends State<_SnapshotView> {
               );
             },
           ),
+
+          // ── Quick / Deep Scan Toggle ──
+          _ScanModeToggle(
+            quickScan: _quickScan,
+            onChanged: (isQuick) {
+              setState(() => _quickScan = isQuick);
+              _triggerRescan(context);
+            },
+          ),
+          const SizedBox(height: 8),
 
           // ── Search & Filter Bar ──
           _SearchFilterBar(
@@ -346,7 +457,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
               padding: const EdgeInsets.symmetric(vertical: 32),
               child: Center(
                 child: Text(
-                  'No networks match your filter',
+                  AppLocalizations.of(context)!.noNetworksMatchFilter,
                   style: GoogleFonts.rajdhani(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 15,
@@ -361,10 +472,103 @@ class _SnapshotViewState extends State<_SnapshotView> {
                 child: _WifiNetworkCard(
                   network: entry.value,
                   interfaceName: widget.snapshot.interfaceName,
+                  isPinned: widget.pinnedBssids.contains(entry.value.bssid),
+                  onTogglePin: () => context.read<WifiScanBloc>().add(
+                    WifiScanToggleFavorite(entry.value.bssid),
+                  ),
                 ),
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+// ── Quick / Deep Scan Mode Toggle ────────────────────────────────────
+
+class _ScanModeToggle extends StatelessWidget {
+  final bool quickScan;
+  final ValueChanged<bool> onChanged;
+
+  const _ScanModeToggle({required this.quickScan, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    return Row(
+      children: [
+        _ModeButton(
+          label: AppLocalizations.of(context)!.quickScan,
+          icon: Icons.flash_on_rounded,
+          selected: quickScan,
+          color: Theme.of(context).colorScheme.tertiary,
+          onTap: () => onChanged(true),
+        ),
+        const SizedBox(width: 8),
+        _ModeButton(
+          label: AppLocalizations.of(context)!.deepScan,
+          icon: Icons.radar_rounded,
+          selected: !quickScan,
+          color: primary,
+          onTap: () => onChanged(false),
+        ),
+        const SizedBox(width: 8),
+        InfoIconButton(
+          title: AppLocalizations.of(context)!.scanModesTitle,
+          body: AppLocalizations.of(context)!.scanModesInfo,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
+      ],
+    );
+  }
+}
+
+class _ModeButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool selected;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _ModeButton({
+    required this.label,
+    required this.icon,
+    required this.selected,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        decoration: BoxDecoration(
+          color: selected ? color.withValues(alpha: 0.15) : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: selected ? color.withValues(alpha: 0.7) : color.withValues(alpha: 0.2),
+            width: selected ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 14, color: selected ? color : color.withValues(alpha: 0.5)),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: GoogleFonts.rajdhani(
+                fontSize: 13,
+                fontWeight: selected ? FontWeight.bold : FontWeight.w600,
+                color: selected ? color : color.withValues(alpha: 0.5),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -409,7 +613,7 @@ class _SearchFilterBar extends StatelessWidget {
               fontSize: 14,
             ),
             decoration: InputDecoration(
-              hintText: 'Search SSID, BSSID, vendor\u2026',
+              hintText: AppLocalizations.of(context)!.searchSsidBssidVendor,
               hintStyle: GoogleFonts.rajdhani(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 14,
@@ -598,6 +802,114 @@ class _ScanChip extends StatelessWidget {
   }
 }
 
+// ── Auto-Recommendation Banner ───────────────────────────────────────
+
+class _RecommendationBanner extends StatelessWidget {
+  final ScanSnapshot snapshot;
+  final VoidCallback onDismiss;
+
+  const _RecommendationBanner({
+    required this.snapshot,
+    required this.onDismiss,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (snapshot.bandStats.isEmpty) return const SizedBox.shrink();
+
+    // Pick the band with the highest average congestion.
+    final sortedBands = List.of(snapshot.bandStats)
+      ..sort(
+        (a, b) => snapshot.channelStats
+            .where((c) {
+              final f = c.frequency;
+              return switch (a.band) {
+                WifiBand.ghz24 => f < 5000,
+                WifiBand.ghz5 => f >= 5000 && f < 5925,
+                WifiBand.ghz6 => f >= 5925,
+              };
+            })
+            .map((c) => c.congestionScore)
+            .fold(0.0, (acc, s) => acc > s ? acc : s)
+            .compareTo(
+              snapshot.channelStats
+                  .where((c) {
+                    final f = c.frequency;
+                    return switch (b.band) {
+                      WifiBand.ghz24 => f < 5000,
+                      WifiBand.ghz5 => f >= 5000 && f < 5925,
+                      WifiBand.ghz6 => f >= 5925,
+                    };
+                  })
+                  .map((c) => c.congestionScore)
+                  .fold(0.0, (acc, s) => acc > s ? acc : s),
+            ),
+      );
+
+    final best = sortedBands.firstOrNull;
+    if (best == null || best.recommendedChannels.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final bandName = switch (best.band) {
+      WifiBand.ghz24 => '2.4 GHz',
+      WifiBand.ghz5 => '5 GHz',
+      WifiBand.ghz6 => '6 GHz',
+    };
+    final channels = best.recommendedChannels.take(3).join(', ');
+    final color = Theme.of(context).colorScheme.tertiary;
+
+    return NeonCard(
+      glowColor: color,
+      glowIntensity: 0.08,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      child: Row(
+        children: [
+          Icon(Icons.lightbulb_outline_rounded, color: color, size: 20),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Flexible(
+                  child: Text(
+                    'Tip: Channel${best.recommendedChannels.length > 1 ? 's' : ''} '
+                    '$channels ($bandName) '
+                    'ha${best.recommendedChannels.length > 1 ? 've' : 's'} '
+                    'the least interference in your area.',
+                    style: GoogleFonts.rajdhani(
+                      fontSize: 13,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.85),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                InfoIconButton(
+                  title: AppLocalizations.of(context)!.channelInterferenceTitle,
+                  body:
+                      'Wi-Fi channels are like radio stations. When many networks '
+                      'share the same channel they slow each other down — like '
+                      'everyone talking at the same time. Switching to a less '
+                      'crowded channel can improve your speed and reliability.',
+                  color: color,
+                ),
+              ],
+            ),
+          ),
+          GestureDetector(
+            onTap: onDismiss,
+            child: Icon(
+              Icons.close_rounded,
+              size: 16,
+              color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 // ── Wifi Bento Header ───────────────────────────────────────────────
 
 class _WifiBentoHeader extends StatelessWidget {
@@ -773,8 +1085,15 @@ class _WifiBentoHeader extends StatelessWidget {
 class _WifiNetworkCard extends StatelessWidget {
   final WifiObservation network;
   final String interfaceName;
+  final bool isPinned;
+  final VoidCallback onTogglePin;
 
-  const _WifiNetworkCard({required this.network, required this.interfaceName});
+  const _WifiNetworkCard({
+    required this.network,
+    required this.interfaceName,
+    required this.isPinned,
+    required this.onTogglePin,
+  });
 
   Color getSignalColor(BuildContext context) {
     if (network.avgSignalDbm > -55) return AppColors.neonGreen;
@@ -895,6 +1214,17 @@ class _WifiNetworkCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    GestureDetector(
+                      onTap: onTogglePin,
+                      child: Icon(
+                        isPinned ? Icons.star_rounded : Icons.star_border_rounded,
+                        color: isPinned
+                            ? Theme.of(context).colorScheme.tertiary
+                            : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
                     NeonText(
                       '${network.avgSignalDbm}',
                       style: GoogleFonts.orbitron(
@@ -940,14 +1270,16 @@ class _WifiNetworkCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 _MiniTechTag(
                   label: network.security.name.toUpperCase(),
-                  icon:
-                      network.security == SecurityType.open
-                          ? Icons.lock_open_rounded
-                          : Icons.lock_rounded,
-                  color:
-                      network.security == SecurityType.open
-                          ? AppColors.neonRed
-                          : AppColors.neonGreen,
+                  icon: switch (network.security) {
+                    SecurityType.open => Icons.lock_open_rounded,
+                    SecurityType.wep => Icons.lock_open_rounded,
+                    _ => Icons.lock_rounded,
+                  },
+                  color: switch (network.security) {
+                    SecurityType.wpa2 || SecurityType.wpa3 => AppColors.neonGreen,
+                    SecurityType.wpa => Colors.amber,
+                    _ => AppColors.neonRed,
+                  },
                 ),
                 const Spacer(),
                 Text(

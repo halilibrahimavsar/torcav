@@ -24,3 +24,12 @@ class WifiScanRefreshed extends WifiScanEvent {
   @override
   List<Object> get props => [request];
 }
+
+class WifiScanToggleFavorite extends WifiScanEvent {
+  final String bssid;
+
+  const WifiScanToggleFavorite(this.bssid);
+
+  @override
+  List<Object> get props => [bssid];
+}

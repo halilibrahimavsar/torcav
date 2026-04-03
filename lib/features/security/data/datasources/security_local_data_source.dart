@@ -50,7 +50,12 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
       'security_events',
       orderBy: 'created_at DESC',
     );
-    return List.generate(maps.length, (i) => _mapToEvent(maps[i]));
+    final events = <SecurityEvent>[];
+    for (final map in maps) {
+      final event = _mapToEvent(map);
+      if (event != null) events.add(event);
+    }
+    return events;
   }
 
   @override
@@ -89,16 +94,20 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
   };
 
   KnownNetwork _mapToNetwork(Map<String, dynamic> map) => KnownNetwork(
-    ssid: map['ssid'] as String,
-    bssid: map['bssid'] as String,
-    security: map['security'] as String,
-    firstSeen: DateTime.parse(map['first_seen'] as String),
-    lastSeen: DateTime.parse(map['last_seen'] as String),
+    ssid: (map['ssid'] as String?) ?? '',
+    bssid: (map['bssid'] as String?) ?? '',
+    security: (map['security'] as String?) ?? '',
+    firstSeen:
+        DateTime.tryParse((map['first_seen'] as String?) ?? '') ??
+        DateTime.fromMillisecondsSinceEpoch(0),
+    lastSeen:
+        DateTime.tryParse((map['last_seen'] as String?) ?? '') ??
+        DateTime.fromMillisecondsSinceEpoch(0),
   );
 
   Map<String, dynamic> _eventToMap(SecurityEvent event) => {
-    'type': event.type.toString(),
-    'severity': event.severity.toString(),
+    'type': event.type.name,
+    'severity': event.severity.name,
     'ssid': event.ssid,
     'bssid': event.bssid,
     'created_at': event.timestamp.toIso8601String(),
@@ -106,18 +115,28 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
     'is_read': event.isRead ? 1 : 0,
   };
 
-  SecurityEvent _mapToEvent(Map<String, dynamic> map) => SecurityEvent(
-    id: map['id'] as int,
-    type: SecurityEventType.values.firstWhere(
-      (e) => e.toString() == (map['type'] as String),
-    ),
-    severity: SecurityEventSeverity.values.firstWhere(
-      (e) => e.toString() == (map['severity'] as String),
-    ),
-    ssid: map['ssid'] as String,
-    bssid: map['bssid'] as String,
-    timestamp: DateTime.parse(map['created_at'] as String),
-    evidence: map['evidence'] as String,
-    isRead: (map['is_read'] as int) == 1,
-  );
+  SecurityEvent? _mapToEvent(Map<String, dynamic> map) {
+    try {
+      return SecurityEvent(
+        id: map['id'] as int?,
+        type: SecurityEventType.values.firstWhere(
+          (e) => e.name == (map['type'] as String?),
+          orElse: () => SecurityEventType.unsupportedOperation,
+        ),
+        severity: SecurityEventSeverity.values.firstWhere(
+          (e) => e.name == (map['severity'] as String?),
+          orElse: () => SecurityEventSeverity.info,
+        ),
+        ssid: (map['ssid'] as String?) ?? '',
+        bssid: (map['bssid'] as String?) ?? '',
+        timestamp:
+            DateTime.tryParse((map['created_at'] as String?) ?? '') ??
+            DateTime.fromMillisecondsSinceEpoch(0),
+        evidence: (map['evidence'] as String?) ?? '',
+        isRead: (map['is_read'] as int? ?? 0) == 1,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
 }

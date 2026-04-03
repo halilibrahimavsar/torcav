@@ -1418,6 +1418,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'SYSTEM STATUS'**
   String get systemStatus;
+
+  /// In en, this message translates to:
+  /// **'Interface Theme'**
+  String get interfaceTheme;
+
+  String get initiatingSpectrumScan;
+
+  String get broadcastingProbeRequests;
+
+  String get noRadiosInRange;
+
+  String get noNetworksMatchFilter;
+
+  String get searchSsidBssidVendor;
+
+  String get quickScan;
+
+  String get deepScan;
+
+  String get scanModesTitle;
+
+  String get scanModesInfo;
+
+  String get channelInterferenceTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

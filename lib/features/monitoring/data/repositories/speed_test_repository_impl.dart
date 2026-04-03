@@ -14,6 +14,8 @@ import '../../domain/repositories/speed_test_repository.dart';
 
 const _kPingPings = 7; // timed pings after 1 warmup
 const _kPingUrl = 'https://speed.cloudflare.com/__down?bytes=1'; // 1-byte body
+const _kConnectionTimeout = Duration(seconds: 10);
+const _kDrainTimeout = Duration(seconds: 2);
 
 const _kDownloadDuration = Duration(seconds: 10);
 // 20 MB is large enough to last several seconds on mid-speed links.
@@ -40,7 +42,7 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
 
   Stream<SpeedTestProgress> _runHttpSpeedTest() async* {
     final client =
-        HttpClient()..connectionTimeout = const Duration(seconds: 10);
+        HttpClient()..connectionTimeout = _kConnectionTimeout;
 
     try {
       // ── Phase 1 ───────────────────────────────────────────────────────────
@@ -204,7 +206,7 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
       try {
         final request = await client
             .postUrl(Uri.parse(_kUploadUrl))
-            .timeout(const Duration(seconds: 10));
+            .timeout(_kConnectionTimeout);
 
         request.headers.set(
           HttpHeaders.contentTypeHeader,
@@ -221,7 +223,7 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
         );
 
         // Quickly discard the (empty) response body.
-        await response.drain<void>().timeout(const Duration(seconds: 2));
+        await response.drain<void>().timeout(_kDrainTimeout);
 
         if (response.statusCode >= 200 && response.statusCode < 300) {
           totalBytes += _kUploadChunkBytes;

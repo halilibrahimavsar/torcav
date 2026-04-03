@@ -123,7 +123,7 @@ class ScanSnapshotBuilder {
     };
 
     for (final network in observations) {
-      bands[_frequencyToBand(network.frequency)]!.add(network);
+      bands[_frequencyToBand(network.frequency)]?.add(network);
     }
 
     final stats = <BandAnalysisStat>[];

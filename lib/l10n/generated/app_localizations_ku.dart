@@ -693,4 +693,40 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get systemStatus => 'REWŞA SÎSTEMÊ';
+
+  @override
+  String get interfaceTheme => 'Tîpa Navrûyê';
+
+  @override
+  String get initiatingSpectrumScan => 'ŞOPANDINA SPEKTRUMÊ DEST PÊ DIKE';
+
+  @override
+  String get broadcastingProbeRequests => 'DAXWAZÊN PROBE TÊN WEŞANDIN...';
+
+  @override
+  String get noRadiosInRange => 'DI NAVÇEYÊ DE RADYO TUNE';
+
+  @override
+  String get noNetworksMatchFilter => 'Tevna ku bi parzûnê re lihev dike tune';
+
+  @override
+  String get searchSsidBssidVendor => 'SSID, BSSID, firoşkar bigere\u2026';
+
+  @override
+  String get quickScan => 'Şopandina Bilez';
+
+  @override
+  String get deepScan => 'Şopandina Kûr';
+
+  @override
+  String get scanModesTitle => 'Awayên Şopandinê';
+
+  @override
+  String get scanModesInfo =>
+      'Şopandina Bilez (1 derbas) di saniyeyan de qediya \u2014 ji bo kontrola bilez baş e.\n\n'
+      'Şopandina Kûr (gelek derbas) dirêjtir digire lê tevnên bêtir dibîne '
+      'û xwendinên sînyalê rasttir dide.';
+
+  @override
+  String get channelInterferenceTitle => 'Tevliheviya Kanalê';
 }

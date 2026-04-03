@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/di/injection.dart';
+import '../../data/services/favorites_store.dart';
 import '../../domain/entities/scan_request.dart';
 import '../../domain/entities/scan_snapshot.dart';
 import '../../domain/entities/wifi_observation.dart';
@@ -14,10 +15,12 @@ part 'wifi_scan_state.dart';
 @injectable
 class WifiScanBloc extends Bloc<WifiScanEvent, WifiScanState> {
   final ScanWifi _scanWifi;
+  final FavoritesStore _favorites;
 
-  WifiScanBloc(this._scanWifi) : super(WifiScanInitial()) {
+  WifiScanBloc(this._scanWifi, this._favorites) : super(WifiScanInitial()) {
     on<WifiScanStarted>(_onStarted);
     on<WifiScanRefreshed>(_onRefreshed);
+    on<WifiScanToggleFavorite>(_onToggleFavorite);
   }
 
   Future<void> _onStarted(
@@ -28,7 +31,7 @@ class WifiScanBloc extends Bloc<WifiScanEvent, WifiScanState> {
     final result = await _scanWifi(request: event.request);
     result.fold((failure) => emit(WifiScanError(failure.message)), (snapshot) {
       getIt<ScanSessionStore>().add(snapshot);
-      emit(WifiScanLoaded(snapshot));
+      emit(WifiScanLoaded(snapshot, pinnedBssids: _favorites.pinned));
     });
   }
 
@@ -40,7 +43,18 @@ class WifiScanBloc extends Bloc<WifiScanEvent, WifiScanState> {
     final result = await _scanWifi(request: event.request);
     result.fold((failure) => emit(WifiScanError(failure.message)), (snapshot) {
       getIt<ScanSessionStore>().add(snapshot);
-      emit(WifiScanLoaded(snapshot));
+      emit(WifiScanLoaded(snapshot, pinnedBssids: _favorites.pinned));
     });
+  }
+
+  void _onToggleFavorite(
+    WifiScanToggleFavorite event,
+    Emitter<WifiScanState> emit,
+  ) {
+    _favorites.toggle(event.bssid);
+    final current = state;
+    if (current is WifiScanLoaded) {
+      emit(WifiScanLoaded(current.snapshot, pinnedBssids: _favorites.pinned));
+    }
   }
 }
