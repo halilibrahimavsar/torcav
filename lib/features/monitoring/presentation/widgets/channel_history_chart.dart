@@ -579,7 +579,7 @@ class _BarView extends StatelessWidget {
     final groups = channels.asMap().entries.map((entry) {
       final i = entry.key;
       final ch = entry.value;
-      final rating = byChannel[ch]!.last.rating.clamp(0.0, 100.0);
+      final rating = byChannel[ch]!.last.rating.clamp(0.0, 10.0);
       final color = colorForIndex(i, channels.length);
       final isActive = highlighted.isEmpty || highlighted.contains(ch);
 
@@ -594,7 +594,7 @@ class _BarView extends StatelessWidget {
                 const BorderRadius.vertical(top: Radius.circular(4)),
             backDrawRodData: BackgroundBarChartRodData(
               show: true,
-              toY: 100,
+              toY: 10,
               color: color.withValues(alpha: 0.05),
             ),
           ),
@@ -614,7 +614,7 @@ class _BarView extends StatelessWidget {
               swapAnimationCurve: Curves.easeOutCubic,
               BarChartData(
                 barGroups: groups,
-                maxY: 100,
+                maxY: 10,
                 gridData: FlGridData(
                   drawHorizontalLine: true,
                   drawVerticalLine: false,
@@ -655,7 +655,7 @@ class _BarView extends StatelessWidget {
                     sideTitles: SideTitles(
                       showTitles: true,
                       reservedSize: 32,
-                      interval: 25,
+                      interval: 2,
                       getTitlesWidget: (v, _) => Text(
                         v.toInt().toString(),
                         style: GoogleFonts.rajdhani(
@@ -747,7 +747,7 @@ class _LineView extends StatelessWidget {
           }
         }
         if (best != null && bestDiff <= 30) {
-          spots.add(FlSpot(si.toDouble(), best.rating.clamp(0.0, 100.0)));
+          spots.add(FlSpot(si.toDouble(), best.rating.clamp(0.0, 10.0)));
         }
       }
 
@@ -795,7 +795,7 @@ class _LineView extends StatelessWidget {
               LineChartData(
                 lineBarsData: lines,
                 minY: 0,
-                maxY: 100,
+                maxY: 10,
                 minX: 0,
                 maxX: (sessions.length - 1).toDouble(),
                 gridData: FlGridData(
@@ -812,7 +812,7 @@ class _LineView extends StatelessWidget {
                     sideTitles: SideTitles(
                       showTitles: true,
                       reservedSize: 32,
-                      interval: 25,
+                      interval: 2,
                       getTitlesWidget: (v, _) => Text(
                         v.toInt().toString(),
                         style: GoogleFonts.rajdhani(
@@ -924,7 +924,7 @@ class _HeatmapView extends StatelessWidget {
           }
         }
         if (best != null && bestDiff <= 30) {
-          matrix[ci]![si] = best.rating.clamp(0.0, 100.0);
+          matrix[ci]![si] = best.rating.clamp(0.0, 10.0);
         }
       }
     }
@@ -1071,8 +1071,8 @@ class _HeatmapPainter extends CustomPainter {
   }
 
   static Color _ratingColor(double rating) {
-    // 0 = red, 50 = yellow, 100 = green
-    final t = (rating / 100).clamp(0.0, 1.0);
+    // 0 = red, 5 = yellow, 10 = green
+    final t = (rating / 10).clamp(0.0, 1.0);
     if (t < 0.5) {
       return Color.lerp(
           const Color(0xFFFF1744), const Color(0xFFEEFF41), t * 2)!;
@@ -1122,7 +1122,7 @@ class _HeatmapColorScale extends StatelessWidget {
         ),
         const SizedBox(width: 4),
         Text(
-          '100',
+          '10',
           style: GoogleFonts.rajdhani(
             fontSize: 10,
             color: textColor.withValues(alpha: 0.5),
