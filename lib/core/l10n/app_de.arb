@@ -235,7 +235,7 @@
     "savePdfReportDialog": "PDF-Bericht speichern",
     "scanning": "Scannen...",
     "shieldActive": "Schutz aktiv",
-    "threatsDetected": "Bedrohungen erkannt",
+    "threatsDetected": "BEDROHUNGEN ERKANNT",
     "trustedLabel": "VERTRAUT",
     "securityEventTitle": "Sicherheitsereignis",
     "networkReconTitle": "NETZWERK-ERKENNUNG",
@@ -586,5 +586,11 @@
     "networkStatusLabel": "NETZWERKSTATUS",
     "ssid": "SSID",
     "lastScanTitle": "LETZTER SCAN",
-    "lastSnapshot": "Letzter Snapshot"
+    "lastSnapshot": "Letzter Snapshot",
+    "channelInterferenceDescription": "Wi-Fi-Kanäle sind wie Radiosender. Wenn viele Netzwerke denselben Kanal nutzen, verlangsamen sie sich gegenseitig – als würden alle gleichzeitig sprechen. Ein Wechsel zu einem weniger überfüllten Kanal kann Ihre Geschwindigkeit und Zuverlässigkeit verbessern.",
+    "securityEventType": "{type, select, rogueApSuspected{Rogue AP Verdacht} deauthBurstDetected{Deauth-Serie Erkannt} handshakeCaptureStarted{Handshake-Aufzeichnung Gestartet} handshakeCaptureCompleted{Handshake Aufgezeichnet} captivePortalDetected{Captive Portal Erkannt} evilTwinDetected{Evil Twin Erkannt} deauthAttackSuspected{Deauth-Angriff Verdacht} encryptionDowngraded{Verschlüsselung Herabgestuft} unsupportedOperation{Nicht Unterstützter Vorgang} other{{type}}}",
+    "securityEventSeverity": "{severity, select, low{Niedrig} medium{Mittel} info{Info} warning{Warnung} high{Hoch} critical{Kritisch} other{{severity}}}",
+    "evilTwinEvidence": "BSSID-Nichtübereinstimmung! Erwartet: {expected}, Gefunden: {found}. Hohe Wahrscheinlichkeit eines Evil Twin Access Points.",
+    "rogueApEvidence": "Zufällige/LAA-MAC in bekanntem Netzwerk erkannt! Dies ist für legitime Access Points höchst ungewöhnlich und kann auf ein bösartiges Gerät hinweisen.",
+    "downgradeEvidence": "Verschlüsselungsprofil wurde von {oldSec} auf {newSec} geändert. Möglicher Downgrade-Angriff."
 }

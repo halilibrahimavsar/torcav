@@ -292,6 +292,24 @@ class _EventCard extends StatelessWidget {
     }
   }
 
+  String _getLocalizedEvidence() {
+    final evidence = event.evidence;
+    if (event.type == domain_event.SecurityEventType.evilTwinDetected) {
+      final match = RegExp(r'Expected: (.*?), Found: (.*?)[\.]').firstMatch(evidence);
+      if (match != null) {
+        return l10n.evilTwinEvidence(match.group(1)!, match.group(2)!);
+      }
+    } else if (event.type == domain_event.SecurityEventType.rogueApSuspected) {
+      return l10n.rogueApEvidence;
+    } else if (event.type == domain_event.SecurityEventType.encryptionDowngraded) {
+      final match = RegExp(r'from (.*?) to (.*?)\.').firstMatch(evidence);
+      if (match != null) {
+        return l10n.downgradeEvidence(match.group(1)!, match.group(2)!);
+      }
+    }
+    return evidence;
+  }
+
   @override
   Widget build(BuildContext context) {
     final severityColor = _severityColor(context);
@@ -310,7 +328,7 @@ class _EventCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 Flexible(
                   child: NeonText(
-                    '${event.type.name.replaceAll(RegExp(r'(?=[A-Z])'), ' ').toUpperCase()} • ${event.severity.name.toUpperCase()}',
+                    '${l10n.securityEventType(event.type.name).toUpperCase()} • ${l10n.securityEventSeverity(event.severity.name).toUpperCase()}',
                     style: GoogleFonts.orbitron(
                       color: severityColor,
                       fontSize: 9,
@@ -367,7 +385,7 @@ class _EventCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        event.evidence,
+                        _getLocalizedEvidence(),
                         style: GoogleFonts.rajdhani(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontSize: 12,
@@ -419,7 +437,7 @@ class _SecurityCenterBentoHeader extends StatelessWidget {
 
     final statusLabel = state is SecurityLoading
         ? l10n.scanning
-        : (isSecure ? l10n.shieldActive : 'THREATS DETECTED');
+        : (isSecure ? l10n.shieldActive : l10n.threatsDetected);
 
     return SizedBox(
       height: 200,

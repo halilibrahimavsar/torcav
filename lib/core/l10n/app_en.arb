@@ -321,9 +321,9 @@
     "@shieldActive": {
         "description": "Shield Active"
     },
-    "threatsDetected": "Threats Detected",
+    "threatsDetected": "THREATS DETECTED",
     "@threatsDetected": {
-        "description": "Threats Detected"
+        "description": "Status text when threats are detected"
     },
     "trustedLabel": "TRUSTED",
     "@trustedLabel": {
@@ -1316,5 +1316,55 @@
     "lastSnapshot": "Last Snapshot",
     "@lastSnapshot": {
         "description": "Last Snapshot"
+    },
+    "channelInterferenceDescription": "Wi-Fi channels are like radio stations. When many networks share the same channel they slow each other down — like everyone talking at the same time. Switching to a less crowded channel can improve your speed and reliability.",
+    "@channelInterferenceDescription": {
+        "description": "Explanation of channel interference"
+    },
+    "securityEventType": "{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst} handshakeCaptureStarted{Handshake Capture Started} handshakeCaptureCompleted{Handshake Captured} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} unsupportedOperation{Unsupported Operation} other{{type}}}",
+    "@securityEventType": {
+        "description": "Name of security event type",
+        "placeholders": {
+            "type": {
+                "type": "String"
+            }
+        }
+    },
+    "securityEventSeverity": "{severity, select, low{Low} medium{Medium} info{Info} warning{Warning} high{High} critical{Critical} other{{severity}}}",
+    "@securityEventSeverity": {
+        "description": "Name of security severity",
+        "placeholders": {
+            "severity": {
+                "type": "String"
+            }
+        }
+    },
+    "evilTwinEvidence": "BSSID mismatch! Expected: {expected}, Found: {found}. High probability of an Evil Twin Access Point.",
+    "@evilTwinEvidence": {
+        "description": "Evil twin evidence text",
+        "placeholders": {
+            "expected": {
+                "type": "String"
+            },
+            "found": {
+                "type": "String"
+            }
+        }
+    },
+    "rogueApEvidence": "Randomized/LAA MAC detected on known network! This is highly unusual for legitimate Access Points and may indicate a rogue device.",
+    "@rogueApEvidence": {
+        "description": "Rogue AP evidence text"
+    },
+    "downgradeEvidence": "Encryption profile changed from {oldSec} to {newSec}. Possible downgrade attack.",
+    "@downgradeEvidence": {
+        "description": "Downgrade evidence text",
+        "placeholders": {
+            "oldSec": {
+                "type": "String"
+            },
+            "newSec": {
+                "type": "String"
+            }
+        }
     }
 }

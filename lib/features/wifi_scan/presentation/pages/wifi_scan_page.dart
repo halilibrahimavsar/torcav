@@ -885,10 +885,7 @@ class _RecommendationBanner extends StatelessWidget {
                 InfoIconButton(
                   title: AppLocalizations.of(context)!.channelInterferenceTitle,
                   body:
-                      'Wi-Fi channels are like radio stations. When many networks '
-                      'share the same channel they slow each other down — like '
-                      'everyone talking at the same time. Switching to a less '
-                      'crowded channel can improve your speed and reliability.',
+                      AppLocalizations.of(context)!.channelInterferenceDescription,
                   color: color,
                 ),
               ],

@@ -489,10 +489,10 @@ abstract class AppLocalizations {
   /// **'Shield Active'**
   String get shieldActive;
 
-  /// Threats Detected
+  /// Status text when threats are detected
   ///
   /// In en, this message translates to:
-  /// **'Threats Detected'**
+  /// **'THREATS DETECTED'**
   String get threatsDetected;
 
   /// Trusted Label
@@ -1868,6 +1868,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last Snapshot'**
   String get lastSnapshot;
+
+  /// Explanation of channel interference
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi channels are like radio stations. When many networks share the same channel they slow each other down — like everyone talking at the same time. Switching to a less crowded channel can improve your speed and reliability.'**
+  String get channelInterferenceDescription;
+
+  /// Name of security event type
+  ///
+  /// In en, this message translates to:
+  /// **'{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst} handshakeCaptureStarted{Handshake Capture Started} handshakeCaptureCompleted{Handshake Captured} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} unsupportedOperation{Unsupported Operation} other{{type}}}'**
+  String securityEventType(String type);
+
+  /// Name of security severity
+  ///
+  /// In en, this message translates to:
+  /// **'{severity, select, low{Low} medium{Medium} info{Info} warning{Warning} high{High} critical{Critical} other{{severity}}}'**
+  String securityEventSeverity(String severity);
+
+  /// Evil twin evidence text
+  ///
+  /// In en, this message translates to:
+  /// **'BSSID mismatch! Expected: {expected}, Found: {found}. High probability of an Evil Twin Access Point.'**
+  String evilTwinEvidence(String expected, String found);
+
+  /// Rogue AP evidence text
+  ///
+  /// In en, this message translates to:
+  /// **'Randomized/LAA MAC detected on known network! This is highly unusual for legitimate Access Points and may indicate a rogue device.'**
+  String get rogueApEvidence;
+
+  /// Downgrade evidence text
+  ///
+  /// In en, this message translates to:
+  /// **'Encryption profile changed from {oldSec} to {newSec}. Possible downgrade attack.'**
+  String downgradeEvidence(String oldSec, String newSec);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -235,7 +235,7 @@
     "savePdfReportDialog": "Rapora PDF Tomar Bike",
     "scanning": "Taran dike...",
     "shieldActive": "Mertal Aktîf e",
-    "threatsDetected": "Gef Hatine Tespîtkirin",
+    "threatsDetected": "XETER HATIN DÎTIN",
     "trustedLabel": "EWLE",
     "securityEventTitle": "Bûyera Ewlehiyê",
     "networkReconTitle": "KEŞFA TORÊ",
@@ -586,5 +586,11 @@
     "networkStatusLabel": "REWŞA TORÊ",
     "ssid": "SSID",
     "lastScanTitle": "SKANA DAWÎ",
-    "lastSnapshot": "Veqetandina Dawî"
+    "lastSnapshot": "Veqetandina Dawî",
+    "channelInterferenceDescription": "Kanalên Wi-Fi wekî stasyonên radyoyê ne. Dema ku gelek tor heman kanalê parve dikin ew hev hêdî dikin - mîna ku her kes di heman demê de diaxive. Veguhestina ser kanalekî kêmtir qelebalix dikare lez û rehetiya we baştir bike.",
+    "securityEventType": "{type, select, rogueApSuspected{Gumana AP ya Sexte} deauthBurstDetected{Êrîşa Qutkirinê Serî Hatiye Dîtin} handshakeCaptureStarted{Girtina Destguhartinê Dest Pê Kir} handshakeCaptureCompleted{Destguhartin Hat Girtin} captivePortalDetected{Portala Girtî Hat Dîtin} evilTwinDetected{Cêwîyê Xirab Hat Dîtin} deauthAttackSuspected{Gumana Êrîşa Qutkirinê} encryptionDowngraded{Şîfrekirin Hat Daxistin} unsupportedOperation{Kareke Nayê Piştgirîkirin} other{{type}}}",
+    "securityEventSeverity": "{severity, select, low{Kêm} medium{Navîn} info{Zanyarî} warning{Hişyarî} high{Bilind} critical{Krîtîk} other{{severity}}}",
+    "evilTwinEvidence": "Lihevnehatina BSSID! Ya Tê Çaverêkirin: {expected}, Ya Hatî Dîtin: {found}. Îhtîmaleke mezin a Xala Gihîştina Cêwîyê Xirab.",
+    "rogueApEvidence": "MAC-a Ketober/LAA di tora naskirî de hat dîtin! Ev ji bo Xalên Gihîştina rewa pir neasayî ye û dibe ku nîşan bide ku amûrek sexte heye.",
+    "downgradeEvidence": "Profîla şîfrekirinê ji {oldSec} ber bi {newSec} ve hat guhartin. Gumana êrîşa daxistinê."
 }

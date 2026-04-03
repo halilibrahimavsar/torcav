@@ -235,7 +235,7 @@
     "savePdfReportDialog": "Save PDF Report",
     "scanning": "Taranıyor...",
     "shieldActive": "Kalkan Aktif",
-    "threatsDetected": "Tehditler Tespit Edildi",
+    "threatsDetected": "TEHDİT TESPİT EDİLDİ",
     "trustedLabel": "GÜVENİLİR",
     "securityEventTitle": "Güvenlik Olayı",
     "networkReconTitle": "AĞ KEŞFİ",
@@ -504,8 +504,11 @@
     "networkStatusLabel": "AĞ DURUMU",
     "ssid": "SSID",
     "lastScanTitle": "SON TARAMA",
-    "lastSnapshot": "Son Anlık Görüntü"
+    "lastSnapshot": "Son Anlık Görüntü",
+    "channelInterferenceDescription": "Wi-Fi kanalları radyo istasyonları gibidir. Birçok ağ aynı kanalı paylaştığında birbirlerini yavaşlatırlar - herkesin aynı anda konuşması gibi. Daha az kalabalık bir kanala geçmek hızınızı ve güvenilirliğinizi artırabilir.",
+    "securityEventType": "{type, select, rogueApSuspected{Sahte AP Şüphesi} deauthBurstDetected{Ağdan Atma Saldırısı Serisi} handshakeCaptureStarted{El Sıkışma Yakalama Başladı} handshakeCaptureCompleted{El Sıkışma Yakalandı} captivePortalDetected{Tutsak Portalı Algılandı} evilTwinDetected{Kötü İkiz Algılandı} deauthAttackSuspected{Ağdan Atma Saldırısı Şüphesi} encryptionDowngraded{Şifreleme Düşürüldü} unsupportedOperation{Desteklenmeyen İşlem} other{{type}}}",
+    "securityEventSeverity": "{severity, select, low{Düşük} medium{Orta} info{Bilgi} warning{Uyarı} high{Yüksek} critical{Kritik} other{{severity}}}",
+    "evilTwinEvidence": "BSSID uyuşmazlığı! Beklenen: {expected}, Bulunan: {found}. Yüksek Evil Twin (Kötü İkiz) Erişim Noktası olasılığı.",
+    "rogueApEvidence": "Bilinen ağda Rastgele/LAA MAC algılandı! Bu meşru Erişim Noktaları için oldukça olağandışıdır ve sahte bir cihaza işaret edebilir.",
+    "downgradeEvidence": "Şifreleme profili {oldSec} değerinden {newSec} değerine değişti. Olası düşürme (downgrade) saldırısı."
 }
-
-
-

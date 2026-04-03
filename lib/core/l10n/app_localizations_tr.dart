@@ -226,7 +226,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get shieldActive => 'Kalkan Aktif';
 
   @override
-  String get threatsDetected => 'Tehditler Tespit Edildi';
+  String get threatsDetected => 'TEHDİT TESPİT EDİLDİ';
 
   @override
   String get trustedLabel => 'GÜVENİLİR';
@@ -942,4 +942,57 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get lastSnapshot => 'Son Anlık Görüntü';
+
+  @override
+  String get channelInterferenceDescription => 'Wi-Fi kanalları radyo istasyonları gibidir. Birçok ağ aynı kanalı paylaştığında birbirlerini yavaşlatırlar - herkesin aynı anda konuşması gibi. Daha az kalabalık bir kanala geçmek hızınızı ve güvenilirliğinizi artırabilir.';
+
+  @override
+  String securityEventType(String type) {
+    String _temp0 = intl.Intl.selectLogic(
+      type,
+      {
+        'rogueApSuspected': 'Sahte AP Şüphesi',
+        'deauthBurstDetected': 'Ağdan Atma Saldırısı Serisi',
+        'handshakeCaptureStarted': 'El Sıkışma Yakalama Başladı',
+        'handshakeCaptureCompleted': 'El Sıkışma Yakalandı',
+        'captivePortalDetected': 'Tutsak Portalı Algılandı',
+        'evilTwinDetected': 'Kötü İkiz Algılandı',
+        'deauthAttackSuspected': 'Ağdan Atma Saldırısı Şüphesi',
+        'encryptionDowngraded': 'Şifreleme Düşürüldü',
+        'unsupportedOperation': 'Desteklenmeyen İşlem',
+        'other': '$type',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String securityEventSeverity(String severity) {
+    String _temp0 = intl.Intl.selectLogic(
+      severity,
+      {
+        'low': 'Düşük',
+        'medium': 'Orta',
+        'info': 'Bilgi',
+        'warning': 'Uyarı',
+        'high': 'Yüksek',
+        'critical': 'Kritik',
+        'other': '$severity',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String evilTwinEvidence(String expected, String found) {
+    return 'BSSID uyuşmazlığı! Beklenen: $expected, Bulunan: $found. Yüksek Evil Twin (Kötü İkiz) Erişim Noktası olasılığı.';
+  }
+
+  @override
+  String get rogueApEvidence => 'Bilinen ağda Rastgele/LAA MAC algılandı! Bu meşru Erişim Noktaları için oldukça olağandışıdır ve sahte bir cihaza işaret edebilir.';
+
+  @override
+  String downgradeEvidence(String oldSec, String newSec) {
+    return 'Şifreleme profili $oldSec değerinden $newSec değerine değişti. Olası düşürme (downgrade) saldırısı.';
+  }
 }

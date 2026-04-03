@@ -226,7 +226,7 @@ class AppLocalizationsKu extends AppLocalizations {
   String get shieldActive => 'Mertal Aktîf e';
 
   @override
-  String get threatsDetected => 'Gef Hatine Tespîtkirin';
+  String get threatsDetected => 'XETER HATIN DÎTIN';
 
   @override
   String get trustedLabel => 'EWLE';
@@ -942,4 +942,57 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get lastSnapshot => 'Veqetandina Dawî';
+
+  @override
+  String get channelInterferenceDescription => 'Kanalên Wi-Fi wekî stasyonên radyoyê ne. Dema ku gelek tor heman kanalê parve dikin ew hev hêdî dikin - mîna ku her kes di heman demê de diaxive. Veguhestina ser kanalekî kêmtir qelebalix dikare lez û rehetiya we baştir bike.';
+
+  @override
+  String securityEventType(String type) {
+    String _temp0 = intl.Intl.selectLogic(
+      type,
+      {
+        'rogueApSuspected': 'Gumana AP ya Sexte',
+        'deauthBurstDetected': 'Êrîşa Qutkirinê Serî Hatiye Dîtin',
+        'handshakeCaptureStarted': 'Girtina Destguhartinê Dest Pê Kir',
+        'handshakeCaptureCompleted': 'Destguhartin Hat Girtin',
+        'captivePortalDetected': 'Portala Girtî Hat Dîtin',
+        'evilTwinDetected': 'Cêwîyê Xirab Hat Dîtin',
+        'deauthAttackSuspected': 'Gumana Êrîşa Qutkirinê',
+        'encryptionDowngraded': 'Şîfrekirin Hat Daxistin',
+        'unsupportedOperation': 'Kareke Nayê Piştgirîkirin',
+        'other': '$type',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String securityEventSeverity(String severity) {
+    String _temp0 = intl.Intl.selectLogic(
+      severity,
+      {
+        'low': 'Kêm',
+        'medium': 'Navîn',
+        'info': 'Zanyarî',
+        'warning': 'Hişyarî',
+        'high': 'Bilind',
+        'critical': 'Krîtîk',
+        'other': '$severity',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String evilTwinEvidence(String expected, String found) {
+    return 'Lihevnehatina BSSID! Ya Tê Çaverêkirin: $expected, Ya Hatî Dîtin: $found. Îhtîmaleke mezin a Xala Gihîştina Cêwîyê Xirab.';
+  }
+
+  @override
+  String get rogueApEvidence => 'MAC-a Ketober/LAA di tora naskirî de hat dîtin! Ev ji bo Xalên Gihîştina rewa pir neasayî ye û dibe ku nîşan bide ku amûrek sexte heye.';
+
+  @override
+  String downgradeEvidence(String oldSec, String newSec) {
+    return 'Profîla şîfrekirinê ji $oldSec ber bi $newSec ve hat guhartin. Gumana êrîşa daxistinê.';
+  }
 }

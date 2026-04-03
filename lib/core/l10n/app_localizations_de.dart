@@ -226,7 +226,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get shieldActive => 'Schutz aktiv';
 
   @override
-  String get threatsDetected => 'Bedrohungen erkannt';
+  String get threatsDetected => 'BEDROHUNGEN ERKANNT';
 
   @override
   String get trustedLabel => 'VERTRAUT';
@@ -942,4 +942,57 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get lastSnapshot => 'Letzter Snapshot';
+
+  @override
+  String get channelInterferenceDescription => 'Wi-Fi-Kanäle sind wie Radiosender. Wenn viele Netzwerke denselben Kanal nutzen, verlangsamen sie sich gegenseitig – als würden alle gleichzeitig sprechen. Ein Wechsel zu einem weniger überfüllten Kanal kann Ihre Geschwindigkeit und Zuverlässigkeit verbessern.';
+
+  @override
+  String securityEventType(String type) {
+    String _temp0 = intl.Intl.selectLogic(
+      type,
+      {
+        'rogueApSuspected': 'Rogue AP Verdacht',
+        'deauthBurstDetected': 'Deauth-Serie Erkannt',
+        'handshakeCaptureStarted': 'Handshake-Aufzeichnung Gestartet',
+        'handshakeCaptureCompleted': 'Handshake Aufgezeichnet',
+        'captivePortalDetected': 'Captive Portal Erkannt',
+        'evilTwinDetected': 'Evil Twin Erkannt',
+        'deauthAttackSuspected': 'Deauth-Angriff Verdacht',
+        'encryptionDowngraded': 'Verschlüsselung Herabgestuft',
+        'unsupportedOperation': 'Nicht Unterstützter Vorgang',
+        'other': '$type',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String securityEventSeverity(String severity) {
+    String _temp0 = intl.Intl.selectLogic(
+      severity,
+      {
+        'low': 'Niedrig',
+        'medium': 'Mittel',
+        'info': 'Info',
+        'warning': 'Warnung',
+        'high': 'Hoch',
+        'critical': 'Kritisch',
+        'other': '$severity',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String evilTwinEvidence(String expected, String found) {
+    return 'BSSID-Nichtübereinstimmung! Erwartet: $expected, Gefunden: $found. Hohe Wahrscheinlichkeit eines Evil Twin Access Points.';
+  }
+
+  @override
+  String get rogueApEvidence => 'Zufällige/LAA-MAC in bekanntem Netzwerk erkannt! Dies ist für legitime Access Points höchst ungewöhnlich und kann auf ein bösartiges Gerät hinweisen.';
+
+  @override
+  String downgradeEvidence(String oldSec, String newSec) {
+    return 'Verschlüsselungsprofil wurde von $oldSec auf $newSec geändert. Möglicher Downgrade-Angriff.';
+  }
 }

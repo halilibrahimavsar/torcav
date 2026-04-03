@@ -226,7 +226,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shieldActive => 'Shield Active';
 
   @override
-  String get threatsDetected => 'Threats Detected';
+  String get threatsDetected => 'THREATS DETECTED';
 
   @override
   String get trustedLabel => 'TRUSTED';
@@ -942,4 +942,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lastSnapshot => 'Last Snapshot';
+
+  @override
+  String get channelInterferenceDescription => 'Wi-Fi channels are like radio stations. When many networks share the same channel they slow each other down — like everyone talking at the same time. Switching to a less crowded channel can improve your speed and reliability.';
+
+  @override
+  String securityEventType(String type) {
+    String _temp0 = intl.Intl.selectLogic(
+      type,
+      {
+        'rogueApSuspected': 'Rogue AP Suspected',
+        'deauthBurstDetected': 'Deauth Burst',
+        'handshakeCaptureStarted': 'Handshake Capture Started',
+        'handshakeCaptureCompleted': 'Handshake Captured',
+        'captivePortalDetected': 'Captive Portal Detected',
+        'evilTwinDetected': 'Evil Twin Detected',
+        'deauthAttackSuspected': 'Deauth Attack Suspected',
+        'encryptionDowngraded': 'Encryption Downgraded',
+        'unsupportedOperation': 'Unsupported Operation',
+        'other': '$type',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String securityEventSeverity(String severity) {
+    String _temp0 = intl.Intl.selectLogic(
+      severity,
+      {
+        'low': 'Low',
+        'medium': 'Medium',
+        'info': 'Info',
+        'warning': 'Warning',
+        'high': 'High',
+        'critical': 'Critical',
+        'other': '$severity',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String evilTwinEvidence(String expected, String found) {
+    return 'BSSID mismatch! Expected: $expected, Found: $found. High probability of an Evil Twin Access Point.';
+  }
+
+  @override
+  String get rogueApEvidence => 'Randomized/LAA MAC detected on known network! This is highly unusual for legitimate Access Points and may indicate a rogue device.';
+
+  @override
+  String downgradeEvidence(String oldSec, String newSec) {
+    return 'Encryption profile changed from $oldSec to $newSec. Possible downgrade attack.';
+  }
 }

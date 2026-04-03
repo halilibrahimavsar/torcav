@@ -160,7 +160,7 @@ class _DiscoveryTabPageState extends State<_DiscoveryTabPage>
     return Scaffold(
       appBar: AppBar(
         title: NeonText(
-          'DISCOVERY',
+          l10n.navDiscovery.toUpperCase(),
           style: GoogleFonts.orbitron(
             color: Theme.of(context).colorScheme.primary,
             fontSize: 16,
