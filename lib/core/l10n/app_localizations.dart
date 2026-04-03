@@ -1904,6 +1904,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Encryption profile changed from {oldSec} to {newSec}. Possible downgrade attack.'**
   String downgradeEvidence(String oldSec, String newSec);
+
+  /// Label for showing all Wi-Fi bands in history filter.
+  ///
+  /// In en, this message translates to:
+  /// **'ALL'**
+  String get historyAllBands;
+
+  /// Label for the best channel stat tile in history view.
+  ///
+  /// In en, this message translates to:
+  /// **'BEST CHANNEL'**
+  String get historyBestChannel;
+
+  /// Label for the average rating stat tile in history view.
+  ///
+  /// In en, this message translates to:
+  /// **'AVG RATING'**
+  String get historyAvgRating;
+
+  /// Label for the sessions count stat tile in history view.
+  ///
+  /// In en, this message translates to:
+  /// **'SESSIONS'**
+  String get historySessions;
+
+  /// Tooltip for switching to line chart mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Line chart'**
+  String get historyLineChart;
+
+  /// Tooltip for switching to heatmap mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Heatmap'**
+  String get historyHeatmap;
+
+  /// Shown when history filters result in no data.
+  ///
+  /// In en, this message translates to:
+  /// **'No data for selected filter.'**
+  String get historyNoDataForFilter;
+
+  /// Section header for channel ratings chart in history.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel Ratings'**
+  String get historyChannelRatings;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

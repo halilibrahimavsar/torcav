@@ -168,7 +168,8 @@ class _HistoryView extends StatefulWidget {
 }
 
 class _HistoryViewState extends State<_HistoryView> {
-  late Future<List<ChannelRatingSample>> _future;
+  List<ChannelRatingSample>? _samples;
+  bool _loading = true;
 
   @override
   void initState() {
@@ -176,41 +177,32 @@ class _HistoryViewState extends State<_HistoryView> {
     _reload();
   }
 
-  void _reload() {
+  Future<void> _reload() async {
     final repo = GetIt.I<ChannelRatingRepository>();
-    setState(() {
-      _future = repo
-          .getHistory(limit: const Duration(days: 7))
-          .then((e) => e.getOrElse((_) => []));
-    });
+    final result = await repo.getHistory(limit: const Duration(days: 7));
+    if (mounted) {
+      setState(() {
+        _samples = result.getOrElse((_) => []);
+        _loading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<ChannelRatingSample>>(
-      future: _future,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              ChannelHistoryChart(samples: snapshot.data ?? []),
-              if (snapshot.data != null && snapshot.data!.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: TextButton.icon(
-                    onPressed: _reload,
-                    icon: const Icon(Icons.refresh, size: 16),
-                    label: Text(context.l10n.refresh),
-                  ),
-                ),
-            ],
-          ),
-        );
-      },
+    if (_loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    return RefreshIndicator(
+      onRefresh: _reload,
+      color: Theme.of(context).colorScheme.primary,
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(16),
+        child: StaggeredEntry(
+          child: ChannelHistoryChart(samples: _samples ?? []),
+        ),
+      ),
     );
   }
 }

@@ -995,4 +995,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String downgradeEvidence(String oldSec, String newSec) {
     return 'Encryption profile changed from $oldSec to $newSec. Possible downgrade attack.';
   }
+
+  @override
+  String get historyAllBands => 'ALL';
+
+  @override
+  String get historyBestChannel => 'BEST CHANNEL';
+
+  @override
+  String get historyAvgRating => 'AVG RATING';
+
+  @override
+  String get historySessions => 'SESSIONS';
+
+  @override
+  String get historyLineChart => 'Line chart';
+
+  @override
+  String get historyHeatmap => 'Heatmap';
+
+  @override
+  String get historyNoDataForFilter => 'No data for selected filter.';
+
+  @override
+  String get historyChannelRatings => 'Channel Ratings';
 }

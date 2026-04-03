@@ -510,5 +510,13 @@
     "securityEventSeverity": "{severity, select, low{Düşük} medium{Orta} info{Bilgi} warning{Uyarı} high{Yüksek} critical{Kritik} other{{severity}}}",
     "evilTwinEvidence": "BSSID uyuşmazlığı! Beklenen: {expected}, Bulunan: {found}. Yüksek Evil Twin (Kötü İkiz) Erişim Noktası olasılığı.",
     "rogueApEvidence": "Bilinen ağda Rastgele/LAA MAC algılandı! Bu meşru Erişim Noktaları için oldukça olağandışıdır ve sahte bir cihaza işaret edebilir.",
-    "downgradeEvidence": "Şifreleme profili {oldSec} değerinden {newSec} değerine değişti. Olası düşürme (downgrade) saldırısı."
+    "downgradeEvidence": "Şifreleme profili {oldSec} değerinden {newSec} değerine değişti. Olası düşürme (downgrade) saldırısı.",
+    "historyAllBands": "TÜMÜ",
+    "historyBestChannel": "EN İYİ KANAL",
+    "historyAvgRating": "ORT. PUAN",
+    "historySessions": "OTURUMLAR",
+    "historyLineChart": "Çizgi grafik",
+    "historyHeatmap": "Isı haritası",
+    "historyNoDataForFilter": "Seçili filtre için veri yok.",
+    "historyChannelRatings": "Kanal Puanları"
 }

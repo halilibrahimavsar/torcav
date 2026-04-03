@@ -19,8 +19,8 @@ class ChannelSpectralChart extends StatelessWidget {
     final onSurface = Theme.of(context).colorScheme.onSurface;
 
     return Container(
-      height: 180,
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+      height: 200,
+      padding: const EdgeInsets.fromLTRB(16, 28, 16, 8),
       decoration: BoxDecoration(
         color:
             isDark
@@ -36,6 +36,8 @@ class ChannelSpectralChart extends StatelessWidget {
           minY: 0,
           barTouchData: BarTouchData(
             touchTooltipData: BarTouchTooltipData(
+              fitInsideHorizontally: true,
+              fitInsideVertically: true,
               getTooltipColor:
                   (_) =>
                       isDark

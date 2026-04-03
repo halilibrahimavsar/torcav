@@ -995,4 +995,28 @@ class AppLocalizationsTr extends AppLocalizations {
   String downgradeEvidence(String oldSec, String newSec) {
     return 'Şifreleme profili $oldSec değerinden $newSec değerine değişti. Olası düşürme (downgrade) saldırısı.';
   }
+
+  @override
+  String get historyAllBands => 'TÜMÜ';
+
+  @override
+  String get historyBestChannel => 'EN İYİ KANAL';
+
+  @override
+  String get historyAvgRating => 'ORT. PUAN';
+
+  @override
+  String get historySessions => 'OTURUMLAR';
+
+  @override
+  String get historyLineChart => 'Çizgi grafik';
+
+  @override
+  String get historyHeatmap => 'Isı haritası';
+
+  @override
+  String get historyNoDataForFilter => 'Seçili filtre için veri yok.';
+
+  @override
+  String get historyChannelRatings => 'Kanal Puanları';
 }

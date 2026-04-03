@@ -592,5 +592,13 @@
     "securityEventSeverity": "{severity, select, low{Kêm} medium{Navîn} info{Zanyarî} warning{Hişyarî} high{Bilind} critical{Krîtîk} other{{severity}}}",
     "evilTwinEvidence": "Lihevnehatina BSSID! Ya Tê Çaverêkirin: {expected}, Ya Hatî Dîtin: {found}. Îhtîmaleke mezin a Xala Gihîştina Cêwîyê Xirab.",
     "rogueApEvidence": "MAC-a Ketober/LAA di tora naskirî de hat dîtin! Ev ji bo Xalên Gihîştina rewa pir neasayî ye û dibe ku nîşan bide ku amûrek sexte heye.",
-    "downgradeEvidence": "Profîla şîfrekirinê ji {oldSec} ber bi {newSec} ve hat guhartin. Gumana êrîşa daxistinê."
+    "downgradeEvidence": "Profîla şîfrekirinê ji {oldSec} ber bi {newSec} ve hat guhartin. Gumana êrîşa daxistinê.",
+    "historyAllBands": "HEMÛ",
+    "historyBestChannel": "KANALA HERÎ BAŞ",
+    "historyAvgRating": "NAVG. PUAN",
+    "historySessions": "DANIŞÎN",
+    "historyLineChart": "Grafîka xêzikê",
+    "historyHeatmap": "Nexşeya germê",
+    "historyNoDataForFilter": "Ji bo fîltera bijartî dane tune.",
+    "historyChannelRatings": "Puanên Kanalê"
 }

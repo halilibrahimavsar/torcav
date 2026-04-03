@@ -995,4 +995,28 @@ class AppLocalizationsKu extends AppLocalizations {
   String downgradeEvidence(String oldSec, String newSec) {
     return 'Profîla şîfrekirinê ji $oldSec ber bi $newSec ve hat guhartin. Gumana êrîşa daxistinê.';
   }
+
+  @override
+  String get historyAllBands => 'HEMÛ';
+
+  @override
+  String get historyBestChannel => 'KANALA HERÎ BAŞ';
+
+  @override
+  String get historyAvgRating => 'NAVG. PUAN';
+
+  @override
+  String get historySessions => 'DANIŞÎN';
+
+  @override
+  String get historyLineChart => 'Grafîka xêzikê';
+
+  @override
+  String get historyHeatmap => 'Nexşeya germê';
+
+  @override
+  String get historyNoDataForFilter => 'Ji bo fîltera bijartî dane tune.';
+
+  @override
+  String get historyChannelRatings => 'Puanên Kanalê';
 }

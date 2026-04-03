@@ -592,5 +592,13 @@
     "securityEventSeverity": "{severity, select, low{Niedrig} medium{Mittel} info{Info} warning{Warnung} high{Hoch} critical{Kritisch} other{{severity}}}",
     "evilTwinEvidence": "BSSID-Nichtübereinstimmung! Erwartet: {expected}, Gefunden: {found}. Hohe Wahrscheinlichkeit eines Evil Twin Access Points.",
     "rogueApEvidence": "Zufällige/LAA-MAC in bekanntem Netzwerk erkannt! Dies ist für legitime Access Points höchst ungewöhnlich und kann auf ein bösartiges Gerät hinweisen.",
-    "downgradeEvidence": "Verschlüsselungsprofil wurde von {oldSec} auf {newSec} geändert. Möglicher Downgrade-Angriff."
+    "downgradeEvidence": "Verschlüsselungsprofil wurde von {oldSec} auf {newSec} geändert. Möglicher Downgrade-Angriff.",
+    "historyAllBands": "ALLE",
+    "historyBestChannel": "BESTER KANAL",
+    "historyAvgRating": "DURCHSCHN.",
+    "historySessions": "SITZUNGEN",
+    "historyLineChart": "Liniendiagramm",
+    "historyHeatmap": "Heatmap",
+    "historyNoDataForFilter": "Keine Daten für den ausgewählten Filter.",
+    "historyChannelRatings": "Kanalbewertungen"
 }

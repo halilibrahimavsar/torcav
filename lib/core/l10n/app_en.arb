@@ -1366,5 +1366,37 @@
                 "type": "String"
             }
         }
+    },
+    "historyAllBands": "ALL",
+    "@historyAllBands": {
+        "description": "Label for showing all Wi-Fi bands in history filter."
+    },
+    "historyBestChannel": "BEST CHANNEL",
+    "@historyBestChannel": {
+        "description": "Label for the best channel stat tile in history view."
+    },
+    "historyAvgRating": "AVG RATING",
+    "@historyAvgRating": {
+        "description": "Label for the average rating stat tile in history view."
+    },
+    "historySessions": "SESSIONS",
+    "@historySessions": {
+        "description": "Label for the sessions count stat tile in history view."
+    },
+    "historyLineChart": "Line chart",
+    "@historyLineChart": {
+        "description": "Tooltip for switching to line chart mode."
+    },
+    "historyHeatmap": "Heatmap",
+    "@historyHeatmap": {
+        "description": "Tooltip for switching to heatmap mode."
+    },
+    "historyNoDataForFilter": "No data for selected filter.",
+    "@historyNoDataForFilter": {
+        "description": "Shown when history filters result in no data."
+    },
+    "historyChannelRatings": "Channel Ratings",
+    "@historyChannelRatings": {
+        "description": "Section header for channel ratings chart in history."
     }
 }
