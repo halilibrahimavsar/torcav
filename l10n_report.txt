@@ -1,0 +1,6 @@
+{
+  "tr": [
+    "scanProfileBalanced",
+    "scanProfileAggressive"
+  ]
+}

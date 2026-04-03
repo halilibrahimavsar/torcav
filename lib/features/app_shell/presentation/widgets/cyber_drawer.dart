@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:torcav/l10n/generated/app_localizations.dart';
+import 'package:torcav/core/l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/theme/theme_cubit.dart';

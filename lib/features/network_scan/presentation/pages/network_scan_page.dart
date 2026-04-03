@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:torcav/l10n/generated/app_localizations.dart';
+import '../../../../core/l10n/app_localizations.dart';
+import '../../../../core/extensions/context_extensions.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/neon_widgets.dart';
@@ -62,8 +63,8 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
           if (state is NetworkScanLoaded && state.newDevices.isNotEmpty) {
             final count = state.newDevices.length;
             final label = count == 1
-                ? '1 new device: ${state.newDevices.first.ip}'
-                : '$count new devices on your network';
+                ? context.l10n.newDeviceFound(state.newDevices.first.ip)
+                : context.l10n.newDevicesFound(count);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(label),
@@ -83,7 +84,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
               StaggeredEntry(
                 delay: const Duration(milliseconds: 50),
                 child: NeonSectionHeader(
-                  label: 'NETWORK RECON',
+                  label: context.l10n.networkReconTitle,
                   icon: Icons.radar_rounded,
                   color: Theme.of(context).colorScheme.primary,
                 ),
@@ -127,7 +128,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 StaggeredEntry(
                   delay: const Duration(milliseconds: 150),
                   child: NeonSectionHeader(
-                    label: 'INTELLIGENCE REPORT',
+                    label: context.l10n.intelligenceReportTitle,
                     icon: Icons.analytics_outlined,
                     color: Theme.of(context).colorScheme.secondary,
                   ),
@@ -145,7 +146,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 StaggeredEntry(
                   delay: const Duration(milliseconds: 200),
                   child: NeonSectionHeader(
-                    label: 'DISCOVERED ENDPOINTS',
+                    label: context.l10n.discoveredEndpointsTitle,
                     icon: Icons.devices_rounded,
                     color: Theme.of(context).colorScheme.tertiary,
                   ),
@@ -265,7 +266,7 @@ class _ScanControlPanel extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                'SCAN PROFILE',
+                l10n.scanProfileLabel,
                 style: GoogleFonts.orbitron(
                   fontSize: 11,
                   color: scheme.primary.withValues(alpha: 0.7),
@@ -274,11 +275,11 @@ class _ScanControlPanel extends StatelessWidget {
               ),
               const SizedBox(width: 4),
               InfoIconButton(
-                title: 'Scan Profiles',
+                title: l10n.infoScanProfilesTitle,
                 body:
-                    'Fast: Quick ping sweep — finds devices in seconds.\n\n'
-                    'Balanced: Ping + common ports — finds more detail.\n\n'
-                    'Aggressive: Full port scan — most thorough but slowest.',
+                    '${l10n.infoScanProfileFastDesc}\n\n'
+                    '${l10n.infoScanProfileBalancedDesc}\n\n'
+                    '${l10n.infoScanProfileAggressiveDesc}',
                 color: scheme.primary,
               ),
               const Spacer(),
@@ -377,6 +378,7 @@ class _ScanningIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final scheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24),
@@ -410,7 +412,7 @@ class _ScanningIndicator extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           Text(
-            'ACTIVE NODE RECONNAISSANCE'.toUpperCase(),
+            l10n.activeNodeRecon,
             style: GoogleFonts.orbitron(
               color: scheme.primary,
               fontSize: 14,
@@ -420,7 +422,7 @@ class _ScanningIndicator extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Interrogating subnet for responsive hosts...',
+            l10n.interrogatingSubnet,
             style: GoogleFonts.rajdhani(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontSize: 14,
@@ -495,7 +497,7 @@ class _NetworkBentoHeader extends StatelessWidget {
                         children: [
                           Expanded(
                             child: BentoStatTile(
-                              label: 'Nodes',
+                              label: context.l10n.nodesLabel,
                               value: '${devices.length}',
                               icon: Icons.devices_other_rounded,
                               color: scheme.primary,
@@ -504,7 +506,7 @@ class _NetworkBentoHeader extends StatelessWidget {
                           const SizedBox(width: 8),
                           Expanded(
                             child: BentoStatTile(
-                              label: 'Risk Avg',
+                              label: context.l10n.riskAvgLabel,
                               value: avgRisk.toStringAsFixed(1),
                               icon: Icons.gpp_maybe_rounded,
                               color:
@@ -522,24 +524,24 @@ class _NetworkBentoHeader extends StatelessWidget {
                         children: [
                           Expanded(
                             child: BentoStatTile(
-                              label: 'Services',
+                              label: context.l10n.servicesLabel,
                               value: '$totalServices',
                               icon: Icons.dns_rounded,
                               color: scheme.secondary,
-                              subValue: 'OPEN PORTS',
+                              subValue: context.l10n.openPortsLabel,
                             ),
                           ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: BentoStatTile(
-                              label: 'Subnet',
+                              label: context.l10n.subnetLabel,
                               value:
                                   target.split('.').last == '0/24'
                                       ? target.replaceAll('.0/24', '')
                                       : target,
                               icon: Icons.lan_rounded,
                               color: scheme.outline,
-                              subValue: 'CIDR TARGET',
+                              subValue: context.l10n.cidrTargetLabel,
                             ),
                           ),
                         ],
@@ -703,7 +705,7 @@ class _DeviceCard extends StatelessWidget {
                     children: [
                       Text(
                         host.hostName.isEmpty
-                            ? 'ANONYMOUS NODE'
+                            ? context.l10n.anonymousNode
                             : host.hostName.toUpperCase(),
                         style: GoogleFonts.orbitron(
                           color: Theme.of(context).colorScheme.onSurface,
@@ -771,7 +773,7 @@ class _DeviceCard extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      '${host.services.length} PORTS',
+                      context.l10n.portsCountLabel(host.services.length),
                       style: GoogleFonts.orbitron(
                         color: riskColor,
                         fontSize: 10,
@@ -816,7 +818,7 @@ class _RiskIndicator extends StatelessWidget {
           glowRadius: 4,
         ),
         Text(
-          'RISK',
+          context.l10n.riskLabel,
           style: GoogleFonts.rajdhani(
             color: color.withValues(alpha: 0.7),
             fontSize: 9,
@@ -887,7 +889,7 @@ class _LanSearchBar extends StatelessWidget {
           controller: controller,
           style: GoogleFonts.rajdhani(color: scheme.onSurface, fontSize: 15),
           decoration: InputDecoration(
-            hintText: 'Search by IP, hostname, or vendor...',
+            hintText: context.l10n.searchLanPlaceholder,
             hintStyle: GoogleFonts.rajdhani(
               color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
             ),
@@ -913,7 +915,7 @@ class _LanSearchBar extends StatelessWidget {
         const SizedBox(height: 8),
         FilterChip(
           label: Text(
-            'Has Vulnerabilities',
+            context.l10n.hasVulnerabilitiesLabel,
             style: GoogleFonts.rajdhani(
               color: vulnOnly ? scheme.onError : scheme.onSurfaceVariant,
               fontWeight: FontWeight.w600,

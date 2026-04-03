@@ -9,520 +9,47 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
-  String get activeOperationsBlockedMsg => 'Aktive Operationen sind blockiert, bis Richtlinien und Zulassungslisten erfüllt sind.';
+  String get wifiScanTitle => 'WLAN-SCAN';
 
   @override
-  String get authorizedTargets => 'Autorisierte Ziele';
+  String get searchingNetworksPlaceholder => 'NETZWERKE WERDEN GESUCHT...';
 
   @override
-  String get add => 'Hinzufügen';
+  String get filterNetworksPlaceholder => 'NETZWERKE FILTERN...';
 
   @override
-  String get noTargetsAllowlisted => 'Noch keine Ziele zugelassen.';
+  String get quickScan => 'Schnellscan';
 
   @override
-  String get hiddenNetwork => 'Verstecktes Netzwerk';
+  String get deepScan => 'Tiefenscan';
 
   @override
-  String get remove => 'Entfernen';
+  String get scanModesTitle => 'Scan-Modi';
 
   @override
-  String get securityTimeline => 'Sicherheits-Zeitlinie';
-
-  @override
-  String get noSecurityEvents => 'Noch keine Sicherheitsereignisse.';
-
-  @override
-  String get authorizeTarget => 'Ziel autorisieren';
-
-  @override
-  String get ssid => 'SSID';
-
-  @override
-  String get bssid => 'BSSID';
-
-  @override
-  String get allowHandshakeCapture => 'Handshake-Erfassung erlauben';
-
-  @override
-  String get allowActiveDefense => 'Aktive Verteidigung/Deauth-Tests erlauben';
-
-  @override
-  String get cancel => 'Abbrechen';
-
-  @override
-  String get save => 'Speichern';
-
-  @override
-  String get confirm => 'Bestätigen';
-
-  @override
-  String get legalDisclaimerAccepted => 'Rechtlicher Hinweis akzeptiert';
-
-  @override
-  String get requiredForActiveOps => 'Erforderlich für aktive Operationen';
-
-  @override
-  String get strictAllowlist => 'Strenge Zulassungsliste';
-
-  @override
-  String get blockActiveOpsUnknown => 'Aktive Operationen für unbekannte Ziele blockieren';
-
-  @override
-  String get rateLimitActiveOps => 'Ratenbegrenzung zwischen aktiven Ops';
-
-  @override
-  String get selectFromScanned => 'Aus Scan-Liste auswählen';
-
-  @override
-  String get settingsLanguage => 'Sprache';
-
-  @override
-  String get settingsScanBehavior => 'Standard-Scanverhalten, Backend-Strategie und Sicherheitslage steuern.';
-
-  @override
-  String get settingsDefaultScanPasses => 'Standard-Scan-Durchgänge';
-
-  @override
-  String get settingsMonitoringInterval => 'Überwachungsintervall (Sekunden)';
-
-  @override
-  String get settingsBackendPreference => 'Standard-Backend-Präferenz';
-
-  @override
-  String get settingsIncludeHidden => 'Versteckte SSIDs standardmäßig einbeziehen';
-
-  @override
-  String get settingsStrictSafety => 'Strenger Sicherheitsmodus';
-
-  @override
-  String get settingsStrictSafetyDesc => 'Zustimmung + Zulassungsliste für aktive Ops erforderlich';
-
-  @override
-  String get navDashboard => 'Dashboard';
-
-  @override
-  String get navWifi => 'WLAN';
-
-  @override
-  String get navLan => 'LAN';
-
-  @override
-  String get navDiscovery => 'Entdeckung';
-
-  @override
-  String get navOperations => 'Operationen';
-
-  @override
-  String get navMore => 'Mehr';
-
-  @override
-  String get moreTitle => 'MEHR';
-
-  @override
-  String get sectionTools => 'WERKZEUGE';
-
-  @override
-  String get speedTestTitle => 'Geschwindigkeitstest & Überwachung';
-
-  @override
-  String get speedTestDesc => 'Bandbreite, Latenz und Anomalie-Verfolgung';
-
-  @override
-  String get securityCenterTitle => 'Sicherheitszentrum';
-
-  @override
-  String get securityCenterDesc => 'Risikobewertung, Zulassungslisten und Richtlinienkontrollen';
-
-  @override
-  String get reportsTitle => 'Berichte';
-
-  @override
-  String get reportsDesc => 'Scans als PDF, HTML oder JSON exportieren';
-
-  @override
-  String get sectionPreferences => 'EINSTELLUNGEN';
-
-  @override
-  String get settingsTitle => 'Einstellungen';
-
-  @override
-  String get settingsDesc => 'Scanverhalten, Backends und Sicherheitsmodus';
-
-  @override
-  String get monitoringTitle => 'Überwachung';
-
-  @override
-  String get monitoringSubtitle => 'Bandbreite, Anomalieerkennung und Heatmap-Streams.';
-
-  @override
-  String get packetsPerSecondLabel => 'Pakete pro Sekunde';
-
-  @override
-  String get throughputLabel => 'Durchsatz';
-
-  @override
-  String get comingSoon => 'DEMNÄCHST';
-
-  @override
-  String get signalTrends => 'Signal-Trends';
-
-  @override
-  String get topologyMesh => 'Topologie & Mesh';
-
-  @override
-  String get anomalyAlerts => 'Anomalie-Warnungen';
-
-  @override
-  String get speedTestHeader => 'GESCHWINDIGKEITSTEST';
-
-  @override
-  String get testConnectionSpeed => 'Testen Sie Ihre Verbindungsgeschwindigkeit';
-
-  @override
-  String get testing => 'TESTEN…';
-
-  @override
-  String get testAgain => 'ERNEUT TESTEN';
-
-  @override
-  String get startTest => 'TEST STARTEN';
-
-  @override
-  String get phasePing => 'PING';
-
-  @override
-  String get phaseDownload => 'DOWNLOAD';
-
-  @override
-  String get phaseUpload => 'UPLOAD';
-
-  @override
-  String get phaseDone => 'FERTIG';
-
-  @override
-  String get wifiScanTitle => 'WLAN-ANALYSATOR';
-
-  @override
-  String get scanSettingsTooltip => 'Scan-Einstellungen';
-
-  @override
-  String get channelRatingTooltip => 'Kanalbewertung';
-
-  @override
-  String get refreshScanTooltip => 'Scan aktualisieren';
+  String get scanModesInfo => 'Der Schnellscan hört auf Broadcasts. Der Tiefenscan sucht aktiv nach Netzwerken.';
 
   @override
   String get readyToScan => 'Bereit zum Scannen';
 
   @override
-  String get scanButton => 'Scannen';
-
-  @override
-  String get scanSettingsTitle => 'Scan-Einstellungen';
-
-  @override
-  String passes(Object count) {
-    return 'Durchgänge: $count';
-  }
-
-  @override
-  String get includeHiddenSsids => 'Versteckte SSIDs einbeziehen';
-
-  @override
-  String get backendPreference => 'Backend-Präferenz';
-
-  @override
-  String get apply => 'Anwenden';
-
-  @override
   String get noSignalsDetected => 'Keine Signale erkannt';
 
   @override
-  String get lastSnapshot => 'Letzter Schnappschuss';
+  String get compareWithPreviousScan => 'MIT VORIGEM SCAN VERGLEICHEN';
 
   @override
-  String get bandAnalysis => 'Band-Analyse';
-
-  @override
-  String networksCount(Object count) {
-    return 'Netzwerke ($count)';
+  String networksCount(int count) {
+    return '$count NETZWERKE';
   }
 
   @override
-  String get recommendation => 'Empfehlung';
-
-  @override
-  String get lanReconTitle => 'LAN-ERKUNDUNG';
-
-  @override
-  String scanFailed(Object message) {
-    return 'SCAN FEHLGESCHLAGEN: $message';
+  String filteredNetworksCount(int count, int total) {
+    return '$count VON $total NETZWERKEN';
   }
 
   @override
-  String get readyToScanAllCaps => 'BEREIT ZUM SCANNEN';
-
-  @override
-  String get targetSubnet => 'Ziel-Subnetz/IP';
-
-  @override
-  String get profile => 'Profil';
-
-  @override
-  String get method => 'Methode';
-
-  @override
-  String get scanAllCaps => 'SCANNEN';
-
-  @override
-  String get noHostsFound => 'KEINE HOSTS GEFUNDEN';
-
-  @override
-  String get unknownHost => 'Unbekannter Host';
-
-  @override
-  String os(Object os) {
-    return 'OS: $os';
-  }
-
-  @override
-  String services(Object services) {
-    return 'Dienste: $services';
-  }
-
-  @override
-  String vuln(Object vuln) {
-    return 'Schwachstelle: $vuln';
-  }
-
-  @override
-  String get reportsSubtitle => 'Letzte Scan-Sitzung als JSON, HTML oder PDF exportieren.';
-
-  @override
-  String get noSnapshotAvailable => 'Noch kein Scan-Schnappschuss verfügbar. Führen Sie zuerst einen WLAN-Scan durch.';
-
-  @override
-  String latestSnapshot(Object count, Object backend) {
-    return 'Letzter Schnappschuss: $count Netzwerke über $backend';
-  }
-
-  @override
-  String get exportJson => 'JSON exportieren';
-
-  @override
-  String get exportHtml => 'HTML exportieren';
-
-  @override
-  String get exportPdf => 'PDF exportieren';
-
-  @override
-  String get printPdf => 'PDF drucken';
-
-  @override
-  String get saveReportDialog => 'Bericht speichern';
-
-  @override
-  String get sectionStatus => 'STATUS';
-
-  @override
-  String get exportOptionsTitle => 'EXPORTOPTIONEN';
-
-  @override
-  String get latestSnapshotTitle => 'NEUESTER SCHNAPPSCHUSS';
-
-  @override
-  String get backendLabel => 'Backend';
-
-  @override
-  String get savePdfReportDialog => 'PDF-Bericht speichern';
-
-  @override
-  String savedToast(Object path) {
-    return 'Gespeichert: $path';
-  }
-
-  @override
-  String get handshakeCaptureCheck => 'Handshake-Erfassungsprüfung';
-
-  @override
-  String get activeDefenseReadiness => 'Bereitschaft zur aktiven Verteidigung';
-
-  @override
-  String get signalGraph => 'Signal-Graph';
-
-  @override
-  String get riskFactors => 'RISIKOFAKTOREN';
-
-  @override
-  String get vulnerabilities => 'SCHWACHSTELLEN';
-
-  @override
-  String recommendationLabel(Object text) {
-    return 'EMPFEHLUNG: $text';
-  }
-
-  @override
-  String get noVulnerabilities => 'Keine bekannten Schwachstellen basierend auf aktuellen Scandaten erkannt.';
-
-  @override
-  String get bssId => 'BSSID';
-
-  @override
-  String get channel => 'KANAL';
-
-  @override
-  String get security => 'SICHERHEIT';
-
-  @override
-  String get signal => 'SIGNAL';
-
-  @override
-  String get channelRatingTitle => 'KANALBEWERTUNG';
-
-  @override
-  String get band24Ghz => '2,4 GHz';
-
-  @override
-  String get band5Ghz => '5 GHz';
-
-  @override
-  String get no24GhzChannels => 'Keine 2,4-GHz-Kanäle erkannt.';
-
-  @override
-  String get no5GhzChannels => 'Keine 5-GHz-Kanäle erkannt.';
-
-  @override
-  String get band6Ghz => '6 GHz';
-
-  @override
-  String get no6GhzChannels => 'Keine 6-GHz-Kanäle erkannt.';
-
-  @override
-  String get recommendedChannel => 'EMPFOHLENER KANAL';
-
-  @override
-  String channelInfo(Object channel, Object frequency) {
-    return 'Kanal $channel — $frequency MHz';
-  }
-
-  @override
-  String bandChannels(Object band) {
-    return '$band-Kanäle';
-  }
-
-  @override
-  String get errorLabel => 'Fehler';
-
-  @override
-  String get loading => 'Laden…';
-
-  @override
-  String get analyzing => 'Analysieren…';
-
-  @override
-  String get success => 'Erfolg';
-
-  @override
-  String get ok => 'OK';
-
-  @override
-  String get scannedNetworksTitle => 'Gescannte Netzwerke';
-
-  @override
-  String get noNetworksFound => 'Keine Netzwerke gefunden.';
-
-  @override
-  String get retry => 'Wiederholen';
-
-  @override
-  String get knownNetworks => 'Bekannte Netzwerke';
-
-  @override
-  String get noKnownNetworksYet => 'Noch keine bekannten Netzwerke.';
-
-  @override
-  String opsLabel(Object ops) {
-    return 'Ops: $ops';
-  }
-
-  @override
-  String get networkStatusLabel => 'NETZWERKSTATUS';
-
-  @override
-  String get activeSessionLabel => 'AKTIVE SITZUNG';
-
-  @override
-  String get gatewayLabel => 'GATEWAY';
-
-  @override
-  String get ipLabel => 'IP-ADRESSE';
-
-  @override
-  String get connectedStatusCaps => 'VERBUNDEN';
-
-  @override
-  String get disconnectedStatusCaps => 'GETRENNT';
-
-  @override
-  String get quickActionsTitle => 'SCHNELLAKTIONEN';
-
-  @override
-  String get lastScanTitle => 'LETZTER SCAN';
-
-  @override
-  String get viewDetailsAction => 'DETAILS ANZEIGEN';
-
-  @override
-  String get scanning => 'SCANNEN…';
-
-  @override
-  String get secure => 'SICHER';
-
-  @override
-  String get blockUnknownAP => 'Unbekannte APs blockieren';
-
-  @override
-  String get automaticBlockMsg => 'Verbindungen zu unautorisierten APs automatisch trennen';
-
-  @override
-  String get activeProbingEnabled => 'Aktives Testen';
-
-  @override
-  String get activeProbingMsg => 'Verbundene APs regelmäßig auf Anomalien prüfen';
-
-  @override
-  String get requireConsentForDeauth => 'Zustimmung erforderlich';
-
-  @override
-  String get manualAuthorizationMsg => 'Deauth/aktive Verteidigung manuell autorisieren';
-
-  @override
-  String get defensePolicy => 'Verteidigungsrichtlinie';
-
-  @override
-  String get shieldActive => 'Schutz aktiv';
-
-  @override
-  String get activeProtection => 'Aktiver Schutz';
-
-  @override
-  String get riskScore => 'Risikobewertung';
-
-  @override
-  String get securityRadar => 'Sicherheitsradar';
-
-  @override
-  String get profileTitle => 'AGENT-PROFIL';
-
-  @override
-  String get logout => 'ABMELDEN';
-
-  @override
-  String get logoutConfirmation => 'SITZUNG TRENNEN';
-
-  @override
-  String get logoutConfirmMessage => 'Möchten Sie die aktuelle Sitzung wirklich beenden? Alle aktiven Überwachungen werden pausiert.';
+  String get securityAlertsTooltip => 'Sicherheitswarnungen anzeigen';
 
   @override
   String get livePulse => 'LIVE-PULS';
@@ -534,19 +61,262 @@ class AppLocalizationsDe extends AppLocalizations {
   String get topologyLabel => 'TOPOLOGIE';
 
   @override
-  String get accessEngine => 'ZUGANGS-ENGINE';
-
-  @override
   String get networkLogs => 'NETZWERK-LOGS';
 
   @override
-  String get strictSafetyEnabled => 'STRENGER SICHERHEITSMODUS AKTIV';
+  String get connectedStatusCaps => 'VERBUNDEN';
 
   @override
-  String get activeMonitoringProgress => 'Aktive Überwachung läuft';
+  String get disconnectedStatusCaps => 'NICHT VERBUNDEN';
 
   @override
-  String get topologyMapTitle => 'TOPOLOGIE-KARTE';
+  String get ipLabel => 'IP';
+
+  @override
+  String get gatewayLabel => 'GATEWAY';
+
+  @override
+  String get accessEngine => 'ACCESS ENGINE';
+
+  @override
+  String get latestSnapshotTitle => 'Letzter Netzwerk-Schnappschuss';
+
+  @override
+  String get noSnapshotAvailable => 'Keine Schnappschussdaten verfügbar...';
+
+  @override
+  String get strictSafetyEnabled => 'Strenge Sicherheitsprotokolle aktiviert';
+
+  @override
+  String get activeMonitoringProgress => 'Aktive Überwachung läuft...';
+
+  @override
+  String get scanComparisonTitle => 'SCAN-VERGLEICH';
+
+  @override
+  String get comparisonNeedsTwoScans => 'Der Vergleich erfordert mindestens 2 Scans.\n\nFühren Sie einen weiteren Scan durch, um Änderungen zu sehen.';
+
+  @override
+  String get noChangesDetected => 'Keine Änderungen zwischen den letzten beiden Scans erkannt.';
+
+  @override
+  String newNetworksCountLabel(int count) {
+    return 'NEU ($count)';
+  }
+
+  @override
+  String goneNetworksCountLabel(int count) {
+    return 'ENTFERNT ($count)';
+  }
+
+  @override
+  String changedNetworksCountLabel(int count) {
+    return 'GEÄNDERT ($count)';
+  }
+
+  @override
+  String get plusNewLabel => '+ NEU';
+
+  @override
+  String get goneLabel => 'ENTFERNT';
+
+  @override
+  String get hiddenLabel => '[Versteckt]';
+
+  @override
+  String channelLabel(int channel) {
+    return 'CH $channel';
+  }
+
+  @override
+  String get securityLabel => 'SICHERHEIT';
+
+  @override
+  String get initiatingSpectrumScan => 'SPEKTRUM-SCAN WIRD GESTARTET...';
+
+  @override
+  String get broadcastingProbeRequests => 'PROBE-ANFRAGEN WERDEN GESENDET...';
+
+  @override
+  String get noRadiosInRange => 'Keine Funkgeräte in Reichweite';
+
+  @override
+  String get noNetworksMatchFilter => 'Keine Netzwerke entsprechen Ihrem Filter';
+
+  @override
+  String get searchSsidBssidVendor => 'Suche nach SSID, BSSID oder Hersteller...';
+
+  @override
+  String sortPrefix(String option) {
+    return 'Sortieren: $option';
+  }
+
+  @override
+  String get bandAll => 'ALLE BÄNDER';
+
+  @override
+  String get sortSignal => 'Signal';
+
+  @override
+  String get sortName => 'Name';
+
+  @override
+  String get sortChannel => 'Kanal';
+
+  @override
+  String get sortSecurity => 'Sicherheit';
+
+  @override
+  String get sortByTitle => 'SORTIEREN NACH';
+
+  @override
+  String recommendationTip(String channels, String band) {
+    return 'Optimale Kanäle auf $band: $channels';
+  }
+
+  @override
+  String get channelInterferenceTitle => 'Kanalstörungen';
+
+  @override
+  String get networksLabel => 'NETZWERKE';
+
+  @override
+  String openCount(int count) {
+    return '$count OFFEN';
+  }
+
+  @override
+  String get avgSignalLabel => 'DURCHSCHNITTSSIGNAL';
+
+  @override
+  String get notAvailable => 'n. v.';
+
+  @override
+  String get dbmCaps => 'DBM';
+
+  @override
+  String get interfaceLabel => 'SCHNITTSTELLE';
+
+  @override
+  String frequencyLabel(int freq) {
+    return '$freq MHz';
+  }
+
+  @override
+  String get reportsTitle => 'BERICHTE';
+
+  @override
+  String get saveReportDialog => 'Bericht speichern';
+
+  @override
+  String savedToast(String path) {
+    return 'Bericht gespeichert unter $path';
+  }
+
+  @override
+  String get errorLabel => 'Fehler';
+
+  @override
+  String get savePdfReportDialog => 'PDF-Bericht speichern';
+
+  @override
+  String get scanning => 'Scannen...';
+
+  @override
+  String get shieldActive => 'Schutz aktiv';
+
+  @override
+  String get threatsDetected => 'Bedrohungen erkannt';
+
+  @override
+  String get trustedLabel => 'VERTRAUT';
+
+  @override
+  String get securityEventTitle => 'Sicherheitsereignis';
+
+  @override
+  String get networkReconTitle => 'NETZWERK-ERKENNUNG';
+
+  @override
+  String get intelligenceReportTitle => 'GEHEIMDIENST-BERICHT';
+
+  @override
+  String get discoveredEndpointsTitle => 'ENTDECKTE ENDPUNKTE';
+
+  @override
+  String newDeviceFound(String ip) {
+    return '1 neues Gerät: $ip';
+  }
+
+  @override
+  String newDevicesFound(int count) {
+    return '$count neue Geräte in Ihrem Netzwerk';
+  }
+
+  @override
+  String get targetIpSubnet => 'Ziel-IP / Subnetz';
+
+  @override
+  String get scanProfileFast => 'Schnell';
+
+  @override
+  String get scanProfileBalanced => 'Ausgewogen';
+
+  @override
+  String get scanProfileAggressive => 'Aggressiv';
+
+  @override
+  String get scanProfileNormal => 'Normal';
+
+  @override
+  String get scanProfileIntense => 'Intensiv';
+
+  @override
+  String get vulnOnlyLabel => 'Nur Schwachstellen';
+
+  @override
+  String get lanReconTitle => 'LAN-ERKUNDUNG';
+
+  @override
+  String get targetSubnet => 'Ziel-IP / Subnetz';
+
+  @override
+  String get scanAllCaps => 'SCAN';
+
+  @override
+  String get channelRatingTitle => 'KANALBEWERTUNG';
+
+  @override
+  String get refreshScanTooltip => 'Scan aktualisieren';
+
+  @override
+  String get band24Ghz => '2,4 GHz';
+
+  @override
+  String get band5Ghz => '5 GHz';
+
+  @override
+  String get band6Ghz => '6 GHz';
+
+  @override
+  String get no24GhzChannels => 'Keine 2,4-GHz-Kanäle gefunden.';
+
+  @override
+  String get no5GhzChannels => 'Keine 5-GHz-Kanäle gefunden.';
+
+  @override
+  String get no6GhzChannels => 'Keine 6-GHz-Kanäle gefunden.';
+
+  @override
+  String get analyzing => 'Analysieren...';
+
+  @override
+  String get historyLabel => 'VERLAUF';
+
+  @override
+  String failedLoadTopology(String error) {
+    return 'Topologie konnte nicht geladen werden: $error';
+  }
 
   @override
   String get trafficLabel => 'TRAFFIC';
@@ -564,123 +334,67 @@ class AppLocalizationsDe extends AppLocalizations {
   String get overdriveSpeed => 'OVERDRIVE';
 
   @override
+  String get topologyMapTitle => 'TOPOLOGIE-KARTE';
+
+  @override
   String get noTopologyData => 'Keine Topologiedaten';
 
   @override
-  String get runScanFirst => 'Zuerst einen WLAN- und LAN-Scan durchführen';
+  String get runScanFirst => 'Führen Sie zuerst einen Scan durch, um die Netzwerkkarte zu erstellen';
 
   @override
-  String get thisDevice => 'Dieses Gerät';
+  String get retry => 'WIEDERHOLEN';
 
   @override
-  String get gatewayDevice => 'Gateway';
+  String get thisDevice => 'DIESES GERÄT';
 
   @override
-  String get mobileDevice => 'Mobil';
+  String get gatewayDevice => 'GATEWAY';
 
   @override
-  String get deviceLabel => 'Gerät';
+  String get mobileDevice => 'MOBIL';
 
   @override
-  String get iotDevice => 'IoT';
+  String get deviceLabel => 'GERÄT';
 
   @override
-  String get analyzingNode => 'KNOTEN ANALYSIEREN...';
+  String get iotDevice => 'IOT';
 
   @override
-  String failedLoadTopology(Object error) {
-    return 'Topologie konnte nicht geladen werden: $error';
-  }
+  String get analyzingNode => 'KNOTEN ANALYSIEREN';
 
   @override
-  String get neuralCoreTitle => 'NEURAL_CORE_AI';
+  String get settingsTitle => 'EINSTELLUNGEN';
 
   @override
-  String get activeAnomalies => 'AKTIVE ANOMALIEN';
+  String get appearance => 'Erscheinungsbild';
 
   @override
-  String get predictiveHealth => 'VORAUSSCHAUENDE GESUNDHEIT';
-
-  @override
-  String get aiStrategyReport => 'KI-STRATEGIEBERICHT';
-
-  @override
-  String get engineStability => 'ENGINE_STABILITÄT: OPTIMAL';
-
-  @override
-  String get aiStrategyText => 'Die aktuelle Netzwerktopologie deutet auf eine stabile Signatur hin. Keine unmittelbare horizontale Bewegung in Subnetzen erkannt. Empfehle Aktivierung des Stealth-Modus an öffentlichen Zugangspunkten.';
-
-  @override
-  String get packetSnifferTitle => 'PAKET_SNIFFER';
-
-  @override
-  String get streamPaused => 'STREAM_PAUSIERT';
-
-  @override
-  String get filterNone => 'FILTER: KEINER';
-
-  @override
-  String get totalPackets => 'GESAMT_PAKETE';
-
-  @override
-  String get droppedLabel => 'VERWORFEN';
-
-  @override
-  String get bufferLabel => 'PUFFER';
-
-  @override
-  String get latencyLabel => 'LATENZ';
-
-  @override
-  String get activeMonitoring => 'AKTIVE ÜBERWACHUNG';
-
-  @override
-  String get deactivate => 'DEAKTIVIEREN';
-
-  @override
-  String get initializeLink => 'VERBINDUNG INITIALISIEREN';
-
-  @override
-  String get commandCenters => 'BEFEHLSZENTRALEN';
-
-  @override
-  String get defenseTitle => 'VERTEIDIGUNG';
-
-  @override
-  String get activeShielding => 'Aktiver Schutz';
-
-  @override
-  String get logisticsTitle => 'LOGISTIK';
-
-  @override
-  String get intelMetrics => 'Intel & Metriken';
-
-  @override
-  String get networkMesh => 'Netzwerk-Mesh';
-
-  @override
-  String get tuningTitle => 'OPTIMIERUNG';
-
-  @override
-  String get systemConfig => 'Systemkonfiguration';
-
-  @override
-  String get technicalTools => 'TECHNISCHE WERKZEUGE';
-
-  @override
-  String get packetLogs => 'PAKET-LOGS';
-
-  @override
-  String get aiInsights => 'KI-EINBLICKE';
-
-  @override
-  String get interactiveSimulation => 'INTERAKTIVE_SIMULATION';
-
-  @override
-  String get appearance => 'ERSCHEINUNGSBILD';
+  String get settingsLanguage => 'Sprache';
 
   @override
   String get theme => 'Design';
+
+  @override
+  String get settingsScanBehavior => 'Scan-Verhalten';
+
+  @override
+  String get settingsDefaultScanPasses => 'Standard-Scan-Durchgänge';
+
+  @override
+  String get settingsMonitoringInterval => 'Überwachungsintervall';
+
+  @override
+  String get settingsBackendPreference => 'Backend-Präferenz';
+
+  @override
+  String get settingsIncludeHidden => 'Versteckte SSIDs einbeziehen';
+
+  @override
+  String get settingsStrictSafety => 'Strenger Sicherheitsmodus';
+
+  @override
+  String get settingsStrictSafetyDesc => 'Gefährliche Operationen einschränken';
 
   @override
   String get darkTheme => 'Dunkel';
@@ -692,5 +406,540 @@ class AppLocalizationsDe extends AppLocalizations {
   String get systemTheme => 'System';
 
   @override
-  String get systemStatus => 'SYSTEMSTATUS';
+  String get sectionStatus => 'Status';
+
+  @override
+  String get reportsSubtitle => 'Netzwerk-Scan & Sicherheitsintelligenz';
+
+  @override
+  String get exportOptionsTitle => 'EXPORTOPTIONEN';
+
+  @override
+  String get exportJson => 'Als JSON exportieren';
+
+  @override
+  String get exportHtml => 'Als HTML exportieren';
+
+  @override
+  String get exportPdf => 'Als PDF exportieren';
+
+  @override
+  String get printPdf => 'PDF drucken';
+
+  @override
+  String get navWifi => 'WLAN';
+
+  @override
+  String get backendLabel => 'BACKEND';
+
+  @override
+  String get defenseTitle => 'VERTEIDIGUNG';
+
+  @override
+  String get knownNetworks => 'Bekannte Netzwerke';
+
+  @override
+  String get noKnownNetworksYet => 'Noch keine bekannten Netzwerke';
+
+  @override
+  String get securityTimeline => 'Sicherheits-Zeitlinie';
+
+  @override
+  String get noSecurityEvents => 'Keine Sicherheitsereignisse aufgezeichnet';
+
+  @override
+  String get authLocalSystem => 'AUTH_LOKALES_SYSTEM';
+
+  @override
+  String remoteNodeIdLabel(String id) {
+    return 'REMOTE_KNOTEN_ID: $id';
+  }
+
+  @override
+  String get ipAddrLabel => 'IP_ADRESSE';
+
+  @override
+  String get macValLabel => 'MAC_WERT';
+
+  @override
+  String get mnfrLabel => 'HERSTELLER';
+
+  @override
+  String get hiddenNetwork => 'Verstecktes Netzwerk';
+
+  @override
+  String get signalGraph => 'Signal-Graph';
+
+  @override
+  String get riskFactors => 'Risikofaktoren';
+
+  @override
+  String get vulnerabilities => 'Schwachstellen';
+
+  @override
+  String get bssId => 'BSSID';
+
+  @override
+  String get channel => 'Kanal';
+
+  @override
+  String get security => 'Sicherheit';
+
+  @override
+  String get signal => 'Signal';
+
+  @override
+  String recommendationLabel(String text) {
+    return 'EMPFEHLUNG: $text';
+  }
+
+  @override
+  String get noVulnerabilities => 'Keine Schwachstellen erkannt.';
+
+  @override
+  String get securityScoreTitle => 'Sicherheitsbewertung';
+
+  @override
+  String get securityScoreDesc => 'Die Sicherheitsbewertung (0–100) gibt an, wie gut dieses Netzwerk geschützt ist. Höher ist besser. Sie berücksichtigt Verschlüsselungstyp, WPS-Status und andere Sicherheitsmerkmale.';
+
+  @override
+  String get capabilitiesLabel => 'FUNKTIONEN';
+
+  @override
+  String get wifi7MldLabel => 'Wi-Fi 7 MLD';
+
+  @override
+  String get tagWpa3Desc => 'WPA3 ist der neueste Wi-Fi-Sicherheitsstandard – sehr sicher.';
+
+  @override
+  String get tagWpa2Desc => 'WPA2 ist ein starker Sicherheitsstandard – sicher für den täglichen Gebrauch.';
+
+  @override
+  String get tagWpaDesc => 'WPA ist ein älterer Sicherheitsstandard mit bekannten Schwachstellen.';
+
+  @override
+  String get tagWpsDesc => 'WPS (Wi-Fi Protected Setup) weist bekannte Sicherheitslücken auf. Es kann Angreifern ermöglichen, die PIN per Brute-Force zu knacken und Zugriff zu erhalten.';
+
+  @override
+  String get tagPmfDesc => 'Protected Management Frames (PMF/MFP) schützt vor Deauthentifizierungsangriffen.';
+
+  @override
+  String get tagEssDesc => 'ESS (Extended Service Set) bedeutet, dass dies ein Standard-Access-Point-Netzwerk ist.';
+
+  @override
+  String get tagCcmpDesc => 'CCMP (AES) ist eine starke Verschlüsselung, die mit WPA2/WPA3 verwendet wird.';
+
+  @override
+  String get tagTkipDesc => 'TKIP ist eine ältere, schwächere Verschlüsselung. CCMP/AES wird bevorzugt.';
+
+  @override
+  String get tagUnknownDesc => 'Netzwerkfunktions-Flag aus dem Beacon-Frame.';
+
+  @override
+  String get scanProfileLabel => 'SCAN-PROFIL';
+
+  @override
+  String get infoScanProfilesTitle => 'Scan-Profile';
+
+  @override
+  String get infoScanProfileFastDesc => 'Schnell: Schneller Ping-Sweep – findet Geräte in Sekunden.';
+
+  @override
+  String get infoScanProfileBalancedDesc => 'Ausgewogen: Ping + gängige Ports – findet mehr Details.';
+
+  @override
+  String get infoScanProfileAggressiveDesc => 'Aggressiv: Vollständiger Port-Scan – am gründlichsten, aber am langsamsten.';
+
+  @override
+  String get activeNodeRecon => 'AKTIVE KNOTEN-ERKUNDUNG';
+
+  @override
+  String get interrogatingSubnet => 'Subnetz wird nach antwortenden Hosts abgefragt...';
+
+  @override
+  String get nodesLabel => 'Knoten';
+
+  @override
+  String get riskAvgLabel => 'Risiko-Schnitt';
+
+  @override
+  String get servicesLabel => 'Dienste';
+
+  @override
+  String get openPortsLabel => 'OFFENE PORTS';
+
+  @override
+  String get subnetLabel => 'Subnetz';
+
+  @override
+  String get cidrTargetLabel => 'CIDR-ZIEL';
+
+  @override
+  String get anonymousNode => 'ANONYMER KNOTEN';
+
+  @override
+  String portsCountLabel(int count) {
+    return '$count PORTS';
+  }
+
+  @override
+  String get riskLabel => 'RISIKO';
+
+  @override
+  String get searchLanPlaceholder => 'Suche nach IP, Hostname oder Hersteller...';
+
+  @override
+  String get hasVulnerabilitiesLabel => 'Hat Schwachstellen';
+
+  @override
+  String get securityStatusSecure => 'Sicher';
+
+  @override
+  String get securityStatusModerate => 'Moderat';
+
+  @override
+  String get securityStatusAtRisk => 'Gefährdet';
+
+  @override
+  String get securityStatusCritical => 'Sicherheitskritisch';
+
+  @override
+  String get securitySummarySecure => 'Ihre Verbindung sieht gut aus! Dieses Netzwerk verwendet eine starke Verschlüsselung und ist gut gegen gängige Angriffe geschützt.';
+
+  @override
+  String get securitySummaryModerate => 'Dieses Netzwerk weist eine ordentliche Sicherheit auf, hat jedoch einige potenzielle Schwachstellen. Es ist sicher für den täglichen Gebrauch, aber vermeiden Sie sensible Transaktionen.';
+
+  @override
+  String get securitySummaryAtRisk => 'Dieses Netzwerk weist Sicherheitsprobleme auf, die Ihre Daten gefährden. Vermeiden Sie die Eingabe von Passwörtern oder persönlichen Informationen, während Sie verbunden sind.';
+
+  @override
+  String get securitySummaryCritical => 'Warnung: Dieses Netzwerk ist nicht sicher. Jeder in der Nähe kann möglicherweise Ihren Internetverkehr sehen. Verwenden Sie ein VPN oder wechseln Sie das Netzwerk.';
+
+  @override
+  String get vulnerabilityOpenNetworkTitle => 'Offenes Netzwerk';
+
+  @override
+  String get vulnerabilityOpenNetworkDesc => 'Keine Verschlüsselung erkannt. Der gesamte Datenverkehr kann im Klartext mitgehört werden.';
+
+  @override
+  String get vulnerabilityOpenNetworkRec => 'Vermeiden Sie sensible Aktivitäten. Bevorzugen Sie ein vertrauenswürdiges VPN oder ein anderes Netzwerk.';
+
+  @override
+  String get vulnerabilityWepTitle => 'WEP-Verschlüsselung';
+
+  @override
+  String get vulnerabilityWepDesc => 'WEP ist veraltet und kann schnell geknackt werden.';
+
+  @override
+  String get vulnerabilityWepRec => 'Konfigurieren Sie den AP sofort auf WPA2 oder WPA3 um.';
+
+  @override
+  String get vulnerabilityLegacyWpaTitle => 'Veraltetes WPA';
+
+  @override
+  String get vulnerabilityLegacyWpaDesc => 'WPA/TKIP ist älter und anfälliger für moderne Angriffstechniken.';
+
+  @override
+  String get vulnerabilityLegacyWpaRec => 'Aktualisieren Sie AP und Clients auf WPA2/WPA3.';
+
+  @override
+  String get vulnerabilityHiddenSsidTitle => 'Versteckte SSID';
+
+  @override
+  String get vulnerabilityHiddenSsidDesc => 'Versteckte SSIDs sind weiterhin auffindbar und können die Kompatibilität beeinträchtigen.';
+
+  @override
+  String get vulnerabilityHiddenSsidRec => 'Eine versteckte SSID allein ist kein Schutz. Konzentrieren Sie sich auf eine starke Verschlüsselung.';
+
+  @override
+  String get vulnerabilityWeakSignalTitle => 'Sehr schwaches Signal';
+
+  @override
+  String get vulnerabilityWeakSignalDesc => 'Ein schwaches Signal kann auf instabile Verbindungen und Anfälligkeit für Spoofing hinweisen.';
+
+  @override
+  String get vulnerabilityWeakSignalRec => 'Bewegen Sie sich näher zum AP oder validieren Sie die BSSID-Konsistenz.';
+
+  @override
+  String get vulnerabilityWpsTitle => 'WPS aktiviert';
+
+  @override
+  String get vulnerabilityWpsDesc => 'Wi-Fi Protected Setup (WPS) ist aktiviert. Der WPS-PIN-Modus kann innerhalb von Stunden mittels Pixie-Dust-Angriff durch Brute-Force geknackt werden, wodurch jedes Passwort effektiv umgangen wird.';
+
+  @override
+  String get vulnerabilityWpsRec => 'Deaktivieren Sie WPS im Administrationspanel Ihres Routers. Verwenden Sie ausschließlich eine WPA2/WPA3-Passphrase.';
+
+  @override
+  String get vulnerabilityPmfTitle => 'Management-Frames ungeschützt';
+
+  @override
+  String get vulnerabilityPmfDesc => 'Dieser Zugangspunkt erzwingt keine Protected Management Frames (PMF / 802.11w). Ungeschützte Management-Frames ermöglichen es einem Angreifer, Deauthentifizierungspakete zu fälschen und Clients zu trennen.';
+
+  @override
+  String get vulnerabilityPmfRec => 'Aktivieren Sie PMF in den Router-Einstellungen (oft als \'802.11w\' oder \'Management Frame Protection\' bezeichnet). WPA3 erfordert standardmäßig PMF.';
+
+  @override
+  String get vulnerabilityEvilTwinTitle => 'Potenzieller Evil Twin';
+
+  @override
+  String get vulnerabilityEvilTwinDesc => 'Die SSID erscheint in der Nähe mit einem widersprüchlichen Sicherheits-/Kanal-Fingerabdruck.';
+
+  @override
+  String get vulnerabilityEvilTwinRec => 'Überprüfen Sie BSSID und Zertifikat vor der Authentifizierung oder dem Datenaustausch.';
+
+  @override
+  String get riskFactorNoEncryption => 'Keine Verschlüsselung verwendet';
+
+  @override
+  String get riskFactorDeprecatedEncryption => 'Veraltete Verschlüsselung (WEP)';
+
+  @override
+  String get riskFactorLegacyWpa => 'Veraltetes WPA in Gebrauch';
+
+  @override
+  String get riskFactorHiddenSsid => 'Verhalten bei versteckter SSID';
+
+  @override
+  String get riskFactorWeakSignal => 'Schwache Signalumgebung';
+
+  @override
+  String get riskFactorWpsEnabled => 'WPS-PIN-Angriffsfläche exponiert';
+
+  @override
+  String get riskFactorPmfNotEnforced => 'PMF nicht erzwungen – Deauth-Spoofing möglich';
+
+  @override
+  String get refresh => 'Aktualisieren';
+
+  @override
+  String get addZonePoint => 'Zonenpunkt hinzufügen';
+
+  @override
+  String get cancel => 'Abbrechen';
+
+  @override
+  String get save => 'Speichern';
+
+  @override
+  String get waitingForData => 'Warten auf Daten...';
+
+  @override
+  String get temporalHeatmap => 'Zeitliche Heatmap';
+
+  @override
+  String get failedToSaveHeatmapPoint => 'Fehler beim Speichern des Heatmap-Punkts';
+
+  @override
+  String signalMonitoringTitle(String ssid) {
+    return 'SIGNAL-ÜBERWACHUNG: $ssid';
+  }
+
+  @override
+  String get heatmapTooltip => 'Heatmap';
+
+  @override
+  String get tagCurrentPointTooltip => 'Aktuellen Punkt markieren';
+
+  @override
+  String get signalCaps => 'SIGNAL';
+
+  @override
+  String get channelCaps => 'KANAL';
+
+  @override
+  String get frequencyCaps => 'FREQ';
+
+  @override
+  String heatmapPointAdded(String zone) {
+    return 'Heatmap-Punkt für $zone hinzugefügt';
+  }
+
+  @override
+  String get zoneTagLabel => 'Zonen-Tag (z. B. Küche)';
+
+  @override
+  String errorPrefix(String message) {
+    return 'Fehler: $message';
+  }
+
+  @override
+  String noHeatmapPointsYet(String bssid) {
+    return 'Noch keine Heatmap-Punkte für $bssid';
+  }
+
+  @override
+  String get averageSignalByZone => 'Durchschnittssignal nach Zone';
+
+  @override
+  String bandChannels(String band) {
+    return '$band-KANÄLE';
+  }
+
+  @override
+  String get recommendedChannel => 'EMPFOHLENER KANAL';
+
+  @override
+  String channelInfo(int ch, int freq) {
+    return 'Kanal $ch · $freq MHz';
+  }
+
+  @override
+  String get riskFactorFingerprintDrift => 'SSID-Fingerabdruck-Drift erkannt';
+
+  @override
+  String get historyCaps => 'VERLAUF';
+
+  @override
+  String get consistentlyBestChannel => 'KONSISTENT BESTER KANAL';
+
+  @override
+  String get avgScore => 'Durchschn. Score';
+
+  @override
+  String get channelBondingTitle => 'Kanalbündelung';
+
+  @override
+  String get channelBondingDesc => 'Kanalbündelung kombiniert 2 oder mehr benachbarte Kanäle, um die Bandbreite zu erhöhen (40 MHz = 2×, 80 MHz = 4×, 160 MHz = 8×). Breitere Kanäle liefern höhere Geschwindigkeiten, können aber mehr benachbarte Netzwerke stören.';
+
+  @override
+  String get spectrumOptimizationCaps => 'SPEKTRUM-OPTIMIERUNG';
+
+  @override
+  String get spectrumOptimizationDesc => 'Kanalbelegung & Interferenzen analysieren';
+
+  @override
+  String get qualityExcellent => 'Exzellent';
+
+  @override
+  String get qualityVeryGood => 'Sehr gut';
+
+  @override
+  String get qualityGood => 'Gut';
+
+  @override
+  String get qualityFair => 'Passabel';
+
+  @override
+  String get qualityCongested => 'Überlastet';
+
+  @override
+  String channelBondingHeader(int count) {
+    return 'KANALBÜNDELUNG ($count APs)';
+  }
+
+  @override
+  String get hiddenSsidLabel => '[Versteckt]';
+
+  @override
+  String get noHistoryPlaceholder => 'Noch kein Verlauf vorhanden.\nKanalbewertungen werden jedes Mal aufgezeichnet, wenn Sie diesen Bildschirm öffnen.';
+
+  @override
+  String get currentSessionInfo => 'Aktuelle Sitzung — höhere Punktzahl = weniger überlastet.';
+
+  @override
+  String historySummaryInfo(int sessions, int samples) {
+    return '$sessions Sitzungen · $samples Stichproben · höher = weniger überlastet';
+  }
+
+  @override
+  String get scanReportTitle => 'Torcav Wi-Fi-Scanbericht';
+
+  @override
+  String get reportTime => 'Zeit';
+
+  @override
+  String get ssidHeader => 'SSID';
+
+  @override
+  String get bssidHeader => 'BSSID';
+
+  @override
+  String get dbmHeader => 'dBm';
+
+  @override
+  String get channelHeader => 'CH';
+
+  @override
+  String get navDashboard => 'DASHBOARD';
+
+  @override
+  String get navDiscovery => 'ENTDECKUNG';
+
+  @override
+  String get navOperations => 'OPERATIONEN';
+
+  @override
+  String get navLan => 'LAN';
+
+  @override
+  String get systemStatus => 'Systemstatus';
+
+  @override
+  String get interfaceTheme => 'Schnittstellentheme';
+
+  @override
+  String get speedTestHeader => 'GESCHWINDIGKEITSTEST';
+
+  @override
+  String get startTest => 'TEST STARTEN';
+
+  @override
+  String get testAgain => 'ERNEUT TESTEN';
+
+  @override
+  String get commandCenters => 'KOMMANDOZENTRALEN';
+
+  @override
+  String get activeShielding => 'Aktive Abschirmung';
+
+  @override
+  String get logisticsTitle => 'LOGISTIK';
+
+  @override
+  String get intelMetrics => 'Intel-Metriken';
+
+  @override
+  String get networkMesh => 'Netzwerk-Mesh';
+
+  @override
+  String get tuningTitle => 'ABSTIMMUNG';
+
+  @override
+  String get systemConfig => 'Systemkonfiguration';
+
+  @override
+  String get phasePing => 'PHASE: PING';
+
+  @override
+  String get phaseDownload => 'PHASE: DOWNLOAD';
+
+  @override
+  String get phaseUpload => 'PHASE: UPLOAD';
+
+  @override
+  String get phaseDone => 'PHASE: FERTIG';
+
+  @override
+  String get riskScore => 'Risikobewertung';
+
+  @override
+  String get loading => 'Wird geladen...';
+
+  @override
+  String get profileTitle => 'PROFIL-HUB';
+
+  @override
+  String get activeSessionLabel => 'Aktive Sitzung';
+
+  @override
+  String get networkStatusLabel => 'NETZWERKSTATUS';
+
+  @override
+  String get ssid => 'SSID';
+
+  @override
+  String get lastScanTitle => 'LETZTER SCAN';
+
+  @override
+  String get lastSnapshot => 'Letzter Snapshot';
 }

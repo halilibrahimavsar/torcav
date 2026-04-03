@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 
-import '../../../../l10n/generated/app_localizations.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../widgets/topology_graph_painter.dart';
 import '../widgets/topology_view_data.dart';
@@ -574,6 +574,7 @@ class _TopologyPageState extends State<TopologyPage>
   }
 
   Widget _buildInspectorContent(TopologyNode node) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         Row(
@@ -614,8 +615,8 @@ class _TopologyPageState extends State<TopologyPage>
                   ),
                   Text(
                     node.isCurrentDevice
-                        ? 'AUTH_LOCAL_SYSTEM'
-                        : 'REMOTE_NODE_ID: ${node.id.substring(0, 8)}',
+                        ? l10n.authLocalSystem
+                        : l10n.remoteNodeIdLabel(node.id.substring(0, 8)),
                     style: GoogleFonts.shareTechMono(
                       color: TopologyViewData.nodeColor(
                         node,
@@ -650,11 +651,11 @@ class _TopologyPageState extends State<TopologyPage>
           ),
           child: Column(
             children: [
-              if (node.ip != null) _infoRow('IP_ADDR', node.ip!, Icons.lan),
+              if (node.ip != null) _infoRow(l10n.ipAddrLabel, node.ip!, Icons.lan),
               if (node.mac != null)
-                _infoRow('MAC_VAL', node.mac!, Icons.fingerprint),
+                _infoRow(l10n.macValLabel, node.mac!, Icons.fingerprint),
               if (node.vendor != null && node.vendor!.isNotEmpty)
-                _infoRow('MNFR', node.vendor!, Icons.factory),
+                _infoRow(l10n.mnfrLabel, node.vendor!, Icons.factory),
             ],
           ),
         ),

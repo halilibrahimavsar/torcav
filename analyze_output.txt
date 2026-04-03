@@ -1,12 +1,33 @@
 Analyzing torcav...                                             
 
-warning • Unused import: 'dart:io' • lib/features/monitoring/data/services/deauth_detection_service.dart:2:8 • unused_import
-warning • The value of the field '_random' isn't used • lib/features/network_scan/data/datasources/nmap_data_source.dart:25:16 • unused_field
-  error • Target of URI doesn't exist: 'package:torcav/core/services/privilege_service.dart' • test/features/network_scan/data/datasources/nmap_data_source_test.dart:6:8 • uri_does_not_exist
-  error • Classes and mixins can only implement other classes and mixins • test/features/network_scan/data/datasources/nmap_data_source_test.dart:10:52 • implements_non_class
-  error • Too many positional arguments: 0 expected, but 1 found • test/features/network_scan/data/datasources/nmap_data_source_test.dart:18:38 • extra_positional_arguments
-  error • The method 'runAsRoot' isn't defined for the type 'MockPrivilegeService' • test/features/network_scan/data/datasources/nmap_data_source_test.dart:46:34 • undefined_method
-  error • The method 'runAsRoot' isn't defined for the type 'MockPrivilegeService' • test/features/network_scan/data/datasources/nmap_data_source_test.dart:61:34 • undefined_method
-  error • The method 'runAsRoot' isn't defined for the type 'MockPrivilegeService' • test/features/network_scan/data/datasources/nmap_data_source_test.dart:77:34 • undefined_method
+warning • Unused import: '../../../../core/l10n/app_localizations.dart' • lib/features/wifi_scan/presentation/pages/scan_comparison_page.dart:4:8 • unused_import
+  error • The getter 'scanComparisonTitle' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/scan_comparison_page.dart:24:18 • undefined_getter
+  error • The getter 'comparisonNeedsTwoScans' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/scan_comparison_page.dart:38:20 • undefined_getter
+  error • The getter 'scanComparisonTitle' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/scan_comparison_page.dart:58:16 • undefined_getter
+  error • The getter 'noChangesDetected' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/scan_comparison_page.dart:71:22 • undefined_getter
+  error • The method 'newNetworksCountLabel' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/scan_comparison_page.dart:84:33 • undefined_method
+  error • The method 'goneNetworksCountLabel' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/scan_comparison_page.dart:99:33 • undefined_method
+  error • The method 'changedNetworksCountLabel' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/scan_comparison_page.dart:114:33 • undefined_method
+  error • The getter 'initiatingSpectrumScan' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:140:63 • undefined_getter
+  error • The getter 'broadcastingProbeRequests' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:150:61 • undefined_getter
+  error • The getter 'noRadiosInRange' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:349:20 • undefined_getter
+  error • The method 'filteredNetworksCount' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:448:49 • undefined_method
+  error • The getter 'noNetworksMatchFilter' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:460:49 • undefined_getter
+  error • The getter 'searchSsidBssidVendor' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:616:55 • undefined_getter
+  error • The method 'sortPrefix' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:644:54 • undefined_method
+  error • The getter 'bandAll' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:654:73 • undefined_getter
+  error • The getter 'sortSignal' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:672:21 • undefined_getter
+  error • The getter 'sortName' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:674:21 • undefined_getter
+  error • The getter 'sortChannel' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:676:21 • undefined_getter
+  error • The getter 'sortSecurity' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:678:21 • undefined_getter
+  error • The getter 'sortByTitle' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:719:45 • undefined_getter
+  error • The method 'recommendationTip' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:877:51 • undefined_method
+  error • The getter 'channelInterferenceTitle' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:886:56 • undefined_getter
+  error • The getter 'networksLabel' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:960:72 • undefined_getter
+  error • The method 'openCount' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:975:69 • undefined_method
+  error • The getter 'avgSignalLabel' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:987:72 • undefined_getter
+  error • The getter 'notAvailable' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:990:75 • undefined_getter
+  error • The getter 'dbmCaps' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:994:75 • undefined_getter
+  error • The getter 'interfaceLabel' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:1000:72 • undefined_getter
+  error • The method 'frequencyLabel' isn't defined for the type 'AppLocalizations' • lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:1264:31 • undefined_method
 
-8 issues found. (ran in 1.5s)

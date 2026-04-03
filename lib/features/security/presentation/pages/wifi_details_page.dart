@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:torcav/l10n/generated/app_localizations.dart';
+import 'package:torcav/core/l10n/app_localizations.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -56,7 +57,7 @@ class WifiDetailsPage extends StatelessWidget {
                     _buildSecurityScore(
                       context,
                       state.assessment.score,
-                      state.assessment.statusLabel,
+                      state.assessment,
                     ),
                     const SizedBox(height: 16),
                     _buildPlainSummaryCard(context, state.assessment),
@@ -71,12 +72,15 @@ class WifiDetailsPage extends StatelessWidget {
                       const SizedBox(height: 16),
                       Text(
                         l10n.riskFactors,
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(color: Theme.of(context).colorScheme.secondary),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       ...state.assessment.riskFactors.map(
-                        (factor) => Text('- $factor'),
+                        (factor) => Text('- ${_localizeRiskFactor(context, factor)}'),
                       ),
                     ],
                     const SizedBox(height: 24),
@@ -136,7 +140,12 @@ class WifiDetailsPage extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      assessment.statusLabel.toUpperCase(),
+                      switch (assessment.status) {
+                        SecurityStatus.secure => context.l10n.securityStatusSecure,
+                        SecurityStatus.moderate => context.l10n.securityStatusModerate,
+                        SecurityStatus.atRisk => context.l10n.securityStatusAtRisk,
+                        SecurityStatus.critical => context.l10n.securityStatusCritical,
+                      }.toUpperCase(),
                       style: GoogleFonts.orbitron(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
@@ -146,22 +155,25 @@ class WifiDetailsPage extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     InfoIconButton(
-                      title: 'Security Score',
-                      body:
-                          'The security score (0–100) rates how well this '
-                          'network is protected. Higher is better. '
-                          'It considers encryption type, WPS status, '
-                          'and other security features.',
+                      title: context.l10n.securityScoreTitle,
+                      body: context.l10n.securityScoreDesc,
                       color: color,
                     ),
                   ],
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  assessment.plainSummary,
+                  switch (assessment.status) {
+                    SecurityStatus.secure => context.l10n.securitySummarySecure,
+                    SecurityStatus.moderate => context.l10n.securitySummaryModerate,
+                    SecurityStatus.atRisk => context.l10n.securitySummaryAtRisk,
+                    SecurityStatus.critical => context.l10n.securitySummaryCritical,
+                  },
                   style: GoogleFonts.rajdhani(
                     fontSize: 14,
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.85),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.85),
                     height: 1.4,
                   ),
                 ),
@@ -173,7 +185,11 @@ class WifiDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSecurityScore(BuildContext context, int score, String status) {
+  Widget _buildSecurityScore(
+    BuildContext context,
+    int score,
+    SecurityAssessment assessment,
+  ) {
     final color =
         score > 80
             ? Theme.of(context).colorScheme.tertiary
@@ -209,7 +225,12 @@ class WifiDetailsPage extends StatelessWidget {
                 ),
               ),
               Text(
-                status.toUpperCase(),
+                (switch (assessment.status) {
+                  SecurityStatus.secure => context.l10n.securityStatusSecure,
+                  SecurityStatus.moderate => context.l10n.securityStatusModerate,
+                  SecurityStatus.atRisk => context.l10n.securityStatusAtRisk,
+                  SecurityStatus.critical => context.l10n.securityStatusCritical,
+                }).toUpperCase(),
                 style: GoogleFonts.rajdhani(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -230,7 +251,9 @@ class WifiDetailsPage extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainer,
-        border: Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+        ),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -291,6 +314,7 @@ class WifiDetailsPage extends StatelessWidget {
             ? Colors.orange
             : Colors.yellow;
 
+    final (title, desc, rec) = _localizeVulnerability(context, v);
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -308,7 +332,7 @@ class WifiDetailsPage extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  v.title.toUpperCase(),
+                  title.toUpperCase(),
                   style: GoogleFonts.orbitron(
                     color: color,
                     fontWeight: FontWeight.bold,
@@ -317,10 +341,10 @@ class WifiDetailsPage extends StatelessWidget {
                 ),
               ),
             ],
-          ),
+           ),
           const SizedBox(height: 8),
           Text(
-            v.description,
+            desc,
             style: TextStyle(
               color: Theme.of(
                 context,
@@ -329,7 +353,7 @@ class WifiDetailsPage extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            l10n.recommendationLabel(v.recommendation),
+            l10n.recommendationLabel(rec),
             style: GoogleFonts.rajdhani(
               color: Theme.of(context).colorScheme.secondary,
               fontWeight: FontWeight.w600,
@@ -362,38 +386,37 @@ class WifiDetailsPage extends StatelessWidget {
     String tagInfo(String tag) {
       final t = tag.toUpperCase();
       if (t.contains('WPA3')) {
-        return 'WPA3 is the latest Wi-Fi security standard — highly secure.';
+        return context.l10n.tagWpa3Desc;
       }
       if (t.contains('WPA2')) {
-        return 'WPA2 is a strong security standard — safe for everyday use.';
+        return context.l10n.tagWpa2Desc;
       }
       if (t.contains('WPA')) {
-        return 'WPA is an older security standard with known weaknesses.';
+        return context.l10n.tagWpaDesc;
       }
       if (t == 'WPS') {
-        return 'WPS (Wi-Fi Protected Setup) has known security vulnerabilities. '
-            'It can allow attackers to brute-force the PIN and gain access.';
+        return context.l10n.tagWpsDesc;
       }
       if (t.contains('PMF') || t.contains('MFP')) {
-        return 'Protected Management Frames (PMF/MFP) protects against deauthentication attacks.';
+        return context.l10n.tagPmfDesc;
       }
       if (t == 'ESS') {
-        return 'ESS (Extended Service Set) means this is a standard access point network.';
+        return context.l10n.tagEssDesc;
       }
       if (t.contains('CCMP')) {
-        return 'CCMP (AES) is a strong encryption cipher used with WPA2/WPA3.';
+        return context.l10n.tagCcmpDesc;
       }
       if (t.contains('TKIP')) {
-        return 'TKIP is an older, weaker encryption cipher. CCMP/AES is preferred.';
+        return context.l10n.tagTkipDesc;
       }
-      return 'Network capability flag from the beacon frame.';
+      return context.l10n.tagUnknownDesc;
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'CAPABILITIES',
+          context.l10n.capabilitiesLabel,
           style: GoogleFonts.orbitron(
             fontSize: 13,
             fontWeight: FontWeight.bold,
@@ -406,27 +429,28 @@ class WifiDetailsPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: NeonChip(
-              label: 'Wi-Fi 7 MLD',
+              label: context.l10n.wifi7MldLabel,
               color: Theme.of(context).colorScheme.tertiary,
             ),
           ),
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: tags.map((tag) {
-            final color = tagColor(tag);
-            return Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                NeonChip(label: tag, color: color),
-                InfoIconButton(
-                  title: tag,
-                  body: tagInfo(tag),
-                  color: color,
-                ),
-              ],
-            );
-          }).toList(),
+          children:
+              tags.map((tag) {
+                final color = tagColor(tag);
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    NeonChip(label: tag, color: color),
+                    InfoIconButton(
+                      title: tag,
+                      body: tagInfo(tag),
+                      color: color,
+                    ),
+                  ],
+                );
+              }).toList(),
         ),
       ],
     );
@@ -464,5 +488,71 @@ class WifiDetailsPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _localizeRiskFactor(BuildContext context, String factor) {
+    final l10n = context.l10n;
+    return switch (factor) {
+      'No encryption in use' => l10n.riskFactorNoEncryption,
+      'Deprecated encryption (WEP)' => l10n.riskFactorDeprecatedEncryption,
+      'Legacy WPA in use' => l10n.riskFactorLegacyWpa,
+      'Hidden SSID behavior' => l10n.riskFactorHiddenSsid,
+      'Weak signal environment' => l10n.riskFactorWeakSignal,
+      'WPS PIN attack surface exposed' => l10n.riskFactorWpsEnabled,
+      'PMF not enforced — deauth spoofing possible' =>
+        l10n.riskFactorPmfNotEnforced,
+      'SSID fingerprint drift detected' => l10n.riskFactorFingerprintDrift,
+      _ => factor,
+    };
+  }
+
+  (String, String, String) _localizeVulnerability(
+    BuildContext context,
+    Vulnerability v,
+  ) {
+    final l10n = context.l10n;
+    return switch (v.title) {
+      'Open Network' => (
+        l10n.vulnerabilityOpenNetworkTitle,
+        l10n.vulnerabilityOpenNetworkDesc,
+        l10n.vulnerabilityOpenNetworkRec,
+      ),
+      'WEP Encryption' => (
+        l10n.vulnerabilityWepTitle,
+        l10n.vulnerabilityWepDesc,
+        l10n.vulnerabilityWepRec,
+      ),
+      'Legacy WPA' => (
+        l10n.vulnerabilityLegacyWpaTitle,
+        l10n.vulnerabilityLegacyWpaDesc,
+        l10n.vulnerabilityLegacyWpaRec,
+      ),
+      'Hidden SSID' => (
+        l10n.vulnerabilityHiddenSsidTitle,
+        l10n.vulnerabilityHiddenSsidDesc,
+        l10n.vulnerabilityHiddenSsidRec,
+      ),
+      'Very Weak Signal' => (
+        l10n.vulnerabilityWeakSignalTitle,
+        l10n.vulnerabilityWeakSignalDesc,
+        l10n.vulnerabilityWeakSignalRec,
+      ),
+      'WPS Enabled' => (
+        l10n.vulnerabilityWpsTitle,
+        l10n.vulnerabilityWpsDesc,
+        l10n.vulnerabilityWpsRec,
+      ),
+      'Management Frames Unprotected' => (
+        l10n.vulnerabilityPmfTitle,
+        l10n.vulnerabilityPmfDesc,
+        l10n.vulnerabilityPmfRec,
+      ),
+      'Potential Evil Twin' => (
+        l10n.vulnerabilityEvilTwinTitle,
+        l10n.vulnerabilityEvilTwinDesc,
+        l10n.vulnerabilityEvilTwinRec,
+      ),
+      _ => (v.title, v.description, v.recommendation),
+    };
   }
 }

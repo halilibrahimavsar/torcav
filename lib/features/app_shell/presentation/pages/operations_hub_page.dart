@@ -11,7 +11,7 @@ import '../../../reports/presentation/pages/reports_page.dart';
 import '../../../security/presentation/pages/security_center_page.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
 import '../../../monitoring/presentation/pages/topology_page.dart';
-import '../../../../l10n/generated/app_localizations.dart';
+import 'package:torcav/core/l10n/app_localizations.dart';
 
 class OperationsHubPage extends StatefulWidget {
   const OperationsHubPage({super.key, required this.onNavigate});

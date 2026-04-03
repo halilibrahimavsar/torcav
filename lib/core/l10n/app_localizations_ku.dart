@@ -9,520 +9,47 @@ class AppLocalizationsKu extends AppLocalizations {
   AppLocalizationsKu([String locale = 'ku']) : super(locale);
 
   @override
-  String get activeOperationsBlockedMsg => 'Operasyonên aktîf hatine astengkirin heta ku polîtîka û lîsteya destûrdayînê werin pejirandin.';
+  String get wifiScanTitle => 'TARANA WI-FI';
 
   @override
-  String get authorizedTargets => 'Hedefên Destûrdayî';
+  String get searchingNetworksPlaceholder => 'TORA DIGERE...';
 
   @override
-  String get add => 'Zêde bike';
+  String get filterNetworksPlaceholder => 'TORAN PARZÛN BIKE...';
 
   @override
-  String get noTargetsAllowlisted => 'Hîn ti hedef nehatine destûrdayîn.';
+  String get quickScan => 'Tarana Bilez';
 
   @override
-  String get hiddenNetwork => 'Tora Veşartî';
+  String get deepScan => 'Tarana Kûr';
 
   @override
-  String get remove => 'Rake';
+  String get scanModesTitle => 'Modên Taranê';
 
   @override
-  String get securityTimeline => 'Dema Ewlekariyê';
+  String get scanModesInfo => 'Tarana bilez guhdariya weşanan dike. Tarana kûr bi awayekî çalak toran diceribîne.';
 
   @override
-  String get noSecurityEvents => 'Hîn bûyerên ewlekariyê tune.';
+  String get readyToScan => 'Amade ye ji bo Taranê';
 
   @override
-  String get authorizeTarget => 'Hedefê Destûr bide';
+  String get noSignalsDetected => 'Sînyal Nehatin Tespîtkirin';
 
   @override
-  String get ssid => 'SSID';
+  String get compareWithPreviousScan => 'BI TARANA BERÊ RE BERAWIRD BIKE';
 
   @override
-  String get bssid => 'BSSID';
-
-  @override
-  String get allowHandshakeCapture => 'Destûr bide girtina destan (handshake)';
-
-  @override
-  String get allowActiveDefense => 'Destûr bide testên aktîf/deauth';
-
-  @override
-  String get cancel => 'Betal bike';
-
-  @override
-  String get save => 'Tomar bike';
-
-  @override
-  String get confirm => 'Piştrast bike';
-
-  @override
-  String get legalDisclaimerAccepted => 'Daxuyaniya yasayî hate qebûlkirin';
-
-  @override
-  String get requiredForActiveOps => 'Ji bo operasyonên aktîf pêwîst e';
-
-  @override
-  String get strictAllowlist => 'Lîsteya destûrdayînê ya hişk';
-
-  @override
-  String get blockActiveOpsUnknown => 'Operasyonên aktîf ji bo hedefên nenas asteng bike';
-
-  @override
-  String get rateLimitActiveOps => 'Sînora lezê navbera operasyonên aktîf';
-
-  @override
-  String get selectFromScanned => 'Ji lîsteya taranayî hilbijêre';
-
-  @override
-  String get settingsLanguage => 'Ziman';
-
-  @override
-  String get settingsScanBehavior => 'Tevgera taranê ya xwerû, stratejiya backend û rewşa ewlekariyê kontrol bike.';
-
-  @override
-  String get settingsDefaultScanPasses => 'Derbasbûnên taranê yên xwerû';
-
-  @override
-  String get settingsMonitoringInterval => 'Navbera şopandinê (saniye)';
-
-  @override
-  String get settingsBackendPreference => 'Terciha backend ya xwerû';
-
-  @override
-  String get settingsIncludeHidden => 'SSID-yên veşartî têxe nav';
-
-  @override
-  String get settingsStrictSafety => 'Moda ewlekariya hişk';
-
-  @override
-  String get settingsStrictSafetyDesc => 'Ji bo operasyonên aktîf destûr û lîsteya destûrdayînê pêwîst e';
-
-  @override
-  String get navDashboard => 'Dashboard';
-
-  @override
-  String get navWifi => 'Wi-Fi';
-
-  @override
-  String get navLan => 'LAN';
-
-  @override
-  String get navDiscovery => 'Vedîtin';
-
-  @override
-  String get navOperations => 'Operasyon';
-
-  @override
-  String get navMore => 'Zêdetir';
-
-  @override
-  String get moreTitle => 'ZÊDETIR';
-
-  @override
-  String get sectionTools => 'AMÛR';
-
-  @override
-  String get speedTestTitle => 'Testa Lezê & Şopandin';
-
-  @override
-  String get speedTestDesc => 'Şopandina berfirehiya bandê, derengî û anomalî';
-
-  @override
-  String get securityCenterTitle => 'Navenda Ewlekariyê';
-
-  @override
-  String get securityCenterDesc => 'Puanlama rîskê, lîsteyên destûrdayînê û kontrolên polîtîkayê';
-
-  @override
-  String get reportsTitle => 'Raport';
-
-  @override
-  String get reportsDesc => 'Taranan wek PDF, HTML an JSON derxe';
-
-  @override
-  String get sectionPreferences => 'TERCIH';
-
-  @override
-  String get settingsTitle => 'Mîheng';
-
-  @override
-  String get settingsDesc => 'Tevgera taranê, backend û moda ewlekariyê';
-
-  @override
-  String get monitoringTitle => 'Şopandin';
-
-  @override
-  String get monitoringSubtitle => 'Berfirehiya bandê, tespîta anomalî û herikîna nexşeya germê.';
-
-  @override
-  String get packetsPerSecondLabel => 'Pakêt Di Her Çirkeyê De';
-
-  @override
-  String get throughputLabel => 'Hecima Daneyan';
-
-  @override
-  String get comingSoon => 'DÊ ZÛ BÊ';
-
-  @override
-  String get signalTrends => 'Trendên Sînyalê';
-
-  @override
-  String get topologyMesh => 'Topolojî & Mesh';
-
-  @override
-  String get anomalyAlerts => 'Hîşyariyên Anomalî';
-
-  @override
-  String get speedTestHeader => 'TESTA LEZÊ';
-
-  @override
-  String get testConnectionSpeed => 'Leza girêdana xwe test bike';
-
-  @override
-  String get testing => 'TEST DIKE…';
-
-  @override
-  String get testAgain => 'DISA TEST BIKE';
-
-  @override
-  String get startTest => 'TESTÊ DEST PÊ BIKE';
-
-  @override
-  String get phasePing => 'PING';
-
-  @override
-  String get phaseDownload => 'DAXISTIN';
-
-  @override
-  String get phaseUpload => 'BARKIRIN';
-
-  @override
-  String get phaseDone => 'TEMAM';
-
-  @override
-  String get wifiScanTitle => 'ANALÎZORÊ WI-FI';
-
-  @override
-  String get scanSettingsTooltip => 'Mîhengên taranê';
-
-  @override
-  String get channelRatingTooltip => 'Puanlama Kanalê';
-
-  @override
-  String get refreshScanTooltip => 'Taranê nû bike';
-
-  @override
-  String get readyToScan => 'Amade ye ji bo taranê';
-
-  @override
-  String get scanButton => 'Taran';
-
-  @override
-  String get scanSettingsTitle => 'Mîhengên Taranê';
-
-  @override
-  String passes(Object count) {
-    return 'Derbasbûn: $count';
+  String networksCount(int count) {
+    return '$count TOR';
   }
 
   @override
-  String get includeHiddenSsids => 'SSID-yên veşartî têxe nav';
-
-  @override
-  String get backendPreference => 'Terciha backend';
-
-  @override
-  String get apply => 'Pêk bîne';
-
-  @override
-  String get noSignalsDetected => 'Sînyal nehatin dîtin';
-
-  @override
-  String get lastSnapshot => 'Wêneyê Dawî';
-
-  @override
-  String get bandAnalysis => 'Analîza Bandê';
-
-  @override
-  String networksCount(Object count) {
-    return 'Tor ($count)';
+  String filteredNetworksCount(int count, int total) {
+    return '$count JI $total TORAN';
   }
 
   @override
-  String get recommendation => 'Pêşniyar';
-
-  @override
-  String get lanReconTitle => 'LAN RECON';
-
-  @override
-  String scanFailed(Object message) {
-    return 'TARAN TÊK ÇÛ: $message';
-  }
-
-  @override
-  String get readyToScanAllCaps => 'AMADE YE JI BO TARANÊ';
-
-  @override
-  String get targetSubnet => 'Subnet/IP ya hedef';
-
-  @override
-  String get profile => 'Profil';
-
-  @override
-  String get method => 'Metod';
-
-  @override
-  String get scanAllCaps => 'TARAN';
-
-  @override
-  String get noHostsFound => 'DIWAR NEHATIN DÎTIN';
-
-  @override
-  String get unknownHost => 'Diwarê nenas';
-
-  @override
-  String os(Object os) {
-    return 'OS: $os';
-  }
-
-  @override
-  String services(Object services) {
-    return 'Xizmet: $services';
-  }
-
-  @override
-  String vuln(Object vuln) {
-    return 'Vuln: $vuln';
-  }
-
-  @override
-  String get reportsSubtitle => 'Danişîna taranê ya dawî wek JSON, HTML an PDF derxe.';
-
-  @override
-  String get noSnapshotAvailable => 'Hîn wêneya taranê tune. Pêşî taranek Wi-Fi pêk bîne.';
-
-  @override
-  String latestSnapshot(Object count, Object backend) {
-    return 'Wêneyê dawî: $count tor bi rêya $backend';
-  }
-
-  @override
-  String get exportJson => 'JSON derxe';
-
-  @override
-  String get exportHtml => 'HTML derxe';
-
-  @override
-  String get exportPdf => 'PDF derxe';
-
-  @override
-  String get printPdf => 'PDF çap bike';
-
-  @override
-  String get saveReportDialog => 'Raportê tomar bike';
-
-  @override
-  String get sectionStatus => 'REWŞ';
-
-  @override
-  String get exportOptionsTitle => 'VEBIJARKÊN DERXISTINÊ';
-
-  @override
-  String get latestSnapshotTitle => 'WÊNEYÊ HERÎ DAWÎ';
-
-  @override
-  String get backendLabel => 'Backend';
-
-  @override
-  String get savePdfReportDialog => 'Raporta PDF tomar bike';
-
-  @override
-  String savedToast(Object path) {
-    return 'Tomar bû: $path';
-  }
-
-  @override
-  String get handshakeCaptureCheck => 'Kontrola girtina destan';
-
-  @override
-  String get activeDefenseReadiness => 'Amadebûna parastina aktîf';
-
-  @override
-  String get signalGraph => 'Grafîka Sînyalan';
-
-  @override
-  String get riskFactors => 'FAKTORÊN RÎSKÊ';
-
-  @override
-  String get vulnerabilities => 'QELISÎ';
-
-  @override
-  String recommendationLabel(Object text) {
-    return 'PÊŞNIYAR: $text';
-  }
-
-  @override
-  String get noVulnerabilities => 'Li gorî daneyên taranê yên niha ti qelisî nehatin dîtin.';
-
-  @override
-  String get bssId => 'BSSID';
-
-  @override
-  String get channel => 'KANAL';
-
-  @override
-  String get security => 'EWLEKARÎ';
-
-  @override
-  String get signal => 'SÎNYAL';
-
-  @override
-  String get channelRatingTitle => 'PUANLAMA KANALÊ';
-
-  @override
-  String get band24Ghz => '2.4 GHz';
-
-  @override
-  String get band5Ghz => '5 GHz';
-
-  @override
-  String get no24GhzChannels => 'Kanalên 2.4 GHz nehatin dîtin.';
-
-  @override
-  String get no5GhzChannels => 'Kanalên 5 GHz nehatin dîtin.';
-
-  @override
-  String get band6Ghz => '6 GHz';
-
-  @override
-  String get no6GhzChannels => 'Kanalên 6 GHz nehatin dîtin.';
-
-  @override
-  String get recommendedChannel => 'KANALA PÊŞNIYARKIRÎ';
-
-  @override
-  String channelInfo(Object channel, Object frequency) {
-    return 'Kan $channel — $frequency MHz';
-  }
-
-  @override
-  String bandChannels(Object band) {
-    return 'Kanalên $band';
-  }
-
-  @override
-  String get errorLabel => 'Hata';
-
-  @override
-  String get loading => 'Bardibe…';
-
-  @override
-  String get analyzing => 'Analîz dike…';
-
-  @override
-  String get success => 'Serkeftî';
-
-  @override
-  String get ok => 'Tamam';
-
-  @override
-  String get scannedNetworksTitle => 'Torên Taranayî';
-
-  @override
-  String get noNetworksFound => 'Tor nehatin dîtin.';
-
-  @override
-  String get retry => 'Disa ceribandin';
-
-  @override
-  String get knownNetworks => 'Torên Nas';
-
-  @override
-  String get noKnownNetworksYet => 'Hîn torên nas tune.';
-
-  @override
-  String opsLabel(Object ops) {
-    return 'Op: $ops';
-  }
-
-  @override
-  String get networkStatusLabel => 'REWŞA TORÊ';
-
-  @override
-  String get activeSessionLabel => 'DANIŞÎNA AKTÎF';
-
-  @override
-  String get gatewayLabel => 'GATEWAY';
-
-  @override
-  String get ipLabel => 'NAVNÎŞANA IP';
-
-  @override
-  String get connectedStatusCaps => 'GIRÊDAYÎ';
-
-  @override
-  String get disconnectedStatusCaps => 'QUTKIRÎ';
-
-  @override
-  String get quickActionsTitle => 'ÇALAKIYÊN BILEZ';
-
-  @override
-  String get lastScanTitle => 'TARA DAWÎ';
-
-  @override
-  String get viewDetailsAction => 'HÛRGULÎ BIBÎNE';
-
-  @override
-  String get scanning => 'TARAN DIKE…';
-
-  @override
-  String get secure => 'EWLE';
-
-  @override
-  String get blockUnknownAP => 'AP-yên Nenas Asteng Bike';
-
-  @override
-  String get automaticBlockMsg => 'Girêdanên bi AP-yên neqanûnî bixweber diqete';
-
-  @override
-  String get activeProbingEnabled => 'Testa Aktîf';
-
-  @override
-  String get activeProbingMsg => 'AP-ya girêdayî bi rêkûpêk ji bo anomalî tê ceribandin';
-
-  @override
-  String get requireConsentForDeauth => 'Destûr Pêwîst e';
-
-  @override
-  String get manualAuthorizationMsg => 'Deauth/parastina aktîf bi destan destûr bide';
-
-  @override
-  String get defensePolicy => 'Polîtîkaya Parastinê';
-
-  @override
-  String get shieldActive => 'Mertal Aktîf';
-
-  @override
-  String get activeProtection => 'Parastina Aktîf';
-
-  @override
-  String get riskScore => 'Puanê Rîskê';
-
-  @override
-  String get securityRadar => 'Radarê Ewlekariyê';
-
-  @override
-  String get profileTitle => 'PROFÎLA AJANÊ';
-
-  @override
-  String get logout => 'DERKEVE';
-
-  @override
-  String get logoutConfirmation => 'DANIŞÎNÊ QEBÛL BIKE';
-
-  @override
-  String get logoutConfirmMessage => 'Tu dixwazî danişîna niha biqedînî? Hemû şopandina aktîf dê raweste.';
+  String get securityAlertsTooltip => 'Hişyariyên ewlehiyê bibîne';
 
   @override
   String get livePulse => 'NEBZA ZINDÎ';
@@ -534,19 +61,262 @@ class AppLocalizationsKu extends AppLocalizations {
   String get topologyLabel => 'TOPOLOJÎ';
 
   @override
+  String get networkLogs => 'LOGÊN TORÊ';
+
+  @override
+  String get connectedStatusCaps => 'GIRÊDAYÎ';
+
+  @override
+  String get disconnectedStatusCaps => 'QUTKIRÎ';
+
+  @override
+  String get ipLabel => 'IP';
+
+  @override
+  String get gatewayLabel => 'GATEWAY';
+
+  @override
   String get accessEngine => 'MOTORA GIHÎŞTINÊ';
 
   @override
-  String get networkLogs => 'LOG-YÊTORÊ';
+  String get latestSnapshotTitle => 'Wêneyê Dawî ya Torê';
 
   @override
-  String get strictSafetyEnabled => 'MODA EWLEKARIYA HIŞK ÇALAK E';
+  String get noSnapshotAvailable => 'Daneyên wêneyê tune...';
 
   @override
-  String get activeMonitoringProgress => 'Şopandina aktîf berdewam dike';
+  String get strictSafetyEnabled => 'Protokolên ewlehiyê yên hişk çalak in';
 
   @override
-  String get topologyMapTitle => 'NEXŞEYA TOPOLOJIYÊ';
+  String get activeMonitoringProgress => 'Şopandina aktîf berdewam dike...';
+
+  @override
+  String get scanComparisonTitle => 'BERAWIRDKIRINA TARANÊ';
+
+  @override
+  String get comparisonNeedsTwoScans => 'Berawirdkirin herî kêm 2 taranan dixwaze.\n\nJi bo dîtina guhertinan taranek din bike.';
+
+  @override
+  String get noChangesDetected => 'Di navbera her du taranên dawî de tu guhertin nehatin dîtin.';
+
+  @override
+  String newNetworksCountLabel(int count) {
+    return 'NÛ ($count)';
+  }
+
+  @override
+  String goneNetworksCountLabel(int count) {
+    return 'ÇÛYÎ ($count)';
+  }
+
+  @override
+  String changedNetworksCountLabel(int count) {
+    return 'GUHERÎ ($count)';
+  }
+
+  @override
+  String get plusNewLabel => '+ NÛ';
+
+  @override
+  String get goneLabel => 'ÇÛYÎ';
+
+  @override
+  String get hiddenLabel => '[Veşartî]';
+
+  @override
+  String channelLabel(int channel) {
+    return 'K $channel';
+  }
+
+  @override
+  String get securityLabel => 'EWLEKARÎ';
+
+  @override
+  String get initiatingSpectrumScan => 'TARANA SPEKTRUMÊ DEST PÊ DIKE...';
+
+  @override
+  String get broadcastingProbeRequests => 'DAXWAZÊN PROBE TÊN WEŞANDIN...';
+
+  @override
+  String get noRadiosInRange => 'Di qadê de tu radyo tune ne';
+
+  @override
+  String get noNetworksMatchFilter => 'Tu tor bi parzûna we re li hev nakin';
+
+  @override
+  String get searchSsidBssidVendor => 'Li SSID, BSSID an Firoşkar bigere...';
+
+  @override
+  String sortPrefix(String option) {
+    return 'Rêzkirin: $option';
+  }
+
+  @override
+  String get bandAll => 'HEMÛ BAND';
+
+  @override
+  String get sortSignal => 'Sînyal';
+
+  @override
+  String get sortName => 'Nav';
+
+  @override
+  String get sortChannel => 'Kanal';
+
+  @override
+  String get sortSecurity => 'Ewlekarî';
+
+  @override
+  String get sortByTitle => 'RÊZKIRIN BI';
+
+  @override
+  String recommendationTip(String channels, String band) {
+    return 'Kanalên herî baş li ser $band: $channels';
+  }
+
+  @override
+  String get channelInterferenceTitle => 'Destwerdana Kanalên';
+
+  @override
+  String get networksLabel => 'TOR';
+
+  @override
+  String openCount(int count) {
+    return '$count VEKIRÎ';
+  }
+
+  @override
+  String get avgSignalLabel => 'SÎNYALA NAVÎN';
+
+  @override
+  String get notAvailable => 'N/A';
+
+  @override
+  String get dbmCaps => 'DBM';
+
+  @override
+  String get interfaceLabel => 'NAVBER';
+
+  @override
+  String frequencyLabel(int freq) {
+    return '$freq MHz';
+  }
+
+  @override
+  String get reportsTitle => 'RAPOR';
+
+  @override
+  String get saveReportDialog => 'Raporê Tomar Bike';
+
+  @override
+  String savedToast(String path) {
+    return 'Rapor li $path hate tomarkirin';
+  }
+
+  @override
+  String get errorLabel => 'Şaşî';
+
+  @override
+  String get savePdfReportDialog => 'Rapora PDF Tomar Bike';
+
+  @override
+  String get scanning => 'Taran dike...';
+
+  @override
+  String get shieldActive => 'Mertal Aktîf e';
+
+  @override
+  String get threatsDetected => 'Gef Hatine Tespîtkirin';
+
+  @override
+  String get trustedLabel => 'EWLE';
+
+  @override
+  String get securityEventTitle => 'Bûyera Ewlehiyê';
+
+  @override
+  String get networkReconTitle => 'KEŞFA TORÊ';
+
+  @override
+  String get intelligenceReportTitle => 'RAPORA ÎSTÎXBARATÊ';
+
+  @override
+  String get discoveredEndpointsTitle => 'NAVNÎŞANÊN HATINE DÎTIN';
+
+  @override
+  String newDeviceFound(String ip) {
+    return '1 amûra nû: $ip';
+  }
+
+  @override
+  String newDevicesFound(int count) {
+    return 'Di tora we de $count amûrên nû hatin dîtin';
+  }
+
+  @override
+  String get targetIpSubnet => 'Target IP / Subnet';
+
+  @override
+  String get scanProfileFast => 'Bilez';
+
+  @override
+  String get scanProfileBalanced => 'Hevseng';
+
+  @override
+  String get scanProfileAggressive => 'Zêde';
+
+  @override
+  String get scanProfileNormal => 'Normal';
+
+  @override
+  String get scanProfileIntense => 'Giran';
+
+  @override
+  String get vulnOnlyLabel => 'Tenê Lawazî';
+
+  @override
+  String get lanReconTitle => 'LAN RECON';
+
+  @override
+  String get targetSubnet => 'Subnet / IP Target';
+
+  @override
+  String get scanAllCaps => 'TARA';
+
+  @override
+  String get channelRatingTitle => 'PUANLAMA KANALÊ';
+
+  @override
+  String get refreshScanTooltip => 'Taranê Nû Bike';
+
+  @override
+  String get band24Ghz => '2.4 GHz';
+
+  @override
+  String get band5Ghz => '5 GHz';
+
+  @override
+  String get band6Ghz => '6 GHz';
+
+  @override
+  String get no24GhzChannels => 'Kanalên 2.4 GHz nehatin dîtin.';
+
+  @override
+  String get no5GhzChannels => 'Kanalên 5 GHz nehatin dîtin.';
+
+  @override
+  String get no6GhzChannels => 'Kanalên 6 GHz nehatin dîtin.';
+
+  @override
+  String get analyzing => 'Analîz dike...';
+
+  @override
+  String get historyLabel => 'DÎROK';
+
+  @override
+  String failedLoadTopology(String error) {
+    return 'Topolojî bar nabe: $error';
+  }
 
   @override
   String get trafficLabel => 'TRAFÎK';
@@ -564,123 +334,67 @@ class AppLocalizationsKu extends AppLocalizations {
   String get overdriveSpeed => 'OVERDRIVE';
 
   @override
-  String get noTopologyData => 'Daneyên topolojiyê tune';
+  String get topologyMapTitle => 'NEXŞEYA TOPOLOJIYÊ';
 
   @override
-  String get runScanFirst => 'Pêşî taranek Wi-Fi û LAN pêk bîne';
+  String get noTopologyData => 'Daneyên Topolojiyê Nîn in';
 
   @override
-  String get thisDevice => 'Ev Amûr';
+  String get runScanFirst => 'Pêşî taranek bike ku nexşeya torê were avakirin';
 
   @override
-  String get gatewayDevice => 'Gateway';
+  String get retry => 'DISA CERIBANDIN';
 
   @override
-  String get mobileDevice => 'Mobîl';
+  String get thisDevice => 'EV AMÛR';
 
   @override
-  String get deviceLabel => 'Amûr';
+  String get gatewayDevice => 'GATEWAY';
 
   @override
-  String get iotDevice => 'IoT';
+  String get mobileDevice => 'MOBÎL';
 
   @override
-  String get analyzingNode => 'GIRÊK ANALÎZ DIKE...';
+  String get deviceLabel => 'AMÛR';
 
   @override
-  String failedLoadTopology(Object error) {
-    return 'Topolojî nayê barkirin: $error';
-  }
+  String get iotDevice => 'IOT';
 
   @override
-  String get neuralCoreTitle => 'NEURAL_CORE_AI';
+  String get analyzingNode => 'GIRÊK ANALÎZ DIKE';
 
   @override
-  String get activeAnomalies => 'ANOMALIYÊN AKTÎF';
+  String get settingsTitle => 'MÎHENG';
 
   @override
-  String get predictiveHealth => 'TENDURISTIYA PÊŞBÎNÎ';
+  String get appearance => 'Xuyang';
 
   @override
-  String get aiStrategyReport => 'RAPORTA STRATEJIYA AI';
-
-  @override
-  String get engineStability => 'ARAMIYA_MOTORÊ: BAŞ';
-
-  @override
-  String get aiStrategyText => 'Topolojiya torê ya niha nîşaneya aram nîşan dide. Di subnet-an de tevgereke horizontî ya tavilê nehat dîtin. Tê pêşniyar kirin ku li xalên gihîştina giştî Moda Veşartî çalak bibe.';
-
-  @override
-  String get packetSnifferTitle => 'PAKET_SNIFFER';
-
-  @override
-  String get streamPaused => 'HERIKÎN_RAWESTIYAYE';
-
-  @override
-  String get filterNone => 'FÎLTER: TUNE';
-
-  @override
-  String get totalPackets => 'GIŞTÎ_PAKÊT';
-
-  @override
-  String get droppedLabel => 'AVÊTÎ';
-
-  @override
-  String get bufferLabel => 'TAMPON';
-
-  @override
-  String get latencyLabel => 'DERENGÎ';
-
-  @override
-  String get activeMonitoring => 'ŞOPANDINA AKTÎF';
-
-  @override
-  String get deactivate => 'NEÇALAK BIKE';
-
-  @override
-  String get initializeLink => 'GIRÊDANÊ DESTPÊBIKE';
-
-  @override
-  String get commandCenters => 'NAVENDÊN FERMANDEHIYÊ';
-
-  @override
-  String get defenseTitle => 'PARASTIN';
-
-  @override
-  String get activeShielding => 'Mertalkirina Aktîf';
-
-  @override
-  String get logisticsTitle => 'LOJÎSTÎK';
-
-  @override
-  String get intelMetrics => 'Intel û Metrîk';
-
-  @override
-  String get networkMesh => 'Tora Mesh';
-
-  @override
-  String get tuningTitle => 'MÎHENGKIRIN';
-
-  @override
-  String get systemConfig => 'Mîhengên Sîstemê';
-
-  @override
-  String get technicalTools => 'AMÛRÊN TEKNÎKÎ';
-
-  @override
-  String get packetLogs => 'LOG-YÊPAKÊTAN';
-
-  @override
-  String get aiInsights => 'TÊGIHÎŞTINÊN AI';
-
-  @override
-  String get interactiveSimulation => 'SÎMÛLASYONA_ÎNTERAKTÎF';
-
-  @override
-  String get appearance => 'XUYANGÊ';
+  String get settingsLanguage => 'Ziman';
 
   @override
   String get theme => 'Tema';
+
+  @override
+  String get settingsScanBehavior => 'Tevgera Taraneyê';
+
+  @override
+  String get settingsDefaultScanPasses => 'Derbasbûnên Taranê';
+
+  @override
+  String get settingsMonitoringInterval => 'Navbera Şopandinê';
+
+  @override
+  String get settingsBackendPreference => 'Terciha Backend';
+
+  @override
+  String get settingsIncludeHidden => 'Torên Veşartî Têxe Nav';
+
+  @override
+  String get settingsStrictSafety => 'Moda Ewlekariya Hişk';
+
+  @override
+  String get settingsStrictSafetyDesc => 'Operasyonên metirsîdar sînor bike';
 
   @override
   String get darkTheme => 'Tarî';
@@ -692,5 +406,540 @@ class AppLocalizationsKu extends AppLocalizations {
   String get systemTheme => 'Sîstem';
 
   @override
-  String get systemStatus => 'REWŞA SÎSTEMÊ';
+  String get sectionStatus => 'Rewş';
+
+  @override
+  String get reportsSubtitle => 'Tarana Torê û Ewlekariya Îstîxbaratê';
+
+  @override
+  String get exportOptionsTitle => 'VEBIJARKÊN DERXISTINÊ';
+
+  @override
+  String get exportJson => 'Wek JSON Derxe';
+
+  @override
+  String get exportHtml => 'Wek HTML Derxe';
+
+  @override
+  String get exportPdf => 'Wek PDF Derxe';
+
+  @override
+  String get printPdf => 'PDF Çap Bike';
+
+  @override
+  String get navWifi => 'WLAN';
+
+  @override
+  String get backendLabel => 'BACKEND';
+
+  @override
+  String get defenseTitle => 'PARASTIN';
+
+  @override
+  String get knownNetworks => 'Torên Nas';
+
+  @override
+  String get noKnownNetworksYet => 'Hîn torên nas tune ne';
+
+  @override
+  String get securityTimeline => 'Rêzika Demê ya Ewlehiyê';
+
+  @override
+  String get noSecurityEvents => 'Tu bûyerên ewlehiyê nehatine tomarkirin';
+
+  @override
+  String get authLocalSystem => 'AUTH_SÎSTEMA_XWECÎHÎ';
+
+  @override
+  String remoteNodeIdLabel(String id) {
+    return 'REMOTE_NODE_ID: $id';
+  }
+
+  @override
+  String get ipAddrLabel => 'NAVNÎŞANA_IP';
+
+  @override
+  String get macValLabel => 'NIRXÊ_MAC';
+
+  @override
+  String get mnfrLabel => 'FIROŞKAR';
+
+  @override
+  String get hiddenNetwork => 'Tora Veşartî';
+
+  @override
+  String get signalGraph => 'Grafîka Sînyalan';
+
+  @override
+  String get riskFactors => 'Faktorên Rîskê';
+
+  @override
+  String get vulnerabilities => 'Lawazî';
+
+  @override
+  String get bssId => 'BSSID';
+
+  @override
+  String get channel => 'Kanal';
+
+  @override
+  String get security => 'Ewlehî';
+
+  @override
+  String get signal => 'Sînyal';
+
+  @override
+  String recommendationLabel(String text) {
+    return 'PÊŞNIYAR: $text';
+  }
+
+  @override
+  String get noVulnerabilities => 'Tu lawazî nehatin dîtin.';
+
+  @override
+  String get securityScoreTitle => 'Puana Ewlehiyê';
+
+  @override
+  String get securityScoreDesc => 'Puana ewlehiyê (0–100) nîşan dide ka ev tor çiqas baş tê parastin. Her ku zêde be çêtir e. Cureyê şîfrekirinê, rewşa WPS û taybetmendiyên din ên ewlehiyê li ber çavan digire.';
+
+  @override
+  String get capabilitiesLabel => 'TAYBETMENDÎ';
+
+  @override
+  String get wifi7MldLabel => 'Wi-Fi 7 MLD';
+
+  @override
+  String get tagWpa3Desc => 'WPA3 standarta herî nû ya ewlehiyê ye — pir ewle ye.';
+
+  @override
+  String get tagWpa2Desc => 'WPA2 standartek ewlehiyê ya bi hêz e — ji bo karanîna rojane ewle ye.';
+
+  @override
+  String get tagWpaDesc => 'WPA standartek kevn a ewlehiyê ye ku kêmasiyên wê yên naskirî hene.';
+
+  @override
+  String get tagWpsDesc => 'Kêmasiyên ewlehiyê yên naskirî di WPS (Wi-Fi Protected Setup) de hene. Dikare rê bide êrîşkaran ku PIN-ê bi brute-force bişkînin û têkevin hundur.';
+
+  @override
+  String get tagPmfDesc => 'Protected Management Frames (PMF/MFP) li dijî êrîşên deauthentication diparêze.';
+
+  @override
+  String get tagEssDesc => 'ESS (Extended Service Set) tê wê wateyê ku ev toreke standarta access point e.';
+
+  @override
+  String get tagCcmpDesc => 'CCMP (AES) şîfrekirineke bi hêz e ku bi WPA2/WPA3 re tê bikaranîn.';
+
+  @override
+  String get tagTkipDesc => 'TKIP cureyekî şîfrekirinê yê kevn û lawaz e. CCMP/AES tê tercîhkirin.';
+
+  @override
+  String get tagUnknownDesc => 'Ala taybetmendiya torê ji beacon frame.';
+
+  @override
+  String get scanProfileLabel => 'PROFÎLA TARANÊ';
+
+  @override
+  String get infoScanProfilesTitle => 'Profîlên Taranê';
+
+  @override
+  String get infoScanProfileFastDesc => 'Bilez: Kontrola ping a bilez — di çirkeyan de amûran dibîne.';
+
+  @override
+  String get infoScanProfileBalancedDesc => 'Hevseng: Ping + portên hevpar — hûrguliyên zêdetir dibîne.';
+
+  @override
+  String get infoScanProfileAggressiveDesc => 'Zêde: Tarana portan a tije — ya herî berfireh lê ya herî hêdî ye.';
+
+  @override
+  String get activeNodeRecon => 'NASÎNA AKTÎF A NAVENDAN';
+
+  @override
+  String get interrogatingSubnet => 'Ji bo mêvandarên bersivdar li subnet heyî digere...';
+
+  @override
+  String get nodesLabel => 'Navend';
+
+  @override
+  String get riskAvgLabel => 'Navîna Rîskê';
+
+  @override
+  String get servicesLabel => 'Xizmet';
+
+  @override
+  String get openPortsLabel => 'PORTÊN VEKIRÎ';
+
+  @override
+  String get subnetLabel => 'Subnet';
+
+  @override
+  String get cidrTargetLabel => 'CIDR TARGET';
+
+  @override
+  String get anonymousNode => 'NAVENDA NANAV';
+
+  @override
+  String portsCountLabel(int count) {
+    return '$count PORT';
+  }
+
+  @override
+  String get riskLabel => 'RÎSK';
+
+  @override
+  String get searchLanPlaceholder => 'Bi navê IP, mêvandar an firoşkar bigere...';
+
+  @override
+  String get hasVulnerabilitiesLabel => 'Lawazî Hene';
+
+  @override
+  String get securityStatusSecure => 'Ewle';
+
+  @override
+  String get securityStatusModerate => 'Navîn';
+
+  @override
+  String get securityStatusAtRisk => 'Di Rîskê de';
+
+  @override
+  String get securityStatusCritical => 'Krîtîk';
+
+  @override
+  String get securitySummarySecure => 'Girêdana we baş xuya dike! Ev tor şîfrekirina bi hêz bikar tîne û li dijî êrîşên gelemperî baş tê parastin.';
+
+  @override
+  String get securitySummaryModerate => 'Ewlehiya vê torê baş e lê hinek xalên lawaz hene. Ji bo bikaranîna rojane ewle ye, lê karên pir hesas nekin.';
+
+  @override
+  String get securitySummaryAtRisk => 'Di vê torê de pirsgirêkên ewlehiyê hene ku daneyên we dixin metirsiyê. Dema girêdayî bin şîfreyan an agahiyên kesane nenivîsin.';
+
+  @override
+  String get securitySummaryCritical => 'Hişyarî: Ev tor ne ewle ye. Kesên li nêzîk dikarin trafîka înterneta we bibînin. VPN bikar bînin an torê biguherînin.';
+
+  @override
+  String get vulnerabilityOpenNetworkTitle => 'Tora Vekirî';
+
+  @override
+  String get vulnerabilityOpenNetworkDesc => 'Şîfrekirin nehat tespîtkirin. Hemû trafîk wekî nivîs dikare were dîtin.';
+
+  @override
+  String get vulnerabilityOpenNetworkRec => 'Ji karên hesas dûr bisekin. VPN-ya pêbawer an toreke cuda tercîh bikin.';
+
+  @override
+  String get vulnerabilityWepTitle => 'Şîfrekirina WEP';
+
+  @override
+  String get vulnerabilityWepDesc => 'WEP nayê pêşniyar kirin û bi hêsanî dikare were şikandin.';
+
+  @override
+  String get vulnerabilityWepRec => 'Tavilê mîhengên AP biguherînin WPA2 an WPA3.';
+
+  @override
+  String get vulnerabilityLegacyWpaTitle => 'WPA ya Kevn';
+
+  @override
+  String get vulnerabilityLegacyWpaDesc => 'WPA/TKIP kevn e û li hember êrîşên nûjen lawaz e.';
+
+  @override
+  String get vulnerabilityLegacyWpaRec => 'AP û amûran bikşînin asteke bilind (WPA2/WPA3).';
+
+  @override
+  String get vulnerabilityHiddenSsidTitle => 'SSID ya Veşartî';
+
+  @override
+  String get vulnerabilityHiddenSsidDesc => 'SSID-yên veşartî hîn jî dikarin werin dîtin û dibe ku lihevhatinê xirab bikin.';
+
+  @override
+  String get vulnerabilityHiddenSsidRec => 'SSID-ya veşartî ne parastin e. Bala xwe bidin ser şîfrekirina bi hêz.';
+
+  @override
+  String get vulnerabilityWeakSignalTitle => 'Sînyala Gelek Lawaz';
+
+  @override
+  String get vulnerabilityWeakSignalDesc => 'Sînyala lawaz dikare girêdanên ne aram û metirsiyan nîşan bide.';
+
+  @override
+  String get vulnerabilityWeakSignalRec => 'Nêzîkî AP bibin an BSSID kontrol bikin.';
+
+  @override
+  String get vulnerabilityWpsTitle => 'WPS Çalak e';
+
+  @override
+  String get vulnerabilityWpsDesc => 'Wi-Fi Korumalı Kurulum (WPS) çalak e. Moda PIN-a WPS dikare bi hêsanî were şikandin û gihîştina şîfreyê bide.';
+
+  @override
+  String get vulnerabilityWpsRec => 'Di panela mîhengan a routerê de WPS bigirin. Tenê WPA2/WPA3 bikar bînin.';
+
+  @override
+  String get vulnerabilityPmfTitle => 'Çarçoveyên Rêvebiriyê Nehatine Parastin';
+
+  @override
+  String get vulnerabilityPmfDesc => 'Ev access point PMF (802.11w) naxwaze. Nivîsên rêvebiriyê yên neparastî rê didin êrîşkaran ku amûran deauth bikin.';
+
+  @override
+  String get vulnerabilityPmfRec => 'Di mîhengên routerê de PMF (wek \'802.11w\' jî tê zanîn) çalak bikin. WPA3 jixwe PMF dixwaze.';
+
+  @override
+  String get vulnerabilityEvilTwinTitle => 'Evil Twin ya Potansiyel';
+
+  @override
+  String get vulnerabilityEvilTwinDesc => 'SSID li nêzîk bi hûrguliyên ewlehiyê yên nakok xuya dike.';
+
+  @override
+  String get vulnerabilityEvilTwinRec => 'Beriya nasandinê BSSID û sertîfîkayê kontrol bikin.';
+
+  @override
+  String get riskFactorNoEncryption => 'Şîfrekirin nayê bikaranîn';
+
+  @override
+  String get riskFactorDeprecatedEncryption => 'Şîfrekirina kevnar (WEP)';
+
+  @override
+  String get riskFactorLegacyWpa => 'WPA ya kevn di bikaranînê de ye';
+
+  @override
+  String get riskFactorHiddenSsid => 'Tevgera SSID a veşartî';
+
+  @override
+  String get riskFactorWeakSignal => 'Hawirdora sînyala lawaz';
+
+  @override
+  String get riskFactorWpsEnabled => 'WPS PIN vekirî ye';
+
+  @override
+  String get riskFactorPmfNotEnforced => 'PMF nayê xwestin — xetera deauth heye';
+
+  @override
+  String get refresh => 'Nû bike';
+
+  @override
+  String get addZonePoint => 'Xala Herêmê Zêde Bike';
+
+  @override
+  String get cancel => 'Betal bike';
+
+  @override
+  String get save => 'Tomar bike';
+
+  @override
+  String get waitingForData => 'Li benda daneyan e...';
+
+  @override
+  String get temporalHeatmap => 'Nexşeya Germiyê ya Demkî';
+
+  @override
+  String get failedToSaveHeatmapPoint => 'Xala nexşeya germiyê nehat tomarkirin';
+
+  @override
+  String signalMonitoringTitle(String ssid) {
+    return 'ŞOPANDINA SÎNYALÊ: $ssid';
+  }
+
+  @override
+  String get heatmapTooltip => 'Nexşeya Germiyê';
+
+  @override
+  String get tagCurrentPointTooltip => 'Xala heyî nîşan bike';
+
+  @override
+  String get signalCaps => 'SÎNYAL';
+
+  @override
+  String get channelCaps => 'KANAL';
+
+  @override
+  String get frequencyCaps => 'FREKANS';
+
+  @override
+  String heatmapPointAdded(String zone) {
+    return 'Xala nexşeya germiyê ji bo $zone hat zêdekirin';
+  }
+
+  @override
+  String get zoneTagLabel => 'Etîketa herêmê (mînak: Metbex)';
+
+  @override
+  String errorPrefix(String message) {
+    return 'Şaşî: $message';
+  }
+
+  @override
+  String noHeatmapPointsYet(String bssid) {
+    return 'Ji bo $bssid hîn ti xalên nexşeya germiyê tune';
+  }
+
+  @override
+  String get averageSignalByZone => 'Sînyala navîn li gorî herêman';
+
+  @override
+  String bandChannels(String band) {
+    return '$band KANAL';
+  }
+
+  @override
+  String get recommendedChannel => 'KANALA PÊŞNIYARKIRÎ';
+
+  @override
+  String channelInfo(int ch, int freq) {
+    return 'Kanala $ch · $freq MHz';
+  }
+
+  @override
+  String get riskFactorFingerprintDrift => 'Veqetîna şopa tiliya SSID hat dîtin';
+
+  @override
+  String get historyCaps => 'DÎROK';
+
+  @override
+  String get consistentlyBestChannel => 'KANALA HERÎ BAŞ A BERDEWAM';
+
+  @override
+  String get avgScore => 'Skora Navîn';
+
+  @override
+  String get channelBondingTitle => 'Girêdana Kanalan';
+
+  @override
+  String get channelBondingDesc => 'Girêdana kanalan 2 an zêdetir kanalên cîranê hev dixe yek ku firehiya bandê zêde bibe (40 MHz = 2×, 80 MHz = 4×, 160 MHz = 8×). Kanalên firehtir leza zêdetir didin lê dikarin bandorê li ser torên cîran jî bikin.';
+
+  @override
+  String get spectrumOptimizationCaps => 'OPTMÎZASYONA SPEKTRUMÊ';
+
+  @override
+  String get spectrumOptimizationDesc => 'Qelebalixiya kanalê û parazîtê analîz bike';
+
+  @override
+  String get qualityExcellent => 'Zaf Baş';
+
+  @override
+  String get qualityVeryGood => 'Gelek Baş';
+
+  @override
+  String get qualityGood => 'Baş';
+
+  @override
+  String get qualityFair => 'Normal';
+
+  @override
+  String get qualityCongested => 'Qelebalix';
+
+  @override
+  String channelBondingHeader(int count) {
+    return 'GIRÊDANA KANALAN ($count AP)';
+  }
+
+  @override
+  String get hiddenSsidLabel => '[Veşartî]';
+
+  @override
+  String get noHistoryPlaceholder => 'Hîn dîrok tune.\nHer cara ku hûn vê ekranê vedikin, pileya kanalan tê tomarkirin.';
+
+  @override
+  String get currentSessionInfo => 'Oturuma heyî — skora bilind = kêmtir qerebalix.';
+
+  @override
+  String historySummaryInfo(int sessions, int samples) {
+    return '$sessions rûniştin · $samples nimûne · bilindtir = kêmtir qerebalix';
+  }
+
+  @override
+  String get scanReportTitle => 'Rapora Skana Wi-Fi ya Torcav';
+
+  @override
+  String get reportTime => 'Dem';
+
+  @override
+  String get ssidHeader => 'SSID';
+
+  @override
+  String get bssidHeader => 'BSSID';
+
+  @override
+  String get dbmHeader => 'dBm';
+
+  @override
+  String get channelHeader => 'CH';
+
+  @override
+  String get navDashboard => 'DASHBOARD';
+
+  @override
+  String get navDiscovery => 'VEDÎTIN';
+
+  @override
+  String get navOperations => 'OPERASYON';
+
+  @override
+  String get navLan => 'LAN';
+
+  @override
+  String get systemStatus => 'Rewşa Pergalê';
+
+  @override
+  String get interfaceTheme => 'Mijara Navrûyê';
+
+  @override
+  String get speedTestHeader => 'TESTA LEZÊ';
+
+  @override
+  String get startTest => 'DEST PÊ BIKIN';
+
+  @override
+  String get testAgain => 'DÎSA TEST BIKIN';
+
+  @override
+  String get commandCenters => 'NAVENDA FERMANDARIYÊ';
+
+  @override
+  String get activeShielding => 'Mertalê Çalak';
+
+  @override
+  String get logisticsTitle => 'LOJÎSTÎK';
+
+  @override
+  String get intelMetrics => 'Metrîkên Veqetandî';
+
+  @override
+  String get networkMesh => 'Tora Qatî';
+
+  @override
+  String get tuningTitle => 'VERASTKIRIN';
+
+  @override
+  String get systemConfig => 'Veavakirina Pergalê';
+
+  @override
+  String get phasePing => 'QONAX: PING';
+
+  @override
+  String get phaseDownload => 'QONAX: DAXISTIN';
+
+  @override
+  String get phaseUpload => 'QONAX: BARKIRIN';
+
+  @override
+  String get phaseDone => 'QONAX: TEMAM';
+
+  @override
+  String get riskScore => 'Pûana Rîskê';
+
+  @override
+  String get loading => 'Tê barkirin...';
+
+  @override
+  String get profileTitle => 'NAVENDA PROFILÊ';
+
+  @override
+  String get activeSessionLabel => 'Danişîna Çalak';
+
+  @override
+  String get networkStatusLabel => 'REWŞA TORÊ';
+
+  @override
+  String get ssid => 'SSID';
+
+  @override
+  String get lastScanTitle => 'SKANA DAWÎ';
+
+  @override
+  String get lastSnapshot => 'Veqetandina Dawî';
 }

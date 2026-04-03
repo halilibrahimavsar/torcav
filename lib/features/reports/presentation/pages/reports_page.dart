@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:torcav/l10n/generated/app_localizations.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
@@ -14,6 +14,7 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
+import '../../domain/entities/report_labels.dart';
 import '../../domain/usecases/generate_report_usecase.dart';
 import '../bloc/reports_bloc.dart';
 
@@ -163,7 +164,7 @@ class ReportsView extends StatelessWidget {
                         isLoading: isLoading,
                         onTap:
                             () => context.read<ReportsBloc>().add(
-                              GenerateReport(latest, ReportFormat.json),
+                              GenerateReport(latest, ReportFormat.json, _getReportLabels(context)),
                             ),
                         delay: const Duration(milliseconds: 400),
                       ),
@@ -174,7 +175,7 @@ class ReportsView extends StatelessWidget {
                         isLoading: isLoading,
                         onTap:
                             () => context.read<ReportsBloc>().add(
-                              GenerateReport(latest, ReportFormat.html),
+                              GenerateReport(latest, ReportFormat.html, _getReportLabels(context)),
                             ),
                         delay: const Duration(milliseconds: 450),
                       ),
@@ -185,7 +186,7 @@ class ReportsView extends StatelessWidget {
                         isLoading: isLoading,
                         onTap:
                             () => context.read<ReportsBloc>().add(
-                              GenerateReport(latest, ReportFormat.pdf),
+                              GenerateReport(latest, ReportFormat.pdf, _getReportLabels(context)),
                             ),
                         delay: const Duration(milliseconds: 500),
                       ),
@@ -196,7 +197,7 @@ class ReportsView extends StatelessWidget {
                         isLoading: isLoading,
                         onTap:
                             () => context.read<ReportsBloc>().add(
-                              GenerateReport(latest, ReportFormat.csv),
+                              GenerateReport(latest, ReportFormat.csv, _getReportLabels(context)),
                             ),
                         delay: const Duration(milliseconds: 550),
                       ),
@@ -260,9 +261,30 @@ class ReportsView extends StatelessWidget {
     await Printing.layoutPdf(
       onLayout: (_) async {
         final useCase = getIt<GenerateReportUseCase>();
-        return await useCase(snapshot, ReportFormat.pdf) as Uint8List;
+        final result = await useCase(snapshot, ReportFormat.pdf, _getReportLabels(context));
+        return result.fold(
+          (failure) => Uint8List(0), // Better error handling would be to show a toast
+          (content) => content as Uint8List,
+        );
       },
       name: 'Torcav Scan Report',
+    );
+  }
+
+  ReportLabels _getReportLabels(BuildContext context) {
+    final l10n = context.l10n;
+    return ReportLabels(
+      reportTitle: l10n.scanReportTitle,
+      timeLabel: l10n.reportTime,
+      backendLabel: l10n.backendLabel,
+      interfaceLabel: l10n.interfaceLabel,
+      networksTitle: l10n.networksLabel,
+      ssidHeader: l10n.ssidHeader,
+      bssidHeader: l10n.bssidHeader,
+      dbmHeader: l10n.dbmHeader,
+      securityHeader: l10n.securityLabel,
+      channelHeader: l10n.channelHeader,
+      hiddenLabel: l10n.hiddenLabel,
     );
   }
 

@@ -1,223 +1,590 @@
 {
     "@@locale": "ku",
-    "activeOperationsBlockedMsg": "Operasyonên aktîf hatine astengkirin heta ku polîtîka û lîsteya destûrdayînê werin pejirandin.",
-    "authorizedTargets": "Hedefên Destûrdayî",
-    "add": "Zêde bike",
-    "noTargetsAllowlisted": "Hîn ti hedef nehatine destûrdayîn.",
-    "hiddenNetwork": "Tora Veşartî",
-    "remove": "Rake",
-    "securityTimeline": "Dema Ewlekariyê",
-    "noSecurityEvents": "Hîn bûyerên ewlekariyê tune.",
-    "authorizeTarget": "Hedefê Destûr bide",
-    "ssid": "SSID",
-    "bssid": "BSSID",
-    "allowHandshakeCapture": "Destûr bide girtina destan (handshake)",
-    "allowActiveDefense": "Destûr bide testên aktîf/deauth",
-    "cancel": "Betal bike",
-    "save": "Tomar bike",
-    "legalDisclaimerAccepted": "Daxuyaniya yasayî hate qebûlkirin",
-    "requiredForActiveOps": "Ji bo operasyonên aktîf pêwîst e",
-    "strictAllowlist": "Lîsteya destûrdayînê ya hişk",
-    "blockActiveOpsUnknown": "Operasyonên aktîf ji bo hedefên nenas asteng bike",
-    "rateLimitActiveOps": "Sînora lezê navbera operasyonên aktîf",
-    "selectFromScanned": "Ji lîsteya taranayî hilbijêre",
-    "settingsLanguage": "Ziman",
-    "settingsScanBehavior": "Tevgera taranê ya xwerû, stratejiya backend û rewşa ewlekariyê kontrol bike.",
-    "settingsDefaultScanPasses": "Derbasbûnên taranê yên xwerû",
-    "settingsMonitoringInterval": "Navbera şopandinê (saniye)",
-    "settingsBackendPreference": "Terciha backend ya xwerû",
-    "settingsIncludeHidden": "SSID-yên veşartî têxe nav",
-    "settingsStrictSafety": "Moda ewlekariya hişk",
-    "settingsStrictSafetyDesc": "Ji bo operasyonên aktîf destûr û lîsteya destûrdayînê pêwîst e",
-    "navDashboard": "Dashboard",
-    "navWifi": "Wi-Fi",
-    "navLan": "LAN",
-    "navMore": "Zêdetir",
-    "moreTitle": "ZÊDETIR",
-    "sectionTools": "AMÛR",
-    "speedTestTitle": "Testa Lezê & Şopandin",
-    "speedTestDesc": "Şopandina berfirehiya bandê, derengî û anomalî",
-    "securityCenterTitle": "Navenda Ewlekariyê",
-    "securityCenterDesc": "Puanlama rîskê, lîsteyên destûrdayînê û kontrolên polîtîkayê",
-    "reportsTitle": "Raport",
-    "reportsDesc": "Taranan wek PDF, HTML an JSON derxe",
-    "sectionPreferences": "TERCIH",
-    "settingsTitle": "Mîheng",
-    "settingsDesc": "Tevgera taranê, backend û moda ewlekariyê",
-    "monitoringTitle": "Şopandin",
-    "monitoringSubtitle": "Berfirehiya bandê, tespîta anomalî û herikîna nexşeya germê.",
-    "packetsPerSecondLabel": "Pakêt Di Her Çirkeyê De",
-    "throughputLabel": "Hecima Daneyan",
-    "comingSoon": "DÊ ZÛ BÊ",
-    "signalTrends": "Trendên Sînyalê",
-    "topologyMesh": "Topolojî & Mesh",
-    "anomalyAlerts": "Hîşyariyên Anomalî",
-    "speedTestHeader": "TESTA LEZÊ",
-    "testConnectionSpeed": "Leza girêdana xwe test bike",
-    "testing": "TEST DIKE…",
-    "testAgain": "DISA TEST BIKE",
-    "startTest": "TESTÊ DEST PÊ BIKE",
-    "phasePing": "PING",
-    "phaseDownload": "DAXISTIN",
-    "phaseUpload": "BARKIRIN",
-    "phaseDone": "TEMAM",
-    "wifiScanTitle": "ANALÎZORÊ WI-FI",
-    "scanSettingsTooltip": "Mîhengên taranê",
-    "channelRatingTooltip": "Puanlama Kanalê",
-    "refreshScanTooltip": "Taranê nû bike",
-    "readyToScan": "Amade ye ji bo taranê",
-    "scanButton": "Taran",
-    "scanSettingsTitle": "Mîhengên Taranê",
-    "passes": "Derbasbûn: {count}",
-    "includeHiddenSsids": "SSID-yên veşartî têxe nav",
-    "backendPreference": "Terciha backend",
-    "apply": "Pêk bîne",
-    "noSignalsDetected": "Sînyal nehatin dîtin",
-    "lastSnapshot": "Wêneyê Dawî",
-    "bandAnalysis": "Analîza Bandê",
-    "networksCount": "Tor ({count})",
-    "recommendation": "Pêşniyar",
+    "wifiScanTitle": "TARANA WI-FI",
+    "@wifiScanTitle": {
+        "description": "Sernav ji bo ekrana tarana wifi."
+    },
+    "searchingNetworksPlaceholder": "TORA DIGERE...",
+    "@searchingNetworksPlaceholder": {
+        "description": "Dema ku barê lêgerînê vala be tê xuyakirin."
+    },
+    "filterNetworksPlaceholder": "TORAN PARZÛN BIKE...",
+    "@filterNetworksPlaceholder": {
+        "description": "Cihgirê ji bo têketina lêgerînê."
+    },
+    "quickScan": "Tarana Bilez",
+    "@quickScan": {
+        "description": "Nîşana tarana pasîf."
+    },
+    "deepScan": "Tarana Kûr",
+    "@deepScan": {
+        "description": "Nîşana tarana aktîf."
+    },
+    "scanModesTitle": "Modên Taranê",
+    "@scanModesTitle": {
+        "description": "Sernav ji bo agahdariya moda taranê."
+    },
+    "scanModesInfo": "Tarana bilez guhdariya weşanan dike. Tarana kûr bi awayekî çalak toran diceribîne.",
+    "@scanModesInfo": {
+        "description": "Daxuyaniya modên taranê."
+    },
+    "readyToScan": "Amade ye ji bo Taranê",
+    "@readyToScan": {
+        "description": "Rewşa gava vala be."
+    },
+    "noSignalsDetected": "Sînyal Nehatin Tespîtkirin",
+    "@noSignalsDetected": {
+        "description": "Rewşa vala ji bo tarana wifi."
+    },
+    "compareWithPreviousScan": "BI TARANA BERÊ RE BERAWIRD BIKE",
+    "@compareWithPreviousScan": {
+        "description": "Nîşana bişkojka berawirdkirinê."
+    },
+    "networksCount": "{count} TOR",
+    "@networksCount": {
+        "description": "Hejmara torên hatine dîtin.",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "filteredNetworksCount": "{count} JI {total} TORAN",
+    "@filteredNetworksCount": {
+        "description": "Hejmara encamên parzûnkirî.",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "securityAlertsTooltip": "Hişyariyên ewlehiyê bibîne",
+    "@securityAlertsTooltip": {
+        "description": "Tooltip-a dashboardê."
+    },
+    "livePulse": "NEBZA ZINDÎ",
+    "@livePulse": {
+        "description": "Nîşana zindî ya dashboardê."
+    },
+    "operationsLabel": "OPERASYON",
+    "@operationsLabel": {
+        "description": "Nîşana beşa dashboardê."
+    },
+    "topologyLabel": "TOPOLOJÎ",
+    "@topologyLabel": {
+        "description": "Nîşana beşa dashboardê."
+    },
+    "networkLogs": "LOGÊN TORÊ",
+    "@networkLogs": {
+        "description": "Nîşana logên dashboardê."
+    },
+    "connectedStatusCaps": "GIRÊDAYÎ",
+    "@connectedStatusCaps": {
+        "description": "Rewşa girêdayî."
+    },
+    "disconnectedStatusCaps": "QUTKIRÎ",
+    "@disconnectedStatusCaps": {
+        "description": "Rewşa qutkirî."
+    },
+    "ipLabel": "IP",
+    "@ipLabel": {
+        "description": "Nîşana IP."
+    },
+    "gatewayLabel": "GATEWAY",
+    "@gatewayLabel": {
+        "description": "Nîşana Gateway."
+    },
+    "accessEngine": "MOTORA GIHÎŞTINÊ",
+    "@accessEngine": {
+        "description": "Rewşa motora gihîştinê."
+    },
+    "latestSnapshotTitle": "Wêneyê Dawî ya Torê",
+    "@latestSnapshotTitle": {
+        "description": "Sernavê beşa wêneyê."
+    },
+    "noSnapshotAvailable": "Daneyên wêneyê tune...",
+    "@noSnapshotAvailable": {
+        "description": "Wêne nehat dîtin."
+    },
+    "strictSafetyEnabled": "Protokolên ewlehiyê yên hişk çalak in",
+    "@strictSafetyEnabled": {
+        "description": "Daxuyaniya moda ewlehiyê."
+    },
+    "activeMonitoringProgress": "Şopandina aktîf berdewam dike...",
+    "@activeMonitoringProgress": {
+        "description": "Nîşana rewşa şopandinê."
+    },
+    "scanComparisonTitle": "BERAWIRDKIRINA TARANÊ",
+    "@scanComparisonTitle": {
+        "description": "Sernavê rûpela berawirdkirinê."
+    },
+    "comparisonNeedsTwoScans": "Berawirdkirin herî kêm 2 taranan dixwaze.\n\nJi bo dîtina guhertinan taranek din bike.",
+    "@comparisonNeedsTwoScans": {
+        "description": "Pêdiviya berawirdkirinê."
+    },
+    "noChangesDetected": "Di navbera her du taranên dawî de tu guhertin nehatin dîtin.",
+    "@noChangesDetected": {
+        "description": "Encama berawirdkirinê ya vala."
+    },
+    "newNetworksCountLabel": "NÛ ({count})",
+    "@newNetworksCountLabel": {
+        "description": "Sernavê torên nû.",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "goneNetworksCountLabel": "ÇÛYÎ ({count})",
+    "@goneNetworksCountLabel": {
+        "description": "Sernavê torên windabûyî.",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "changedNetworksCountLabel": "GUHERÎ ({count})",
+    "@changedNetworksCountLabel": {
+        "description": "Sernavê torên guherî.",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "plusNewLabel": "+ NÛ",
+    "goneLabel": "ÇÛYÎ",
+    "hiddenLabel": "[Veşartî]",
+    "channelLabel": "K {channel}",
+    "@channelLabel": {
+        "description": "Kanala wifi.",
+        "placeholders": {
+            "channel": {
+                "type": "int"
+            }
+        }
+    },
+    "securityLabel": "EWLEKARÎ",
+    "initiatingSpectrumScan": "TARANA SPEKTRUMÊ DEST PÊ DIKE...",
+    "broadcastingProbeRequests": "DAXWAZÊN PROBE TÊN WEŞANDIN...",
+    "noRadiosInRange": "Di qadê de tu radyo tune ne",
+    "noNetworksMatchFilter": "Tu tor bi parzûna we re li hev nakin",
+    "searchSsidBssidVendor": "Li SSID, BSSID an Firoşkar bigere...",
+    "sortPrefix": "Rêzkirin: {option}",
+    "@sortPrefix": {
+        "placeholders": {
+            "option": {
+                "type": "String"
+            }
+        }
+    },
+    "bandAll": "HEMÛ BAND",
+    "sortSignal": "Sînyal",
+    "sortName": "Nav",
+    "sortChannel": "Kanal",
+    "sortSecurity": "Ewlekarî",
+    "sortByTitle": "RÊZKIRIN BI",
+    "recommendationTip": "Kanalên herî baş li ser {band}: {channels}",
+    "@recommendationTip": {
+        "placeholders": {
+            "channels": {
+                "type": "String"
+            },
+            "band": {
+                "type": "String"
+            }
+        }
+    },
+    "channelInterferenceTitle": "Destwerdana Kanalên",
+    "networksLabel": "TOR",
+    "openCount": "{count} VEKIRÎ",
+    "@openCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "avgSignalLabel": "SÎNYALA NAVÎN",
+    "notAvailable": "N/A",
+    "dbmCaps": "DBM",
+    "interfaceLabel": "NAVBER",
+    "frequencyLabel": "{freq} MHz",
+    "@frequencyLabel": {
+        "placeholders": {
+            "freq": {
+                "type": "int"
+            }
+        }
+    },
+    "reportsTitle": "RAPOR",
+    "saveReportDialog": "Raporê Tomar Bike",
+    "savedToast": "Rapor li {path} hate tomarkirin",
+    "@savedToast": {
+        "placeholders": {
+            "path": {
+                "type": "String"
+            }
+        }
+    },
+    "errorLabel": "Şaşî",
+    "savePdfReportDialog": "Rapora PDF Tomar Bike",
+    "scanning": "Taran dike...",
+    "shieldActive": "Mertal Aktîf e",
+    "threatsDetected": "Gef Hatine Tespîtkirin",
+    "trustedLabel": "EWLE",
+    "securityEventTitle": "Bûyera Ewlehiyê",
+    "networkReconTitle": "KEŞFA TORÊ",
+    "intelligenceReportTitle": "RAPORA ÎSTÎXBARATÊ",
+    "discoveredEndpointsTitle": "NAVNÎŞANÊN HATINE DÎTIN",
+    "newDeviceFound": "1 amûra nû: {ip}",
+    "@newDeviceFound": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            }
+        }
+    },
+    "newDevicesFound": "Di tora we de {count} amûrên nû hatin dîtin",
+    "@newDevicesFound": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "targetIpSubnet": "Target IP / Subnet",
+    "scanProfileFast": "Bilez",
+    "scanProfileBalanced": "Hevseng",
+    "scanProfileAggressive": "Zêde",
+    "scanProfileNormal": "Normal",
+    "scanProfileIntense": "Giran",
+    "vulnOnlyLabel": "Tenê Lawazî",
     "lanReconTitle": "LAN RECON",
-    "scanFailed": "TARAN TÊK ÇÛ: {message}",
-    "readyToScanAllCaps": "AMADE YE JI BO TARANÊ",
-    "targetSubnet": "Subnet/IP ya hedef",
-    "profile": "Profil",
-    "method": "Metod",
-    "scanAllCaps": "TARAN",
-    "noHostsFound": "DIWAR NEHATIN DÎTIN",
-    "unknownHost": "Diwarê nenas",
-    "os": "OS: {os}",
-    "services": "Xizmet: {services}",
-    "vuln": "Vuln: {vuln}",
-    "reportsSubtitle": "Danişîna taranê ya dawî wek JSON, HTML an PDF derxe.",
-    "noSnapshotAvailable": "Hîn wêneya taranê tune. Pêşî taranek Wi-Fi pêk bîne.",
-    "latestSnapshot": "Wêneyê dawî: {count} tor bi rêya {backend}",
-    "exportJson": "JSON derxe",
-    "exportHtml": "HTML derxe",
-    "exportPdf": "PDF derxe",
-    "printPdf": "PDF çap bike",
-    "saveReportDialog": "Raportê tomar bike",
-    "savePdfReportDialog": "Raporta PDF tomar bike",
-    "savedToast": "Tomar bû: {path}",
-    "handshakeCaptureCheck": "Kontrola girtina destan",
-    "activeDefenseReadiness": "Amadebûna parastina aktîf",
-    "signalGraph": "Grafîka Sînyalan",
-    "riskFactors": "FAKTORÊN RÎSKÊ",
-    "vulnerabilities": "QELISÎ",
-    "recommendationLabel": "PÊŞNIYAR: {text}",
-    "noVulnerabilities": "Li gorî daneyên taranê yên niha ti qelisî nehatin dîtin.",
-    "bssId": "BSSID",
-    "channel": "KANAL",
-    "security": "EWLEKARÎ",
-    "signal": "SÎNYAL",
+    "targetSubnet": "Subnet / IP Target",
+    "scanAllCaps": "TARA",
     "channelRatingTitle": "PUANLAMA KANALÊ",
+    "refreshScanTooltip": "Taranê Nû Bike",
     "band24Ghz": "2.4 GHz",
     "band5Ghz": "5 GHz",
+    "band6Ghz": "6 GHz",
     "no24GhzChannels": "Kanalên 2.4 GHz nehatin dîtin.",
     "no5GhzChannels": "Kanalên 5 GHz nehatin dîtin.",
-    "band6Ghz": "6 GHz",
     "no6GhzChannels": "Kanalên 6 GHz nehatin dîtin.",
-    "recommendedChannel": "KANALA PÊŞNIYARKIRÎ",
-    "channelInfo": "Kan {channel} — {frequency} MHz",
-    "bandChannels": "Kanalên {band}",
-    "errorLabel": "Hata",
-    "loading": "Bardibe…",
-    "analyzing": "Analîz dike…",
-    "success": "Serkeftî",
-    "ok": "Tamam",
-    "scannedNetworksTitle": "Torên Taranayî",
-    "noNetworksFound": "Tor nehatin dîtin.",
-    "retry": "Disa ceribandin",
-    "knownNetworks": "Torên Nas",
-    "noKnownNetworksYet": "Hîn torên nas tune.",
-    "opsLabel": "Op: {ops}",
-    "networkStatusLabel": "REWŞA TORÊ",
-    "activeSessionLabel": "DANIŞÎNA AKTÎF",
-    "gatewayLabel": "GATEWAY",
-    "ipLabel": "NAVNÎŞANA IP",
-    "connectedStatusCaps": "GIRÊDAYÎ",
-    "disconnectedStatusCaps": "QUTKIRÎ",
-    "quickActionsTitle": "ÇALAKIYÊN BILEZ",
-    "lastScanTitle": "TARA DAWÎ",
-    "viewDetailsAction": "HÛRGULÎ BIBÎNE",
-    "scanning": "TARAN DIKE…",
-    "secure": "EWLE",
-    "blockUnknownAP": "AP-yên Nenas Asteng Bike",
-    "automaticBlockMsg": "Girêdanên bi AP-yên neqanûnî bixweber diqete",
-    "activeProbingEnabled": "Testa Aktîf",
-    "activeProbingMsg": "AP-ya girêdayî bi rêkûpêk ji bo anomalî tê ceribandin",
-    "requireConsentForDeauth": "Destûr Pêwîst e",
-    "manualAuthorizationMsg": "Deauth/parastina aktîf bi destan destûr bide",
-    "defensePolicy": "Polîtîkaya Parastinê",
-    "shieldActive": "Mertal Aktîf",
-    "activeProtection": "Parastina Aktîf",
-    "riskScore": "Puanê Rîskê",
-    "securityRadar": "Radarê Ewlekariyê",
-    "profileTitle": "PROFÎLA AJANÊ",
-    "logout": "DERKEVE",
-    "logoutConfirmation": "DANIŞÎNÊ QEBÛL BIKE",
-    "logoutConfirmMessage": "Tu dixwazî danişîna niha biqedînî? Hemû şopandina aktîf dê raweste.",
-    "livePulse": "NEBZA ZINDÎ",
-    "operationsLabel": "OPERASYON",
-    "topologyLabel": "TOPOLOJÎ",
-    "accessEngine": "MOTORA GIHÎŞTINÊ",
-    "networkLogs": "LOG-YÊTORÊ",
-    "strictSafetyEnabled": "MODA EWLEKARIYA HIŞK ÇALAK E",
-    "activeMonitoringProgress": "Şopandina aktîf berdewam dike",
-    "topologyMapTitle": "NEXŞEYA TOPOLOJIYÊ",
+    "analyzing": "Analîz dike...",
+    "historyLabel": "DÎROK",
+    "failedLoadTopology": "Topolojî bar nabe: {error}",
+    "@failedLoadTopology": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
     "trafficLabel": "TRAFÎK",
     "forceLabel": "HÊZ",
     "normalSpeed": "NORMAL",
     "fastSpeed": "BILEZ",
     "overdriveSpeed": "OVERDRIVE",
-    "noTopologyData": "Daneyên topolojiyê tune",
-    "runScanFirst": "Pêşî taranek Wi-Fi û LAN pêk bîne",
-    "thisDevice": "Ev Amûr",
-    "gatewayDevice": "Gateway",
-    "mobileDevice": "Mobîl",
-    "deviceLabel": "Amûr",
-    "iotDevice": "IoT",
-    "analyzingNode": "GIRÊK ANALÎZ DIKE...",
-    "failedLoadTopology": "Topolojî nayê barkirin: {error}",
-    "neuralCoreTitle": "NEURAL_CORE_AI",
-    "activeAnomalies": "ANOMALIYÊN AKTÎF",
-    "predictiveHealth": "TENDURISTIYA PÊŞBÎNÎ",
-    "aiStrategyReport": "RAPORTA STRATEJIYA AI",
-    "engineStability": "ARAMIYA_MOTORÊ: BAŞ",
-    "aiStrategyText": "Topolojiya torê ya niha nîşaneya aram nîşan dide. Di subnet-an de tevgereke horizontî ya tavilê nehat dîtin. Tê pêşniyar kirin ku li xalên gihîştina giştî Moda Veşartî çalak bibe.",
-    "packetSnifferTitle": "PAKET_SNIFFER",
-    "streamPaused": "HERIKÎN_RAWESTIYAYE",
-    "filterNone": "FÎLTER: TUNE",
-    "totalPackets": "GIŞTÎ_PAKÊT",
-    "droppedLabel": "AVÊTÎ",
-    "bufferLabel": "TAMPON",
-    "latencyLabel": "DERENGÎ",
-    "activeMonitoring": "ŞOPANDINA AKTÎF",
-    "deactivate": "NEÇALAK BIKE",
-    "initializeLink": "GIRÊDANÊ DESTPÊBIKE",
-    "commandCenters": "NAVENDÊN FERMANDEHIYÊ",
-    "defenseTitle": "PARASTIN",
-    "activeShielding": "Mertalkirina Aktîf",
-    "logisticsTitle": "LOJÎSTÎK",
-    "intelMetrics": "Intel û Metrîk",
-    "networkMesh": "Tora Mesh",
-    "tuningTitle": "MÎHENGKIRIN",
-    "systemConfig": "Mîhengên Sîstemê",
-    "technicalTools": "AMÛRÊN TEKNÎKÎ",
-    "packetLogs": "LOG-YÊPAKÊTAN",
-    "aiInsights": "TÊGIHÎŞTINÊN AI",
-    "interactiveSimulation": "SÎMÛLASYONA_ÎNTERAKTÎF",
-    "appearance": "XUYANGÊ",
+    "topologyMapTitle": "NEXŞEYA TOPOLOJIYÊ",
+    "noTopologyData": "Daneyên Topolojiyê Nîn in",
+    "runScanFirst": "Pêşî taranek bike ku nexşeya torê were avakirin",
+    "retry": "DISA CERIBANDIN",
+    "thisDevice": "EV AMÛR",
+    "gatewayDevice": "GATEWAY",
+    "mobileDevice": "MOBÎL",
+    "deviceLabel": "AMÛR",
+    "iotDevice": "IOT",
+    "analyzingNode": "GIRÊK ANALÎZ DIKE",
+    "settingsTitle": "MÎHENG",
+    "appearance": "Xuyang",
+    "settingsLanguage": "Ziman",
     "theme": "Tema",
+    "settingsScanBehavior": "Tevgera Taraneyê",
+    "settingsDefaultScanPasses": "Derbasbûnên Taranê",
+    "settingsMonitoringInterval": "Navbera Şopandinê",
+    "settingsBackendPreference": "Terciha Backend",
+    "settingsIncludeHidden": "Torên Veşartî Têxe Nav",
+    "settingsStrictSafety": "Moda Ewlekariya Hişk",
+    "settingsStrictSafetyDesc": "Operasyonên metirsîdar sînor bike",
     "darkTheme": "Tarî",
     "lightTheme": "Ronî",
     "systemTheme": "Sîstem",
-    "systemStatus": "REWŞA SÎSTEMÊ",
-    "confirm": "Piştrast bike",
-    "navDiscovery": "Vedîtin",
-    "navOperations": "Operasyon",
-    "sectionStatus": "REWŞ",
+    "sectionStatus": "Rewş",
+    "reportsSubtitle": "Tarana Torê û Ewlekariya Îstîxbaratê",
     "exportOptionsTitle": "VEBIJARKÊN DERXISTINÊ",
-    "latestSnapshotTitle": "WÊNEYÊ HERÎ DAWÎ",
-    "backendLabel": "Backend"
+    "exportJson": "Wek JSON Derxe",
+    "exportHtml": "Wek HTML Derxe",
+    "exportPdf": "Wek PDF Derxe",
+    "printPdf": "PDF Çap Bike",
+    "navWifi": "WLAN",
+    "backendLabel": "BACKEND",
+    "defenseTitle": "PARASTIN",
+    "knownNetworks": "Torên Nas",
+    "noKnownNetworksYet": "Hîn torên nas tune ne",
+    "securityTimeline": "Rêzika Demê ya Ewlehiyê",
+    "noSecurityEvents": "Tu bûyerên ewlehiyê nehatine tomarkirin",
+    "authLocalSystem": "AUTH_SÎSTEMA_XWECÎHÎ",
+    "remoteNodeIdLabel": "REMOTE_NODE_ID: {id}",
+    "@remoteNodeIdLabel": {
+        "placeholders": {
+            "id": {
+                "type": "String"
+            }
+        }
+    },
+    "ipAddrLabel": "NAVNÎŞANA_IP",
+    "macValLabel": "NIRXÊ_MAC",
+    "mnfrLabel": "FIROŞKAR",
+    "hiddenNetwork": "Tora Veşartî",
+    "signalGraph": "Grafîka Sînyalan",
+    "riskFactors": "Faktorên Rîskê",
+    "vulnerabilities": "Lawazî",
+    "bssId": "BSSID",
+    "channel": "Kanal",
+    "security": "Ewlehî",
+    "signal": "Sînyal",
+    "recommendationLabel": "PÊŞNIYAR: {text}",
+    "@recommendationLabel": {
+        "placeholders": {
+            "text": {
+                "type": "String"
+            }
+        }
+    },
+    "noVulnerabilities": "Tu lawazî nehatin dîtin.",
+    "securityScoreTitle": "Puana Ewlehiyê",
+    "securityScoreDesc": "Puana ewlehiyê (0–100) nîşan dide ka ev tor çiqas baş tê parastin. Her ku zêde be çêtir e. Cureyê şîfrekirinê, rewşa WPS û taybetmendiyên din ên ewlehiyê li ber çavan digire.",
+    "capabilitiesLabel": "TAYBETMENDÎ",
+    "wifi7MldLabel": "Wi-Fi 7 MLD",
+    "tagWpa3Desc": "WPA3 standarta herî nû ya ewlehiyê ye — pir ewle ye.",
+    "tagWpa2Desc": "WPA2 standartek ewlehiyê ya bi hêz e — ji bo karanîna rojane ewle ye.",
+    "tagWpaDesc": "WPA standartek kevn a ewlehiyê ye ku kêmasiyên wê yên naskirî hene.",
+    "tagWpsDesc": "Kêmasiyên ewlehiyê yên naskirî di WPS (Wi-Fi Protected Setup) de hene. Dikare rê bide êrîşkaran ku PIN-ê bi brute-force bişkînin û têkevin hundur.",
+    "tagPmfDesc": "Protected Management Frames (PMF/MFP) li dijî êrîşên deauthentication diparêze.",
+    "tagEssDesc": "ESS (Extended Service Set) tê wê wateyê ku ev toreke standarta access point e.",
+    "tagCcmpDesc": "CCMP (AES) şîfrekirineke bi hêz e ku bi WPA2/WPA3 re tê bikaranîn.",
+    "tagTkipDesc": "TKIP cureyekî şîfrekirinê yê kevn û lawaz e. CCMP/AES tê tercîhkirin.",
+    "tagUnknownDesc": "Ala taybetmendiya torê ji beacon frame.",
+    "scanProfileLabel": "PROFÎLA TARANÊ",
+    "infoScanProfilesTitle": "Profîlên Taranê",
+    "infoScanProfileFastDesc": "Bilez: Kontrola ping a bilez — di çirkeyan de amûran dibîne.",
+    "infoScanProfileBalancedDesc": "Hevseng: Ping + portên hevpar — hûrguliyên zêdetir dibîne.",
+    "infoScanProfileAggressiveDesc": "Zêde: Tarana portan a tije — ya herî berfireh lê ya herî hêdî ye.",
+    "activeNodeRecon": "NASÎNA AKTÎF A NAVENDAN",
+    "interrogatingSubnet": "Ji bo mêvandarên bersivdar li subnet heyî digere...",
+    "nodesLabel": "Navend",
+    "riskAvgLabel": "Navîna Rîskê",
+    "servicesLabel": "Xizmet",
+    "openPortsLabel": "PORTÊN VEKIRÎ",
+    "subnetLabel": "Subnet",
+    "cidrTargetLabel": "CIDR TARGET",
+    "anonymousNode": "NAVENDA NANAV",
+    "portsCountLabel": "{count} PORT",
+    "@portsCountLabel": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "riskLabel": "RÎSK",
+    "searchLanPlaceholder": "Bi navê IP, mêvandar an firoşkar bigere...",
+    "hasVulnerabilitiesLabel": "Lawazî Hene",
+    "securityStatusSecure": "Ewle",
+    "securityStatusModerate": "Navîn",
+    "securityStatusAtRisk": "Di Rîskê de",
+    "securityStatusCritical": "Krîtîk",
+    "securitySummarySecure": "Girêdana we baş xuya dike! Ev tor şîfrekirina bi hêz bikar tîne û li dijî êrîşên gelemperî baş tê parastin.",
+    "securitySummaryModerate": "Ewlehiya vê torê baş e lê hinek xalên lawaz hene. Ji bo bikaranîna rojane ewle ye, lê karên pir hesas nekin.",
+    "securitySummaryAtRisk": "Di vê torê de pirsgirêkên ewlehiyê hene ku daneyên we dixin metirsiyê. Dema girêdayî bin şîfreyan an agahiyên kesane nenivîsin.",
+    "securitySummaryCritical": "Hişyarî: Ev tor ne ewle ye. Kesên li nêzîk dikarin trafîka înterneta we bibînin. VPN bikar bînin an torê biguherînin.",
+    "vulnerabilityOpenNetworkTitle": "Tora Vekirî",
+    "vulnerabilityOpenNetworkDesc": "Şîfrekirin nehat tespîtkirin. Hemû trafîk wekî nivîs dikare were dîtin.",
+    "vulnerabilityOpenNetworkRec": "Ji karên hesas dûr bisekin. VPN-ya pêbawer an toreke cuda tercîh bikin.",
+    "vulnerabilityWepTitle": "Şîfrekirina WEP",
+    "vulnerabilityWepDesc": "WEP nayê pêşniyar kirin û bi hêsanî dikare were şikandin.",
+    "vulnerabilityWepRec": "Tavilê mîhengên AP biguherînin WPA2 an WPA3.",
+    "vulnerabilityLegacyWpaTitle": "WPA ya Kevn",
+    "vulnerabilityLegacyWpaDesc": "WPA/TKIP kevn e û li hember êrîşên nûjen lawaz e.",
+    "vulnerabilityLegacyWpaRec": "AP û amûran bikşînin asteke bilind (WPA2/WPA3).",
+    "vulnerabilityHiddenSsidTitle": "SSID ya Veşartî",
+    "vulnerabilityHiddenSsidDesc": "SSID-yên veşartî hîn jî dikarin werin dîtin û dibe ku lihevhatinê xirab bikin.",
+    "vulnerabilityHiddenSsidRec": "SSID-ya veşartî ne parastin e. Bala xwe bidin ser şîfrekirina bi hêz.",
+    "vulnerabilityWeakSignalTitle": "Sînyala Gelek Lawaz",
+    "vulnerabilityWeakSignalDesc": "Sînyala lawaz dikare girêdanên ne aram û metirsiyan nîşan bide.",
+    "vulnerabilityWeakSignalRec": "Nêzîkî AP bibin an BSSID kontrol bikin.",
+    "vulnerabilityWpsTitle": "WPS Çalak e",
+    "vulnerabilityWpsDesc": "Wi-Fi Korumalı Kurulum (WPS) çalak e. Moda PIN-a WPS dikare bi hêsanî were şikandin û gihîştina şîfreyê bide.",
+    "vulnerabilityWpsRec": "Di panela mîhengan a routerê de WPS bigirin. Tenê WPA2/WPA3 bikar bînin.",
+    "vulnerabilityPmfTitle": "Çarçoveyên Rêvebiriyê Nehatine Parastin",
+    "vulnerabilityPmfDesc": "Ev access point PMF (802.11w) naxwaze. Nivîsên rêvebiriyê yên neparastî rê didin êrîşkaran ku amûran deauth bikin.",
+    "vulnerabilityPmfRec": "Di mîhengên routerê de PMF (wek '802.11w' jî tê zanîn) çalak bikin. WPA3 jixwe PMF dixwaze.",
+    "vulnerabilityEvilTwinTitle": "Evil Twin ya Potansiyel",
+    "vulnerabilityEvilTwinDesc": "SSID li nêzîk bi hûrguliyên ewlehiyê yên nakok xuya dike.",
+    "vulnerabilityEvilTwinRec": "Beriya nasandinê BSSID û sertîfîkayê kontrol bikin.",
+    "riskFactorNoEncryption": "Şîfrekirin nayê bikaranîn",
+    "riskFactorDeprecatedEncryption": "Şîfrekirina kevnar (WEP)",
+    "riskFactorLegacyWpa": "WPA ya kevn di bikaranînê de ye",
+    "riskFactorHiddenSsid": "Tevgera SSID a veşartî",
+    "riskFactorWeakSignal": "Hawirdora sînyala lawaz",
+    "riskFactorWpsEnabled": "WPS PIN vekirî ye",
+    "riskFactorPmfNotEnforced": "PMF nayê xwestin — xetera deauth heye",
+    "refresh": "Nû bike",
+    "@refresh": {
+        "description": "Nîşana bişkojka nûkirinê."
+    },
+    "addZonePoint": "Xala Herêmê Zêde Bike",
+    "@addZonePoint": {
+        "description": "Sernavê zêdekirina xalê."
+    },
+    "cancel": "Betal bike",
+    "@cancel": {
+        "description": "Nîşana bişkojka betalkirinê."
+    },
+    "save": "Tomar bike",
+    "@save": {
+        "description": "Nîşana bişkojka tomarkirinê."
+    },
+    "waitingForData": "Li benda daneyan e...",
+    "@waitingForData": {
+        "description": "Dema barkirina daneyan tê nîşandan."
+    },
+    "temporalHeatmap": "Nexşeya Germiyê ya Demkî",
+    "@temporalHeatmap": {
+        "description": "Sernavê rûpela nexşeya germiyê."
+    },
+    "failedToSaveHeatmapPoint": "Xala nexşeya germiyê nehat tomarkirin",
+    "signalMonitoringTitle": "ŞOPANDINA SÎNYALÊ: {ssid}",
+    "@signalMonitoringTitle": {
+        "placeholders": {
+            "ssid": {
+                "type": "String"
+            }
+        }
+    },
+    "heatmapTooltip": "Nexşeya Germiyê",
+    "tagCurrentPointTooltip": "Xala heyî nîşan bike",
+    "signalCaps": "SÎNYAL",
+    "channelCaps": "KANAL",
+    "frequencyCaps": "FREKANS",
+    "heatmapPointAdded": "Xala nexşeya germiyê ji bo {zone} hat zêdekirin",
+    "@heatmapPointAdded": {
+        "placeholders": {
+            "zone": {
+                "type": "String"
+            }
+        }
+    },
+    "zoneTagLabel": "Etîketa herêmê (mînak: Metbex)",
+    "errorPrefix": "Şaşî: {message}",
+    "@errorPrefix": {
+        "placeholders": {
+            "message": {
+                "type": "String"
+            }
+        }
+    },
+    "noHeatmapPointsYet": "Ji bo {bssid} hîn ti xalên nexşeya germiyê tune",
+    "@noHeatmapPointsYet": {
+        "placeholders": {
+            "bssid": {
+                "type": "String"
+            }
+        }
+    },
+    "averageSignalByZone": "Sînyala navîn li gorî herêman",
+    "bandChannels": "{band} KANAL",
+    "@bandChannels": {
+        "placeholders": {
+            "band": {
+                "type": "String"
+            }
+        }
+    },
+    "recommendedChannel": "KANALA PÊŞNIYARKIRÎ",
+    "channelInfo": "Kanala {ch} · {freq} MHz",
+    "@channelInfo": {
+        "placeholders": {
+            "ch": {
+                "type": "int"
+            },
+            "freq": {
+                "type": "int"
+            }
+        }
+    },
+    "riskFactorFingerprintDrift": "Veqetîna şopa tiliya SSID hat dîtin",
+    "historyCaps": "DÎROK",
+    "consistentlyBestChannel": "KANALA HERÎ BAŞ A BERDEWAM",
+    "avgScore": "Skora Navîn",
+    "channelBondingTitle": "Girêdana Kanalan",
+    "channelBondingDesc": "Girêdana kanalan 2 an zêdetir kanalên cîranê hev dixe yek ku firehiya bandê zêde bibe (40 MHz = 2×, 80 MHz = 4×, 160 MHz = 8×). Kanalên firehtir leza zêdetir didin lê dikarin bandorê li ser torên cîran jî bikin.",
+    "spectrumOptimizationCaps": "OPTMÎZASYONA SPEKTRUMÊ",
+    "spectrumOptimizationDesc": "Qelebalixiya kanalê û parazîtê analîz bike",
+    "qualityExcellent": "Zaf Baş",
+    "qualityVeryGood": "Gelek Baş",
+    "qualityGood": "Baş",
+    "qualityFair": "Normal",
+    "qualityCongested": "Qelebalix",
+    "channelBondingHeader": "GIRÊDANA KANALAN ({count} AP)",
+    "@channelBondingHeader": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "hiddenSsidLabel": "[Veşartî]",
+    "noHistoryPlaceholder": "Hîn dîrok tune.\nHer cara ku hûn vê ekranê vedikin, pileya kanalan tê tomarkirin.",
+    "currentSessionInfo": "Oturuma heyî — skora bilind = kêmtir qerebalix.",
+    "historySummaryInfo": "{sessions} rûniştin · {samples} nimûne · bilindtir = kêmtir qerebalix",
+    "@historySummaryInfo": {
+        "placeholders": {
+            "sessions": {
+                "type": "int"
+            },
+            "samples": {
+                "type": "int"
+            }
+        }
+    },
+    "scanReportTitle": "Rapora Skana Wi-Fi ya Torcav",
+    "reportTime": "Dem",
+    "ssidHeader": "SSID",
+    "bssidHeader": "BSSID",
+    "dbmHeader": "dBm",
+    "channelHeader": "CH",
+    "navDashboard": "DASHBOARD",
+    "navDiscovery": "VEDÎTIN",
+    "navOperations": "OPERASYON",
+    "navLan": "LAN",
+    "systemStatus": "Rewşa Pergalê",
+    "interfaceTheme": "Mijara Navrûyê",
+    "speedTestHeader": "TESTA LEZÊ",
+    "startTest": "DEST PÊ BIKIN",
+    "testAgain": "DÎSA TEST BIKIN",
+    "commandCenters": "NAVENDA FERMANDARIYÊ",
+    "activeShielding": "Mertalê Çalak",
+    "logisticsTitle": "LOJÎSTÎK",
+    "intelMetrics": "Metrîkên Veqetandî",
+    "networkMesh": "Tora Qatî",
+    "tuningTitle": "VERASTKIRIN",
+    "systemConfig": "Veavakirina Pergalê",
+    "phasePing": "QONAX: PING",
+    "phaseDownload": "QONAX: DAXISTIN",
+    "phaseUpload": "QONAX: BARKIRIN",
+    "phaseDone": "QONAX: TEMAM",
+    "riskScore": "Pûana Rîskê",
+    "loading": "Tê barkirin...",
+    "profileTitle": "NAVENDA PROFILÊ",
+    "activeSessionLabel": "Danişîna Çalak",
+    "networkStatusLabel": "REWŞA TORÊ",
+    "ssid": "SSID",
+    "lastScanTitle": "SKANA DAWÎ",
+    "lastSnapshot": "Veqetandina Dawî"
 }

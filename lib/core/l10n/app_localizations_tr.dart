@@ -9,523 +9,50 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get activeOperationsBlockedMsg => 'Etkin operasyonlar, politika ve izin listesi koşulları sağlanmadıkça engellenir.';
+  String get wifiScanTitle => 'WIFI TARAMA';
 
   @override
-  String get authorizedTargets => 'Yetkili Hedefler';
+  String get searchingNetworksPlaceholder => 'AĞLAR ARANIYOR...';
 
   @override
-  String get add => 'Ekle';
+  String get filterNetworksPlaceholder => 'AĞLARI FİLTRELE...';
 
   @override
-  String get noTargetsAllowlisted => 'Henüz izin verilen hedef yok.';
+  String get quickScan => 'Hızlı Tarama';
 
   @override
-  String get hiddenNetwork => 'Gizli Ağ';
+  String get deepScan => 'Derin Tarama';
 
   @override
-  String get remove => 'Kaldır';
+  String get scanModesTitle => 'Tarama Modları';
 
   @override
-  String get securityTimeline => 'Güvenlik Zaman Çizelgesi';
+  String get scanModesInfo => 'Hızlı tarama yayınları dinler. Derin tarama aktif olarak ağları sorgular.';
 
   @override
-  String get noSecurityEvents => 'Henüz güvenlik olayı yok.';
+  String get readyToScan => 'Taramaya Hazır';
 
   @override
-  String get authorizeTarget => 'Hedefi Yetkilendir';
+  String get noSignalsDetected => 'Sinyal Tespit Edilmedi';
 
   @override
-  String get ssid => 'SSID';
+  String get compareWithPreviousScan => 'ÖNCEKİ TARAMA İLE KARŞILAŞTIR';
 
   @override
-  String get bssid => 'BSSID';
-
-  @override
-  String get allowHandshakeCapture => 'Yakalamaya izin ver (Handshake)';
-
-  @override
-  String get allowActiveDefense => 'Aktif savunma/deauth testlerine izin ver';
-
-  @override
-  String get cancel => 'İptal';
-
-  @override
-  String get save => 'Kaydet';
-
-  @override
-  String get confirm => 'Onayla';
-
-  @override
-  String get legalDisclaimerAccepted => 'Yasal uyarı kabul edildi';
-
-  @override
-  String get requiredForActiveOps => 'Aktif operasyonlar için gerekli';
-
-  @override
-  String get strictAllowlist => 'Katı izin listesi';
-
-  @override
-  String get blockActiveOpsUnknown => 'Bilinmeyen hedefler için aktif operasyonları engelle';
-
-  @override
-  String get rateLimitActiveOps => 'Operasyonlar arası bekleme';
-
-  @override
-  String get selectFromScanned => 'Tarananlardan seç';
-
-  @override
-  String get settingsLanguage => 'Dil';
-
-  @override
-  String get settingsScanBehavior => 'Varsayılan tarama davranışı, arka uç stratejisi ve güvenlik durumu.';
-
-  @override
-  String get settingsDefaultScanPasses => 'Varsayılan tarama geçişleri';
-
-  @override
-  String get settingsMonitoringInterval => 'İzleme aralığı (saniye)';
-
-  @override
-  String get settingsBackendPreference => 'Varsayılan arka uç tercihi';
-
-  @override
-  String get settingsIncludeHidden => 'Varsayılan olarak gizli SSID\'leri dahil et';
-
-  @override
-  String get settingsStrictSafety => 'Katı güvenlik modu';
-
-  @override
-  String get settingsStrictSafetyDesc => 'Aktif operasyonlar için onay + izin listesi gerektir';
-
-  @override
-  String get navDashboard => 'Panel';
-
-  @override
-  String get navWifi => 'Wi-Fi';
-
-  @override
-  String get navLan => 'LAN';
-
-  @override
-  String get navDiscovery => 'Keşif';
-
-  @override
-  String get navOperations => 'Operasyonlar';
-
-  @override
-  String get navMore => 'Daha Fazla';
-
-  @override
-  String get moreTitle => 'DAHA FAZLA';
-
-  @override
-  String get sectionTools => 'ARAÇLAR';
-
-  @override
-  String get speedTestTitle => 'Hız Testi ve İzleme';
-
-  @override
-  String get speedTestDesc => 'Bant genişliği, gecikme ve anomali takibi';
-
-  @override
-  String get securityCenterTitle => 'Güvenlik Merkezi';
-
-  @override
-  String get securityCenterDesc => 'Risk puanlama, izin listeleri ve politika denetimleri';
-
-  @override
-  String get reportsTitle => 'Raporlar';
-
-  @override
-  String get reportsDesc => 'Taramaları PDF, HTML veya JSON olarak dışa aktar';
-
-  @override
-  String get sectionPreferences => 'TERCİHLER';
-
-  @override
-  String get settingsTitle => 'Ayarlar';
-
-  @override
-  String get settingsDesc => 'Tarama davranışı, arka uçlar ve güvenlik modu';
-
-  @override
-  String get monitoringTitle => 'İzleme';
-
-  @override
-  String get monitoringSubtitle => 'Bant genişliği, anomali tespiti ve ısı haritası akışları.';
-
-  @override
-  String get packetsPerSecondLabel => 'Saniyelik Paket Sayısı';
-
-  @override
-  String get throughputLabel => 'Veri Akışı';
-
-  @override
-  String get comingSoon => 'ÇOK YAKINDA';
-
-  @override
-  String get signalTrends => 'Sinyal Eğilimleri';
-
-  @override
-  String get topologyMesh => 'Topoloji ve Mesh';
-
-  @override
-  String get anomalyAlerts => 'Anomali Uyarıları';
-
-  @override
-  String get speedTestHeader => 'HIZ TESTİ';
-
-  @override
-  String get testConnectionSpeed => 'Bağlantı hızınızı test edin';
-
-  @override
-  String get testing => 'TEST EDİLİYOR…';
-
-  @override
-  String get testAgain => 'TEKRAR TEST ET';
-
-  @override
-  String get startTest => 'TESTİ BAŞLAT';
-
-  @override
-  String get phasePing => 'PING';
-
-  @override
-  String get phaseDownload => 'İNDİRME';
-
-  @override
-  String get phaseUpload => 'YÜKLEME';
-
-  @override
-  String get phaseDone => 'BİTTİ';
-
-  @override
-  String get wifiScanTitle => 'WI-FI ANALİZÖRÜ';
-
-  @override
-  String get scanSettingsTooltip => 'Tarama ayarları';
-
-  @override
-  String get channelRatingTooltip => 'Kanal puanlaması';
-
-  @override
-  String get refreshScanTooltip => 'Taramayı yenile';
-
-  @override
-  String get readyToScan => 'Taramaya hazır';
-
-  @override
-  String get scanButton => 'Tara';
-
-  @override
-  String get scanSettingsTitle => 'Tarama Ayarları';
-
-  @override
-  String passes(Object count) {
-    return 'Geçişler: $count';
+  String networksCount(int count) {
+    return '$count AĞ';
   }
 
   @override
-  String get includeHiddenSsids => 'Gizli SSID\'leri dahil et';
-
-  @override
-  String get backendPreference => 'Arka uç tercihi';
-
-  @override
-  String get apply => 'Uygula';
-
-  @override
-  String get noSignalsDetected => 'Sinyal algılanmadı';
-
-  @override
-  String get lastSnapshot => 'Son Anlık Görüntü';
-
-  @override
-  String get bandAnalysis => 'Bant Analizi';
-
-  @override
-  String networksCount(Object count) {
-    return 'Ağlar ($count)';
+  String filteredNetworksCount(int count, int total) {
+    return '$total AĞDAN $count TANESİ';
   }
 
   @override
-  String get recommendation => 'Öneri';
+  String get securityAlertsTooltip => 'Güvenlik uyarılarını görüntüle';
 
   @override
-  String get lanReconTitle => 'YEREL AĞ KEŞFİ';
-
-  @override
-  String scanFailed(Object message) {
-    return 'TARAMA BAŞARISIZ: $message';
-  }
-
-  @override
-  String get readyToScanAllCaps => 'TARAMAYA HAZIR';
-
-  @override
-  String get targetSubnet => 'Hedef Alt Ağ/IP';
-
-  @override
-  String get profile => 'Profil';
-
-  @override
-  String get method => 'Yöntem';
-
-  @override
-  String get scanAllCaps => 'TARA';
-
-  @override
-  String get noHostsFound => 'CİHAZ BULUNAMADI';
-
-  @override
-  String get unknownHost => 'Bilinmeyen cihaz';
-
-  @override
-  String os(Object os) {
-    return 'İS: $os';
-  }
-
-  @override
-  String services(Object services) {
-    return 'Servisler: $services';
-  }
-
-  @override
-  String vuln(Object vuln) {
-    return 'Zaafiyet: $vuln';
-  }
-
-  @override
-  String get reportsSubtitle => 'Son tarama oturumunu JSON, HTML veya PDF olarak dışa aktar.';
-
-  @override
-  String get noSnapshotAvailable => 'Henüz tarama görüntüsü yok. Önce bir Wi-Fi taraması yapın.';
-
-  @override
-  String latestSnapshot(Object count, Object backend) {
-    return 'Son görüntü: $backend üzerinden $count ağ';
-  }
-
-  @override
-  String get exportJson => 'JSON Dışa Aktar';
-
-  @override
-  String get exportHtml => 'HTML Dışa Aktar';
-
-  @override
-  String get exportPdf => 'PDF Dışa Aktar';
-
-  @override
-  String get printPdf => 'PDF Yazdır';
-
-  @override
-  String get saveReportDialog => 'Raporu kaydet';
-
-  @override
-  String get sectionStatus => 'DURUM';
-
-  @override
-  String get exportOptionsTitle => 'DIŞA AKTARIM SEÇENEKLERİ';
-
-  @override
-  String get latestSnapshotTitle => 'SON ANLIK GÖRÜNTÜ';
-
-  @override
-  String get backendLabel => 'Arka Uç';
-
-  @override
-  String get savePdfReportDialog => 'PDF raporunu kaydet';
-
-  @override
-  String savedToast(Object path) {
-    return 'Kaydedildi: $path';
-  }
-
-  @override
-  String get handshakeCaptureCheck => 'Handshake yakalama kontrolü';
-
-  @override
-  String get activeDefenseReadiness => 'Aktif savunma hazırlığı';
-
-  @override
-  String get signalGraph => 'Sinyal Grafiği';
-
-  @override
-  String get riskFactors => 'RİSK FAKTÖRLERİ';
-
-  @override
-  String get vulnerabilities => 'ZAFİYETLER';
-
-  @override
-  String recommendationLabel(Object text) {
-    return 'ÖNERİ: $text';
-  }
-
-  @override
-  String get noVulnerabilities => 'Mevcut tarama verilerine göre bilinen zafiyet algılanmadı.';
-
-  @override
-  String get bssId => 'BSSID';
-
-  @override
-  String get channel => 'KANAL';
-
-  @override
-  String get security => 'GÜVENLİK';
-
-  @override
-  String get signal => 'SİNYAL';
-
-  @override
-  String get channelRatingTitle => 'KANAL PUANLAMASI';
-
-  @override
-  String get band24Ghz => '2.4 GHz';
-
-  @override
-  String get band5Ghz => '5 GHz';
-
-  @override
-  String get no24GhzChannels => '2.4 GHz kanal algılanmadı.';
-
-  @override
-  String get no5GhzChannels => '5 GHz kanal algılanmadı.';
-
-  @override
-  String get band6Ghz => '6 GHz';
-
-  @override
-  String get no6GhzChannels => '6 GHz kanal algılanmadı.';
-
-  @override
-  String get recommendedChannel => 'ÖNERİLEN KANAL';
-
-  @override
-  String channelInfo(Object channel, Object frequency) {
-    return 'Kan $channel — $frequency MHz';
-  }
-
-  @override
-  String bandChannels(Object band) {
-    return '$band Kanalları';
-  }
-
-  @override
-  String get errorLabel => 'Hata';
-
-  @override
-  String get loading => 'Yükleniyor…';
-
-  @override
-  String get analyzing => 'Analiz ediliyor…';
-
-  @override
-  String get success => 'Başarılı';
-
-  @override
-  String get ok => 'Tamam';
-
-  @override
-  String get scannedNetworksTitle => 'Taranan Ağlar';
-
-  @override
-  String get noNetworksFound => 'Ağ bulunamadı.';
-
-  @override
-  String get retry => 'Tekrar Dene';
-
-  @override
-  String get knownNetworks => 'Bilinen Ağlar';
-
-  @override
-  String get noKnownNetworksYet => 'Henüz bilinen ağ yok.';
-
-  @override
-  String opsLabel(Object ops) {
-    return 'Ops: $ops';
-  }
-
-  @override
-  String get networkStatusLabel => 'AĞ DURUMU';
-
-  @override
-  String get activeSessionLabel => 'AKTİF OTURUM';
-
-  @override
-  String get gatewayLabel => 'GEÇİT';
-
-  @override
-  String get ipLabel => 'IP ADRESİ';
-
-  @override
-  String get connectedStatusCaps => 'BAĞLI';
-
-  @override
-  String get disconnectedStatusCaps => 'BAĞLI DEĞİL';
-
-  @override
-  String get quickActionsTitle => 'HIZLI İŞLEMLER';
-
-  @override
-  String get lastScanTitle => 'SON TARAMA';
-
-  @override
-  String get viewDetailsAction => 'DETAYLARI GÖR';
-
-  @override
-  String get scanning => 'TARIYOR…';
-
-  @override
-  String get secure => 'GÜVENLİ';
-
-  @override
-  String get blockUnknownAP => 'Bilinmeyen AP\'leri Engelle';
-
-  @override
-  String get automaticBlockMsg => 'Rogue AP bağlantılarını otomatik olarak keser';
-
-  @override
-  String get activeProbingEnabled => 'Aktif Sondaj';
-
-  @override
-  String get activeProbingMsg => 'Bağlı AP\'leri anomali için periyodik test eder';
-
-  @override
-  String get requireConsentForDeauth => 'Onay Gerekli';
-
-  @override
-  String get manualAuthorizationMsg => 'Deauth/Aktif savunmayı manuel yetkilendir';
-
-  @override
-  String get defensePolicy => 'Savunma Politikası';
-
-  @override
-  String get shieldActive => 'Kalkan Aktif';
-
-  @override
-  String get activeProtection => 'Aktif Koruma';
-
-  @override
-  String get riskScore => 'Risk Puanı';
-
-  @override
-  String get securityRadar => 'Güvenlik Radarı';
-
-  @override
-  String get profileTitle => 'AJAN PROFİLİ';
-
-  @override
-  String get logout => 'OTURUMU KAPAT';
-
-  @override
-  String get logoutConfirmation => 'OTURUMU SONLANDIR';
-
-  @override
-  String get logoutConfirmMessage => 'Mevcut oturumu sonlandırmak istediğinizden emin misiniz? Tüm aktif izlemeler duraklatılacaktır.';
-
-  @override
-  String get livePulse => 'CANLI NABIZ';
+  String get livePulse => 'CANLI VERİ';
 
   @override
   String get operationsLabel => 'OPERASYONLAR';
@@ -534,25 +61,268 @@ class AppLocalizationsTr extends AppLocalizations {
   String get topologyLabel => 'TOPOLOJİ';
 
   @override
-  String get accessEngine => 'ERİŞİM MOTORU';
-
-  @override
   String get networkLogs => 'AĞ GÜNLÜKLERİ';
 
   @override
-  String get strictSafetyEnabled => 'KATI GÜVENLİK ETKİN';
+  String get connectedStatusCaps => 'BAĞLI';
 
   @override
-  String get activeMonitoringProgress => 'Aktif izleme devam ediyor';
+  String get disconnectedStatusCaps => 'BAĞLANTI YOK';
 
   @override
-  String get topologyMapTitle => 'TOPOLOJİ HARİTASI';
+  String get ipLabel => 'IP';
+
+  @override
+  String get gatewayLabel => 'AĞ GEÇİDİ';
+
+  @override
+  String get accessEngine => 'ERİŞİM MOTORU';
+
+  @override
+  String get latestSnapshotTitle => 'Son Ağ Görünümü';
+
+  @override
+  String get noSnapshotAvailable => 'Görünüm verisi yok...';
+
+  @override
+  String get strictSafetyEnabled => 'Sıkı güvenlik protokolleri etkin';
+
+  @override
+  String get activeMonitoringProgress => 'Aktif izleme devam ediyor...';
+
+  @override
+  String get scanComparisonTitle => 'TARAMA KARŞILAŞTIRMA';
+
+  @override
+  String get comparisonNeedsTwoScans => 'Karşılaştırma için en az 2 tarama gereklidir.\n\nDeğişiklikleri görmek için başka bir tarama yapın.';
+
+  @override
+  String get noChangesDetected => 'Son iki tarama arasında değişiklik tespit edilmedi.';
+
+  @override
+  String newNetworksCountLabel(int count) {
+    return 'YENİ ($count)';
+  }
+
+  @override
+  String goneNetworksCountLabel(int count) {
+    return 'GİDEN ($count)';
+  }
+
+  @override
+  String changedNetworksCountLabel(int count) {
+    return 'DEĞİŞEN ($count)';
+  }
+
+  @override
+  String get plusNewLabel => '+ YENİ';
+
+  @override
+  String get goneLabel => 'GİDEN';
+
+  @override
+  String get hiddenLabel => '[Gizli]';
+
+  @override
+  String channelLabel(int channel) {
+    return 'K$channel';
+  }
+
+  @override
+  String get securityLabel => 'GÜVENLİK';
+
+  @override
+  String get initiatingSpectrumScan => 'SPEKTRUM TARAMASI BAŞLATILIYOR...';
+
+  @override
+  String get broadcastingProbeRequests => 'PROBE İSTEKLERİ YAYINLANIYOR...';
+
+  @override
+  String get noRadiosInRange => 'Menzilde radyo bulunamadı';
+
+  @override
+  String get noNetworksMatchFilter => 'Filtreye uygun ağ bulunamadı';
+
+  @override
+  String get searchSsidBssidVendor => 'SSID, BSSID veya Satıcı Ara...';
+
+  @override
+  String sortPrefix(String option) {
+    return 'Sırala: $option';
+  }
+
+  @override
+  String get bandAll => 'TÜM BANTLAR';
+
+  @override
+  String get sortSignal => 'Sinyal';
+
+  @override
+  String get sortName => 'İsim';
+
+  @override
+  String get sortChannel => 'Kanal';
+
+  @override
+  String get sortSecurity => 'Güvenlik';
+
+  @override
+  String get sortByTitle => 'SIRALA';
+
+  @override
+  String recommendationTip(String channels, String band) {
+    return '$band bandında en uygun kanallar: $channels';
+  }
+
+  @override
+  String get channelInterferenceTitle => 'Kanal Girişimi';
+
+  @override
+  String get networksLabel => 'AĞLAR';
+
+  @override
+  String openCount(int count) {
+    return '$count AÇIK';
+  }
+
+  @override
+  String get avgSignalLabel => 'ORT. SİNYAL';
+
+  @override
+  String get notAvailable => 'YOK';
+
+  @override
+  String get dbmCaps => 'DBM';
+
+  @override
+  String get interfaceLabel => 'ARAYÜZ';
+
+  @override
+  String frequencyLabel(int freq) {
+    return '$freq MHz';
+  }
+
+  @override
+  String get reportsTitle => 'RAPORLAR';
+
+  @override
+  String get saveReportDialog => 'Raporu Kaydet';
+
+  @override
+  String savedToast(String path) {
+    return 'Rapor $path konumuna kaydedildi';
+  }
+
+  @override
+  String get errorLabel => 'Hata';
+
+  @override
+  String get savePdfReportDialog => 'Save PDF Report';
+
+  @override
+  String get scanning => 'Taranıyor...';
+
+  @override
+  String get shieldActive => 'Kalkan Aktif';
+
+  @override
+  String get threatsDetected => 'Tehditler Tespit Edildi';
+
+  @override
+  String get trustedLabel => 'GÜVENİLİR';
+
+  @override
+  String get securityEventTitle => 'Güvenlik Olayı';
+
+  @override
+  String get networkReconTitle => 'AĞ KEŞFİ';
+
+  @override
+  String get intelligenceReportTitle => 'İSTİHBARAT RAPORU';
+
+  @override
+  String get discoveredEndpointsTitle => 'TESPİT EDİLEN UÇ NOKTALAR';
+
+  @override
+  String newDeviceFound(String ip) {
+    return '1 yeni cihaz: $ip';
+  }
+
+  @override
+  String newDevicesFound(int count) {
+    return 'Ağınızda $count yeni cihaz bulundu';
+  }
+
+  @override
+  String get targetIpSubnet => 'Hedef IP / Alt Ağ';
+
+  @override
+  String get scanProfileFast => 'Hızlı';
+
+  @override
+  String get scanProfileBalanced => 'Balanced';
+
+  @override
+  String get scanProfileAggressive => 'Aggressive';
+
+  @override
+  String get scanProfileNormal => 'Normal';
+
+  @override
+  String get scanProfileIntense => 'Yoğun';
+
+  @override
+  String get vulnOnlyLabel => 'Sadece Zafiyetler';
+
+  @override
+  String get lanReconTitle => 'LAN TARAMASI';
+
+  @override
+  String get targetSubnet => 'Hedef IP / Alt Ağ';
+
+  @override
+  String get scanAllCaps => 'TARA';
+
+  @override
+  String get channelRatingTitle => 'KANAL PUANLAMASI';
+
+  @override
+  String get refreshScanTooltip => 'Taramayı Yenile';
+
+  @override
+  String get band24Ghz => '2.4 GHz';
+
+  @override
+  String get band5Ghz => '5 GHz';
+
+  @override
+  String get band6Ghz => '6 GHz';
+
+  @override
+  String get no24GhzChannels => '2.4 GHz kanalı bulunamadı.';
+
+  @override
+  String get no5GhzChannels => '5 GHz kanalı bulunamadı.';
+
+  @override
+  String get no6GhzChannels => '6 GHz kanalı bulunamadı.';
+
+  @override
+  String get analyzing => 'Analiz ediliyor...';
+
+  @override
+  String get historyLabel => 'GEÇMİŞ';
+
+  @override
+  String failedLoadTopology(String error) {
+    return 'Topoloji yüklenemedi: $error';
+  }
 
   @override
   String get trafficLabel => 'TRAFİK';
 
   @override
-  String get forceLabel => 'KUVVET';
+  String get forceLabel => 'GÜÇ';
 
   @override
   String get normalSpeed => 'NORMAL';
@@ -561,126 +331,70 @@ class AppLocalizationsTr extends AppLocalizations {
   String get fastSpeed => 'HIZLI';
 
   @override
-  String get overdriveSpeed => 'AŞIRI HIZ';
+  String get overdriveSpeed => 'MAKSİMUM';
 
   @override
-  String get noTopologyData => 'Topoloji verisi yok';
+  String get topologyMapTitle => 'TOPOLOJİ HARİTASI';
 
   @override
-  String get runScanFirst => 'Önce bir Wi-Fi ve LAN taraması yapın';
+  String get noTopologyData => 'Topoloji Verisi Yok';
 
   @override
-  String get thisDevice => 'Bu Cihaz';
+  String get runScanFirst => 'Ağ haritasını oluşturmak için önce bir tarama yapın';
 
   @override
-  String get gatewayDevice => 'Ağ Geçidi';
+  String get retry => 'TEKRAR DENE';
 
   @override
-  String get mobileDevice => 'Mobil';
+  String get thisDevice => 'BU CİHAZ';
 
   @override
-  String get deviceLabel => 'Cihaz';
+  String get gatewayDevice => 'AĞ GEÇİDİ';
 
   @override
-  String get iotDevice => 'IoT';
+  String get mobileDevice => 'MOBİL';
 
   @override
-  String get analyzingNode => 'DÜĞÜM ANALİZ EDİLİYOR...';
+  String get deviceLabel => 'CİHAZ';
 
   @override
-  String failedLoadTopology(Object error) {
-    return 'Topoloji yüklenemedi: $error';
-  }
+  String get iotDevice => 'NESNELERİN İNTERNETİ';
 
   @override
-  String get neuralCoreTitle => 'SİNİRSEL_ÇEKİRDEK_AI';
+  String get analyzingNode => 'DÜĞÜM ANALİZİ';
 
   @override
-  String get activeAnomalies => 'AKTİF ANOMALİLER';
+  String get settingsTitle => 'AYARLAR';
 
   @override
-  String get predictiveHealth => 'TAHMİNİ SAĞLIK';
+  String get appearance => 'Görünüm';
 
   @override
-  String get aiStrategyReport => 'AI STRATEJİ RAPORU';
-
-  @override
-  String get engineStability => 'MOTOR_KARARLILIĞI: OPTİMAL';
-
-  @override
-  String get aiStrategyText => 'Mevcut ağ topolojisi stabil bir imza öneriyor. Alt ağlarda anlık yatay hareket tespit edilmedi. Pasif düğüm keşfini azaltmak için genel erişim noktalarında Gizli Mod etkinleştirilmesi önerilir.';
-
-  @override
-  String get packetSnifferTitle => 'PAKET_YAKALAYICI';
-
-  @override
-  String get streamPaused => 'AKIŞ_DURAKLATILDI';
-
-  @override
-  String get filterNone => 'FİLTRE: YOK';
-
-  @override
-  String get totalPackets => 'TOPLAM_PKT';
-
-  @override
-  String get droppedLabel => 'DÜŞÜRÜLEN';
-
-  @override
-  String get bufferLabel => 'TAMPON';
-
-  @override
-  String get latencyLabel => 'GECİKME';
-
-  @override
-  String get activeMonitoring => 'AKTİF İZLEME';
-
-  @override
-  String get deactivate => 'DEVRE DIŞI BIRAK';
-
-  @override
-  String get initializeLink => 'BAĞLANTIYI BAŞLAT';
-
-  @override
-  String get commandCenters => 'KOMUTA MERKEZLERİ';
-
-  @override
-  String get defenseTitle => 'SAVUNMA';
-
-  @override
-  String get activeShielding => 'Aktif Kalkan';
-
-  @override
-  String get logisticsTitle => 'LOJİSTİK';
-
-  @override
-  String get intelMetrics => 'İstihbarat & Metrikler';
-
-  @override
-  String get networkMesh => 'Ağ Mesh';
-
-  @override
-  String get tuningTitle => 'AYARLAMA';
-
-  @override
-  String get systemConfig => 'Sistem Yapılandırması';
-
-  @override
-  String get technicalTools => 'TEKNİK ARAÇLAR';
-
-  @override
-  String get packetLogs => 'PAKET GÜNLÜKLERİ';
-
-  @override
-  String get aiInsights => 'AI İÇGÖRÜLER';
-
-  @override
-  String get interactiveSimulation => 'ETKİLEŞİMLİ_SİMÜLASYON';
-
-  @override
-  String get appearance => 'GÖRÜNÜM';
+  String get settingsLanguage => 'Dil';
 
   @override
   String get theme => 'Tema';
+
+  @override
+  String get settingsScanBehavior => 'Tarama Davranışı';
+
+  @override
+  String get settingsDefaultScanPasses => 'Varsayılan Tarama Geçişi';
+
+  @override
+  String get settingsMonitoringInterval => 'İzleme Aralığı';
+
+  @override
+  String get settingsBackendPreference => 'Backend Tercihi';
+
+  @override
+  String get settingsIncludeHidden => 'Gizli Ağları Dahil Et';
+
+  @override
+  String get settingsStrictSafety => 'Sıkı Güvenlik Modu';
+
+  @override
+  String get settingsStrictSafetyDesc => 'Tehlikeli işlemleri kısıtla';
 
   @override
   String get darkTheme => 'Koyu';
@@ -692,5 +406,540 @@ class AppLocalizationsTr extends AppLocalizations {
   String get systemTheme => 'Sistem';
 
   @override
-  String get systemStatus => 'SİSTEM DURUMU';
+  String get sectionStatus => 'Durum';
+
+  @override
+  String get reportsSubtitle => 'Ağ Tarama ve Güvenlik İstihbaratı';
+
+  @override
+  String get exportOptionsTitle => 'DIŞA AKTARMA SEÇENEKLERİ';
+
+  @override
+  String get exportJson => 'JSON Olarak Dışa Aktar';
+
+  @override
+  String get exportHtml => 'HTML Olarak Dışa Aktar';
+
+  @override
+  String get exportPdf => 'PDF Olarak Dışa Aktar';
+
+  @override
+  String get printPdf => 'PDF Yazdır';
+
+  @override
+  String get navWifi => 'WIFI';
+
+  @override
+  String get backendLabel => 'BACKEND';
+
+  @override
+  String get defenseTitle => 'SAVUNMA';
+
+  @override
+  String get knownNetworks => 'Bilinen Ağlar';
+
+  @override
+  String get noKnownNetworksYet => 'Henüz bilinen ağ yok';
+
+  @override
+  String get securityTimeline => 'Güvenlik Zaman Çizelgesi';
+
+  @override
+  String get noSecurityEvents => 'Kayıtlı güvenlik olayı yok';
+
+  @override
+  String get authLocalSystem => 'YEREL_SİSTEM';
+
+  @override
+  String remoteNodeIdLabel(String id) {
+    return 'UZAK_DÜĞÜM_İD: $id';
+  }
+
+  @override
+  String get ipAddrLabel => 'IP_ADRESİ';
+
+  @override
+  String get macValLabel => 'MAC_DEĞERİ';
+
+  @override
+  String get mnfrLabel => 'SATICI';
+
+  @override
+  String get hiddenNetwork => 'Gizli Ağ';
+
+  @override
+  String get signalGraph => 'Sinyal Grafiği';
+
+  @override
+  String get riskFactors => 'Risk Faktörleri';
+
+  @override
+  String get vulnerabilities => 'Zafiyetler';
+
+  @override
+  String get bssId => 'BSSID';
+
+  @override
+  String get channel => 'Kanal';
+
+  @override
+  String get security => 'Güvenlik';
+
+  @override
+  String get signal => 'Sinyal';
+
+  @override
+  String recommendationLabel(String text) {
+    return 'ÖNERİ: $text';
+  }
+
+  @override
+  String get noVulnerabilities => 'Hiçbir zafiyet tespit edilmedi.';
+
+  @override
+  String get securityScoreTitle => 'Güvenlik Puanı';
+
+  @override
+  String get securityScoreDesc => 'Güvenlik puanı (0-100) bu ağın ne kadar iyi korunduğunu gösterir. Yüksek puan daha iyidir. Şifreleme türü, WPS durumu ve diğer güvenlik özellikleri dikkate alınır.';
+
+  @override
+  String get capabilitiesLabel => 'ÖZELLİKLER';
+
+  @override
+  String get wifi7MldLabel => 'Wi-Fi 7 MLD';
+
+  @override
+  String get tagWpa3Desc => 'WPA3 en yeni Wi-Fi güvenlik standardıdır — yüksek düzeyde güvenlidir.';
+
+  @override
+  String get tagWpa2Desc => 'WPA2 güçlü bir güvenlik standardıdır — günlük kullanım için güvenlidir.';
+
+  @override
+  String get tagWpaDesc => 'WPA, bilinen zayıflıkları olan eski bir güvenlik standardıdır.';
+
+  @override
+  String get tagWpsDesc => 'WPS (Wi-Fi Korumalı Kurulum) bilinen güvenlik açıklarına sahiptir. Saldırganların PIN\'i kaba kuvvetle ele geçirmesine ve erişim kazanmasına izin verebilir.';
+
+  @override
+  String get tagPmfDesc => 'Korumalı Yönetim Çerçeveleri (PMF/MFP), kimlik doğrulama saldırılarına karşı koruma sağlar.';
+
+  @override
+  String get tagEssDesc => 'ESS (Genişletilmiş Servis Seti), bunun standart bir erişim noktası ağı olduğu anlamına gelir.';
+
+  @override
+  String get tagCcmpDesc => 'CCMP (AES), WPA2/WPA3 ile kullanılan güçlü bir şifreleme yöntemidir.';
+
+  @override
+  String get tagTkipDesc => 'TKIP, eski ve daha zayıf bir şifreleme yöntemidir. CCMP/AES tercih edilir.';
+
+  @override
+  String get tagUnknownDesc => 'Beacon karelerinden gelen ağ özelliği bayrağı.';
+
+  @override
+  String get scanProfileLabel => 'TARAMA PROFİLİ';
+
+  @override
+  String get infoScanProfilesTitle => 'Tarama Profilleri';
+
+  @override
+  String get infoScanProfileFastDesc => 'Hızlı: Çabuk ping taraması — cihazları saniyeler içinde bulur.';
+
+  @override
+  String get infoScanProfileBalancedDesc => 'Dengeli: Ping + ortak portlar — daha fazla detay bulur.';
+
+  @override
+  String get infoScanProfileAggressiveDesc => 'Agresif: Tam port taraması — en kapsamlı ama en yavaş.';
+
+  @override
+  String get activeNodeRecon => 'AKTİF DÜĞÜM KEŞFİ';
+
+  @override
+  String get interrogatingSubnet => 'Alt ağ, yanıt veren ana bilgisayarlar için sorgulanıyor...';
+
+  @override
+  String get nodesLabel => 'Düğümler';
+
+  @override
+  String get riskAvgLabel => 'Risk Ort.';
+
+  @override
+  String get servicesLabel => 'Servisler';
+
+  @override
+  String get openPortsLabel => 'AÇIK PORTLAR';
+
+  @override
+  String get subnetLabel => 'Alt Ağ';
+
+  @override
+  String get cidrTargetLabel => 'CIDR HEDEFİ';
+
+  @override
+  String get anonymousNode => 'ANONİM DÜĞÜM';
+
+  @override
+  String portsCountLabel(int count) {
+    return '$count PORT';
+  }
+
+  @override
+  String get riskLabel => 'RİSK';
+
+  @override
+  String get searchLanPlaceholder => 'IP, ana bilgisayar adı veya satıcıya göre ara...';
+
+  @override
+  String get hasVulnerabilitiesLabel => 'Zafiyetleri Olanlar';
+
+  @override
+  String get securityStatusSecure => 'Güvenli';
+
+  @override
+  String get securityStatusModerate => 'Orta Derece';
+
+  @override
+  String get securityStatusAtRisk => 'Risk Altında';
+
+  @override
+  String get securityStatusCritical => 'Kritik';
+
+  @override
+  String get securitySummarySecure => 'Bağlantınız iyi görünüyor! Bu ağ güçlü şifreleme kullanıyor ve yaygın saldırılara karşı iyi korunuyor.';
+
+  @override
+  String get securitySummaryModerate => 'Bu ağın makul bir güvenliği var ancak bazı potansiyel zayıf noktaları bulunuyor. Günlük kullanım için güvenlidir, ancak hassas işlemlerden kaçının.';
+
+  @override
+  String get securitySummaryAtRisk => 'Bu ağda verilerinizi riske atan güvenlik sorunları var. Bağlıyken şifre veya kişisel bilgilerinizi girmekten kaçının.';
+
+  @override
+  String get securitySummaryCritical => 'Uyarı: Bu ağ güvenli değil. Yakındaki herkes internet trafiğinizi görebilir. Bir VPN kullanın veya ağ değiştirin.';
+
+  @override
+  String get vulnerabilityOpenNetworkTitle => 'Açık Ağ';
+
+  @override
+  String get vulnerabilityOpenNetworkDesc => 'Şifreleme tespit edilmedi. Tüm trafik düz metin olarak dinlenebilir.';
+
+  @override
+  String get vulnerabilityOpenNetworkRec => 'Hassas aktivitelerden kaçının. Güvenilir bir VPN veya farklı bir ağ tercih edin.';
+
+  @override
+  String get vulnerabilityWepTitle => 'WEP Şifreleme';
+
+  @override
+  String get vulnerabilityWepDesc => 'WEP kullanımdan kaldırılmıştır ve hızla kırılabilir.';
+
+  @override
+  String get vulnerabilityWepRec => 'Erişim noktasını derhal WPA2 veya WPA3 olarak yeniden yapılandırın.';
+
+  @override
+  String get vulnerabilityLegacyWpaTitle => 'Eski WPA';
+
+  @override
+  String get vulnerabilityLegacyWpaDesc => 'WPA/TKIP daha eskidir ve modern saldırı tekniklerine karşı zayıftır.';
+
+  @override
+  String get vulnerabilityLegacyWpaRec => 'Erişim noktasını ve istemcileri WPA2/WPA3\'e yükseltin.';
+
+  @override
+  String get vulnerabilityHiddenSsidTitle => 'Gizli SSID';
+
+  @override
+  String get vulnerabilityHiddenSsidDesc => 'Gizli SSID\'ler hala keşfedilebilir ve uyumluluğa zarar verebilir.';
+
+  @override
+  String get vulnerabilityHiddenSsidRec => 'Tek başına gizli SSID koruma sağlamaz. Güçlü şifrelemeye odaklanın.';
+
+  @override
+  String get vulnerabilityWeakSignalTitle => 'Çok Zayıf Sinyal';
+
+  @override
+  String get vulnerabilityWeakSignalDesc => 'Zayıf sinyal, kararsız bağlantıları ve yanıltma olasılığını gösterebilir.';
+
+  @override
+  String get vulnerabilityWeakSignalRec => 'Erişim noktasına yaklaşın veya BSSID tutarlılığını doğrulayın.';
+
+  @override
+  String get vulnerabilityWpsTitle => 'WPS Etkin';
+
+  @override
+  String get vulnerabilityWpsDesc => 'Wi-Fi Korumalı Kurulum (WPS) etkin. WPS PIN modu, Pixie Dust saldırısı kullanılarak saatler içinde kaba kuvvetle kırılabilir ve şifreyi etkisiz hale getirebilir.';
+
+  @override
+  String get vulnerabilityWpsRec => 'Yönlendirici yönetici panelinden WPS\'yi devre dışı bırakın. Sadece WPA2/WPA3 parolası kullanın.';
+
+  @override
+  String get vulnerabilityPmfTitle => 'Yönetim Çerçeveleri Korunmuyor';
+
+  @override
+  String get vulnerabilityPmfDesc => 'Bu erişim noktası Korumalı Yönetim Çerçevelerini (PMF / 802.11w) zorunlu tutmuyor. Korunmayan yönetim çerçeveleri, bir saldırganın kimlik doğrulama paketleri oluşturmasına ve istemcilerin bağlantısını kesmesine olanak tanır.';
+
+  @override
+  String get vulnerabilityPmfRec => 'Yönlendirici ayarlarında PMF\'yi (genellikle \'802.11w\' veya \'Yönetim Çerçevesi Koruması\' olarak adlandırılır) etkinleştirin. WPA3 varsayılan olarak PMF gerektirir.';
+
+  @override
+  String get vulnerabilityEvilTwinTitle => 'Potansiyel Kötü İkiz (Evil Twin)';
+
+  @override
+  String get vulnerabilityEvilTwinDesc => 'SSID yakında çelişkili güvenlik/kanal parmak iziyle görünüyor.';
+
+  @override
+  String get vulnerabilityEvilTwinRec => 'Kimlik doğrulama veya veri alışverişinden önce BSSID ve sertifikayı doğrulayın.';
+
+  @override
+  String get riskFactorNoEncryption => 'Şifreleme kullanılmıyor';
+
+  @override
+  String get riskFactorDeprecatedEncryption => 'Kullanımdan kaldırılmış şifreleme (WEP)';
+
+  @override
+  String get riskFactorLegacyWpa => 'Eski WPA kullanımda';
+
+  @override
+  String get riskFactorHiddenSsid => 'Gizli SSID davranışı';
+
+  @override
+  String get riskFactorWeakSignal => 'Zayıf sinyal ortamı';
+
+  @override
+  String get riskFactorWpsEnabled => 'WPS PIN saldırı yüzeyi açık';
+
+  @override
+  String get riskFactorPmfNotEnforced => 'PMF zorunlu değil — deauth yanıltması mümkün';
+
+  @override
+  String get refresh => 'Yenile';
+
+  @override
+  String get addZonePoint => 'Bölge Noktası Ekle';
+
+  @override
+  String get cancel => 'İptal';
+
+  @override
+  String get save => 'Kaydet';
+
+  @override
+  String get waitingForData => 'Veri bekleniyor...';
+
+  @override
+  String get temporalHeatmap => 'Zamansal Isı Haritası';
+
+  @override
+  String get failedToSaveHeatmapPoint => 'Isı haritası noktası kaydedilemedi';
+
+  @override
+  String signalMonitoringTitle(String ssid) {
+    return 'SİNYAL İZLEME: $ssid';
+  }
+
+  @override
+  String get heatmapTooltip => 'Isı Haritası';
+
+  @override
+  String get tagCurrentPointTooltip => 'Mevcut noktayı etiketle';
+
+  @override
+  String get signalCaps => 'SİNYAL';
+
+  @override
+  String get channelCaps => 'KANAL';
+
+  @override
+  String get frequencyCaps => 'FREKANS';
+
+  @override
+  String heatmapPointAdded(String zone) {
+    return '$zone için ısı haritası noktası eklendi';
+  }
+
+  @override
+  String get zoneTagLabel => 'Bölge etiketi (örn. Mutfak)';
+
+  @override
+  String errorPrefix(String message) {
+    return 'Hata: $message';
+  }
+
+  @override
+  String noHeatmapPointsYet(String bssid) {
+    return '$bssid için henüz ısı haritası noktası yok';
+  }
+
+  @override
+  String get averageSignalByZone => 'Bölgeye göre ortalama sinyal';
+
+  @override
+  String bandChannels(String band) {
+    return '$band KANALLARI';
+  }
+
+  @override
+  String get recommendedChannel => 'ÖNERİLEN KANAL';
+
+  @override
+  String channelInfo(int ch, int freq) {
+    return 'Kanal $ch · $freq MHz';
+  }
+
+  @override
+  String get riskFactorFingerprintDrift => 'SSID parmak izi kayması tespit edildi';
+
+  @override
+  String get historyCaps => 'GEÇMİŞ';
+
+  @override
+  String get consistentlyBestChannel => 'SÜREKLİ EN İYİ KANAL';
+
+  @override
+  String get avgScore => 'Ort. Skor';
+
+  @override
+  String get channelBondingTitle => 'Kanal Birleştirme';
+
+  @override
+  String get channelBondingDesc => 'Kanal birleştirme, bant genişliğini artırmak için 2 veya daha fazla bitişik kanalı birleştirir (40 MHz = 2×, 80 MHz = 4×, 160 MHz = 8×). Daha geniş kanallar daha yüksek hızlar sağlar ancak daha fazla komşu ağla çakışabilir.';
+
+  @override
+  String get spectrumOptimizationCaps => 'SPEKTRUM OPTİMİZASYONU';
+
+  @override
+  String get spectrumOptimizationDesc => 'Kanal yoğunluğunu ve paraziti analiz et';
+
+  @override
+  String get qualityExcellent => 'Mükemmel';
+
+  @override
+  String get qualityVeryGood => 'Çok İyi';
+
+  @override
+  String get qualityGood => 'İyi';
+
+  @override
+  String get qualityFair => 'Orta';
+
+  @override
+  String get qualityCongested => 'Yoğun';
+
+  @override
+  String channelBondingHeader(int count) {
+    return 'KANAL BİRLEŞTİRME ($count AP)';
+  }
+
+  @override
+  String get hiddenSsidLabel => '[Gizli]';
+
+  @override
+  String get noHistoryPlaceholder => 'Henüz geçmiş yok.\nKanal derecelendirmeleri bu ekranı her açtığınızda kaydedilir.';
+
+  @override
+  String get currentSessionInfo => 'Mevcut oturum — yüksek puan = daha az yoğun.';
+
+  @override
+  String historySummaryInfo(int sessions, int samples) {
+    return '$sessions oturum · $samples örnek · yüksek = daha az yoğun';
+  }
+
+  @override
+  String get scanReportTitle => 'Torcav Wi-Fi Tarama Raporu';
+
+  @override
+  String get reportTime => 'Zaman';
+
+  @override
+  String get ssidHeader => 'SSID';
+
+  @override
+  String get bssidHeader => 'BSSID';
+
+  @override
+  String get dbmHeader => 'dBm';
+
+  @override
+  String get channelHeader => 'CH';
+
+  @override
+  String get navDashboard => 'KONTROL PANELİ';
+
+  @override
+  String get navDiscovery => 'KEŞİF';
+
+  @override
+  String get navOperations => 'OPERASYONLAR';
+
+  @override
+  String get navLan => 'LAN';
+
+  @override
+  String get systemStatus => 'Sistem Durumu';
+
+  @override
+  String get interfaceTheme => 'Arayüz Teması';
+
+  @override
+  String get speedTestHeader => 'HIZ TESTİ';
+
+  @override
+  String get startTest => 'TESTİ BAŞLAT';
+
+  @override
+  String get testAgain => 'TEKRAR TEST ET';
+
+  @override
+  String get commandCenters => 'KOMUTA MERKEZLERİ';
+
+  @override
+  String get activeShielding => 'Aktif Kalkan';
+
+  @override
+  String get logisticsTitle => 'LOJİSTİK';
+
+  @override
+  String get intelMetrics => 'İstihbarat Metrikleri';
+
+  @override
+  String get networkMesh => 'Ağ Örgüsü';
+
+  @override
+  String get tuningTitle => 'AYARLAMA';
+
+  @override
+  String get systemConfig => 'Sistem Yapılandırması';
+
+  @override
+  String get phasePing => 'AŞAMA: PING';
+
+  @override
+  String get phaseDownload => 'AŞAMA: İNDİRME';
+
+  @override
+  String get phaseUpload => 'AŞAMA: YÜKLEME';
+
+  @override
+  String get phaseDone => 'AŞAMA: TAMAMLANDI';
+
+  @override
+  String get riskScore => 'Risk Puanı';
+
+  @override
+  String get loading => 'Yükleniyor...';
+
+  @override
+  String get profileTitle => 'PROFİL MERKEZİ';
+
+  @override
+  String get activeSessionLabel => 'Aktif Oturum';
+
+  @override
+  String get networkStatusLabel => 'AĞ DURUMU';
+
+  @override
+  String get ssid => 'SSID';
+
+  @override
+  String get lastScanTitle => 'SON TARAMA';
+
+  @override
+  String get lastSnapshot => 'Son Anlık Görüntü';
 }

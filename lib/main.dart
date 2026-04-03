@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:torcav/l10n/generated/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:torcav/core/l10n/app_localizations.dart';
 import 'core/l10n/delegates/fallback_localization_delegate.dart';
 
 import 'core/di/injection.dart';
@@ -64,9 +64,10 @@ class TorcavApp extends StatelessWidget {
                   FallbackCupertinoLocalizationsDelegate(),
                 ],
                 supportedLocales: AppLocalizations.supportedLocales,
-                home: showOnboarding
-                    ? const OnboardingPage()
-                    : const AppShellPage(),
+                home:
+                    showOnboarding
+                        ? const OnboardingPage()
+                        : const AppShellPage(),
               );
             },
           );

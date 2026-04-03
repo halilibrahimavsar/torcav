@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/extensions/context_extensions.dart';
 import '../bloc/heatmap_bloc.dart';
 
 class TemporalHeatmapPage extends StatelessWidget {
@@ -15,13 +16,13 @@ class TemporalHeatmapPage extends StatelessWidget {
     return BlocProvider(
       create: (_) => GetIt.I<HeatmapBloc>()..add(LoadHeatmap(bssid)),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Temporal Heatmap')),
+        appBar: AppBar(title: Text(context.l10n.temporalHeatmap)),
         body: BlocConsumer<HeatmapBloc, HeatmapState>(
           listenWhen: (_, current) => current is HeatmapLogFailed,
           listener: (context, state) {
             if (state is HeatmapLogFailed) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Failed to save heatmap point')),
+                SnackBar(content: Text(context.l10n.failedToSaveHeatmapPoint)),
               );
             }
           },
@@ -35,7 +36,7 @@ class TemporalHeatmapPage extends StatelessWidget {
               if (zones.isEmpty) {
                 return Center(
                   child: Text(
-                    'No heatmap points yet for $bssid',
+                    context.l10n.noHeatmapPointsYet(bssid),
                     style: GoogleFonts.rajdhani(
                       color: onSurface.withValues(alpha: 0.82),
                       fontSize: 18,
@@ -48,7 +49,7 @@ class TemporalHeatmapPage extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 children: [
                   Text(
-                    'Average signal by zone',
+                    context.l10n.averageSignalByZone,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 12),

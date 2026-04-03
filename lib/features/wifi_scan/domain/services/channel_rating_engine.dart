@@ -83,7 +83,7 @@ class ChannelRatingEngine {
           frequency: frequency,
           rating: score,
           networkCount: count,
-          recommendation: _getRecommendation(score),
+          quality: _getQuality(score),
         ),
       );
     }
@@ -108,11 +108,11 @@ class ChannelRatingEngine {
     }
   }
 
-  String _getRecommendation(double score) {
-    if (score >= 8.5) return 'Excellent';
-    if (score >= 7.0) return 'Very Good';
-    if (score >= 5.0) return 'Good';
-    if (score >= 3.0) return 'Fair';
-    return 'Congested';
+  ChannelQuality _getQuality(double score) {
+    if (score >= 8.5) return ChannelQuality.excellent;
+    if (score >= 7.0) return ChannelQuality.veryGood;
+    if (score >= 5.0) return ChannelQuality.good;
+    if (score >= 3.0) return ChannelQuality.fair;
+    return ChannelQuality.congested;
   }
 }

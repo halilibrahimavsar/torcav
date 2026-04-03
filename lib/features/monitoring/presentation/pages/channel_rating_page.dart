@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:torcav/l10n/generated/app_localizations.dart';
+import 'package:torcav/core/l10n/app_localizations.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 import '../../../../core/theme/neon_widgets.dart';
+
 import '../../../../features/wifi_scan/domain/entities/channel_rating_sample.dart';
 import '../../../../features/wifi_scan/domain/entities/scan_request.dart';
 import '../../../../features/wifi_scan/domain/entities/wifi_network.dart';
@@ -103,7 +105,7 @@ class _ChannelRatingView extends StatelessWidget {
               Tab(text: l10n.band24Ghz),
               Tab(text: l10n.band5Ghz),
               Tab(text: l10n.band6Ghz),
-              const Tab(text: 'HISTORY'),
+              Tab(text: l10n.historyCaps),
             ],
           ),
         ),
@@ -202,7 +204,7 @@ class _HistoryViewState extends State<_HistoryView> {
                   child: TextButton.icon(
                     onPressed: _reload,
                     icon: const Icon(Icons.refresh, size: 16),
-                    label: const Text('Refresh'),
+                    label: Text(context.l10n.refresh),
                   ),
                 ),
             ],
@@ -320,6 +322,7 @@ class _HistoricalBestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final onSurface = Theme.of(context).colorScheme.onSurface;
     return Container(
       padding: const EdgeInsets.all(16),
@@ -337,7 +340,7 @@ class _HistoricalBestCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'CONSISTENTLY BEST CHANNEL',
+                  l10n.consistentlyBestChannel,
                   style: GoogleFonts.rajdhani(
                     fontSize: 11,
                     color: accentColor.withValues(alpha: 0.7),
@@ -345,7 +348,7 @@ class _HistoricalBestCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Channel $channel',
+                  l10n.channelLabel(channel),
                   style: GoogleFonts.orbitron(
                     fontSize: 18,
                     color: onSurface,
@@ -359,7 +362,7 @@ class _HistoricalBestCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                'Avg Score',
+                l10n.avgScore,
                 style: GoogleFonts.rajdhani(
                   fontSize: 12,
                   color: onSurface.withValues(alpha: 0.7),
@@ -447,7 +450,7 @@ class _RecommendationCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '${rating.rating.toStringAsFixed(1)}/10 · ${rating.recommendation}',
+                  '${rating.rating.toStringAsFixed(1)}/10 · ${_qualityString(l10n, rating.quality)}',
                   style: GoogleFonts.rajdhani(
                     color: onSurface.withValues(alpha: 0.7),
                     fontSize: 14,
@@ -471,6 +474,7 @@ class _ChannelTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final onSurface = Theme.of(context).colorScheme.onSurface;
     final primary = Theme.of(context).colorScheme.primary;
     final color = _getColorForRating(rating.rating, primary);
@@ -513,7 +517,7 @@ class _ChannelTile extends StatelessWidget {
                     ),
                     const Spacer(),
                     Text(
-                      rating.recommendation,
+                      _qualityString(l10n, rating.quality),
                       style: GoogleFonts.rajdhani(
                         color: color,
                         fontWeight: FontWeight.bold,
@@ -592,6 +596,7 @@ class _ChannelBondingSectionState extends State<_ChannelBondingSection> {
 
     if (bonded.isEmpty) return const SizedBox.shrink();
 
+    final l10n = context.l10n;
     final onSurface = Theme.of(context).colorScheme.onSurface;
 
     return Column(
@@ -614,7 +619,7 @@ class _ChannelBondingSectionState extends State<_ChannelBondingSection> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'CHANNEL BONDING (${bonded.length} APs)',
+                  l10n.channelBondingHeader(bonded.length),
                   style: GoogleFonts.orbitron(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
@@ -624,12 +629,8 @@ class _ChannelBondingSectionState extends State<_ChannelBondingSection> {
                 ),
                 const SizedBox(width: 4),
                 InfoIconButton(
-                  title: 'Channel Bonding',
-                  body:
-                      'Channel bonding combines 2 or more adjacent channels to '
-                      'increase bandwidth (40 MHz = 2×, 80 MHz = 4×, 160 MHz = 8×). '
-                      'Wider channels deliver faster speeds but may interfere with '
-                      'more neighboring networks.',
+                  title: l10n.channelBondingTitle,
+                  body: l10n.channelBondingDesc,
                   color: widget.accentColor,
                 ),
               ],
@@ -661,7 +662,7 @@ class _ChannelBondingSectionState extends State<_ChannelBondingSection> {
                   ),
                   const Spacer(),
                   Text(
-                    n.ssid.isEmpty ? '[Hidden]' : n.ssid,
+                    n.ssid.isEmpty ? l10n.hiddenSsidLabel : n.ssid,
                     style: GoogleFonts.rajdhani(
                       fontSize: 13,
                       color: onSurface.withValues(alpha: 0.7),
@@ -694,5 +695,20 @@ class _ChannelBondingSectionState extends State<_ChannelBondingSection> {
           }),
       ],
     );
+  }
+}
+
+String _qualityString(AppLocalizations l10n, ChannelQuality quality) {
+  switch (quality) {
+    case ChannelQuality.excellent:
+      return l10n.qualityExcellent;
+    case ChannelQuality.veryGood:
+      return l10n.qualityVeryGood;
+    case ChannelQuality.good:
+      return l10n.qualityGood;
+    case ChannelQuality.fair:
+      return l10n.qualityFair;
+    case ChannelQuality.congested:
+      return l10n.qualityCongested;
   }
 }

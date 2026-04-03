@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../../features/wifi_scan/domain/entities/channel_rating_sample.dart';
 
 /// Displays channel rating history.
@@ -81,8 +82,7 @@ class ChannelHistoryChart extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Text(
-          'No history yet.\nChannel ratings are recorded each time you open '
-          'this screen.',
+          context.l10n.noHistoryPlaceholder,
           textAlign: TextAlign.center,
           style: GoogleFonts.rajdhani(
             fontSize: 15,
@@ -229,7 +229,7 @@ class _BarView extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'Current session — higher score = less congested.',
+          context.l10n.currentSessionInfo,
           style: GoogleFonts.rajdhani(
             fontSize: 12,
             color: onSurface.withValues(alpha: 0.5),
@@ -411,8 +411,7 @@ class _LineView extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          '${sessions.length} sessions · $totalSamples samples · '
-          'higher = less congested',
+          context.l10n.historySummaryInfo(sessions.length, totalSamples),
           style: GoogleFonts.rajdhani(
             fontSize: 12,
             color: onSurface.withValues(alpha: 0.5),

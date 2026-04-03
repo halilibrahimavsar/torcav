@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+enum ChannelQuality { excellent, veryGood, good, fair, congested }
+
 /// Represents the quality rating of a Wi-Fi channel.
 class ChannelRating extends Equatable {
   final int channel;
@@ -11,15 +13,15 @@ class ChannelRating extends Equatable {
   /// Number of APs detected on or near this channel.
   final int networkCount;
 
-  /// Human-readable recommendation (e.g., 'Excellent', 'Congested').
-  final String recommendation;
+  /// Enum representation of quality for localization.
+  final ChannelQuality quality;
 
   const ChannelRating({
     required this.channel,
     required this.frequency,
     required this.rating,
     required this.networkCount,
-    required this.recommendation,
+    required this.quality,
   });
 
   @override
@@ -28,6 +30,6 @@ class ChannelRating extends Equatable {
     frequency,
     rating,
     networkCount,
-    recommendation,
+    quality,
   ];
 }

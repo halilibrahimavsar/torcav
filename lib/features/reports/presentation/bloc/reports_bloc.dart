@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../wifi_scan/domain/entities/scan_snapshot.dart';
+import '../../domain/entities/report_labels.dart';
 import '../../domain/usecases/generate_report_usecase.dart';
 
 // Events
@@ -15,11 +16,12 @@ abstract class ReportsEvent extends Equatable {
 class GenerateReport extends ReportsEvent {
   final ScanSnapshot snapshot;
   final ReportFormat format;
+  final ReportLabels labels;
 
-  const GenerateReport(this.snapshot, this.format);
+  const GenerateReport(this.snapshot, this.format, this.labels);
 
   @override
-  List<Object?> get props => [snapshot, format];
+  List<Object?> get props => [snapshot, format, labels];
 }
 
 // State
@@ -54,17 +56,20 @@ class ReportsFailure extends ReportsState {
 
 @injectable
 class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
-  final GenerateReportUseCase _generateReport;
+  final GenerateReportUseCase _generateReportUsecase;
 
-  ReportsBloc(this._generateReport) : super(ReportsInitial()) {
+  ReportsBloc(this._generateReportUsecase) : super(ReportsInitial()) {
     on<GenerateReport>((event, emit) async {
       emit(ReportsLoading());
-      try {
-        final result = await _generateReport(event.snapshot, event.format);
-        emit(ReportGenerated(event.format, result));
-      } catch (e) {
-        emit(ReportsFailure(e.toString()));
-      }
+      final result = await _generateReportUsecase(
+        event.snapshot,
+        event.format,
+        event.labels,
+      );
+      result.fold(
+        (failure) => emit(ReportsFailure(failure.message)),
+        (content) => emit(ReportGenerated(event.format, content)),
+      );
     });
   }
 }

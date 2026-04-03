@@ -1,911 +1,590 @@
 {
     "@@locale": "en",
-    "activeOperationsBlockedMsg": "Active operations are blocked unless policy and allowlist conditions pass.",
-    "@activeOperationsBlockedMsg": {
-        "description": "Warning message when policy prevents active operations."
-    },
-    "authorizedTargets": "Authorized Targets",
-    "@authorizedTargets": {
-        "description": "Label for the list of authorized networks."
-    },
-    "add": "Add",
-    "@add": {
-        "description": "Generic add button label."
-    },
-    "noTargetsAllowlisted": "No targets allowlisted yet.",
-    "@noTargetsAllowlisted": {
-        "description": "Status message when the allowlist is empty."
-    },
-    "hiddenNetwork": "Hidden Network",
-    "@hiddenNetwork": {
-        "description": "Placeholder for a network with an empty SSID."
-    },
-    "remove": "Remove",
-    "@remove": {
-        "description": "Generic remove button label."
-    },
-    "securityTimeline": "Security Timeline",
-    "@securityTimeline": {
-        "description": "Title for the history of security events."
-    },
-    "noSecurityEvents": "No security events yet.",
-    "@noSecurityEvents": {
-        "description": "Status message when there are no security events logged."
-    },
-    "authorizeTarget": "Authorize Target",
-    "@authorizeTarget": {
-        "description": "Action label to authorize a network."
-    },
-    "ssid": "SSID",
-    "@ssid": {
-        "description": "Service Set Identifier (Network Name)."
-    },
-    "bssid": "BSSID",
-    "@bssid": {
-        "description": "Basic Service Set Identifier (MAC Address)."
-    },
-    "allowHandshakeCapture": "Allow handshake capture",
-    "@allowHandshakeCapture": {
-        "description": "Checkbox label for handshake capture permission."
-    },
-    "allowActiveDefense": "Allow active defense/deauth tests",
-    "@allowActiveDefense": {
-        "description": "Checkbox label for active defense tests permission."
-    },
-    "cancel": "Cancel",
-    "@cancel": {
-        "description": "Generic cancel button label."
-    },
-    "save": "Save",
-    "@save": {
-        "description": "Generic save button label."
-    },
-    "confirm": "Confirm",
-    "@confirm": {
-        "description": "Description for confirm"
-    },
-    "legalDisclaimerAccepted": "Legal disclaimer accepted",
-    "@legalDisclaimerAccepted": {
-        "description": "Label in settings for legal acknowledgement."
-    },
-    "requiredForActiveOps": "Required for active operations",
-    "@requiredForActiveOps": {
-        "description": "Instructional text about requirements for active scanning."
-    },
-    "strictAllowlist": "Strict allowlist",
-    "@strictAllowlist": {
-        "description": "Toggle label for strict allowlist enforcement."
-    },
-    "blockActiveOpsUnknown": "Block active operations for unknown targets",
-    "@blockActiveOpsUnknown": {
-        "description": "Setting label to block ops on non-allowlisted targets."
-    },
-    "rateLimitActiveOps": "Rate limit between active ops",
-    "@rateLimitActiveOps": {
-        "description": "Setting label for operational rate limiting."
-    },
-    "selectFromScanned": "Select from scanned list",
-    "@selectFromScanned": {
-        "description": "Button label to pick a target from results."
-    },
-    "settingsLanguage": "Language",
-    "@settingsLanguage": {
-        "description": "Label for language selection setting."
-    },
-    "settingsScanBehavior": "Control default scan behavior, backend strategy, and safety posture.",
-    "@settingsScanBehavior": {
-        "description": "Description of the scan behavior settings section."
-    },
-    "settingsDefaultScanPasses": "Default scan passes",
-    "@settingsDefaultScanPasses": {
-        "description": "Label for the default number of scan passes."
-    },
-    "settingsMonitoringInterval": "Monitoring interval (seconds)",
-    "@settingsMonitoringInterval": {
-        "description": "Label for the monitoring frequency setting."
-    },
-    "settingsBackendPreference": "Default backend preference",
-    "@settingsBackendPreference": {
-        "description": "Label for choosing the scanning backend (e.g., nmcli, iw)."
-    },
-    "settingsIncludeHidden": "Include hidden SSIDs by default",
-    "@settingsIncludeHidden": {
-        "description": "Label for hidden SSID inclusion setting."
-    },
-    "settingsStrictSafety": "Strict safety mode",
-    "@settingsStrictSafety": {
-        "description": "Label for strict safety mode toggle."
-    },
-    "settingsStrictSafetyDesc": "Require consent + allowlist for active ops",
-    "@settingsStrictSafetyDesc": {
-        "description": "Explanation of strict safety requirements."
-    },
-    "navDashboard": "Dashboard",
-    "@navDashboard": {
-        "description": "Bottom navigation label for Dashboard."
-    },
-    "navWifi": "Wi-Fi",
-    "@navWifi": {
-        "description": "Bottom navigation label for Wi-Fi Analyzer."
-    },
-    "navLan": "LAN",
-    "@navLan": {
-        "description": "Bottom navigation label for LAN Recon."
-    },
-    "navDiscovery": "Discovery",
-    "@navDiscovery": {
-        "description": "Description for navDiscovery"
-    },
-    "navOperations": "Operations",
-    "@navOperations": {
-        "description": "Description for navOperations"
-    },
-    "navMore": "More",
-    "@navMore": {
-        "description": "Bottom navigation label for the More hub."
-    },
-    "moreTitle": "MORE",
-    "@moreTitle": {
-        "description": "Header for the More hub screen."
-    },
-    "sectionTools": "TOOLS",
-    "@sectionTools": {
-        "description": "Section header for utility tools."
-    },
-    "speedTestTitle": "Speed Test & Monitoring",
-    "@speedTestTitle": {
-        "description": "Title for the Speed Test feature."
-    },
-    "speedTestDesc": "Bandwidth, latency, and anomaly tracking",
-    "@speedTestDesc": {
-        "description": "Brief description of the speed test tool."
-    },
-    "securityCenterTitle": "Security Center",
-    "@securityCenterTitle": {
-        "description": "Title for the Security Center feature."
-    },
-    "securityCenterDesc": "Risk scoring, allowlists, and policy controls",
-    "@securityCenterDesc": {
-        "description": "Brief description of the security feature."
-    },
-    "reportsTitle": "Reports",
-    "@reportsTitle": {
-        "description": "Title for the Reports feature."
-    },
-    "reportsDesc": "Export scans as PDF, HTML, or JSON",
-    "@reportsDesc": {
-        "description": "Brief description of the reporting tool."
-    },
-    "sectionPreferences": "PREFERENCES",
-    "@sectionPreferences": {
-        "description": "Section header for app preferences."
-    },
-    "settingsTitle": "Settings",
-    "@settingsTitle": {
-        "description": "Title for the Settings screen."
-    },
-    "settingsDesc": "Scan behavior, backends, and safety mode",
-    "@settingsDesc": {
-        "description": "Brief description of the settings page."
-    },
-    "monitoringTitle": "Monitoring",
-    "@monitoringTitle": {
-        "description": "Header for the network monitoring section."
-    },
-    "monitoringSubtitle": "Bandwidth, anomaly detection, and heatmap streams.",
-    "@monitoringSubtitle": {
-        "description": "Subtitle for monitoring feature set."
-    },
-    "packetsPerSecondLabel": "Packets Per Second",
-    "@packetsPerSecondLabel": {
-        "description": "Label for real-time packets per second metric."
-    },
-    "throughputLabel": "Throughput",
-    "@throughputLabel": {
-        "description": "Label for real-time throughput metric."
-    },
-    "comingSoon": "COMING SOON",
-    "@comingSoon": {
-        "description": "Label for features under development."
-    },
-    "signalTrends": "Signal Trends",
-    "@signalTrends": {
-        "description": "Title for signal history graphing."
-    },
-    "topologyMesh": "Topology & Mesh",
-    "@topologyMesh": {
-        "description": "Title for network topology visualization."
-    },
-    "anomalyAlerts": "Anomaly Alerts",
-    "@anomalyAlerts": {
-        "description": "Title for anomaly detection alerts."
-    },
-    "speedTestHeader": "SPEED TEST",
-    "@speedTestHeader": {
-        "description": "Header in the speed test UI."
-    },
-    "testConnectionSpeed": "Test your connection speed",
-    "@testConnectionSpeed": {
-        "description": "Prompt to start a speed test."
-    },
-    "testing": "TESTING…",
-    "@testing": {
-        "description": "Status text while a test is active."
-    },
-    "testAgain": "TEST AGAIN",
-    "@testAgain": {
-        "description": "Button label to restart a test."
-    },
-    "startTest": "START TEST",
-    "@startTest": {
-        "description": "Button label to initiate a test."
-    },
-    "phasePing": "PING",
-    "@phasePing": {
-        "description": "Latency test phase label."
-    },
-    "phaseDownload": "DOWNLOAD",
-    "@phaseDownload": {
-        "description": "Download speed test phase label."
-    },
-    "phaseUpload": "UPLOAD",
-    "@phaseUpload": {
-        "description": "Upload speed test phase label."
-    },
-    "phaseDone": "DONE",
-    "@phaseDone": {
-        "description": "Completed test phase status."
-    },
-    "wifiScanTitle": "WI-FI ANALYZER",
+    "wifiScanTitle": "WIFI SCAN",
     "@wifiScanTitle": {
-        "description": "Main title for the Wi-Fi Analyzer screen."
+        "description": "Title for the wifi scan screen."
     },
-    "scanSettingsTooltip": "Scan settings",
-    "@scanSettingsTooltip": {
-        "description": "Tooltip for scan customization button."
+    "searchingNetworksPlaceholder": "SEARCHING NETWORKS...",
+    "@searchingNetworksPlaceholder": {
+        "description": "Text shown when the search bar is empty."
     },
-    "channelRatingTooltip": "Channel rating",
-    "@channelRatingTooltip": {
-        "description": "Tooltip for channel rating view button."
+    "filterNetworksPlaceholder": "FILTER NETWORKS...",
+    "@filterNetworksPlaceholder": {
+        "description": "Placeholder for the search input."
     },
-    "refreshScanTooltip": "Refresh scan",
-    "@refreshScanTooltip": {
-        "description": "Tooltip for scan refresh button."
+    "quickScan": "Quick Scan",
+    "@quickScan": {
+        "description": "Passive scan label."
     },
-    "readyToScan": "Ready to scan",
+    "deepScan": "Deep Scan",
+    "@deepScan": {
+        "description": "Active scan label."
+    },
+    "scanModesTitle": "Scan Modes",
+    "@scanModesTitle": {
+        "description": "Title for scan mode info."
+    },
+    "scanModesInfo": "Quick scan listens for broadcasts. Deep scan actively probes for networks.",
+    "@scanModesInfo": {
+        "description": "Description of scan modes."
+    },
+    "readyToScan": "Ready to Scan",
     "@readyToScan": {
-        "description": "Status text when system is idle."
+        "description": "Status when idle."
     },
-    "scanButton": "Scan",
-    "@scanButton": {
-        "description": "Label for the main scan action."
-    },
-    "scanSettingsTitle": "Scan Settings",
-    "@scanSettingsTitle": {
-        "description": "Header for scan settings dialog."
-    },
-    "passes": "Passes: {count}",
-    "@passes": {
-        "placeholders": {
-            "count": {}
-        }
-    },
-    "includeHiddenSsids": "Include hidden SSIDs",
-    "@includeHiddenSsids": {
-        "description": "Checkbox label for hidden networks."
-    },
-    "backendPreference": "Backend preference",
-    "@backendPreference": {
-        "description": "Label for scanning strategy selection."
-    },
-    "apply": "Apply",
-    "@apply": {
-        "description": "Generic apply button label."
-    },
-    "noSignalsDetected": "No signals detected",
+    "noSignalsDetected": "No Signals Detected",
     "@noSignalsDetected": {
-        "description": "Status when no networks are found."
+        "description": "Empty state for wifi scan."
     },
-    "lastSnapshot": "Last Snapshot",
-    "@lastSnapshot": {
-        "description": "Header for the most recent scan data."
+    "compareWithPreviousScan": "COMPARE WITH PREVIOUS SCAN",
+    "@compareWithPreviousScan": {
+        "description": "Comparison button label."
     },
-    "bandAnalysis": "Band Analysis",
-    "@bandAnalysis": {
-        "description": "Title for per-band network breakdown."
-    },
-    "networksCount": "Networks ({count})",
+    "networksCount": "{count} NETWORKS",
     "@networksCount": {
+        "description": "Count of networks found.",
         "placeholders": {
-            "count": {}
+            "count": {
+                "type": "int"
+            }
         }
     },
-    "recommendation": "Recommendation",
-    "@recommendation": {
-        "description": "Label for the automated network recommendation."
-    },
-    "lanReconTitle": "LAN RECON",
-    "@lanReconTitle": {
-        "description": "Main title for the LAN Reconnaissance screen."
-    },
-    "scanFailed": "SCAN FAILED: {message}",
-    "@scanFailed": {
+    "filteredNetworksCount": "{count} OF {total} NETWORKS",
+    "@filteredNetworksCount": {
+        "description": "Count of filtered results.",
         "placeholders": {
-            "message": {}
+            "count": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
         }
     },
-    "readyToScanAllCaps": "READY TO SCAN",
-    "@readyToScanAllCaps": {
-        "description": "Uppercase status label for readiness."
-    },
-    "targetSubnet": "Target subnet/IP",
-    "@targetSubnet": {
-        "description": "Input label for the network range to scan."
-    },
-    "profile": "Profile",
-    "@profile": {
-        "description": "Label for Nmap scan profile selection."
-    },
-    "method": "Method",
-    "@method": {
-        "description": "Label for discovery method selection."
-    },
-    "scanAllCaps": "SCAN",
-    "@scanAllCaps": {
-        "description": "Uppercase label for the scan button."
-    },
-    "noHostsFound": "NO HOSTS FOUND",
-    "@noHostsFound": {
-        "description": "Status when no hosts respond on the LAN."
-    },
-    "unknownHost": "Unknown host",
-    "@unknownHost": {
-        "description": "Label for a host with no hostname/SSID."
-    },
-    "os": "OS: {os}",
-    "@os": {
-        "placeholders": {
-            "os": {}
-        }
-    },
-    "services": "Services: {services}",
-    "@services": {
-        "placeholders": {
-            "services": {}
-        }
-    },
-    "vuln": "Vuln: {vuln}",
-    "@vuln": {
-        "placeholders": {
-            "vuln": {}
-        }
-    },
-    "reportsSubtitle": "Export the latest scan session as JSON, HTML, or PDF.",
-    "@reportsSubtitle": {
-        "description": "Instructional text on the reports screen."
-    },
-    "noSnapshotAvailable": "No scan snapshot is available yet. Run a Wi-Fi scan first.",
-    "@noSnapshotAvailable": {
-        "description": "Error when trying to report without data."
-    },
-    "latestSnapshot": "Latest snapshot: {count} networks via {backend}",
-    "@latestSnapshot": {
-        "placeholders": {
-            "count": {},
-            "backend": {}
-        }
-    },
-    "exportJson": "Export JSON",
-    "@exportJson": {
-        "description": "Action label for JSON export."
-    },
-    "exportHtml": "Export HTML",
-    "@exportHtml": {
-        "description": "Action label for HTML export."
-    },
-    "exportPdf": "Export PDF",
-    "@exportPdf": {
-        "description": "Action label for PDF export."
-    },
-    "printPdf": "Print PDF",
-    "@printPdf": {
-        "description": "Action label to invoke the print dialog."
-    },
-    "saveReportDialog": "Save report",
-    "@saveReportDialog": {
-        "description": "Title for report save dialog."
-    },
-    "sectionStatus": "STATUS",
-    "@sectionStatus": {
-        "description": "Description for sectionStatus"
-    },
-    "exportOptionsTitle": "EXPORT OPTIONS",
-    "@exportOptionsTitle": {
-        "description": "Description for exportOptionsTitle"
-    },
-    "latestSnapshotTitle": "LATEST SNAPSHOT",
-    "@latestSnapshotTitle": {
-        "description": "Description for latestSnapshotTitle"
-    },
-    "backendLabel": "Backend",
-    "@backendLabel": {
-        "description": "Description for backendLabel"
-    },
-    "savePdfReportDialog": "Save PDF report",
-    "@savePdfReportDialog": {
-        "description": "Title for PDF specific save dialog."
-    },
-    "savedToast": "Saved: {path}",
-    "@savedToast": {
-        "placeholders": {
-            "path": {}
-        }
-    },
-    "handshakeCaptureCheck": "Handshake capture check",
-    "@handshakeCaptureCheck": {
-        "description": "Title of the security check for handshakes."
-    },
-    "activeDefenseReadiness": "Active defense readiness",
-    "@activeDefenseReadiness": {
-        "description": "Title of the readiness check for active defense."
-    },
-    "signalGraph": "Signal Graph",
-    "@signalGraph": {
-        "description": "Header for the spectral visualization."
-    },
-    "riskFactors": "RISK FACTORS",
-    "@riskFactors": {
-        "description": "Section header for security risk list."
-    },
-    "vulnerabilities": "VULNERABILITIES",
-    "@vulnerabilities": {
-        "description": "Header for detected vulnerabilities."
-    },
-    "recommendationLabel": "RECOMMENDATION: {text}",
-    "@recommendationLabel": {
-        "placeholders": {
-            "text": {}
-        }
-    },
-    "noVulnerabilities": "No known vulnerabilities detected based on current scan data.",
-    "@noVulnerabilities": {
-        "description": "Message when no vulnerabilities are found."
-    },
-    "bssId": "BSSID",
-    "@bssId": {
-        "description": "MAC address label (BSSID)."
-    },
-    "channel": "CHANNEL",
-    "@channel": {
-        "description": "Wireless channel number label."
-    },
-    "security": "SECURITY",
-    "@security": {
-        "description": "Encryption/Security type label."
-    },
-    "signal": "SIGNAL",
-    "@signal": {
-        "description": "Signal strength label (RSSI)."
-    },
-    "channelRatingTitle": "CHANNEL RATING",
-    "@channelRatingTitle": {
-        "description": "Header for the channel evaluation screen."
-    },
-    "band24Ghz": "2.4 GHz",
-    "@band24Ghz": {
-        "description": "The 2.4 GHz frequency band."
-    },
-    "band5Ghz": "5 GHz",
-    "@band5Ghz": {
-        "description": "The 5 GHz frequency band."
-    },
-    "no24GhzChannels": "No 2.4 GHz channels detected.",
-    "@no24GhzChannels": {
-        "description": "Status when no 2.4 GHz signals exist."
-    },
-    "no5GhzChannels": "No 5 GHz channels detected.",
-    "@no5GhzChannels": {
-        "description": "Status when no 5 GHz signals exist."
-    },
-    "band6Ghz": "6 GHz",
-    "@band6Ghz": {
-        "description": "The 6 GHz frequency band."
-    },
-    "no6GhzChannels": "No 6 GHz channels detected.",
-    "@no6GhzChannels": {
-        "description": "Status when no 6 GHz signals exist."
-    },
-    "recommendedChannel": "RECOMMENDED CHANNEL",
-    "@recommendedChannel": {
-        "description": "Header for the best suggested channel."
-    },
-    "channelInfo": "Ch {channel} — {frequency} MHz",
-    "@channelInfo": {
-        "placeholders": {
-            "channel": {},
-            "frequency": {}
-        }
-    },
-    "bandChannels": "{band} Channels",
-    "@bandChannels": {
-        "placeholders": {
-            "band": {}
-        }
-    },
-    "errorLabel": "Error",
-    "@errorLabel": {
-        "description": "Prefix for error messages."
-    },
-    "loading": "Loading…",
-    "@loading": {
-        "description": "Generic loading state indicator."
-    },
-    "analyzing": "Analyzing…",
-    "@analyzing": {
-        "description": "Generic processing state indicator."
-    },
-    "success": "Success",
-    "@success": {
-        "description": "Generic success indicator."
-    },
-    "ok": "OK",
-    "@ok": {
-        "description": "Generic acceptance button label."
-    },
-    "scannedNetworksTitle": "Scanned Networks",
-    "@scannedNetworksTitle": {
-        "description": "Title for list of discovered networks."
-    },
-    "noNetworksFound": "No networks found.",
-    "@noNetworksFound": {
-        "description": "Status when scanning results are empty."
-    },
-    "retry": "Retry",
-    "@retry": {
-        "description": "Generic retry button label."
-    },
-    "knownNetworks": "Known Networks",
-    "@knownNetworks": {
-        "description": "Title for the list of previously seen networks."
-    },
-    "noKnownNetworksYet": "No known networks yet.",
-    "@noKnownNetworksYet": {
-        "description": "Status when the local database is empty."
-    },
-    "opsLabel": "Ops: {ops}",
-    "@opsLabel": {
-        "placeholders": {
-            "ops": {}
-        }
-    },
-    "networkStatusLabel": "NETWORK STATUS",
-    "@networkStatusLabel": {
-        "description": "Description for networkStatusLabel"
-    },
-    "activeSessionLabel": "ACTIVE SESSION",
-    "@activeSessionLabel": {
-        "description": "Description for activeSessionLabel"
-    },
-    "gatewayLabel": "GATEWAY",
-    "@gatewayLabel": {
-        "description": "Description for gatewayLabel"
-    },
-    "ipLabel": "IP ADDRESS",
-    "@ipLabel": {
-        "description": "Description for ipLabel"
-    },
-    "connectedStatusCaps": "CONNECTED",
-    "@connectedStatusCaps": {
-        "description": "Description for connectedStatusCaps"
-    },
-    "disconnectedStatusCaps": "DISCONNECTED",
-    "@disconnectedStatusCaps": {
-        "description": "Description for disconnectedStatusCaps"
-    },
-    "quickActionsTitle": "QUICK ACTIONS",
-    "@quickActionsTitle": {
-        "description": "Description for quickActionsTitle"
-    },
-    "lastScanTitle": "LAST SCAN",
-    "@lastScanTitle": {
-        "description": "Description for lastScanTitle"
-    },
-    "viewDetailsAction": "VIEW DETAILS",
-    "@viewDetailsAction": {
-        "description": "Description for viewDetailsAction"
-    },
-    "scanning": "SCANNING…",
-    "@scanning": {
-        "description": "Description for scanning"
-    },
-    "secure": "SECURE",
-    "@secure": {
-        "description": "Description for secure"
-    },
-    "blockUnknownAP": "Block Unknown APs",
-    "@blockUnknownAP": {
-        "description": "Description for blockUnknownAP"
-    },
-    "automaticBlockMsg": "Automatically drops connections to rogue APs",
-    "@automaticBlockMsg": {
-        "description": "Description for automaticBlockMsg"
-    },
-    "activeProbingEnabled": "Active Probing",
-    "@activeProbingEnabled": {
-        "description": "Description for activeProbingEnabled"
-    },
-    "activeProbingMsg": "Periodically tests connected AP for anomalies",
-    "@activeProbingMsg": {
-        "description": "Description for activeProbingMsg"
-    },
-    "requireConsentForDeauth": "Require Consent",
-    "@requireConsentForDeauth": {
-        "description": "Description for requireConsentForDeauth"
-    },
-    "manualAuthorizationMsg": "Manually authorize deauth/active defense",
-    "@manualAuthorizationMsg": {
-        "description": "Description for manualAuthorizationMsg"
-    },
-    "defensePolicy": "Defense Policy",
-    "@defensePolicy": {
-        "description": "Description for defensePolicy"
-    },
-    "shieldActive": "Shield Active",
-    "@shieldActive": {
-        "description": "Description for shieldActive"
-    },
-    "activeProtection": "Active Protection",
-    "@activeProtection": {
-        "description": "Description for activeProtection"
-    },
-    "riskScore": "Risk Score",
-    "@riskScore": {
-        "description": "Description for riskScore"
-    },
-    "securityRadar": "Security Radar",
-    "@securityRadar": {
-        "description": "Description for securityRadar"
-    },
-    "profileTitle": "AGENT PROFILE",
-    "@profileTitle": {
-        "description": "Description for profileTitle"
-    },
-    "logout": "LOGOUT",
-    "@logout": {
-        "description": "Description for logout"
-    },
-    "logoutConfirmation": "DISCONNECT SESSION",
-    "@logoutConfirmation": {
-        "description": "Description for logoutConfirmation"
-    },
-    "logoutConfirmMessage": "Are you sure you want to terminate the current session? All active monitoring will be paused.",
-    "@logoutConfirmMessage": {
-        "description": "Description for logoutConfirmMessage"
+    "securityAlertsTooltip": "View security alerts",
+    "@securityAlertsTooltip": {
+        "description": "Dashboard tooltip."
     },
     "livePulse": "LIVE PULSE",
     "@livePulse": {
-        "description": "Description for livePulse"
+        "description": "Dashboard live indicator."
     },
     "operationsLabel": "OPERATIONS",
     "@operationsLabel": {
-        "description": "Description for operationsLabel"
+        "description": "Dashboard section label."
     },
     "topologyLabel": "TOPOLOGY",
     "@topologyLabel": {
-        "description": "Description for topologyLabel"
-    },
-    "accessEngine": "ACCESS ENGINE",
-    "@accessEngine": {
-        "description": "Description for accessEngine"
+        "description": "Dashboard section label."
     },
     "networkLogs": "NETWORK LOGS",
     "@networkLogs": {
-        "description": "Description for networkLogs"
+        "description": "Dashboard logs label."
     },
-    "strictSafetyEnabled": "STRICT SAFETY ENABLED",
+    "connectedStatusCaps": "CONNECTED",
+    "@connectedStatusCaps": {
+        "description": "Status connected."
+    },
+    "disconnectedStatusCaps": "DISCONNECTED",
+    "@disconnectedStatusCaps": {
+        "description": "Status disconnected."
+    },
+    "ipLabel": "IP",
+    "@ipLabel": {
+        "description": "IP label."
+    },
+    "gatewayLabel": "GATEWAY",
+    "@gatewayLabel": {
+        "description": "Gateway label."
+    },
+    "accessEngine": "ACCESS ENGINE",
+    "@accessEngine": {
+        "description": "Access engine status."
+    },
+    "latestSnapshotTitle": "Latest Network Snapshot",
+    "@latestSnapshotTitle": {
+        "description": "Snapshot section title."
+    },
+    "noSnapshotAvailable": "No snapshot data available...",
+    "@noSnapshotAvailable": {
+        "description": "No snapshot found."
+    },
+    "strictSafetyEnabled": "Strict safety protocols enabled",
     "@strictSafetyEnabled": {
-        "description": "Description for strictSafetyEnabled"
+        "description": "Safety mode text."
     },
-    "activeMonitoringProgress": "Active monitoring in progress",
+    "activeMonitoringProgress": "Active monitoring in progress...",
     "@activeMonitoringProgress": {
-        "description": "Description for activeMonitoringProgress"
+        "description": "Monitoring status text."
     },
-    "topologyMapTitle": "TOPOLOGY MAP",
-    "@topologyMapTitle": {
-        "description": "Description for topologyMapTitle"
+    "scanComparisonTitle": "SCAN COMPARISON",
+    "@scanComparisonTitle": {
+        "description": "Comparison page title."
     },
-    "trafficLabel": "TRAFFIC",
-    "@trafficLabel": {
-        "description": "Description for trafficLabel"
+    "comparisonNeedsTwoScans": "Comparison requires at least 2 scans.\n\nRun another scan to see changes.",
+    "@comparisonNeedsTwoScans": {
+        "description": "Requirement for comparison."
     },
-    "forceLabel": "FORCE",
-    "@forceLabel": {
-        "description": "Description for forceLabel"
+    "noChangesDetected": "No changes detected between the last two scans.",
+    "@noChangesDetected": {
+        "description": "Empty comparison result."
     },
-    "normalSpeed": "NORMAL",
-    "@normalSpeed": {
-        "description": "Description for normalSpeed"
+    "newNetworksCountLabel": "NEW ({count})",
+    "@newNetworksCountLabel": {
+        "description": "New networks header.",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
     },
-    "fastSpeed": "FAST",
-    "@fastSpeed": {
-        "description": "Description for fastSpeed"
+    "goneNetworksCountLabel": "GONE ({count})",
+    "@goneNetworksCountLabel": {
+        "description": "Removed networks header.",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
     },
-    "overdriveSpeed": "OVERDRIVE",
-    "@overdriveSpeed": {
-        "description": "Description for overdriveSpeed"
+    "changedNetworksCountLabel": "CHANGED ({count})",
+    "@changedNetworksCountLabel": {
+        "description": "Modified networks header.",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
     },
-    "noTopologyData": "No topology data",
-    "@noTopologyData": {
-        "description": "Description for noTopologyData"
+    "plusNewLabel": "+ NEW",
+    "goneLabel": "GONE",
+    "hiddenLabel": "[Hidden]",
+    "channelLabel": "CH {channel}",
+    "@channelLabel": {
+        "description": "Wifi channel.",
+        "placeholders": {
+            "channel": {
+                "type": "int"
+            }
+        }
     },
-    "runScanFirst": "Run a Wi-Fi and LAN scan first",
-    "@runScanFirst": {
-        "description": "Description for runScanFirst"
+    "securityLabel": "SECURITY",
+    "initiatingSpectrumScan": "INITIATING SPECTRUM SCAN...",
+    "broadcastingProbeRequests": "BROADCASTING PROBE REQUESTS...",
+    "noRadiosInRange": "No radios in range",
+    "noNetworksMatchFilter": "No networks match your filter",
+    "searchSsidBssidVendor": "Search SSID, BSSID or Vendor...",
+    "sortPrefix": "Sort: {option}",
+    "@sortPrefix": {
+        "placeholders": {
+            "option": {
+                "type": "String"
+            }
+        }
     },
-    "thisDevice": "This Device",
-    "@thisDevice": {
-        "description": "Description for thisDevice"
+    "bandAll": "ALL BANDS",
+    "sortSignal": "Signal",
+    "sortName": "Name",
+    "sortChannel": "Channel",
+    "sortSecurity": "Security",
+    "sortByTitle": "SORT BY",
+    "recommendationTip": "Optimum channels on {band}: {channels}",
+    "@recommendationTip": {
+        "placeholders": {
+            "channels": {
+                "type": "String"
+            },
+            "band": {
+                "type": "String"
+            }
+        }
     },
-    "gatewayDevice": "Gateway",
-    "@gatewayDevice": {
-        "description": "Description for gatewayDevice"
+    "channelInterferenceTitle": "Channel Interference",
+    "networksLabel": "NETWORKS",
+    "openCount": "{count} OPEN",
+    "@openCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
     },
-    "mobileDevice": "Mobile",
-    "@mobileDevice": {
-        "description": "Description for mobileDevice"
+    "avgSignalLabel": "AVG SIGNAL",
+    "notAvailable": "N/A",
+    "dbmCaps": "DBM",
+    "interfaceLabel": "INTERFACE",
+    "frequencyLabel": "{freq} MHz",
+    "@frequencyLabel": {
+        "placeholders": {
+            "freq": {
+                "type": "int"
+            }
+        }
     },
-    "deviceLabel": "Device",
-    "@deviceLabel": {
-        "description": "Description for deviceLabel"
+    "reportsTitle": "REPORTS",
+    "saveReportDialog": "Save Report",
+    "savedToast": "Report saved to {path}",
+    "@savedToast": {
+        "placeholders": {
+            "path": {
+                "type": "String"
+            }
+        }
     },
-    "iotDevice": "IoT",
-    "@iotDevice": {
-        "description": "Description for iotDevice"
+    "errorLabel": "Error",
+    "savePdfReportDialog": "Save PDF Report",
+    "scanning": "Scanning...",
+    "shieldActive": "Shield Active",
+    "threatsDetected": "Threats Detected",
+    "trustedLabel": "TRUSTED",
+    "securityEventTitle": "Security Event",
+    "networkReconTitle": "NETWORK RECON",
+    "intelligenceReportTitle": "INTELLIGENCE REPORT",
+    "discoveredEndpointsTitle": "DISCOVERED ENDPOINTS",
+    "newDeviceFound": "1 new device: {ip}",
+    "@newDeviceFound": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            }
+        }
     },
-    "analyzingNode": "ANALYZING NODE...",
-    "@analyzingNode": {
-        "description": "Description for analyzingNode"
+    "newDevicesFound": "{count} new devices on your network",
+    "@newDevicesFound": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
     },
+    "targetIpSubnet": "Target IP / Subnet",
+    "scanProfileFast": "Fast",
+    "scanProfileBalanced": "Balanced",
+    "scanProfileAggressive": "Aggressive",
+    "scanProfileNormal": "Normal",
+    "scanProfileIntense": "Intense",
+    "vulnOnlyLabel": "Vulnerabilities Only",
+    "lanReconTitle": "LAN RECON",
+    "targetSubnet": "Target IP / Subnet",
+    "scanAllCaps": "SCAN",
+    "channelRatingTitle": "CHANNEL RATING",
+    "refreshScanTooltip": "Refresh Scan",
+    "band24Ghz": "2.4 GHz",
+    "band5Ghz": "5 GHz",
+    "band6Ghz": "6 GHz",
+    "no24GhzChannels": "No 2.4 GHz channels found.",
+    "no5GhzChannels": "No 5 GHz channels found.",
+    "no6GhzChannels": "No 6 GHz channels found.",
+    "analyzing": "Analyzing...",
+    "historyLabel": "HISTORY",
     "failedLoadTopology": "Failed to load topology: {error}",
     "@failedLoadTopology": {
         "placeholders": {
-            "error": {}
+            "error": {
+                "type": "String"
+            }
         }
     },
-    "neuralCoreTitle": "NEURAL_CORE_AI",
-    "@neuralCoreTitle": {
-        "description": "Description for neuralCoreTitle"
-    },
-    "activeAnomalies": "ACTIVE ANOMALIES",
-    "@activeAnomalies": {
-        "description": "Description for activeAnomalies"
-    },
-    "predictiveHealth": "PREDICTIVE HEALTH",
-    "@predictiveHealth": {
-        "description": "Description for predictiveHealth"
-    },
-    "aiStrategyReport": "AI STRATEGY REPORT",
-    "@aiStrategyReport": {
-        "description": "Description for aiStrategyReport"
-    },
-    "engineStability": "ENGINE_STABILITY: OPTIMAL",
-    "@engineStability": {
-        "description": "Description for engineStability"
-    },
-    "aiStrategyText": "Current network topology suggests a stable signature. No immediate horizontal movement detected in subnets. Recommend enabling Stealth Mode on public access points to mitigate passive node discovery.",
-    "@aiStrategyText": {
-        "description": "Description for aiStrategyText"
-    },
-    "packetSnifferTitle": "PACKET_SNIFFER",
-    "@packetSnifferTitle": {
-        "description": "Description for packetSnifferTitle"
-    },
-    "streamPaused": "STREAM_PAUSED",
-    "@streamPaused": {
-        "description": "Description for streamPaused"
-    },
-    "filterNone": "FILTER: NONE",
-    "@filterNone": {
-        "description": "Description for filterNone"
-    },
-    "totalPackets": "TOTAL_PKTS",
-    "@totalPackets": {
-        "description": "Description for totalPackets"
-    },
-    "droppedLabel": "DROPPED",
-    "@droppedLabel": {
-        "description": "Description for droppedLabel"
-    },
-    "bufferLabel": "BUFFER",
-    "@bufferLabel": {
-        "description": "Description for bufferLabel"
-    },
-    "latencyLabel": "LATENCY",
-    "@latencyLabel": {
-        "description": "Description for latencyLabel"
-    },
-    "activeMonitoring": "ACTIVE MONITORING",
-    "@activeMonitoring": {
-        "description": "Description for activeMonitoring"
-    },
-    "deactivate": "DEACTIVATE",
-    "@deactivate": {
-        "description": "Description for deactivate"
-    },
-    "initializeLink": "INITIALIZE LINK",
-    "@initializeLink": {
-        "description": "Description for initializeLink"
-    },
-    "commandCenters": "COMMAND CENTERS",
-    "@commandCenters": {
-        "description": "Description for commandCenters"
-    },
-    "defenseTitle": "DEFENSE",
-    "@defenseTitle": {
-        "description": "Description for defenseTitle"
-    },
-    "activeShielding": "Active Shielding",
-    "@activeShielding": {
-        "description": "Description for activeShielding"
-    },
-    "logisticsTitle": "LOGISTICS",
-    "@logisticsTitle": {
-        "description": "Description for logisticsTitle"
-    },
-    "intelMetrics": "Intel & Metrics",
-    "@intelMetrics": {
-        "description": "Description for intelMetrics"
-    },
-    "networkMesh": "Network Mesh",
-    "@networkMesh": {
-        "description": "Description for networkMesh"
-    },
-    "tuningTitle": "TUNING",
-    "@tuningTitle": {
-        "description": "Description for tuningTitle"
-    },
-    "systemConfig": "System Config",
-    "@systemConfig": {
-        "description": "Description for systemConfig"
-    },
-    "technicalTools": "TECHNICAL TOOLS",
-    "@technicalTools": {
-        "description": "Description for technicalTools"
-    },
-    "packetLogs": "PACKET LOGS",
-    "@packetLogs": {
-        "description": "Description for packetLogs"
-    },
-    "aiInsights": "AI INSIGHTS",
-    "@aiInsights": {
-        "description": "Description for aiInsights"
-    },
-    "interactiveSimulation": "INTERACTIVE_SIMULATION",
-    "@interactiveSimulation": {
-        "description": "Description for interactiveSimulation"
-    },
-    "appearance": "APPEARANCE",
-    "@appearance": {
-        "description": "Description for appearance"
-    },
+    "trafficLabel": "TRAFFIC",
+    "forceLabel": "FORCE",
+    "normalSpeed": "NORMAL",
+    "fastSpeed": "FAST",
+    "overdriveSpeed": "OVERDRIVE",
+    "topologyMapTitle": "TOPOLOGY MAP",
+    "noTopologyData": "No Topology Data",
+    "runScanFirst": "Run a scan first to build the network map",
+    "retry": "RETRY",
+    "thisDevice": "THIS DEVICE",
+    "gatewayDevice": "GATEWAY",
+    "mobileDevice": "MOBILE",
+    "deviceLabel": "DEVICE",
+    "iotDevice": "IOT",
+    "analyzingNode": "ANALYZING NODE",
+    "settingsTitle": "SETTINGS",
+    "appearance": "Appearance",
+    "settingsLanguage": "Language",
     "theme": "Theme",
-    "@theme": {
-        "description": "Description for theme"
-    },
+    "settingsScanBehavior": "Scan Behavior",
+    "settingsDefaultScanPasses": "Default Scan Passes",
+    "settingsMonitoringInterval": "Monitoring Interval",
+    "settingsBackendPreference": "Backend Preference",
+    "settingsIncludeHidden": "Include Hidden SSIDs",
+    "settingsStrictSafety": "Strict Safety Mode",
+    "settingsStrictSafetyDesc": "Restrict dangerous operations",
     "darkTheme": "Dark",
-    "@darkTheme": {
-        "description": "Description for darkTheme"
-    },
     "lightTheme": "Light",
-    "@lightTheme": {
-        "description": "Description for lightTheme"
-    },
     "systemTheme": "System",
-    "@systemTheme": {
-        "description": "Description for systemTheme"
+    "sectionStatus": "Status",
+    "reportsSubtitle": "Network Scan & Security Intelligence",
+    "exportOptionsTitle": "EXPORT OPTIONS",
+    "exportJson": "Export JSON",
+    "exportHtml": "Export HTML",
+    "exportPdf": "Export PDF",
+    "printPdf": "Print PDF",
+    "navWifi": "WIFI",
+    "backendLabel": "BACKEND",
+    "defenseTitle": "DEFENSE",
+    "knownNetworks": "Known Networks",
+    "noKnownNetworksYet": "No known networks yet",
+    "securityTimeline": "Security Timeline",
+    "noSecurityEvents": "No security events recorded",
+    "authLocalSystem": "AUTH_LOCAL_SYSTEM",
+    "remoteNodeIdLabel": "REMOTE_NODE_ID: {id}",
+    "@remoteNodeIdLabel": {
+        "placeholders": {
+            "id": {
+                "type": "String"
+            }
+        }
     },
-    "systemStatus": "SYSTEM STATUS",
-    "@systemStatus": {
-        "description": "Description for systemStatus"
-    }
+    "ipAddrLabel": "IP_ADDR",
+    "macValLabel": "MAC_VAL",
+    "mnfrLabel": "MNFR",
+    "hiddenNetwork": "Hidden Network",
+    "signalGraph": "Signal Graph",
+    "riskFactors": "Risk Factors",
+    "vulnerabilities": "Vulnerabilities",
+    "bssId": "BSSID",
+    "channel": "Channel",
+    "security": "Security",
+    "signal": "Signal",
+    "recommendationLabel": "RECO: {text}",
+    "@recommendationLabel": {
+        "placeholders": {
+            "text": {
+                "type": "String"
+            }
+        }
+    },
+    "noVulnerabilities": "No vulnerabilities detected.",
+    "securityScoreTitle": "Security Score",
+    "securityScoreDesc": "The security score (0–100) rates how well this network is protected. Higher is better. It considers encryption type, WPS status, and other security features.",
+    "capabilitiesLabel": "CAPABILITIES",
+    "wifi7MldLabel": "Wi-Fi 7 MLD",
+    "tagWpa3Desc": "WPA3 is the latest Wi-Fi security standard — highly secure.",
+    "tagWpa2Desc": "WPA2 is a strong security standard — safe for everyday use.",
+    "tagWpaDesc": "WPA is an older security standard with known weaknesses.",
+    "tagWpsDesc": "WPS (Wi-Fi Protected Setup) has known security vulnerabilities. It can allow attackers to brute-force the PIN and gain access.",
+    "tagPmfDesc": "Protected Management Frames (PMF/MFP) protects against deauthentication attacks.",
+    "tagEssDesc": "ESS (Extended Service Set) means this is a standard access point network.",
+    "tagCcmpDesc": "CCMP (AES) is a strong encryption cipher used with WPA2/WPA3.",
+    "tagTkipDesc": "TKIP is an older, weaker encryption cipher. CCMP/AES is preferred.",
+    "tagUnknownDesc": "Network capability flag from the beacon frame.",
+    "scanProfileLabel": "SCAN PROFILE",
+    "infoScanProfilesTitle": "Scan Profiles",
+    "infoScanProfileFastDesc": "Fast: Quick ping sweep — finds devices in seconds.",
+    "infoScanProfileBalancedDesc": "Balanced: Ping + common ports — finds more detail.",
+    "infoScanProfileAggressiveDesc": "Aggressive: Full port scan — most thorough but slowest.",
+    "activeNodeRecon": "ACTIVE NODE RECONNAISSANCE",
+    "interrogatingSubnet": "Interrogating subnet for responsive hosts...",
+    "nodesLabel": "Nodes",
+    "riskAvgLabel": "Risk Avg",
+    "servicesLabel": "Services",
+    "openPortsLabel": "OPEN PORTS",
+    "subnetLabel": "Subnet",
+    "cidrTargetLabel": "CIDR TARGET",
+    "anonymousNode": "ANONYMOUS NODE",
+    "portsCountLabel": "{count} PORTS",
+    "@portsCountLabel": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "riskLabel": "RISK",
+    "searchLanPlaceholder": "Search by IP, hostname, or vendor...",
+    "hasVulnerabilitiesLabel": "Has Vulnerabilities",
+    "securityStatusSecure": "Secure",
+    "securityStatusModerate": "Moderate",
+    "securityStatusAtRisk": "At Risk",
+    "securityStatusCritical": "Critical",
+    "securitySummarySecure": "Your connection looks good! This network uses strong encryption and is well protected against common attacks.",
+    "securitySummaryModerate": "This network has decent security but some potential weaknesses. It is safe for everyday use, but avoid sensitive transactions.",
+    "securitySummaryAtRisk": "This network has security issues that put your data at risk. Avoid entering passwords or personal information while connected.",
+    "securitySummaryCritical": "Warning: This network is not secure. Anyone nearby may be able to see your internet traffic. Use a VPN or switch networks.",
+    "vulnerabilityOpenNetworkTitle": "Open Network",
+    "vulnerabilityOpenNetworkDesc": "No encryption detected. All traffic can be sniffed in plaintext.",
+    "vulnerabilityOpenNetworkRec": "Avoid sensitive activity. Prefer trusted VPN or different network.",
+    "vulnerabilityWepTitle": "WEP Encryption",
+    "vulnerabilityWepDesc": "WEP is deprecated and can be cracked quickly.",
+    "vulnerabilityWepRec": "Reconfigure AP to WPA2 or WPA3 immediately.",
+    "vulnerabilityLegacyWpaTitle": "Legacy WPA",
+    "vulnerabilityLegacyWpaDesc": "WPA/TKIP is older and weaker against modern attack techniques.",
+    "vulnerabilityLegacyWpaRec": "Upgrade AP and clients to WPA2/WPA3.",
+    "vulnerabilityHiddenSsidTitle": "Hidden SSID",
+    "vulnerabilityHiddenSsidDesc": "Hidden SSIDs are still discoverable and may hurt compatibility.",
+    "vulnerabilityHiddenSsidRec": "Hidden SSID alone is not protection. Focus on strong encryption.",
+    "vulnerabilityWeakSignalTitle": "Very Weak Signal",
+    "vulnerabilityWeakSignalDesc": "Weak signal can indicate unstable links and spoofing susceptibility.",
+    "vulnerabilityWeakSignalRec": "Move closer to AP or validate BSSID consistency.",
+    "vulnerabilityWpsTitle": "WPS Enabled",
+    "vulnerabilityWpsDesc": "Wi-Fi Protected Setup (WPS) is enabled. The WPS PIN mode can be brute-forced in hours using Pixie Dust attack, effectively bypassing any password.",
+    "vulnerabilityWpsRec": "Disable WPS in your router admin panel. Use WPA2/WPA3 passphrase only.",
+    "vulnerabilityPmfTitle": "Management Frames Unprotected",
+    "vulnerabilityPmfDesc": "This access point does not enforce Protected Management Frames (PMF / 802.11w). Unprotected management frames allow an attacker to forge deauthentication packets and disconnect clients.",
+    "vulnerabilityPmfRec": "Enable PMF in router settings (often labelled '802.11w' or 'Management Frame Protection'). WPA3 requires PMF by default.",
+    "vulnerabilityEvilTwinTitle": "Potential Evil Twin",
+    "vulnerabilityEvilTwinDesc": "SSID appears with conflicting security/channel fingerprint nearby.",
+    "vulnerabilityEvilTwinRec": "Verify BSSID and certificate before authentication or data exchange.",
+    "riskFactorNoEncryption": "No encryption in use",
+    "riskFactorDeprecatedEncryption": "Deprecated encryption (WEP)",
+    "riskFactorLegacyWpa": "Legacy WPA in use",
+    "riskFactorHiddenSsid": "Hidden SSID behavior",
+    "riskFactorWeakSignal": "Weak signal environment",
+    "riskFactorWpsEnabled": "WPS PIN attack surface exposed",
+    "riskFactorPmfNotEnforced": "PMF not enforced — deauth spoofing possible",
+    "refresh": "Refresh",
+    "@refresh": {
+        "description": "Label for refresh button."
+    },
+    "addZonePoint": "Add Zone Point",
+    "@addZonePoint": {
+        "description": "Title for adding a zone point."
+    },
+    "cancel": "Cancel",
+    "@cancel": {
+        "description": "Label for cancel button."
+    },
+    "save": "Save",
+    "@save": {
+        "description": "Label for save button."
+    },
+    "waitingForData": "Waiting for data...",
+    "@waitingForData": {
+        "description": "Text shown while waiting for data to load."
+    },
+    "temporalHeatmap": "Temporal Heatmap",
+    "@temporalHeatmap": {
+        "description": "Title for the temporal heatmap screen."
+    },
+    "failedToSaveHeatmapPoint": "Failed to save heatmap point",
+    "signalMonitoringTitle": "SIGNAL MONITORING: {ssid}",
+    "@signalMonitoringTitle": {
+        "placeholders": {
+            "ssid": {
+                "type": "String"
+            }
+        }
+    },
+    "heatmapTooltip": "Heatmap",
+    "tagCurrentPointTooltip": "Tag current point",
+    "signalCaps": "SIGNAL",
+    "channelCaps": "CHANNEL",
+    "frequencyCaps": "FREQ",
+    "heatmapPointAdded": "Heatmap point added for {zone}",
+    "@heatmapPointAdded": {
+        "placeholders": {
+            "zone": {
+                "type": "String"
+            }
+        }
+    },
+    "zoneTagLabel": "Zone tag (e.g. Kitchen)",
+    "errorPrefix": "Error: {message}",
+    "@errorPrefix": {
+        "placeholders": {
+            "message": {
+                "type": "String"
+            }
+        }
+    },
+    "noHeatmapPointsYet": "No heatmap points yet for {bssid}",
+    "@noHeatmapPointsYet": {
+        "placeholders": {
+            "bssid": {
+                "type": "String"
+            }
+        }
+    },
+    "averageSignalByZone": "Average signal by zone",
+    "bandChannels": "{band} CHANNELS",
+    "@bandChannels": {
+        "placeholders": {
+            "band": {
+                "type": "String"
+            }
+        }
+    },
+    "recommendedChannel": "RECOMMENDED CHANNEL",
+    "channelInfo": "Channel {ch} · {freq} MHz",
+    "@channelInfo": {
+        "placeholders": {
+            "ch": {
+                "type": "int"
+            },
+            "freq": {
+                "type": "int"
+            }
+        }
+    },
+    "riskFactorFingerprintDrift": "SSID fingerprint drift detected",
+    "historyCaps": "HISTORY",
+    "consistentlyBestChannel": "CONSISTENTLY BEST CHANNEL",
+    "avgScore": "Avg Score",
+    "channelBondingTitle": "Channel Bonding",
+    "channelBondingDesc": "Channel bonding combines 2 or more adjacent channels to increase bandwidth (40 MHz = 2×, 80 MHz = 4×, 160 MHz = 8×). Wider channels deliver faster speeds but may interfere with more neighboring networks.",
+    "spectrumOptimizationCaps": "SPECTRUM OPTIMIZATION",
+    "spectrumOptimizationDesc": "Analyze channel congestion & interference",
+    "qualityExcellent": "Excellent",
+    "qualityVeryGood": "Very Good",
+    "qualityGood": "Good",
+    "qualityFair": "Fair",
+    "qualityCongested": "Congested",
+    "channelBondingHeader": "CHANNEL BONDING ({count} APs)",
+    "@channelBondingHeader": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "hiddenSsidLabel": "[Hidden]",
+    "noHistoryPlaceholder": "No history yet.\nChannel ratings are recorded each time you open this screen.",
+    "currentSessionInfo": "Current session — higher score = less congested.",
+    "historySummaryInfo": "{sessions} sessions · {samples} samples · higher = less congested",
+    "@historySummaryInfo": {
+        "placeholders": {
+            "sessions": {
+                "type": "int"
+            },
+            "samples": {
+                "type": "int"
+            }
+        }
+    },
+    "scanReportTitle": "Torcav Wi-Fi Scan Report",
+    "reportTime": "Time",
+    "ssidHeader": "SSID",
+    "bssidHeader": "BSSID",
+    "dbmHeader": "dBm",
+    "channelHeader": "CH",
+    "navDashboard": "DASHBOARD",
+    "navDiscovery": "DISCOVERY",
+    "navOperations": "OPERATIONS",
+    "navLan": "LAN",
+    "systemStatus": "System Status",
+    "interfaceTheme": "Interface Theme",
+    "speedTestHeader": "SPEED TEST",
+    "startTest": "START TEST",
+    "testAgain": "TEST AGAIN",
+    "commandCenters": "COMMAND CENTERS",
+    "activeShielding": "Active Shielding",
+    "logisticsTitle": "LOGISTICS",
+    "intelMetrics": "Intel Metrics",
+    "networkMesh": "Network Mesh",
+    "tuningTitle": "TUNING",
+    "systemConfig": "System Config",
+    "phasePing": "PHASE: PING",
+    "phaseDownload": "PHASE: DOWNLOAD",
+    "phaseUpload": "PHASE: UPLOAD",
+    "phaseDone": "PHASE: DONE",
+    "riskScore": "Risk Score",
+    "loading": "Loading...",
+    "profileTitle": "PROFILE HUB",
+    "activeSessionLabel": "Active Session",
+    "networkStatusLabel": "NETWORK STATUS",
+    "ssid": "SSID",
+    "lastScanTitle": "LAST SCAN",
+    "lastSnapshot": "Last Snapshot"
 }

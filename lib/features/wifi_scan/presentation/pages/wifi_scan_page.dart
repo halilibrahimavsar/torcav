@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:torcav/l10n/generated/app_localizations.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/di/injection.dart';
@@ -384,7 +384,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
               child: OutlinedButton.icon(
                 icon: const Icon(Icons.compare_arrows_rounded, size: 16),
                 label: Text(
-                  'COMPARE WITH PREVIOUS SCAN',
+                  AppLocalizations.of(context)!.compareWithPreviousScan,
                   style: GoogleFonts.orbitron(fontSize: 11, letterSpacing: 1),
                 ),
                 style: OutlinedButton.styleFrom(
@@ -445,7 +445,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
           NeonSectionHeader(
             label: filtered.length == widget.snapshot.networks.length
                 ? AppLocalizations.of(context)!.networksCount(filtered.length)
-                : '${filtered.length} / ${widget.snapshot.networks.length} NETWORKS',
+                : AppLocalizations.of(context)!.filteredNetworksCount(filtered.length, widget.snapshot.networks.length),
             icon: Icons.wifi_rounded,
             color: Theme.of(context).colorScheme.primary,
           ),
@@ -641,7 +641,7 @@ class _SearchFilterBar extends StatelessWidget {
           child: Row(
             children: [
               _ScanChip(
-                label: 'Sort: ${_sortLabel(filter.sortBy)}',
+                label: AppLocalizations.of(context)!.sortPrefix(_sortLabel(context, filter.sortBy)),
                 icon: Icons.sort_rounded,
                 color: primary,
                 onTap: () => _showSortMenu(context),
@@ -651,7 +651,7 @@ class _SearchFilterBar extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 6),
                   child: _ScanChip(
-                    label: band == null ? 'All' : _bandLabel(band),
+                    label: band == null ? AppLocalizations.of(context)!.bandAll : _bandLabel(band),
                     icon: band == null ? Icons.cell_tower_rounded : Icons.wifi_rounded,
                     color: filter.band == band ? primary : Theme.of(context).colorScheme.outline,
                     selected: filter.band == band,
@@ -665,16 +665,17 @@ class _SearchFilterBar extends StatelessWidget {
     );
   }
 
-  String _sortLabel(_SortBy sortBy) {
+  String _sortLabel(BuildContext context, _SortBy sortBy) {
+    final l10n = AppLocalizations.of(context)!;
     switch (sortBy) {
       case _SortBy.signal:
-        return 'Signal';
+        return l10n.sortSignal;
       case _SortBy.ssid:
-        return 'Name';
+        return l10n.sortName;
       case _SortBy.channel:
-        return 'Channel';
+        return l10n.sortChannel;
       case _SortBy.security:
-        return 'Security';
+        return l10n.sortSecurity;
     }
   }
 
@@ -715,7 +716,7 @@ class _SearchFilterBar extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'SORT BY',
+              AppLocalizations.of(context)!.sortByTitle,
               style: GoogleFonts.orbitron(
                 color: Theme.of(context).colorScheme.primary,
                 fontSize: 13,
@@ -727,7 +728,7 @@ class _SearchFilterBar extends StatelessWidget {
             for (final sort in _SortBy.values)
               ListTile(
                 title: Text(
-                  _sortLabel(sort).toUpperCase(),
+                  _sortLabel(context, sort).toUpperCase(),
                   style: GoogleFonts.rajdhani(
                     color: filter.sortBy == sort
                         ? Theme.of(context).colorScheme.primary
@@ -873,10 +874,7 @@ class _RecommendationBanner extends StatelessWidget {
               children: [
                 Flexible(
                   child: Text(
-                    'Tip: Channel${best.recommendedChannels.length > 1 ? 's' : ''} '
-                    '$channels ($bandName) '
-                    'ha${best.recommendedChannels.length > 1 ? 've' : 's'} '
-                    'the least interference in your area.',
+                    AppLocalizations.of(context)!.recommendationTip(channels, bandName),
                     style: GoogleFonts.rajdhani(
                       fontSize: 13,
                       color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.85),
@@ -959,7 +957,7 @@ class _WifiBentoHeader extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: BentoStatTile(
-                                  label: 'Networks',
+                                  label: AppLocalizations.of(context)!.networksLabel,
                                   value: '${snapshot.networks.length}',
                                   icon: Icons.wifi_find_rounded,
                                   color: Theme.of(context).colorScheme.primary,
@@ -968,13 +966,13 @@ class _WifiBentoHeader extends StatelessWidget {
                               const SizedBox(width: 8),
                               Expanded(
                                 child: BentoStatTile(
-                                  label: 'Security',
+                                  label: AppLocalizations.of(context)!.securityLabel,
                                   value:
                                       '${snapshot.networks.where((n) => n.security != SecurityType.open).length}',
                                   icon: Icons.security_rounded,
                                   color: AppColors.neonGreen,
                                   subValue:
-                                      '${snapshot.networks.where((n) => n.security == SecurityType.open).length} OPEN',
+                                      AppLocalizations.of(context)!.openCount(snapshot.networks.where((n) => n.security == SecurityType.open).length),
                                 ),
                               ),
                             ],
@@ -986,20 +984,20 @@ class _WifiBentoHeader extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: BentoStatTile(
-                                  label: 'Avg Signal',
+                                  label: AppLocalizations.of(context)!.avgSignalLabel,
                                   value:
                                       snapshot.networks.isEmpty
-                                          ? 'N/A'
+                                          ? AppLocalizations.of(context)!.notAvailable
                                           : '${(snapshot.networks.map((n) => n.avgSignalDbm).reduce((a, b) => a + b) / snapshot.networks.length).round()}',
                                   icon: Icons.signal_wifi_4_bar_rounded,
                                   color: AppColors.neonPurple,
-                                  subValue: 'DBM',
+                                  subValue: AppLocalizations.of(context)!.dbmCaps,
                                 ),
                               ),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: BentoStatTile(
-                                  label: 'Interface',
+                                  label: AppLocalizations.of(context)!.interfaceLabel,
                                   value: snapshot.interfaceName.toUpperCase(),
                                   icon: Icons.lan_rounded,
                                   color: AppColors.neonOrange,
@@ -1048,7 +1046,7 @@ class _WifiBentoHeader extends StatelessWidget {
                               ),
                               const Spacer(),
                               Text(
-                                '${band.networkCount} NETWORKS',
+                                AppLocalizations.of(context)!.networksCount(band.networkCount),
                                 style: GoogleFonts.rajdhani(
                                   color:
                                       Theme.of(context).colorScheme.onSurface,
@@ -1257,13 +1255,13 @@ class _WifiNetworkCard extends StatelessWidget {
             Row(
               children: [
                 _MiniTechTag(
-                  label: 'CH ${network.channel}',
+                  label: l10n.channelLabel(network.channel),
                   icon: Icons.tag_rounded,
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 const SizedBox(width: 8),
                 _MiniTechTag(
-                  label: '${network.frequency} MHz',
+                  label: l10n.frequencyLabel(network.frequency),
                   icon: Icons.waves_rounded,
                   color: AppColors.neonPurple,
                 ),
@@ -1348,6 +1346,7 @@ class _ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -1386,7 +1385,7 @@ class _ErrorView extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('RETRY'),
+              label: Text(l10n.retry.toUpperCase()),
             ),
           ],
         ),
@@ -1405,6 +1404,7 @@ class _ChannelRatingLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return NeonCard(
       glowColor: AppColors.neonPurple,
       glowIntensity: 0.1,
@@ -1441,7 +1441,7 @@ class _ChannelRatingLink extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'SPECTRUM OPTIMIZATION',
+                  l10n.spectrumOptimizationCaps,
                   style: GoogleFonts.orbitron(
                     color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 12,
@@ -1450,7 +1450,7 @@ class _ChannelRatingLink extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Analyze channel congestion & interference',
+                  l10n.spectrumOptimizationDesc,
                   style: GoogleFonts.rajdhani(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 11,

@@ -5,7 +5,7 @@ import 'package:network_info_plus/network_info_plus.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/neon_widgets.dart';
-import '../../../../l10n/generated/app_localizations.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../security/presentation/bloc/notification/notification_bloc.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
 import '../widgets/security_core.dart';
@@ -126,7 +126,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     NeonIconButton(
                       icon: Icons.notifications_none_rounded,
                       onTap: () => _showNotificationSheet(context),
-                      tooltip: 'Security Alerts',
+                      tooltip: l10n.securityAlertsTooltip,
                     ),
                     if (unreadCount > 0)
                       Positioned(

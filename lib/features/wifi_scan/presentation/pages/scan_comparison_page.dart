@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../domain/entities/wifi_observation.dart';
@@ -12,6 +12,7 @@ class ScanComparisonPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final store = getIt<ScanSessionStore>();
     final all = store.all;
 
@@ -19,7 +20,7 @@ class ScanComparisonPage extends StatelessWidget {
       return Scaffold(
         appBar: AppBar(
           title: Text(
-            'SCAN COMPARISON',
+            l10n.scanComparisonTitle,
             style: GoogleFonts.orbitron(
               fontWeight: FontWeight.bold,
               fontSize: 15,
@@ -33,7 +34,7 @@ class ScanComparisonPage extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(32),
             child: Text(
-              'At least 2 scans are needed for comparison.\n\nRun another scan to see what changed.',
+              l10n.comparisonNeedsTwoScans,
               textAlign: TextAlign.center,
               style: GoogleFonts.rajdhani(
                 fontSize: 15,
@@ -53,7 +54,7 @@ class ScanComparisonPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'SCAN COMPARISON',
+          l10n.scanComparisonTitle,
           style: GoogleFonts.orbitron(
             fontWeight: FontWeight.bold,
             fontSize: 15,
@@ -66,7 +67,7 @@ class ScanComparisonPage extends StatelessWidget {
       body: diff.isEmpty
           ? Center(
               child: Text(
-                'No changes detected between the last two scans.',
+                l10n.noChangesDetected,
                 style: GoogleFonts.rajdhani(
                   fontSize: 15,
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -79,7 +80,7 @@ class ScanComparisonPage extends StatelessWidget {
               children: [
                 if (diff.added.isNotEmpty) ...[
                   _SectionHeader(
-                    label: 'NEW (${diff.added.length})',
+                    label: l10n.newNetworksCountLabel(diff.added.length),
                     color: Theme.of(context).colorScheme.tertiary,
                     icon: Icons.add_circle_outline_rounded,
                   ),
@@ -94,7 +95,7 @@ class ScanComparisonPage extends StatelessWidget {
                 ],
                 if (diff.removed.isNotEmpty) ...[
                   _SectionHeader(
-                    label: 'GONE (${diff.removed.length})',
+                    label: l10n.goneNetworksCountLabel(diff.removed.length),
                     color: Theme.of(context).colorScheme.error,
                     icon: Icons.remove_circle_outline_rounded,
                   ),
@@ -109,7 +110,7 @@ class ScanComparisonPage extends StatelessWidget {
                 ],
                 if (diff.changed.isNotEmpty) ...[
                   _SectionHeader(
-                    label: 'CHANGED (${diff.changed.length})',
+                    label: l10n.changedNetworksCountLabel(diff.changed.length),
                     color: Theme.of(context).colorScheme.primary,
                     icon: Icons.swap_horiz_rounded,
                   ),

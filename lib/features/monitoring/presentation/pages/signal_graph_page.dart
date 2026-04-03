@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../../features/wifi_scan/domain/entities/wifi_network.dart';
 import '../bloc/heatmap_bloc.dart';
 import '../bloc/monitoring_bloc.dart';
@@ -31,12 +32,12 @@ class SignalGraphPage extends StatelessWidget {
           return Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
-              title: Text('SIGNAL MONITORING: ${network.ssid}'),
+              title: Text(context.l10n.signalMonitoringTitle(network.ssid)),
               backgroundColor: Colors.transparent,
               actions: [
                 IconButton(
                   icon: const Icon(Icons.map_outlined),
-                  tooltip: 'Heatmap',
+                  tooltip: context.l10n.heatmapTooltip,
                   onPressed: () {
                     Navigator.of(innerContext).push(
                       MaterialPageRoute(
@@ -48,7 +49,7 @@ class SignalGraphPage extends StatelessWidget {
                 ),
                 IconButton(
                   icon: const Icon(Icons.add_location_alt_outlined),
-                  tooltip: 'Tag current point',
+                  tooltip: context.l10n.tagCurrentPointTooltip,
                   onPressed: () => _addHeatmapPoint(innerContext),
                 ),
               ],
@@ -87,11 +88,11 @@ class SignalGraphPage extends StatelessWidget {
               children: [
                 _buildStatItem(
                   context,
-                  'SIGNAL',
+                  context.l10n.signalCaps,
                   '${state.currentData.signalStrength} dBm',
                 ),
-                _buildStatItem(context, 'CHANNEL', '${state.currentData.channel}'),
-                _buildStatItem(context, 'FREQ', '${state.currentData.frequency} MHz'),
+                _buildStatItem(context, context.l10n.channelCaps, '${state.currentData.channel}'),
+                _buildStatItem(context, context.l10n.frequencyCaps, '${state.currentData.frequency} MHz'),
               ],
             ),
           );
@@ -145,7 +146,7 @@ class SignalGraphPage extends StatelessWidget {
     if (!context.mounted) return;
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text('Heatmap point added for $zone')));
+    ).showSnackBar(SnackBar(content: Text(context.l10n.heatmapPointAdded(zone))));
   }
 }
 
@@ -174,16 +175,16 @@ class _ZoneInputDialogState extends State<_ZoneInputDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add Zone Point'),
+      title: Text(context.l10n.addZonePoint),
       content: TextField(
         controller: _controller,
         autofocus: true,
-        decoration: const InputDecoration(labelText: 'Zone tag (e.g. Kitchen)'),
+        decoration: InputDecoration(labelText: context.l10n.zoneTagLabel),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.cancel),
         ),
         ElevatedButton(
           onPressed: () {
@@ -192,7 +193,7 @@ class _ZoneInputDialogState extends State<_ZoneInputDialog> {
               Navigator.of(context).pop(text);
             }
           },
-          child: const Text('Save'),
+          child: Text(context.l10n.save),
         ),
       ],
     );
@@ -281,9 +282,9 @@ class _SignalChart extends StatelessWidget {
             ),
           );
         } else if (state is MonitoringFailure) {
-          return Center(child: Text('Error: ${state.message}'));
+          return Center(child: Text(context.l10n.errorPrefix(state.message)));
         }
-        return const Center(child: Text('Waiting for data...'));
+        return Center(child: Text(context.l10n.waitingForData));
       },
     );
   }

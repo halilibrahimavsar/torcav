@@ -1,6 +1,6 @@
 // lib/core/extensions/context_extensions.dart
 import 'package:flutter/material.dart';
-import 'package:torcav/l10n/generated/app_localizations.dart';
+import 'package:torcav/core/l10n/app_localizations.dart';
 
 extension LocalizationX on BuildContext {
   /// Access [AppLocalizations] from [BuildContext].

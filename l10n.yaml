@@ -3,5 +3,6 @@ template-arb-file: app_en.arb
 output-localization-file: app_localizations.dart
 synthetic-package: false
 output-dir: lib/core/l10n
+untranslated-messages-file: l10n_report.txt
 
 
