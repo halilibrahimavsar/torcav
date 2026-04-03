@@ -753,6 +753,72 @@ abstract class AppLocalizations {
   /// **'ANALYZING NODE'**
   String get analyzingNode;
 
+  /// Title for the topology information sheet
+  ///
+  /// In en, this message translates to:
+  /// **'TOPOLOGY GUIDE'**
+  String get topologyGuideTitle;
+
+  /// Description for the topology information sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Understand your network structure and device connectivity.'**
+  String get topologyGuideDesc;
+
+  /// Gateway title
+  ///
+  /// In en, this message translates to:
+  /// **'The Gateway'**
+  String get gatewayTitle;
+
+  /// Gateway description
+  ///
+  /// In en, this message translates to:
+  /// **'The central brain of your network. All external traffic flows through this node.'**
+  String get gatewayDesc;
+
+  /// Device layers title
+  ///
+  /// In en, this message translates to:
+  /// **'Device Layers'**
+  String get deviceLayersTitle;
+
+  /// Device layers description
+  ///
+  /// In en, this message translates to:
+  /// **'Devices are categorized by their role: Core (Routers/APs), Mobile, and IoT/Peripheral.'**
+  String get deviceLayersDesc;
+
+  /// Pathways title
+  ///
+  /// In en, this message translates to:
+  /// **'Pathways'**
+  String get pathwaysTitle;
+
+  /// Pathways description
+  ///
+  /// In en, this message translates to:
+  /// **'Modern networks mix wired (Ethernet) and wireless (Wi-Fi) connections. Solid lines indicate high-speed wired links, while dashed lines show wireless segments.'**
+  String get pathwaysDesc;
+
+  /// Action to ping a device
+  ///
+  /// In en, this message translates to:
+  /// **'TEST LATENCY'**
+  String get pingAction;
+
+  /// Ping success message
+  ///
+  /// In en, this message translates to:
+  /// **'Latency: {ms}ms'**
+  String pingSuccess(int ms);
+
+  /// Ping failure message
+  ///
+  /// In en, this message translates to:
+  /// **'Host Unreachable'**
+  String get pingFailure;
+
   /// Settings Title
   ///
   /// In en, this message translates to:

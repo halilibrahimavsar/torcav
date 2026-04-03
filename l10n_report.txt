@@ -1,6 +1,45 @@
 {
+  "de": [
+    "topologyGuideTitle",
+    "topologyGuideDesc",
+    "gatewayTitle",
+    "gatewayDesc",
+    "deviceLayersTitle",
+    "deviceLayersDesc",
+    "pathwaysTitle",
+    "pathwaysDesc",
+    "pingAction",
+    "pingSuccess",
+    "pingFailure"
+  ],
+
+  "ku": [
+    "topologyGuideTitle",
+    "topologyGuideDesc",
+    "gatewayTitle",
+    "gatewayDesc",
+    "deviceLayersTitle",
+    "deviceLayersDesc",
+    "pathwaysTitle",
+    "pathwaysDesc",
+    "pingAction",
+    "pingSuccess",
+    "pingFailure"
+  ],
+
   "tr": [
     "scanProfileBalanced",
-    "scanProfileAggressive"
+    "scanProfileAggressive",
+    "topologyGuideTitle",
+    "topologyGuideDesc",
+    "gatewayTitle",
+    "gatewayDesc",
+    "deviceLayersTitle",
+    "deviceLayersDesc",
+    "pathwaysTitle",
+    "pathwaysDesc",
+    "pingAction",
+    "pingSuccess",
+    "pingFailure"
   ]
 }

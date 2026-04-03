@@ -9,8 +9,6 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:io' show Platform;
-
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:network_info_plus/network_info_plus.dart' as _i846;
@@ -22,18 +20,26 @@ import '../../features/monitoring/data/repositories/monitoring_repository_impl.d
     as _i592;
 import '../../features/monitoring/data/repositories/speed_test_repository_impl.dart'
     as _i528;
+import '../../features/monitoring/data/repositories/topology_repository_impl.dart'
+    as _i21;
 import '../../features/monitoring/domain/repositories/heatmap_repository.dart'
     as _i494;
 import '../../features/monitoring/domain/repositories/monitoring_repository.dart'
     as _i365;
 import '../../features/monitoring/domain/repositories/speed_test_repository.dart'
     as _i890;
+import '../../features/monitoring/domain/repositories/topology_repository.dart'
+    as _i244;
 import '../../features/monitoring/domain/services/topology_builder.dart'
     as _i892;
+import '../../features/monitoring/domain/usecases/get_topology_usecase.dart'
+    as _i422;
 import '../../features/monitoring/domain/usecases/get_zone_averages_usecase.dart'
     as _i725;
 import '../../features/monitoring/domain/usecases/log_heatmap_point_usecase.dart'
     as _i102;
+import '../../features/monitoring/domain/usecases/ping_node_usecase.dart'
+    as _i534;
 import '../../features/monitoring/domain/usecases/run_speed_test_usecase.dart'
     as _i1024;
 import '../../features/monitoring/presentation/bloc/heatmap_bloc.dart' as _i573;
@@ -41,6 +47,7 @@ import '../../features/monitoring/presentation/bloc/monitoring_bloc.dart'
     as _i613;
 import '../../features/monitoring/presentation/bloc/monitoring_hub_bloc.dart'
     as _i374;
+import '../../features/monitoring/presentation/bloc/topology_bloc.dart' as _i95;
 import '../../features/network_scan/data/datasources/arp_data_source.dart'
     as _i1066;
 import '../../features/network_scan/data/repositories/network_scan_repository_impl.dart'
@@ -48,7 +55,7 @@ import '../../features/network_scan/data/repositories/network_scan_repository_im
 import '../../features/network_scan/domain/repositories/network_scan_repository.dart'
     as _i1073;
 import '../../features/network_scan/domain/services/new_device_detector.dart'
-    as _i883;
+    as _i505;
 import '../../features/network_scan/presentation/bloc/network_scan_bloc.dart'
     as _i739;
 import '../../features/reports/data/repositories/report_export_repository_impl.dart'
@@ -65,7 +72,7 @@ import '../../features/security/data/repositories/security_repository_impl.dart'
 import '../../features/security/domain/repositories/security_repository.dart'
     as _i578;
 import '../../features/security/domain/services/captive_portal_detector.dart'
-    as _i888;
+    as _i363;
 import '../../features/security/domain/usecases/analyze_network_security_usecase.dart'
     as _i87;
 import '../../features/security/domain/usecases/security_analyzer.dart'
@@ -77,11 +84,8 @@ import '../../features/security/presentation/bloc/wifi_details_bloc.dart'
     as _i361;
 import '../../features/settings/domain/services/app_settings_store.dart'
     as _i552;
-import '../../features/wifi_scan/data/services/favorites_store.dart' as _i121;
 import '../../features/wifi_scan/data/datasources/android_wifi_data_source.dart'
     as _i672;
-import '../../features/wifi_scan/data/datasources/linux_wifi_data_source.dart'
-    as _i673;
 import '../../features/wifi_scan/data/datasources/channel_rating_local_data_source.dart'
     as _i305;
 import '../../features/wifi_scan/data/datasources/wifi_data_source.dart'
@@ -90,6 +94,7 @@ import '../../features/wifi_scan/data/repositories/channel_rating_repository_imp
     as _i671;
 import '../../features/wifi_scan/data/repositories/wifi_repository_impl.dart'
     as _i433;
+import '../../features/wifi_scan/data/services/favorites_store.dart' as _i696;
 import '../../features/wifi_scan/domain/repositories/channel_rating_repository.dart'
     as _i332;
 import '../../features/wifi_scan/domain/repositories/wifi_repository.dart'
@@ -131,9 +136,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i969.ChannelRatingEngine(),
     );
     gh.lazySingleton<_i471.SecurityAnalyzer>(() => _i471.SecurityAnalyzer());
-    gh.lazySingleton<_i888.CaptivePortalDetector>(
-      () => _i888.CaptivePortalDetector(gh<_i846.NetworkInfo>()),
-    );
     gh.lazySingleton<_i1066.ArpDataSource>(() => _i1066.ArpDataSource());
     gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
     gh.lazySingleton<_i494.HeatmapRepository>(
@@ -148,11 +150,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i611.ThemeCubit>(
       () => _i611.ThemeCubit(gh<_i460.SharedPreferences>()),
     );
+    gh.lazySingleton<_i696.FavoritesStore>(
+      () => _i696.FavoritesStore(gh<_i460.SharedPreferences>()),
+    );
+    gh.lazySingleton<_i505.NewDeviceDetector>(
+      () => _i505.NewDeviceDetector(gh<_i460.SharedPreferences>()),
+    );
     gh.lazySingleton<_i552.AppSettingsStore>(
       () => _i552.AppSettingsStore(gh<_i460.SharedPreferences>()),
-    );
-    gh.lazySingleton<_i121.FavoritesStore>(
-      () => _i121.FavoritesStore(gh<_i460.SharedPreferences>()),
     );
     gh.lazySingleton<_i119.ReportExportRepository>(
       () => _i953.ReportExportRepositoryImpl(),
@@ -175,28 +180,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i890.SpeedTestRepository>(
       () => const _i528.SpeedTestRepositoryImpl(),
     );
-    // Register the platform-appropriate Wi-Fi data source without a name,
-    // so WifiRepositoryImpl can receive it directly.
-    if (Platform.isAndroid) {
-      gh.lazySingleton<_i1012.WifiDataSource>(
-        () => _i672.AndroidWifiDataSource(),
-      );
-    } else if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
-      gh.lazySingleton<_i1012.WifiDataSource>(
-        () => _i673.LinuxWifiDataSource(),
-      );
-    } else {
-      // Fallback for unsupported platforms — register Android source
-      // (it will throw a ScanFailure at runtime with a clear message).
-      gh.lazySingleton<_i1012.WifiDataSource>(
-        () => _i672.AndroidWifiDataSource(),
-      );
-    }
+    gh.lazySingleton<_i1012.WifiDataSource>(
+      () => _i672.AndroidWifiDataSource(),
+    );
     gh.lazySingleton<_i1073.NetworkScanRepository>(
       () => _i551.NetworkScanRepositoryImpl(gh<_i1066.ArpDataSource>()),
     );
-    gh.lazySingleton<_i883.NewDeviceDetector>(
-      () => _i883.NewDeviceDetector(gh<_i460.SharedPreferences>()),
+    gh.lazySingleton<_i363.CaptivePortalDetector>(
+      () => _i363.CaptivePortalDetector(gh<_i846.NetworkInfo>()),
     );
     gh.lazySingleton<_i367.GenerateReportUseCase>(
       () => _i367.GenerateReportUseCase(gh<_i119.ReportExportRepository>()),
@@ -210,6 +201,23 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i941.NotificationService>(),
       ),
     );
+    gh.lazySingleton<_i1027.WifiRepository>(
+      () => _i433.WifiRepositoryImpl(gh<_i1012.WifiDataSource>()),
+    );
+    gh.factory<_i554.ReportsBloc>(
+      () => _i554.ReportsBloc(gh<_i367.GenerateReportUseCase>()),
+    );
+    gh.lazySingleton<_i365.MonitoringRepository>(
+      () => _i592.MonitoringRepositoryImpl(gh<_i1027.WifiRepository>()),
+    );
+    gh.lazySingleton<_i244.TopologyRepository>(
+      () => _i21.TopologyRepositoryImpl(
+        gh<_i846.NetworkInfo>(),
+        gh<_i797.ScanSessionStore>(),
+        gh<_i1073.NetworkScanRepository>(),
+        gh<_i892.TopologyBuilder>(),
+      ),
+    );
     gh.lazySingleton<_i1024.RunSpeedTestUseCase>(
       () => _i1024.RunSpeedTestUseCase(gh<_i890.SpeedTestRepository>()),
     );
@@ -218,26 +226,36 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i305.ChannelRatingLocalDataSource>(),
       ),
     );
+    gh.lazySingleton<_i451.ScanWifi>(
+      () => _i451.ScanWifi(gh<_i1027.WifiRepository>()),
+    );
     gh.factory<_i739.NetworkScanBloc>(
       () => _i739.NetworkScanBloc(
         gh<_i1073.NetworkScanRepository>(),
-        gh<_i883.NewDeviceDetector>(),
+        gh<_i505.NewDeviceDetector>(),
       ),
-    );
-    gh.lazySingleton<_i1027.WifiRepository>(
-      () => _i433.WifiRepositoryImpl(gh<_i1012.WifiDataSource>()),
     );
     gh.lazySingleton<_i519.GetBestHistoricalChannel>(
       () => _i519.GetBestHistoricalChannel(gh<_i332.ChannelRatingRepository>()),
-    );
-    gh.factory<_i554.ReportsBloc>(
-      () => _i554.ReportsBloc(gh<_i367.GenerateReportUseCase>()),
     );
     gh.lazySingleton<_i87.AnalyzeNetworkSecurityUseCase>(
       () => _i87.AnalyzeNetworkSecurityUseCase(gh<_i578.SecurityRepository>()),
     );
     gh.factory<_i796.NotificationBloc>(
       () => _i796.NotificationBloc(gh<_i578.SecurityRepository>()),
+    );
+    gh.factory<_i968.WifiScanBloc>(
+      () =>
+          _i968.WifiScanBloc(gh<_i451.ScanWifi>(), gh<_i696.FavoritesStore>()),
+    );
+    gh.factory<_i374.MonitoringHubBloc>(
+      () => _i374.MonitoringHubBloc(gh<_i1024.RunSpeedTestUseCase>()),
+    );
+    gh.lazySingleton<_i422.GetTopologyUseCase>(
+      () => _i422.GetTopologyUseCase(gh<_i244.TopologyRepository>()),
+    );
+    gh.lazySingleton<_i534.PingNodeUseCase>(
+      () => _i534.PingNodeUseCase(gh<_i244.TopologyRepository>()),
     );
     gh.factory<_i676.SecurityBloc>(
       () => _i676.SecurityBloc(
@@ -247,18 +265,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i471.SecurityAnalyzer>(),
       ),
     );
-    gh.factory<_i374.MonitoringHubBloc>(
-      () => _i374.MonitoringHubBloc(gh<_i1024.RunSpeedTestUseCase>()),
-    );
-    gh.lazySingleton<_i365.MonitoringRepository>(
-      () => _i592.MonitoringRepositoryImpl(gh<_i1027.WifiRepository>()),
-    );
-    gh.lazySingleton<_i451.ScanWifi>(
-      () => _i451.ScanWifi(gh<_i1027.WifiRepository>()),
-    );
-    gh.factory<_i968.WifiScanBloc>(
-      () => _i968.WifiScanBloc(gh<_i451.ScanWifi>(), gh<_i121.FavoritesStore>()),
-    );
     gh.factory<_i613.MonitoringBloc>(
       () => _i613.MonitoringBloc(
         gh<_i365.MonitoringRepository>(),
@@ -266,6 +272,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i797.ScanSessionStore>(),
         gh<_i332.ChannelRatingRepository>(),
         gh<_i519.GetBestHistoricalChannel>(),
+      ),
+    );
+    gh.factory<_i95.TopologyBloc>(
+      () => _i95.TopologyBloc(
+        gh<_i422.GetTopologyUseCase>(),
+        gh<_i534.PingNodeUseCase>(),
       ),
     );
     return this;

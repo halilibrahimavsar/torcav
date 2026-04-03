@@ -7,6 +7,8 @@ class TopologyNode extends Equatable {
   final String? ip;
   final String? mac;
   final int? signalStrength;
+  final int? frequency;
+  final int? latencyMs;
   final String? vendor;
   final bool isGateway;
   final bool isCurrentDevice;
@@ -18,6 +20,8 @@ class TopologyNode extends Equatable {
     this.ip,
     this.mac,
     this.signalStrength,
+    this.frequency,
+    this.latencyMs,
     this.vendor,
     this.isGateway = false,
     this.isCurrentDevice = false,
@@ -31,6 +35,8 @@ class TopologyNode extends Equatable {
     ip,
     mac,
     signalStrength,
+    frequency,
+    latencyMs,
     vendor,
     isGateway,
     isCurrentDevice,

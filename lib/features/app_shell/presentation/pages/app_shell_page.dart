@@ -107,7 +107,7 @@ class _AppShellPageState extends State<AppShellPage> {
         _onTabSelected(2);
         Navigator.of(
           context,
-        ).push(MaterialPageRoute(builder: (context) => const TopologyPage()));
+        ).push(MaterialPageRoute(builder: (context) => const TopologyRoute()));
       case 'security':
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => const SecurityCenterPage()),

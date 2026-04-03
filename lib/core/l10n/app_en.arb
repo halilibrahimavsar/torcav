@@ -512,6 +512,55 @@
     "@analyzingNode": {
         "description": "Analyzing Node"
     },
+    "topologyGuideTitle": "TOPOLOGY GUIDE",
+    "@topologyGuideTitle": {
+        "description": "Title for the topology information sheet"
+    },
+    "topologyGuideDesc": "Understand your network structure and device connectivity.",
+    "@topologyGuideDesc": {
+        "description": "Description for the topology information sheet"
+    },
+    "gatewayTitle": "The Gateway",
+    "@gatewayTitle": {
+        "description": "Gateway title"
+    },
+    "gatewayDesc": "The central brain of your network. All external traffic flows through this node.",
+    "@gatewayDesc": {
+        "description": "Gateway description"
+    },
+    "deviceLayersTitle": "Device Layers",
+    "@deviceLayersTitle": {
+        "description": "Device layers title"
+    },
+    "deviceLayersDesc": "Devices are categorized by their role: Core (Routers/APs), Mobile, and IoT/Peripheral.",
+    "@deviceLayersDesc": {
+        "description": "Device layers description"
+    },
+    "pathwaysTitle": "Pathways",
+    "@pathwaysTitle": {
+        "description": "Pathways title"
+    },
+    "pathwaysDesc": "Modern networks mix wired (Ethernet) and wireless (Wi-Fi) connections. Solid lines indicate high-speed wired links, while dashed lines show wireless segments.",
+    "@pathwaysDesc": {
+        "description": "Pathways description"
+    },
+    "pingAction": "TEST LATENCY",
+    "@pingAction": {
+        "description": "Action to ping a device"
+    },
+    "pingSuccess": "Latency: {ms}ms",
+    "@pingSuccess": {
+        "description": "Ping success message",
+        "placeholders": {
+            "ms": {
+                "type": "int"
+            }
+        }
+    },
+    "pingFailure": "Host Unreachable",
+    "@pingFailure": {
+        "description": "Ping failure message"
+    },
     "settingsTitle": "SETTINGS",
     "@settingsTitle": {
         "description": "Settings Title"

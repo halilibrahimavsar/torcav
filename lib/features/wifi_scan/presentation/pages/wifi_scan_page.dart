@@ -110,91 +110,88 @@ class _WifiScanViewState extends State<_WifiScanView> {
     return Scaffold(
       body: Stack(
         children: [
-          // ── Loading state: radar always in tree, shown via Visibility ──
-          // Keeping WifiScannerRadar permanently mounted prevents Flutter from
-          // disposing its AnimationController when BLoC emits mid-scan, which
-          // was the cause of the radar animation freezing.
           BlocBuilder<WifiScanBloc, WifiScanState>(
-            buildWhen: (prev, next) =>
-                (prev is WifiScanLoading) != (next is WifiScanLoading),
             builder: (context, state) {
               final isLoading = state is WifiScanLoading;
-              return Visibility(
-                visible: isLoading,
-                maintainState: true,
-                maintainAnimation: true,
-                maintainSize: false,
-                child: Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      WifiScannerRadar(isScanning: true),
-                      const SizedBox(height: 48),
-                      StaggeredEntry(
-                        child: Column(
-                          children: [
-                              Text(
-                                AppLocalizations.of(context)!.initiatingSpectrumScan,
-                                style: GoogleFonts.orbitron(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 2,
+
+              return Stack(
+                children: [
+                  // ── Loading state: radar always in tree, shown via Visibility ──
+                  // Keeping WifiScannerRadar permanently mounted prevents Flutter from
+                  // disposing its AnimationController when BLoC emits mid-scan, which
+                  // was the cause of the radar animation freezing.
+                  Visibility(
+                    visible: isLoading,
+                    maintainState: true,
+                    maintainAnimation: true,
+                    maintainSize: false,
+                    child: Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          WifiScannerRadar(isScanning: isLoading),
+                          const SizedBox(height: 48),
+                          StaggeredEntry(
+                            child: Column(
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.initiatingSpectrumScan,
+                                  style: GoogleFonts.orbitron(
+                                    color: Theme.of(context).colorScheme.primary,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 2,
+                                  ),
                                 ),
-                              ),
-                            const SizedBox(height: 8),
-                            Text(
-                              AppLocalizations.of(context)!.broadcastingProbeRequests,
-                              style: GoogleFonts.rajdhani(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: 1,
-                              ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  AppLocalizations.of(context)!.broadcastingProbeRequests,
+                                  style: GoogleFonts.rajdhani(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // ── Non-loading states ──
+                  if (!isLoading)
+                    if (state is WifiScanError)
+                      _ErrorView(
+                        message: state.message,
+                        onRetry: () {
+                          context.read<WifiScanBloc>().add(
+                            WifiScanStarted(request: _currentRequest),
+                          );
+                        },
+                      )
+                    else if (state is WifiScanLoaded)
+                      _SnapshotView(
+                        snapshot: state.snapshot,
+                        currentRequest: _currentRequest,
+                        pinnedBssids: state.pinnedBssids,
+                      )
+                    else
+                      Center(
+                        child: NeonText(
+                          l10n.readyToScan,
+                          style: GoogleFonts.rajdhani(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            fontSize: 18,
+                          ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-
-          // ── Non-loading states ──
-          BlocBuilder<WifiScanBloc, WifiScanState>(
-            buildWhen: (prev, next) => next is! WifiScanLoading,
-            builder: (context, state) {
-              if (state is WifiScanLoading) return const SizedBox.shrink();
-              if (state is WifiScanError) {
-                return _ErrorView(
-                  message: state.message,
-                  onRetry: () {
-                    context.read<WifiScanBloc>().add(
-                      WifiScanStarted(request: _currentRequest),
-                    );
-                  },
-                );
-              }
-              if (state is WifiScanLoaded) {
-                return _SnapshotView(
-                  snapshot: state.snapshot,
-                  currentRequest: _currentRequest,
-                  pinnedBssids: state.pinnedBssids,
-                );
-              }
-              return Center(
-                child: NeonText(
-                  l10n.readyToScan,
-                  style: GoogleFonts.rajdhani(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontSize: 18,
-                  ),
-                ),
+                ],
               );
             },
           ),

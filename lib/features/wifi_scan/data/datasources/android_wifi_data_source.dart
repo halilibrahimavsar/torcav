@@ -14,7 +14,6 @@ import 'scan_snapshot_builder.dart';
 import 'wifi_data_source.dart';
 
 @LazySingleton(as: WifiDataSource)
-@Named('android')
 class AndroidWifiDataSource implements WifiDataSource {
   final ScanSnapshotBuilder _snapshotBuilder;
 

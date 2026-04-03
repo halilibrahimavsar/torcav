@@ -243,7 +243,7 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                       onTap:
                           () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => const TopologyPage(),
+                              builder: (context) => const TopologyRoute(),
                             ),
                           ),
                       delay: 500,

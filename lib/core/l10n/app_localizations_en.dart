@@ -364,6 +364,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get analyzingNode => 'ANALYZING NODE';
 
   @override
+  String get topologyGuideTitle => 'TOPOLOGY GUIDE';
+
+  @override
+  String get topologyGuideDesc => 'Understand your network structure and device connectivity.';
+
+  @override
+  String get gatewayTitle => 'The Gateway';
+
+  @override
+  String get gatewayDesc => 'The central brain of your network. All external traffic flows through this node.';
+
+  @override
+  String get deviceLayersTitle => 'Device Layers';
+
+  @override
+  String get deviceLayersDesc => 'Devices are categorized by their role: Core (Routers/APs), Mobile, and IoT/Peripheral.';
+
+  @override
+  String get pathwaysTitle => 'Pathways';
+
+  @override
+  String get pathwaysDesc => 'Modern networks mix wired (Ethernet) and wireless (Wi-Fi) connections. Solid lines indicate high-speed wired links, while dashed lines show wireless segments.';
+
+  @override
+  String get pingAction => 'TEST LATENCY';
+
+  @override
+  String pingSuccess(int ms) {
+    return 'Latency: ${ms}ms';
+  }
+
+  @override
+  String get pingFailure => 'Host Unreachable';
+
+  @override
   String get settingsTitle => 'SETTINGS';
 
   @override

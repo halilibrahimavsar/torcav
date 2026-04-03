@@ -90,6 +90,7 @@ class TopologyBuilder {
           type: TopologyNodeType.accessPoint,
           mac: ap.bssid,
           signalStrength: ap.signalStrength,
+          frequency: ap.frequency,
           vendor: ap.vendor,
           isGateway: isConnected && gatewayIp != null,
         ),

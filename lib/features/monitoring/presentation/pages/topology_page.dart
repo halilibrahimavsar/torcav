@@ -1,18 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:network_info_plus/network_info_plus.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
-
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../widgets/topology_graph_painter.dart';
 import '../widgets/topology_view_data.dart';
-import '../../../network_scan/domain/entities/network_device.dart';
-import '../../../network_scan/domain/repositories/network_scan_repository.dart';
-import '../../../wifi_scan/domain/services/scan_session_store.dart';
+import '../widgets/topology_info_sheet.dart';
+import '../bloc/topology_bloc.dart';
 import '../../../../core/di/injection.dart';
 import '../../domain/entities/network_topology.dart';
-import '../../domain/services/topology_builder.dart';
+
+/// Route-level wrapper that owns the [TopologyBloc] lifetime.
+///
+/// Separating provider from page ensures [TopologyPage] can always call
+/// `context.read<TopologyBloc>()` — including inside [initState] via
+/// [WidgetsBinding.addPostFrameCallback] — without a [ProviderNotFoundException].
+class TopologyRoute extends StatelessWidget {
+  const TopologyRoute({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<TopologyBloc>(
+      // create dispatches the initial load — TopologyPage must NOT fire it again.
+      create: (ctx) => getIt<TopologyBloc>()..add(const LoadTopologyEvent()),
+      child: const TopologyPage(),
+    );
+  }
+}
 
 class TopologyPage extends StatefulWidget {
   const TopologyPage({super.key});
@@ -22,124 +37,210 @@ class TopologyPage extends StatefulWidget {
 }
 
 class _TopologyPageState extends State<TopologyPage>
-    with SingleTickerProviderStateMixin {
-  NetworkTopology? _topology;
+    with TickerProviderStateMixin {
   String? _selectedNodeId;
-  bool _loading = true;
+  String _searchQuery = '';
+  TopologyNodeVisualKind? _filterType;
   bool _showTraffic = true;
   bool _forceView = false;
   bool _isScanning = false;
   double _flowSpeed = 1.0;
   late AnimationController _pulseController;
+  late AnimationController _positionController;
+  final TextEditingController _searchController = TextEditingController();
+
+  Map<String, Offset>? _oldPositions;
+  Map<String, Offset>? _targetPositions;
+  Map<String, Offset> _currentPositions = {};
 
   @override
   void initState() {
     super.initState();
     _pulseController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 3),
-    )..repeat();
-    _loadTopology();
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+
+    _positionController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    )..addListener(() {
+      if (_oldPositions != null && _targetPositions != null) {
+        setState(() {
+          final t = Curves.easeInOutCubic.transform(_positionController.value);
+          for (final id in _targetPositions!.keys) {
+            final oldP = _oldPositions![id] ?? _targetPositions![id]!;
+            final newP = _targetPositions![id]!;
+            _currentPositions[id] = Offset.lerp(oldP, newP, t)!;
+          }
+        });
+      }
+    });
+    // Initial load is dispatched by TopologyRoute's BlocProvider.create.
+    // Do NOT call _loadTopology() here — the bloc context is not yet reachable
+    // from initState at this point in the widget lifecycle.
   }
 
   @override
   void dispose() {
     _pulseController.dispose();
+    _positionController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
-  Future<void> _loadTopology() async {
-    setState(() => _loading = true);
+  void _onForceViewToggled(bool value, NetworkTopology topology, Size size) {
+    _oldPositions = Map.from(_currentPositions);
+    _forceView = value;
+    _targetPositions = TopologyViewData.calculatePositions(
+      topology,
+      size,
+      forceView: _forceView,
+    );
+    _positionController.forward(from: 0);
+  }
 
-    try {
-      final networkInfo = getIt<NetworkInfo>();
-      final scanStore = getIt<ScanSessionStore>();
-      final networkScanRepo = getIt<NetworkScanRepository>();
-
-      final results = await Future.wait([
-        networkInfo.getWifiIP(),
-        networkInfo.getWifiGatewayIP(),
-        networkInfo.getWifiName(),
-        networkInfo.getWifiBSSID(),
-      ]);
-
-      final currentIp = results[0];
-      final gatewayIp = results[1];
-      final ssid = (results[2] ?? '').replaceAll('"', '');
-      final bssid = results[3];
-
-      List<NetworkDevice> lanDevices = [];
-      if (currentIp != null) {
-        final subnet = currentIp.substring(0, currentIp.lastIndexOf('.'));
-        final result = await networkScanRepo.scanNetwork('$subnet.0/24');
-        result.fold((_) {}, (devices) => lanDevices = devices);
-      }
-
-      final latestSnapshot = scanStore.latest;
-      final wifiNetworks = latestSnapshot?.toLegacyNetworks() ?? [];
-
-      final topology = getIt<TopologyBuilder>().build(
-        wifiNetworks: wifiNetworks,
-        lanDevices: lanDevices,
-        currentIp: currentIp,
-        gatewayIp: gatewayIp,
-        connectedSsid: ssid,
-        connectedBssid: bssid,
-      );
-
-      if (mounted) {
-        setState(() {
-          _topology = topology;
-          _loading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() => _loading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppLocalizations.of(context)!.failedLoadTopology(e.toString()),
-            ),
-          ),
-        );
-      }
-    }
+  void _loadTopology() {
+    context.read<TopologyBloc>().add(const LoadTopologyEvent());
   }
 
   @override
   Widget build(BuildContext context) {
+    // BlocProvider lives in TopologyRoute above this widget — DO NOT add one here.
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      body: Stack(
-        children: [
-          // Cyberpunk Grid Background
-          Positioned.fill(
-            child: CustomPaint(
-              painter: _GridPainter(
-                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
+      body: BlocBuilder<TopologyBloc, TopologyState>(
+        builder: (context, state) {
+          bool loading = false;
+          String? error;
+          String? pingingNodeId;
+          NetworkTopology? topology;
+
+          if (state is TopologyLoading) {
+            loading = true;
+          } else if (state is TopologyLoaded) {
+            topology = state.topology;
+            pingingNodeId = state.pingingNodeId;
+          } else if (state is TopologyError) {
+            error = state.message;
+          }
+
+          return Stack(
+            children: [
+              // Cyberpunk Grid Background
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: _GridPainter(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.05),
+                  ),
+                ),
               ),
-            ),
-          ),
 
-          // Main Content
-          _loading
-              ? const Center(child: CircularProgressIndicator())
-              : _topology == null
-              ? _buildEmptyState()
-              : _buildTopologyView(),
+              // Main Content
+              loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : error != null
+                  ? _buildErrorPlaceholder(error)
+                  : topology == null
+                  ? _buildEmptyState()
+                  : _buildTopologyView(topology),
 
-          // Floating Header
-          _buildFloatingHeader(),
+              // Floating Header
+              _buildFloatingHeader(),
 
-          // Lateral Control Bar
-          Positioned(left: 16, top: 100, child: _buildSideControls()),
+              // Filter Chips
+              Positioned(
+                top: 140,
+                left: 70,
+                right: 16,
+                child: _buildFilterChips(),
+              ),
 
-          // Node Inspector (Floating)
-          if (_selectedNodeId != null && !_loading && _topology != null)
-            _buildNodeInspector(),
+              // Lateral Control Bar
+              Positioned(left: 16, top: 100, child: _buildSideControls()),
+
+              // Node Inspector (Floating)
+              if (_selectedNodeId != null && !loading && topology != null)
+                _buildNodeInspector(topology, pingingNodeId),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildFilterChips() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
+      child: Row(
+        children: [
+          _filterChip(null, 'ALL'),
+          _filterChip(TopologyNodeVisualKind.router, 'CORE'),
+          _filterChip(TopologyNodeVisualKind.mobile, 'MOBILE'),
+          _filterChip(TopologyNodeVisualKind.iot, 'IOT'),
+          _filterChip(TopologyNodeVisualKind.device, 'OTHER'),
         ],
       ),
+    );
+  }
+
+  Widget _filterChip(TopologyNodeVisualKind? type, String label) {
+    final isSelected = _filterType == type;
+    final colorScheme = Theme.of(context).colorScheme;
+    final activeColor = colorScheme.primary;
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: GestureDetector(
+        onTap: () => setState(() => _filterType = type),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color:
+                isSelected
+                    ? activeColor.withValues(alpha: 0.15)
+                    : colorScheme.surface.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color:
+                  isSelected
+                      ? activeColor
+                      : colorScheme.onSurface.withValues(alpha: 0.1),
+              width: isSelected ? 1.5 : 1,
+            ),
+            boxShadow:
+                isSelected
+                    ? [
+                      BoxShadow(
+                        color: activeColor.withValues(alpha: 0.3),
+                        blurRadius: 8,
+                      ),
+                    ]
+                    : null,
+          ),
+          child: Text(
+            label,
+            style: GoogleFonts.orbitron(
+              color:
+                  isSelected
+                      ? activeColor
+                      : colorScheme.onSurface.withValues(alpha: 0.4),
+              fontSize: 9,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorPlaceholder(String message) {
+    return Center(
+      child: NeonErrorCard(message: message, onRetry: _loadTopology),
     );
   }
 
@@ -154,9 +255,19 @@ class _TopologyPageState extends State<TopologyPage>
         ),
         const SizedBox(height: 12),
         _controlButton(
-          icon: Icons.auto_graph_outlined,
+          icon:
+              _forceView ? Icons.grid_view_rounded : Icons.bubble_chart_rounded,
           active: _forceView,
-          onTap: () => setState(() => _forceView = !_forceView),
+          onTap: () {
+            final state = context.read<TopologyBloc>().state;
+            if (state is TopologyLoaded) {
+              _onForceViewToggled(
+                !_forceView,
+                state.topology,
+                MediaQuery.of(context).size,
+              );
+            }
+          },
           label: AppLocalizations.of(context)!.forceLabel,
         ),
         const SizedBox(height: 12),
@@ -194,7 +305,9 @@ class _TopologyPageState extends State<TopologyPage>
     final color =
         active
             ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.2);
+            : Theme.of(
+              context,
+            ).colorScheme.onSurfaceVariant.withValues(alpha: 0.2);
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -246,54 +359,119 @@ class _TopologyPageState extends State<TopologyPage>
                 size: 18,
               ),
               style: IconButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.15),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                   side: BorderSide(
-                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.4),
                   ),
                 ),
               ),
             ),
             const SizedBox(width: 8),
-            HolographicCard(
-              color: Theme.of(context).colorScheme.primary,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.hub_outlined,
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 18,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      AppLocalizations.of(context)!.topologyMapTitle,
-                      style: GoogleFonts.orbitron(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                  ],
+            Expanded(child: _buildSearchBar()),
+            const SizedBox(width: 8),
+            // Info Button for Guide
+            IconButton(
+              onPressed: () => TopologyInfoSheet.show(context),
+              icon: Icon(
+                Icons.info_outline_rounded,
+                color: Theme.of(context).colorScheme.primary,
+                size: 18,
+              ),
+              style: IconButton.styleFrom(
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.1),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: BorderSide(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.3),
+                  ),
                 ),
               ),
             ),
-            const Spacer(),
+            const SizedBox(width: 8),
             IconButton(
               onPressed: _loadTopology,
-              icon: Icon(Icons.refresh, color: Theme.of(context).colorScheme.primary),
+              icon: Icon(
+                Icons.refresh,
+                color: Theme.of(context).colorScheme.primary,
+                size: 18,
+              ),
               style: IconButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.1),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: BorderSide(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.3),
+                  ),
+                ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: colorScheme.surface.withValues(alpha: 0.8),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.primary.withValues(alpha: 0.1),
+            blurRadius: 10,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: TextField(
+        controller: _searchController,
+        onChanged: (val) => setState(() => _searchQuery = val),
+        style: GoogleFonts.rajdhani(
+          color: colorScheme.onSurface,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+        decoration: InputDecoration(
+          hintText: AppLocalizations.of(context)!.searchSsidBssidVendor,
+          hintStyle: GoogleFonts.rajdhani(
+            color: colorScheme.onSurface.withValues(alpha: 0.4),
+            fontSize: 13,
+          ),
+          prefixIcon: Icon(
+            Icons.search,
+            color: colorScheme.primary.withValues(alpha: 0.7),
+            size: 20,
+          ),
+          suffixIcon:
+              _searchQuery.isNotEmpty
+                  ? IconButton(
+                    icon: const Icon(Icons.close, size: 16),
+                    onPressed: () {
+                      _searchController.clear();
+                      setState(() => _searchQuery = '');
+                    },
+                  )
+                  : null,
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(vertical: 12),
         ),
       ),
     );
@@ -307,13 +485,17 @@ class _TopologyPageState extends State<TopologyPage>
           Icon(
             Icons.device_hub,
             size: 64,
-            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.1),
           ),
           const SizedBox(height: 16),
           Text(
             AppLocalizations.of(context)!.noTopologyData,
             style: GoogleFonts.rajdhani(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -322,12 +504,14 @@ class _TopologyPageState extends State<TopologyPage>
           Text(
             AppLocalizations.of(context)!.runScanFirst,
             style: GoogleFonts.rajdhani(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.4),
               fontSize: 14,
             ),
           ),
           const SizedBox(height: 24),
-            NeonButton(
+          NeonButton(
             onPressed: _loadTopology,
             label: AppLocalizations.of(context)!.retry,
             icon: Icons.refresh_rounded,
@@ -338,7 +522,7 @@ class _TopologyPageState extends State<TopologyPage>
     );
   }
 
-  Widget _buildTopologyView() {
+  Widget _buildTopologyView(NetworkTopology topology) {
     return Stack(
       children: [
         InteractiveViewer(
@@ -347,23 +531,39 @@ class _TopologyPageState extends State<TopologyPage>
           maxScale: 2.0,
           child: LayoutBuilder(
             builder: (context, constraints) {
+              final size = constraints.biggest;
               return GestureDetector(
                 onTapUp:
                     (details) =>
-                        _handleTap(details.localPosition, constraints.biggest),
+                        _handleTap(details.localPosition, size, topology),
                 child: RepaintBoundary(
                   child: AnimatedBuilder(
                     animation: _pulseController,
                     builder: (context, child) {
+                      // If positions aren't initialized yet, or topology changed
+                      if (_currentPositions.isEmpty ||
+                          _targetPositions == null) {
+                        _currentPositions = TopologyViewData.calculatePositions(
+                          topology,
+                          size,
+                          forceView: _forceView,
+                        );
+                        _targetPositions = Map.from(_currentPositions);
+                      }
+
                       return CustomPaint(
-                        size: constraints.biggest,
+                        size: size,
                         painter: TopologyGraphPainter(
-                          topology: _topology!,
+                          topology: topology,
+                          nodePositions: _currentPositions,
                           selectedNodeId: _selectedNodeId,
+                          searchQuery: _searchQuery,
+                          filterType: _filterType,
                           pulseValue: _pulseController.value,
                           showTraffic: _showTraffic,
                           forceView: _forceView,
                           flowSpeed: _flowSpeed,
+                          isScanning: _isScanning,
                           colorScheme: Theme.of(context).colorScheme,
                         ),
                       );
@@ -445,7 +645,9 @@ class _TopologyPageState extends State<TopologyPage>
         Text(
           label,
           style: GoogleFonts.rajdhani(
-            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.7),
             fontSize: 11,
             fontWeight: FontWeight.w500,
           ),
@@ -454,9 +656,11 @@ class _TopologyPageState extends State<TopologyPage>
     );
   }
 
-  void _handleTap(Offset localPosition, Size canvasSize) {
-    if (_topology == null) return;
-
+  void _handleTap(
+    Offset localPosition,
+    Size canvasSize,
+    NetworkTopology topology,
+  ) {
     final center = Offset(canvasSize.width / 2, canvasSize.height / 2);
 
     // Matrix used in Painter
@@ -468,9 +672,10 @@ class _TopologyPageState extends State<TopologyPage>
     String? tappedNodeId;
     double minDistance = 45.0;
 
-    for (final node in _topology!.nodes) {
-      // 1. Get Base 2D Position
-      final pos = _getNodePosition(node, canvasSize);
+    for (final node in topology.nodes) {
+      // 1. Get Current Position
+      final pos = _currentPositions[node.id];
+      if (pos == null) continue;
 
       // 2. Map to 3D Space (matching the Painter's translate/transform)
       final relativePos = pos - center;
@@ -504,18 +709,9 @@ class _TopologyPageState extends State<TopologyPage>
     }
   }
 
-  Offset _getNodePosition(TopologyNode node, Size size) {
-    final positions = TopologyViewData.calculatePositions(
-      _topology!,
-      size,
-      forceView: _forceView,
-    );
-    return positions[node.id] ?? Offset(size.width / 2, size.height / 2);
-  }
-
-  Widget _buildNodeInspector() {
+  Widget _buildNodeInspector(NetworkTopology topology, String? pingingNodeId) {
     final node =
-        _topology!.nodes.where((n) => n.id == _selectedNodeId).firstOrNull;
+        topology.nodes.where((n) => n.id == _selectedNodeId).firstOrNull;
     if (node == null) return const SizedBox.shrink();
 
     return Positioned(
@@ -525,7 +721,10 @@ class _TopologyPageState extends State<TopologyPage>
       child: StaggeredEntry(
         delay: Duration.zero,
         child: HolographicCard(
-          color: TopologyViewData.nodeColor(node, Theme.of(context).colorScheme),
+          color: TopologyViewData.nodeColor(
+            node,
+            Theme.of(context).colorScheme,
+          ),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -535,7 +734,7 @@ class _TopologyPageState extends State<TopologyPage>
                 if (_isScanning) ...[
                   _buildScanningEffect(),
                 ] else ...[
-                  _buildInspectorContent(node),
+                  _buildInspectorContent(node, pingingNodeId),
                 ],
               ],
             ),
@@ -557,7 +756,7 @@ class _TopologyPageState extends State<TopologyPage>
               color: Theme.of(context).colorScheme.primary,
             ),
             const SizedBox(height: 16),
-              Text(
+            Text(
               AppLocalizations.of(context)!.analyzingNode,
               style: GoogleFonts.orbitron(
                 color: Theme.of(context).colorScheme.primary,
@@ -572,8 +771,10 @@ class _TopologyPageState extends State<TopologyPage>
     );
   }
 
-  Widget _buildInspectorContent(TopologyNode node) {
+  Widget _buildInspectorContent(TopologyNode node, String? pingingNodeId) {
     final l10n = AppLocalizations.of(context)!;
+    final isPinging = pingingNodeId == node.id;
+
     return Column(
       children: [
         Row(
@@ -582,7 +783,10 @@ class _TopologyPageState extends State<TopologyPage>
               width: 54,
               height: 54,
               decoration: BoxDecoration(
-                color: TopologyViewData.nodeColor(node, Theme.of(context).colorScheme).withValues(alpha: 0.1),
+                color: TopologyViewData.nodeColor(
+                  node,
+                  Theme.of(context).colorScheme,
+                ).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(
                   color: TopologyViewData.nodeColor(
@@ -594,7 +798,10 @@ class _TopologyPageState extends State<TopologyPage>
               child: Center(
                 child: Icon(
                   TopologyViewData.materialIcon(node),
-                  color: TopologyViewData.nodeColor(node, Theme.of(context).colorScheme),
+                  color: TopologyViewData.nodeColor(
+                    node,
+                    Theme.of(context).colorScheme,
+                  ),
                   size: 28,
                 ),
               ),
@@ -632,7 +839,9 @@ class _TopologyPageState extends State<TopologyPage>
               onPressed: () => setState(() => _selectedNodeId = null),
               icon: Icon(
                 Icons.close,
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.38),
                 size: 20,
               ),
             ),
@@ -645,16 +854,105 @@ class _TopologyPageState extends State<TopologyPage>
             color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.4),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: TopologyViewData.nodeColor(node, Theme.of(context).colorScheme).withValues(alpha: 0.1),
+              color: TopologyViewData.nodeColor(
+                node,
+                Theme.of(context).colorScheme,
+              ).withValues(alpha: 0.1),
             ),
           ),
           child: Column(
             children: [
-              if (node.ip != null) _infoRow(l10n.ipAddrLabel, node.ip!, Icons.lan),
+              if (node.ip != null)
+                _infoRow(l10n.ipAddrLabel, node.ip!, Icons.lan),
               if (node.mac != null)
                 _infoRow(l10n.macValLabel, node.mac!, Icons.fingerprint),
               if (node.vendor != null && node.vendor!.isNotEmpty)
                 _infoRow(l10n.mnfrLabel, node.vendor!, Icons.factory),
+
+              const SizedBox(height: 12),
+              const NeonDivider(),
+              const SizedBox(height: 12),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'LATENCY',
+                        style: GoogleFonts.orbitron(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.4),
+                          fontSize: 8,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        node.latencyMs != null ? '${node.latencyMs}ms' : '--',
+                        style: GoogleFonts.orbitron(
+                          color:
+                              node.latencyMs != null
+                                  ? (node.latencyMs! < 50
+                                      ? Colors.greenAccent
+                                      : Colors.orangeAccent)
+                                  : Theme.of(context).colorScheme.onSurface
+                                      .withValues(alpha: 0.3),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (node.ip != null && !node.isCurrentDevice)
+                    SizedBox(
+                      height: 36,
+                      child: OutlinedButton(
+                        onPressed:
+                            isPinging
+                                ? null
+                                : () {
+                                  context.read<TopologyBloc>().add(
+                                    PingNodeEvent(
+                                      nodeId: node.id,
+                                      ip: node.ip!,
+                                    ),
+                                  );
+                                },
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withValues(alpha: 0.3),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child:
+                            isPinging
+                                ? const SizedBox(
+                                  width: 14,
+                                  height: 14,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                                : Text(
+                                  l10n.pingAction,
+                                  style: GoogleFonts.orbitron(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                      ),
+                    ),
+                ],
+              ),
             ],
           ),
         ),
@@ -676,7 +974,9 @@ class _TopologyPageState extends State<TopologyPage>
           Text(
             label,
             style: GoogleFonts.shareTechMono(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.4),
               fontSize: 10,
               letterSpacing: 1,
             ),
@@ -685,7 +985,9 @@ class _TopologyPageState extends State<TopologyPage>
           Text(
             value,
             style: GoogleFonts.shareTechMono(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.9),
               fontSize: 13,
             ),
           ),
