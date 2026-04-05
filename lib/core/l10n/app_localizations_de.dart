@@ -1089,4 +1089,80 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get dnsIspProvider => 'ISP PROVIDER';
+
+  @override
+  String get phaseIdle => 'BEREIT';
+
+  @override
+  String get performanceTitle => 'GESCHWINDIGKEITSTEST';
+
+  @override
+  String get performanceStart => 'TEST STARTEN';
+
+  @override
+  String get performanceRetry => 'NOCHMAL';
+
+  @override
+  String get latencyLabel => 'LATENZ';
+
+  @override
+  String get jitterLabel => 'JITTER';
+
+  @override
+  String get whatThisMeans => 'WAS BEDEUTET DAS';
+
+  @override
+  String get channelRecommendation => 'KANAL-EMPFEHLUNG';
+
+  @override
+  String switchToChannel(int channel) {
+    return 'Zu Kanal $channel wechseln';
+  }
+
+  @override
+  String get channelCongestionHint => 'Ihr aktueller Kanal ist überlastet. Ein Wechsel kann die Geschwindigkeit verbessern.';
+
+  @override
+  String get evilTwinAlertTitle => 'EVIL TWIN ERKANNT';
+
+  @override
+  String get evilTwinAlertBody => 'Ein Netzwerk gibt vor, ein bekannter Access Point zu sein. Verbinden Sie sich nicht mit unbekannten Netzwerken.';
+
+  @override
+  String get wpsWarningTitle => 'WPS IST AKTIVIERT';
+
+  @override
+  String get wpsWarningBody => 'WPS hat bekannte Sicherheitslücken. Deaktivieren Sie es in Ihren Router-Einstellungen.';
+
+  @override
+  String wpsAffectedNetworks(int count) {
+    return '$count Netzwerk(e) mit aktiviertem WPS';
+  }
+
+  @override
+  String get heatmapTutorialTitle => 'SO NUTZEN SIE DIE HEATMAP';
+
+  @override
+  String get heatmapTutorialStep1 => 'Tippen Sie auf AUFNAHME STARTEN, um eine neue Sitzung zu beginnen.';
+
+  @override
+  String get heatmapTutorialStep2 => 'Gehen Sie durch Ihren Raum und tippen Sie an Ihrer aktuellen Position auf die Karte.';
+
+  @override
+  String get heatmapTutorialStep3 => 'Rot = schwaches Signal. Grün = starkes Signal. Finden Sie tote Zonen.';
+
+  @override
+  String get heatmapTutorialStep4 => 'Tippen Sie auf STOPP & SPEICHERN wenn fertig.';
+
+  @override
+  String get gotIt => 'VERSTANDEN';
+
+  @override
+  String get speedTestHistory => 'TESTVERLAUF';
+
+  @override
+  String get noSpeedTestHistory => 'Noch keine Tests. Starten Sie den ersten Test oben.';
+
+  @override
+  String get networkScoreLabel => 'NETZWERK-BEWERTUNG';
 }

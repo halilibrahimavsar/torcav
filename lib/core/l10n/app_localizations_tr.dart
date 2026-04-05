@@ -1089,4 +1089,80 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get dnsIspProvider => 'ISP PROVIDER';
+
+  @override
+  String get phaseIdle => 'HAZIR';
+
+  @override
+  String get performanceTitle => 'HIZ TESTİ';
+
+  @override
+  String get performanceStart => 'TEST BAŞLAT';
+
+  @override
+  String get performanceRetry => 'TEKRAR ÇALIŞTIR';
+
+  @override
+  String get latencyLabel => 'GECİKME';
+
+  @override
+  String get jitterLabel => 'JITTER';
+
+  @override
+  String get whatThisMeans => 'BU NE ANLAMA GELİYOR';
+
+  @override
+  String get channelRecommendation => 'KANAL ÖNERİSİ';
+
+  @override
+  String switchToChannel(int channel) {
+    return 'Kanal $channel\'a geç';
+  }
+
+  @override
+  String get channelCongestionHint => 'Mevcut kanalınız kalabalık. Geçiş hızı artırabilir.';
+
+  @override
+  String get evilTwinAlertTitle => 'SAHTE AĞNOKTASI TESPİT EDİLDİ';
+
+  @override
+  String get evilTwinAlertBody => 'Bir ağ, bilinen bir erişim noktasını taklit ediyor. Tanımadığınız ağlara bağlanmayın.';
+
+  @override
+  String get wpsWarningTitle => 'WPS AÇIK';
+
+  @override
+  String get wpsWarningBody => 'WPS, WPA2\'de bile şifrenizi kırmaya izin veren güvenlik açıkları içerir. Router ayarlarından devre dışı bırakın.';
+
+  @override
+  String wpsAffectedNetworks(int count) {
+    return 'WPS etkin $count ağ';
+  }
+
+  @override
+  String get heatmapTutorialTitle => 'ISISI HARİTASINI NASIL KULLANIRIM';
+
+  @override
+  String get heatmapTutorialStep1 => 'Yeni oturum başlatmak için KAYDI BAŞLAT\'a dokunun.';
+
+  @override
+  String get heatmapTutorialStep2 => 'Alanınızın her köşesine gidin ve konumunuza haritada dokunun.';
+
+  @override
+  String get heatmapTutorialStep3 => 'Kırmızı = zayıf sinyal. Yeşil = güçlü sinyal.';
+
+  @override
+  String get heatmapTutorialStep4 => 'Bitince DURDUR & KAYDET\'e dokunun.';
+
+  @override
+  String get gotIt => 'ANLADIM';
+
+  @override
+  String get speedTestHistory => 'TEST GEÇMİŞİ';
+
+  @override
+  String get noSpeedTestHistory => 'Henüz kayıtlı test yok. İlk testi yukarıdan başlatın.';
+
+  @override
+  String get networkScoreLabel => 'AĞ PUANI';
 }

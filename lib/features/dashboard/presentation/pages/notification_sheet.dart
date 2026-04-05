@@ -49,28 +49,76 @@ class NotificationSheet extends StatelessWidget {
 
   Widget _buildHeader(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 0, 12, 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      padding: const EdgeInsets.fromLTRB(16, 0, 8, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Icon(Icons.security, color: Theme.of(context).colorScheme.primary, size: 20),
-              const SizedBox(width: 12),
-              Text(
-                'SECURITY ALERTS',
-                style: GoogleFonts.orbitron(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'SECURITY ALERTS',
+                  style: GoogleFonts.orbitron(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                  ),
                 ),
+              ),
+              IconButton(
+                icon: Icon(Icons.close, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
+                onPressed: () => Navigator.pop(context),
               ),
             ],
           ),
-          IconButton(
-            icon: Icon(Icons.close, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
-            onPressed: () => Navigator.pop(context),
+          BlocBuilder<NotificationBloc, NotificationState>(
+            builder: (context, state) {
+              if (state is! NotificationLoaded || state.notifications.isEmpty) {
+                return const SizedBox.shrink();
+              }
+              return Row(
+                children: [
+                  TextButton.icon(
+                    onPressed: () => context.read<NotificationBloc>().add(MarkAllNotificationsAsRead()),
+                    icon: Icon(Icons.done_all_rounded, size: 14, color: Theme.of(context).colorScheme.primary),
+                    label: Text(
+                      'MARK ALL READ',
+                      style: GoogleFonts.orbitron(
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  TextButton.icon(
+                    onPressed: () => context.read<NotificationBloc>().add(ClearAllNotifications()),
+                    icon: Icon(Icons.delete_sweep_rounded, size: 14, color: Theme.of(context).colorScheme.error),
+                    label: Text(
+                      'CLEAR ALL',
+                      style: GoogleFonts.orbitron(
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ],
       ),

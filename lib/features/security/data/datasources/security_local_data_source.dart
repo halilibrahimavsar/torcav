@@ -12,6 +12,8 @@ abstract class SecurityLocalDataSource {
   Future<void> saveSecurityEvent(SecurityEvent event);
   Future<void> saveSecurityEvents(List<SecurityEvent> events);
   Future<void> markSecurityEventAsRead(int id);
+  Future<void> markAllSecurityEventsAsRead();
+  Future<void> clearAllSecurityEvents();
 }
 
 @LazySingleton(as: SecurityLocalDataSource)
@@ -83,6 +85,18 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  @override
+  Future<void> markAllSecurityEventsAsRead() async {
+    final db = await _database.database;
+    await db.update('security_events', {'is_read': 1});
+  }
+
+  @override
+  Future<void> clearAllSecurityEvents() async {
+    final db = await _database.database;
+    await db.delete('security_events');
   }
 
   Map<String, dynamic> _networkToMap(KnownNetwork network) => {

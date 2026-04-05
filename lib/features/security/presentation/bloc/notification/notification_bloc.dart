@@ -20,6 +20,10 @@ class MarkNotificationAsRead extends NotificationEvent {
   List<Object?> get props => [id];
 }
 
+class MarkAllNotificationsAsRead extends NotificationEvent {}
+
+class ClearAllNotifications extends NotificationEvent {}
+
 // States
 abstract class NotificationState extends Equatable {
   const NotificationState();
@@ -58,6 +62,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   NotificationBloc(this._repository) : super(NotificationInitial()) {
     on<LoadNotifications>(_onLoadNotifications);
     on<MarkNotificationAsRead>(_onMarkAsRead);
+    on<MarkAllNotificationsAsRead>(_onMarkAllAsRead);
+    on<ClearAllNotifications>(_onClearAll);
   }
 
   Future<void> _onLoadNotifications(
@@ -72,7 +78,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       final unreadCount = events.where((e) => !e.isRead).length;
       emit(
         NotificationLoaded(
-          notifications: events.reversed.toList(), // Latest first
+          notifications: events, // Already newest-first from DB (ORDER BY created_at DESC)
           unreadCount: unreadCount,
         ),
       );
@@ -87,6 +93,30 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   ) async {
     try {
       await _repository.markSecurityEventAsRead(event.id);
+      add(LoadNotifications());
+    } catch (e) {
+      emit(NotificationError(e.toString()));
+    }
+  }
+
+  Future<void> _onMarkAllAsRead(
+    MarkAllNotificationsAsRead event,
+    Emitter<NotificationState> emit,
+  ) async {
+    try {
+      await _repository.markAllSecurityEventsAsRead();
+      add(LoadNotifications());
+    } catch (e) {
+      emit(NotificationError(e.toString()));
+    }
+  }
+
+  Future<void> _onClearAll(
+    ClearAllNotifications event,
+    Emitter<NotificationState> emit,
+  ) async {
+    try {
+      await _repository.clearAllSecurityEvents();
       add(LoadNotifications());
     } catch (e) {
       emit(NotificationError(e.toString()));

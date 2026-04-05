@@ -7,6 +7,7 @@ import '../../../../core/theme/neon_widgets.dart';
 import '../../../monitoring/presentation/bloc/monitoring_hub_bloc.dart';
 import '../../../monitoring/domain/entities/speed_test_progress.dart';
 import '../../../monitoring/presentation/widgets/speed_command_gauge.dart';
+import '../../../performance/presentation/pages/performance_page.dart';
 import '../../../reports/presentation/pages/reports_page.dart';
 import '../../../security/presentation/pages/security_center_page.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
@@ -260,6 +261,19 @@ class _OperationsHubPageState extends State<OperationsHubPage> {
                             ),
                           ),
                       delay: 600,
+                    ),
+                    _OperationCard(
+                      title: l10n.performanceTitle,
+                      subtitle: l10n.speedTestHeader,
+                      icon: Icons.speed_rounded,
+                      color: Theme.of(context).colorScheme.secondary,
+                      onTap:
+                          () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const PerformancePage(),
+                            ),
+                          ),
+                      delay: 700,
                     ),
                   ],
                 ),

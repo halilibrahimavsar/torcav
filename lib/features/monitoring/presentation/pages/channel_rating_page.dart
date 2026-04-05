@@ -188,6 +188,44 @@ class _HistoryViewState extends State<_HistoryView> {
     }
   }
 
+  Future<void> _clearHistory() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Theme.of(ctx).colorScheme.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(
+          'CLEAR CHANNEL HISTORY',
+          style: GoogleFonts.orbitron(fontSize: 13, fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'Delete all channel rating records? This cannot be undone.',
+          style: GoogleFonts.rajdhani(fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text('CANCEL', style: GoogleFonts.orbitron(fontSize: 10)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(
+              'DELETE ALL',
+              style: GoogleFonts.orbitron(
+                fontSize: 10,
+                color: Theme.of(ctx).colorScheme.error,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirm == true) {
+      await GetIt.I<ChannelRatingRepository>().clearHistory();
+      _reload();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) {
@@ -199,8 +237,36 @@ class _HistoryViewState extends State<_HistoryView> {
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(16),
-        child: StaggeredEntry(
-          child: ChannelHistoryChart(samples: _samples ?? []),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (_samples != null && _samples!.isNotEmpty)
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton.icon(
+                  onPressed: _clearHistory,
+                  icon: Icon(Icons.delete_sweep_rounded,
+                      size: 16, color: Theme.of(context).colorScheme.error),
+                  label: Text(
+                    'CLEAR HISTORY',
+                    style: GoogleFonts.orbitron(
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                ),
+              ),
+            const SizedBox(height: 8),
+            StaggeredEntry(
+              child: ChannelHistoryChart(samples: _samples ?? []),
+            ),
+          ],
         ),
       ),
     );

@@ -4,9 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/l10n/app_localizations.dart';
+import '../../../security/domain/usecases/security_analyzer.dart';
 import '../../../security/presentation/bloc/notification/notification_bloc.dart';
+import '../../../wifi_scan/domain/entities/channel_rating.dart';
+import '../../../wifi_scan/domain/entities/wifi_network.dart';
+import '../../../wifi_scan/domain/services/channel_rating_engine.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
 import '../widgets/security_core.dart';
 import 'notification_sheet.dart';
@@ -28,6 +33,9 @@ class _DashboardPageState extends State<DashboardPage> {
   String _gateway = '—';
   int _networkCount = 0;
   bool _loading = true;
+  int _securityScore = 100;
+  ChannelRating? _bestChannel;
+  int? _currentChannel;
 
   @override
   void initState() {
@@ -46,6 +54,48 @@ class _DashboardPageState extends State<DashboardPage> {
 
       final store = getIt<ScanSessionStore>();
       final latestSnapshot = store.latest;
+      final networks = latestSnapshot?.networks
+              .map((n) => n.toWifiNetwork())
+              .toList() ??
+          <WifiNetwork>[];
+
+      // Security score: lowest score across all scanned networks.
+      int secScore = 100;
+      if (networks.isNotEmpty) {
+        final analyzer = getIt<SecurityAnalyzer>();
+        secScore = networks
+            .map((n) => analyzer.assess(n, localBaseline: networks).score)
+            .reduce((a, b) => a < b ? a : b);
+      }
+
+      // Best channel recommendation.
+      ChannelRating? bestCh;
+      int? currentCh;
+      if (networks.isNotEmpty) {
+        final engine = getIt<ChannelRatingEngine>();
+        final ratings = engine.calculateRatings(networks);
+        final ssid = _cleanSsid(results[0]) ?? '';
+        final connected = networks
+            .where((n) => n.ssid == ssid)
+            .toList();
+        if (connected.isNotEmpty) {
+          currentCh = connected.first.channel;
+          final band24 = ratings
+              .where((r) => r.frequency < 4000)
+              .toList()
+            ..sort((a, b) => b.rating.compareTo(a.rating));
+          final band5 = ratings
+              .where((r) => r.frequency >= 4000 && r.frequency < 6000)
+              .toList()
+            ..sort((a, b) => b.rating.compareTo(a.rating));
+          final sameBand = connected.first.frequency < 4000 ? band24 : band5;
+          if (sameBand.isNotEmpty &&
+              sameBand.first.channel != currentCh &&
+              sameBand.first.rating > 7.0) {
+            bestCh = sameBand.first;
+          }
+        }
+      }
 
       if (!mounted) return;
       setState(() {
@@ -53,6 +103,9 @@ class _DashboardPageState extends State<DashboardPage> {
         _ip = results[1] ?? '—';
         _gateway = results[2] ?? '—';
         _networkCount = latestSnapshot?.networks.length ?? 0;
+        _securityScore = secScore;
+        _bestChannel = bestCh;
+        _currentChannel = currentCh;
         _loading = false;
       });
     } catch (_) {
@@ -246,8 +299,23 @@ class _DashboardPageState extends State<DashboardPage> {
 
               StaggeredEntry(
                 delay: const Duration(milliseconds: 900),
-                child: _SafetyBadge(onTap: () => widget.onNavigate('security')),
+                child: _SafetyBadge(
+                  score: _securityScore,
+                  onTap: () => widget.onNavigate('security'),
+                ),
               ),
+
+              if (_bestChannel != null) ...[
+                const SizedBox(height: 20),
+                StaggeredEntry(
+                  delay: const Duration(milliseconds: 1000),
+                  child: _ChannelRecommendationCard(
+                    best: _bestChannel!,
+                    currentChannel: _currentChannel,
+                    onTap: () => widget.onNavigate('monitor/channels'),
+                  ),
+                ),
+              ],
             ],
           ),
         ),
@@ -579,31 +647,49 @@ class _LastScanStrip extends StatelessWidget {
 
 class _SafetyBadge extends StatelessWidget {
   final VoidCallback onTap;
+  final int score;
 
-  const _SafetyBadge({required this.onTap});
+  const _SafetyBadge({required this.onTap, required this.score});
+
+  Color _scoreColor(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    if (score >= 85) return scheme.primary;
+    if (score >= 60) return const Color(0xFFFFB300);
+    return scheme.error;
+  }
+
+  String _scoreLabel(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    if (score >= 85) return l10n.strictSafetyEnabled;
+    if (score >= 60) return l10n.activeMonitoringProgress;
+    return l10n.threatsDetected;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final tertiary = Theme.of(context).colorScheme.tertiary;
+    final color = _scoreColor(context);
 
     return GlassmorphicContainer(
-      borderColor: tertiary.withValues(alpha: 0.3),
+      borderColor: color.withValues(alpha: 0.3),
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
       child: InkWell(
         onTap: onTap,
         child: Row(
           children: [
             Container(
-              width: 32,
-              height: 32,
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: tertiary.withValues(alpha: 0.1),
+                color: color.withValues(alpha: 0.1),
+                border: Border.all(color: color.withValues(alpha: 0.3)),
               ),
               child: Icon(
-                Icons.verified_user_rounded,
-                color: tertiary,
-                size: 16,
+                score >= 85
+                    ? Icons.verified_user_rounded
+                    : Icons.shield_outlined,
+                color: color,
+                size: 20,
               ),
             ),
             const SizedBox(width: 12),
@@ -612,22 +698,123 @@ class _SafetyBadge extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.strictSafetyEnabled,
+                    AppLocalizations.of(context)!.networkScoreLabel,
                     style: GoogleFonts.orbitron(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontSize: 10,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontSize: 9,
                       fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
                     ),
                   ),
                   Text(
-                    AppLocalizations.of(context)!.activeMonitoringProgress,
+                    _scoreLabel(context),
                     style: GoogleFonts.rajdhani(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
               ),
+            ),
+            NeonText(
+              '$score%',
+              style: GoogleFonts.orbitron(
+                color: color,
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+              ),
+              glowColor: color,
+              glowRadius: 6,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Channel Recommendation Card ─────────────────────────────────────
+
+class _ChannelRecommendationCard extends StatelessWidget {
+  final ChannelRating best;
+  final int? currentChannel;
+  final VoidCallback onTap;
+
+  const _ChannelRecommendationCard({
+    required this.best,
+    required this.currentChannel,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    const color = AppColors.neonCyan;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: GlassmorphicContainer(
+        borderColor: color.withValues(alpha: 0.3),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: color.withValues(alpha: 0.1),
+                border: Border.all(color: color.withValues(alpha: 0.3)),
+              ),
+              child: const Icon(Icons.tune_rounded, color: color, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.channelRecommendation,
+                    style: GoogleFonts.orbitron(
+                      color: color.withValues(alpha: 0.7),
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                  Text(
+                    l10n.switchToChannel(best.channel),
+                    style: GoogleFonts.rajdhani(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  if (currentChannel != null)
+                    Text(
+                      l10n.channelCongestionHint,
+                      style: GoogleFonts.rajdhani(
+                        color:
+                            Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 11,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            NeonText(
+              'CH ${best.channel}',
+              style: GoogleFonts.orbitron(
+                color: color,
+                fontSize: 14,
+                fontWeight: FontWeight.w900,
+              ),
+              glowColor: color,
+              glowRadius: 5,
             ),
           ],
         ),

@@ -5,6 +5,7 @@ import '../../domain/entities/channel_rating_sample.dart';
 abstract class ChannelRatingLocalDataSource {
   Future<void> saveRatingSamples(List<ChannelRatingSample> samples);
   Future<List<ChannelRatingSample>> getHistory({Duration? limit});
+  Future<void> clearHistory();
 }
 
 @LazySingleton(as: ChannelRatingLocalDataSource)
@@ -55,5 +56,11 @@ class ChannelRatingLocalDataSourceImpl implements ChannelRatingLocalDataSource {
         timestamp: DateTime.parse(map['timestamp'] as String),
       );
     }).toList();
+  }
+
+  @override
+  Future<void> clearHistory() async {
+    final db = await _appDatabase.database;
+    await db.delete('channel_rating_history');
   }
 }

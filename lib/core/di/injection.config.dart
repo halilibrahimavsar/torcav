@@ -128,6 +128,16 @@ import '../../features/wifi_scan/domain/usecases/get_historical_best_channel.dar
 import '../../features/wifi_scan/domain/usecases/scan_wifi.dart' as _i451;
 import '../../features/wifi_scan/presentation/bloc/wifi_scan_bloc.dart'
     as _i968;
+import '../../features/performance/data/repositories/speed_test_history_repository_impl.dart'
+    as _i_sth_impl;
+import '../../features/performance/data/repositories/speed_test_repository_impl.dart'
+    as _i_perf_repo;
+import '../../features/performance/domain/repositories/speed_test_history_repository.dart'
+    as _i_sth;
+import '../../features/performance/domain/usecases/run_speed_test_usecase.dart'
+    as _i_perf_uc;
+import '../../features/performance/presentation/bloc/performance_bloc.dart'
+    as _i_perf_bloc;
 import '../l10n/locale_cubit.dart' as _i171;
 import '../services/notification_service.dart' as _i941;
 import '../storage/app_database.dart' as _i690;
@@ -265,6 +275,24 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1024.RunSpeedTestUseCase>(
       () => _i1024.RunSpeedTestUseCase(gh<_i890.SpeedTestRepository>()),
     );
+    // ── Performance feature (separate from monitoring speed test) ──
+    gh.lazySingleton<_i_sth.SpeedTestHistoryRepository>(
+      () => _i_sth_impl.SpeedTestHistoryRepositoryImpl(gh<_i690.AppDatabase>()),
+    );
+    gh.lazySingleton<_i_perf_repo.SpeedTestRepositoryImpl>(
+      () => const _i_perf_repo.SpeedTestRepositoryImpl(),
+    );
+    gh.lazySingleton<_i_perf_uc.RunSpeedTestUseCase>(
+      () => _i_perf_uc.RunSpeedTestUseCase(
+        gh<_i_perf_repo.SpeedTestRepositoryImpl>(),
+      ),
+    );
+    gh.factory<_i_perf_bloc.PerformanceBloc>(
+      () => _i_perf_bloc.PerformanceBloc(
+        gh<_i_perf_uc.RunSpeedTestUseCase>(),
+        gh<_i_sth.SpeedTestHistoryRepository>(),
+      ),
+    );
     gh.lazySingleton<_i332.ChannelRatingRepository>(
       () => _i671.ChannelRatingRepositoryImpl(
         gh<_i305.ChannelRatingLocalDataSource>(),
@@ -314,6 +342,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i931.HeatmapBloc(
         gh<_i716.GetHeatmapSessionsUsecase>(),
         gh<_i737.RecordHeatmapPointUsecase>(),
+        gh<_i747.HeatmapRepository>(),
       ),
     );
     gh.factory<_i613.MonitoringBloc>(

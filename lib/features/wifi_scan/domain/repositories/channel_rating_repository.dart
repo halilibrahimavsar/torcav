@@ -7,4 +7,5 @@ abstract class ChannelRatingRepository {
   Future<Either<Failure, List<ChannelRatingSample>>> getHistory({
     Duration? limit,
   });
+  Future<Either<Failure, void>> clearHistory();
 }

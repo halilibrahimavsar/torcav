@@ -54,6 +54,14 @@ class _SecurityCenterView extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
+              // ── Evil Twin Alert ──
+              if (state is SecurityLoaded)
+                _EvilTwinAlertBanner(state: state),
+
+              // ── WPS Warning ──
+              if (state is SecurityLoaded)
+                _WpsWarningCard(state: state),
+
               // ── Scan Overview ──
               if (state case SecurityLoaded(:final scanSummary?)
                   when scanSummary.totalNetworks > 0) ...[
@@ -973,6 +981,166 @@ class _HeatmapShortcutCard extends StatelessWidget {
             Icon(
               Icons.chevron_right_rounded,
               color: AppColors.neonCyan.withValues(alpha: 0.6),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Evil Twin Alert Banner ───────────────────────────────────────────
+
+class _EvilTwinAlertBanner extends StatelessWidget {
+  final SecurityLoaded state;
+  const _EvilTwinAlertBanner({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    final hasEvilTwin = state.recentEvents.any(
+      (e) => e.type == domain_event.SecurityEventType.evilTwinDetected,
+    );
+    if (!hasEvilTwin) return const SizedBox.shrink();
+
+    final l10n = AppLocalizations.of(context)!;
+    final errorColor = Theme.of(context).colorScheme.error;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: NeonCard(
+        glowColor: errorColor,
+        glowIntensity: 0.18,
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: errorColor.withValues(alpha: 0.15),
+                border: Border.all(color: errorColor.withValues(alpha: 0.5)),
+              ),
+              child: Icon(Icons.warning_amber_rounded, color: errorColor, size: 24),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  NeonText(
+                    l10n.evilTwinAlertTitle,
+                    style: GoogleFonts.orbitron(
+                      color: errorColor,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1,
+                    ),
+                    glowColor: errorColor,
+                    glowRadius: 6,
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    l10n.evilTwinAlertBody,
+                    style: GoogleFonts.rajdhani(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: 13,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── WPS Warning Card ─────────────────────────────────────────────────
+
+class _WpsWarningCard extends StatelessWidget {
+  final SecurityLoaded state;
+  const _WpsWarningCard({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    final wpsCount = state.scanSummary?.wpsCount ?? 0;
+    if (wpsCount == 0) return const SizedBox.shrink();
+
+    final l10n = AppLocalizations.of(context)!;
+    const warnColor = Color(0xFFFFB300);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: NeonCard(
+        glowColor: warnColor,
+        glowIntensity: 0.10,
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: warnColor.withValues(alpha: 0.12),
+                border: Border.all(color: warnColor.withValues(alpha: 0.4)),
+              ),
+              child: const Icon(Icons.lock_open_rounded, color: warnColor, size: 22),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: NeonText(
+                          l10n.wpsWarningTitle,
+                          style: GoogleFonts.orbitron(
+                            color: warnColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1,
+                          ),
+                          glowColor: warnColor,
+                          glowRadius: 4,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: warnColor.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: warnColor.withValues(alpha: 0.4)),
+                        ),
+                        child: Text(
+                          l10n.wpsAffectedNetworks(wpsCount),
+                          style: GoogleFonts.orbitron(
+                            color: warnColor,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    l10n.wpsWarningBody,
+                    style: GoogleFonts.rajdhani(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontSize: 13,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

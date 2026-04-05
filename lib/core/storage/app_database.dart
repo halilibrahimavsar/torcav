@@ -25,7 +25,7 @@ class AppDatabase {
 
     return openDatabase(
       dbPath,
-      version: 2,
+      version: 3,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onConfigure: (db) async {
@@ -76,9 +76,27 @@ class AppDatabase {
         signal_dbm INTEGER NOT NULL
       )
     ''');
+
+    await _createSpeedTestTable(db);
+  }
+
+  Future<void> _createSpeedTestTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE speed_test_results (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        recorded_at TEXT NOT NULL,
+        latency_ms REAL NOT NULL,
+        jitter_ms REAL NOT NULL,
+        download_mbps REAL NOT NULL,
+        upload_mbps REAL NOT NULL
+      )
+    ''');
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 3) {
+      await _createSpeedTestTable(db);
+    }
     if (oldVersion < 2) {
       await db.execute('DROP TABLE IF EXISTS wifi_signal_samples');
       await db.execute('DROP TABLE IF EXISTS wifi_observations');

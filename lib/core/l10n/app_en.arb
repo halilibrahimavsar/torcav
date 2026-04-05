@@ -1502,4 +1502,111 @@
     "@dnsIspProvider": {
         "description": "Label for ISP provider in DNS test"
     }
+,
+    "phaseIdle": "READY",
+    "@phaseIdle": {
+            "description": "Idle phase label"
+    },
+    "performanceTitle": "SPEED TEST",
+    "@performanceTitle": {
+            "description": "Performance page title"
+    },
+    "performanceStart": "START TEST",
+    "@performanceStart": {
+            "description": "Start speed test button"
+    },
+    "performanceRetry": "RUN AGAIN",
+    "@performanceRetry": {
+            "description": "Retry speed test button"
+    },
+    "latencyLabel": "LATENCY",
+    "@latencyLabel": {
+            "description": "Latency stat label"
+    },
+    "jitterLabel": "JITTER",
+    "@jitterLabel": {
+            "description": "Jitter stat label"
+    },
+    "whatThisMeans": "WHAT THIS MEANS",
+    "@whatThisMeans": {
+            "description": "Interpretation section header"
+    },
+    "channelRecommendation": "CHANNEL RECOMMENDATION",
+    "@channelRecommendation": {
+            "description": "Channel recommendation card header"
+    },
+    "switchToChannel": "Switch to Channel {channel}",
+    "@switchToChannel": {
+            "description": "Channel switch recommendation",
+            "placeholders": {
+                    "channel": {
+                            "type": "int"
+                    }
+            }
+    },
+    "channelCongestionHint": "Your current channel is congested. Switching may improve speed.",
+    "@channelCongestionHint": {
+            "description": "Channel congestion hint"
+    },
+    "evilTwinAlertTitle": "EVIL TWIN DETECTED",
+    "@evilTwinAlertTitle": {
+            "description": "Evil twin alert title"
+    },
+    "evilTwinAlertBody": "A network is impersonating a known access point. Do not connect to unrecognized networks.",
+    "@evilTwinAlertBody": {
+            "description": "Evil twin alert body"
+    },
+    "wpsWarningTitle": "WPS IS ENABLED",
+    "@wpsWarningTitle": {
+            "description": "WPS warning title"
+    },
+    "wpsWarningBody": "WPS has known vulnerabilities that allow attackers to crack your Wi-Fi password even on WPA2. Disable it in your router settings.",
+    "@wpsWarningBody": {
+            "description": "WPS warning body"
+    },
+    "wpsAffectedNetworks": "{count} network(s) with WPS enabled",
+    "@wpsAffectedNetworks": {
+            "description": "WPS affected networks count",
+            "placeholders": {
+                    "count": {
+                            "type": "int"
+                    }
+            }
+    },
+    "heatmapTutorialTitle": "HOW TO USE THE HEATMAP",
+    "@heatmapTutorialTitle": {
+            "description": "Heatmap tutorial title"
+    },
+    "heatmapTutorialStep1": "Tap START RECORDING to begin a new survey session.",
+    "@heatmapTutorialStep1": {
+            "description": "Heatmap tutorial step 1"
+    },
+    "heatmapTutorialStep2": "Walk to each area of your space. Tap the canvas at your current position to record the signal strength at that spot.",
+    "@heatmapTutorialStep2": {
+            "description": "Heatmap tutorial step 2"
+    },
+    "heatmapTutorialStep3": "Red = weak signal. Green = strong signal. Find dead zones and move your router to fix them.",
+    "@heatmapTutorialStep3": {
+            "description": "Heatmap tutorial step 3"
+    },
+    "heatmapTutorialStep4": "Tap STOP & SAVE when done. View past sessions with the history button.",
+    "@heatmapTutorialStep4": {
+            "description": "Heatmap tutorial step 4"
+    },
+    "gotIt": "GOT IT",
+    "@gotIt": {
+            "description": "Dismiss tutorial button"
+    },
+    "speedTestHistory": "TEST HISTORY",
+    "@speedTestHistory": {
+            "description": "Speed test history section header"
+    },
+    "noSpeedTestHistory": "No tests recorded yet. Run your first test above.",
+    "@noSpeedTestHistory": {
+            "description": "Empty speed test history"
+    },
+    "networkScoreLabel": "NETWORK SCORE",
+    "@networkScoreLabel": {
+            "description": "Security score label on dashboard"
+    }
 }

@@ -3,8 +3,10 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../domain/entities/heatmap_point.dart';
@@ -18,14 +20,46 @@ import '../widgets/heatmap_canvas.dart';
 /// the current Wi-Fi RSSI. The canvas accumulates points and renders them as a
 /// colour-gradient heatmap. Sessions can be saved and reviewed from a bottom
 /// sheet.
-class HeatmapPage extends StatelessWidget {
+class HeatmapPage extends StatefulWidget {
   const HeatmapPage({super.key});
+
+  @override
+  State<HeatmapPage> createState() => _HeatmapPageState();
+}
+
+class _HeatmapPageState extends State<HeatmapPage> {
+  static const _kTutorialKey = 'heatmap_tutorial_seen';
+  bool _showTutorial = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkTutorial();
+  }
+
+  Future<void> _checkTutorial() async {
+    final prefs = await SharedPreferences.getInstance();
+    final seen = prefs.getBool(_kTutorialKey) ?? false;
+    if (!seen && mounted) setState(() => _showTutorial = true);
+  }
+
+  Future<void> _dismissTutorial() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kTutorialKey, true);
+    if (mounted) setState(() => _showTutorial = false);
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<HeatmapBloc>()..loadSessions(),
-      child: const _HeatmapView(),
+      child: Stack(
+        children: [
+          const _HeatmapView(),
+          if (_showTutorial)
+            _HeatmapTutorialOverlay(onDismiss: _dismissTutorial),
+        ],
+      ),
     );
   }
 }
@@ -408,19 +442,24 @@ class _SessionPickerSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<HeatmapBloc>();
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
-          child: Text(
-            'PAST SESSIONS',
-            style: GoogleFonts.orbitron(
-              color: AppColors.neonCyan,
-              fontSize: 12,
-              letterSpacing: 2,
-            ),
+          padding: const EdgeInsets.fromLTRB(20, 20, 12, 8),
+          child: Row(
+            children: [
+              Text(
+                'PAST SESSIONS',
+                style: GoogleFonts.orbitron(
+                  color: AppColors.neonCyan,
+                  fontSize: 12,
+                  letterSpacing: 2,
+                ),
+              ),
+            ],
           ),
         ),
         if (sessions.isEmpty)
@@ -457,6 +496,15 @@ class _SessionPickerSheet extends StatelessWidget {
                     ),
                   ),
                   onTap: () => onSelect(s),
+                  trailing: IconButton(
+                    icon: const Icon(
+                      Icons.delete_outline_rounded,
+                      color: AppColors.neonRed,
+                      size: 20,
+                    ),
+                    tooltip: 'Delete session',
+                    onPressed: () => bloc.deleteSession(s.id),
+                  ),
                 );
               },
             ),
@@ -588,6 +636,139 @@ class _PulsingDotState extends State<_PulsingDot>
           shape: BoxShape.circle,
         ),
       ),
+    );
+  }
+}
+
+// ── Heatmap Tutorial Overlay ─────────────────────────────────────────
+
+class _HeatmapTutorialOverlay extends StatelessWidget {
+  final VoidCallback onDismiss;
+  const _HeatmapTutorialOverlay({required this.onDismiss});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Material(
+      color: Colors.black.withValues(alpha: 0.82),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.neonCyan.withValues(alpha: 0.12),
+                  border: Border.all(
+                    color: AppColors.neonCyan.withValues(alpha: 0.5),
+                    width: 1.5,
+                  ),
+                ),
+                child: const Icon(
+                  Icons.thermostat_rounded,
+                  color: AppColors.neonCyan,
+                  size: 32,
+                ),
+              ),
+              const SizedBox(height: 20),
+              NeonText(
+                l10n.heatmapTutorialTitle,
+                style: GoogleFonts.orbitron(
+                  color: AppColors.neonCyan,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 2,
+                ),
+                glowColor: AppColors.neonCyan,
+                glowRadius: 8,
+              ),
+              const SizedBox(height: 28),
+              _TutorialStep(number: '1', text: l10n.heatmapTutorialStep1),
+              const SizedBox(height: 16),
+              _TutorialStep(number: '2', text: l10n.heatmapTutorialStep2),
+              const SizedBox(height: 16),
+              _TutorialStep(number: '3', text: l10n.heatmapTutorialStep3),
+              const SizedBox(height: 16),
+              _TutorialStep(number: '4', text: l10n.heatmapTutorialStep4),
+              const SizedBox(height: 36),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: onDismiss,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.neonCyan.withValues(alpha: 0.15),
+                    foregroundColor: AppColors.neonCyan,
+                    side: BorderSide(
+                      color: AppColors.neonCyan.withValues(alpha: 0.5),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    l10n.gotIt,
+                    style: GoogleFonts.orbitron(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 13,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TutorialStep extends StatelessWidget {
+  final String number;
+  final String text;
+  const _TutorialStep({required this.number, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.neonCyan.withValues(alpha: 0.15),
+            border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.4)),
+          ),
+          child: Center(
+            child: Text(
+              number,
+              style: GoogleFonts.orbitron(
+                color: AppColors.neonCyan,
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 14),
+        Expanded(
+          child: Text(
+            text,
+            style: GoogleFonts.rajdhani(
+              color: Colors.white.withValues(alpha: 0.85),
+              fontSize: 14,
+              height: 1.5,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1089,4 +1089,80 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dnsIspProvider => 'ISP PROVIDER';
+
+  @override
+  String get phaseIdle => 'READY';
+
+  @override
+  String get performanceTitle => 'SPEED TEST';
+
+  @override
+  String get performanceStart => 'START TEST';
+
+  @override
+  String get performanceRetry => 'RUN AGAIN';
+
+  @override
+  String get latencyLabel => 'LATENCY';
+
+  @override
+  String get jitterLabel => 'JITTER';
+
+  @override
+  String get whatThisMeans => 'WHAT THIS MEANS';
+
+  @override
+  String get channelRecommendation => 'CHANNEL RECOMMENDATION';
+
+  @override
+  String switchToChannel(int channel) {
+    return 'Switch to Channel $channel';
+  }
+
+  @override
+  String get channelCongestionHint => 'Your current channel is congested. Switching may improve speed.';
+
+  @override
+  String get evilTwinAlertTitle => 'EVIL TWIN DETECTED';
+
+  @override
+  String get evilTwinAlertBody => 'A network is impersonating a known access point. Do not connect to unrecognized networks.';
+
+  @override
+  String get wpsWarningTitle => 'WPS IS ENABLED';
+
+  @override
+  String get wpsWarningBody => 'WPS has known vulnerabilities that allow attackers to crack your Wi-Fi password even on WPA2. Disable it in your router settings.';
+
+  @override
+  String wpsAffectedNetworks(int count) {
+    return '$count network(s) with WPS enabled';
+  }
+
+  @override
+  String get heatmapTutorialTitle => 'HOW TO USE THE HEATMAP';
+
+  @override
+  String get heatmapTutorialStep1 => 'Tap START RECORDING to begin a new survey session.';
+
+  @override
+  String get heatmapTutorialStep2 => 'Walk to each area of your space. Tap the canvas at your current position to record the signal strength at that spot.';
+
+  @override
+  String get heatmapTutorialStep3 => 'Red = weak signal. Green = strong signal. Find dead zones and move your router to fix them.';
+
+  @override
+  String get heatmapTutorialStep4 => 'Tap STOP & SAVE when done. View past sessions with the history button.';
+
+  @override
+  String get gotIt => 'GOT IT';
+
+  @override
+  String get speedTestHistory => 'TEST HISTORY';
+
+  @override
+  String get noSpeedTestHistory => 'No tests recorded yet. Run your first test above.';
+
+  @override
+  String get networkScoreLabel => 'NETWORK SCORE';
 }

@@ -34,4 +34,14 @@ class ChannelRatingRepositoryImpl implements ChannelRatingRepository {
       return Left(DatabaseFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> clearHistory() async {
+    try {
+      await _localDataSource.clearHistory();
+      return const Right(null);
+    } catch (e) {
+      return Left(DatabaseFailure(e.toString()));
+    }
+  }
 }

@@ -1089,4 +1089,80 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get dnsIspProvider => 'ISP PROVIDER';
+
+  @override
+  String get phaseIdle => 'AMADE';
+
+  @override
+  String get performanceTitle => 'TESTA LEZÊ';
+
+  @override
+  String get performanceStart => 'DEST PÊ KE';
+
+  @override
+  String get performanceRetry => 'DU CARÊ';
+
+  @override
+  String get latencyLabel => 'DERENGÎ';
+
+  @override
+  String get jitterLabel => 'JITTER';
+
+  @override
+  String get whatThisMeans => 'ÊVÊ ÇI TÊ WATEYA';
+
+  @override
+  String get channelRecommendation => 'PÊŞNIYARA KANALÊ';
+
+  @override
+  String switchToChannel(int channel) {
+    return 'Biçe Kanala $channel';
+  }
+
+  @override
+  String get channelCongestionHint => 'Kanala we tijî ye. Guherandin dikare lezê baştir bike.';
+
+  @override
+  String get evilTwinAlertTitle => 'XALÊ GIHÎŞTINÊ YÊ DEREWÎN HATE DÎTIN';
+
+  @override
+  String get evilTwinAlertBody => 'Tora xwe wekî xaleke naskirî nîşan dide. Bi torên nenas ve nevekin.';
+
+  @override
+  String get wpsWarningTitle => 'WPS VEKIRÎ YE';
+
+  @override
+  String get wpsWarningBody => 'WPS xeletiyên ewlehiyê hene. Ji mîhengên rûterê xwe neçalak bike.';
+
+  @override
+  String wpsAffectedNetworks(int count) {
+    return '$count tor bi WPS vekirî';
+  }
+
+  @override
+  String get heatmapTutorialTitle => 'NEXŞEYA GERMAHIYÊ ÇAWA BIKAR BÎNIM';
+
+  @override
+  String get heatmapTutorialStep1 => 'Seansek nû destpê bike, li TOMAR DEST PÊ KE bikirtînin.';
+
+  @override
+  String get heatmapTutorialStep2 => 'Biçin her quncikek û li cîhê xwe nexşeyê bikirtînin.';
+
+  @override
+  String get heatmapTutorialStep3 => 'Sor = nîşan qels. Kesk = nîşan xurt.';
+
+  @override
+  String get heatmapTutorialStep4 => 'Dema ku hat xulasekirin, RAWEST û SAVE bikirtînin.';
+
+  @override
+  String get gotIt => 'FÊHM KIR';
+
+  @override
+  String get speedTestHistory => 'DÎROKA TESTÊ';
+
+  @override
+  String get noSpeedTestHistory => 'Hêj test nehatiye tomar kirin. Testa yekem li jorê dest pê bike.';
+
+  @override
+  String get networkScoreLabel => 'PUANA TORÊ';
 }

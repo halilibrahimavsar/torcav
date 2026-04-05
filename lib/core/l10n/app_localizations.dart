@@ -2084,6 +2084,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'ISP PROVIDER'**
   String get dnsIspProvider;
+
+  /// Idle phase label
+  ///
+  /// In en, this message translates to:
+  /// **'READY'**
+  String get phaseIdle;
+
+  /// Performance page title
+  ///
+  /// In en, this message translates to:
+  /// **'SPEED TEST'**
+  String get performanceTitle;
+
+  /// Start speed test button
+  ///
+  /// In en, this message translates to:
+  /// **'START TEST'**
+  String get performanceStart;
+
+  /// Retry speed test button
+  ///
+  /// In en, this message translates to:
+  /// **'RUN AGAIN'**
+  String get performanceRetry;
+
+  /// Latency stat label
+  ///
+  /// In en, this message translates to:
+  /// **'LATENCY'**
+  String get latencyLabel;
+
+  /// Jitter stat label
+  ///
+  /// In en, this message translates to:
+  /// **'JITTER'**
+  String get jitterLabel;
+
+  /// Interpretation section header
+  ///
+  /// In en, this message translates to:
+  /// **'WHAT THIS MEANS'**
+  String get whatThisMeans;
+
+  /// Channel recommendation card header
+  ///
+  /// In en, this message translates to:
+  /// **'CHANNEL RECOMMENDATION'**
+  String get channelRecommendation;
+
+  /// Channel switch recommendation
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to Channel {channel}'**
+  String switchToChannel(int channel);
+
+  /// Channel congestion hint
+  ///
+  /// In en, this message translates to:
+  /// **'Your current channel is congested. Switching may improve speed.'**
+  String get channelCongestionHint;
+
+  /// Evil twin alert title
+  ///
+  /// In en, this message translates to:
+  /// **'EVIL TWIN DETECTED'**
+  String get evilTwinAlertTitle;
+
+  /// Evil twin alert body
+  ///
+  /// In en, this message translates to:
+  /// **'A network is impersonating a known access point. Do not connect to unrecognized networks.'**
+  String get evilTwinAlertBody;
+
+  /// WPS warning title
+  ///
+  /// In en, this message translates to:
+  /// **'WPS IS ENABLED'**
+  String get wpsWarningTitle;
+
+  /// WPS warning body
+  ///
+  /// In en, this message translates to:
+  /// **'WPS has known vulnerabilities that allow attackers to crack your Wi-Fi password even on WPA2. Disable it in your router settings.'**
+  String get wpsWarningBody;
+
+  /// WPS affected networks count
+  ///
+  /// In en, this message translates to:
+  /// **'{count} network(s) with WPS enabled'**
+  String wpsAffectedNetworks(int count);
+
+  /// Heatmap tutorial title
+  ///
+  /// In en, this message translates to:
+  /// **'HOW TO USE THE HEATMAP'**
+  String get heatmapTutorialTitle;
+
+  /// Heatmap tutorial step 1
+  ///
+  /// In en, this message translates to:
+  /// **'Tap START RECORDING to begin a new survey session.'**
+  String get heatmapTutorialStep1;
+
+  /// Heatmap tutorial step 2
+  ///
+  /// In en, this message translates to:
+  /// **'Walk to each area of your space. Tap the canvas at your current position to record the signal strength at that spot.'**
+  String get heatmapTutorialStep2;
+
+  /// Heatmap tutorial step 3
+  ///
+  /// In en, this message translates to:
+  /// **'Red = weak signal. Green = strong signal. Find dead zones and move your router to fix them.'**
+  String get heatmapTutorialStep3;
+
+  /// Heatmap tutorial step 4
+  ///
+  /// In en, this message translates to:
+  /// **'Tap STOP & SAVE when done. View past sessions with the history button.'**
+  String get heatmapTutorialStep4;
+
+  /// Dismiss tutorial button
+  ///
+  /// In en, this message translates to:
+  /// **'GOT IT'**
+  String get gotIt;
+
+  /// Speed test history section header
+  ///
+  /// In en, this message translates to:
+  /// **'TEST HISTORY'**
+  String get speedTestHistory;
+
+  /// Empty speed test history
+  ///
+  /// In en, this message translates to:
+  /// **'No tests recorded yet. Run your first test above.'**
+  String get noSpeedTestHistory;
+
+  /// Security score label on dashboard
+  ///
+  /// In en, this message translates to:
+  /// **'NETWORK SCORE'**
+  String get networkScoreLabel;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../domain/entities/heatmap_point.dart';
 import '../../domain/entities/heatmap_session.dart';
+import '../../domain/repositories/heatmap_repository.dart';
 import '../../domain/usecases/get_heatmap_sessions_usecase.dart';
 import '../../domain/usecases/record_heatmap_point_usecase.dart';
 
@@ -11,11 +12,12 @@ part 'heatmap_state.dart';
 
 @injectable
 class HeatmapBloc extends Cubit<HeatmapState> {
-  HeatmapBloc(this._getSessions, this._recordPoint)
+  HeatmapBloc(this._getSessions, this._recordPoint, this._repository)
       : super(const HeatmapState());
 
   final GetHeatmapSessionsUsecase _getSessions;
   final RecordHeatmapPointUsecase _recordPoint;
+  final HeatmapRepository _repository;
 
   Future<void> loadSessions() async {
     emit(state.copyWith(isLoading: true));
@@ -68,5 +70,15 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
   void clearSelection() {
     emit(state.copyWith(clearSelectedSession: true));
+  }
+
+  Future<void> deleteSession(String sessionId) async {
+    await _repository.deleteSession(sessionId);
+    final sessions = await _getSessions();
+    final wasSelected = state.selectedSession?.id == sessionId;
+    emit(state.copyWith(
+      sessions: sessions,
+      clearSelectedSession: wasSelected,
+    ));
   }
 }

@@ -49,6 +49,14 @@ class SecurityRepositoryImpl implements SecurityRepository {
       _localDataSource.markSecurityEventAsRead(id);
 
   @override
+  Future<void> markAllSecurityEventsAsRead() =>
+      _localDataSource.markAllSecurityEventsAsRead();
+
+  @override
+  Future<void> clearAllSecurityEvents() =>
+      _localDataSource.clearAllSecurityEvents();
+
+  @override
   Future<List<SecurityEvent>> analyzeNetworks(
     List<WifiNetwork> networks,
   ) async {
