@@ -30,6 +30,7 @@ class SecurityScanSummary extends Equatable {
 
 class SecurityLoaded extends SecurityState {
   final List<KnownNetwork> knownNetworks;
+  final List<TrustedNetworkProfile> trustedNetworkProfiles;
   final List<domain_event.SecurityEvent> recentEvents;
   final int overallScore;
   final SecurityScanSummary? scanSummary;
@@ -38,6 +39,7 @@ class SecurityLoaded extends SecurityState {
 
   const SecurityLoaded({
     required this.knownNetworks,
+    required this.trustedNetworkProfiles,
     required this.recentEvents,
     this.overallScore = 100,
     this.scanSummary,
@@ -47,6 +49,7 @@ class SecurityLoaded extends SecurityState {
 
   SecurityLoaded copyWith({
     List<KnownNetwork>? knownNetworks,
+    List<TrustedNetworkProfile>? trustedNetworkProfiles,
     List<domain_event.SecurityEvent>? recentEvents,
     int? overallScore,
     SecurityScanSummary? scanSummary,
@@ -55,6 +58,8 @@ class SecurityLoaded extends SecurityState {
   }) {
     return SecurityLoaded(
       knownNetworks: knownNetworks ?? this.knownNetworks,
+      trustedNetworkProfiles:
+          trustedNetworkProfiles ?? this.trustedNetworkProfiles,
       recentEvents: recentEvents ?? this.recentEvents,
       overallScore: overallScore ?? this.overallScore,
       scanSummary: scanSummary ?? this.scanSummary,
@@ -66,6 +71,7 @@ class SecurityLoaded extends SecurityState {
   @override
   List<Object?> get props => [
         knownNetworks,
+        trustedNetworkProfiles,
         recentEvents,
         overallScore,
         scanSummary,

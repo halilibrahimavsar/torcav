@@ -1,6 +1,9 @@
 # torcav
 
-A new Flutter project.
+Torcav is a passive Wi-Fi and LAN analysis app focused on defensive assessment,
+hardening guidance, and evidence-backed diagnostics for networks you own or are
+authorized to test. It does not perform offensive actions such as deauth,
+credential capture, brute force, exploitation, or monitor-mode attack flows.
 
 ## Getting Started
 

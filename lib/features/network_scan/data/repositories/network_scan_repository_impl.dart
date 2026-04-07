@@ -99,13 +99,13 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
           osGuess: host.osGuess,
           latency: host.latency,
           services: host.services,
-          vulnerabilities: host.vulnerabilities,
+          exposureFindings: host.exposureFindings,
           exposureScore: host.exposureScore,
           deviceType: deviceType,
         );
       }).toList();
 
-      return Right(enrichedHosts);
+      return Right<Failure, List<HostScanResult>>(enrichedHosts);
     } on Failure catch (e) {
       return Left(e);
     } catch (e) {

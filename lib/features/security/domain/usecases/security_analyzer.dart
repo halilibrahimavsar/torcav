@@ -1,8 +1,12 @@
 import 'package:injectable/injectable.dart';
 
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
+import '../entities/network_fingerprint.dart';
 import '../entities/security_assessment.dart';
+import '../entities/security_drift_finding.dart';
+import '../entities/security_finding.dart';
 import '../entities/security_report.dart';
+import '../entities/trusted_network_profile.dart';
 import '../entities/vulnerability.dart';
 
 @lazySingleton
@@ -10,46 +14,69 @@ class SecurityAnalyzer {
   SecurityAssessment assess(
     WifiNetwork network, {
     List<WifiNetwork> localBaseline = const [],
+    TrustedNetworkProfile? trustedProfile,
   }) {
-    final vulnerabilities = <Vulnerability>[];
+    final findings = <SecurityFinding>[];
     final riskFactors = <String>[];
     var score = 100;
+    final now = DateTime.now();
 
     switch (network.security) {
       case SecurityType.open:
-        vulnerabilities.add(
-          const Vulnerability(
+        findings.add(
+          SecurityFinding(
+            ruleId: 'wifi.open_network',
+            category: SecurityFindingCategory.wifiConfiguration,
             title: 'Open Network',
             description:
                 'No encryption detected. All traffic can be sniffed in plaintext.',
             severity: VulnerabilitySeverity.critical,
             recommendation:
                 'Avoid sensitive activity. Prefer trusted VPN or different network.',
+            confidence: SecurityFindingConfidence.observed,
+            evidence:
+                'The access point advertises no encryption for ${network.ssid.isEmpty ? network.bssid : network.ssid}.',
+            timestamp: now,
+            subject: network.bssid,
           ),
         );
         riskFactors.add('No encryption in use');
         score -= 80;
         break;
       case SecurityType.wep:
-        vulnerabilities.add(
-          const Vulnerability(
+        findings.add(
+          SecurityFinding(
+            ruleId: 'wifi.wep',
+            category: SecurityFindingCategory.wifiConfiguration,
             title: 'WEP Encryption',
             description: 'WEP is deprecated and can be cracked quickly.',
             severity: VulnerabilitySeverity.critical,
             recommendation: 'Reconfigure AP to WPA2 or WPA3 immediately.',
+            confidence: SecurityFindingConfidence.observed,
+            evidence:
+                'The beacon capabilities for ${network.bssid} advertise WEP.',
+            timestamp: now,
+            subject: network.bssid,
           ),
         );
         riskFactors.add('Deprecated encryption (WEP)');
         score -= 70;
         break;
       case SecurityType.wpa:
-        vulnerabilities.add(
-          const Vulnerability(
+        findings.add(
+          SecurityFinding(
+            ruleId: 'wifi.legacy_wpa',
+            category: SecurityFindingCategory.wifiConfiguration,
             title: 'Legacy WPA',
             description:
                 'WPA/TKIP is older and weaker against modern attack techniques.',
             severity: VulnerabilitySeverity.high,
             recommendation: 'Upgrade AP and clients to WPA2/WPA3.',
+            confidence: SecurityFindingConfidence.observed,
+            evidence:
+                'The access point reports a legacy WPA profile instead of WPA2/WPA3.',
+            timestamp: now,
+            subject: network.bssid,
           ),
         );
         riskFactors.add('Legacy WPA in use');
@@ -62,14 +89,21 @@ class SecurityAnalyzer {
     }
 
     if (network.isHidden) {
-      vulnerabilities.add(
-        const Vulnerability(
+      findings.add(
+        SecurityFinding(
+          ruleId: 'wifi.hidden_ssid',
+          category: SecurityFindingCategory.wifiConfiguration,
           title: 'Hidden SSID',
           description:
               'Hidden SSIDs are still discoverable and may hurt compatibility.',
           severity: VulnerabilitySeverity.low,
           recommendation:
               'Hidden SSID alone is not protection. Focus on strong encryption.',
+          confidence: SecurityFindingConfidence.observed,
+          evidence:
+              'The network is being advertised without a visible SSID value.',
+          timestamp: now,
+          subject: network.bssid,
         ),
       );
       riskFactors.add('Hidden SSID behavior');
@@ -77,23 +111,31 @@ class SecurityAnalyzer {
     }
 
     if (network.signalStrength < -85) {
-      vulnerabilities.add(
-        const Vulnerability(
+      findings.add(
+        SecurityFinding(
+          ruleId: 'wifi.very_weak_signal',
+          category: SecurityFindingCategory.wifiConfiguration,
           title: 'Very Weak Signal',
           description:
               'Weak signal can indicate unstable links and spoofing susceptibility.',
           severity: VulnerabilitySeverity.info,
           recommendation: 'Move closer to AP or validate BSSID consistency.',
+          confidence: SecurityFindingConfidence.heuristic,
+          evidence:
+              'Observed RSSI is ${network.signalStrength} dBm, which is well below the recommended range.',
+          timestamp: now,
+          subject: network.bssid,
         ),
       );
       riskFactors.add('Weak signal environment');
       score -= 5;
     }
 
-    // WPS vulnerability (A3)
     if (network.hasWps == true) {
-      vulnerabilities.add(
-        const Vulnerability(
+      findings.add(
+        SecurityFinding(
+          ruleId: 'wifi.wps_enabled',
+          category: SecurityFindingCategory.wifiConfiguration,
           title: 'WPS Enabled',
           description:
               'Wi-Fi Protected Setup (WPS) is enabled. The WPS PIN mode '
@@ -101,20 +143,26 @@ class SecurityAnalyzer {
               '(Pixie Dust attack), effectively bypassing any password.',
           severity: VulnerabilitySeverity.high,
           recommendation:
-              'Disable WPS in your router admin panel. Use WPA2/WPA3 passphrase '
-              'only.',
+            'Disable WPS in your router admin panel. Use WPA2/WPA3 passphrase '
+            'only.',
+          confidence: SecurityFindingConfidence.observed,
+          evidence:
+              'The capabilities string for ${network.bssid} advertises WPS support.',
+          timestamp: now,
+          subject: network.bssid,
         ),
       );
       riskFactors.add('WPS PIN attack surface exposed');
       score -= 30;
     }
 
-    // PMF (Protected Management Frames) check (B1)
     final isWpa2OrBetter = network.security == SecurityType.wpa2 ||
         network.security == SecurityType.wpa3;
     if (isWpa2OrBetter && network.hasPmf == false) {
-      vulnerabilities.add(
-        const Vulnerability(
+      findings.add(
+        SecurityFinding(
+          ruleId: 'wifi.pmf_not_enforced',
+          category: SecurityFindingCategory.wifiConfiguration,
           title: 'Management Frames Unprotected',
           description:
               'This access point does not enforce Protected Management Frames '
@@ -124,6 +172,11 @@ class SecurityAnalyzer {
           recommendation:
               'Enable PMF in your router settings (often labelled "802.11w" '
               'or "Management Frame Protection"). WPA3 requires PMF by default.',
+          confidence: SecurityFindingConfidence.observed,
+          evidence:
+              'The scan metadata did not report PMF support for a WPA2/WPA3 access point.',
+          timestamp: now,
+          subject: network.bssid,
         ),
       );
       riskFactors.add('PMF not enforced — deauth spoofing possible');
@@ -131,24 +184,32 @@ class SecurityAnalyzer {
     }
 
     if (_isPotentialEvilTwin(network, localBaseline)) {
-      vulnerabilities.add(
-        const Vulnerability(
+      findings.add(
+        SecurityFinding(
+          ruleId: 'wifi.suspicious_sibling_ap',
+          category: SecurityFindingCategory.trustedBaseline,
           title: 'Potential Evil Twin',
           description:
               'SSID appears with conflicting security/channel fingerprint nearby.',
           severity: VulnerabilitySeverity.high,
           recommendation:
               'Verify BSSID and certificate before authentication or data exchange.',
+          confidence: SecurityFindingConfidence.heuristic,
+          evidence:
+              'Another AP with the same SSID was detected nearby with a conflicting security or channel profile.',
+          timestamp: now,
+          subject: network.ssid,
         ),
       );
       riskFactors.add('SSID fingerprint drift detected');
       score -= 35;
     }
 
-    // Suspicious SSID names — common honeypot lures
     if (_isSuspiciousSsid(network.ssid)) {
-      vulnerabilities.add(
-        const Vulnerability(
+      findings.add(
+        SecurityFinding(
+          ruleId: 'wifi.suspicious_ssid',
+          category: SecurityFindingCategory.wifiConfiguration,
           title: 'Suspicious Network Name',
           description:
               'This SSID matches common honeypot/lure patterns used by '
@@ -158,19 +219,25 @@ class SecurityAnalyzer {
           recommendation:
               'Verify this network with the venue operator before connecting. '
               'Use a VPN if you must connect to unknown networks.',
+          confidence: SecurityFindingConfidence.heuristic,
+          evidence:
+              'The SSID "${network.ssid}" matches a common lure pattern seen in public hotspot impersonation.',
+          timestamp: now,
+          subject: network.ssid,
         ),
       );
       riskFactors.add('SSID matches known honeypot pattern');
       score -= 15;
     }
 
-    // Channel congestion — many APs sharing the same channel
     final sameChannelCount = localBaseline
         .where((n) => n.channel == network.channel && n.bssid != network.bssid)
         .length;
     if (sameChannelCount >= 5) {
-      vulnerabilities.add(
-        Vulnerability(
+      findings.add(
+        SecurityFinding(
+          ruleId: 'wifi.high_channel_congestion',
+          category: SecurityFindingCategory.wifiConfiguration,
           title: 'High Channel Congestion',
           description:
               '${sameChannelCount + 1} networks are broadcasting on channel '
@@ -181,13 +248,17 @@ class SecurityAnalyzer {
           recommendation:
               'Ask the network admin to switch to a less congested channel. '
               'Use the Channel Rating screen to find optimal channels.',
+          confidence: SecurityFindingConfidence.observed,
+          evidence:
+              '${sameChannelCount + 1} nearby networks were seen on channel ${network.channel}.',
+          timestamp: now,
+          subject: network.bssid,
         ),
       );
       riskFactors.add('Channel ${network.channel} is heavily congested');
       score -= 5;
     }
 
-    // 2.4 GHz only — no 5 GHz counterpart detected
     if (network.frequency < 3000 && localBaseline.isNotEmpty) {
       final has5GhzSibling = localBaseline.any(
         (n) =>
@@ -196,8 +267,10 @@ class SecurityAnalyzer {
             n.frequency >= 5000,
       );
       if (!has5GhzSibling && network.security != SecurityType.open) {
-        vulnerabilities.add(
-          const Vulnerability(
+        findings.add(
+          SecurityFinding(
+            ruleId: 'wifi.only_24ghz',
+            category: SecurityFindingCategory.wifiConfiguration,
             title: '2.4 GHz Only',
             description:
                 'This network only broadcasts on the 2.4 GHz band, which is '
@@ -207,10 +280,53 @@ class SecurityAnalyzer {
             recommendation:
                 'Enable 5 GHz band on your router for better performance. '
                 'Most modern devices support dual-band operation.',
+            confidence: SecurityFindingConfidence.heuristic,
+            evidence:
+                'No 5 GHz sibling access point was detected for this SSID in the current scan.',
+            timestamp: now,
+            subject: network.ssid,
           ),
         );
         riskFactors.add('No 5 GHz band detected');
         score -= 3;
+      }
+    }
+
+    if (trustedProfile != null) {
+      final currentFingerprint = NetworkFingerprint.fromWifiNetwork(network);
+      final drift = currentFingerprint.driftAgainst(trustedProfile.fingerprint);
+      if (drift.isNotEmpty) {
+        final severeAttributes = {
+          'BSSID',
+          'Security',
+          'WPS',
+          'PMF',
+          'Vendor',
+        };
+        final severity = drift.any(severeAttributes.contains)
+            ? VulnerabilitySeverity.high
+            : VulnerabilitySeverity.medium;
+        findings.add(
+          SecurityDriftFinding(
+            ruleId: 'trusted.baseline_drift',
+            severity: severity,
+            confidence: SecurityFindingConfidence.observed,
+            title: 'Trusted Baseline Drift',
+            description:
+                'This access point no longer matches the fingerprint you previously trusted.',
+            evidence:
+                'Changed attributes: ${drift.join(', ')}. Baseline BSSID ${trustedProfile.bssid}, observed ${network.bssid}.',
+            recommendation:
+                'Re-validate the router configuration and only re-trust the network if the change was intentional.',
+            timestamp: now,
+            baselineBssid: trustedProfile.bssid,
+            observedBssid: network.bssid,
+            changedAttributes: drift,
+            subject: network.ssid,
+          ),
+        );
+        riskFactors.add('Trusted fingerprint drift: ${drift.join(', ')}');
+        score -= severity == VulnerabilitySeverity.high ? 25 : 12;
       }
     }
 
@@ -220,13 +336,21 @@ class SecurityAnalyzer {
     return SecurityAssessment(
       score: score,
       status: status,
-      findings: vulnerabilities,
+      evidenceFindings: findings,
       riskFactors: riskFactors,
     );
   }
 
-  SecurityReport analyze(WifiNetwork network) {
-    final assessment = assess(network);
+  SecurityReport analyze(
+    WifiNetwork network, {
+    List<WifiNetwork> localBaseline = const [],
+    TrustedNetworkProfile? trustedProfile,
+  }) {
+    final assessment = assess(
+      network,
+      localBaseline: localBaseline,
+      trustedProfile: trustedProfile,
+    );
     return SecurityReport(
       score: assessment.score,
       vulnerabilities: assessment.findings,

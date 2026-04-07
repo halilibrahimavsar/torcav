@@ -10,6 +10,7 @@ import '../../domain/usecases/dns_leak_test_usecase.dart';
 import '../../domain/entities/dns_test_result.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
+import '../../domain/entities/trusted_network_profile.dart';
 import 'dart:async';
 
 part 'security_event.dart';
@@ -35,7 +36,7 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
   ) : super(SecurityInitial()) {
     on<SecurityStarted>(_onStarted);
     on<SecurityAnalyzeRequested>(_onAnalyzeRequested);
-    on<SecurityNetworkTrustChanged>(_onTrustChanged);
+    on<SecurityUntrustRequested>(_onUntrustRequested);
     on<SecurityDnsTestRequested>(_onDnsTestRequested);
 
     // Auto-analyze on every new scan
@@ -74,12 +75,14 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
       }
 
       final known = await _repository.getKnownNetworks();
+      final trusted = await _repository.getTrustedNetworkProfiles();
       final events = await _repository.getSecurityEvents();
       final score = _computeScore(_lastNetworks);
       final summary =
           _lastNetworks.isEmpty ? null : _buildSummary(_lastNetworks);
       emit(SecurityLoaded(
         knownNetworks: known,
+        trustedNetworkProfiles: trusted,
         recentEvents: events,
         overallScore: score,
         scanSummary: summary,
@@ -97,11 +100,13 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
       _lastNetworks = event.networks;
       await _analyzeUseCase(event.networks);
       final known = await _repository.getKnownNetworks();
+      final trusted = await _repository.getTrustedNetworkProfiles();
       final events = await _repository.getSecurityEvents();
       final score = _computeScore(event.networks);
       final summary = _buildSummary(event.networks);
       emit(SecurityLoaded(
         knownNetworks: known,
+        trustedNetworkProfiles: trusted,
         recentEvents: events,
         overallScore: score,
         scanSummary: summary,
@@ -111,23 +116,22 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
     }
   }
 
-  Future<void> _onTrustChanged(
-    SecurityNetworkTrustChanged event,
+  Future<void> _onUntrustRequested(
+    SecurityUntrustRequested event,
     Emitter<SecurityState> emit,
   ) async {
     try {
-      if (event.isTrusted) {
-        await _repository.saveKnownNetwork(event.network);
-      } else {
-        await _repository.deleteKnownNetwork(event.network.bssid);
-      }
+      await _repository.deleteTrustedNetworkProfile(event.bssid);
+
       final known = await _repository.getKnownNetworks();
+      final trusted = await _repository.getTrustedNetworkProfiles();
       final events = await _repository.getSecurityEvents();
       final score = _computeScore(_lastNetworks);
       final summary =
           _lastNetworks.isEmpty ? null : _buildSummary(_lastNetworks);
       emit(SecurityLoaded(
         knownNetworks: known,
+        trustedNetworkProfiles: trusted,
         recentEvents: events,
         overallScore: score,
         scanSummary: summary,

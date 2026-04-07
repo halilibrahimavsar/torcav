@@ -9,6 +9,7 @@ import '../../../../core/theme/neon_widgets.dart';
 import '../../../heatmap/presentation/pages/heatmap_page.dart';
 import '../bloc/security_bloc.dart';
 import '../../domain/entities/known_network.dart';
+import '../../domain/entities/trusted_network_profile.dart';
 import '../../domain/entities/dns_test_result.dart';
 import '../../domain/entities/security_event.dart' as domain_event;
 import '../widgets/security_status_radar.dart';
@@ -72,20 +73,36 @@ class _SecurityCenterView extends StatelessWidget {
                 const SizedBox(height: 24),
               ],
 
-              // ── Known Networks ──
+              // ── Trusted Baselines ──
               StaggeredEntry(
                 delay: const Duration(milliseconds: 150),
                 child: NeonSectionHeader(
-                  label: l10n.knownNetworks,
+                  label: l10n.trustedBaselineBadge,
                   icon: Icons.verified_user_rounded,
                   color: Theme.of(context).colorScheme.tertiary,
                 ),
               ),
               const SizedBox(height: 12),
               if (state is SecurityLoaded)
-                _buildKnownNetworks(context, state.knownNetworks, l10n)
+                _buildTrustedBaselines(context, state.trustedNetworkProfiles, l10n)
               else if (state is SecurityLoading)
                 _buildLoading(context)
+              else
+                _emptyBox(context, l10n.noKnownNetworksYet),
+              const SizedBox(height: 24),
+
+              // ── Discovered Networks ──
+              StaggeredEntry(
+                delay: const Duration(milliseconds: 200),
+                child: NeonSectionHeader(
+                  label: l10n.knownNetworks,
+                  icon: Icons.wifi_find_rounded,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              ),
+              const SizedBox(height: 12),
+              if (state is SecurityLoaded)
+                _buildKnownNetworks(context, state.knownNetworks, state.trustedNetworkProfiles, l10n)
               else
                 _emptyBox(context, l10n.noKnownNetworksYet),
               const SizedBox(height: 24),
@@ -140,13 +157,32 @@ class _SecurityCenterView extends StatelessWidget {
   Widget _buildKnownNetworks(
     BuildContext context,
     List<KnownNetwork> networks,
+    List<TrustedNetworkProfile> trustedProfiles,
     AppLocalizations l10n,
   ) {
     if (networks.isEmpty) {
       return _emptyBox(context, l10n.noKnownNetworksYet);
     }
     return Column(
-      children: networks.map((net) => _NetworkCard(network: net)).toList(),
+      children: networks.map((net) {
+        final isTrusted = trustedProfiles.any((p) => p.bssid == net.bssid);
+        return _NetworkCard(network: net, isTrusted: isTrusted);
+      }).toList(),
+    );
+  }
+
+  Widget _buildTrustedBaselines(
+    BuildContext context,
+    List<TrustedNetworkProfile> profiles,
+    AppLocalizations l10n,
+  ) {
+    if (profiles.isEmpty) {
+      return _emptyBox(context, l10n.noKnownNetworksYet); // TODO: Add a specific "No baselines" string if needed
+    }
+    return Column(
+      children: profiles.map((profile) {
+        return _TrustedProfileCard(profile: profile);
+      }).toList(),
     );
   }
 
@@ -187,11 +223,14 @@ class _SecurityCenterView extends StatelessWidget {
 
 class _NetworkCard extends StatelessWidget {
   final KnownNetwork network;
-  const _NetworkCard({required this.network});
+  final bool isTrusted;
+  const _NetworkCard({required this.network, required this.isTrusted});
 
   @override
   Widget build(BuildContext context) {
+    final secondaryColor = Theme.of(context).colorScheme.secondary;
     final tertiaryColor = Theme.of(context).colorScheme.tertiary;
+    final activeColor = isTrusted ? tertiaryColor : secondaryColor;
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: NeonCard(
@@ -205,20 +244,20 @@ class _NetworkCard extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: tertiaryColor.withValues(alpha: 0.1),
+                color: activeColor.withValues(alpha: 0.1),
                 border: Border.all(
-                  color: tertiaryColor.withValues(alpha: 0.2),
+                  color: activeColor.withValues(alpha: 0.2),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: tertiaryColor.withValues(alpha: 0.15),
+                    color: activeColor.withValues(alpha: 0.15),
                     blurRadius: 12,
                   ),
                 ],
               ),
               child: Icon(
-                Icons.verified_user_rounded,
-                color: tertiaryColor,
+                isTrusted ? Icons.verified_user_rounded : Icons.wifi_find_rounded,
+                color: activeColor,
                 size: 20,
               ),
             ),
@@ -247,24 +286,97 @@ class _NetworkCard extends StatelessWidget {
                 ],
               ),
             ),
+            if (isTrusted)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(
+                    color: tertiaryColor.withValues(alpha: 0.3),
+                  ),
+                  color: tertiaryColor.withValues(alpha: 0.05),
+                ),
+                child: Text(
+                  'TRUSTED',
+                  style: GoogleFonts.orbitron(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                    color: tertiaryColor,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Trusted Profile Card ──────────────────────────────────────────
+
+class _TrustedProfileCard extends StatelessWidget {
+  final TrustedNetworkProfile profile;
+  const _TrustedProfileCard({required this.profile});
+
+  @override
+  Widget build(BuildContext context) {
+    final tertiaryColor = Theme.of(context).colorScheme.tertiary;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: NeonCard(
+        glowColor: tertiaryColor,
+        glowIntensity: 0.06,
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
+                shape: BoxShape.circle,
+                color: tertiaryColor.withValues(alpha: 0.1),
                 border: Border.all(
-                  color: tertiaryColor.withValues(alpha: 0.3),
-                ),
-                color: tertiaryColor.withValues(alpha: 0.05),
-              ),
-              child: Text(
-                'TRUSTED',
-                style: GoogleFonts.orbitron(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w900,
-                  color: tertiaryColor,
-                  letterSpacing: 0.5,
+                  color: tertiaryColor.withValues(alpha: 0.2),
                 ),
               ),
+              child: Icon(
+                Icons.verified_user_rounded,
+                color: tertiaryColor,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    profile.ssid.toUpperCase(),
+                    style: GoogleFonts.orbitron(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Established: ${profile.trustedAt.day}/${profile.trustedAt.month}/${profile.trustedAt.year}',
+                    style: GoogleFonts.rajdhani(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              onPressed: () => context.read<SecurityBloc>().add(
+                    SecurityUntrustRequested(profile.bssid),
+                  ),
+              icon: const Icon(Icons.delete_outline_rounded, size: 20),
+              color: Theme.of(context).colorScheme.error.withValues(alpha: 0.7),
             ),
           ],
         ),
@@ -760,13 +872,55 @@ class _DnsSecurityCard extends StatelessWidget {
                     onTap: isLoading
                         ? null
                         : () => context.read<SecurityBloc>().add(
-                          const SecurityDnsTestRequested(),
+                           SecurityDnsTestRequested(),
                         ),
                     label: isLoading ? l10n.dnsTesting : l10n.dnsTestNow,
                     color: statusColor,
                   ),
                 ],
               ),
+              if (dnsResult != null && dnsResult.evidence.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: statusColor.withValues(alpha: 0.05),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: statusColor.withValues(alpha: 0.15),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.terminal_rounded, size: 12, color: statusColor),
+                          const SizedBox(width: 6),
+                          Text(
+                            l10n.dnsEvidenceTitle.toUpperCase(),
+                            style: GoogleFonts.orbitron(
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                              color: statusColor,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        dnsResult.evidence,
+                        style: GoogleFonts.sourceCodePro(
+                          fontSize: 10,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               if (dnsResult != null) ...[
                 const SizedBox(height: 16),
                 const Divider(height: 1, thickness: 0.5),

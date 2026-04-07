@@ -17,17 +17,13 @@ class SecurityAnalyzeRequested extends SecurityEvent {
   List<Object?> get props => [networks];
 }
 
-class SecurityNetworkTrustChanged extends SecurityEvent {
-  final KnownNetwork network;
-  final bool isTrusted;
+class SecurityUntrustRequested extends SecurityEvent {
+  final String bssid;
 
-  const SecurityNetworkTrustChanged({
-    required this.network,
-    required this.isTrusted,
-  });
+  const SecurityUntrustRequested(this.bssid);
 
   @override
-  List<Object?> get props => [network, isTrusted];
+  List<Object?> get props => [bssid];
 }
 
 class SecurityDnsTestRequested extends SecurityEvent {

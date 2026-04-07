@@ -2270,6 +2270,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} issue(s) found'**
   String vulnLabFoundCount(int count);
+
+  /// Button to trust a network baseline
+  ///
+  /// In en, this message translates to:
+  /// **'TRUST NETWORK'**
+  String get trustNetwork;
+
+  /// Button to remove a network from trusted profiles
+  ///
+  /// In en, this message translates to:
+  /// **'UNTRUST NETWORK'**
+  String get untrustNetwork;
+
+  /// Badge for a network with an established trusted profile
+  ///
+  /// In en, this message translates to:
+  /// **'TRUSTED BASELINE'**
+  String get trustedBaselineBadge;
+
+  /// Title for the DNS diagnostic evidence section
+  ///
+  /// In en, this message translates to:
+  /// **'DNS EVIDENCE'**
+  String get dnsEvidenceTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

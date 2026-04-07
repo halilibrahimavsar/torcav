@@ -318,7 +318,9 @@ class _DonePage extends StatelessWidget {
       body:
           'Tap "Start Scanning" to begin exploring your wireless environment. '
           'Look for the ℹ️ icons throughout the app to learn what technical '
-          'terms mean.',
+          'terms mean. Torcav is a passive defensive analyzer: it helps you '
+          'inspect and harden networks you own or are authorized to assess, '
+          'and it does not perform attack, capture, or exploitation actions.',
       color: Theme.of(context).colorScheme.tertiary,
     );
   }

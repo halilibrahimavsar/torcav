@@ -28,7 +28,11 @@
     "vulnLabRunning",
     "vulnLabNoNetwork",
     "vulnLabAllClear",
-    "vulnLabFoundCount"
+    "vulnLabFoundCount",
+    "trustNetwork",
+    "untrustNetwork",
+    "trustedBaselineBadge",
+    "dnsEvidenceTitle"
   ],
 
   "ku": [
@@ -60,7 +64,11 @@
     "vulnLabRunning",
     "vulnLabNoNetwork",
     "vulnLabAllClear",
-    "vulnLabFoundCount"
+    "vulnLabFoundCount",
+    "trustNetwork",
+    "untrustNetwork",
+    "trustedBaselineBadge",
+    "dnsEvidenceTitle"
   ],
 
   "tr": [
@@ -94,6 +102,10 @@
     "vulnLabRunning",
     "vulnLabNoNetwork",
     "vulnLabAllClear",
-    "vulnLabFoundCount"
+    "vulnLabFoundCount",
+    "trustNetwork",
+    "untrustNetwork",
+    "trustedBaselineBadge",
+    "dnsEvidenceTitle"
   ]
 }

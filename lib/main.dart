@@ -8,12 +8,14 @@ import 'package:torcav/core/l10n/locale_cubit.dart';
 import 'package:torcav/core/i18n/delegates/fallback_localization_delegate.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/features/app_shell/presentation/pages/app_shell_page.dart';
+import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   // Initialize Dependency Injection
   await configureDependencies();
+  await getIt<ScanSessionStore>().restore();
   
   runApp(const TorcavApp());
 }

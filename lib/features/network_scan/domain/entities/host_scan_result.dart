@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import 'lan_exposure_finding.dart';
 import 'service_fingerprint.dart';
 import 'vulnerability_finding.dart';
 
@@ -11,7 +12,7 @@ class HostScanResult extends Equatable {
   final String osGuess;
   final double latency;
   final List<ServiceFingerprint> services;
-  final List<VulnerabilityFinding> vulnerabilities;
+  final List<LanExposureFinding> exposureFindings;
   final double exposureScore;
   final String deviceType;
 
@@ -23,10 +24,13 @@ class HostScanResult extends Equatable {
     required this.osGuess,
     required this.latency,
     required this.services,
-    required this.vulnerabilities,
+    required this.exposureFindings,
     required this.exposureScore,
     required this.deviceType,
   });
+
+  List<VulnerabilityFinding> get vulnerabilities =>
+      exposureFindings.map((finding) => finding.toLegacyFinding()).toList();
 
   @override
   List<Object?> get props => [
@@ -37,7 +41,7 @@ class HostScanResult extends Equatable {
     osGuess,
     latency,
     services,
-    vulnerabilities,
+    exposureFindings,
     exposureScore,
     deviceType,
   ];

@@ -13,30 +13,42 @@ import '../../domain/entities/network_topology.dart';
 
 /// Route-level wrapper that owns the [TopologyBloc] lifetime.
 ///
-/// Separating provider from page ensures [TopologyPage] can always call
-/// `context.read<TopologyBloc>()` — including inside [initState] via
-/// [WidgetsBinding.addPostFrameCallback] — without a [ProviderNotFoundException].
+/// [TopologyPage] can also be mounted directly in tests, so the route delegates
+/// to the same provider-aware wrapper instead of owning a separate page type.
 class TopologyRoute extends StatelessWidget {
   const TopologyRoute({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<TopologyBloc>(
-      // create dispatches the initial load — TopologyPage must NOT fire it again.
-      create: (ctx) => getIt<TopologyBloc>()..add(const LoadTopologyEvent()),
-      child: const TopologyPage(),
-    );
+    return const TopologyPage();
   }
 }
 
-class TopologyPage extends StatefulWidget {
+class TopologyPage extends StatelessWidget {
   const TopologyPage({super.key});
 
   @override
-  State<TopologyPage> createState() => _TopologyPageState();
+  Widget build(BuildContext context) {
+    try {
+      context.read<TopologyBloc>();
+      return const _TopologyPageContent();
+    } catch (_) {
+      return BlocProvider<TopologyBloc>(
+        create: (ctx) => getIt<TopologyBloc>()..add(const LoadTopologyEvent()),
+        child: const _TopologyPageContent(),
+      );
+    }
+  }
 }
 
-class _TopologyPageState extends State<TopologyPage>
+class _TopologyPageContent extends StatefulWidget {
+  const _TopologyPageContent();
+
+  @override
+  State<_TopologyPageContent> createState() => _TopologyPageContentState();
+}
+
+class _TopologyPageContentState extends State<_TopologyPageContent>
     with TickerProviderStateMixin {
   String? _selectedNodeId;
   String _searchQuery = '';
@@ -106,7 +118,6 @@ class _TopologyPageState extends State<TopologyPage>
 
   @override
   Widget build(BuildContext context) {
-    // BlocProvider lives in TopologyRoute above this widget — DO NOT add one here.
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: BlocBuilder<TopologyBloc, TopologyState>(

@@ -1188,4 +1188,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String vulnLabFoundCount(int count) {
     return '$count issue(s) found';
   }
+
+  @override
+  String get trustNetwork => 'TRUST NETWORK';
+
+  @override
+  String get untrustNetwork => 'UNTRUST NETWORK';
+
+  @override
+  String get trustedBaselineBadge => 'TRUSTED BASELINE';
+
+  @override
+  String get dnsEvidenceTitle => 'DNS EVIDENCE';
 }

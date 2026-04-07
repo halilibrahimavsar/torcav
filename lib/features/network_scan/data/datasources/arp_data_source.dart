@@ -68,7 +68,7 @@ class ArpDataSource {
           osGuess: '',
           latency: 0,
           services: services,
-          vulnerabilities: const [],
+          exposureFindings: const [],
           exposureScore: (services.length * 7).toDouble().clamp(0, 100),
           deviceType: deviceType,
         ),

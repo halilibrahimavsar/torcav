@@ -58,7 +58,10 @@ class WifiDetailsPage extends StatelessWidget {
                       context,
                       state.assessment.score,
                       state.assessment,
+                      state.isTrusted,
                     ),
+                    const SizedBox(height: 16),
+                    _buildTrustActions(context, state),
                     const SizedBox(height: 16),
                     _buildPlainSummaryCard(context, state.assessment),
                     const SizedBox(height: 16),
@@ -189,6 +192,7 @@ class WifiDetailsPage extends StatelessWidget {
     BuildContext context,
     int score,
     SecurityAssessment assessment,
+    bool isTrusted,
   ) {
     final color =
         score > 80
@@ -238,10 +242,69 @@ class WifiDetailsPage extends StatelessWidget {
                   letterSpacing: 2,
                 ),
               ),
+              if (isTrusted) ...[
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.verified_user_rounded,
+                        color: Theme.of(context).colorScheme.tertiary,
+                        size: 14,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        context.l10n.trustedBaselineBadge.toUpperCase(),
+                        style: GoogleFonts.orbitron(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.tertiary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTrustActions(BuildContext context, WifiDetailsLoaded state) {
+    final l10n = context.l10n;
+    final tertiary = Theme.of(context).colorScheme.tertiary;
+    final error = Theme.of(context).colorScheme.error;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: state.isTrusted
+          ? NeonButton(
+              onPressed: () => context.read<WifiDetailsBloc>().add(
+                    WifiDetailsUntrustRequested(network),
+                  ),
+              label: l10n.untrustNetwork.toUpperCase(),
+              icon: Icons.gpp_bad_rounded,
+              color: error,
+            )
+          : NeonButton(
+              onPressed: () => context.read<WifiDetailsBloc>().add(
+                    WifiDetailsTrustRequested(network),
+                  ),
+              label: l10n.trustNetwork.toUpperCase(),
+              icon: Icons.verified_user_rounded,
+              color: tertiary,
+            ),
     );
   }
 

@@ -61,6 +61,8 @@ import '../../features/monitoring/presentation/bloc/monitoring_bloc.dart'
 import '../../features/monitoring/presentation/bloc/topology_bloc.dart' as _i95;
 import '../../features/network_scan/data/datasources/arp_data_source.dart'
     as _i1066;
+import '../../features/network_scan/data/datasources/lan_scan_history_local_data_source.dart'
+    as _i190;
 import '../../features/network_scan/data/datasources/mdns_data_source.dart'
     as _i165;
 import '../../features/network_scan/data/datasources/upnp_data_source.dart'
@@ -122,6 +124,8 @@ import '../../features/wifi_scan/data/datasources/channel_rating_local_data_sour
     as _i305;
 import '../../features/wifi_scan/data/datasources/wifi_data_source.dart'
     as _i1012;
+import '../../features/wifi_scan/data/datasources/wifi_scan_history_local_data_source.dart'
+    as _i239;
 import '../../features/wifi_scan/data/repositories/channel_rating_repository_impl.dart'
     as _i671;
 import '../../features/wifi_scan/data/repositories/wifi_repository_impl.dart'
@@ -163,7 +167,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i941.NotificationService(),
     );
     gh.lazySingleton<_i690.AppDatabase>(() => _i690.AppDatabase());
-    gh.lazySingleton<_i797.ScanSessionStore>(() => _i797.ScanSessionStore());
     gh.lazySingleton<_i969.ChannelRatingEngine>(
       () => _i969.ChannelRatingEngine(),
     );
@@ -183,6 +186,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i885.SpeedTestHistoryRepository>(
       () => _i77.SpeedTestHistoryRepositoryImpl(gh<_i690.AppDatabase>()),
+    );
+    gh.lazySingleton<_i190.LanScanHistoryLocalDataSource>(
+      () => _i190.LanScanHistoryLocalDataSourceImpl(gh<_i690.AppDatabase>()),
     );
     gh.singleton<_i171.LocaleCubit>(
       () => _i171.LocaleCubit(gh<_i460.SharedPreferences>()),
@@ -248,14 +254,29 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1012.WifiDataSource>(
       () => _i672.AndroidWifiDataSource(),
     );
+    gh.lazySingleton<_i239.WifiScanHistoryLocalDataSource>(
+      () => _i239.WifiScanHistoryLocalDataSourceImpl(gh<_i690.AppDatabase>()),
+    );
     gh.lazySingleton<_i363.CaptivePortalDetector>(
       () => _i363.CaptivePortalDetector(gh<_i846.NetworkInfo>()),
     );
-    gh.lazySingleton<_i367.GenerateReportUseCase>(
-      () => _i367.GenerateReportUseCase(gh<_i119.ReportExportRepository>()),
+    gh.lazySingleton<_i578.SecurityRepository>(
+      () => _i997.SecurityRepositoryImpl(
+        gh<_i499.SecurityLocalDataSource>(),
+        gh<_i941.NotificationService>(),
+        gh<_i363.DeauthDetector>(),
+        gh<_i471.SecurityAnalyzer>(),
+        gh<_i991.DnsDataSource>(),
+      ),
     );
     gh.factory<_i361.WifiDetailsBloc>(
-      () => _i361.WifiDetailsBloc(gh<_i471.SecurityAnalyzer>()),
+      () => _i361.WifiDetailsBloc(
+        gh<_i471.SecurityAnalyzer>(),
+        gh<_i578.SecurityRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i367.GenerateReportUseCase>(
+      () => _i367.GenerateReportUseCase(gh<_i119.ReportExportRepository>()),
     );
     gh.lazySingleton<_i1027.WifiRepository>(
       () => _i433.WifiRepositoryImpl(gh<_i1012.WifiDataSource>()),
@@ -266,18 +287,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i747.HeatmapRepository>(
       () => _i531.HeatmapRepositoryImpl(gh<_i652.HeatmapLocalDataSource>()),
     );
+    gh.lazySingleton<_i797.ScanSessionStore>(
+      () => _i797.ScanSessionStore(gh<_i239.WifiScanHistoryLocalDataSource>()),
+    );
     gh.lazySingleton<_i315.DnsLeakTestUsecase>(
       () => _i315.DnsLeakTestUsecase(gh<_i991.DnsDataSource>()),
     );
     gh.lazySingleton<_i365.MonitoringRepository>(
       () => _i592.MonitoringRepositoryImpl(gh<_i1027.WifiRepository>()),
-    );
-    gh.lazySingleton<_i578.SecurityRepository>(
-      () => _i997.SecurityRepositoryImpl(
-        gh<_i499.SecurityLocalDataSource>(),
-        gh<_i941.NotificationService>(),
-        gh<_i363.DeauthDetector>(),
-      ),
     );
     gh.lazySingleton<_i244.TopologyRepository>(
       () => _i21.TopologyRepositoryImpl(

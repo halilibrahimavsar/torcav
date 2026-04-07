@@ -222,7 +222,7 @@ class _ProfileHubPageState extends State<ProfileHubPage> {
     final l10n = AppLocalizations.of(context)!;
     if (latestSnapshot == null) {
       return Text(
-        l10n.noSnapshotAvailable,
+        'No scan snapshot is available yet. Run a Wi-Fi scan first.',
         style: GoogleFonts.outfit(
           color: Theme.of(context).colorScheme.onSurfaceVariant,
           fontSize: 14,
@@ -244,7 +244,7 @@ class _ProfileHubPageState extends State<ProfileHubPage> {
         const Divider(height: 24),
         _buildInfoRow(
           context,
-          l10n.networksCount(latestSnapshot.networks.length),
+          'Networks (${latestSnapshot.networks.length})',
           latestSnapshot.backendUsed.toUpperCase(),
           Icons.radar_outlined,
         ),

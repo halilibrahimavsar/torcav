@@ -1639,5 +1639,21 @@
             "placeholders": {
                     "count": {"type": "int"}
             }
+    },
+    "trustNetwork": "TRUST NETWORK",
+    "@trustNetwork": {
+        "description": "Button to trust a network baseline"
+    },
+    "untrustNetwork": "UNTRUST NETWORK",
+    "@untrustNetwork": {
+        "description": "Button to remove a network from trusted profiles"
+    },
+    "trustedBaselineBadge": "TRUSTED BASELINE",
+    "@trustedBaselineBadge": {
+        "description": "Badge for a network with an established trusted profile"
+    },
+    "dnsEvidenceTitle": "DNS EVIDENCE",
+    "@dnsEvidenceTitle": {
+        "description": "Title for the DNS diagnostic evidence section"
     }
 }
