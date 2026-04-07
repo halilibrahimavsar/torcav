@@ -1608,5 +1608,36 @@
     "networkScoreLabel": "NETWORK SCORE",
     "@networkScoreLabel": {
             "description": "Security score label on dashboard"
+    },
+    "vulnLabTitle": "VULNERABILITY LAB",
+    "@vulnLabTitle": {
+            "description": "Vulnerability Lab screen title"
+    },
+    "vulnLabSubtitle": "Run security tests against your connected network",
+    "@vulnLabSubtitle": {
+            "description": "Vulnerability Lab subtitle"
+    },
+    "vulnLabRunAll": "RUN ALL TESTS",
+    "@vulnLabRunAll": {
+            "description": "Button to run all vulnerability tests"
+    },
+    "vulnLabRunning": "SCANNING...",
+    "@vulnLabRunning": {
+            "description": "Shown while vulnerability tests are running"
+    },
+    "vulnLabNoNetwork": "Not connected to a Wi-Fi network. Connect first to run tests.",
+    "@vulnLabNoNetwork": {
+            "description": "Shown when no network is connected"
+    },
+    "vulnLabAllClear": "All tests passed. No vulnerabilities found on this network.",
+    "@vulnLabAllClear": {
+            "description": "Shown when no vulnerabilities are found"
+    },
+    "vulnLabFoundCount": "{count} issue(s) found",
+    "@vulnLabFoundCount": {
+            "description": "Count of vulnerabilities found",
+            "placeholders": {
+                    "count": {"type": "int"}
+            }
     }
 }

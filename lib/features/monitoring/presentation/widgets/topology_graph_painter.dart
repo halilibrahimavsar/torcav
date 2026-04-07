@@ -154,6 +154,9 @@ class TopologyGraphPainter extends CustomPainter {
   }
 
   void _drawNodes(Canvas canvas, Map<String, Offset> positions, Size size) {
+    // First pass: draw all nodes (circles + icons)
+    final labelCandidates = <_LabelCandidate>[];
+
     for (final node in topology.nodes) {
       final pos = positions[node.id];
       if (pos == null) continue;
@@ -168,7 +171,105 @@ class TopologyGraphPainter extends CustomPainter {
       if (searchQuery.isNotEmpty && !isMatch) opacity *= 0.2;
 
       _drawSingleNode(canvas, pos, node, isSelected, isMatch, opacity);
+
+      // Collect labels to draw with collision avoidance
+      if (isSelected || isMatch || opacity > 0.8) {
+        labelCandidates.add(_LabelCandidate(
+          node: node,
+          pos: pos,
+          opacity: opacity,
+          isSelected: isSelected,
+          isMatch: isMatch,
+        ));
+      }
     }
+
+    // Second pass: resolve label positions to avoid overlaps, then draw
+    final resolvedLabels = _resolveLabelPositions(labelCandidates);
+    for (final label in resolvedLabels) {
+      _drawLabel(canvas, label);
+    }
+  }
+
+  List<_ResolvedLabel> _resolveLabelPositions(List<_LabelCandidate> candidates) {
+    final resolved = <_ResolvedLabel>[];
+
+    for (final c in candidates) {
+      final style = GoogleFonts.orbitron(
+        fontSize: 10,
+        fontWeight: FontWeight.bold,
+        color: colorScheme.onSurface.withValues(alpha: c.opacity),
+      );
+      final painter = TextPainter(
+        text: TextSpan(text: c.node.label, style: style),
+        textDirection: TextDirection.ltr,
+      )..layout();
+
+      final radius = TopologyViewData.nodeRadius(c.node);
+      // Try 4 positions: below, above, right, left
+      final offsets = [
+        c.pos + Offset(-painter.width / 2, radius + 12),     // below
+        c.pos + Offset(-painter.width / 2, -(radius + 12 + painter.height)), // above
+        c.pos + Offset(radius + 10, -painter.height / 2),    // right
+        c.pos + Offset(-(radius + 10 + painter.width), -painter.height / 2), // left
+      ];
+
+      Offset bestPos = offsets[0];
+      double bestOverlap = double.infinity;
+
+      for (final candidate in offsets) {
+        final candidateRect = Rect.fromLTWH(
+          candidate.dx, candidate.dy, painter.width, painter.height,
+        );
+        double totalOverlap = 0;
+        for (final existing in resolved) {
+          final intersection = candidateRect.intersect(existing.rect);
+          if (!intersection.isEmpty) {
+            totalOverlap += intersection.width * intersection.height;
+          }
+        }
+        if (totalOverlap < bestOverlap) {
+          bestOverlap = totalOverlap;
+          bestPos = candidate;
+          if (totalOverlap == 0) break; // perfect placement found
+        }
+      }
+
+      final rect = Rect.fromLTWH(bestPos.dx, bestPos.dy, painter.width, painter.height);
+      resolved.add(_ResolvedLabel(
+        painter: painter,
+        pos: bestPos,
+        rect: rect,
+        opacity: c.opacity,
+        color: TopologyViewData.nodeColor(c.node, colorScheme),
+        isSelected: c.isSelected,
+      ));
+    }
+    return resolved;
+  }
+
+  void _drawLabel(Canvas canvas, _ResolvedLabel label) {
+    // Draw background for readability
+    final bgPaint = Paint()
+      ..color = colorScheme.surface.withValues(alpha: 0.6 * label.opacity);
+    final bgRect = label.rect.inflate(3);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(bgRect, const Radius.circular(4)),
+      bgPaint,
+    );
+
+    if (label.isSelected) {
+      final borderPaint = Paint()
+        ..color = label.color.withValues(alpha: 0.4 * label.opacity)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.5;
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(bgRect, const Radius.circular(4)),
+        borderPaint,
+      );
+    }
+
+    label.painter.paint(canvas, label.pos);
   }
 
   bool _isNodeMatch(TopologyNode node) {
@@ -234,19 +335,7 @@ class TopologyGraphPainter extends CustomPainter {
     )..layout();
     textPainter.paint(canvas, pos - Offset(textPainter.width / 2, textPainter.height / 2));
 
-    // Label if matched or selected or large enough
-    if (isSelected || isMatch || opacity > 0.8) {
-      final labelStyle = GoogleFonts.orbitron(
-        fontSize: 10,
-        fontWeight: FontWeight.bold,
-        color: colorScheme.onSurface.withValues(alpha: opacity),
-      );
-      final labelPainter = TextPainter(
-        text: TextSpan(text: node.label, style: labelStyle),
-        textDirection: TextDirection.ltr,
-      )..layout();
-      labelPainter.paint(canvas, pos + Offset(-labelPainter.width / 2, radius + 15));
-    }
+    // Labels are drawn in a second pass with collision avoidance (see _drawNodes).
   }
 
   void _drawScanlines(Canvas canvas, Size size) {
@@ -263,4 +352,40 @@ class TopologyGraphPainter extends CustomPainter {
   bool shouldRepaint(covariant TopologyGraphPainter oldDelegate) {
     return true; // Simple for now due to animations
   }
+}
+
+// ── Helper data classes for label collision avoidance ────────────────────────
+
+class _LabelCandidate {
+  final TopologyNode node;
+  final Offset pos;
+  final double opacity;
+  final bool isSelected;
+  final bool isMatch;
+
+  const _LabelCandidate({
+    required this.node,
+    required this.pos,
+    required this.opacity,
+    required this.isSelected,
+    required this.isMatch,
+  });
+}
+
+class _ResolvedLabel {
+  final TextPainter painter;
+  final Offset pos;
+  final Rect rect;
+  final double opacity;
+  final Color color;
+  final bool isSelected;
+
+  const _ResolvedLabel({
+    required this.painter,
+    required this.pos,
+    required this.rect,
+    required this.opacity,
+    required this.color,
+    required this.isSelected,
+  });
 }

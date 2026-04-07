@@ -1165,4 +1165,27 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get networkScoreLabel => 'NETZWERK-BEWERTUNG';
+
+  @override
+  String get vulnLabTitle => 'VULNERABILITY LAB';
+
+  @override
+  String get vulnLabSubtitle => 'Run security tests against your connected network';
+
+  @override
+  String get vulnLabRunAll => 'RUN ALL TESTS';
+
+  @override
+  String get vulnLabRunning => 'SCANNING...';
+
+  @override
+  String get vulnLabNoNetwork => 'Not connected to a Wi-Fi network. Connect first to run tests.';
+
+  @override
+  String get vulnLabAllClear => 'All tests passed. No vulnerabilities found on this network.';
+
+  @override
+  String vulnLabFoundCount(int count) {
+    return '$count issue(s) found';
+  }
 }

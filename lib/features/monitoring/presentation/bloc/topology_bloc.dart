@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../domain/entities/network_topology.dart';
+import '../../domain/repositories/topology_repository.dart';
 import '../../domain/usecases/get_topology_usecase.dart';
 import '../../domain/usecases/ping_node_usecase.dart';
 
@@ -27,6 +28,16 @@ class PingNodeEvent extends TopologyEvent {
   List<Object?> get props => [nodeId, ip];
 }
 
+class TraceRouteEvent extends TopologyEvent {
+  final String nodeId;
+  final String ip;
+
+  const TraceRouteEvent({required this.nodeId, required this.ip});
+
+  @override
+  List<Object?> get props => [nodeId, ip];
+}
+
 // States
 abstract class TopologyState extends Equatable {
   const TopologyState();
@@ -41,25 +52,35 @@ class TopologyLoading extends TopologyState {}
 class TopologyLoaded extends TopologyState {
   final NetworkTopology topology;
   final String? pingingNodeId;
+  final String? tracingNodeId;
+  final List<TraceHop>? traceResult;
 
   const TopologyLoaded({
     required this.topology,
     this.pingingNodeId,
+    this.tracingNodeId,
+    this.traceResult,
   });
 
   TopologyLoaded copyWith({
     NetworkTopology? topology,
     String? pingingNodeId,
     bool clearPinging = false,
+    String? tracingNodeId,
+    bool clearTracing = false,
+    List<TraceHop>? traceResult,
+    bool clearTraceResult = false,
   }) {
     return TopologyLoaded(
       topology: topology ?? this.topology,
       pingingNodeId: clearPinging ? null : (pingingNodeId ?? this.pingingNodeId),
+      tracingNodeId: clearTracing ? null : (tracingNodeId ?? this.tracingNodeId),
+      traceResult: clearTraceResult ? null : (traceResult ?? this.traceResult),
     );
   }
 
   @override
-  List<Object?> get props => [topology, pingingNodeId];
+  List<Object?> get props => [topology, pingingNodeId, tracingNodeId, traceResult];
 }
 
 class TopologyError extends TopologyState {
@@ -73,13 +94,16 @@ class TopologyError extends TopologyState {
 class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
   final GetTopologyUseCase _getTopology;
   final PingNodeUseCase _pingNode;
+  final TopologyRepository _repository;
 
   TopologyBloc(
     this._getTopology,
     this._pingNode,
+    this._repository,
   ) : super(TopologyInitial()) {
     on<LoadTopologyEvent>(_onLoadTopology);
     on<PingNodeEvent>(_onPingNode);
+    on<TraceRouteEvent>(_onTraceRoute);
   }
 
   Future<void> _onLoadTopology(
@@ -141,6 +165,29 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
 
         emit(TopologyLoaded(topology: updatedTopology, pingingNodeId: null));
       },
+    );
+  }
+
+  Future<void> _onTraceRoute(
+    TraceRouteEvent event,
+    Emitter<TopologyState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is! TopologyLoaded) return;
+
+    emit(currentState.copyWith(
+      tracingNodeId: event.nodeId,
+      clearTraceResult: true,
+    ));
+
+    final result = await _repository.traceRoute(event.ip);
+
+    result.fold(
+      (_) => emit(currentState.copyWith(clearTracing: true)),
+      (hops) => emit(currentState.copyWith(
+        clearTracing: true,
+        traceResult: hops,
+      )),
     );
   }
 }

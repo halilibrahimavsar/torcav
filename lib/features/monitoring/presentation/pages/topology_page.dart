@@ -774,6 +774,10 @@ class _TopologyPageState extends State<TopologyPage>
   Widget _buildInspectorContent(TopologyNode node, String? pingingNodeId) {
     final l10n = AppLocalizations.of(context)!;
     final isPinging = pingingNodeId == node.id;
+    final blocState = context.read<TopologyBloc>().state;
+    final isTracing = blocState is TopologyLoaded &&
+        blocState.tracingNodeId == node.id;
+    final traceResult = blocState is TopologyLoaded ? blocState.traceResult : null;
 
     return Column(
       children: [
@@ -873,6 +877,7 @@ class _TopologyPageState extends State<TopologyPage>
               const NeonDivider(),
               const SizedBox(height: 12),
 
+              // ── Latency display ──
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -906,53 +911,106 @@ class _TopologyPageState extends State<TopologyPage>
                       ),
                     ],
                   ),
-                  if (node.ip != null && !node.isCurrentDevice)
-                    SizedBox(
-                      height: 36,
-                      child: OutlinedButton(
-                        onPressed:
-                            isPinging
-                                ? null
-                                : () {
-                                  context.read<TopologyBloc>().add(
-                                    PingNodeEvent(
-                                      nodeId: node.id,
-                                      ip: node.ip!,
-                                    ),
-                                  );
-                                },
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.primary.withValues(alpha: 0.3),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child:
-                            isPinging
-                                ? const SizedBox(
-                                  width: 14,
-                                  height: 14,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                                : Text(
-                                  l10n.pingAction,
-                                  style: GoogleFonts.orbitron(
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.bold,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                  ),
-                                ),
-                      ),
-                    ),
                 ],
               ),
+
+              // ── Action buttons ──
+              if (node.ip != null && !node.isCurrentDevice) ...[
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _NodeActionButton(
+                        label: l10n.pingAction,
+                        icon: Icons.network_ping_rounded,
+                        color: Theme.of(context).colorScheme.primary,
+                        isLoading: isPinging,
+                        onTap: () {
+                          context.read<TopologyBloc>().add(
+                            PingNodeEvent(nodeId: node.id, ip: node.ip!),
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _NodeActionButton(
+                        label: 'TRACEROUTE',
+                        icon: Icons.alt_route_rounded,
+                        color: Theme.of(context).colorScheme.tertiary,
+                        isLoading: isTracing,
+                        onTap: () {
+                          context.read<TopologyBloc>().add(
+                            TraceRouteEvent(nodeId: node.id, ip: node.ip!),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+
+              // ── Traceroute results ──
+              if (traceResult != null && traceResult.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                const NeonDivider(),
+                const SizedBox(height: 12),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'ROUTE HOPS',
+                    style: GoogleFonts.orbitron(
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                      fontSize: 8,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ...traceResult.map((hop) => Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 20,
+                        child: Text(
+                          '${hop.hopNumber}',
+                          style: GoogleFonts.orbitron(
+                            color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.6),
+                            fontSize: 8,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        size: 12,
+                        color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.4),
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          hop.ip,
+                          style: GoogleFonts.shareTechMono(
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                            fontSize: 11,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '${hop.latencyMs}ms',
+                        style: GoogleFonts.orbitron(
+                          color: hop.latencyMs < 50
+                              ? Colors.greenAccent
+                              : Colors.orangeAccent,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+              ],
             ],
           ),
         ),
@@ -1019,4 +1077,63 @@ class _GridPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _NodeActionButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Color color;
+  final bool isLoading;
+  final VoidCallback onTap;
+
+  const _NodeActionButton({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.isLoading,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: isLoading ? null : onTap,
+      child: Opacity(
+        opacity: isLoading ? 0.5 : 1.0,
+        child: Container(
+          height: 36,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: color.withValues(alpha: 0.3)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (isLoading)
+                SizedBox(
+                  width: 12,
+                  height: 12,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 1.5,
+                    color: color,
+                  ),
+                )
+              else
+                Icon(icon, size: 14, color: color),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: GoogleFonts.orbitron(
+                  fontSize: 8,
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

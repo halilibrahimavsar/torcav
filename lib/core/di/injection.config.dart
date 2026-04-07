@@ -29,16 +29,12 @@ import '../../features/monitoring/data/repositories/heatmap_repository_impl.dart
     as _i335;
 import '../../features/monitoring/data/repositories/monitoring_repository_impl.dart'
     as _i592;
-import '../../features/monitoring/data/repositories/speed_test_repository_impl.dart'
-    as _i528;
 import '../../features/monitoring/data/repositories/topology_repository_impl.dart'
     as _i21;
 import '../../features/monitoring/domain/repositories/heatmap_repository.dart'
     as _i494;
 import '../../features/monitoring/domain/repositories/monitoring_repository.dart'
     as _i365;
-import '../../features/monitoring/domain/repositories/speed_test_repository.dart'
-    as _i890;
 import '../../features/monitoring/domain/repositories/topology_repository.dart'
     as _i244;
 import '../../features/monitoring/domain/services/topology_builder.dart'
@@ -51,13 +47,9 @@ import '../../features/monitoring/domain/usecases/log_heatmap_point_usecase.dart
     as _i102;
 import '../../features/monitoring/domain/usecases/ping_node_usecase.dart'
     as _i534;
-import '../../features/monitoring/domain/usecases/run_speed_test_usecase.dart'
-    as _i1024;
 import '../../features/monitoring/presentation/bloc/heatmap_bloc.dart' as _i573;
 import '../../features/monitoring/presentation/bloc/monitoring_bloc.dart'
     as _i613;
-import '../../features/monitoring/presentation/bloc/monitoring_hub_bloc.dart'
-    as _i374;
 import '../../features/monitoring/presentation/bloc/topology_bloc.dart' as _i95;
 import '../../features/network_scan/data/datasources/arp_data_source.dart'
     as _i1066;
@@ -221,9 +213,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i102.LogHeatmapPointUseCase>(),
       ),
     );
-    gh.lazySingleton<_i890.SpeedTestRepository>(
-      () => const _i528.SpeedTestRepositoryImpl(),
-    );
     gh.factory<_i739.NetworkScanBloc>(
       () => _i739.NetworkScanBloc(
         gh<_i1073.NetworkScanRepository>(),
@@ -271,9 +260,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1073.NetworkScanRepository>(),
         gh<_i892.TopologyBuilder>(),
       ),
-    );
-    gh.lazySingleton<_i1024.RunSpeedTestUseCase>(
-      () => _i1024.RunSpeedTestUseCase(gh<_i890.SpeedTestRepository>()),
     );
     // ── Performance feature (separate from monitoring speed test) ──
     gh.lazySingleton<_i_sth.SpeedTestHistoryRepository>(
@@ -329,9 +315,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i716.GetHeatmapSessionsUsecase>(
       () => _i716.GetHeatmapSessionsUsecase(gh<_i747.HeatmapRepository>()),
     );
-    gh.factory<_i374.MonitoringHubBloc>(
-      () => _i374.MonitoringHubBloc(gh<_i1024.RunSpeedTestUseCase>()),
-    );
     gh.lazySingleton<_i422.GetTopologyUseCase>(
       () => _i422.GetTopologyUseCase(gh<_i244.TopologyRepository>()),
     );
@@ -358,6 +341,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i95.TopologyBloc(
         gh<_i422.GetTopologyUseCase>(),
         gh<_i534.PingNodeUseCase>(),
+        gh<_i244.TopologyRepository>(),
       ),
     );
     return this;

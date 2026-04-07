@@ -87,4 +87,39 @@ class TopologyRepositoryImpl implements TopologyRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, List<TraceHop>>> traceRoute(String ip) async {
+    try {
+      // Use traceroute with max 15 hops, 1s timeout per hop
+      final result = await Process.run(
+        'traceroute',
+        ['-m', '15', '-w', '1', ip],
+      ).timeout(const Duration(seconds: 20));
+
+      final hops = <TraceHop>[];
+      final lines = (result.stdout as String).split('\n');
+
+      for (final line in lines) {
+        // Parse lines like: " 1  192.168.1.1 (192.168.1.1)  1.234 ms  ..."
+        final match = RegExp(
+          r'^\s*(\d+)\s+.*?\(([\d.]+)\)\s+([\d.]+)\s+ms',
+        ).firstMatch(line);
+        if (match != null) {
+          hops.add(TraceHop(
+            hopNumber: int.parse(match.group(1)!),
+            ip: match.group(2)!,
+            latencyMs: double.parse(match.group(3)!).round(),
+          ));
+        }
+      }
+
+      if (hops.isEmpty) {
+        return const Left(ServerFailure('No route found'));
+      }
+      return Right(hops);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

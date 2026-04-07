@@ -86,13 +86,15 @@ class TopologyViewData {
       positions[accessPoints[i].id] = Offset(x, y);
     }
 
+    // Dynamically adjust columns based on device count for better spacing
+    final cols = otherDevices.length <= 4 ? 2 : 3;
     for (var i = 0; i < otherDevices.length; i++) {
-      const cols = 2;
       final col = i % cols;
       final row = i ~/ cols;
-      final spacingX = size.width * 0.4;
-      final x = center.dx + (col - 0.5) * spacingX;
-      final y = middleY + 100 + row * 90;
+      final spacingX = size.width * 0.8 / cols;
+      final xOffset = (col - (cols - 1) / 2) * spacingX;
+      final x = center.dx + xOffset;
+      final y = middleY + 100 + row * 100;
       positions[otherDevices[i].id] = Offset(x, y);
     }
 

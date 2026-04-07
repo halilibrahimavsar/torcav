@@ -145,6 +145,75 @@ class SecurityAnalyzer {
       score -= 35;
     }
 
+    // Suspicious SSID names — common honeypot lures
+    if (_isSuspiciousSsid(network.ssid)) {
+      vulnerabilities.add(
+        const Vulnerability(
+          title: 'Suspicious Network Name',
+          description:
+              'This SSID matches common honeypot/lure patterns used by '
+              'attackers to trick users into connecting (e.g. "Free WiFi", '
+              '"Airport WiFi"). Legitimate networks rarely use these names.',
+          severity: VulnerabilitySeverity.medium,
+          recommendation:
+              'Verify this network with the venue operator before connecting. '
+              'Use a VPN if you must connect to unknown networks.',
+        ),
+      );
+      riskFactors.add('SSID matches known honeypot pattern');
+      score -= 15;
+    }
+
+    // Channel congestion — many APs sharing the same channel
+    final sameChannelCount = localBaseline
+        .where((n) => n.channel == network.channel && n.bssid != network.bssid)
+        .length;
+    if (sameChannelCount >= 5) {
+      vulnerabilities.add(
+        Vulnerability(
+          title: 'High Channel Congestion',
+          description:
+              '${sameChannelCount + 1} networks are broadcasting on channel '
+              '${network.channel}. Heavy congestion degrades performance and '
+              'increases packet retransmissions, making the connection less '
+              'reliable and potentially easier to intercept.',
+          severity: VulnerabilitySeverity.info,
+          recommendation:
+              'Ask the network admin to switch to a less congested channel. '
+              'Use the Channel Rating screen to find optimal channels.',
+        ),
+      );
+      riskFactors.add('Channel ${network.channel} is heavily congested');
+      score -= 5;
+    }
+
+    // 2.4 GHz only — no 5 GHz counterpart detected
+    if (network.frequency < 3000 && localBaseline.isNotEmpty) {
+      final has5GhzSibling = localBaseline.any(
+        (n) =>
+            n.ssid == network.ssid &&
+            n.bssid != network.bssid &&
+            n.frequency >= 5000,
+      );
+      if (!has5GhzSibling && network.security != SecurityType.open) {
+        vulnerabilities.add(
+          const Vulnerability(
+            title: '2.4 GHz Only',
+            description:
+                'This network only broadcasts on the 2.4 GHz band, which is '
+                'more crowded and susceptible to interference. 5 GHz offers '
+                'better speed and less interference.',
+            severity: VulnerabilitySeverity.info,
+            recommendation:
+                'Enable 5 GHz band on your router for better performance. '
+                'Most modern devices support dual-band operation.',
+          ),
+        );
+        riskFactors.add('No 5 GHz band detected');
+        score -= 3;
+      }
+    }
+
     score = score.clamp(0, 100);
     final status = _statusFromScore(score);
 
@@ -178,24 +247,112 @@ class SecurityAnalyzer {
     return SecurityStatus.secure;
   }
 
+  static const _honeypotPatterns = [
+    'free wifi', 'free internet', 'free wi-fi',
+    'airport wifi', 'airport free',
+    'hotel wifi', 'hotel free',
+    'starbucks free', 'mcdonalds free',
+    'open wifi', 'open network',
+    'public wifi', 'public free',
+    'guest free', 'free hotspot',
+    'wifi free', 'internet free',
+    'xfinity wifi', // commonly spoofed
+  ];
+
+  bool _isSuspiciousSsid(String ssid) {
+    if (ssid.isEmpty) return false;
+    final lower = ssid.toLowerCase().trim();
+    return _honeypotPatterns.any((pattern) => lower == pattern || lower.contains(pattern));
+  }
+
   bool _isPotentialEvilTwin(WifiNetwork target, List<WifiNetwork> baseline) {
     final sameSsid =
         baseline
             .where(
-              (entry) => entry.ssid.isNotEmpty && entry.ssid == target.ssid,
+              (entry) =>
+                  entry.ssid.isNotEmpty &&
+                  entry.ssid == target.ssid &&
+                  entry.bssid != target.bssid,
             )
             .toList();
     if (sameSsid.isEmpty) {
       return false;
     }
 
-    final conflictingSecurity = sameSsid.any(
-      (entry) => entry.security != target.security,
-    );
-    final heavyChannelDrift = sameSsid.any(
-      (entry) => (entry.channel - target.channel).abs() >= 8,
-    );
+    // Check each peer with the same SSID
+    for (final peer in sameSsid) {
+      // Skip if this is a legitimate multi-band/multi-radio sibling
+      if (_isLegitimateMultiBandSibling(target, peer)) continue;
 
-    return conflictingSecurity || heavyChannelDrift;
+      // Flag 1: Conflicting security type (e.g. WPA2 vs Open)
+      if (peer.security != target.security) return true;
+
+      // Flag 2: Heavy channel drift *within the same frequency band*
+      if (_isSameBand(target.frequency, peer.frequency)) {
+        if ((peer.channel - target.channel).abs() >= 6) return true;
+      }
+    }
+
+    return false;
+  }
+
+  /// Determines whether two APs with the same SSID are likely from the
+  /// same physical router broadcasting on different bands (2.4/5/6 GHz).
+  bool _isLegitimateMultiBandSibling(WifiNetwork a, WifiNetwork b) {
+    // If on the same band, they are NOT multi-band siblings
+    if (_isSameBand(a.frequency, b.frequency)) return false;
+
+    // Wi-Fi 7 MLD: if both share the same AP MLD MAC, they are the same device
+    if (a.apMldMac != null &&
+        a.apMldMac!.isNotEmpty &&
+        a.apMldMac == b.apMldMac) {
+      return true;
+    }
+
+    // BSSID proximity: manufacturers typically assign sequential MACs
+    // to radios on the same device (e.g. AA:BB:CC:DD:EE:01 and :02)
+    if (_areBssidsClose(a.bssid, b.bssid)) return true;
+
+    // Same vendor + same security across different bands is very likely
+    // a legitimate dual-band router
+    if (a.vendor == b.vendor &&
+        a.vendor != 'Unknown' &&
+        a.security == b.security) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /// Returns true if two frequencies belong to the same Wi-Fi band.
+  bool _isSameBand(int freqA, int freqB) {
+    return _bandOf(freqA) == _bandOf(freqB);
+  }
+
+  /// Maps a frequency (MHz) to its band identifier.
+  int _bandOf(int freq) {
+    if (freq < 3000) return 2;  // 2.4 GHz
+    if (freq < 5900) return 5;  // 5 GHz
+    return 6;                    // 6 GHz
+  }
+
+  /// Checks if two BSSIDs differ by at most 3 in the last octet,
+  /// with identical prefix — a strong indicator of same physical device.
+  bool _areBssidsClose(String bssidA, String bssidB) {
+    final partsA = bssidA.split(':');
+    final partsB = bssidB.split(':');
+    if (partsA.length != 6 || partsB.length != 6) return false;
+
+    // First 5 octets must match exactly
+    for (int i = 0; i < 5; i++) {
+      if (partsA[i].toLowerCase() != partsB[i].toLowerCase()) return false;
+    }
+
+    // Last octet should be within 3 (covers up to 4 radios: 2.4, 5L, 5H, 6)
+    final lastA = int.tryParse(partsA[5], radix: 16) ?? -1;
+    final lastB = int.tryParse(partsB[5], radix: 16) ?? -1;
+    if (lastA < 0 || lastB < 0) return false;
+
+    return (lastA - lastB).abs() <= 3;
   }
 }

@@ -2228,6 +2228,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'NETWORK SCORE'**
   String get networkScoreLabel;
+
+  /// Vulnerability Lab screen title
+  ///
+  /// In en, this message translates to:
+  /// **'VULNERABILITY LAB'**
+  String get vulnLabTitle;
+
+  /// Vulnerability Lab subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Run security tests against your connected network'**
+  String get vulnLabSubtitle;
+
+  /// Button to run all vulnerability tests
+  ///
+  /// In en, this message translates to:
+  /// **'RUN ALL TESTS'**
+  String get vulnLabRunAll;
+
+  /// Shown while vulnerability tests are running
+  ///
+  /// In en, this message translates to:
+  /// **'SCANNING...'**
+  String get vulnLabRunning;
+
+  /// Shown when no network is connected
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected to a Wi-Fi network. Connect first to run tests.'**
+  String get vulnLabNoNetwork;
+
+  /// Shown when no vulnerabilities are found
+  ///
+  /// In en, this message translates to:
+  /// **'All tests passed. No vulnerabilities found on this network.'**
+  String get vulnLabAllClear;
+
+  /// Count of vulnerabilities found
+  ///
+  /// In en, this message translates to:
+  /// **'{count} issue(s) found'**
+  String vulnLabFoundCount(int count);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
