@@ -14,6 +14,8 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:network_info_plus/network_info_plus.dart' as _i846;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
+import '../../features/ai/data/services/onnx_device_classifier_service.dart'
+    as _i265;
 import '../../features/heatmap/data/datasources/barometer_datasource.dart'
     as _i761;
 import '../../features/heatmap/data/datasources/heatmap_local_data_source.dart'
@@ -178,6 +180,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i119.UpnpDataSource>(() => _i119.UpnpDataSource());
     gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
     gh.lazySingleton<_i960.FinalizeFloorPlan>(() => _i960.FinalizeFloorPlan());
+    gh.lazySingleton<_i265.OnnxDeviceClassifierService>(
+      () => _i265.OnnxDeviceClassifierService(),
+      dispose: (i) => i.dispose(),
+    );
+    gh.lazySingleton<_i1073.NetworkScanRepository>(
+      () => _i551.NetworkScanRepositoryImpl(
+        gh<_i1066.ArpDataSource>(),
+        gh<_i165.MdnsDataSource>(),
+        gh<_i119.UpnpDataSource>(),
+        gh<_i265.OnnxDeviceClassifierService>(),
+      ),
+    );
     gh.lazySingleton<_i494.HeatmapRepository>(
       () => _i335.HeatmapRepositoryImpl(gh<_i690.AppDatabase>()),
     );
@@ -207,13 +221,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i652.HeatmapLocalDataSource>(
       () => _i652.HeatmapLocalDataSource(gh<_i460.SharedPreferences>()),
-    );
-    gh.lazySingleton<_i1073.NetworkScanRepository>(
-      () => _i551.NetworkScanRepositoryImpl(
-        gh<_i1066.ArpDataSource>(),
-        gh<_i165.MdnsDataSource>(),
-        gh<_i119.UpnpDataSource>(),
-      ),
     );
     gh.lazySingleton<_i119.ReportExportRepository>(
       () => _i953.ReportExportRepositoryImpl(),

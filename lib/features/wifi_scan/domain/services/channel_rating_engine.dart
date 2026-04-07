@@ -92,20 +92,37 @@ class ChannelRatingEngine {
   }
 
   int _guessFrequency(int channel, List<WifiNetwork> networks) {
-    // Try to find frequency from actual scan
-    try {
-      final match = networks.firstWhere((n) => n.channel == channel);
-      return match.frequency;
-    } catch (_) {
-      // Math fallback
-      if (channel >= 1 && channel <= 14) {
-        return 2412 + (channel - 1) * 5;
+    // 1. Try to find frequency from actual scan results
+    for (final network in networks) {
+      if (network.channel == channel) {
+        return network.frequency;
       }
-      if (channel >= 36) {
-        return 5000 + (channel * 5); // Approximate
-      }
-      return 0;
     }
+
+    // 2. Math fallback for standard channels
+    // 2.4 GHz Band
+    if (channel >= 1 && channel <= 13) {
+      return 2412 + (channel - 1) * 5;
+    }
+    if (channel == 14) {
+      return 2484;
+    }
+
+    // 5 GHz Band
+    if (channel >= 36 && channel <= 177) {
+      return 5000 + (channel * 5);
+    }
+
+    // 6 GHz Band (U-NII-5 through 8)
+    if (channel >= 1 && channel <= 233) {
+      // Note: 6GHz channels overlap 1-13, but are handled by the 2.4GHz block first
+      // if 1 <= channel <= 13. This logic assumes 6GHz specific channels are > 14.
+      if (channel > 14) {
+        return 5940 + (channel * 5);
+      }
+    }
+
+    return 0;
   }
 
   ChannelQuality _getQuality(double score) {

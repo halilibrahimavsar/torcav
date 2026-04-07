@@ -786,9 +786,10 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
     final l10n = AppLocalizations.of(context)!;
     final isPinging = pingingNodeId == node.id;
     final blocState = context.read<TopologyBloc>().state;
-    final isTracing = blocState is TopologyLoaded &&
-        blocState.tracingNodeId == node.id;
-    final traceResult = blocState is TopologyLoaded ? blocState.traceResult : null;
+    final isTracing =
+        blocState is TopologyLoaded && blocState.tracingNodeId == node.id;
+    final traceResult =
+        blocState is TopologyLoaded ? blocState.traceResult : null;
 
     return Column(
       children: [
@@ -971,56 +972,67 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                   child: Text(
                     'ROUTE HOPS',
                     style: GoogleFonts.orbitron(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.4),
                       fontSize: 8,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
                 const SizedBox(height: 8),
-                ...traceResult.map((hop) => Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 20,
-                        child: Text(
-                          '${hop.hopNumber}',
+                ...traceResult.map(
+                  (hop) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 20,
+                          child: Text(
+                            '${hop.hopNumber}',
+                            style: GoogleFonts.orbitron(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.tertiary.withValues(alpha: 0.6),
+                              fontSize: 8,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          size: 12,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.tertiary.withValues(alpha: 0.4),
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            hop.ip,
+                            style: GoogleFonts.shareTechMono(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withValues(alpha: 0.8),
+                              fontSize: 11,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          '${hop.latencyMs}ms',
                           style: GoogleFonts.orbitron(
-                            color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.6),
-                            fontSize: 8,
+                            color:
+                                hop.latencyMs < 50
+                                    ? Colors.greenAccent
+                                    : Colors.orangeAccent,
+                            fontSize: 9,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
-                      Icon(
-                        Icons.chevron_right_rounded,
-                        size: 12,
-                        color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.4),
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          hop.ip,
-                          style: GoogleFonts.shareTechMono(
-                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
-                            fontSize: 11,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        '${hop.latencyMs}ms',
-                        style: GoogleFonts.orbitron(
-                          color: hop.latencyMs < 50
-                              ? Colors.greenAccent
-                              : Colors.orangeAccent,
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                )),
+                ),
               ],
             ],
           ),

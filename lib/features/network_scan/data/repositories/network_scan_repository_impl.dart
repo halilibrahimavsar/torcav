@@ -1,6 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../ai/data/services/onnx_device_classifier_service.dart';
 import '../../domain/entities/host_scan_result.dart';
 import '../../domain/entities/network_device.dart';
 import '../../domain/entities/network_scan_profile.dart';
@@ -14,11 +15,13 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
   final ArpDataSource _arpDataSource;
   final MdnsDataSource _mdnsDataSource;
   final UpnpDataSource _upnpDataSource;
+  final OnnxDeviceClassifierService _deviceClassifier;
 
   NetworkScanRepositoryImpl(
     this._arpDataSource,
     this._mdnsDataSource,
     this._upnpDataSource,
+    this._deviceClassifier,
   );
 
   @override
@@ -67,18 +70,37 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
       final Map<String, List<String>> mdnsMap = results[1] as Map<String, List<String>>;
       final Map<String, String> upnpMap = results[2] as Map<String, String>;
 
-      // Enrich hosts with discovered info
-      final enrichedHosts = baseHosts.map((host) {
+      // Enrich hosts with discovered info (mDNS names + UPnP + AI classification)
+      final enrichedHosts = <HostScanResult>[];
+      for (final host in baseHosts) {
         String hostName = host.hostName;
         String deviceType = host.deviceType;
-        
+
         // Use mDNS name if hostName is empty
         if (hostName.isEmpty && mdnsMap.containsKey(host.ip)) {
           hostName = mdnsMap[host.ip]!.first;
         }
 
-        // Refine device type if UPnP info is available
-        if (upnpMap.containsKey(host.ip)) {
+        // Build a temporary host with enriched name for AI classification
+        final enrichedHost = HostScanResult(
+          ip: host.ip,
+          mac: host.mac,
+          vendor: host.vendor,
+          hostName: hostName,
+          osGuess: host.osGuess,
+          latency: host.latency,
+          services: host.services,
+          exposureFindings: host.exposureFindings,
+          exposureScore: host.exposureScore,
+          deviceType: deviceType,
+        );
+
+        // AI-based device classification
+        final aiResult = await _deviceClassifier.classify(enrichedHost);
+        if (aiResult != null && aiResult.confidence > 0.6) {
+          deviceType = aiResult.deviceType;
+        } else if (upnpMap.containsKey(host.ip)) {
+          // Fallback to UPnP heuristics when AI is unavailable or low confidence
           final upnpInfo = upnpMap[host.ip]!.toLowerCase();
           if (upnpInfo.contains('smart tv') || upnpInfo.contains('tizen') || upnpInfo.contains('webos')) {
             deviceType = 'Smart TV';
@@ -91,7 +113,7 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
           }
         }
 
-        return HostScanResult(
+        enrichedHosts.add(HostScanResult(
           ip: host.ip,
           mac: host.mac,
           vendor: host.vendor,
@@ -102,8 +124,8 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
           exposureFindings: host.exposureFindings,
           exposureScore: host.exposureScore,
           deviceType: deviceType,
-        );
-      }).toList();
+        ));
+      }
 
       return Right<Failure, List<HostScanResult>>(enrichedHosts);
     } on Failure catch (e) {

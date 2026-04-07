@@ -1,0 +1,17 @@
+[
+  "Router/Gateway",
+  "Access Point",
+  "Desktop",
+  "Laptop",
+  "Mobile Device",
+  "Tablet",
+  "Smart TV",
+  "IoT Sensor",
+  "Printer",
+  "NAS/Storage",
+  "Game Console",
+  "IP Camera",
+  "Smart Speaker",
+  "Server",
+  "Unknown"
+]
