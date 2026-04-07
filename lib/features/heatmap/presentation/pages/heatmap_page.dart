@@ -12,6 +12,8 @@ import '../../../../core/theme/neon_widgets.dart';
 import '../../domain/entities/heatmap_point.dart';
 import '../../domain/entities/heatmap_session.dart';
 import '../bloc/heatmap_bloc.dart';
+import '../bloc/scan_phase.dart';
+import '../widgets/ar_camera_view.dart';
 import '../widgets/heatmap_canvas.dart';
 
 /// Full-screen signal strength heatmap feature page.
@@ -118,70 +120,90 @@ class _HeatmapView extends StatelessWidget {
                   padding: const EdgeInsets.all(12),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    child: Stack(
-                      children: [
-                        // Background gradient
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: RadialGradient(
-                              center: Alignment.center,
-                              radius: 1.2,
-                              colors: [
-                                AppColors.darkSurfaceLight,
-                                AppColors.deepBlack,
-                              ],
-                            ),
-                            border: Border.all(
-                              color: AppColors.neonCyan.withValues(alpha: 0.15),
-                              width: 1,
-                            ),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        HeatmapCanvas(
-                          session: session,
-                          onTap: state.isRecording
-                              ? (norm) => _onCanvasTap(context, norm)
-                              : null,
-                        ),
-                        // Tap-to-measure hint when recording
-                        if (state.isRecording && session.points.isEmpty)
-                          Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.touch_app_rounded,
-                                  color: AppColors.neonCyan.withValues(
-                                    alpha: 0.4,
+                    child: state.isArViewEnabled &&
+                            state.isRecording &&
+                            state.phase == ScanPhase.scanning
+                        ? const ArCameraView()
+                        : Stack(
+                            children: [
+                              // Background gradient
+                              Container(
+                                decoration: BoxDecoration(
+                                  gradient: RadialGradient(
+                                    center: Alignment.center,
+                                    radius: 1.2,
+                                    colors: [
+                                      AppColors.darkSurfaceLight,
+                                      AppColors.deepBlack,
+                                    ],
                                   ),
-                                  size: 48,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'TAP TO RECORD SIGNAL',
-                                  style: GoogleFonts.orbitron(
+                                  border: Border.all(
                                     color: AppColors.neonCyan.withValues(
-                                      alpha: 0.4,
+                                      alpha: 0.15,
                                     ),
-                                    fontSize: 11,
-                                    letterSpacing: 2,
+                                    width: 1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              HeatmapCanvas(
+                                session: session,
+                                onTap: state.isRecording
+                                    ? (norm) => _onCanvasTap(context, norm)
+                                    : null,
+                              ),
+                              // Tap-to-measure hint when recording
+                              if (state.isRecording && session.points.isEmpty)
+                                Center(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.touch_app_rounded,
+                                        color: AppColors.neonCyan.withValues(
+                                          alpha: 0.4,
+                                        ),
+                                        size: 48,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        'TAP TO RECORD SIGNAL',
+                                        style: GoogleFonts.orbitron(
+                                          color: AppColors.neonCyan.withValues(
+                                            alpha: 0.4,
+                                          ),
+                                          fontSize: 11,
+                                          letterSpacing: 2,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
+                              // Legend
+                              Positioned(
+                                right: 12,
+                                bottom: 12,
+                                child: _RssiLegend(session: session),
+                              ),
+                            ],
                           ),
-                        // Legend
-                        Positioned(
-                          right: 12,
-                          bottom: 12,
-                          child: _RssiLegend(session: session),
-                        ),
-                      ],
-                    ),
                   ),
                 ),
               ),
+
+              // ── AR Toggle Button (Floating Over Canvas) ───────────────────
+              if (state.isRecording)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: _ArToggleButton(
+                      isEnabled: state.isArViewEnabled,
+                      onToggle: () =>
+                          context.read<HeatmapBloc>().toggleArView(),
+                    ),
+                  ),
+                ),
 
               // ── Action buttons ───────────────────────────────────────
               _ActionBar(state: state),
@@ -203,6 +225,9 @@ class _HeatmapView extends StatelessWidget {
       HeatmapPoint(
         x: norm.dx,
         y: norm.dy,
+        floorX: 0.0,
+        floorY: 0.0,
+        heading: 0.0,
         rssi: fakeRssi,
         timestamp: DateTime.now(),
       ),
@@ -769,6 +794,40 @@ class _TutorialStep extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+// ── AR Toggle Button ────────────────────────────────────────────────
+
+class _ArToggleButton extends StatelessWidget {
+  const _ArToggleButton({
+    required this.isEnabled,
+    required this.onToggle,
+  });
+
+  final bool isEnabled;
+  final VoidCallback onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.darkSurface.withValues(alpha: 0.7),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isEnabled
+              ? AppColors.neonCyan.withValues(alpha: 0.5)
+              : AppColors.textMuted.withValues(alpha: 0.3),
+        ),
+      ),
+      child: IconButton(
+        icon: Icon(
+          isEnabled ? Icons.view_in_ar_rounded : Icons.map_rounded,
+          color: isEnabled ? AppColors.neonCyan : AppColors.textMuted,
+        ),
+        onPressed: onToggle,
+        tooltip: isEnabled ? 'Switch to 2D Map' : 'Switch to AR Scan',
+      ),
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/entities/heatmap_point.dart';
 import '../../domain/entities/heatmap_session.dart';
+import '../models/floor_plan_dto.dart';
 
 /// Persists [HeatmapSession]s as JSON in SharedPreferences.
 ///
@@ -62,12 +63,18 @@ class HeatmapLocalDataSource {
               (p) => {
                 'x': p.x,
                 'y': p.y,
+                'floorX': p.floorX,
+                'floorY': p.floorY,
+                'heading': p.heading,
                 'rssi': p.rssi,
                 'timestamp': p.timestamp.toIso8601String(),
                 'ssid': p.ssid,
               },
             )
             .toList(),
+        'floorPlan': s.floorPlan != null
+            ? FloorPlanDto.fromEntity(s.floorPlan!).toJson()
+            : null,
       };
 
   HeatmapSession _fromJson(Map<String, dynamic> map) => HeatmapSession(
@@ -76,14 +83,24 @@ class HeatmapLocalDataSource {
         createdAt: DateTime.parse(map['createdAt'] as String),
         points: (map['points'] as List<dynamic>)
             .map(
-              (e) => HeatmapPoint(
-                x: (e['x'] as num).toDouble(),
-                y: (e['y'] as num).toDouble(),
-                rssi: e['rssi'] as int,
-                timestamp: DateTime.parse(e['timestamp'] as String),
-                ssid: e['ssid'] as String? ?? '',
-              ),
+              (e) {
+                final rssiNum = e['rssi'] as num;
+                return HeatmapPoint(
+                  x: (e['x'] as num).toDouble(),
+                  y: (e['y'] as num).toDouble(),
+                  floorX: (e['floorX'] as num? ?? 0.0).toDouble(),
+                  floorY: (e['floorY'] as num? ?? 0.0).toDouble(),
+                  heading: (e['heading'] as num? ?? 0.0).toDouble(),
+                  rssi: rssiNum.toInt(),
+                  timestamp: DateTime.parse(e['timestamp'] as String),
+                  ssid: e['ssid'] as String? ?? '',
+                );
+              },
             )
             .toList(),
+        floorPlan: map['floorPlan'] != null
+            ? FloorPlanDto.fromJson(map['floorPlan'] as Map<String, dynamic>)
+                .toEntity()
+            : null,
       );
 }

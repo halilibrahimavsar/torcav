@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import 'floor_plan.dart';
 import 'heatmap_point.dart';
 
 /// An ordered collection of [HeatmapPoint]s captured during a single walk-through.
@@ -9,6 +10,7 @@ class HeatmapSession extends Equatable {
     required this.name,
     required this.points,
     required this.createdAt,
+    this.floorPlan,
   });
 
   final String id;
@@ -19,6 +21,9 @@ class HeatmapSession extends Equatable {
   final List<HeatmapPoint> points;
 
   final DateTime createdAt;
+
+  /// Optional floor plan synthesized from room geometry.
+  final FloorPlan? floorPlan;
 
   /// Signal strength range across all points, used for colour-scale normalisation.
   int get minRssi =>
@@ -31,14 +36,16 @@ class HeatmapSession extends Equatable {
     String? name,
     List<HeatmapPoint>? points,
     DateTime? createdAt,
+    FloorPlan? floorPlan,
   }) =>
       HeatmapSession(
         id: id ?? this.id,
         name: name ?? this.name,
         points: points ?? this.points,
         createdAt: createdAt ?? this.createdAt,
+        floorPlan: floorPlan ?? this.floorPlan,
       );
 
   @override
-  List<Object?> get props => [id, name, points, createdAt];
+  List<Object?> get props => [id, name, points, createdAt, floorPlan];
 }

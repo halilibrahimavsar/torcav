@@ -1,5 +1,7 @@
+import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/errors/failures.dart';
 import '../entities/heatmap_point.dart';
 import '../entities/heatmap_session.dart';
 import '../repositories/heatmap_repository.dart';
@@ -13,27 +15,46 @@ class RecordHeatmapPointUsecase {
 
   final HeatmapRepository _repository;
 
-  Future<HeatmapSession> call({
+  Future<Either<Failure, HeatmapSession>> call({
     required String sessionId,
     required String sessionName,
     required HeatmapPoint point,
   }) async {
-    final sessions = await _repository.getSessions();
-    final existing = sessions.where((s) => s.id == sessionId).firstOrNull;
+    final sessionsResult = await _repository.getSessions();
 
-    final session =
-        existing ??
-        HeatmapSession(
-          id: sessionId,
-          name: sessionName,
-          points: const [],
-          createdAt: DateTime.now(),
+    return sessionsResult.fold(
+      (failure) => Left(failure),
+      (sessions) async {
+        final existing = sessions.isEmpty
+            ? null
+            : sessions.firstWhere(
+                (s) => s.id == sessionId,
+                orElse: () => HeatmapSession(
+                  id: sessionId,
+                  name: sessionName,
+                  points: const [],
+                  createdAt: DateTime.now(),
+                ),
+              );
+
+        final session = existing ??
+            HeatmapSession(
+              id: sessionId,
+              name: sessionName,
+              points: const [],
+              createdAt: DateTime.now(),
+            );
+
+        final updated = session.copyWith(
+          points: [...session.points, point],
         );
 
-    final updated = session.copyWith(
-      points: [...session.points, point],
+        final saveResult = await _repository.saveSession(updated);
+        return saveResult.fold(
+          (f) => Left(f),
+          (_) => Right(updated),
+        );
+      },
     );
-    await _repository.saveSession(updated);
-    return updated;
   }
 }

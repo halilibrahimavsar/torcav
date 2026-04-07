@@ -1,5 +1,7 @@
+import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/errors/failures.dart';
 import '../entities/heatmap_session.dart';
 import '../repositories/heatmap_repository.dart';
 
@@ -10,5 +12,6 @@ class GetHeatmapSessionsUsecase {
 
   final HeatmapRepository _repository;
 
-  Future<List<HeatmapSession>> call() => _repository.getSessions();
+  Future<Either<Failure, List<HeatmapSession>>> call() =>
+      _repository.getSessions();
 }

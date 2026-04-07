@@ -24,6 +24,10 @@ import '../../features/heatmap/domain/usecases/get_heatmap_sessions_usecase.dart
     as _i716;
 import '../../features/heatmap/domain/usecases/record_heatmap_point_usecase.dart'
     as _i737;
+import '../../features/heatmap/data/datasources/position_datasource.dart'
+    as _i800;
+import '../../features/heatmap/data/datasources/wall_detector_datasource.dart'
+    as _i801;
 import '../../features/heatmap/presentation/bloc/heatmap_bloc.dart' as _i931;
 import '../../features/monitoring/data/repositories/heatmap_repository_impl.dart'
     as _i335;
@@ -324,8 +328,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i931.HeatmapBloc>(
       () => _i931.HeatmapBloc(
         gh<_i716.GetHeatmapSessionsUsecase>(),
-        gh<_i737.RecordHeatmapPointUsecase>(),
         gh<_i747.HeatmapRepository>(),
+        gh<_i801.WallDetectorDataSource>(),
+        gh<_i800.PositionDataSource>(),
       ),
     );
     gh.factory<_i613.MonitoringBloc>(
@@ -344,6 +349,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i244.TopologyRepository>(),
       ),
     );
+    gh.lazySingleton<_i800.PositionDataSource>(() => _i800.PositionDataSourceImpl());
+    gh.lazySingleton<_i801.WallDetectorDataSource>(
+        () => _i801.WallDetectorDataSourceImpl());
     return this;
   }
 }
