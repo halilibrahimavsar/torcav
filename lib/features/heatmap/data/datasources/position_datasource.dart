@@ -32,16 +32,9 @@ class PositionDataSourceImpl implements PositionDataSource {
   double _heading = 0;
   double _stepLength = 0.75;
 
-  // Gyroscope fusion state
-  double _gyroHeading = 0.0;
-  int _lastGyroTimestamp = 0;
-  // Complementary filter weight: gyro handles fast changes, compass corrects drift.
-  static const _alpha = 0.98;
-
   final _controller = StreamController<PositionUpdate>.broadcast();
   StreamSubscription? _accelSub;
   StreamSubscription? _compassSub;
-  StreamSubscription? _gyroSub;
 
   @override
   Stream<PositionUpdate> get positionStream => _controller.stream;
@@ -51,35 +44,35 @@ class PositionDataSourceImpl implements PositionDataSource {
 
   @override
   void startTracking() {
-    _accelSub = accelerometerEventStream().listen((event) {
-      final mag = math.sqrt(
-        event.x * event.x + event.y * event.y + event.z * event.z,
+    stopTracking();
+    _x = 0;
+    _y = 0;
+    _heading = 0;
+    _lastStepTime = 0;
+
+    try {
+      _accelSub = accelerometerEventStream().listen(
+        (event) {
+          final mag = math.sqrt(
+            event.x * event.x + event.y * event.y + event.z * event.z,
+          );
+          final now = DateTime.now().millisecondsSinceEpoch;
+          if (mag > 12.5 && (now - _lastStepTime > 250)) {
+            _lastStepTime = now;
+            _onStep();
+          }
+        },
+        onError:
+            (_) {}, // Sensor unavailable on this device — degrade silently.
+        cancelOnError: false,
       );
-      final now = DateTime.now().millisecondsSinceEpoch;
-      if (mag > 12.5 && (now - _lastStepTime > 250)) {
-        _lastStepTime = now;
-        _onStep();
-      }
-    });
+    } catch (_) {}
 
-    // Gyroscope: integrate z-axis (yaw) angular velocity for fast turn detection.
-    _gyroSub = gyroscopeEventStream().listen((event) {
-      final now = DateTime.now().millisecondsSinceEpoch;
-      if (_lastGyroTimestamp > 0) {
-        final dtSec = (now - _lastGyroTimestamp) / 1000.0;
-        final deltaHeadingDeg = event.z * dtSec * (180.0 / math.pi);
-        _gyroHeading = (_gyroHeading + deltaHeadingDeg) % 360.0;
-      }
-      _lastGyroTimestamp = now;
-    });
-
-    // Compass: absolute heading for long-term drift correction via complementary filter.
+    // Compass-only heading is more stable on some MIUI devices than opening the
+    // optional gyroscope stream, which can report an unsupported-sensor error.
     _compassSub = FlutterCompass.events?.listen((event) {
       final compassHeading = event.heading ?? _heading;
-      // Fuse gyro (fast, drifts) with compass (slow, absolute).
-      _heading = (_alpha * _gyroHeading + (1.0 - _alpha) * compassHeading) % 360.0;
-      // Sync gyro to fused result to prevent unbounded drift.
-      _gyroHeading = _heading;
+      _heading = compassHeading;
       _controller.add(PositionUpdate(x: _x, y: _y, heading: _heading));
     });
   }
@@ -91,19 +84,16 @@ class PositionDataSourceImpl implements PositionDataSource {
     _x += _stepLength * math.cos(radians);
     _y += _stepLength * math.sin(radians);
 
-    _controller.add(PositionUpdate(
-      x: _x,
-      y: _y,
-      heading: _heading,
-      isStep: true,
-    ));
+    _controller.add(
+      PositionUpdate(x: _x, y: _y, heading: _heading, isStep: true),
+    );
   }
 
   @override
   void stopTracking() {
     _accelSub?.cancel();
     _compassSub?.cancel();
-    _gyroSub?.cancel();
-    _lastGyroTimestamp = 0;
+    _accelSub = null;
+    _compassSub = null;
   }
 }

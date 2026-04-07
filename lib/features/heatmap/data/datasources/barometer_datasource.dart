@@ -35,21 +35,25 @@ class BarometerDataSourceImpl implements BarometerDataSource {
     _baseline = _calibrated ? baselinePressureHpa : 1013.25;
 
     try {
-      _sub = barometerEventStream().listen((event) {
-        if (!_calibrated) {
-          // Self-calibrate on the first real reading.
-          _calibrated = true;
-          _baseline = event.pressure;
-        }
-        // Higher floor → lower pressure → positive delta.
-        final delta = _baseline - event.pressure;
-        final floorIndex = (delta / _hpaPerFloor).round();
-        _controller.add(
-          FloorReading(floorIndex: floorIndex, pressureHpa: event.pressure),
-        );
-      });
+      _sub = barometerEventStream().listen(
+        (event) {
+          if (!_calibrated) {
+            // Self-calibrate on the first real reading.
+            _calibrated = true;
+            _baseline = event.pressure;
+          }
+          // Higher floor → lower pressure → positive delta.
+          final delta = _baseline - event.pressure;
+          final floorIndex = (delta / _hpaPerFloor).round();
+          _controller.add(
+            FloorReading(floorIndex: floorIndex, pressureHpa: event.pressure),
+          );
+        },
+        onError: (_) {}, // Barometer not available on this device — degrade silently.
+        cancelOnError: false,
+      );
     } catch (_) {
-      // Barometer not available on this device — degrade silently.
+      // Barometer plugin threw synchronously — degrade silently.
     }
   }
 

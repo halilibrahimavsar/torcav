@@ -56,6 +56,7 @@ class HeatmapState extends Equatable {
   HeatmapState copyWith({
     List<HeatmapSession>? sessions,
     HeatmapSession? currentSession,
+    bool clearCurrentSession = false,
     HeatmapSession? selectedSession,
     bool clearSelectedSession = false,
     bool? isLoading,
@@ -64,49 +65,58 @@ class HeatmapState extends Equatable {
     bool clearFailure = false,
     ScanPhase? phase,
     FloorPlan? liveFloorPlan,
+    bool clearLiveFloorPlan = false,
     Offset? currentPosition,
+    bool clearCurrentPosition = false,
     double? currentHeading,
     int? currentRssi,
+    bool clearCurrentRssi = false,
     List<WallSegment>? pendingWalls,
     bool? isArViewEnabled,
     DateTime? lastStepTimestamp,
+    bool clearLastStepTimestamp = false,
     int? currentFloor,
-  }) =>
-      HeatmapState(
-        sessions: sessions ?? this.sessions,
-        currentSession: currentSession ?? this.currentSession,
-        selectedSession:
-            clearSelectedSession ? null : selectedSession ?? this.selectedSession,
-        isLoading: isLoading ?? this.isLoading,
-        isRecording: isRecording ?? this.isRecording,
-        failure: clearFailure ? null : failure ?? this.failure,
-        phase: phase ?? this.phase,
-        liveFloorPlan: liveFloorPlan ?? this.liveFloorPlan,
-        currentPosition: currentPosition ?? this.currentPosition,
-        currentHeading: currentHeading ?? this.currentHeading,
-        currentRssi: currentRssi ?? this.currentRssi,
-        pendingWalls: pendingWalls ?? this.pendingWalls,
-        isArViewEnabled: isArViewEnabled ?? this.isArViewEnabled,
-        lastStepTimestamp: lastStepTimestamp ?? this.lastStepTimestamp,
-        currentFloor: currentFloor ?? this.currentFloor,
-      );
+  }) => HeatmapState(
+    sessions: sessions ?? this.sessions,
+    currentSession:
+        clearCurrentSession ? null : currentSession ?? this.currentSession,
+    selectedSession:
+        clearSelectedSession ? null : selectedSession ?? this.selectedSession,
+    isLoading: isLoading ?? this.isLoading,
+    isRecording: isRecording ?? this.isRecording,
+    failure: clearFailure ? null : failure ?? this.failure,
+    phase: phase ?? this.phase,
+    liveFloorPlan:
+        clearLiveFloorPlan ? null : liveFloorPlan ?? this.liveFloorPlan,
+    currentPosition:
+        clearCurrentPosition ? null : currentPosition ?? this.currentPosition,
+    currentHeading: currentHeading ?? this.currentHeading,
+    currentRssi: clearCurrentRssi ? null : currentRssi ?? this.currentRssi,
+    pendingWalls: pendingWalls ?? this.pendingWalls,
+    isArViewEnabled: isArViewEnabled ?? this.isArViewEnabled,
+    lastStepTimestamp:
+        clearLastStepTimestamp
+            ? null
+            : lastStepTimestamp ?? this.lastStepTimestamp,
+    currentFloor: currentFloor ?? this.currentFloor,
+  );
 
   @override
   List<Object?> get props => [
-        sessions,
-        currentSession,
-        selectedSession,
-        isLoading,
-        isRecording,
-        failure,
-        phase,
-        liveFloorPlan,
-        currentPosition,
-        currentHeading,
-        currentRssi,
-        pendingWalls,
-        isArViewEnabled,
-        lastStepTimestamp,
-        currentFloor,
-      ];
+    sessions,
+    currentSession,
+    selectedSession,
+    isLoading,
+    isRecording,
+    failure,
+    phase,
+    liveFloorPlan,
+    currentPosition,
+    currentHeading,
+    currentRssi,
+    pendingWalls,
+    isArViewEnabled,
+    lastStepTimestamp,
+    currentFloor,
+  ];
 }
