@@ -56,16 +56,15 @@ class _SecurityCenterView extends StatelessWidget {
               const SizedBox(height: 24),
 
               // ── Evil Twin Alert ──
-              if (state is SecurityLoaded)
-                _EvilTwinAlertBanner(state: state),
+              if (state is SecurityLoaded) _EvilTwinAlertBanner(state: state),
 
               // ── WPS Warning ──
-              if (state is SecurityLoaded)
-                _WpsWarningCard(state: state),
+              if (state is SecurityLoaded) _WpsWarningCard(state: state),
 
               // ── Scan Overview ──
-              if (state case SecurityLoaded(:final scanSummary?)
-                  when scanSummary.totalNetworks > 0) ...[
+              if (state case SecurityLoaded(
+                :final scanSummary?,
+              ) when scanSummary.totalNetworks > 0) ...[
                 StaggeredEntry(
                   delay: const Duration(milliseconds: 100),
                   child: _ScanOverviewRow(summary: scanSummary),
@@ -84,7 +83,11 @@ class _SecurityCenterView extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               if (state is SecurityLoaded)
-                _buildTrustedBaselines(context, state.trustedNetworkProfiles, l10n)
+                _buildTrustedBaselines(
+                  context,
+                  state.trustedNetworkProfiles,
+                  l10n,
+                )
               else if (state is SecurityLoading)
                 _buildLoading(context)
               else
@@ -102,7 +105,12 @@ class _SecurityCenterView extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               if (state is SecurityLoaded)
-                _buildKnownNetworks(context, state.knownNetworks, state.trustedNetworkProfiles, l10n)
+                _buildKnownNetworks(
+                  context,
+                  state.knownNetworks,
+                  state.trustedNetworkProfiles,
+                  l10n,
+                )
               else
                 _emptyBox(context, l10n.noKnownNetworksYet),
               const SizedBox(height: 24),
@@ -164,10 +172,11 @@ class _SecurityCenterView extends StatelessWidget {
       return _emptyBox(context, l10n.noKnownNetworksYet);
     }
     return Column(
-      children: networks.map((net) {
-        final isTrusted = trustedProfiles.any((p) => p.bssid == net.bssid);
-        return _NetworkCard(network: net, isTrusted: isTrusted);
-      }).toList(),
+      children:
+          networks.map((net) {
+            final isTrusted = trustedProfiles.any((p) => p.bssid == net.bssid);
+            return _NetworkCard(network: net, isTrusted: isTrusted);
+          }).toList(),
     );
   }
 
@@ -177,12 +186,16 @@ class _SecurityCenterView extends StatelessWidget {
     AppLocalizations l10n,
   ) {
     if (profiles.isEmpty) {
-      return _emptyBox(context, l10n.noKnownNetworksYet); // TODO: Add a specific "No baselines" string if needed
+      return _emptyBox(
+        context,
+        l10n.noKnownNetworksYet,
+      ); // TODO: Add a specific "No baselines" string if needed
     }
     return Column(
-      children: profiles.map((profile) {
-        return _TrustedProfileCard(profile: profile);
-      }).toList(),
+      children:
+          profiles.map((profile) {
+            return _TrustedProfileCard(profile: profile);
+          }).toList(),
     );
   }
 
@@ -245,9 +258,7 @@ class _NetworkCard extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: activeColor.withValues(alpha: 0.1),
-                border: Border.all(
-                  color: activeColor.withValues(alpha: 0.2),
-                ),
+                border: Border.all(color: activeColor.withValues(alpha: 0.2)),
                 boxShadow: [
                   BoxShadow(
                     color: activeColor.withValues(alpha: 0.15),
@@ -256,7 +267,9 @@ class _NetworkCard extends StatelessWidget {
                 ],
               ),
               child: Icon(
-                isTrusted ? Icons.verified_user_rounded : Icons.wifi_find_rounded,
+                isTrusted
+                    ? Icons.verified_user_rounded
+                    : Icons.wifi_find_rounded,
                 color: activeColor,
                 size: 20,
               ),
@@ -288,7 +301,10 @@ class _NetworkCard extends StatelessWidget {
             ),
             if (isTrusted)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
@@ -336,9 +352,7 @@ class _TrustedProfileCard extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: tertiaryColor.withValues(alpha: 0.1),
-                border: Border.all(
-                  color: tertiaryColor.withValues(alpha: 0.2),
-                ),
+                border: Border.all(color: tertiaryColor.withValues(alpha: 0.2)),
               ),
               child: Icon(
                 Icons.verified_user_rounded,
@@ -372,7 +386,8 @@ class _TrustedProfileCard extends StatelessWidget {
               ),
             ),
             IconButton(
-              onPressed: () => context.read<SecurityBloc>().add(
+              onPressed:
+                  () => context.read<SecurityBloc>().add(
                     SecurityUntrustRequested(profile.bssid),
                   ),
               icon: const Icon(Icons.delete_outline_rounded, size: 20),
@@ -432,13 +447,16 @@ class _EventCard extends StatelessWidget {
   String _getLocalizedEvidence() {
     final evidence = event.evidence;
     if (event.type == domain_event.SecurityEventType.evilTwinDetected) {
-      final match = RegExp(r'Expected: (.*?), Found: (.*?)[\.]').firstMatch(evidence);
+      final match = RegExp(
+        r'Expected: (.*?), Found: (.*?)[\.]',
+      ).firstMatch(evidence);
       if (match != null) {
         return l10n.evilTwinEvidence(match.group(1)!, match.group(2)!);
       }
     } else if (event.type == domain_event.SecurityEventType.rogueApSuspected) {
       return l10n.rogueApEvidence;
-    } else if (event.type == domain_event.SecurityEventType.encryptionDowngraded) {
+    } else if (event.type ==
+        domain_event.SecurityEventType.encryptionDowngraded) {
       final match = RegExp(r'from (.*?) to (.*?)\.').firstMatch(evidence);
       if (match != null) {
         return l10n.downgradeEvidence(match.group(1)!, match.group(2)!);
@@ -556,25 +574,29 @@ class _SecurityCenterBentoHeader extends StatelessWidget {
 
     final loaded = state is SecurityLoaded ? state as SecurityLoaded : null;
     final score = loaded?.overallScore ?? 100;
-    final hasCritical = loaded?.recentEvents.any(
+    final hasCritical =
+        loaded?.recentEvents.any(
           (e) => e.severity == domain_event.SecurityEventSeverity.critical,
         ) ??
         false;
-    final hasHigh = loaded?.recentEvents.any(
+    final hasHigh =
+        loaded?.recentEvents.any(
           (e) => e.severity == domain_event.SecurityEventSeverity.high,
         ) ??
         false;
 
     final isSecure = score >= 85 && !hasCritical;
-    final activeColor = hasCritical
-        ? scheme.error
-        : (hasHigh
-            ? const Color(0xFFFFB300)
-            : (score >= 85 ? scheme.primary : scheme.outline));
+    final activeColor =
+        hasCritical
+            ? scheme.error
+            : (hasHigh
+                ? const Color(0xFFFFB300)
+                : (score >= 85 ? scheme.primary : scheme.outline));
 
-    final statusLabel = state is SecurityLoading
-        ? l10n.scanning
-        : (isSecure ? l10n.shieldActive : l10n.threatsDetected);
+    final statusLabel =
+        state is SecurityLoading
+            ? l10n.scanning
+            : (isSecure ? l10n.shieldActive : l10n.threatsDetected);
 
     return SizedBox(
       height: 200,
@@ -655,9 +677,8 @@ class _ScanOverviewRow extends StatelessWidget {
         _MiniStatChip(
           label: 'WPS',
           value: '${summary.wpsCount}',
-          color: summary.wpsCount > 0
-              ? const Color(0xFFFFB300)
-              : scheme.tertiary,
+          color:
+              summary.wpsCount > 0 ? const Color(0xFFFFB300) : scheme.tertiary,
         ),
         const SizedBox(width: 8),
         _MiniStatChip(
@@ -792,7 +813,8 @@ class _DnsSecurityCard extends StatelessWidget {
     if (dnsResult != null) {
       if (dnsResult.isHijacked || dnsResult.isLeaking) {
         statusColor = scheme.error;
-        statusText = dnsResult.isLeaking ? l10n.dnsLeakDetected : l10n.dnsHijacked;
+        statusText =
+            dnsResult.isLeaking ? l10n.dnsLeakDetected : l10n.dnsHijacked;
         statusIcon = Icons.gpp_bad_rounded;
       } else if (dnsResult.status == DnsSecurityStatus.warning) {
         statusColor = const Color(0xFFFFB300);
@@ -828,15 +850,16 @@ class _DnsSecurityCard extends StatelessWidget {
                         color: statusColor.withValues(alpha: 0.3),
                       ),
                     ),
-                    child: isLoading
-                        ? Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: statusColor,
-                          ),
-                        )
-                        : Icon(statusIcon, color: statusColor, size: 24),
+                    child:
+                        isLoading
+                            ? Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: statusColor,
+                              ),
+                            )
+                            : Icon(statusIcon, color: statusColor, size: 24),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -858,7 +881,10 @@ class _DnsSecurityCard extends StatelessWidget {
                               ? l10n.dnsVerifyIntegrity
                               : l10n.dnsLastCheck(
                                 DateTime.now().hour.toString().padLeft(2, '0'),
-                                DateTime.now().minute.toString().padLeft(2, '0'),
+                                DateTime.now().minute.toString().padLeft(
+                                  2,
+                                  '0',
+                                ),
                               ),
                           style: GoogleFonts.rajdhani(
                             color: scheme.onSurfaceVariant,
@@ -869,11 +895,12 @@ class _DnsSecurityCard extends StatelessWidget {
                     ),
                   ),
                   _CyberButton(
-                    onTap: isLoading
-                        ? null
-                        : () => context.read<SecurityBloc>().add(
-                           SecurityDnsTestRequested(),
-                        ),
+                    onTap:
+                        isLoading
+                            ? null
+                            : () => context.read<SecurityBloc>().add(
+                              SecurityDnsTestRequested(),
+                            ),
                     label: isLoading ? l10n.dnsTesting : l10n.dnsTestNow,
                     color: statusColor,
                   ),
@@ -896,7 +923,11 @@ class _DnsSecurityCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.terminal_rounded, size: 12, color: statusColor),
+                          Icon(
+                            Icons.terminal_rounded,
+                            size: 12,
+                            color: statusColor,
+                          ),
                           const SizedBox(width: 6),
                           Text(
                             l10n.dnsEvidenceTitle.toUpperCase(),
@@ -1069,9 +1100,10 @@ class _HeatmapShortcutCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute<void>(builder: (_) => const HeatmapPage()),
-      ),
+      onTap:
+          () => Navigator.of(
+            context,
+          ).push(MaterialPageRoute<void>(builder: (_) => const HeatmapPage())),
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(16),
@@ -1176,7 +1208,11 @@ class _EvilTwinAlertBanner extends StatelessWidget {
                 color: errorColor.withValues(alpha: 0.15),
                 border: Border.all(color: errorColor.withValues(alpha: 0.5)),
               ),
-              child: Icon(Icons.warning_amber_rounded, color: errorColor, size: 24),
+              child: Icon(
+                Icons.warning_amber_rounded,
+                color: errorColor,
+                size: 24,
+              ),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -1244,7 +1280,11 @@ class _WpsWarningCard extends StatelessWidget {
                 color: warnColor.withValues(alpha: 0.12),
                 border: Border.all(color: warnColor.withValues(alpha: 0.4)),
               ),
-              child: const Icon(Icons.lock_open_rounded, color: warnColor, size: 22),
+              child: const Icon(
+                Icons.lock_open_rounded,
+                color: warnColor,
+                size: 22,
+              ),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -1267,11 +1307,16 @@ class _WpsWarningCard extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
                           color: warnColor.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: warnColor.withValues(alpha: 0.4)),
+                          border: Border.all(
+                            color: warnColor.withValues(alpha: 0.4),
+                          ),
                         ),
                         child: Text(
                           l10n.wpsAffectedNetworks(wpsCount),

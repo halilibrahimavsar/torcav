@@ -20,7 +20,10 @@ class TopologyRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const TopologyPage();
+    return BlocProvider<TopologyBloc>(
+      create: (ctx) => getIt<TopologyBloc>()..add(const LoadTopologyEvent()),
+      child: const TopologyPage(),
+    );
   }
 }
 
@@ -29,15 +32,7 @@ class TopologyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    try {
-      context.read<TopologyBloc>();
-      return const _TopologyPageContent();
-    } catch (_) {
-      return BlocProvider<TopologyBloc>(
-        create: (ctx) => getIt<TopologyBloc>()..add(const LoadTopologyEvent()),
-        child: const _TopologyPageContent(),
-      );
-    }
+    return const _TopologyPageContent();
   }
 }
 
