@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -149,8 +147,10 @@ class _HeatmapView extends StatelessWidget {
                               HeatmapCanvas(
                                 session: session,
                                 floorPlan: state.liveFloorPlan,
+                                showPath: state.isRecording || state.selectedSession != null,
+                                activeFloor: state.isRecording ? state.currentFloor : null,
                                 onTap: state.isRecording
-                                    ? (metricPos) => _onCanvasTap(context, metricPos)
+                                    ? (metricPos) => _onCanvasTap(context, metricPos, state.currentRssi)
                                     : null,
                               ),
                               // Tap-to-measure hint when recording
@@ -217,19 +217,16 @@ class _HeatmapView extends StatelessWidget {
     );
   }
 
-  void _onCanvasTap(BuildContext context, Offset metricPos) {
+  void _onCanvasTap(BuildContext context, Offset metricPos, int? currentRssi) {
     final bloc = context.read<HeatmapBloc>();
-    // Simulate current RSSI with slight randomness for demo;
-    // in production this would come from WifiInfo / platform channel.
-    final fakeRssi = -55 - math.Random().nextInt(30);
     bloc.addPoint(
       HeatmapPoint(
-        x: 0, // Deprecated
-        y: 0, // Deprecated
+        x: 0,
+        y: 0,
         floorX: metricPos.dx,
         floorY: metricPos.dy,
         heading: 0.0,
-        rssi: fakeRssi,
+        rssi: currentRssi ?? -70,
         timestamp: DateTime.now(),
       ),
     );

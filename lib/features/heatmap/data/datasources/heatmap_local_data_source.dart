@@ -69,6 +69,7 @@ class HeatmapLocalDataSource {
                 'rssi': p.rssi,
                 'timestamp': p.timestamp.toIso8601String(),
                 'ssid': p.ssid,
+                'floor': p.floor,
               },
             )
             .toList(),
@@ -94,6 +95,7 @@ class HeatmapLocalDataSource {
                   rssi: rssiNum.toInt(),
                   timestamp: DateTime.parse(e['timestamp'] as String),
                   ssid: e['ssid'] as String? ?? '',
+                  floor: (e['floor'] as num? ?? 0).toInt(),
                 );
               },
             )

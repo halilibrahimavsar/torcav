@@ -16,6 +16,7 @@ class HeatmapState extends Equatable {
     this.pendingWalls = const [],
     this.isArViewEnabled = true,
     this.lastStepTimestamp,
+    this.currentFloor = 0,
   });
 
   final List<HeatmapSession> sessions;
@@ -49,6 +50,9 @@ class HeatmapState extends Equatable {
   /// Timestamp of the last physical step detected by the sensors.
   final DateTime? lastStepTimestamp;
 
+  /// Current floor index relative to scan start (0 = starting floor).
+  final int currentFloor;
+
   HeatmapState copyWith({
     List<HeatmapSession>? sessions,
     HeatmapSession? currentSession,
@@ -66,6 +70,7 @@ class HeatmapState extends Equatable {
     List<WallSegment>? pendingWalls,
     bool? isArViewEnabled,
     DateTime? lastStepTimestamp,
+    int? currentFloor,
   }) =>
       HeatmapState(
         sessions: sessions ?? this.sessions,
@@ -83,6 +88,7 @@ class HeatmapState extends Equatable {
         pendingWalls: pendingWalls ?? this.pendingWalls,
         isArViewEnabled: isArViewEnabled ?? this.isArViewEnabled,
         lastStepTimestamp: lastStepTimestamp ?? this.lastStepTimestamp,
+        currentFloor: currentFloor ?? this.currentFloor,
       );
 
   @override
@@ -101,5 +107,6 @@ class HeatmapState extends Equatable {
         pendingWalls,
         isArViewEnabled,
         lastStepTimestamp,
+        currentFloor,
       ];
 }

@@ -15,6 +15,7 @@ class HeatmapPoint extends Equatable {
     required this.timestamp,
     this.heading = 0.0,
     this.ssid = '',
+    this.floor = 0,
   });
 
   /// Normalised horizontal position [0.0, 1.0] (deprecated in favour of floorX).
@@ -41,6 +42,9 @@ class HeatmapPoint extends Equatable {
   /// SSID of the AP this reading belongs to (optional, for multi-SSID views).
   final String ssid;
 
+  /// Floor index relative to scan start (0 = starting floor, barometer-based).
+  final int floor;
+
   HeatmapPoint copyWith({
     double? x,
     double? y,
@@ -50,6 +54,7 @@ class HeatmapPoint extends Equatable {
     int? rssi,
     DateTime? timestamp,
     String? ssid,
+    int? floor,
   }) =>
       HeatmapPoint(
         x: x ?? this.x,
@@ -60,8 +65,9 @@ class HeatmapPoint extends Equatable {
         rssi: rssi ?? this.rssi,
         timestamp: timestamp ?? this.timestamp,
         ssid: ssid ?? this.ssid,
+        floor: floor ?? this.floor,
       );
 
   @override
-  List<Object?> get props => [x, y, floorX, floorY, heading, rssi, timestamp, ssid];
+  List<Object?> get props => [x, y, floorX, floorY, heading, rssi, timestamp, ssid, floor];
 }

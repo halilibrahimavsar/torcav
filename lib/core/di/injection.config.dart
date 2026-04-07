@@ -14,20 +14,24 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:network_info_plus/network_info_plus.dart' as _i846;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
+import '../../features/heatmap/data/datasources/barometer_datasource.dart'
+    as _i761;
 import '../../features/heatmap/data/datasources/heatmap_local_data_source.dart'
     as _i652;
+import '../../features/heatmap/data/datasources/position_datasource.dart'
+    as _i989;
+import '../../features/heatmap/data/datasources/wall_detector_datasource.dart'
+    as _i543;
 import '../../features/heatmap/data/repositories/heatmap_repository_impl.dart'
     as _i531;
 import '../../features/heatmap/domain/repositories/heatmap_repository.dart'
     as _i747;
+import '../../features/heatmap/domain/usecases/finalize_floor_plan.dart'
+    as _i960;
 import '../../features/heatmap/domain/usecases/get_heatmap_sessions_usecase.dart'
     as _i716;
 import '../../features/heatmap/domain/usecases/record_heatmap_point_usecase.dart'
     as _i737;
-import '../../features/heatmap/data/datasources/position_datasource.dart'
-    as _i800;
-import '../../features/heatmap/data/datasources/wall_detector_datasource.dart'
-    as _i801;
 import '../../features/heatmap/presentation/bloc/heatmap_bloc.dart' as _i931;
 import '../../features/monitoring/data/repositories/heatmap_repository_impl.dart'
     as _i335;
@@ -69,6 +73,18 @@ import '../../features/network_scan/domain/services/new_device_detector.dart'
     as _i505;
 import '../../features/network_scan/presentation/bloc/network_scan_bloc.dart'
     as _i739;
+import '../../features/performance/data/repositories/speed_test_history_repository_impl.dart'
+    as _i77;
+import '../../features/performance/data/repositories/speed_test_repository_impl.dart'
+    as _i275;
+import '../../features/performance/domain/repositories/speed_test_history_repository.dart'
+    as _i885;
+import '../../features/performance/domain/repositories/speed_test_repository.dart'
+    as _i389;
+import '../../features/performance/domain/usecases/run_speed_test_usecase.dart'
+    as _i510;
+import '../../features/performance/presentation/bloc/performance_bloc.dart'
+    as _i58;
 import '../../features/reports/data/repositories/report_export_repository_impl.dart'
     as _i953;
 import '../../features/reports/domain/repositories/report_export_repository.dart'
@@ -124,16 +140,6 @@ import '../../features/wifi_scan/domain/usecases/get_historical_best_channel.dar
 import '../../features/wifi_scan/domain/usecases/scan_wifi.dart' as _i451;
 import '../../features/wifi_scan/presentation/bloc/wifi_scan_bloc.dart'
     as _i968;
-import '../../features/performance/data/repositories/speed_test_history_repository_impl.dart'
-    as _i_sth_impl;
-import '../../features/performance/data/repositories/speed_test_repository_impl.dart'
-    as _i_perf_repo;
-import '../../features/performance/domain/repositories/speed_test_history_repository.dart'
-    as _i_sth;
-import '../../features/performance/domain/usecases/run_speed_test_usecase.dart'
-    as _i_perf_uc;
-import '../../features/performance/presentation/bloc/performance_bloc.dart'
-    as _i_perf_bloc;
 import '../l10n/locale_cubit.dart' as _i171;
 import '../services/notification_service.dart' as _i941;
 import '../storage/app_database.dart' as _i690;
@@ -161,18 +167,22 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i969.ChannelRatingEngine>(
       () => _i969.ChannelRatingEngine(),
     );
-    gh.lazySingleton<_i471.SecurityAnalyzer>(() => _i471.SecurityAnalyzer());
     gh.lazySingleton<_i363.DeauthDetector>(() => _i363.DeauthDetector());
+    gh.lazySingleton<_i471.SecurityAnalyzer>(() => _i471.SecurityAnalyzer());
+    gh.lazySingleton<_i991.DnsDataSource>(() => _i991.DnsDataSource());
     gh.lazySingleton<_i1066.ArpDataSource>(() => _i1066.ArpDataSource());
     gh.lazySingleton<_i165.MdnsDataSource>(() => _i165.MdnsDataSource());
     gh.lazySingleton<_i119.UpnpDataSource>(() => _i119.UpnpDataSource());
     gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
-    gh.lazySingleton<_i991.DnsDataSource>(() => _i991.DnsDataSource());
+    gh.lazySingleton<_i960.FinalizeFloorPlan>(() => _i960.FinalizeFloorPlan());
     gh.lazySingleton<_i494.HeatmapRepository>(
       () => _i335.HeatmapRepositoryImpl(gh<_i690.AppDatabase>()),
     );
     gh.lazySingleton<_i499.SecurityLocalDataSource>(
       () => _i499.SecurityLocalDataSourceImpl(gh<_i690.AppDatabase>()),
+    );
+    gh.lazySingleton<_i885.SpeedTestHistoryRepository>(
+      () => _i77.SpeedTestHistoryRepositoryImpl(gh<_i690.AppDatabase>()),
     );
     gh.singleton<_i171.LocaleCubit>(
       () => _i171.LocaleCubit(gh<_i460.SharedPreferences>()),
@@ -202,6 +212,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i119.ReportExportRepository>(
       () => _i953.ReportExportRepositoryImpl(),
     );
+    gh.lazySingleton<_i989.PositionDataSource>(
+      () => _i989.PositionDataSourceImpl(),
+    );
     gh.lazySingleton<_i305.ChannelRatingLocalDataSource>(
       () => _i305.ChannelRatingLocalDataSourceImpl(gh<_i690.AppDatabase>()),
     );
@@ -222,6 +235,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1073.NetworkScanRepository>(),
         gh<_i505.NewDeviceDetector>(),
       ),
+    );
+    gh.lazySingleton<_i543.WallDetectorDataSource>(
+      () => _i543.WallDetectorDataSourceImpl(),
+    );
+    gh.lazySingleton<_i389.SpeedTestRepository>(
+      () => const _i275.SpeedTestRepositoryImpl(),
+    );
+    gh.lazySingleton<_i761.BarometerDataSource>(
+      () => _i761.BarometerDataSourceImpl(),
     );
     gh.lazySingleton<_i1012.WifiDataSource>(
       () => _i672.AndroidWifiDataSource(),
@@ -265,23 +287,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i892.TopologyBuilder>(),
       ),
     );
-    // ── Performance feature (separate from monitoring speed test) ──
-    gh.lazySingleton<_i_sth.SpeedTestHistoryRepository>(
-      () => _i_sth_impl.SpeedTestHistoryRepositoryImpl(gh<_i690.AppDatabase>()),
-    );
-    gh.lazySingleton<_i_perf_repo.SpeedTestRepositoryImpl>(
-      () => const _i_perf_repo.SpeedTestRepositoryImpl(),
-    );
-    gh.lazySingleton<_i_perf_uc.RunSpeedTestUseCase>(
-      () => _i_perf_uc.RunSpeedTestUseCase(
-        gh<_i_perf_repo.SpeedTestRepositoryImpl>(),
-      ),
-    );
-    gh.factory<_i_perf_bloc.PerformanceBloc>(
-      () => _i_perf_bloc.PerformanceBloc(
-        gh<_i_perf_uc.RunSpeedTestUseCase>(),
-        gh<_i_sth.SpeedTestHistoryRepository>(),
-      ),
+    gh.lazySingleton<_i510.RunSpeedTestUseCase>(
+      () => _i510.RunSpeedTestUseCase(gh<_i389.SpeedTestRepository>()),
     );
     gh.lazySingleton<_i332.ChannelRatingRepository>(
       () => _i671.ChannelRatingRepositoryImpl(
@@ -290,6 +297,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i451.ScanWifi>(
       () => _i451.ScanWifi(gh<_i1027.WifiRepository>()),
+    );
+    gh.factory<_i58.PerformanceBloc>(
+      () => _i58.PerformanceBloc(
+        gh<_i510.RunSpeedTestUseCase>(),
+        gh<_i885.SpeedTestHistoryRepository>(),
+      ),
     );
     gh.lazySingleton<_i519.GetBestHistoricalChannel>(
       () => _i519.GetBestHistoricalChannel(gh<_i332.ChannelRatingRepository>()),
@@ -329,8 +342,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i931.HeatmapBloc(
         gh<_i716.GetHeatmapSessionsUsecase>(),
         gh<_i747.HeatmapRepository>(),
-        gh<_i801.WallDetectorDataSource>(),
-        gh<_i800.PositionDataSource>(),
+        gh<_i543.WallDetectorDataSource>(),
+        gh<_i989.PositionDataSource>(),
+        gh<_i451.ScanWifi>(),
+        gh<_i846.NetworkInfo>(),
+        gh<_i761.BarometerDataSource>(),
+        gh<_i960.FinalizeFloorPlan>(),
       ),
     );
     gh.factory<_i613.MonitoringBloc>(
@@ -349,9 +366,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i244.TopologyRepository>(),
       ),
     );
-    gh.lazySingleton<_i800.PositionDataSource>(() => _i800.PositionDataSourceImpl());
-    gh.lazySingleton<_i801.WallDetectorDataSource>(
-        () => _i801.WallDetectorDataSourceImpl());
     return this;
   }
 }

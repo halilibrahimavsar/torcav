@@ -1,8 +1,9 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import '../../domain/entities/heatmap_session.dart';
 import '../../domain/entities/floor_plan.dart';
+import '../../domain/entities/heatmap_point.dart';
+import '../../domain/entities/heatmap_session.dart';
 
 /// Renders signal-strength data and floor plan walls.
 class HeatmapCanvas extends StatelessWidget {
@@ -10,6 +11,8 @@ class HeatmapCanvas extends StatelessWidget {
     required this.session,
     this.floorPlan,
     this.onTap,
+    this.showPath = false,
+    this.activeFloor,
     super.key,
   });
 
@@ -19,34 +22,43 @@ class HeatmapCanvas extends StatelessWidget {
   /// Called with the metric [Offset] (meters) when the user taps.
   final void Function(Offset metricPos)? onTap;
 
+  /// Whether to draw the walking path overlay.
+  final bool showPath;
+
+  /// When set, only points on this floor are rendered (barometer-based).
+  final int? activeFloor;
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = constraints.biggest;
-        // Calculate scale to fit floor plan if provided, or default to 20m
         final maxMetersX = floorPlan?.widthMeters ?? 20.0;
         final maxMetersY = floorPlan?.heightMeters ?? 20.0;
-        
+
         final scaleX = size.width / maxMetersX;
         final scaleY = size.height / maxMetersY;
         final scale = math.min(scaleX, scaleY);
 
         return GestureDetector(
-          onTapDown: onTap == null ? null : (d) {
-            final local = d.localPosition;
-            onTap!(Offset(local.dx / scale, local.dy / scale));
-          },
+          onTapDown: onTap == null
+              ? null
+              : (d) {
+                  final local = d.localPosition;
+                  onTap!(Offset(local.dx / scale, local.dy / scale));
+                },
           child: CustomPaint(
             painter: _HeatmapPainter(
               session: session,
               floorPlan: floorPlan,
               scale: scale,
+              showPath: showPath,
+              activeFloor: activeFloor,
             ),
             child: const SizedBox.expand(),
           ),
         );
-      }
+      },
     );
   }
 }
@@ -56,30 +68,41 @@ class _HeatmapPainter extends CustomPainter {
     required this.session,
     this.floorPlan,
     required this.scale,
+    this.showPath = false,
+    this.activeFloor,
   });
 
   final HeatmapSession session;
   final FloorPlan? floorPlan;
   final double scale;
+  final bool showPath;
+  final int? activeFloor;
 
   @override
   void paint(Canvas canvas, Size size) {
     _drawGrid(canvas, size);
-    
+
     if (floorPlan != null) {
       _drawWalls(canvas);
     }
 
-    if (session.points.isEmpty) return;
+    final points = activeFloor == null
+        ? session.points
+        : session.points.where((p) => p.floor == activeFloor).toList();
 
-    final rssiRange = math.max(1, session.maxRssi - session.minRssi);
+    if (showPath) _drawPath(canvas, points);
 
-    for (final point in session.points) {
-      final t = ((point.rssi - session.minRssi) / rssiRange).clamp(0.0, 1.0);
-      
-      // Use metric units
+    if (points.isEmpty) return;
+
+    final minRssi = points.map((p) => p.rssi).reduce((a, b) => a < b ? a : b);
+    final maxRssi = points.map((p) => p.rssi).reduce((a, b) => a > b ? a : b);
+    final rssiRange = math.max(1, maxRssi - minRssi);
+
+    for (final point in points) {
+      final t = ((point.rssi - minRssi) / rssiRange).clamp(0.0, 1.0);
+
       final centre = Offset(point.floorX * scale, point.floorY * scale);
-      final radius = 2.5 * scale; // 2.5 meters radius for interpolation
+      final radius = 2.5 * scale;
 
       final paint = Paint()
         ..shader = ui.Gradient.radial(
@@ -92,13 +115,49 @@ class _HeatmapPainter extends CustomPainter {
         );
       canvas.drawCircle(centre, radius, paint);
 
-      // Dot marker
       canvas.drawCircle(
         centre,
         3,
         Paint()..color = Colors.white.withValues(alpha: 0.8),
       );
     }
+  }
+
+  void _drawPath(Canvas canvas, List<HeatmapPoint> points) {
+    if (points.length < 2) return;
+
+    final pathPaint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.35)
+      ..strokeWidth = 1.5
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+
+    final path = Path();
+    final first = points.first;
+    path.moveTo(first.floorX * scale, first.floorY * scale);
+    for (int i = 1; i < points.length; i++) {
+      path.lineTo(points[i].floorX * scale, points[i].floorY * scale);
+    }
+    canvas.drawPath(path, pathPaint);
+
+    // Start marker — green filled circle.
+    canvas.drawCircle(
+      Offset(first.floorX * scale, first.floorY * scale),
+      5.0,
+      Paint()..color = Colors.green.withValues(alpha: 0.85),
+    );
+
+    // Current position marker — white outline circle.
+    final last = points.last;
+    canvas.drawCircle(
+      Offset(last.floorX * scale, last.floorY * scale),
+      6.0,
+      Paint()
+        ..color = Colors.white.withValues(alpha: 0.9)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.0,
+    );
   }
 
   void _drawWalls(Canvas canvas) {
@@ -147,6 +206,10 @@ class _HeatmapPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_HeatmapPainter old) => 
-    old.session != session || old.floorPlan != floorPlan || old.scale != scale;
+  bool shouldRepaint(_HeatmapPainter old) =>
+      old.session != session ||
+      old.floorPlan != floorPlan ||
+      old.scale != scale ||
+      old.showPath != showPath ||
+      old.activeFloor != activeFloor;
 }
