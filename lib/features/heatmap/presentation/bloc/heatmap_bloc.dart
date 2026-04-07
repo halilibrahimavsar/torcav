@@ -93,7 +93,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         clearLastStepTimestamp: true,
         currentPosition: Offset.zero,
         currentFloor: 0,
-        isArViewEnabled: false,
+        isArViewEnabled: true,
         liveFloorPlan: const FloorPlan(
           walls: [],
           widthMeters: 40,

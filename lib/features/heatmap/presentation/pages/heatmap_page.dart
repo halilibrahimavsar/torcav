@@ -14,6 +14,7 @@ import '../../domain/entities/floor_plan.dart';
 import '../../domain/entities/heatmap_point.dart';
 import '../../domain/entities/heatmap_session.dart';
 import '../../domain/entities/wall_segment.dart';
+import '../../domain/services/survey_guidance_service.dart';
 import '../bloc/heatmap_bloc.dart';
 import '../bloc/scan_phase.dart';
 import '../widgets/ar_camera_view.dart';
@@ -71,6 +72,8 @@ class _HeatmapPageState extends State<HeatmapPage> {
 
 class _HeatmapView extends StatelessWidget {
   const _HeatmapView();
+
+  static const _guidanceService = SurveyGuidanceService();
 
   @override
   Widget build(BuildContext context) {
@@ -135,6 +138,16 @@ class _HeatmapView extends StatelessWidget {
             floorPlan: floorPlan,
             currentRssi: state.currentRssi,
           );
+          final guidance = _guidanceService.analyze(
+            points: session.points,
+            floorPlan: floorPlan,
+            isRecording: state.isRecording,
+            isArViewEnabled: state.isArViewEnabled,
+            pendingWallCount: state.pendingWalls.length,
+            currentRssi: state.currentRssi,
+            currentX: state.currentPosition?.dx,
+            currentY: state.currentPosition?.dy,
+          );
 
           return Column(
             children: [
@@ -154,12 +167,8 @@ class _HeatmapView extends StatelessWidget {
                 ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                child: _MissionCard(state: state, summary: summary, copy: copy),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: _MetricsStrip(
-                  state: state,
+                child: _SurveyPilotCard(
+                  guidance: guidance,
                   summary: summary,
                   copy: copy,
                 ),
@@ -198,14 +207,27 @@ class _HeatmapView extends StatelessWidget {
                                   child: _ViewModeBadge(
                                     label:
                                         state.isRecording
-                                            ? copy.mapViewLabel
+                                            ? (state.isArViewEnabled
+                                                ? copy.cameraViewLabel
+                                                : copy.mapViewLabel)
                                             : copy.resultViewLabel,
                                   ),
                                 ),
+                                if (state.isRecording)
+                                  Positioned(
+                                    top: 14,
+                                    right: 14,
+                                    child: _RouteCueBadge(
+                                      guidance: guidance,
+                                      copy: copy,
+                                    ),
+                                  ),
                                 Positioned(
+                                  left: 12,
                                   right: 12,
                                   bottom: 12,
-                                  child: _RssiLegend(
+                                  child: _MetricsStrip(
+                                    state: state,
                                     summary: summary,
                                     copy: copy,
                                   ),
@@ -214,10 +236,6 @@ class _HeatmapView extends StatelessWidget {
                             ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-                child: _InsightCard(state: state, summary: summary, copy: copy),
               ),
               if (state.isRecording)
                 Padding(
@@ -363,6 +381,7 @@ class _StatusBar extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _MissionCard extends StatelessWidget {
   const _MissionCard({
     required this.state,
@@ -428,6 +447,151 @@ class _MissionCard extends StatelessWidget {
   }
 }
 
+class _SurveyPilotCard extends StatelessWidget {
+  const _SurveyPilotCard({
+    required this.guidance,
+    required this.summary,
+    required this.copy,
+  });
+
+  final SurveyGuidance guidance;
+  final _HeatmapSummary summary;
+  final _HeatmapCopy copy;
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = copy.guidanceColor(guidance);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: accent.withValues(alpha: 0.28)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.14),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  copy.guidanceIcon(guidance),
+                  color: accent,
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      copy.guidanceTitle(guidance),
+                      style: GoogleFonts.orbitron(
+                        color: accent,
+                        fontSize: 11,
+                        letterSpacing: 1.1,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      copy.guidanceBody(guidance, summary),
+                      style: GoogleFonts.outfit(
+                        color: AppColors.textPrimary,
+                        fontSize: 13,
+                        height: 1.42,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              _ProgressRing(progress: guidance.overallProgress, color: accent),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: LinearProgressIndicator(
+              value: guidance.overallProgress,
+              minHeight: 7,
+              backgroundColor: Colors.white.withValues(alpha: 0.08),
+              valueColor: AlwaysStoppedAnimation<Color>(accent),
+            ),
+          ),
+          const SizedBox(height: 12),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _ScorePill(
+                  label: copy.routeLabel,
+                  value: copy.routeLabelValue(guidance),
+                  color: accent,
+                ),
+                const SizedBox(width: 8),
+                _ScorePill(
+                  label: copy.planConfidenceLabel,
+                  value: copy.percent(guidance.planScore),
+                  color: AppColors.neonBlue,
+                ),
+                const SizedBox(width: 8),
+                _ScorePill(
+                  label: copy.coverageConfidenceLabel,
+                  value: copy.percent(guidance.coverageScore),
+                  color: AppColors.neonGreen,
+                ),
+                const SizedBox(width: 8),
+                _ScorePill(
+                  label: copy.signalConfidenceLabel,
+                  value: copy.percent(guidance.signalScore),
+                  color: summary.signalColor,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _FeedDot(
+                  label: copy.motionFeedLabel,
+                  active: guidance.feeds.motionLive,
+                ),
+                const SizedBox(width: 10),
+                _FeedDot(
+                  label: copy.wifiFeedLabel,
+                  active: guidance.feeds.wifiLive,
+                ),
+                const SizedBox(width: 10),
+                _FeedDot(
+                  label: copy.cameraFeedLabel,
+                  active: guidance.feeds.cameraLive,
+                ),
+                const SizedBox(width: 10),
+                _FeedDot(
+                  label: copy.planFeedLabel,
+                  active: guidance.feeds.planLive,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _MetricsStrip extends StatelessWidget {
   const _MetricsStrip({
     required this.state,
@@ -441,57 +605,148 @@ class _MetricsStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cards = [
-      _MetricCard(
-        label: copy.samplesLabel,
-        value: '${summary.sampleCount}',
-        helper:
-            summary.sampleCount == 0
-                ? copy.noSamplesHelper
-                : copy.samplesHelper(summary.sampleCount),
-        color: AppColors.neonCyan,
+    final feeds = [
+      copy.feedStatusLabel(
+        copy.motionFeedLabel,
+        state.currentPosition != null || summary.sampleCount > 0,
       ),
-      _MetricCard(
-        label: copy.wallsLabel,
-        value: '${summary.wallCount}',
-        helper:
-            summary.wallCount == 0
-                ? copy.noWallsHelper
-                : copy.wallsHelper(summary.wallCount),
-        color: AppColors.neonBlue,
+      copy.feedStatusLabel(
+        copy.wifiFeedLabel,
+        state.currentRssi != null || summary.sampleCount > 0,
       ),
-      _MetricCard(
-        label:
-            state.isRecording ? copy.currentSignalLabel : copy.avgSignalLabel,
-        value: summary.signalDisplay(copy),
-        helper: summary.signalHelper(copy),
-        color: summary.signalColor,
+      copy.feedStatusLabel(
+        copy.cameraFeedLabel,
+        state.isRecording && state.phase == ScanPhase.scanning,
       ),
-      _MetricCard(
-        label: copy.weakZonesLabel,
-        value: '${summary.weakZoneCount}',
-        helper: copy.weakZoneHelper(summary.weakZoneCount),
-        color:
-            summary.weakZoneCount == 0
-                ? AppColors.neonGreen
-                : AppColors.neonOrange,
-      ),
-      _MetricCard(
-        label: copy.planSizeLabel,
-        value: summary.planSizeDisplay(copy),
-        helper: copy.planSizeHelper,
-        color: AppColors.neonPurple,
+      copy.feedStatusLabel(
+        copy.planFeedLabel,
+        summary.wallCount > 0 || state.pendingWalls.isNotEmpty,
       ),
     ];
 
-    return SizedBox(
-      height: 104,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: cards.length,
-        physics: const BouncingScrollPhysics(),
-        separatorBuilder: (_, _) => const SizedBox(width: 10),
-        itemBuilder: (context, index) => cards[index],
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.darkSurface.withValues(alpha: 0.92),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: AppColors.glassWhiteBorder),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            copy.infoSheetTitle,
+            style: GoogleFonts.orbitron(
+              color: AppColors.neonCyan,
+              fontSize: 10,
+              letterSpacing: 1.2,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 10),
+          _SheetTextRow(
+            label:
+                state.isRecording
+                    ? copy.currentSignalLabel
+                    : copy.avgSignalLabel,
+            value: summary.signalDisplay(copy),
+            helper: summary.signalHelper(copy),
+            accent: summary.signalColor,
+          ),
+          const SizedBox(height: 6),
+          _SheetTextRow(
+            label: copy.samplesLabel,
+            value: '${summary.sampleCount}',
+            helper:
+                summary.sampleCount == 0
+                    ? copy.noSamplesHelper
+                    : copy.samplesHelper(summary.sampleCount),
+            accent: AppColors.neonCyan,
+          ),
+          const SizedBox(height: 6),
+          _SheetTextRow(
+            label: copy.wallsLabel,
+            value: '${summary.wallCount}',
+            helper:
+                summary.wallCount == 0
+                    ? copy.noWallsHelper
+                    : copy.wallsHelper(summary.wallCount),
+            accent: AppColors.neonBlue,
+          ),
+          const SizedBox(height: 6),
+          _SheetTextRow(
+            label: copy.weakZonesLabel,
+            value: '${summary.weakZoneCount}',
+            helper: copy.weakZoneHelper(summary.weakZoneCount),
+            accent:
+                summary.weakZoneCount == 0
+                    ? AppColors.neonGreen
+                    : AppColors.neonOrange,
+          ),
+          const SizedBox(height: 6),
+          _SheetTextRow(
+            label: copy.planSizeLabel,
+            value: summary.planSizeDisplay(copy),
+            helper: copy.planSizeHelper,
+            accent: AppColors.neonPurple,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            feeds.join('  ·  '),
+            style: GoogleFonts.outfit(
+              color: AppColors.textSecondary,
+              fontSize: 12,
+              height: 1.3,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RouteCueBadge extends StatelessWidget {
+  const _RouteCueBadge({required this.guidance, required this.copy});
+
+  final SurveyGuidance guidance;
+  final _HeatmapCopy copy;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 168),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.42),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: copy.guidanceColor(guidance).withValues(alpha: 0.32),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            copy.guidanceIcon(guidance),
+            size: 16,
+            color: copy.guidanceColor(guidance),
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              copy.routeLabelValue(guidance),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.outfit(
+                color: AppColors.textPrimary,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                height: 1.2,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -518,6 +773,58 @@ class _CanvasBackdrop extends StatelessWidget {
         ),
         border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.16)),
       ),
+    );
+  }
+}
+
+class _SheetTextRow extends StatelessWidget {
+  const _SheetTextRow({
+    required this.label,
+    required this.value,
+    required this.helper,
+    required this.accent,
+  });
+
+  final String label;
+  final String value;
+  final String helper;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 8,
+          height: 8,
+          margin: const EdgeInsets.only(top: 5),
+          decoration: BoxDecoration(color: accent, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: RichText(
+            text: TextSpan(
+              style: GoogleFonts.outfit(
+                color: AppColors.textPrimary,
+                fontSize: 13,
+                height: 1.35,
+              ),
+              children: [
+                TextSpan(
+                  text: '$label: ',
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+                TextSpan(text: value),
+                TextSpan(
+                  text: '  •  $helper',
+                  style: const TextStyle(color: AppColors.textSecondary),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -608,15 +915,18 @@ class _ViewModeBadge extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _InsightCard extends StatelessWidget {
   const _InsightCard({
     required this.state,
     required this.summary,
+    required this.guidance,
     required this.copy,
   });
 
   final HeatmapState state;
   final _HeatmapSummary summary;
+  final SurveyGuidance guidance;
   final _HeatmapCopy copy;
 
   @override
@@ -631,6 +941,9 @@ class _InsightCard extends StatelessWidget {
 
   String _body() {
     if (state.isRecording) {
+      if (guidance.readyToFinish) {
+        return copy.recordingInsightReady;
+      }
       if (summary.sampleCount < 3) {
         return copy.recordingInsightTooEarly;
       }
@@ -899,6 +1212,7 @@ class _SessionPickerSheet extends StatelessWidget {
       '${dt.day}.${dt.month}.${dt.year} ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}';
 }
 
+// ignore: unused_element
 class _RssiLegend extends StatelessWidget {
   const _RssiLegend({required this.summary, required this.copy});
 
@@ -1000,6 +1314,7 @@ class _LegendRow extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _MetricCard extends StatelessWidget {
   const _MetricCard({
     required this.label,
@@ -1063,6 +1378,119 @@ class _MetricCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ScorePill extends StatelessWidget {
+  const _ScorePill({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  final String label;
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: color.withValues(alpha: 0.24)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: GoogleFonts.orbitron(
+              color: color,
+              fontSize: 9,
+              letterSpacing: 1,
+            ),
+          ),
+          const SizedBox(height: 3),
+          Text(
+            value,
+            style: GoogleFonts.outfit(
+              color: AppColors.textPrimary,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FeedDot extends StatelessWidget {
+  const _FeedDot({required this.label, required this.active});
+
+  final String label;
+  final bool active;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = active ? AppColors.neonGreen : AppColors.textMuted;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: GoogleFonts.outfit(
+            color: active ? AppColors.textPrimary : AppColors.textSecondary,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProgressRing extends StatelessWidget {
+  const _ProgressRing({required this.progress, required this.color});
+
+  final double progress;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final clamped = progress.clamp(0.0, 1.0);
+
+    return SizedBox(
+      width: 54,
+      height: 54,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          CircularProgressIndicator(
+            value: clamped,
+            strokeWidth: 4,
+            backgroundColor: Colors.white.withValues(alpha: 0.08),
+            valueColor: AlwaysStoppedAnimation<Color>(color),
+          ),
+          Text(
+            '${(clamped * 100).round()}%',
+            style: GoogleFonts.orbitron(
+              color: AppColors.textPrimary,
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1669,6 +2097,10 @@ class _HeatmapCopy {
   String get resultViewLabel => isTurkish ? 'SONUC GORUNUMU' : 'RESULT VIEW';
 
   String get findingsTitle => isTurkish ? 'NE ANLATIYOR?' : 'WHAT IT MEANS';
+  String get recordingInsightReady =>
+      isTurkish
+          ? 'Survey artik yeterince doldu. Son bir oda gecisi daha alip sonucu kaydedebilirsiniz.'
+          : 'The survey is now dense enough. One last room transition is enough before saving the result.';
   String get recordingInsightTooEarly =>
       isTurkish
           ? 'Henuz cok erken. En az birkac odada dolasip 4-5 ornek toplandiginda sonuc yorumlanabilir hale gelir.'
@@ -1742,6 +2174,16 @@ class _HeatmapCopy {
   String get legendStrong => isTurkish ? 'Guclu' : 'Strong';
   String get legendFair => isTurkish ? 'Orta' : 'Fair';
   String get legendWeak => isTurkish ? 'Zayif' : 'Weak';
+  String get cameraViewLabel => isTurkish ? 'CANLI KAMERA' : 'LIVE CAMERA';
+  String get infoSheetTitle =>
+      isTurkish ? 'CANLI SURVEY VERILERI' : 'LIVE SURVEY DATA';
+
+  String feedStatusLabel(String label, bool active) {
+    if (isTurkish) {
+      return '$label: ${active ? 'aktif' : 'pasif'}';
+    }
+    return '$label: ${active ? 'active' : 'inactive'}';
+  }
 
   String get tutorialTitle =>
       isTurkish ? 'ISI HARITASINI NASIL OKURUM?' : 'HOW TO READ THE HEATMAP';
@@ -1771,4 +2213,147 @@ class _HeatmapCopy {
       isTurkish
           ? 'Plan cizgisini guclendirmek icin AR kullan'
           : 'Use AR to strengthen the outline';
+
+  String get routeLabel => isTurkish ? 'SONRAKI ADIM' : 'NEXT STEP';
+  String get planConfidenceLabel =>
+      isTurkish ? 'PLAN GUVENI' : 'PLAN CONFIDENCE';
+  String get coverageConfidenceLabel =>
+      isTurkish ? 'KAPSAMA GUVENI' : 'COVERAGE CONFIDENCE';
+  String get signalConfidenceLabel =>
+      isTurkish ? 'SINYAL GUVENI' : 'SIGNAL CONFIDENCE';
+  String get motionFeedLabel => isTurkish ? 'Hareket' : 'Motion';
+  String get wifiFeedLabel => 'Wi-Fi';
+  String get cameraFeedLabel => isTurkish ? 'Kamera' : 'Camera';
+  String get planFeedLabel => isTurkish ? 'Plan' : 'Plan';
+
+  String percent(double value) => '${(value.clamp(0.0, 1.0) * 100).round()}%';
+
+  Color guidanceColor(SurveyGuidance guidance) {
+    switch (guidance.tone) {
+      case SurveyTone.info:
+        return AppColors.neonCyan;
+      case SurveyTone.progress:
+        return AppColors.neonGreen;
+      case SurveyTone.caution:
+        return AppColors.neonOrange;
+      case SurveyTone.success:
+        return AppColors.neonBlue;
+    }
+  }
+
+  IconData guidanceIcon(SurveyGuidance guidance) {
+    switch (guidance.stage) {
+      case SurveyStage.idle:
+        return Icons.play_arrow_rounded;
+      case SurveyStage.calibration:
+        return Icons.directions_walk_rounded;
+      case SurveyStage.planCapture:
+        return guidance.suggestAr
+            ? Icons.view_in_ar_rounded
+            : Icons.home_work_outlined;
+      case SurveyStage.coverageSweep:
+        return Icons.alt_route_rounded;
+      case SurveyStage.weakZoneReview:
+        return Icons.wifi_tethering_error_rounded;
+      case SurveyStage.wrapUp:
+        return Icons.flag_rounded;
+      case SurveyStage.review:
+        return Icons.analytics_rounded;
+    }
+  }
+
+  String guidanceTitle(SurveyGuidance guidance) {
+    switch (guidance.stage) {
+      case SurveyStage.idle:
+        return isTurkish ? 'Survey Hazirligi' : 'Survey Setup';
+      case SurveyStage.calibration:
+        return isTurkish ? 'Rota Baslatiliyor' : 'Starting Route';
+      case SurveyStage.planCapture:
+        return isTurkish ? 'Plan Cizgisi Toplaniyor' : 'Capturing Outline';
+      case SurveyStage.coverageSweep:
+        return isTurkish ? 'Kapsama Dolduruluyor' : 'Filling Coverage';
+      case SurveyStage.weakZoneReview:
+        return isTurkish ? 'Zayif Alan Dogrulama' : 'Weak Zone Check';
+      case SurveyStage.wrapUp:
+        return isTurkish ? 'Kayda Hazir' : 'Ready To Save';
+      case SurveyStage.review:
+        return isTurkish ? 'Survey Kalitesi' : 'Survey Quality';
+    }
+  }
+
+  String guidanceBody(SurveyGuidance guidance, _HeatmapSummary summary) {
+    switch (guidance.stage) {
+      case SurveyStage.idle:
+        return isTurkish
+            ? 'Yeni bir tur baslatin. Uygulama hareket, kamera ve Wi-Fi izini birlikte sentezleyerek net bir plan cikarmaya calisacak.'
+            : 'Start a new survey. The app will combine motion, camera, and Wi-Fi traces into a cleaner floor plan.';
+      case SurveyStage.calibration:
+        return isTurkish
+            ? 'Ilk izi olusturmak icin 5-8 adim duz ilerleyin. Oda girisleri ve kose donusleri konum iskeletini daha hizli oturtur.'
+            : 'Walk straight for 5-8 steps to establish the first trace. Doorways and corner turns help anchor the layout faster.';
+      case SurveyStage.planCapture:
+        return guidance.suggestAr
+            ? (isTurkish
+                ? 'Plan guveni henuz dusuk. AR moduna gecip telefonu duvarlara ve kapi hatlarina cevirin.'
+                : 'Outline confidence is still low. Switch to AR and face walls and door edges.')
+            : (isTurkish
+                ? 'Duvar cizgisi toplanıyor. Telefonu oda sinirlarina dogru sakin sekilde gezdirin.'
+                : 'Wall lines are being captured. Sweep the phone calmly across room boundaries.');
+      case SurveyStage.coverageSweep:
+        return isTurkish
+            ? 'Haritanin ${routeLabelValue(guidance)} tarafi daha seyrek. O yone gidip 3-4 yeni ornek toplayin.'
+            : 'The ${routeLabelValue(guidance)} side of the map is still sparse. Move there and collect 3-4 more samples.';
+      case SurveyStage.weakZoneReview:
+        return isTurkish
+            ? 'Su an zayif sinyal bolgesindesiniz. Bu alani biraz daha tarayip sonucun gercek bir olu nokta olup olmadigini netlestirin.'
+            : 'You are currently in a weak-signal area. Sweep this zone a bit more to confirm whether it is a real dead spot.';
+      case SurveyStage.wrapUp:
+        return isTurkish
+            ? 'Plan, kapsama ve sinyal yogunlugu yeterince doldu. Sonucu kaydedip review ekraninda plan/isi haritasini okuyabilirsiniz.'
+            : 'Outline, coverage, and signal density are now strong enough. Save the result and read the plan/heatmap in review.';
+      case SurveyStage.review:
+        return isTurkish
+            ? 'Bu tur ${(guidance.overallProgress * 100).round()}% dolulukta. ${summary.sampleCount} ornek ve ${summary.wallCount} duvar ile sonuc okunabilir.'
+            : 'This survey is ${(guidance.overallProgress * 100).round()}% complete. With ${summary.sampleCount} samples and ${summary.wallCount} walls, the result is readable.';
+    }
+  }
+
+  String routeLabelValue(SurveyGuidance guidance) {
+    if (guidance.readyToFinish) {
+      return isTurkish ? 'Kaydi bitir' : 'Finish survey';
+    }
+    switch (guidance.stage) {
+      case SurveyStage.idle:
+        return isTurkish ? 'Turu baslat' : 'Start survey';
+      case SurveyStage.calibration:
+        return isTurkish ? 'Duz ilerle' : 'Walk forward';
+      case SurveyStage.planCapture:
+        return guidance.suggestAr
+            ? (isTurkish ? 'AR moduna gec' : 'Switch to AR')
+            : (isTurkish ? 'Duvarlari tara' : 'Scan the walls');
+      case SurveyStage.coverageSweep:
+        return directionLabel(guidance.sparseRegion);
+      case SurveyStage.weakZoneReview:
+        return isTurkish ? 'Zayif alani tara' : 'Sweep weak zone';
+      case SurveyStage.wrapUp:
+        return isTurkish ? 'Son turu tamamla' : 'Wrap up run';
+      case SurveyStage.review:
+        return isTurkish ? 'Sonucu incele' : 'Review result';
+    }
+  }
+
+  String directionLabel(SparseRegion? region) {
+    switch (region) {
+      case SparseRegion.leftWing:
+        return isTurkish ? 'sol kanada ilerle' : 'move to left wing';
+      case SparseRegion.rightWing:
+        return isTurkish ? 'sag kanada ilerle' : 'move to right wing';
+      case SparseRegion.topWing:
+        return isTurkish ? 'ust bolgeyi doldur' : 'cover upper area';
+      case SparseRegion.bottomWing:
+        return isTurkish ? 'alt bolgeyi doldur' : 'cover lower area';
+      case null:
+        return isTurkish ? 'dengeyi koru' : 'keep sweeping';
+    }
+  }
 }
