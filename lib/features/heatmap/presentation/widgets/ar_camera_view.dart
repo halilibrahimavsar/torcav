@@ -41,8 +41,10 @@ class _ArCameraViewState extends State<ArCameraView> {
       setState(() => _isInit = true);
       
       // Start image stream for wall detection
+      final bloc = context.read<HeatmapBloc>();
       _controller!.startImageStream((image) {
-        context.read<HeatmapBloc>().processCameraImage(image);
+        if (!mounted) return;
+        bloc.processCameraImage(image);
       });
     } catch (e) {
       debugPrint('Camera error: $e');

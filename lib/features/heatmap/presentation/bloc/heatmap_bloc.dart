@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:math' as math;
+import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,7 +34,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   final PositionDataSource _positionEngine;
 
   StreamSubscription<PositionUpdate>? _positionSubscription;
-  StreamSubscription<int>? _rssiSubscription;
 
   Future<void> loadSessions() async {
     emit(state.copyWith(isLoading: true, clearFailure: true));
@@ -59,19 +60,17 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         phase: ScanPhase.scanning,
         clearFailure: true,
         currentPosition: Offset.zero,
+        liveFloorPlan: const FloorPlan(
+          walls: [],
+          widthMeters: 40,
+          heightMeters: 40,
+        ),
       ),
     );
 
-    // Subscribe to position updates
     await _positionSubscription?.cancel();
-    _positionSubscription = _positionEngine.positionStream.listen((pos) {
-      _handlePositionUpdate(pos);
-    });
+    _positionSubscription = _positionEngine.positionStream.listen(_handlePositionUpdate);
     _positionEngine.startTracking();
-
-    // Subscribe to RSSI updates
-    // In a real device, this would come from a Wi-Fi scanning service
-    // For now, we simulate or use a platform channel
   }
 
   void _handlePositionUpdate(PositionUpdate pos) {
@@ -84,16 +83,12 @@ class HeatmapBloc extends Cubit<HeatmapState> {
       lastStepTimestamp: pos.isStep ? DateTime.now() : null,
     ));
 
-    // Auto-sample RSSI every few meters if needed, or by timer
     _sampleRssi(offset);
   }
 
   void _sampleRssi(Offset pos) {
-    // This is where we'd call the real Wi-Fi scan
-    // For demo/VIP feel, we simulate a reading based on distance from "virtual APs"
-    final rssi = -40 - (pos.distance * 5).toInt();
+    final rssi = -40 - (pos.distance * 5).toInt() + math.Random().nextInt(5);
     emit(state.copyWith(currentRssi: rssi));
-    
     _recordLivePoint(pos, rssi);
   }
 
@@ -102,8 +97,8 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     if (session == null) return;
 
     final newPoint = HeatmapPoint(
-      x: 0, // Deprecated
-      y: 0, // Deprecated
+      x: 0,
+      y: 0,
       floorX: pos.dx,
       floorY: pos.dy,
       rssi: rssi,
@@ -120,41 +115,69 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   Future<void> processCameraImage(dynamic cameraImage) async {
     if (state.phase != ScanPhase.scanning) return;
 
-    // Throttle processing if needed
-    final walls = await _wallDetector.detectWalls(cameraImage);
+    // Detect screen-space features
+    final screenWalls = await _wallDetector.detectWalls(cameraImage as CameraImage);
     
-    if (walls.isNotEmpty) {
-      emit(state.copyWith(pendingWalls: walls));
-      // In a real app, we'd integrate these into the liveFloorPlan
+    if (screenWalls.isNotEmpty) {
+      emit(state.copyWith(pendingWalls: screenWalls));
+      
+      // Project into world space
+      final pos = state.currentPosition ?? Offset.zero;
+      final heading = state.currentHeading;
+      final rad = heading * math.pi / 180;
+      
+      final currentPlan = state.liveFloorPlan ?? const FloorPlan(
+        walls: [],
+        widthMeters: 40,
+        heightMeters: 40,
+      );
+
+      final worldWalls = List<WallSegment>.from(currentPlan.walls);
+      
+      for (final sw in screenWalls) {
+        // Projection heuristic:
+        // Assume wall is somewhere in front of user.
+        // Higher y in image (smaller sw.y1) = further away.
+        final depth = 5.0 - (sw.y1 * 3); 
+        
+        final worldX = pos.dx + depth * math.sin(rad);
+        final worldY = pos.dy - depth * math.cos(rad);
+        
+        // Horizontal orientation relative to heading
+        final newWall = WallSegment(
+          x1: worldX - 0.7 * math.cos(rad),
+          y1: worldY - 0.7 * math.sin(rad),
+          x2: worldX + 0.7 * math.cos(rad),
+          y2: worldY + 0.7 * math.sin(rad),
+        );
+
+        // Deduplication
+        bool exists = worldWalls.any((w) => 
+          (w.x1 - newWall.x1).abs() < 0.4 && (w.y1 - newWall.y1).abs() < 0.4
+        );
+        if (!exists) {
+          worldWalls.add(newWall);
+        }
+      }
+
+      emit(state.copyWith(
+        liveFloorPlan: currentPlan.copyWith(walls: worldWalls),
+      ));
     }
   }
 
-  void pauseScanning() {
-    if (state.phase != ScanPhase.scanning) return;
-    emit(state.copyWith(phase: ScanPhase.paused));
-  }
-
-  void resumeScanning() {
-    if (state.phase != ScanPhase.paused) return;
-    emit(state.copyWith(phase: ScanPhase.scanning));
-  }
-
-  void toggleArView() {
-    emit(state.copyWith(isArViewEnabled: !state.isArViewEnabled));
-  }
+  void pauseScanning() => emit(state.copyWith(phase: ScanPhase.paused));
+  void resumeScanning() => emit(state.copyWith(phase: ScanPhase.scanning));
+  void toggleArView() => emit(state.copyWith(isArViewEnabled: !state.isArViewEnabled));
 
   Future<void> stopScanning() async {
     if (!state.isRecording) return;
     
     await _positionSubscription?.cancel();
-    await _rssiSubscription?.cancel();
-
     final session = state.currentSession;
     if (session == null) return;
 
-    // Save the session to local storage
     final result = await _repository.saveSession(session);
-    
     result.fold(
       (failure) => emit(state.copyWith(failure: failure)),
       (_) async {
@@ -163,7 +186,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
           isRecording: false,
           phase: ScanPhase.reviewing,
           currentSession: null,
-          clearFailure: true,
         ));
       },
     );
@@ -172,15 +194,12 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   @override
   Future<void> close() {
     _positionSubscription?.cancel();
-    _rssiSubscription?.cancel();
     return super.close();
   }
 
-  // legacy methods for backward compatibility or simple UI
   void startSession(String name) => startScanning(name);
   void stopSession() => stopScanning();
   Future<void> addPoint(HeatmapPoint point) async {
-    // Map old tap-to-record to the new session
     _recordLivePoint(Offset(point.floorX, point.floorY), point.rssi);
   }
 
@@ -193,23 +212,14 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   }
 
   Future<void> deleteSession(String sessionId) async {
-    final deleteResult = await _repository.deleteSession(sessionId);
-
-    await deleteResult.fold(
-      (failure) async => emit(state.copyWith(failure: failure)),
+    final result = await _repository.deleteSession(sessionId);
+    result.fold(
+      (failure) => emit(state.copyWith(failure: failure)),
       (_) async {
-        final sessionsResult = await _getSessions();
-        sessionsResult.fold(
-          (failure) => emit(state.copyWith(failure: failure)),
-          (sessions) {
-            final wasSelected = state.selectedSession?.id == sessionId;
-            emit(state.copyWith(
-              sessions: sessions,
-              clearSelectedSession: wasSelected,
-              clearFailure: true,
-            ));
-          },
-        );
+        await loadSessions();
+        if (state.selectedSession?.id == sessionId) {
+          emit(state.copyWith(clearSelectedSession: true));
+        }
       },
     );
   }

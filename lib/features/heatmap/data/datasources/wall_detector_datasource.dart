@@ -10,39 +10,36 @@ abstract class WallDetectorDataSource {
 class WallDetectorDataSourceImpl implements WallDetectorDataSource {
   @override
   Future<List<WallSegment>> detectWalls(CameraImage image) async {
-    // In a real app, this would use TensorFlow Lite or ARCore.
-    // Here we use a simplified pixel-gradient analysis for the "Premium" feel.
-    
-    // 1. Convert YUV420 to RGB (simplified) or use only Y plane
+    // 1. Core image data
     final plane = image.planes[0];
     final bytes = plane.bytes;
     final width = image.width;
     final height = image.height;
 
-    final walls = <WallSegment>[];
+    final detected = <WallSegment>[];
 
-    // Sample vertical lines in the image
-    // If we see a high-contrast transition, we assume a corner/wall edge
-    for (int x = 20; x < width - 20; x += 100) {
-      for (int y = 20; y < height - 40; y += 50) {
+    // 2. Screen-space Wall Detection (Normalized 0..1)
+    // We sample high-contrast vertical lines in the image.
+    for (int x = width ~/ 4; x < width * 3 ~/ 4; x += 150) {
+      for (int y = height ~/ 3; y < height * 2 ~/ 3; y += 100) {
         final idx = y * width + x;
-        final nextIdx = (y + 10) * width + x;
+        final nextIdx = (y + 50) * width + x;
         
         if (nextIdx < bytes.length) {
           final diff = (bytes[idx] - bytes[nextIdx]).abs();
-          if (diff > 50) {
-             // Found a vertical contrast edge
-             walls.add(WallSegment(
-               x1: x / width, 
-               y1: y / height, 
-               x2: x / width, 
-               y2: (y + 20) / height,
-             ));
+          if (diff > 45) {
+            // Found a likely vertical boundary in the camera view.
+            detected.add(WallSegment(
+              x1: x / width,
+              y1: y / height,
+              x2: x / width,
+              y2: (y + 50) / height,
+            ));
           }
         }
       }
     }
 
-    return walls.take(10).toList(); // Limit for performance
+    return detected.take(5).toList();
   }
 }

@@ -148,8 +148,9 @@ class _HeatmapView extends StatelessWidget {
                               ),
                               HeatmapCanvas(
                                 session: session,
+                                floorPlan: state.liveFloorPlan,
                                 onTap: state.isRecording
-                                    ? (norm) => _onCanvasTap(context, norm)
+                                    ? (metricPos) => _onCanvasTap(context, metricPos)
                                     : null,
                               ),
                               // Tap-to-measure hint when recording
@@ -216,17 +217,17 @@ class _HeatmapView extends StatelessWidget {
     );
   }
 
-  void _onCanvasTap(BuildContext context, Offset norm) {
+  void _onCanvasTap(BuildContext context, Offset metricPos) {
     final bloc = context.read<HeatmapBloc>();
     // Simulate current RSSI with slight randomness for demo;
     // in production this would come from WifiInfo / platform channel.
     final fakeRssi = -55 - math.Random().nextInt(30);
     bloc.addPoint(
       HeatmapPoint(
-        x: norm.dx,
-        y: norm.dy,
-        floorX: 0.0,
-        floorY: 0.0,
+        x: 0, // Deprecated
+        y: 0, // Deprecated
+        floorX: metricPos.dx,
+        floorY: metricPos.dy,
         heading: 0.0,
         rssi: fakeRssi,
         timestamp: DateTime.now(),

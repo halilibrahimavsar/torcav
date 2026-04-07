@@ -7,6 +7,7 @@ import '../../../security/presentation/pages/security_center_page.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
 import '../../../monitoring/presentation/pages/topology_page.dart';
 import '../../../security/presentation/pages/vulnerability_lab_page.dart';
+import '../../../heatmap/presentation/pages/heatmap_page.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
 
 class OperationsHubPage extends StatelessWidget {
@@ -92,6 +93,19 @@ class OperationsHubPage extends StatelessWidget {
                       ),
                     ),
                 delay: 400,
+              ),
+              _OperationCard(
+                title: l10n.heatmapTooltip,
+                subtitle: l10n.temporalHeatmap,
+                icon: Icons.map_rounded,
+                color: Colors.cyanAccent,
+                onTap:
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const HeatmapPage(),
+                      ),
+                    ),
+                delay: 450,
               ),
               _OperationCard(
                 title: l10n.vulnLabTitle,
