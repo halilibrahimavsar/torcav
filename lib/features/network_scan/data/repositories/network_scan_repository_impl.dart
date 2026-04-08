@@ -29,21 +29,25 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
     String subnet,
   ) async {
     try {
-      final results = (await _arpDataSource.discoverHosts(targetSubnet: subnet))
-          .map(
-            (h) => NetworkDevice(
-              ip: h.ip,
-              mac: h.mac,
-              vendor: h.vendor,
-              hostName: h.hostName,
-              latency: h.latency,
-            ),
-          )
-          .toList();
-
-      return Right(results);
-    } on Failure catch (e) {
-      return Left(e);
+      final discoverResult = await _arpDataSource.discoverHosts(targetSubnet: subnet);
+      
+      return discoverResult.fold(
+        (failure) => Left(failure),
+        (hosts) {
+          final results = hosts
+              .map(
+                (h) => NetworkDevice(
+                  ip: h.ip,
+                  mac: h.mac,
+                  vendor: h.vendor,
+                  hostName: h.hostName,
+                  latency: h.latency,
+                ),
+              )
+              .toList();
+          return Right(results);
+        },
+      );
     } catch (e) {
       return Left(ScanFailure(e.toString()));
     }
@@ -66,9 +70,17 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
 
       final results = await Future.wait([arpFuture, mdnsFuture, upnpFuture]);
       
-      final List<HostScanResult> baseHosts = results[0] as List<HostScanResult>;
-      final Map<String, List<String>> mdnsMap = results[1] as Map<String, List<String>>;
-      final Map<String, String> upnpMap = results[2] as Map<String, String>;
+      final arpResult = results[0] as Either<Failure, List<HostScanResult>>;
+      final mdnsResult = results[1] as Either<Failure, Map<String, List<String>>>;
+      final upnpResult = results[2] as Either<Failure, Map<String, String>>;
+
+      if (arpResult.isLeft()) {
+        return Left(arpResult.match((l) => l, (r) => throw Exception()));
+      }
+      
+      final List<HostScanResult> baseHosts = arpResult.getOrElse((l) => []);
+      final Map<String, List<String>> mdnsMap = mdnsResult.getOrElse((l) => {});
+      final Map<String, String> upnpMap = upnpResult.getOrElse((l) => {});
 
       // Enrich hosts with discovered info (mDNS names + UPnP + AI classification)
       final enrichedHosts = <HostScanResult>[];

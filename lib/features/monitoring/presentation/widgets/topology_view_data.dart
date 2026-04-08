@@ -30,8 +30,9 @@ class TopologyViewData {
 
     if (forceView) {
       final nodes = topology.nodes;
-      final radius = math.min(size.width, size.height) * 0.4;
+      final radius = math.min(size.width, size.height) * 0.45;
 
+      // Initial circular layout
       for (int i = 0; i < nodes.length; i++) {
         final angle = (i * 2 * math.pi) / nodes.length;
         positions[nodes[i].id] = Offset(
@@ -40,23 +41,41 @@ class TopologyViewData {
         );
       }
 
-      for (int step = 0; step < 5; step++) {
+      // Stronger force-directed repulsion loop
+      for (int step = 0; step < 50; step++) {
+        final forces = <String, Offset>{};
+        for (final node in nodes) {
+          forces[node.id] = Offset.zero;
+        }
+
         for (int i = 0; i < nodes.length; i++) {
+          final idA = nodes[i].id;
+          final posA = positions[idA]!;
+
+          // Repulsion from other nodes
           for (int j = i + 1; j < nodes.length; j++) {
-            final idA = nodes[i].id;
             final idB = nodes[j].id;
-            final posA = positions[idA]!;
             final posB = positions[idB]!;
             final delta = posB - posA;
             final dist = delta.distance;
-            const minAllowed = 60.0;
+            const minAllowed = 180.0; // Increased significantly to prevent overlap
 
             if (dist < minAllowed && dist > 0.1) {
-              final force = (minAllowed - dist) / dist * 0.5;
-              positions[idA] = posA - delta * force;
-              positions[idB] = posB + delta * force;
+              final strength = (minAllowed - dist) / dist * 0.8;
+              final force = delta * strength;
+              forces[idA] = forces[idA]! - force;
+              forces[idB] = forces[idB]! + force;
             }
           }
+
+          // Central gravity (keep them from drifting too far)
+          final toCenter = center - posA;
+          forces[idA] = forces[idA]! + toCenter * 0.05;
+        }
+
+        // Apply forces
+        for (final node in nodes) {
+          positions[node.id] = positions[node.id]! + forces[node.id]!;
         }
       }
 
@@ -65,9 +84,9 @@ class TopologyViewData {
 
     final accessPoints = topology.accessPoints;
     final otherDevices = topology.connectedDevices;
-    final currentY = size.height - 100;
-    const gatewayY = 100.0;
-    final middleY = center.dy;
+    final currentY = size.height - 80;
+    const gatewayY = 80.0;
+    const rowSpacing = 180.0; // Increased for better clarity
 
     final currentDevice = topology.currentDevice;
     if (currentDevice != null) {
@@ -76,25 +95,25 @@ class TopologyViewData {
 
     final gateway = topology.gateway;
     if (gateway != null) {
-      positions[gateway.id] = const Offset(0, gatewayY).translate(center.dx, 0);
+      positions[gateway.id] = Offset(center.dx, gatewayY);
     }
 
+    // Access points in a wide row below gateway
     for (var i = 0; i < accessPoints.length; i++) {
-      final radius = size.width * 0.35;
-      final x = center.dx + radius * (i.isEven ? -0.6 : 0.6);
-      final y = middleY - 40 + (i ~/ 2) * 100;
+      final width = size.width * 0.8;
+      final x = center.dx + (accessPoints.length <= 1 ? 0 : (i / (accessPoints.length - 1) - 0.5) * width);
+      final y = gatewayY + rowSpacing;
       positions[accessPoints[i].id] = Offset(x, y);
     }
 
-    // Dynamically adjust columns based on device count for better spacing
-    final cols = otherDevices.length <= 4 ? 2 : 3;
+    // Grid layout for devices with more spacing
+    final cols = otherDevices.length <= 2 ? 1 : (otherDevices.length <= 6 ? 2 : 3);
     for (var i = 0; i < otherDevices.length; i++) {
       final col = i % cols;
       final row = i ~/ cols;
-      final spacingX = size.width * 0.8 / cols;
-      final xOffset = (col - (cols - 1) / 2) * spacingX;
-      final x = center.dx + xOffset;
-      final y = middleY + 100 + row * 100;
+      final colWidth = size.width * 0.9 / cols;
+      final x = center.dx + (col - (cols - 1) / 2) * colWidth;
+      final y = (accessPoints.isNotEmpty ? gatewayY + 2 * rowSpacing : gatewayY + rowSpacing) + row * rowSpacing;
       positions[otherDevices[i].id] = Offset(x, y);
     }
 

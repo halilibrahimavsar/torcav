@@ -8,6 +8,7 @@ enum SecurityFindingCategory {
   privacy,
   lanExposure,
   heatmapCoverage,
+  hardwareVulnerability,
 }
 
 enum SecurityFindingConfidence { heuristic, observed, strong }

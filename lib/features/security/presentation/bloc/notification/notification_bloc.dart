@@ -72,9 +72,10 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   ) async {
     emit(NotificationLoading());
     try {
-      final events = await _repository.getSecurityEvents();
+      final eventsResult = await _repository.getSecurityEvents();
       // Only show events that are mapped to "notifications"
       // For now, all security events are notifications
+      final events = eventsResult.getOrElse(() => []);
       final unreadCount = events.where((e) => !e.isRead).length;
       emit(
         NotificationLoaded(

@@ -14,13 +14,30 @@ class WifiScanLoading extends WifiScanState {}
 class WifiScanLoaded extends WifiScanState {
   final ScanSnapshot snapshot;
   final Set<String> pinnedBssids;
+  final bool isRefreshing;
 
-  const WifiScanLoaded(this.snapshot, {this.pinnedBssids = const {}});
+  const WifiScanLoaded(
+    this.snapshot, {
+    this.pinnedBssids = const {},
+    this.isRefreshing = false,
+  });
 
   List<WifiObservation> get networks => snapshot.networks;
 
   @override
-  List<Object> get props => [snapshot, pinnedBssids];
+  List<Object> get props => [snapshot, pinnedBssids, isRefreshing];
+
+  WifiScanLoaded copyWith({
+    ScanSnapshot? snapshot,
+    Set<String>? pinnedBssids,
+    bool? isRefreshing,
+  }) {
+    return WifiScanLoaded(
+      snapshot ?? this.snapshot,
+      pinnedBssids: pinnedBssids ?? this.pinnedBssids,
+      isRefreshing: isRefreshing ?? this.isRefreshing,
+    );
+  }
 }
 
 class WifiScanError extends WifiScanState {

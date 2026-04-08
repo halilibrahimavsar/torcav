@@ -67,14 +67,22 @@ import '../../features/network_scan/data/datasources/lan_scan_history_local_data
     as _i190;
 import '../../features/network_scan/data/datasources/mdns_data_source.dart'
     as _i165;
+import '../../features/network_scan/data/datasources/port_scan_data_source.dart'
+    as _i978;
 import '../../features/network_scan/data/datasources/upnp_data_source.dart'
     as _i119;
 import '../../features/network_scan/data/repositories/network_scan_repository_impl.dart'
     as _i551;
+import '../../features/network_scan/data/repositories/port_scan_repository_impl.dart'
+    as _i27;
 import '../../features/network_scan/domain/repositories/network_scan_repository.dart'
     as _i1073;
+import '../../features/network_scan/domain/repositories/port_scan_repository.dart'
+    as _i269;
 import '../../features/network_scan/domain/services/new_device_detector.dart'
     as _i505;
+import '../../features/network_scan/domain/usecases/port_scan_usecase.dart'
+    as _i160;
 import '../../features/network_scan/presentation/bloc/network_scan_bloc.dart'
     as _i739;
 import '../../features/performance/data/repositories/speed_test_history_repository_impl.dart'
@@ -100,6 +108,8 @@ import '../../features/security/data/datasources/dns_test_data_source.dart'
     as _i991;
 import '../../features/security/data/datasources/security_local_data_source.dart'
     as _i499;
+import '../../features/security/data/datasources/vulnerability_data_source.dart'
+    as _i5;
 import '../../features/security/data/repositories/security_repository_impl.dart'
     as _i997;
 import '../../features/security/domain/repositories/security_repository.dart'
@@ -108,9 +118,15 @@ import '../../features/security/domain/services/captive_portal_detector.dart'
     as _i363;
 import '../../features/security/domain/usecases/analyze_network_security_usecase.dart'
     as _i87;
+import '../../features/security/domain/usecases/arp_spoofing_detector.dart'
+    as _i151;
+import '../../features/security/domain/usecases/check_router_vulnerability_usecase.dart'
+    as _i923;
 import '../../features/security/domain/usecases/deauth_detector.dart' as _i363;
 import '../../features/security/domain/usecases/dns_leak_test_usecase.dart'
     as _i315;
+import '../../features/security/domain/usecases/dns_security_usecase.dart'
+    as _i927;
 import '../../features/security/domain/usecases/security_analyzer.dart'
     as _i471;
 import '../../features/security/presentation/bloc/notification/notification_bloc.dart'
@@ -184,6 +200,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i265.OnnxDeviceClassifierService(),
       dispose: (i) => i.dispose(),
     );
+    gh.lazySingleton<_i978.PortScanDataSource>(
+      () => _i978.PortScanDataSource(),
+    );
+    gh.lazySingleton<_i927.DnsSecurityUseCase>(
+      () => _i927.DnsSecurityUseCase(),
+    );
     gh.lazySingleton<_i1073.NetworkScanRepository>(
       () => _i551.NetworkScanRepositoryImpl(
         gh<_i1066.ArpDataSource>(),
@@ -225,6 +247,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i119.ReportExportRepository>(
       () => _i953.ReportExportRepositoryImpl(),
     );
+    gh.lazySingleton<_i269.PortScanRepository>(
+      () => _i27.PortScanRepositoryImpl(gh<_i978.PortScanDataSource>()),
+    );
     gh.lazySingleton<_i989.PositionDataSource>(
       () => _i989.PositionDataSourceImpl(),
     );
@@ -243,11 +268,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i102.LogHeatmapPointUseCase>(),
       ),
     );
-    gh.factory<_i739.NetworkScanBloc>(
-      () => _i739.NetworkScanBloc(
-        gh<_i1073.NetworkScanRepository>(),
-        gh<_i505.NewDeviceDetector>(),
-      ),
+    gh.lazySingleton<_i5.VulnerabilityDataSource>(
+      () => _i5.VulnerabilityDataSourceImpl(),
     );
     gh.lazySingleton<_i543.WallDetectorDataSource>(
       () => _i543.WallDetectorDataSourceImpl(),
@@ -267,21 +289,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i363.CaptivePortalDetector>(
       () => _i363.CaptivePortalDetector(gh<_i846.NetworkInfo>()),
     );
-    gh.lazySingleton<_i578.SecurityRepository>(
-      () => _i997.SecurityRepositoryImpl(
-        gh<_i499.SecurityLocalDataSource>(),
-        gh<_i941.NotificationService>(),
-        gh<_i363.DeauthDetector>(),
-        gh<_i471.SecurityAnalyzer>(),
-        gh<_i991.DnsDataSource>(),
-      ),
-    );
-    gh.factory<_i361.WifiDetailsBloc>(
-      () => _i361.WifiDetailsBloc(
-        gh<_i471.SecurityAnalyzer>(),
-        gh<_i578.SecurityRepository>(),
-      ),
-    );
     gh.lazySingleton<_i367.GenerateReportUseCase>(
       () => _i367.GenerateReportUseCase(gh<_i119.ReportExportRepository>()),
     );
@@ -297,8 +304,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i797.ScanSessionStore>(
       () => _i797.ScanSessionStore(gh<_i239.WifiScanHistoryLocalDataSource>()),
     );
+    gh.lazySingleton<_i151.ArpSpoofingDetector>(
+      () => _i151.ArpSpoofingDetector(gh<_i1066.ArpDataSource>()),
+    );
     gh.lazySingleton<_i315.DnsLeakTestUsecase>(
       () => _i315.DnsLeakTestUsecase(gh<_i991.DnsDataSource>()),
+    );
+    gh.factory<_i160.PortScanUseCase>(
+      () => _i160.PortScanUseCase(gh<_i269.PortScanRepository>()),
     );
     gh.lazySingleton<_i365.MonitoringRepository>(
       () => _i592.MonitoringRepositoryImpl(gh<_i1027.WifiRepository>()),
@@ -331,15 +344,35 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i519.GetBestHistoricalChannel>(
       () => _i519.GetBestHistoricalChannel(gh<_i332.ChannelRatingRepository>()),
     );
+    gh.factory<_i968.WifiScanBloc>(
+      () => _i968.WifiScanBloc(
+        gh<_i451.ScanWifi>(),
+        gh<_i696.FavoritesStore>(),
+        gh<_i797.ScanSessionStore>(),
+      ),
+    );
+    gh.lazySingleton<_i578.SecurityRepository>(
+      () => _i997.SecurityRepositoryImpl(
+        gh<_i499.SecurityLocalDataSource>(),
+        gh<_i941.NotificationService>(),
+        gh<_i363.DeauthDetector>(),
+        gh<_i471.SecurityAnalyzer>(),
+        gh<_i991.DnsDataSource>(),
+        gh<_i5.VulnerabilityDataSource>(),
+        gh<_i151.ArpSpoofingDetector>(),
+        gh<_i927.DnsSecurityUseCase>(),
+        gh<_i1073.NetworkScanRepository>(),
+      ),
+    );
     gh.lazySingleton<_i87.AnalyzeNetworkSecurityUseCase>(
       () => _i87.AnalyzeNetworkSecurityUseCase(gh<_i578.SecurityRepository>()),
     );
+    gh.lazySingleton<_i923.CheckRouterVulnerabilityUseCase>(
+      () =>
+          _i923.CheckRouterVulnerabilityUseCase(gh<_i578.SecurityRepository>()),
+    );
     gh.factory<_i796.NotificationBloc>(
       () => _i796.NotificationBloc(gh<_i578.SecurityRepository>()),
-    );
-    gh.factory<_i968.WifiScanBloc>(
-      () =>
-          _i968.WifiScanBloc(gh<_i451.ScanWifi>(), gh<_i696.FavoritesStore>()),
     );
     gh.factory<_i676.SecurityBloc>(
       () => _i676.SecurityBloc(
@@ -348,6 +381,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i797.ScanSessionStore>(),
         gh<_i471.SecurityAnalyzer>(),
         gh<_i315.DnsLeakTestUsecase>(),
+        gh<_i552.AppSettingsStore>(),
+      ),
+    );
+    gh.factory<_i361.WifiDetailsBloc>(
+      () => _i361.WifiDetailsBloc(
+        gh<_i471.SecurityAnalyzer>(),
+        gh<_i578.SecurityRepository>(),
       ),
     );
     gh.lazySingleton<_i737.RecordHeatmapPointUsecase>(
@@ -355,6 +395,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i716.GetHeatmapSessionsUsecase>(
       () => _i716.GetHeatmapSessionsUsecase(gh<_i747.HeatmapRepository>()),
+    );
+    gh.factory<_i739.NetworkScanBloc>(
+      () => _i739.NetworkScanBloc(
+        gh<_i1073.NetworkScanRepository>(),
+        gh<_i505.NewDeviceDetector>(),
+        gh<_i160.PortScanUseCase>(),
+      ),
     );
     gh.lazySingleton<_i422.GetTopologyUseCase>(
       () => _i422.GetTopologyUseCase(gh<_i244.TopologyRepository>()),

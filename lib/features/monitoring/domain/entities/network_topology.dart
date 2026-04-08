@@ -27,6 +27,34 @@ class TopologyNode extends Equatable {
     this.isCurrentDevice = false,
   });
 
+  TopologyNode copyWith({
+    String? id,
+    String? label,
+    TopologyNodeType? type,
+    String? ip,
+    String? mac,
+    int? signalStrength,
+    int? frequency,
+    int? latencyMs,
+    String? vendor,
+    bool? isGateway,
+    bool? isCurrentDevice,
+  }) {
+    return TopologyNode(
+      id: id ?? this.id,
+      label: label ?? this.label,
+      type: type ?? this.type,
+      ip: ip ?? this.ip,
+      mac: mac ?? this.mac,
+      signalStrength: signalStrength ?? this.signalStrength,
+      frequency: frequency ?? this.frequency,
+      latencyMs: latencyMs ?? this.latencyMs,
+      vendor: vendor ?? this.vendor,
+      isGateway: isGateway ?? this.isGateway,
+      isCurrentDevice: isCurrentDevice ?? this.isCurrentDevice,
+    );
+  }
+
   @override
   List<Object?> get props => [
     id,

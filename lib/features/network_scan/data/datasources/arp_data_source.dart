@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/errors/failures.dart';
 import '../../../../core/utils/oui_lookup.dart';
+import '../../domain/entities/arp_entry.dart';
 import '../../domain/entities/host_scan_result.dart';
 import '../../domain/entities/network_scan_profile.dart';
 import '../../domain/entities/service_fingerprint.dart';
@@ -16,7 +19,7 @@ import '../../domain/entities/service_fingerprint.dart';
 @LazySingleton()
 class ArpDataSource {
   /// Discovers hosts via the ARP table and optional port probing.
-  Future<List<HostScanResult>> discoverHosts({
+  Future<Either<Failure, List<HostScanResult>>> discoverHosts({
     String? targetSubnet,
     NetworkScanProfile profile = NetworkScanProfile.fast,
   }) async {
@@ -31,22 +34,32 @@ class ArpDataSource {
     });
   }
 
-  Future<List<HostScanResult>> _discoverHostsInternal({
+  Future<Either<Failure, List<HostScanResult>>> _discoverHostsInternal({
     String? targetSubnet,
     NetworkScanProfile profile = NetworkScanProfile.fast,
   }) async {
-    var arpEntries = await _readArpTable();
+    List<ArpEntry> finalArpEntries = [];
+    
+    var arpResult = await readArpTable();
+    arpResult.fold(
+      (failure) => null, // Proceed to fallback
+      (entries) => finalArpEntries = entries,
+    );
 
     // Fallback for Android (where ARP table is restricted)
-    if (arpEntries.isEmpty && targetSubnet != null) {
-      arpEntries = await _pingScanSubnet(targetSubnet);
+    if (finalArpEntries.isEmpty && targetSubnet != null) {
+      var pingResult = await _pingScanSubnet(targetSubnet);
+      pingResult.fold(
+        (failure) => null,
+        (entries) => finalArpEntries = entries,
+      );
     }
 
-    if (arpEntries.isEmpty) return [];
+    if (finalArpEntries.isEmpty) return const Right([]);
 
     final hosts = <HostScanResult>[];
 
-    for (final entry in arpEntries) {
+    for (final entry in finalArpEntries) {
       final services = <ServiceFingerprint>[];
 
       // Only probe ports for non-fast profiles.
@@ -75,19 +88,19 @@ class ArpDataSource {
       );
     }
 
-    return hosts;
+    return Right(hosts);
   }
 
-  Future<List<_ArpEntry>> _readArpTable() async {
+  Future<Either<Failure, List<ArpEntry>>> readArpTable() async {
     try {
       final file = File('/proc/net/arp');
-      if (!await file.exists()) return [];
+      if (!await file.exists()) return const Right([]);
 
       final lines = await file.readAsLines();
       // First line is the header: IP address, HW type, Flags, HW address, Mask, Device
-      if (lines.length <= 1) return [];
+      if (lines.length <= 1) return const Right([]);
 
-      final entries = <_ArpEntry>[];
+      final entries = <ArpEntry>[];
       for (var i = 1; i < lines.length; i++) {
         final parts = lines[i].split(RegExp(r'\s+'));
         if (parts.length < 4) continue;
@@ -98,11 +111,11 @@ class ArpDataSource {
         // Skip incomplete entries (00:00:00:00:00:00)
         if (mac == '00:00:00:00:00:00') continue;
 
-        entries.add(_ArpEntry(ip: ip, mac: mac, vendor: _guessVendor(mac)));
+        entries.add(ArpEntry(ip: ip, mac: mac, vendor: _guessVendor(mac)));
       }
-      return entries;
-    } catch (_) {
-      return [];
+      return Right(entries);
+    } catch (e) {
+      return Left(ScanFailure('Failed to read /proc/net/arp: $e'));
     }
   }
 
@@ -155,7 +168,9 @@ class ArpDataSource {
         product: '',
         version: '',
       );
-    } catch (_) {
+    } catch (e) {
+      // In port probing, failure usually means the port is closed or filtered. 
+      // We don't bubble this up as a hard Failure to avoid dropping the host.
       return null;
     }
   }
@@ -183,21 +198,21 @@ class ArpDataSource {
 
   // Vendor guessing is now fully delegated to OuiLookup in core/utils.
 
-  Future<List<_ArpEntry>> _pingScanSubnet(String ipWithMask) async {
+  Future<Either<Failure, List<ArpEntry>>> _pingScanSubnet(String ipWithMask) async {
     final parts = ipWithMask.split('/');
-    if (parts.isEmpty) return [];
+    if (parts.isEmpty) return const Right([]);
 
     final ip = parts[0];
     // Simple logic: assume /24 by taking first 3 octets
-    if (ip.split('.').length != 4) return [];
+    if (ip.split('.').length != 4) return const Right([]);
     final baseIp = ip.substring(0, ip.lastIndexOf('.'));
 
-    final entries = <_ArpEntry>[];
+    final entries = <ArpEntry>[];
     const parallelBatches = 20;
 
     // Scan .1 to .254
     for (var i = 1; i < 255; i += parallelBatches) {
-      final futures = <Future<_ArpEntry?>>[];
+      final futures = <Future<ArpEntry?>>[];
       for (var j = 0; j < parallelBatches; j++) {
         final hostPart = i + j;
         if (hostPart > 254) break;
@@ -205,31 +220,25 @@ class ArpDataSource {
       }
 
       final results = await Future.wait(futures);
-      entries.addAll(results.whereType<_ArpEntry>());
+      entries.addAll(results.whereType<ArpEntry>());
     }
-    return entries;
+    return Right(entries);
   }
 
-  Future<_ArpEntry?> _pingHost(String ip) async {
+  Future<ArpEntry?> _pingHost(String ip) async {
     try {
       // Android ping command supports these flags
       final result = await Process.run('ping', ['-c', '1', '-W', '1', ip]);
       if (result.exitCode == 0) {
-        return _ArpEntry(
+        return ArpEntry(
           ip: ip,
           mac: '00:00:00:00:00:00', // Cannot get MAC on Android 11+
           vendor: 'Unknown (Android Limited)',
         );
       }
-    } catch (_) {}
+    } catch (e) {
+      // Ignore ping failure to proceed to next IP
+    }
     return null;
   }
-}
-
-class _ArpEntry {
-  final String ip;
-  final String mac;
-  final String vendor;
-
-  const _ArpEntry({required this.ip, required this.mac, required this.vendor});
 }

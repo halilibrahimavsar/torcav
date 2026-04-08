@@ -3,11 +3,14 @@ import 'dart:io';
 
 import 'package:injectable/injectable.dart';
 
+import 'package:fpdart/fpdart.dart';
+import '../../../../core/errors/failures.dart';
+
 @LazySingleton()
 class UpnpDataSource {
   /// Sends a multicast SSDP M-SEARCH and parses responses.
   /// Returns a map of IP -> Device Friendly Name or Type.
-  Future<Map<String, String>> discoverSsdp() async {
+  Future<Either<Failure, Map<String, String>>> discoverSsdp() async {
     final Map<String, String> discoveries = {};
     const multicastAddress = '239.255.255.250';
     const multicastPort = 1900;
@@ -23,7 +26,11 @@ class UpnpDataSource {
     RawDatagramSocket? socket;
 
     try {
-      socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
+      socket = await RawDatagramSocket.bind(
+        InternetAddress.anyIPv4,
+        0,
+        reusePort: false,
+      );
       socket.broadcastEnabled = true;
       socket.send(utf8.encode(searchRequest), InternetAddress(multicastAddress), multicastPort);
       
@@ -47,13 +54,13 @@ class UpnpDataSource {
           }
         }
       }
-    } catch (_) {
-      // Network issues/timeout
+    } catch (e) {
+      return Left(ScanFailure('UPnP discovery failed: $e'));
     } finally {
       socket?.close();
     }
 
-    return discoveries;
+    return Right(discoveries);
   }
 
   String _getHeader(String response, String header) {

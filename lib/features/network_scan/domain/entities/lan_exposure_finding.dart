@@ -7,6 +7,7 @@ class LanExposureFinding extends Equatable {
     required this.ruleId,
     required this.hostIp,
     required this.hostMac,
+    required this.hostVendor,
     required this.summary,
     required this.risk,
     required this.evidence,
@@ -20,6 +21,7 @@ class LanExposureFinding extends Equatable {
       ruleId: json['ruleId'] as String? ?? 'lan.unknown',
       hostIp: json['hostIp'] as String? ?? '',
       hostMac: json['hostMac'] as String? ?? '',
+      hostVendor: json['hostVendor'] as String? ?? 'Unknown',
       summary: json['summary'] as String? ?? '',
       risk: VulnerabilityRisk.values.firstWhere(
         (value) => value.name == json['risk'],
@@ -35,6 +37,7 @@ class LanExposureFinding extends Equatable {
   final String ruleId;
   final String hostIp;
   final String hostMac;
+  final String hostVendor;
   final String summary;
   final VulnerabilityRisk risk;
   final String evidence;
@@ -47,6 +50,7 @@ class LanExposureFinding extends Equatable {
       'ruleId': ruleId,
       'hostIp': hostIp,
       'hostMac': hostMac,
+      'hostVendor': hostVendor,
       'summary': summary,
       'risk': risk.name,
       'evidence': evidence,
@@ -65,6 +69,7 @@ class LanExposureFinding extends Equatable {
     ruleId,
     hostIp,
     hostMac,
+    hostVendor,
     summary,
     risk,
     evidence,

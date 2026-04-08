@@ -228,74 +228,46 @@ class _SpeedometerPainter extends CustomPainter {
     final dlProgress = (download / maxSpeed).clamp(0.0, 1.0);
     final ulProgress = (upload / maxSpeed).clamp(0.0, 1.0);
 
-    // ── Grid Lines (Background) ──
-    final gridPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.03)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
+    // ── Background Scanning Grid ──
+    _drawScanningGrid(canvas, center, radius, animationValue);
 
-    for (int i = 0; i < 10; i++) {
-        canvas.drawCircle(center, radius * (i / 10), gridPaint);
-    }
-
-    // ── Outer Track ──
+    // ── Outer Track Base ──
     final trackPaint = Paint()
       ..color = Colors.white.withValues(alpha: 0.05)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 20
+      ..strokeWidth = 16
       ..strokeCap = StrokeCap.round;
 
     canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius - 10),
+      Rect.fromCircle(center: center, radius: radius - 15),
       startAngle,
       sweepAngle,
       false,
       trackPaint,
     );
 
-    // ── Download Progress ──
+    // ── Progress Arcs ──
     if (dlProgress > 0) {
-      final dlPaint = Paint()
-        ..shader = SweepGradient(
-          colors: [dlColor.withValues(alpha: 0.5), dlColor],
-          stops: const [0.0, 1.0],
-          transform: GradientRotation(startAngle),
-        ).createShader(Rect.fromCircle(center: center, radius: radius))
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 20
-        ..strokeCap = StrokeCap.round;
-
-      // Outer glow
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius - 10),
-        startAngle,
-        sweepAngle * dlProgress,
-        false,
-        Paint()
-          ..color = dlColor.withValues(alpha: 0.2)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 30
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 15),
-      );
-
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius - 10),
-        startAngle,
-        sweepAngle * dlProgress,
-        false,
-        dlPaint,
+      _drawProgressArc(
+        canvas: canvas,
+        center: center,
+        radius: radius - 15,
+        startAngle: startAngle,
+        sweepAngle: sweepAngle * dlProgress,
+        color: dlColor,
+        isSecondary: false,
       );
     }
 
-    // ── Upload Progress (Inner Ring) ──
+    // ── Inner Track (Upload) ──
     final innerTrackPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.05)
+      ..color = Colors.white.withValues(alpha: 0.03)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 8
+      ..strokeWidth = 6
       ..strokeCap = StrokeCap.round;
 
     canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius - 40),
+      Rect.fromCircle(center: center, radius: radius - 45),
       startAngle,
       sweepAngle,
       false,
@@ -303,54 +275,153 @@ class _SpeedometerPainter extends CustomPainter {
     );
 
     if (ulProgress > 0) {
-      final ulPaint = Paint()
-        ..color = ulColor
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 8
-        ..strokeCap = StrokeCap.round;
-
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius - 40),
-        startAngle,
-        sweepAngle * ulProgress,
-        false,
-        ulPaint,
+      _drawProgressArc(
+        canvas: canvas,
+        center: center,
+        radius: radius - 45,
+        startAngle: startAngle,
+        sweepAngle: sweepAngle * ulProgress,
+        color: ulColor,
+        isSecondary: true,
       );
     }
 
-    // ── Dynamic Pulses ──
+    // ── Liquid Pulses ──
     if (phase != SpeedTestPhase.idle && phase != SpeedTestPhase.done) {
-        final activeColor = phase == SpeedTestPhase.upload ? ulColor : dlColor;
-        final pulseRadius = radius - 10;
-        
-        final pulsePaint = Paint()
-          ..color = activeColor.withValues(alpha: (1.0 - animationValue) * 0.3)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2;
-
-        canvas.drawCircle(center, pulseRadius + (animationValue * 20), pulsePaint);
+      _drawLiquidPulse(canvas, center, radius, animationValue, 
+          phase == SpeedTestPhase.upload ? ulColor : dlColor);
     }
 
-    // ── Tick Marks ──
-    final tickPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.2)
-      ..strokeWidth = 2;
+    // ── Tick Marks & Scale ──
+    _drawScale(canvas, center, radius, startAngle, sweepAngle);
+  }
 
-    for (int i = 0; i <= 30; i++) {
-        final angle = startAngle + (sweepAngle * (i / 30));
-        final isMajor = i % 5 == 0;
-        final tLength = isMajor ? 12.0 : 6.0;
-        
-        final p1 = Offset(
-            center.dx + (radius - 20) * math.cos(angle),
-            center.dy + (radius - 20) * math.sin(angle),
-        );
-        final p2 = Offset(
-            center.dx + (radius - 20 - tLength) * math.cos(angle),
-            center.dy + (radius - 20 - tLength) * math.sin(angle),
-        );
-        
-        canvas.drawLine(p1, p2, tickPaint..color = Colors.white.withValues(alpha: isMajor ? 0.3 : 0.1));
+  void _drawScanningGrid(Canvas canvas, Offset center, double radius, double anim) {
+    final gridOpacity = 0.05 + (0.05 * math.sin(anim * math.pi * 2));
+    final gridPaint = Paint()
+      ..color = dlColor.withValues(alpha: gridOpacity)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.5;
+
+    // Concentric circles
+    for (int i = 1; i <= 5; i++) {
+      canvas.drawCircle(center, radius * (i / 5), gridPaint);
+    }
+
+    // Radial scanning line
+    final scanAngle = (anim * 2 * math.pi);
+    final scanPaint = Paint()
+      ..shader = SweepGradient(
+        colors: [
+          dlColor.withValues(alpha: 0),
+          dlColor.withValues(alpha: 0.15),
+          dlColor.withValues(alpha: 0),
+        ],
+        stops: const [0.0, 0.5, 1.0],
+        transform: GradientRotation(scanAngle - math.pi / 2),
+      ).createShader(Rect.fromCircle(center: center, radius: radius))
+      ..style = PaintingStyle.fill;
+
+    canvas.drawCircle(center, radius, scanPaint);
+  }
+
+  void _drawProgressArc({
+    required Canvas canvas,
+    required Offset center,
+    required double radius,
+    required double startAngle,
+    required double sweepAngle,
+    required Color color,
+    required bool isSecondary,
+  }) {
+    final strokeWidth = isSecondary ? 6.0 : 16.0;
+    
+    // 1. Shadow/Glow base
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      startAngle,
+      sweepAngle,
+      false,
+      Paint()
+        ..color = color.withValues(alpha: 0.3)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth + 10
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8),
+    );
+
+    // 2. Main Gradient Arc
+    final rect = Rect.fromCircle(center: center, radius: radius);
+    canvas.drawArc(
+      rect,
+      startAngle,
+      sweepAngle,
+      false,
+      Paint()
+        ..shader = SweepGradient(
+          colors: [color.withValues(alpha: 0.2), color],
+          stops: const [0.0, 1.0],
+          transform: GradientRotation(startAngle),
+        ).createShader(rect)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth
+        ..strokeCap = StrokeCap.round,
+    );
+
+    // 3. Flare "Comet" Head
+    final headAngle = startAngle + sweepAngle;
+    final headPos = Offset(
+      center.dx + radius * math.cos(headAngle),
+      center.dy + radius * math.sin(headAngle),
+    );
+
+    // Bright core
+    canvas.drawCircle(
+      headPos, 
+      strokeWidth / 2, 
+      Paint()..color = Colors.white..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2)
+    );
+    
+    // Outer flare
+    canvas.drawCircle(
+      headPos, 
+      strokeWidth * 1.5, 
+      Paint()..color = color.withValues(alpha: 0.5)..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10)
+    );
+  }
+
+  void _drawLiquidPulse(Canvas canvas, Offset center, double radius, double anim, Color color) {
+    for (int i = 0; i < 2; i++) {
+      final pAnim = (anim + (i * 0.5)) % 1.0;
+      final pPaint = Paint()
+        ..color = color.withValues(alpha: (1.0 - pAnim) * 0.2)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.0 - (pAnim * 1.5);
+
+      canvas.drawCircle(center, (radius * 0.4) + (pAnim * radius * 0.8), pPaint);
+    }
+  }
+
+  void _drawScale(Canvas canvas, Offset center, double radius, double startAngle, double sweepAngle) {
+    final tickPaint = Paint()..strokeCap = StrokeCap.round;
+
+    for (int i = 0; i <= 40; i++) {
+      final angle = startAngle + (sweepAngle * (i / 40));
+      final isMajor = i % 10 == 0;
+      final isMinor = i % 5 == 0;
+      
+      final tLen = isMajor ? 12.0 : (isMinor ? 8.0 : 4.0);
+      final opacity = isMajor ? 0.4 : (isMinor ? 0.2 : 0.1);
+      
+      final p1 = Offset(
+        center.dx + (radius - 30) * math.cos(angle),
+        center.dy + (radius - 30) * math.sin(angle),
+      );
+      final p2 = Offset(
+        center.dx + (radius - 30 - tLen) * math.cos(angle),
+        center.dy + (radius - 30 - tLen) * math.sin(angle),
+      );
+      
+      canvas.drawLine(p1, p2, tickPaint..color = Colors.white.withValues(alpha: opacity)..strokeWidth = isMajor ? 2 : 1);
     }
   }
 

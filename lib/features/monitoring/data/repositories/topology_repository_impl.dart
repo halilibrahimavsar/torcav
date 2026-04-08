@@ -101,23 +101,118 @@ class TopologyRepositoryImpl implements TopologyRepository {
       final lines = (result.stdout as String).split('\n');
 
       for (final line in lines) {
-        // Parse lines like: " 1  192.168.1.1 (192.168.1.1)  1.234 ms  ..."
-        final match = RegExp(
-          r'^\s*(\d+)\s+.*?\(([\d.]+)\)\s+([\d.]+)\s+ms',
-        ).firstMatch(line);
-        if (match != null) {
+        final trimmed = line.trim();
+        if (trimmed.isEmpty || trimmed.contains('*')) continue;
+
+        final parts = trimmed.split(RegExp(r'\s+'));
+        if (parts.length < 4) continue;
+
+        final hopNumber = int.tryParse(parts[0]);
+        if (hopNumber == null) continue;
+
+        // Find IP address (often in parentheses or as a standalone string)
+        String? ipAddress;
+        for (final part in parts) {
+          final cleanPart = part.replaceAll('(', '').replaceAll(')', '');
+          if (RegExp(r'^\d{1,3}(?:\.\d{1,3}){3}$').hasMatch(cleanPart)) {
+            ipAddress = cleanPart;
+            break;
+          }
+        }
+
+        // Find first occurrence of "ms" and get previous value
+        int? latency;
+        for (int i = 1; i < parts.length; i++) {
+          if (parts[i] == 'ms') {
+            final val = double.tryParse(parts[i - 1]);
+            if (val != null) {
+              latency = val.round();
+              break;
+            }
+          }
+        }
+
+        if (ipAddress != null && latency != null) {
           hops.add(TraceHop(
-            hopNumber: int.parse(match.group(1)!),
-            ip: match.group(2)!,
-            latencyMs: double.parse(match.group(3)!).round(),
+            hopNumber: hopNumber,
+            ip: ipAddress,
+            latencyMs: latency,
           ));
         }
       }
 
-      if (hops.isEmpty) {
-        return const Left(ServerFailure('No route found'));
-      }
       return Right(hops);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<int>>> scanPorts(String ip, {List<int>? ports}) async {
+    final targetPorts = ports ?? [21, 22, 53, 80, 443, 3000, 8080];
+    final openPorts = <int>[];
+
+    try {
+      final futures = targetPorts.map((port) async {
+        try {
+          final socket = await Socket.connect(ip, port, timeout: const Duration(milliseconds: 500));
+          socket.destroy();
+          return port;
+        } catch (_) {
+          return null;
+        }
+      });
+
+      final results = await Future.wait(futures);
+      openPorts.addAll(results.whereType<int>());
+      return Right(openPorts);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> reverseLookup(String ip) async {
+    try {
+      final addresses = await InternetAddress.lookup(ip);
+      if (addresses.isNotEmpty) {
+        final host = addresses.first.host;
+        if (host != ip) return Right(host);
+      }
+      return const Left(ServerFailure('Hostname not found'));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> getArpInfo(String ip) async {
+    try {
+      // Try to get info from ARP cache
+      if (Platform.isLinux || Platform.isAndroid) {
+        final result = await Process.run('arp', ['-n', ip]);
+        if (result.exitCode == 0) {
+          final output = result.stdout as String;
+          // Look for MAC address in output
+          final macMatch = RegExp(r'(([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))').firstMatch(output);
+          if (macMatch != null) {
+            return Right('ARP: ${macMatch.group(1)}');
+          }
+        }
+        
+        // Fallback: Read /proc/net/arp
+        final arpTable = await File('/proc/net/arp').readAsString();
+        final lines = arpTable.split('\n');
+        for (final line in lines) {
+          if (line.contains(ip)) {
+             final macMatch = RegExp(r'(([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))').firstMatch(line);
+             if (macMatch != null) {
+               return Right('ARP Cache Match: ${macMatch.group(1)}');
+             }
+          }
+        }
+      }
+      return const Left(ServerFailure('ARP Info unavailable'));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }

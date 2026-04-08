@@ -178,6 +178,8 @@ class NotificationService {
       SecurityEventType.handshakeCaptureCompleted => '✅ Handshake Captured',
       SecurityEventType.captivePortalDetected => '🌐 Captive Portal Detected',
       SecurityEventType.unsupportedOperation => '⚠️ Operation Not Supported',
+      SecurityEventType.arpSpoofingDetected => '🛡️ ARP Spoofing Detected',
+      SecurityEventType.dnsHijackingDetected => '🕵️ DNS Hijacking Detected',
     };
   }
 

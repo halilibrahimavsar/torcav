@@ -1,13 +1,22 @@
 import 'package:injectable/injectable.dart';
 import 'package:multicast_dns/multicast_dns.dart';
 
+import 'package:fpdart/fpdart.dart';
+import '../../../../core/errors/failures.dart';
+
 @LazySingleton()
 class MdnsDataSource {
   /// Performs mDNS PTR lookup to find local network services and their host names.
   /// Returns a map of IP -> List of service names or host names discovered.
-  Future<Map<String, List<String>>> discoverServices() async {
+  Future<Either<Failure, Map<String, List<String>>>> discoverServices() async {
     final client = MDnsClient();
-    await client.start();
+    try {
+      await client.start();
+    } catch (e) {
+      // On some Android versions, even the default bind can trigger reusePort errors
+      // or other socket issues. We catch it here to prevent total failure.
+      return Left(ScanFailure('mDNS client failed to start: $e'));
+    }
 
     final discoveries = <String, List<String>>{};
 
@@ -44,12 +53,12 @@ class MdnsDataSource {
           }
         }
       }
-    } catch (_) {
-      // Quietly ignore network errors during discovery
+    } catch (e) {
+      return Left(ScanFailure('mDNS discovery failed: $e'));
     } finally {
       client.stop();
     }
 
-    return discoveries;
+    return Right(discoveries);
   }
 }

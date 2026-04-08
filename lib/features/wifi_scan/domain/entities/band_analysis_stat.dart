@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
-
-enum WifiBand { ghz24, ghz5, ghz6 }
+import 'wifi_band.dart';
 
 class BandAnalysisStat extends Equatable {
   final WifiBand band;

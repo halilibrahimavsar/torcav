@@ -9,6 +9,7 @@ import 'package:torcav/features/wifi_scan/domain/entities/channel_occupancy_stat
 import 'package:torcav/features/wifi_scan/domain/entities/scan_snapshot.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_observation.dart';
+import 'package:torcav/features/wifi_scan/domain/entities/wifi_band.dart';
 
 abstract class WifiScanHistoryLocalDataSource {
   Future<void> saveSnapshot(ScanSnapshot snapshot);

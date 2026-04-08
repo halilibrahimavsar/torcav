@@ -24,6 +24,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get deepScan => 'Derin Tarama';
 
   @override
+  String get deepScanExperimentalTitle => 'Deep Scan (Experimental)';
+
+  @override
+  String get deepScanExperimentalSubtitle => 'Actively probe LAN for devices and ports. Increased battery usage.';
+
+  @override
   String get scanModesTitle => 'Tarama Modları';
 
   @override
@@ -471,16 +477,43 @@ class AppLocalizationsTr extends AppLocalizations {
   String get defenseTitle => 'SAVUNMA';
 
   @override
+  String get shieldLabReady => 'Ready for Assessment';
+
+  @override
+  String get deepScanRunning => 'Scan in progress...';
+
+  @override
   String get knownNetworks => 'Bilinen Ağlar';
 
   @override
   String get noKnownNetworksYet => 'Henüz bilinen ağ yok';
 
   @override
+  String get noIdentifiedNetworks => 'No identified networks in laboratory archives';
+
+  @override
+  String get knownNetworksDashboard => 'KNOWN NETWORKS ARCHIVE';
+
+  @override
   String get securityTimeline => 'Güvenlik Zaman Çizelgesi';
 
   @override
   String get noSecurityEvents => 'Kayıtlı güvenlik olayı yok';
+
+  @override
+  String get dnsSecurityTitle => 'DNS INTEGRITY';
+
+  @override
+  String get dnsSecurityBody => 'Verify that your DNS queries are not being hijacked or spoofed.';
+
+  @override
+  String get dnsIntegrity => 'DNS INTEGRITY';
+
+  @override
+  String get runTest => 'RUN TEST';
+
+  @override
+  String get integrityCheck => 'INTEGRITY CHECK';
 
   @override
   String get authLocalSystem => 'YEREL_SİSTEM';
@@ -536,6 +569,42 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get securityScoreDesc => 'Güvenlik puanı (0-100) bu ağın ne kadar iyi korunduğunu gösterir. Yüksek puan daha iyidir. Şifreleme türü, WPS durumu ve diğer güvenlik özellikleri dikkate alınır.';
+
+  @override
+  String get networkSecurity => 'Network Security';
+
+  @override
+  String get portScanAction => 'PORT SCAN';
+
+  @override
+  String get hostnameLookupAction => 'LOOKUP HOSTNAME';
+
+  @override
+  String get arpInfoAction => 'ARP INFO';
+
+  @override
+  String get portsFoundLabel => 'OPEN PORTS';
+
+  @override
+  String get noPortsFound => 'No open ports found';
+
+  @override
+  String get hostnameLabel => 'HOSTNAME';
+
+  @override
+  String get arpInfoLabel => 'ARP DATA';
+
+  @override
+  String get scanningPortsTitle => 'SCANNING PORTS...';
+
+  @override
+  String get lookingUpHostnameTitle => 'LOOKING UP HOSTNAME...';
+
+  @override
+  String get fetchingArpTitle => 'FETCHING ARP DATA...';
+
+  @override
+  String get portRangeHint => 'Port range (e.g. 80,443 or 1-1000)';
 
   @override
   String get capabilitiesLabel => 'ÖZELLİKLER';
@@ -1196,8 +1265,23 @@ class AppLocalizationsTr extends AppLocalizations {
   String get untrustNetwork => 'UNTRUST NETWORK';
 
   @override
-  String get trustedBaselineBadge => 'TRUSTED BASELINE';
+  String get trustedBaselineBadge => 'TRUSTED BASELINES';
 
   @override
   String get dnsEvidenceTitle => 'DNS EVIDENCE';
+
+  @override
+  String get shieldLabTitle => 'SHIELD LABORATORY';
+
+  @override
+  String get discoveredDevices => 'DISCOVERED DEVICES';
+
+  @override
+  String get openPortsFound => 'OPEN PORTS DETECTED';
+
+  @override
+  String get experimentalFeature => 'EXPERIMENTAL';
+
+  @override
+  String get deepScanDescription => 'Active port scanning and LAN discovery (May trigger network alerts)';
 }

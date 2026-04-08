@@ -4,6 +4,7 @@ import '../../domain/entities/channel_occupancy_stat.dart';
 import '../../domain/entities/scan_snapshot.dart';
 import '../../domain/entities/wifi_network.dart';
 import '../../domain/entities/wifi_observation.dart';
+import '../../domain/entities/wifi_band.dart';
 
 class ScanSnapshotBuilder {
   final OuiLookup _ouiLookup;

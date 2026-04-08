@@ -76,20 +76,26 @@ class WifiDetailsBloc extends Bloc<WifiDetailsEvent, WifiDetailsState> {
     Emitter<WifiDetailsState> emit,
   ) async {
     emit(WifiDetailsLoading());
-    final trustedProfiles = await _securityRepository.getTrustedNetworkProfiles();
+    final trustedProfilesResult = await _securityRepository.getTrustedNetworkProfiles();
+    final trustedProfiles = trustedProfilesResult.getOrElse(() => []);
     final isTrusted = trustedProfiles.any((p) => p.bssid == event.network.bssid);
     
-    final assessment = _securityAnalyzer.assess(
-      event.network, 
+    final assessmentResult = await _securityRepository.analyzeNetwork(
+      event.network,
       trustedProfile: isTrusted ? trustedProfiles.firstWhere((p) => p.bssid == event.network.bssid) : null,
     );
-    final report = _securityAnalyzer.analyze(event.network);
-    
-    emit(WifiDetailsLoaded(
-      report: report, 
-      assessment: assessment,
-      isTrusted: isTrusted,
-    ));
+
+    assessmentResult.fold(
+      (failure) => emit(WifiDetailsInitial()), // Or error
+      (assessment) {
+        final report = _securityAnalyzer.analyze(event.network);
+        emit(WifiDetailsLoaded(
+          report: report,
+          assessment: assessment,
+          isTrusted: isTrusted,
+        ));
+      },
+    );
   }
 
   Future<void> _onTrustRequested(

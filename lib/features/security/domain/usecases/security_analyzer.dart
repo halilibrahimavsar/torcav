@@ -8,6 +8,7 @@ import '../entities/security_finding.dart';
 import '../entities/security_report.dart';
 import '../entities/trusted_network_profile.dart';
 import '../entities/vulnerability.dart';
+import '../entities/vulnerable_router.dart';
 
 @lazySingleton
 class SecurityAnalyzer {
@@ -15,11 +16,30 @@ class SecurityAnalyzer {
     WifiNetwork network, {
     List<WifiNetwork> localBaseline = const [],
     TrustedNetworkProfile? trustedProfile,
+    List<VulnerableRouter> hardwareVulnerabilities = const [],
+    bool isDeepScan = false,
   }) {
     final findings = <SecurityFinding>[];
     final riskFactors = <String>[];
     var score = 100;
     final now = DateTime.now();
+
+    if (isDeepScan) {
+      findings.add(
+        SecurityFinding(
+          ruleId: 'scan.deep_scan_active',
+          category: SecurityFindingCategory.lanExposure,
+          title: 'Active Probing Active',
+          description: 'Deep scan is enabled, performing more intrusive network tests.',
+          severity: VulnerabilitySeverity.info,
+          recommendation: 'Use only on networks you own or have permission to scan.',
+          confidence: SecurityFindingConfidence.observed,
+          evidence: 'User-initiated deep scan (active probing) is enabled.',
+          timestamp: now,
+          subject: network.bssid,
+        ),
+      );
+    }
 
     switch (network.security) {
       case SecurityType.open:
@@ -330,6 +350,27 @@ class SecurityAnalyzer {
       }
     }
 
+    for (final vulnerable in hardwareVulnerabilities) {
+      final severity = _mapStringSeverity(vulnerable.severity);
+      findings.add(
+        SecurityFinding(
+          ruleId: 'hardware.vulnerability',
+          category: SecurityFindingCategory.hardwareVulnerability,
+          title: 'Vulnerable Hardware: ${vulnerable.model}',
+          description: vulnerable.vulnerability,
+          severity: severity,
+          recommendation: vulnerable.recommendation,
+          confidence: SecurityFindingConfidence.strong,
+          evidence:
+              'BSSID prefix ${vulnerable.prefix} matches a known vulnerable hardware profile.',
+          timestamp: now,
+          subject: network.bssid,
+        ),
+      );
+      riskFactors.add('Known vulnerability in ${vulnerable.model}');
+      score -= _scoreDeductionForSeverity(severity);
+    }
+
     score = score.clamp(0, 100);
     final status = _statusFromScore(score);
 
@@ -353,9 +394,31 @@ class SecurityAnalyzer {
     );
     return SecurityReport(
       score: assessment.score,
-      vulnerabilities: assessment.findings,
-      overallStatus: assessment.statusLabel,
+      vulnerabilities: assessment.evidenceFindings
+          .map((f) => f.toVulnerability())
+          .toList(),
+      overallStatus: assessment.status.name,
     );
+  }
+
+  int _scoreDeductionForSeverity(VulnerabilitySeverity severity) {
+    return switch (severity) {
+      VulnerabilitySeverity.critical => 50,
+      VulnerabilitySeverity.high => 30,
+      VulnerabilitySeverity.medium => 15,
+      VulnerabilitySeverity.low => 5,
+      VulnerabilitySeverity.info => 1,
+    };
+  }
+
+  VulnerabilitySeverity _mapStringSeverity(String severity) {
+    return switch (severity.toLowerCase()) {
+      'critical' => VulnerabilitySeverity.critical,
+      'high' => VulnerabilitySeverity.high,
+      'medium' => VulnerabilitySeverity.medium,
+      'low' => VulnerabilitySeverity.low,
+      _ => VulnerabilitySeverity.info,
+    };
   }
 
   SecurityStatus _statusFromScore(int score) {

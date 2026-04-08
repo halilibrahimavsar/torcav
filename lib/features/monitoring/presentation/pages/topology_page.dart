@@ -4,12 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/neon_widgets.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../widgets/topology_graph_painter.dart';
 import '../widgets/topology_view_data.dart';
 import '../widgets/topology_info_sheet.dart';
 import '../bloc/topology_bloc.dart';
 import '../../../../core/di/injection.dart';
 import '../../domain/entities/network_topology.dart';
+import '../../domain/repositories/topology_repository.dart';
 
 /// Route-level wrapper that owns the [TopologyBloc] lifetime.
 ///
@@ -32,7 +34,21 @@ class TopologyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _TopologyPageContent();
+    return BlocListener<TopologyBloc, TopologyState>(
+      listener: (context, state) {
+        if (state is TopologyLoaded && state.lastErrorMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.lastErrorMessage!),
+              backgroundColor: Theme.of(context).colorScheme.error,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+          );
+        }
+      },
+      child: const _TopologyPageContent(),
+    );
   }
 }
 
@@ -55,6 +71,8 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
   late AnimationController _pulseController;
   late AnimationController _positionController;
   final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _portController = TextEditingController();
+
 
   Map<String, Offset>? _oldPositions;
   Map<String, Offset>? _targetPositions;
@@ -93,7 +111,39 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
     _pulseController.dispose();
     _positionController.dispose();
     _searchController.dispose();
+    _portController.dispose();
     super.dispose();
+  }
+
+  List<int>? get _parsedPorts {
+    final text = _portController.text.trim();
+    if (text.isEmpty) return null;
+    
+    final ports = <int>[];
+    final parts = text.split(',');
+    
+    for (final part in parts) {
+      final trimmed = part.trim();
+      if (trimmed.contains('-')) {
+        final range = trimmed.split('-');
+        if (range.length == 2) {
+          final start = int.tryParse(range[0].trim());
+          final end = int.tryParse(range[1].trim());
+          if (start != null && end != null && start <= end) {
+            for (int i = start; i <= end; i++) {
+              if (i > 0 && i <= 65535) ports.add(i);
+            }
+          }
+        }
+      } else {
+        final port = int.tryParse(trimmed);
+        if (port != null && port > 0 && port <= 65535) {
+          ports.add(port);
+        }
+      }
+    }
+    
+    return ports.isEmpty ? null : ports;
   }
 
   void _onForceViewToggled(bool value, NetworkTopology topology, Size size) {
@@ -884,154 +934,391 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
               const NeonDivider(),
               const SizedBox(height: 12),
 
-              // ── Latency display ──
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'LATENCY',
-                        style: GoogleFonts.orbitron(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.4),
-                          fontSize: 8,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        node.latencyMs != null ? '${node.latencyMs}ms' : '--',
-                        style: GoogleFonts.orbitron(
-                          color:
-                              node.latencyMs != null
-                                  ? (node.latencyMs! < 50
-                                      ? Colors.greenAccent
-                                      : Colors.orangeAccent)
-                                  : Theme.of(context).colorScheme.onSurface
-                                      .withValues(alpha: 0.3),
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              // ── Diagnostic Results (Hostname, ARP) ──
+              _buildIdentityResults(blocState, node),
+
+              const SizedBox(height: 12),
+              const NeonDivider(),
+              const SizedBox(height: 12),
 
               // ── Action buttons ──
               if (node.ip != null && !node.isCurrentDevice) ...[
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _NodeActionButton(
-                        label: l10n.pingAction,
-                        icon: Icons.network_ping_rounded,
-                        color: Theme.of(context).colorScheme.primary,
-                        isLoading: isPinging,
-                        onTap: () {
-                          context.read<TopologyBloc>().add(
-                            PingNodeEvent(nodeId: node.id, ip: node.ip!),
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: _NodeActionButton(
-                        label: 'TRACEROUTE',
-                        icon: Icons.alt_route_rounded,
-                        color: Theme.of(context).colorScheme.tertiary,
-                        isLoading: isTracing,
-                        onTap: () {
-                          context.read<TopologyBloc>().add(
-                            TraceRouteEvent(nodeId: node.id, ip: node.ip!),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+                _buildDiagnosticActions(context, node, blocState, isPinging, isTracing),
               ],
 
               // ── Traceroute results ──
               if (traceResult != null && traceResult.isNotEmpty) ...[
-                const SizedBox(height: 16),
-                const NeonDivider(),
-                const SizedBox(height: 12),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'ROUTE HOPS',
+                _buildTracerouteResults(traceResult),
+              ],
+
+              // ── Port Scan results ──
+              _buildPortScanResults(blocState, node),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDiagnosticActions(
+    BuildContext context,
+    TopologyNode node,
+    TopologyState blocState,
+    bool isPinging,
+    bool isTracing,
+  ) {
+    final l10n = context.l10n;
+    final isScanning = blocState is TopologyLoaded &&
+        blocState.scanningNodeId == node.id &&
+        blocState.isScanningPorts;
+    final isLookingUp = blocState is TopologyLoaded &&
+        blocState.lookingUpNodeId == node.id &&
+        blocState.isLookingUpHostname;
+    final isGettingArp = blocState is TopologyLoaded &&
+        blocState.gettingArpNodeId == node.id &&
+        blocState.isGettingArp;
+
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: _NodeActionButton(
+                label: l10n.pingAction,
+                icon: Icons.network_ping_rounded,
+                color: Theme.of(context).colorScheme.primary,
+                isLoading: isPinging,
+                onTap: () {
+                  context.read<TopologyBloc>().add(
+                    PingNodeEvent(nodeId: node.id, ip: node.ip!),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _NodeActionButton(
+                label: 'TRACEROUTE',
+                icon: Icons.alt_route_rounded,
+                color: Theme.of(context).colorScheme.tertiary,
+                isLoading: isTracing,
+                onTap: () {
+                  context.read<TopologyBloc>().add(
+                    TraceRouteEvent(nodeId: node.id, ip: node.ip!),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: _NodeActionButton(
+                label: l10n.hostnameLookupAction,
+                icon: Icons.badge_rounded,
+                color: Colors.blueAccent,
+                isLoading: isLookingUp,
+                onTap: () {
+                  context.read<TopologyBloc>().add(
+                    LookupHostnameEvent(nodeId: node.id, ip: node.ip!),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _NodeActionButton(
+                label: l10n.arpInfoAction,
+                icon: Icons.list_alt_rounded,
+                color: Colors.orangeAccent,
+                isLoading: isGettingArp,
+                onTap: () {
+                  context.read<TopologyBloc>().add(
+                    GetArpInfoEvent(nodeId: node.id, ip: node.ip!),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        // ── Port Scan Section ──
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+            ),
+          ),
+          child: Column(
+            children: [
+              TextField(
+                controller: _portController,
+                style: GoogleFonts.shareTechMono(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontSize: 12,
+                ),
+                decoration: InputDecoration(
+                  isDense: true,
+                  hintText: l10n.portRangeHint,
+                  hintStyle: GoogleFonts.shareTechMono(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                    fontSize: 10,
+                  ),
+                  border: InputBorder.none,
+                ),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: _NodeActionButton(
+                  label: l10n.portScanAction,
+                  icon: Icons.radar_rounded,
+                  color: Theme.of(context).colorScheme.primary,
+                  isLoading: isScanning,
+                  onTap: () {
+                    context.read<TopologyBloc>().add(
+                      ScanPortsEvent(
+                        nodeId: node.id,
+                        ip: node.ip!,
+                        customPorts: _parsedPorts,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildIdentityResults(TopologyState state, TopologyNode node) {
+    if (state is! TopologyLoaded) return const SizedBox.shrink();
+    
+    final hostname = state.lookingUpNodeId == node.id ? state.hostname : null;
+    final arpInfo = state.gettingArpNodeId == node.id ? state.arpInfo : null;
+    final l10n = context.l10n;
+
+    return Column(
+      children: [
+        // Latency
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'LATENCY',
+                  style: GoogleFonts.orbitron(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                    fontSize: 8,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  node.latencyMs != null ? '${node.latencyMs}ms' : '--',
+                  style: GoogleFonts.orbitron(
+                    color: node.latencyMs != null
+                        ? (node.latencyMs! < 50 ? Colors.greenAccent : Colors.orangeAccent)
+                        : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            if (hostname != null)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    l10n.hostnameLabel,
                     style: GoogleFonts.orbitron(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withValues(alpha: 0.4),
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                      fontSize: 8,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    hostname,
+                    style: GoogleFonts.shareTechMono(
+                      color: Colors.blueAccent,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
+        if (arpInfo != null) ...[
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              l10n.arpInfoLabel,
+              style: GoogleFonts.orbitron(
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                fontSize: 8,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Container(
+            padding: const EdgeInsets.all(8),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.orangeAccent.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              arpInfo,
+              style: GoogleFonts.shareTechMono(
+                color: Colors.orangeAccent.withValues(alpha: 0.8),
+                fontSize: 10,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildTracerouteResults(List<TraceHop> traceResult) {
+    return Column(
+      children: [
+        const SizedBox(height: 16),
+        const NeonDivider(),
+        const SizedBox(height: 12),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'ROUTE HOPS',
+            style: GoogleFonts.orbitron(
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+              fontSize: 8,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        ...traceResult.map(
+          (hop) => Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 20,
+                  child: Text(
+                    '${hop.hopNumber}',
+                    style: GoogleFonts.orbitron(
+                      color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.6),
                       fontSize: 8,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
-                ...traceResult.map(
-                  (hop) => Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 20,
-                          child: Text(
-                            '${hop.hopNumber}',
-                            style: GoogleFonts.orbitron(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.tertiary.withValues(alpha: 0.6),
-                              fontSize: 8,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        Icon(
-                          Icons.chevron_right_rounded,
-                          size: 12,
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.tertiary.withValues(alpha: 0.4),
-                        ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            hop.ip,
-                            style: GoogleFonts.shareTechMono(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.onSurface.withValues(alpha: 0.8),
-                              fontSize: 11,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          '${hop.latencyMs}ms',
-                          style: GoogleFonts.orbitron(
-                            color:
-                                hop.latencyMs < 50
-                                    ? Colors.greenAccent
-                                    : Colors.orangeAccent,
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                Icon(
+                  Icons.chevron_right_rounded,
+                  size: 12,
+                  color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.4),
+                ),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    hop.ip,
+                    style: GoogleFonts.shareTechMono(
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                      fontSize: 11,
                     ),
                   ),
                 ),
+                Text(
+                  '${hop.latencyMs}ms',
+                  style: GoogleFonts.orbitron(
+                    color: hop.latencyMs < 50 ? Colors.greenAccent : Colors.orangeAccent,
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
-            ],
+            ),
           ),
         ),
+      ],
+    );
+  }
+
+  Widget _buildPortScanResults(TopologyState state, TopologyNode node) {
+    if (state is! TopologyLoaded) return const SizedBox.shrink();
+    if (state.scanningNodeId != node.id || state.openPorts == null) {
+      return const SizedBox.shrink();
+    }
+
+    final ports = state.openPorts!;
+    final l10n = context.l10n;
+
+    return Column(
+      children: [
+        const SizedBox(height: 16),
+        const NeonDivider(),
+        const SizedBox(height: 12),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            l10n.portsFoundLabel,
+            style: GoogleFonts.orbitron(
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+              fontSize: 8,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        if (ports.isEmpty)
+          Text(
+            l10n.noPortsFound,
+            style: GoogleFonts.shareTechMono(
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+              fontSize: 11,
+            ),
+          )
+        else
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children:
+                ports.map((port) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Text(
+                      'PORT $port',
+                      style: GoogleFonts.shareTechMono(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  );
+                }).toList(),
+          ),
       ],
     );
   }

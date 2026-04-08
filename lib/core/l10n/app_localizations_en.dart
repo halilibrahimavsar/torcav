@@ -24,6 +24,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deepScan => 'Deep Scan';
 
   @override
+  String get deepScanExperimentalTitle => 'Deep Scan (Experimental)';
+
+  @override
+  String get deepScanExperimentalSubtitle => 'Actively probe LAN for devices and ports. Increased battery usage.';
+
+  @override
   String get scanModesTitle => 'Scan Modes';
 
   @override
@@ -468,7 +474,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backendLabel => 'BACKEND';
 
   @override
-  String get defenseTitle => 'DEFENSE';
+  String get defenseTitle => 'SECURITY CENTER';
+
+  @override
+  String get shieldLabReady => 'Ready for Assessment';
+
+  @override
+  String get deepScanRunning => 'Scan in progress...';
 
   @override
   String get knownNetworks => 'Known Networks';
@@ -477,10 +489,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noKnownNetworksYet => 'No known networks yet';
 
   @override
+  String get noIdentifiedNetworks => 'No identified networks in laboratory archives';
+
+  @override
+  String get knownNetworksDashboard => 'KNOWN NETWORKS ARCHIVE';
+
+  @override
   String get securityTimeline => 'Security Timeline';
 
   @override
   String get noSecurityEvents => 'No security events recorded';
+
+  @override
+  String get dnsSecurityTitle => 'DNS INTEGRITY';
+
+  @override
+  String get dnsSecurityBody => 'Verify that your DNS queries are not being hijacked or spoofed.';
+
+  @override
+  String get dnsIntegrity => 'DNS INTEGRITY';
+
+  @override
+  String get runTest => 'RUN TEST';
+
+  @override
+  String get integrityCheck => 'INTEGRITY CHECK';
 
   @override
   String get authLocalSystem => 'AUTH_LOCAL_SYSTEM';
@@ -536,6 +569,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get securityScoreDesc => 'The security score (0–100) rates how well this network is protected. Higher is better. It considers encryption type, WPS status, and other security features.';
+
+  @override
+  String get networkSecurity => 'Network Security';
+
+  @override
+  String get portScanAction => 'PORT SCAN';
+
+  @override
+  String get hostnameLookupAction => 'LOOKUP HOSTNAME';
+
+  @override
+  String get arpInfoAction => 'ARP INFO';
+
+  @override
+  String get portsFoundLabel => 'OPEN PORTS';
+
+  @override
+  String get noPortsFound => 'No open ports found';
+
+  @override
+  String get hostnameLabel => 'HOSTNAME';
+
+  @override
+  String get arpInfoLabel => 'ARP DATA';
+
+  @override
+  String get scanningPortsTitle => 'SCANNING PORTS...';
+
+  @override
+  String get lookingUpHostnameTitle => 'LOOKING UP HOSTNAME...';
+
+  @override
+  String get fetchingArpTitle => 'FETCHING ARP DATA...';
+
+  @override
+  String get portRangeHint => 'Port range (e.g. 80,443 or 1-1000)';
 
   @override
   String get capabilitiesLabel => 'CAPABILITIES';
@@ -994,6 +1063,8 @@ class AppLocalizationsEn extends AppLocalizations {
         'evilTwinDetected': 'Evil Twin Detected',
         'deauthAttackSuspected': 'Deauth Attack Suspected',
         'encryptionDowngraded': 'Encryption Downgraded',
+        'arpSpoofingDetected': 'ARP Spoofing Detected',
+        'dnsHijackingDetected': 'DNS Hijacking Detected',
         'unsupportedOperation': 'Unsupported Operation',
         'other': '$type',
       },
@@ -1123,16 +1194,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get channelCongestionHint => 'Your current channel is congested. Switching may improve speed.';
 
   @override
-  String get evilTwinAlertTitle => 'EVIL TWIN DETECTED';
+  String get evilTwinAlertTitle => 'CRITICAL: EVIL TWIN DETECTED';
 
   @override
-  String get evilTwinAlertBody => 'A network is impersonating a known access point. Do not connect to unrecognized networks.';
+  String get evilTwinAlertBody => 'A suspicious access point with a matching SSID but different security parameters has been identified.';
 
   @override
-  String get wpsWarningTitle => 'WPS IS ENABLED';
+  String get wpsWarningTitle => 'WPS VULNERABILITY DETECTED';
 
   @override
-  String get wpsWarningBody => 'WPS has known vulnerabilities that allow attackers to crack your Wi-Fi password even on WPA2. Disable it in your router settings.';
+  String get wpsWarningBody => 'One or more nearby networks have WPS active. This can be exploited to gain unauthorized access.';
 
   @override
   String wpsAffectedNetworks(int count) {
@@ -1196,8 +1267,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get untrustNetwork => 'UNTRUST NETWORK';
 
   @override
-  String get trustedBaselineBadge => 'TRUSTED BASELINE';
+  String get trustedBaselineBadge => 'TRUSTED BASELINES';
 
   @override
   String get dnsEvidenceTitle => 'DNS EVIDENCE';
+
+  @override
+  String get shieldLabTitle => 'SHIELD LABORATORY';
+
+  @override
+  String get discoveredDevices => 'DISCOVERED DEVICES';
+
+  @override
+  String get openPortsFound => 'OPEN PORTS DETECTED';
+
+  @override
+  String get experimentalFeature => 'EXPERIMENTAL';
+
+  @override
+  String get deepScanDescription => 'Active port scanning and LAN discovery (May trigger network alerts)';
 }

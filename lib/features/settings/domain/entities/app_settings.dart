@@ -9,6 +9,7 @@ class AppSettings extends Equatable {
   final bool includeHiddenSsids;
   final bool strictSafetyMode;
   final bool autoScanEnabled;
+  final bool isDeepScanEnabled;
 
   const AppSettings({
     this.scanIntervalSeconds = 30,
@@ -17,6 +18,7 @@ class AppSettings extends Equatable {
     this.includeHiddenSsids = true,
     this.strictSafetyMode = true,
     this.autoScanEnabled = false,
+    this.isDeepScanEnabled = false,
   });
 
   AppSettings copyWith({
@@ -26,6 +28,7 @@ class AppSettings extends Equatable {
     bool? includeHiddenSsids,
     bool? strictSafetyMode,
     bool? autoScanEnabled,
+    bool? isDeepScanEnabled,
   }) {
     return AppSettings(
       scanIntervalSeconds: scanIntervalSeconds ?? this.scanIntervalSeconds,
@@ -35,6 +38,7 @@ class AppSettings extends Equatable {
       includeHiddenSsids: includeHiddenSsids ?? this.includeHiddenSsids,
       strictSafetyMode: strictSafetyMode ?? this.strictSafetyMode,
       autoScanEnabled: autoScanEnabled ?? this.autoScanEnabled,
+      isDeepScanEnabled: isDeepScanEnabled ?? this.isDeepScanEnabled,
     );
   }
 
@@ -46,6 +50,7 @@ class AppSettings extends Equatable {
     includeHiddenSsids,
     strictSafetyMode,
     autoScanEnabled,
+    isDeepScanEnabled,
   ];
 
   Map<String, dynamic> toJson() {
@@ -56,6 +61,7 @@ class AppSettings extends Equatable {
       'includeHiddenSsids': includeHiddenSsids,
       'strictSafetyMode': strictSafetyMode,
       'autoScanEnabled': autoScanEnabled,
+      'isDeepScanEnabled': isDeepScanEnabled,
     };
   }
 
@@ -69,6 +75,7 @@ class AppSettings extends Equatable {
       includeHiddenSsids: _readBool(json['includeHiddenSsids'], fallback: true),
       strictSafetyMode: _readBool(json['strictSafetyMode'], fallback: true),
       autoScanEnabled: _readBool(json['autoScanEnabled'], fallback: false),
+      isDeepScanEnabled: _readBool(json['isDeepScanEnabled'], fallback: false),
     );
   }
 

@@ -129,6 +129,18 @@ abstract class AppLocalizations {
   /// **'Deep Scan'**
   String get deepScan;
 
+  /// Title for the experimental deep scan toggle in Security Center.
+  ///
+  /// In en, this message translates to:
+  /// **'Deep Scan (Experimental)'**
+  String get deepScanExperimentalTitle;
+
+  /// Subtitle for the experimental deep scan toggle in Security Center.
+  ///
+  /// In en, this message translates to:
+  /// **'Actively probe LAN for devices and ports. Increased battery usage.'**
+  String get deepScanExperimentalSubtitle;
+
   /// Title for scan mode info.
   ///
   /// In en, this message translates to:
@@ -960,8 +972,20 @@ abstract class AppLocalizations {
   /// Defense Title
   ///
   /// In en, this message translates to:
-  /// **'DEFENSE'**
+  /// **'SECURITY CENTER'**
   String get defenseTitle;
+
+  /// Shield Lab Ready
+  ///
+  /// In en, this message translates to:
+  /// **'Ready for Assessment'**
+  String get shieldLabReady;
+
+  /// Deep Scan Running
+  ///
+  /// In en, this message translates to:
+  /// **'Scan in progress...'**
+  String get deepScanRunning;
 
   /// Known Networks
   ///
@@ -975,6 +999,18 @@ abstract class AppLocalizations {
   /// **'No known networks yet'**
   String get noKnownNetworksYet;
 
+  /// No Identified Networks
+  ///
+  /// In en, this message translates to:
+  /// **'No identified networks in laboratory archives'**
+  String get noIdentifiedNetworks;
+
+  /// Known Networks Dashboard
+  ///
+  /// In en, this message translates to:
+  /// **'KNOWN NETWORKS ARCHIVE'**
+  String get knownNetworksDashboard;
+
   /// Security Timeline
   ///
   /// In en, this message translates to:
@@ -986,6 +1022,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No security events recorded'**
   String get noSecurityEvents;
+
+  /// Title for DNS Security card
+  ///
+  /// In en, this message translates to:
+  /// **'DNS INTEGRITY'**
+  String get dnsSecurityTitle;
+
+  /// Body for DNS Security card
+  ///
+  /// In en, this message translates to:
+  /// **'Verify that your DNS queries are not being hijacked or spoofed.'**
+  String get dnsSecurityBody;
+
+  /// DNS Integrity status label
+  ///
+  /// In en, this message translates to:
+  /// **'DNS INTEGRITY'**
+  String get dnsIntegrity;
+
+  /// Label for run test button
+  ///
+  /// In en, this message translates to:
+  /// **'RUN TEST'**
+  String get runTest;
+
+  /// Label for integrity check
+  ///
+  /// In en, this message translates to:
+  /// **'INTEGRITY CHECK'**
+  String get integrityCheck;
 
   /// Auth Local System
   ///
@@ -1088,6 +1154,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The security score (0–100) rates how well this network is protected. Higher is better. It considers encryption type, WPS status, and other security features.'**
   String get securityScoreDesc;
+
+  /// Label for network security section
+  ///
+  /// In en, this message translates to:
+  /// **'Network Security'**
+  String get networkSecurity;
+
+  /// Action to scan ports on a device
+  ///
+  /// In en, this message translates to:
+  /// **'PORT SCAN'**
+  String get portScanAction;
+
+  /// Action to lookup hostname of a device
+  ///
+  /// In en, this message translates to:
+  /// **'LOOKUP HOSTNAME'**
+  String get hostnameLookupAction;
+
+  /// Action to get ARP information for a device
+  ///
+  /// In en, this message translates to:
+  /// **'ARP INFO'**
+  String get arpInfoAction;
+
+  /// Label for discovered open ports
+  ///
+  /// In en, this message translates to:
+  /// **'OPEN PORTS'**
+  String get portsFoundLabel;
+
+  /// Message when no ports are found open
+  ///
+  /// In en, this message translates to:
+  /// **'No open ports found'**
+  String get noPortsFound;
+
+  /// Label for hostname result
+  ///
+  /// In en, this message translates to:
+  /// **'HOSTNAME'**
+  String get hostnameLabel;
+
+  /// Label for ARP information
+  ///
+  /// In en, this message translates to:
+  /// **'ARP DATA'**
+  String get arpInfoLabel;
+
+  /// Loading title for port scanning
+  ///
+  /// In en, this message translates to:
+  /// **'SCANNING PORTS...'**
+  String get scanningPortsTitle;
+
+  /// Loading title for hostname lookup
+  ///
+  /// In en, this message translates to:
+  /// **'LOOKING UP HOSTNAME...'**
+  String get lookingUpHostnameTitle;
+
+  /// Loading title for fetching ARP info
+  ///
+  /// In en, this message translates to:
+  /// **'FETCHING ARP DATA...'**
+  String get fetchingArpTitle;
+
+  /// Hint for port range input field
+  ///
+  /// In en, this message translates to:
+  /// **'Port range (e.g. 80,443 or 1-1000)'**
+  String get portRangeHint;
 
   /// Capabilities Label
   ///
@@ -1944,7 +2082,7 @@ abstract class AppLocalizations {
   /// Name of security event type
   ///
   /// In en, this message translates to:
-  /// **'{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst} handshakeCaptureStarted{Handshake Capture Started} handshakeCaptureCompleted{Handshake Captured} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} unsupportedOperation{Unsupported Operation} other{{type}}}'**
+  /// **'{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst} handshakeCaptureStarted{Handshake Capture Started} handshakeCaptureCompleted{Handshake Captured} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} arpSpoofingDetected{ARP Spoofing Detected} dnsHijackingDetected{DNS Hijacking Detected} unsupportedOperation{Unsupported Operation} other{{type}}}'**
   String securityEventType(String type);
 
   /// Name of security severity
@@ -2148,25 +2286,25 @@ abstract class AppLocalizations {
   /// Evil twin alert title
   ///
   /// In en, this message translates to:
-  /// **'EVIL TWIN DETECTED'**
+  /// **'CRITICAL: EVIL TWIN DETECTED'**
   String get evilTwinAlertTitle;
 
   /// Evil twin alert body
   ///
   /// In en, this message translates to:
-  /// **'A network is impersonating a known access point. Do not connect to unrecognized networks.'**
+  /// **'A suspicious access point with a matching SSID but different security parameters has been identified.'**
   String get evilTwinAlertBody;
 
   /// WPS warning title
   ///
   /// In en, this message translates to:
-  /// **'WPS IS ENABLED'**
+  /// **'WPS VULNERABILITY DETECTED'**
   String get wpsWarningTitle;
 
   /// WPS warning body
   ///
   /// In en, this message translates to:
-  /// **'WPS has known vulnerabilities that allow attackers to crack your Wi-Fi password even on WPA2. Disable it in your router settings.'**
+  /// **'One or more nearby networks have WPS active. This can be exploited to gain unauthorized access.'**
   String get wpsWarningBody;
 
   /// WPS affected networks count
@@ -2286,7 +2424,7 @@ abstract class AppLocalizations {
   /// Badge for a network with an established trusted profile
   ///
   /// In en, this message translates to:
-  /// **'TRUSTED BASELINE'**
+  /// **'TRUSTED BASELINES'**
   String get trustedBaselineBadge;
 
   /// Title for the DNS diagnostic evidence section
@@ -2294,6 +2432,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'DNS EVIDENCE'**
   String get dnsEvidenceTitle;
+
+  /// Experimental security testing and analysis title
+  ///
+  /// In en, this message translates to:
+  /// **'SHIELD LABORATORY'**
+  String get shieldLabTitle;
+
+  /// Header for LAN devices discovery section
+  ///
+  /// In en, this message translates to:
+  /// **'DISCOVERED DEVICES'**
+  String get discoveredDevices;
+
+  /// Header for open ports list
+  ///
+  /// In en, this message translates to:
+  /// **'OPEN PORTS DETECTED'**
+  String get openPortsFound;
+
+  /// Badge for experimental features
+  ///
+  /// In en, this message translates to:
+  /// **'EXPERIMENTAL'**
+  String get experimentalFeature;
+
+  /// Description for deep scan toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Active port scanning and LAN discovery (May trigger network alerts)'**
+  String get deepScanDescription;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

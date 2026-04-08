@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:torcav/core/di/injection.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
 import 'package:torcav/core/l10n/locale_cubit.dart';
-import 'package:torcav/core/i18n/delegates/fallback_localization_delegate.dart';
+import 'package:torcav/core/l10n/delegates/fallback_localization_delegate.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/features/app_shell/presentation/pages/app_shell_page.dart';
 import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';

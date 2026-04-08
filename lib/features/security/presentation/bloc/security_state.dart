@@ -36,6 +36,9 @@ class SecurityLoaded extends SecurityState {
   final SecurityScanSummary? scanSummary;
   final DnsTestResult? dnsResult;
   final bool isDnsLoading;
+  final bool isDeepScanEnabled;
+  final bool isDeepScanning;
+  final AssessmentSession? latestSession;
 
   const SecurityLoaded({
     required this.knownNetworks,
@@ -45,6 +48,9 @@ class SecurityLoaded extends SecurityState {
     this.scanSummary,
     this.dnsResult,
     this.isDnsLoading = false,
+    this.isDeepScanEnabled = false,
+    this.isDeepScanning = false,
+    this.latestSession,
   });
 
   SecurityLoaded copyWith({
@@ -55,6 +61,9 @@ class SecurityLoaded extends SecurityState {
     SecurityScanSummary? scanSummary,
     DnsTestResult? dnsResult,
     bool? isDnsLoading,
+    bool? isDeepScanEnabled,
+    bool? isDeepScanning,
+    AssessmentSession? latestSession,
   }) {
     return SecurityLoaded(
       knownNetworks: knownNetworks ?? this.knownNetworks,
@@ -65,6 +74,9 @@ class SecurityLoaded extends SecurityState {
       scanSummary: scanSummary ?? this.scanSummary,
       dnsResult: dnsResult ?? this.dnsResult,
       isDnsLoading: isDnsLoading ?? this.isDnsLoading,
+      isDeepScanEnabled: isDeepScanEnabled ?? this.isDeepScanEnabled,
+      isDeepScanning: isDeepScanning ?? this.isDeepScanning,
+      latestSession: latestSession ?? this.latestSession,
     );
   }
 
@@ -77,6 +89,9 @@ class SecurityLoaded extends SecurityState {
         scanSummary,
         dnsResult,
         isDnsLoading,
+        isDeepScanEnabled,
+        isDeepScanning,
+        latestSession,
       ];
 }
 

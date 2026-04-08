@@ -584,12 +584,14 @@ class NeonDivider extends StatelessWidget {
 /// A small pill-shaped label with neon border.
 class NeonChip extends StatelessWidget {
   final String label;
+  final IconData? icon;
   final Color? color;
   final TextStyle? textStyle;
 
   const NeonChip({
     super.key,
     required this.label,
+    this.icon,
     this.color,
     this.textStyle,
   });
@@ -610,15 +612,23 @@ class NeonChip extends StatelessWidget {
           ),
         ],
       ),
-      child: Text(
-        label,
-        style:
-            textStyle ??
-            GoogleFonts.outfit(
-              color: effectiveColor.withValues(alpha: 0.9),
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 14, color: effectiveColor.withValues(alpha: 0.8)),
+            const SizedBox(width: 6),
+          ],
+          Text(
+            label,
+            style: textStyle ??
+                GoogleFonts.outfit(
+                  color: effectiveColor.withValues(alpha: 0.9),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+        ],
       ),
     );
   }
@@ -758,8 +768,9 @@ class BentoStatTile extends StatelessWidget {
     final effectiveColor = color ?? Theme.of(context).colorScheme.primary;
     return NeonCard(
       glowColor: effectiveColor,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -781,7 +792,7 @@ class BentoStatTile extends StatelessWidget {
                 ),
             ],
           ),
-          const Spacer(),
+          const SizedBox(height: 12),
           FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
@@ -800,10 +811,10 @@ class BentoStatTile extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: GoogleFonts.rajdhani(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              color: Colors.white70,
               fontSize: 10,
-              fontWeight: FontWeight.bold,
               letterSpacing: 1,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
@@ -1052,6 +1063,133 @@ class NeonConfirmDialog extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+// ── Pulse Animation ──────────────────────────────────────────────────
+
+/// Wraps a child with a breathing/pulsing animation.
+class PulseAnimation extends StatefulWidget {
+  final Widget child;
+  final Color color;
+  final bool isPaused;
+  final double minScale;
+  final double maxScale;
+  final Duration duration;
+
+  const PulseAnimation({
+    super.key,
+    required this.child,
+    required this.color,
+    this.isPaused = false,
+    this.minScale = 0.95,
+    this.maxScale = 1.05,
+    this.duration = const Duration(seconds: 2),
+  });
+
+  @override
+  State<PulseAnimation> createState() => _PulseAnimationState();
+}
+
+class _PulseAnimationState extends State<PulseAnimation>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _glowAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: widget.duration);
+    _scaleAnimation = Tween<double>(begin: widget.minScale, end: widget.maxScale)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    _glowAnimation = Tween<double>(begin: 0.0, end: 1.0)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
+    if (!widget.isPaused) {
+      _controller.repeat(reverse: true);
+    }
+  }
+
+  @override
+  void didUpdateWidget(PulseAnimation oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isPaused != oldWidget.isPaused) {
+      if (widget.isPaused) {
+        _controller.stop();
+      } else {
+        _controller.repeat(reverse: true);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (MediaQuery.of(context).disableAnimations) {
+      return widget.child;
+    }
+
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _scaleAnimation.value,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: widget.color.withValues(alpha: 0.2 * _glowAnimation.value),
+                  blurRadius: 15 * _glowAnimation.value,
+                  spreadRadius: 2 * _glowAnimation.value,
+                ),
+              ],
+            ),
+            child: child,
+          ),
+        );
+      },
+      child: widget.child,
+    );
+  }
+}
+
+// ── Glow Point ───────────────────────────────────────────────────────
+
+/// A tiny, glowing decorative point for the "Cyber" look.
+class GlowPoint extends StatelessWidget {
+  final Color color;
+  final double size;
+
+  const GlowPoint({
+    super.key,
+    required this.color,
+    this.size = 2.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.8),
+            blurRadius: size * 2,
+            spreadRadius: size / 2,
+          ),
+        ],
       ),
     );
   }

@@ -41,38 +41,72 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
   // ── HTTP path ─────────────────────────────────────────────────────────────
 
   Stream<SpeedTestProgress> _runHttpSpeedTest() async* {
-    final client =
-        HttpClient()..connectionTimeout = _kConnectionTimeout;
+    final client = HttpClient()..connectionTimeout = _kConnectionTimeout;
 
     try {
       // ── Phase 1 ───────────────────────────────────────────────────────────
       yield const SpeedTestProgress(phase: SpeedTestPhase.latency);
-      final (latencyMs, jitterMs) = await _measureLatency(client);
+      final (latencyMs, jitterMs, packetLoss) = await _measureLatency(client);
 
       // ── Phase 2 ───────────────────────────────────────────────────────────
       yield SpeedTestProgress(
         phase: SpeedTestPhase.download,
         latencyMs: latencyMs,
         jitterMs: jitterMs,
+        packetLoss: packetLoss,
       );
 
       var downloadMbps = 0.0;
+      var loadedLatencyMs = 0.0;
+      final loadedSamples = <double>[];
+      var isTestingUnderLoad = true;
+
+      // Measure loaded latency in background during download
+      unawaited(Future(() async {
+        final innerClient = HttpClient()..connectionTimeout = const Duration(seconds: 2);
+        try {
+          while (isTestingUnderLoad) {
+            final sw = Stopwatch()..start();
+            try {
+              final req = await innerClient.getUrl(Uri.parse(_kPingUrl));
+              final resp = await req.close();
+              await resp.drain<void>();
+              sw.stop();
+              loadedSamples.add(sw.elapsedMilliseconds.toDouble());
+            } catch (_) {}
+            await Future<void>.delayed(const Duration(milliseconds: 500));
+          }
+        } finally {
+          innerClient.close(force: true);
+        }
+      }));
+
       await for (final mbps in _measureDownload(client)) {
         downloadMbps = mbps;
+        if (loadedSamples.isNotEmpty) {
+          loadedSamples.sort();
+          loadedLatencyMs = loadedSamples[loadedSamples.length ~/ 2];
+        }
         yield SpeedTestProgress(
           phase: SpeedTestPhase.download,
           latencyMs: latencyMs,
           jitterMs: jitterMs,
+          packetLoss: packetLoss,
           downloadMbps: downloadMbps,
+          loadedLatencyMs: loadedLatencyMs,
         );
       }
+      
+      isTestingUnderLoad = false; // Stop the background pings after download phase
 
       // ── Phase 3 ───────────────────────────────────────────────────────────
       yield SpeedTestProgress(
         phase: SpeedTestPhase.upload,
         latencyMs: latencyMs,
         jitterMs: jitterMs,
+        packetLoss: packetLoss,
         downloadMbps: downloadMbps,
+        loadedLatencyMs: loadedLatencyMs,
       );
 
       var uploadMbps = 0.0;
@@ -82,8 +116,10 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
           phase: SpeedTestPhase.upload,
           latencyMs: latencyMs,
           jitterMs: jitterMs,
+          packetLoss: packetLoss,
           downloadMbps: downloadMbps,
           uploadMbps: uploadMbps,
+          loadedLatencyMs: loadedLatencyMs,
         );
       }
 
@@ -91,8 +127,10 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
         phase: SpeedTestPhase.done,
         latencyMs: latencyMs,
         jitterMs: jitterMs,
+        packetLoss: packetLoss,
         downloadMbps: downloadMbps,
         uploadMbps: uploadMbps,
+        loadedLatencyMs: loadedLatencyMs,
       );
     } finally {
       client.close(force: true);
@@ -105,8 +143,8 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
   // make [_kPingPings] timed GETs on the same keep-alive connection.
   // Reporting the median removes the effect of OS/GC-induced spikes.
 
-  /// Returns (medianLatencyMs, jitterMs).
-  Future<(double, double)> _measureLatency(HttpClient client) async {
+  /// Returns (medianLatencyMs, jitterMs, packetLoss).
+  Future<(double, double, double)> _measureLatency(HttpClient client) async {
     // Warmup — DNS + TCP + TLS paid here, not counted in results.
     try {
       final req = await client.getUrl(Uri.parse(_kPingUrl));
@@ -115,6 +153,8 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
     } catch (_) {}
 
     final samples = <double>[];
+    var failedCount = 0;
+    
     for (var i = 0; i < _kPingPings; i++) {
       final sw = Stopwatch()..start();
       try {
@@ -124,20 +164,24 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
         sw.stop();
         samples.add(sw.elapsedMilliseconds.toDouble());
       } catch (_) {
-        // skip failed sample
+        failedCount++;
       }
     }
 
-    if (samples.isEmpty) return (0.0, 0.0);
+    final packetLoss = (failedCount / _kPingPings) * 100;
+
+    if (samples.isEmpty) return (0.0, 0.0, packetLoss);
     samples.sort();
     final median = samples[samples.length ~/ 2];
+    
     // Jitter = mean absolute deviation between consecutive sorted samples.
     double jitterSum = 0;
     for (var i = 1; i < samples.length; i++) {
       jitterSum += (samples[i] - samples[i - 1]).abs();
     }
     final jitter = samples.length > 1 ? jitterSum / (samples.length - 1) : 0.0;
-    return (median, jitter);
+    
+    return (median, jitter, packetLoss);
   }
 
   // ── Download ──────────────────────────────────────────────────────────────

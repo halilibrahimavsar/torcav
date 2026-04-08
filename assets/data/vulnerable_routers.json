@@ -1,0 +1,44 @@
+[
+  {
+    "prefix": "00:50:7F",
+    "model": "D-Link DSL Series",
+    "vulnerability": "Legacy WPS vulnerability (Pixie Dust)",
+    "severity": "critical",
+    "recommendation": "Disable WPS immediately and update firmware if available."
+  },
+  {
+    "prefix": "C8:3A:35",
+    "model": "Tenda AC Series",
+    "vulnerability": "Hardcoded manufacturer credentials",
+    "severity": "critical",
+    "recommendation": "Change the default admin password and disable remote management (WAN side)."
+  },
+  {
+    "prefix": "00:1D:CE",
+    "model": "TP-Link WR740N/TL-WR841N",
+    "vulnerability": "Multiple unauthenticated RCE CVEs",
+    "severity": "high",
+    "recommendation": "Update to the latest firmware version or replace with supported hardware."
+  },
+  {
+    "prefix": "00:26:5B",
+    "model": "ASUS RT Series (Legacy)",
+    "vulnerability": "AiCloud vulnerability (CVE-2014-2719)",
+    "severity": "high",
+    "recommendation": "Disable AiCloud features or apply the latest security patches."
+  },
+  {
+    "prefix": "E0:3F:49",
+    "model": "ASUS Modern Series",
+    "vulnerability": "Potential unpatched 'BadLock' firmware",
+    "severity": "medium",
+    "recommendation": "Ensure 'Auto-update' is enabled in the router settings."
+  },
+  {
+    "prefix": "BC:F6:85",
+    "model": "Linksys E-Series",
+    "vulnerability": "The Moon worm susceptibility",
+    "severity": "high",
+    "recommendation": "Apply security firmware updates and disable HNAP if possible."
+  }
+]

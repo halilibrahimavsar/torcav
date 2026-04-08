@@ -7,6 +7,7 @@ import '../../domain/entities/network_device.dart';
 import '../../domain/entities/network_scan_profile.dart';
 import '../../domain/repositories/network_scan_repository.dart';
 import '../../domain/services/new_device_detector.dart';
+import '../../domain/usecases/port_scan_usecase.dart';
 
 // Events
 abstract class NetworkScanEvent extends Equatable {
@@ -17,15 +18,17 @@ class StartNetworkScan extends NetworkScanEvent {
   final String target;
   final NetworkScanProfile profile;
   final PortScanMethod method;
+  final bool deepScan;
 
   const StartNetworkScan({
     required this.target,
     this.profile = NetworkScanProfile.fast,
     this.method = PortScanMethod.auto,
+    this.deepScan = false,
   });
 
   @override
-  List<Object?> get props => [target, profile, method];
+  List<Object?> get props => [target, profile, method, deepScan];
 }
 
 // State
@@ -65,8 +68,9 @@ class NetworkScanError extends NetworkScanState {
 class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
   final NetworkScanRepository _repository;
   final NewDeviceDetector _newDeviceDetector;
+  final PortScanUseCase _portScanUseCase;
 
-  NetworkScanBloc(this._repository, this._newDeviceDetector)
+  NetworkScanBloc(this._repository, this._newDeviceDetector, this._portScanUseCase)
       : super(NetworkScanInitial()) {
     on<StartNetworkScan>(_onStartScan);
   }
@@ -103,6 +107,33 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
           hosts: hosts,
           newDevices: newDevices,
         ));
+
+        // Background Port Scan Phase Phase
+        if (event.deepScan || event.profile != NetworkScanProfile.fast) {
+          final updatedHosts = List<HostScanResult>.from(hosts);
+          final futures = <Future<void>>[];
+          
+          for (int i = 0; i < updatedHosts.length; i++) {
+            futures.add(() async {
+              final result = await _portScanUseCase(updatedHosts[i].ip);
+              result.fold(
+                (failure) => null, // Ignore failures internally per host
+                (services) {
+                  if (services.isNotEmpty) {
+                    updatedHosts[i] = updatedHosts[i].copyWith(services: services);
+                    // Re-emit immediately per host updated
+                    emit(NetworkScanLoaded(
+                      devices: devices,
+                      hosts: List.from(updatedHosts),
+                      newDevices: newDevices,
+                    ));
+                  }
+                },
+              );
+            }());
+          }
+          await Future.wait(futures);
+        }
       },
     );
   }

@@ -10,6 +10,8 @@ enum SecurityEventType {
   deauthAttackSuspected,
   encryptionDowngraded,
   unsupportedOperation,
+  arpSpoofingDetected,
+  dnsHijackingDetected,
 }
 
 enum SecurityEventSeverity { low, medium, info, warning, high, critical }

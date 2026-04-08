@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
-import '../../../../core/di/injection.dart';
 import '../../data/services/favorites_store.dart';
 import '../../domain/entities/scan_request.dart';
 import '../../domain/entities/scan_snapshot.dart';
@@ -16,8 +15,13 @@ part 'wifi_scan_state.dart';
 class WifiScanBloc extends Bloc<WifiScanEvent, WifiScanState> {
   final ScanWifi _scanWifi;
   final FavoritesStore _favorites;
+  final ScanSessionStore _sessionStore;
 
-  WifiScanBloc(this._scanWifi, this._favorites) : super(WifiScanInitial()) {
+  WifiScanBloc(
+    this._scanWifi,
+    this._favorites,
+    this._sessionStore,
+  ) : super(WifiScanInitial()) {
     on<WifiScanStarted>(_onStarted);
     on<WifiScanRefreshed>(_onRefreshed);
     on<WifiScanToggleFavorite>(_onToggleFavorite);
@@ -29,22 +33,44 @@ class WifiScanBloc extends Bloc<WifiScanEvent, WifiScanState> {
   ) async {
     emit(WifiScanLoading());
     final result = await _scanWifi(request: event.request);
-    result.fold((failure) => emit(WifiScanError(failure.message)), (snapshot) {
-      getIt<ScanSessionStore>().add(snapshot);
-      emit(WifiScanLoaded(snapshot, pinnedBssids: _favorites.pinned));
-    });
+    if (isClosed) return;
+    
+    result.fold(
+      (failure) => emit(WifiScanError(failure.message)), 
+      (snapshot) {
+        final sortedSnapshot = _sortSnapshot(snapshot);
+        _sessionStore.add(sortedSnapshot);
+        emit(WifiScanLoaded(sortedSnapshot, pinnedBssids: _favorites.pinned));
+      },
+    );
   }
 
   Future<void> _onRefreshed(
     WifiScanRefreshed event,
     Emitter<WifiScanState> emit,
   ) async {
-    emit(WifiScanLoading());
+    final current = state;
+    if (current is WifiScanLoaded) {
+      emit(current.copyWith(isRefreshing: true));
+    } else {
+      emit(WifiScanLoading());
+    }
+
     final result = await _scanWifi(request: event.request);
-    result.fold((failure) => emit(WifiScanError(failure.message)), (snapshot) {
-      getIt<ScanSessionStore>().add(snapshot);
-      emit(WifiScanLoaded(snapshot, pinnedBssids: _favorites.pinned));
-    });
+    if (isClosed) return;
+
+    result.fold(
+      (failure) => emit(WifiScanError(failure.message)), 
+      (snapshot) {
+        final sortedSnapshot = _sortSnapshot(snapshot);
+        _sessionStore.add(sortedSnapshot);
+        emit(WifiScanLoaded(
+          sortedSnapshot, 
+          pinnedBssids: _favorites.pinned, 
+          isRefreshing: false,
+        ));
+      },
+    );
   }
 
   void _onToggleFavorite(
@@ -54,7 +80,25 @@ class WifiScanBloc extends Bloc<WifiScanEvent, WifiScanState> {
     _favorites.toggle(event.bssid);
     final current = state;
     if (current is WifiScanLoaded) {
-      emit(WifiScanLoaded(current.snapshot, pinnedBssids: _favorites.pinned));
+      emit(WifiScanLoaded(
+        current.snapshot, 
+        pinnedBssids: _favorites.pinned,
+        isRefreshing: current.isRefreshing,
+      ));
     }
+  }
+
+  ScanSnapshot _sortSnapshot(ScanSnapshot snapshot) {
+    final sortedNetworks = snapshot.networks.toList()
+      ..sort((a, b) => b.avgSignalDbm.compareTo(a.avgSignalDbm));
+
+    return ScanSnapshot(
+      timestamp: snapshot.timestamp,
+      backendUsed: snapshot.backendUsed,
+      interfaceName: snapshot.interfaceName,
+      networks: sortedNetworks,
+      channelStats: snapshot.channelStats,
+      bandStats: snapshot.bandStats,
+    );
   }
 }

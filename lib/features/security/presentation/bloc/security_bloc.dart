@@ -8,8 +8,10 @@ import '../../domain/usecases/analyze_network_security_usecase.dart';
 import '../../domain/usecases/security_analyzer.dart';
 import '../../domain/usecases/dns_leak_test_usecase.dart';
 import '../../domain/entities/dns_test_result.dart';
+import '../../domain/entities/assessment_session.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
+import 'package:torcav/features/settings/domain/services/app_settings_store.dart';
 import '../../domain/entities/trusted_network_profile.dart';
 import 'dart:async';
 
@@ -23,7 +25,9 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
   final ScanSessionStore _sessionStore;
   final SecurityAnalyzer _analyzer;
   final DnsLeakTestUsecase _dnsLeakTestUsecase;
+  final AppSettingsStore _settingsStore;
   StreamSubscription? _scanSubscription;
+  StreamSubscription? _settingsSubscription;
 
   List<WifiNetwork> _lastNetworks = [];
 
@@ -33,11 +37,13 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
     this._sessionStore,
     this._analyzer,
     this._dnsLeakTestUsecase,
+    this._settingsStore,
   ) : super(SecurityInitial()) {
     on<SecurityStarted>(_onStarted);
     on<SecurityAnalyzeRequested>(_onAnalyzeRequested);
     on<SecurityUntrustRequested>(_onUntrustRequested);
     on<SecurityDnsTestRequested>(_onDnsTestRequested);
+    on<SecurityDeepScanToggled>(_onDeepScanToggled);
 
     // Auto-analyze on every new scan
     DateTime? lastTimestamp;
@@ -50,11 +56,22 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
         ),
       );
     });
+
+    // Listen to global settings changes for Deep Scan sync
+    _settingsSubscription = _settingsStore.changes.listen((settings) {
+      final currentState = state;
+      if (currentState is SecurityLoaded) {
+        if (currentState.isDeepScanEnabled != settings.isDeepScanEnabled) {
+          add(SecurityDeepScanToggled(settings.isDeepScanEnabled));
+        }
+      }
+    });
   }
 
   @override
   Future<void> close() {
     _scanSubscription?.cancel();
+    _settingsSubscription?.cancel();
     return super.close();
   }
 
@@ -74,20 +91,29 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
         await _analyzeUseCase(_lastNetworks);
       }
 
-      final known = await _repository.getKnownNetworks();
-      final trusted = await _repository.getTrustedNetworkProfiles();
-      final events = await _repository.getSecurityEvents();
+      final knownResult = await _repository.getKnownNetworks();
+      final known = knownResult.getOrElse(() => []);
+      final trustedResult = await _repository.getTrustedNetworkProfiles();
+      final trusted = trustedResult.getOrElse(() => []);
+      final eventsResult = await _repository.getSecurityEvents();
+      final events = eventsResult.getOrElse(() => []);
       final score = _computeScore(_lastNetworks);
-      final summary =
-          _lastNetworks.isEmpty ? null : _buildSummary(_lastNetworks);
+      final summary = _lastNetworks.isEmpty ? null : _buildSummary(_lastNetworks);
+      final sessionResult = await _repository.getLatestAssessmentSession();
+      final latestSession = sessionResult.getOrElse(() => null);
+
+      if (isClosed) return;
+
       emit(SecurityLoaded(
         knownNetworks: known,
         trustedNetworkProfiles: trusted,
         recentEvents: events,
         overallScore: score,
         scanSummary: summary,
+        latestSession: latestSession,
       ));
     } catch (e) {
+      if (isClosed) return;
       emit(SecurityError(e.toString()));
     }
   }
@@ -98,20 +124,44 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
   ) async {
     try {
       _lastNetworks = event.networks;
-      await _analyzeUseCase(event.networks);
-      final known = await _repository.getKnownNetworks();
-      final trusted = await _repository.getTrustedNetworkProfiles();
-      final events = await _repository.getSecurityEvents();
+      final isDeepScan = event.isDeepScan ?? _settingsStore.value.isDeepScanEnabled;
+
+      final currentState = state;
+      if (currentState is SecurityLoaded && isDeepScan) {
+        emit(currentState.copyWith(
+          isDeepScanning: true,
+          isDeepScanEnabled: true,
+        ));
+      }
+
+      await _analyzeUseCase(event.networks, isDeepScan: isDeepScan);
+
+      final knownResult = await _repository.getKnownNetworks();
+      final known = knownResult.getOrElse(() => []);
+      final trustedResult = await _repository.getTrustedNetworkProfiles();
+      final trusted = trustedResult.getOrElse(() => []);
+      final eventsResult = await _repository.getSecurityEvents();
+      final events = eventsResult.getOrElse(() => []);
       final score = _computeScore(event.networks);
       final summary = _buildSummary(event.networks);
+
+      final sessionResult = await _repository.getLatestAssessmentSession();
+      final latestSession = sessionResult.getOrElse(() => null);
+
+      if (isClosed) return;
+
       emit(SecurityLoaded(
         knownNetworks: known,
         trustedNetworkProfiles: trusted,
         recentEvents: events,
         overallScore: score,
         scanSummary: summary,
+        isDeepScanEnabled: isDeepScan,
+        isDeepScanning: false,
+        latestSession: latestSession,
       ));
     } catch (e) {
+      if (isClosed) return;
       emit(SecurityError(e.toString()));
     }
   }
@@ -123,20 +173,39 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
     try {
       await _repository.deleteTrustedNetworkProfile(event.bssid);
 
-      final known = await _repository.getKnownNetworks();
-      final trusted = await _repository.getTrustedNetworkProfiles();
-      final events = await _repository.getSecurityEvents();
+      final knownResult = await _repository.getKnownNetworks();
+      final known = knownResult.getOrElse(() => []);
+      final trustedResult = await _repository.getTrustedNetworkProfiles();
+      final trusted = trustedResult.getOrElse(() => []);
+      final eventsResult = await _repository.getSecurityEvents();
+      final events = eventsResult.getOrElse(() => []);
       final score = _computeScore(_lastNetworks);
       final summary =
           _lastNetworks.isEmpty ? null : _buildSummary(_lastNetworks);
+      final isDeepScan = state is SecurityLoaded
+          ? (state as SecurityLoaded).isDeepScanEnabled
+          : false;
+      final dnsResult =
+          state is SecurityLoaded ? (state as SecurityLoaded).dnsResult : null;
+
+      final latestSession = state is SecurityLoaded
+          ? (state as SecurityLoaded).latestSession
+          : null;
+
+      if (isClosed) return;
+
       emit(SecurityLoaded(
         knownNetworks: known,
         trustedNetworkProfiles: trusted,
         recentEvents: events,
         overallScore: score,
         scanSummary: summary,
+        isDeepScanEnabled: isDeepScan,
+        dnsResult: dnsResult,
+        latestSession: latestSession,
       ));
     } catch (e) {
+      if (isClosed) return;
       emit(SecurityError(e.toString()));
     }
   }
@@ -170,15 +239,42 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
 
     final result = await _dnsLeakTestUsecase(null);
 
+    if (isClosed) return;
+
     result.fold(
       (failure) => emit(currentState.copyWith(
         isDnsLoading: false,
-        // We could emit an error here but let's just stop loading for now
       )),
       (dnsResult) => emit(currentState.copyWith(
         isDnsLoading: false,
         dnsResult: dnsResult,
+        // Also update latestSession if it contains DNS results
+        latestSession: currentState.latestSession?.copyWith(
+          dnsResult: dnsResult,
+        ),
       )),
     );
+  }
+
+  Future<void> _onDeepScanToggled(
+    SecurityDeepScanToggled event,
+    Emitter<SecurityState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is! SecurityLoaded) return;
+
+    if (isClosed) return;
+
+    // Update global settings to sync and persist
+    if (_settingsStore.value.isDeepScanEnabled != event.value) {
+      _settingsStore.update(
+        _settingsStore.value.copyWith(isDeepScanEnabled: event.value),
+      );
+    }
+
+    emit(currentState.copyWith(isDeepScanEnabled: event.value));
+
+    // Trigger analysis with new setting
+    add(SecurityAnalyzeRequested(_lastNetworks, isDeepScan: event.value));
   }
 }

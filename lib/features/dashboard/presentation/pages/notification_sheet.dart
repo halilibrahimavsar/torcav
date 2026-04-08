@@ -307,6 +307,10 @@ class NotificationTile extends StatelessWidget {
         icon = Icons.web_rounded;
       case SecurityEventType.unsupportedOperation:
         icon = Icons.error_outline_rounded;
+      case SecurityEventType.arpSpoofingDetected:
+        icon = Icons.security_rounded;
+      case SecurityEventType.dnsHijackingDetected:
+        icon = Icons.travel_explore_rounded;
     }
     return Icon(icon, color: color, size: 16);
   }
@@ -331,6 +335,10 @@ class NotificationTile extends StatelessWidget {
         return 'CAPTIVE PORTAL';
       case SecurityEventType.unsupportedOperation:
         return 'UNSUPPORTED';
+      case SecurityEventType.arpSpoofingDetected:
+        return 'ARP SPOOFING';
+      case SecurityEventType.dnsHijackingDetected:
+        return 'DNS HIJACKING';
     }
   }
 }

@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:torcav/core/l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:torcav/core/l10n/app_localizations.dart';
 import '../../../../core/di/injection.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/theme/neon_widgets.dart';
-import '../../../heatmap/presentation/pages/heatmap_page.dart';
 import '../bloc/security_bloc.dart';
-import '../../domain/entities/known_network.dart';
-import '../../domain/entities/trusted_network_profile.dart';
-import '../../domain/entities/dns_test_result.dart';
+import '../widgets/dns_security_card.dart';
+import '../widgets/network_security_card.dart';
+import '../widgets/scan_overview_card.dart';
+import '../widgets/security_alerts.dart';
+import '../widgets/security_header.dart';
+import '../widgets/security_timeline_view.dart';
+import '../widgets/foldable_neon_section.dart';
+import '../widgets/cyber_grid_background.dart';
 import '../../domain/entities/security_event.dart' as domain_event;
-import '../widgets/security_status_radar.dart';
 
 class SecurityCenterPage extends StatelessWidget {
   const SecurityCenterPage({super.key});
@@ -32,1317 +32,151 @@ class _SecurityCenterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         title: Text(
-          l10n.defenseTitle,
+          l10n.defenseTitle.toUpperCase(),
           style: GoogleFonts.orbitron(
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 2.0,
+            fontSize: 18,
           ),
         ),
+        centerTitle: true,
+        actions: [
+          BlocBuilder<SecurityBloc, SecurityState>(
+            builder: (context, state) {
+              final isLoading = state is SecurityLoading || (state is SecurityLoaded && state.isDnsLoading);
+              return IconButton(
+                icon: isLoading 
+                  ? const SizedBox(
+                      width: 20, 
+                      height: 20, 
+                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white70)
+                    )
+                  : const Icon(Icons.refresh_rounded),
+                onPressed: isLoading ? null : () {
+                  context.read<SecurityBloc>().add(SecurityStarted());
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: BlocBuilder<SecurityBloc, SecurityState>(
         builder: (context, state) {
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-            children: [
-              // ── Security Header (Bento) ──
-              StaggeredEntry(
-                delay: const Duration(milliseconds: 50),
-                child: _SecurityCenterBentoHeader(state: state),
-              ),
-              const SizedBox(height: 24),
+          if (state is SecurityInitial || state is SecurityLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-              // ── Evil Twin Alert ──
-              if (state is SecurityLoaded) _EvilTwinAlertBanner(state: state),
+          if (state is SecurityLoaded) {
+            final score = state.overallScore;
+            final hasCritical = state.recentEvents.any((e) => e.severity == domain_event.SecurityEventSeverity.critical);
+            final hasHigh = state.recentEvents.any((e) => e.severity == domain_event.SecurityEventSeverity.high);
+            
+            final activeColor = hasCritical
+                ? scheme.error
+                : (hasHigh
+                    ? const Color(0xFFFFB300)
+                    : (score >= 85 ? scheme.primary : scheme.outline));
 
-              // ── WPS Warning ──
-              if (state is SecurityLoaded) _WpsWarningCard(state: state),
-
-              // ── Scan Overview ──
-              if (state case SecurityLoaded(
-                :final scanSummary?,
-              ) when scanSummary.totalNetworks > 0) ...[
-                StaggeredEntry(
-                  delay: const Duration(milliseconds: 100),
-                  child: _ScanOverviewRow(summary: scanSummary),
-                ),
-                const SizedBox(height: 24),
-              ],
-
-              // ── Trusted Baselines ──
-              StaggeredEntry(
-                delay: const Duration(milliseconds: 150),
-                child: NeonSectionHeader(
-                  label: l10n.trustedBaselineBadge,
-                  icon: Icons.verified_user_rounded,
-                  color: Theme.of(context).colorScheme.tertiary,
-                ),
-              ),
-              const SizedBox(height: 12),
-              if (state is SecurityLoaded)
-                _buildTrustedBaselines(
-                  context,
-                  state.trustedNetworkProfiles,
-                  l10n,
-                )
-              else if (state is SecurityLoading)
-                _buildLoading(context)
-              else
-                _emptyBox(context, l10n.noKnownNetworksYet),
-              const SizedBox(height: 24),
-
-              // ── Discovered Networks ──
-              StaggeredEntry(
-                delay: const Duration(milliseconds: 200),
-                child: NeonSectionHeader(
-                  label: l10n.knownNetworks,
-                  icon: Icons.wifi_find_rounded,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-              const SizedBox(height: 12),
-              if (state is SecurityLoaded)
-                _buildKnownNetworks(
-                  context,
-                  state.knownNetworks,
-                  state.trustedNetworkProfiles,
-                  l10n,
-                )
-              else
-                _emptyBox(context, l10n.noKnownNetworksYet),
-              const SizedBox(height: 24),
-
-              // ── Security Timeline ──
-              StaggeredEntry(
-                delay: const Duration(milliseconds: 250),
-                child: NeonSectionHeader(
-                  label: l10n.securityTimeline,
-                  icon: Icons.history_rounded,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              const SizedBox(height: 12),
-              if (state is SecurityLoaded)
-                _buildSecurityTimeline(context, state.recentEvents, l10n)
-              else
-                _emptyBox(context, l10n.noSecurityEvents),
-              const SizedBox(height: 24),
-
-              // ── DNS Security Test ──
-              StaggeredEntry(
-                delay: const Duration(milliseconds: 300),
-                child: _DnsSecurityCard(state: state),
-              ),
-              const SizedBox(height: 24),
-
-              // ── Signal Heatmap shortcut ──
-              StaggeredEntry(
-                delay: const Duration(milliseconds: 350),
-                child: _HeatmapShortcutCard(),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildLoading(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Center(
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildKnownNetworks(
-    BuildContext context,
-    List<KnownNetwork> networks,
-    List<TrustedNetworkProfile> trustedProfiles,
-    AppLocalizations l10n,
-  ) {
-    if (networks.isEmpty) {
-      return _emptyBox(context, l10n.noKnownNetworksYet);
-    }
-    return Column(
-      children:
-          networks.map((net) {
-            final isTrusted = trustedProfiles.any((p) => p.bssid == net.bssid);
-            return _NetworkCard(network: net, isTrusted: isTrusted);
-          }).toList(),
-    );
-  }
-
-  Widget _buildTrustedBaselines(
-    BuildContext context,
-    List<TrustedNetworkProfile> profiles,
-    AppLocalizations l10n,
-  ) {
-    if (profiles.isEmpty) {
-      return _emptyBox(
-        context,
-        l10n.noKnownNetworksYet,
-      ); // TODO: Add a specific "No baselines" string if needed
-    }
-    return Column(
-      children:
-          profiles.map((profile) {
-            return _TrustedProfileCard(profile: profile);
-          }).toList(),
-    );
-  }
-
-  Widget _buildSecurityTimeline(
-    BuildContext context,
-    List<domain_event.SecurityEvent> events,
-    AppLocalizations l10n,
-  ) {
-    if (events.isEmpty) return _emptyBox(context, l10n.noSecurityEvents);
-    return Column(
-      children:
-          events.reversed
-              .take(10)
-              .map((event) => _EventCard(event: event, l10n: l10n))
-              .toList(),
-    );
-  }
-
-  Widget _emptyBox(BuildContext context, String text) {
-    return NeonCard(
-      glowColor: Theme.of(context).colorScheme.primary,
-      glowIntensity: 0.02,
-      padding: const EdgeInsets.all(20),
-      child: Center(
-        child: Text(
-          text,
-          style: GoogleFonts.rajdhani(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-            fontSize: 14,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ── Network Card (Known) ────────────────────────────────────────────
-
-class _NetworkCard extends StatelessWidget {
-  final KnownNetwork network;
-  final bool isTrusted;
-  const _NetworkCard({required this.network, required this.isTrusted});
-
-  @override
-  Widget build(BuildContext context) {
-    final secondaryColor = Theme.of(context).colorScheme.secondary;
-    final tertiaryColor = Theme.of(context).colorScheme.tertiary;
-    final activeColor = isTrusted ? tertiaryColor : secondaryColor;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: NeonCard(
-        glowColor: tertiaryColor,
-        glowIntensity: 0.04,
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: activeColor.withValues(alpha: 0.1),
-                border: Border.all(color: activeColor.withValues(alpha: 0.2)),
-                boxShadow: [
-                  BoxShadow(
-                    color: activeColor.withValues(alpha: 0.15),
-                    blurRadius: 12,
-                  ),
-                ],
-              ),
-              child: Icon(
-                isTrusted
-                    ? Icons.verified_user_rounded
-                    : Icons.wifi_find_rounded,
-                color: activeColor,
-                size: 20,
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    network.ssid.toUpperCase(),
-                    style: GoogleFonts.orbitron(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    network.bssid,
-                    style: GoogleFonts.sourceCodePro(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      fontSize: 11,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (isTrusted)
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(
-                    color: tertiaryColor.withValues(alpha: 0.3),
-                  ),
-                  color: tertiaryColor.withValues(alpha: 0.05),
-                ),
-                child: Text(
-                  'TRUSTED',
-                  style: GoogleFonts.orbitron(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w900,
-                    color: tertiaryColor,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── Trusted Profile Card ──────────────────────────────────────────
-
-class _TrustedProfileCard extends StatelessWidget {
-  final TrustedNetworkProfile profile;
-  const _TrustedProfileCard({required this.profile});
-
-  @override
-  Widget build(BuildContext context) {
-    final tertiaryColor = Theme.of(context).colorScheme.tertiary;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: NeonCard(
-        glowColor: tertiaryColor,
-        glowIntensity: 0.06,
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: tertiaryColor.withValues(alpha: 0.1),
-                border: Border.all(color: tertiaryColor.withValues(alpha: 0.2)),
-              ),
-              child: Icon(
-                Icons.verified_user_rounded,
-                color: tertiaryColor,
-                size: 20,
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    profile.ssid.toUpperCase(),
-                    style: GoogleFonts.orbitron(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'Established: ${profile.trustedAt.day}/${profile.trustedAt.month}/${profile.trustedAt.year}',
-                    style: GoogleFonts.rajdhani(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      fontSize: 11,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            IconButton(
-              onPressed:
-                  () => context.read<SecurityBloc>().add(
-                    SecurityUntrustRequested(profile.bssid),
-                  ),
-              icon: const Icon(Icons.delete_outline_rounded, size: 20),
-              color: Theme.of(context).colorScheme.error.withValues(alpha: 0.7),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── Event Card ──────────────────────────────────────────────────────
-
-class _EventCard extends StatelessWidget {
-  final domain_event.SecurityEvent event;
-  final AppLocalizations l10n;
-  const _EventCard({required this.event, required this.l10n});
-
-  Color _severityColor(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    switch (event.severity) {
-      case domain_event.SecurityEventSeverity.critical:
-        return scheme.error;
-      case domain_event.SecurityEventSeverity.high:
-        return scheme.outline;
-      case domain_event.SecurityEventSeverity.medium:
-        return scheme.primary;
-      case domain_event.SecurityEventSeverity.warning:
-        return const Color(0xFFFFB300); // Amber 600 for visibility
-      case domain_event.SecurityEventSeverity.low:
-      case domain_event.SecurityEventSeverity.info:
-        return scheme.primary;
-    }
-  }
-
-  IconData get _icon {
-    switch (event.type) {
-      case domain_event.SecurityEventType.rogueApSuspected:
-      case domain_event.SecurityEventType.evilTwinDetected:
-        return Icons.warning_amber_rounded;
-      case domain_event.SecurityEventType.deauthAttackSuspected:
-      case domain_event.SecurityEventType.deauthBurstDetected:
-        return Icons.wifi_off_rounded;
-      case domain_event.SecurityEventType.encryptionDowngraded:
-      case domain_event.SecurityEventType.handshakeCaptureStarted:
-        return Icons.lock_open_rounded;
-      case domain_event.SecurityEventType.handshakeCaptureCompleted:
-        return Icons.lock_rounded;
-      case domain_event.SecurityEventType.captivePortalDetected:
-        return Icons.web_rounded;
-      case domain_event.SecurityEventType.unsupportedOperation:
-        return Icons.block_rounded;
-    }
-  }
-
-  String _getLocalizedEvidence() {
-    final evidence = event.evidence;
-    if (event.type == domain_event.SecurityEventType.evilTwinDetected) {
-      final match = RegExp(
-        r'Expected: (.*?), Found: (.*?)[\.]',
-      ).firstMatch(evidence);
-      if (match != null) {
-        return l10n.evilTwinEvidence(match.group(1)!, match.group(2)!);
-      }
-    } else if (event.type == domain_event.SecurityEventType.rogueApSuspected) {
-      return l10n.rogueApEvidence;
-    } else if (event.type ==
-        domain_event.SecurityEventType.encryptionDowngraded) {
-      final match = RegExp(r'from (.*?) to (.*?)\.').firstMatch(evidence);
-      if (match != null) {
-        return l10n.downgradeEvidence(match.group(1)!, match.group(2)!);
-      }
-    }
-    return evidence;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final severityColor = _severityColor(context);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: NeonCard(
-        glowColor: severityColor,
-        glowIntensity: 0.04,
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(_icon, color: severityColor, size: 16),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: NeonText(
-                    '${l10n.securityEventType(event.type.name).toUpperCase()} • ${l10n.securityEventSeverity(event.severity.name).toUpperCase()}',
-                    style: GoogleFonts.orbitron(
-                      color: severityColor,
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
-                    ),
-                    glowColor: severityColor,
-                    glowRadius: 3,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  '${event.timestamp.hour.toString().padLeft(2, '0')}:${event.timestamp.minute.toString().padLeft(2, '0')}',
-                  style: GoogleFonts.rajdhani(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Container(
-                  width: 2,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    color: severityColor,
-                    borderRadius: BorderRadius.circular(2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: severityColor.withValues(alpha: 0.5),
-                        blurRadius: 4,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${event.ssid.isEmpty ? l10n.hiddenNetwork : event.ssid} (${event.bssid})',
-                        style: GoogleFonts.rajdhani(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        _getLocalizedEvidence(),
-                        style: GoogleFonts.rajdhani(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          fontSize: 12,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── Security Center Header ──────────────────────────────────────────
-
-class _SecurityCenterBentoHeader extends StatelessWidget {
-  final SecurityState state;
-
-  const _SecurityCenterBentoHeader({required this.state});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final scheme = Theme.of(context).colorScheme;
-
-    final loaded = state is SecurityLoaded ? state as SecurityLoaded : null;
-    final score = loaded?.overallScore ?? 100;
-    final hasCritical =
-        loaded?.recentEvents.any(
-          (e) => e.severity == domain_event.SecurityEventSeverity.critical,
-        ) ??
-        false;
-    final hasHigh =
-        loaded?.recentEvents.any(
-          (e) => e.severity == domain_event.SecurityEventSeverity.high,
-        ) ??
-        false;
-
-    final isSecure = score >= 85 && !hasCritical;
-    final activeColor =
-        hasCritical
-            ? scheme.error
-            : (hasHigh
-                ? const Color(0xFFFFB300)
-                : (score >= 85 ? scheme.primary : scheme.outline));
-
-    final statusLabel =
-        state is SecurityLoading
-            ? l10n.scanning
-            : (isSecure ? l10n.shieldActive : l10n.threatsDetected);
-
-    return SizedBox(
-      height: 200,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Left: Main Radar
-          Expanded(
-            flex: 6,
-            child: NeonCard(
-              glowColor: activeColor,
-              glowIntensity: 0.12,
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: SecurityStatusRadar(
-                      score: score / 100.0,
-                      isScanning: state is SecurityLoading,
-                      color: activeColor,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  NeonText(
-                    statusLabel.toUpperCase(),
-                    style: GoogleFonts.orbitron(
-                      color: activeColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 3,
-                    ),
-                    glowRadius: 8,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(width: 14),
-          // Right: Risk Score
-          Expanded(
-            flex: 4,
-            child: _BentoStatTile(
-              label: l10n.riskScore.toUpperCase(),
-              value: '$score%',
-              icon: Icons.speed_rounded,
+            return CyberGridBackground(
               color: activeColor,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ── System Status & Score ──
+                    SecurityCenterBentoHeader(state: state),
+                    const SizedBox(height: 24),
 
-// ── Scan Overview Row ───────────────────────────────────────────────
+                  // ── Critical Alerts ──
+                  EvilTwinAlertBanner(state: state),
+                  WpsWarningCard(state: state),
 
-class _ScanOverviewRow extends StatelessWidget {
-  final SecurityScanSummary summary;
-  const _ScanOverviewRow({required this.summary});
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Row(
-      children: [
-        _MiniStatChip(
-          label: 'APs',
-          value: '${summary.totalNetworks}',
-          color: scheme.primary,
-        ),
-        const SizedBox(width: 8),
-        _MiniStatChip(
-          label: 'OPEN',
-          value: '${summary.openCount}',
-          color: summary.openCount > 0 ? scheme.error : scheme.tertiary,
-        ),
-        const SizedBox(width: 8),
-        _MiniStatChip(
-          label: 'WPS',
-          value: '${summary.wpsCount}',
-          color:
-              summary.wpsCount > 0 ? const Color(0xFFFFB300) : scheme.tertiary,
-        ),
-        const SizedBox(width: 8),
-        _MiniStatChip(
-          label: 'WEP',
-          value: '${summary.wepCount}',
-          color: summary.wepCount > 0 ? scheme.error : scheme.tertiary,
-        ),
-      ],
-    );
-  }
-}
-
-class _MiniStatChip extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color color;
-  const _MiniStatChip({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: NeonCard(
-        glowColor: color,
-        glowIntensity: 0.06,
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            NeonText(
-              value,
-              style: GoogleFonts.orbitron(
-                color: color,
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-              ),
-              glowColor: color,
-              glowRadius: 4,
-            ),
-            const SizedBox(height: 2),
-            Text(
-              label,
-              style: GoogleFonts.rajdhani(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ────────────────────────────────────────────────────────────────────
-
-class _BentoStatTile extends StatelessWidget {
-  final String label;
-  final String value;
-  final IconData icon;
-  final Color color;
-
-  const _BentoStatTile({
-    required this.label,
-    required this.value,
-    required this.icon,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return NeonCard(
-      glowColor: color,
-      glowIntensity: 0.05,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: color.withValues(alpha: 0.6), size: 14),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: GoogleFonts.rajdhani(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1,
-            ),
-          ),
-          NeonText(
-            value,
-            style: GoogleFonts.orbitron(
-              color: color,
-              fontSize: 14,
-              fontWeight: FontWeight.w900,
-            ),
-            glowColor: color,
-            glowRadius: 4,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── DNS Security Card ─────────────────────────────────────────────
-
-class _DnsSecurityCard extends StatelessWidget {
-  final SecurityState state;
-
-  const _DnsSecurityCard({required this.state});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final scheme = Theme.of(context).colorScheme;
-
-    final loaded = state is SecurityLoaded ? state as SecurityLoaded : null;
-    final dnsResult = loaded?.dnsResult;
-    final isLoading = loaded?.isDnsLoading ?? false;
-
-    Color statusColor = scheme.primary;
-    String statusText = l10n.dnsSecure;
-    IconData statusIcon = Icons.verified_user_rounded;
-
-    if (dnsResult != null) {
-      if (dnsResult.isHijacked || dnsResult.isLeaking) {
-        statusColor = scheme.error;
-        statusText =
-            dnsResult.isLeaking ? l10n.dnsLeakDetected : l10n.dnsHijacked;
-        statusIcon = Icons.gpp_bad_rounded;
-      } else if (dnsResult.status == DnsSecurityStatus.warning) {
-        statusColor = const Color(0xFFFFB300);
-        statusText = l10n.dnsWarning;
-        statusIcon = Icons.warning_amber_rounded;
-      }
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        NeonSectionHeader(
-          label: l10n.dnsSecurityTest,
-          icon: Icons.dns_rounded,
-          color: scheme.secondary,
-        ),
-        const SizedBox(height: 12),
-        NeonCard(
-          glowColor: statusColor,
-          glowIntensity: 0.08,
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: statusColor.withValues(alpha: 0.1),
-                      border: Border.all(
-                        color: statusColor.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child:
-                        isLoading
-                            ? Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: statusColor,
-                              ),
-                            )
-                            : Icon(statusIcon, color: statusColor, size: 24),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        NeonText(
-                          statusText,
-                          style: GoogleFonts.orbitron(
-                            color: statusColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1,
-                          ),
-                          glowColor: statusColor,
-                        ),
-                        Text(
-                          dnsResult == null
-                              ? l10n.dnsVerifyIntegrity
-                              : l10n.dnsLastCheck(
-                                DateTime.now().hour.toString().padLeft(2, '0'),
-                                DateTime.now().minute.toString().padLeft(
-                                  2,
-                                  '0',
-                                ),
-                              ),
-                          style: GoogleFonts.rajdhani(
-                            color: scheme.onSurfaceVariant,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  _CyberButton(
-                    onTap:
-                        isLoading
-                            ? null
-                            : () => context.read<SecurityBloc>().add(
-                              SecurityDnsTestRequested(),
-                            ),
-                    label: isLoading ? l10n.dnsTesting : l10n.dnsTestNow,
-                    color: statusColor,
-                  ),
-                ],
-              ),
-              if (dnsResult != null && dnsResult.evidence.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: statusColor.withValues(alpha: 0.05),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: statusColor.withValues(alpha: 0.15),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.terminal_rounded,
-                            size: 12,
-                            color: statusColor,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            l10n.dnsEvidenceTitle.toUpperCase(),
-                            style: GoogleFonts.orbitron(
-                              fontSize: 9,
-                              fontWeight: FontWeight.bold,
-                              color: statusColor,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        dnsResult.evidence,
-                        style: GoogleFonts.sourceCodePro(
-                          fontSize: 10,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-              if (dnsResult != null) ...[
-                const SizedBox(height: 16),
-                const Divider(height: 1, thickness: 0.5),
-                const SizedBox(height: 16),
-                _DnsDetailRow(
-                  label: l10n.dnsCurrentDns,
-                  value: dnsResult.currentDns,
-                  icon: Icons.dns_outlined,
-                ),
-                const SizedBox(height: 8),
-                _DnsDetailRow(
-                  label: l10n.dnsIspProvider,
-                  value: dnsResult.ispName,
-                  icon: Icons.business_rounded,
-                ),
-                if (dnsResult.detectedServers.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children:
-                        dnsResult.detectedServers
-                            .map(
-                              (s) => Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(4),
-                                  border: Border.all(
-                                    color: scheme.onSurfaceVariant.withValues(
-                                      alpha: 0.2,
-                                    ),
-                                  ),
-                                ),
-                                child: Text(
-                                  s,
-                                  style: GoogleFonts.sourceCodePro(
-                                    fontSize: 10,
-                                    color: scheme.onSurfaceVariant,
-                                  ),
-                                ),
-                              ),
-                            )
-                            .toList(),
-                  ),
-                ],
-              ],
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _DnsDetailRow extends StatelessWidget {
-  final String label;
-  final String value;
-  final IconData icon;
-
-  const _DnsDetailRow({
-    required this.label,
-    required this.value,
-    required this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Row(
-      children: [
-        Icon(icon, size: 14, color: scheme.onSurfaceVariant),
-        const SizedBox(width: 8),
-        Text(
-          label,
-          style: GoogleFonts.rajdhani(
-            color: scheme.onSurfaceVariant,
-            fontSize: 11,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const Spacer(),
-        Text(
-          value,
-          style: GoogleFonts.sourceCodePro(
-            color: scheme.onSurface,
-            fontSize: 11,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _CyberButton extends StatelessWidget {
-  final VoidCallback? onTap;
-  final String label;
-  final Color color;
-
-  const _CyberButton({this.onTap, required this.label, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Opacity(
-        opacity: onTap == null ? 0.5 : 1.0,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: color.withValues(alpha: 0.5)),
-            boxShadow: [
-              if (onTap != null)
-                BoxShadow(
-                  color: color.withValues(alpha: 0.2),
-                  blurRadius: 8,
-                  spreadRadius: -2,
-                ),
-            ],
-          ),
-          child: Text(
-            label,
-            style: GoogleFonts.orbitron(
-              color: color,
-              fontSize: 10,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ── Heatmap shortcut card ─────────────────────────────────────────────
-
-class _HeatmapShortcutCard extends StatelessWidget {
-  const _HeatmapShortcutCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap:
-          () => Navigator.of(
-            context,
-          ).push(MaterialPageRoute<void>(builder: (_) => const HeatmapPage())),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.neonCyan.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: AppColors.neonCyan.withValues(alpha: 0.2),
-            width: 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    AppColors.neonCyan.withValues(alpha: 0.2),
-                    AppColors.neonCyan.withValues(alpha: 0.0),
+                  // ── Quick Telemetry ──
+                  if (state.scanSummary != null) ...[
+                    ScanOverviewCard(summary: state.scanSummary!),
+                    const SizedBox(height: 24),
                   ],
-                ),
-                border: Border.all(
-                  color: AppColors.neonCyan.withValues(alpha: 0.4),
-                ),
-              ),
-              child: const Icon(
-                Icons.thermostat_rounded,
-                color: AppColors.neonCyan,
-                size: 22,
+
+                  // ── Network Topology ──
+                  FoldableNeonSection(
+                    label: l10n.networkSecurity,
+                    icon: Icons.hub_rounded,
+                    color: scheme.primary,
+                    child: NetworkSecurityCard(
+                      knownNetworks: state.knownNetworks,
+                      trustedProfiles: state.trustedNetworkProfiles,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // ── Protocol Integrity ──
+                  FoldableNeonSection(
+                    label: l10n.dnsSecurityTest,
+                    icon: Icons.dns_rounded,
+                    color: scheme.secondary,
+                    child: DnsSecurityCard(state: state),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // ── Mission Log ──
+                  FoldableNeonSection(
+                    label: l10n.securityTimeline,
+                    icon: Icons.terminal_rounded,
+                    color: scheme.tertiary,
+                    child: SecurityTimelineView(events: state.recentEvents),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(width: 16),
-            Expanded(
+          );
+        }
+
+          if (state is SecurityError) {
+            return Center(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                   const Icon(Icons.gpp_bad_rounded, size: 64, color: Colors.redAccent),
+                  const SizedBox(height: 16),
                   Text(
-                    'SIGNAL HEATMAP',
+                    'SECURITY ASSESSMENT FAILED',
                     style: GoogleFonts.orbitron(
-                      color: AppColors.neonCyan,
-                      fontSize: 12,
+                      color: Colors.redAccent,
                       fontWeight: FontWeight.bold,
-                      letterSpacing: 1.5,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Map signal strength across your space by tapping points.',
-                    style: GoogleFonts.outfit(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: Text(
+                      state.message,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.rajdhani(color: Colors.white70),
                     ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: () => context.read<SecurityBloc>().add(SecurityStarted()),
+                    icon: const Icon(Icons.refresh_rounded),
+                    label: const Text('RETRY ANALYTICS'),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(width: 8),
-            Icon(
-              Icons.chevron_right_rounded,
-              color: AppColors.neonCyan.withValues(alpha: 0.6),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+            );
+          }
 
-// ── Evil Twin Alert Banner ───────────────────────────────────────────
-
-class _EvilTwinAlertBanner extends StatelessWidget {
-  final SecurityLoaded state;
-  const _EvilTwinAlertBanner({required this.state});
-
-  @override
-  Widget build(BuildContext context) {
-    final hasEvilTwin = state.recentEvents.any(
-      (e) => e.type == domain_event.SecurityEventType.evilTwinDetected,
-    );
-    if (!hasEvilTwin) return const SizedBox.shrink();
-
-    final l10n = AppLocalizations.of(context)!;
-    final errorColor = Theme.of(context).colorScheme.error;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: NeonCard(
-        glowColor: errorColor,
-        glowIntensity: 0.18,
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: errorColor.withValues(alpha: 0.15),
-                border: Border.all(color: errorColor.withValues(alpha: 0.5)),
-              ),
-              child: Icon(
-                Icons.warning_amber_rounded,
-                color: errorColor,
-                size: 24,
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  NeonText(
-                    l10n.evilTwinAlertTitle,
-                    style: GoogleFonts.orbitron(
-                      color: errorColor,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1,
-                    ),
-                    glowColor: errorColor,
-                    glowRadius: 6,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    l10n.evilTwinAlertBody,
-                    style: GoogleFonts.rajdhani(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontSize: 13,
-                      height: 1.4,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── WPS Warning Card ─────────────────────────────────────────────────
-
-class _WpsWarningCard extends StatelessWidget {
-  final SecurityLoaded state;
-  const _WpsWarningCard({required this.state});
-
-  @override
-  Widget build(BuildContext context) {
-    final wpsCount = state.scanSummary?.wpsCount ?? 0;
-    if (wpsCount == 0) return const SizedBox.shrink();
-
-    final l10n = AppLocalizations.of(context)!;
-    const warnColor = Color(0xFFFFB300);
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: NeonCard(
-        glowColor: warnColor,
-        glowIntensity: 0.10,
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: warnColor.withValues(alpha: 0.12),
-                border: Border.all(color: warnColor.withValues(alpha: 0.4)),
-              ),
-              child: const Icon(
-                Icons.lock_open_rounded,
-                color: warnColor,
-                size: 22,
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: NeonText(
-                          l10n.wpsWarningTitle,
-                          style: GoogleFonts.orbitron(
-                            color: warnColor,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1,
-                          ),
-                          glowColor: warnColor,
-                          glowRadius: 4,
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: warnColor.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: warnColor.withValues(alpha: 0.4),
-                          ),
-                        ),
-                        child: Text(
-                          l10n.wpsAffectedNetworks(wpsCount),
-                          style: GoogleFonts.orbitron(
-                            color: warnColor,
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    l10n.wpsWarningBody,
-                    style: GoogleFonts.rajdhani(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      fontSize: 13,
-                      height: 1.4,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          return const SizedBox.shrink();
+        },
       ),
     );
   }

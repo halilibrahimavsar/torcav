@@ -26,7 +26,7 @@ class AppDatabase {
 
     return openDatabase(
       dbPath,
-      version: 5,
+      version: 6,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onConfigure: (db) async {
@@ -95,7 +95,9 @@ class AppDatabase {
         latency_ms REAL NOT NULL,
         jitter_ms REAL NOT NULL,
         download_mbps REAL NOT NULL,
-        upload_mbps REAL NOT NULL
+        upload_mbps REAL NOT NULL,
+        packet_loss REAL NOT NULL DEFAULT 0,
+        loaded_latency_ms REAL NOT NULL DEFAULT 0
       )
     ''');
   }
@@ -225,6 +227,14 @@ class AppDatabase {
     if (oldVersion < 5) {
       await db.execute(
         'ALTER TABLE known_networks ADD COLUMN seen_count INTEGER NOT NULL DEFAULT 1',
+      );
+    }
+    if (oldVersion < 6) {
+      await db.execute(
+        'ALTER TABLE speed_test_results ADD COLUMN packet_loss REAL NOT NULL DEFAULT 0',
+      );
+      await db.execute(
+        'ALTER TABLE speed_test_results ADD COLUMN loaded_latency_ms REAL NOT NULL DEFAULT 0',
       );
     }
   }

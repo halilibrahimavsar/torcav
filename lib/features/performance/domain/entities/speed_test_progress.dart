@@ -9,6 +9,8 @@ class SpeedTestProgress extends Equatable {
   final double jitterMs;
   final double downloadMbps;
   final double uploadMbps;
+  final double packetLoss;
+  final double loadedLatencyMs;
 
   const SpeedTestProgress({
     required this.phase,
@@ -16,6 +18,8 @@ class SpeedTestProgress extends Equatable {
     this.jitterMs = 0,
     this.downloadMbps = 0,
     this.uploadMbps = 0,
+    this.packetLoss = 0,
+    this.loadedLatencyMs = 0,
   });
 
   const SpeedTestProgress.idle()
@@ -23,7 +27,9 @@ class SpeedTestProgress extends Equatable {
       latencyMs = 0,
       jitterMs = 0,
       downloadMbps = 0,
-      uploadMbps = 0;
+      uploadMbps = 0,
+      packetLoss = 0,
+      loadedLatencyMs = 0;
 
   SpeedTestProgress copyWith({
     SpeedTestPhase? phase,
@@ -31,6 +37,8 @@ class SpeedTestProgress extends Equatable {
     double? jitterMs,
     double? downloadMbps,
     double? uploadMbps,
+    double? packetLoss,
+    double? loadedLatencyMs,
   }) {
     return SpeedTestProgress(
       phase: phase ?? this.phase,
@@ -38,9 +46,12 @@ class SpeedTestProgress extends Equatable {
       jitterMs: jitterMs ?? this.jitterMs,
       downloadMbps: downloadMbps ?? this.downloadMbps,
       uploadMbps: uploadMbps ?? this.uploadMbps,
+      packetLoss: packetLoss ?? this.packetLoss,
+      loadedLatencyMs: loadedLatencyMs ?? this.loadedLatencyMs,
     );
   }
 
   @override
-  List<Object?> get props => [phase, latencyMs, jitterMs, downloadMbps, uploadMbps];
+  List<Object?> get props =>
+      [phase, latencyMs, jitterMs, downloadMbps, uploadMbps, packetLoss, loadedLatencyMs];
 }

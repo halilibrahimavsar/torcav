@@ -127,8 +127,7 @@ class _PerformanceView extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          const Spacer(),
-          const Icon(Icons.speed_rounded, size: 20, color: AppColors.neonCyan),
+          const SizedBox(width: 8),
         ],
       ),
     );
@@ -149,17 +148,20 @@ class _PerformanceView extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            width: 12,
-            height: 12,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                progress.phase.index > 0 ? AppColors.neonCyan : Colors.white24,
+          if (progress.phase != SpeedTestPhase.idle &&
+              progress.phase != SpeedTestPhase.done) ...[
+            SizedBox(
+              width: 12,
+              height: 12,
+              child: CircularProgressIndicator(
+                strokeWidth: 1.5,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  progress.phase.index > 0 ? AppColors.neonCyan : Colors.white24,
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 12),
+            const SizedBox(width: 12),
+          ],
           Text(
             phaseText.toUpperCase(),
             style: GoogleFonts.orbitron(
@@ -175,29 +177,60 @@ class _PerformanceView extends StatelessWidget {
   }
 
   Widget _buildStatsGrid(BuildContext context, SpeedTestProgress progress) {
-    return SizedBox(
-      height: 90,
-      child: Row(
-        children: [
-          Expanded(
-            child: BentoStatTile(
-              label: context.l10n.latencyLabel,
-              value: '${progress.latencyMs.toStringAsFixed(0)} MS',
-              icon: Icons.timer_outlined,
-              color: AppColors.neonCyan,
-            ),
+    return Column(
+      children: [
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: BentoStatTile(
+                  label: context.l10n.latencyLabel,
+                  value: '${progress.latencyMs.toStringAsFixed(0)} MS',
+                  icon: Icons.timer_outlined,
+                  color: AppColors.neonCyan,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: BentoStatTile(
+                  label: context.l10n.jitterLabel,
+                  value: '${progress.jitterMs.toStringAsFixed(1)} MS',
+                  icon: Icons.grain_rounded,
+                  color: AppColors.neonPurple,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: BentoStatTile(
-              label: context.l10n.jitterLabel,
-              value: '${progress.jitterMs.toStringAsFixed(1)} MS',
-              icon: Icons.grain_rounded,
-              color: AppColors.neonPurple,
-            ),
+        ),
+        const SizedBox(height: 12),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: BentoStatTile(
+                  label: 'PACKET LOSS',
+                  value: '${progress.packetLoss.toStringAsFixed(1)} %',
+                  icon: Icons.signal_cellular_connected_no_internet_4_bar_rounded,
+                  color: progress.packetLoss > 1 ? AppColors.neonRed : AppColors.neonGreen,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: BentoStatTile(
+                  label: 'LOADED LATENCY',
+                  value: progress.loadedLatencyMs > 0
+                      ? '${progress.loadedLatencyMs.toStringAsFixed(0)} MS'
+                      : '--',
+                  icon: Icons.speed_rounded,
+                  color: AppColors.neonOrange,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -293,6 +326,19 @@ class _InterpretationSection extends StatelessWidget {
         title: _uploadTitle(result.uploadMbps),
         body: _uploadBody(result.uploadMbps),
       ),
+      _InterpretationCard(
+        icon: Icons.signal_cellular_no_sim_rounded,
+        color: _packetLossColor(result.packetLoss),
+        title: _packetLossTitle(result.packetLoss),
+        body: _packetLossBody(result.packetLoss),
+      ),
+      if (result.loadedLatencyMs > 0)
+        _InterpretationCard(
+          icon: Icons.speed_rounded,
+          color: _loadedLatencyColor(result.loadedLatencyMs, result.latencyMs),
+          title: _loadedLatencyTitle(result.loadedLatencyMs, result.latencyMs),
+          body: _loadedLatencyBody(result.loadedLatencyMs, result.latencyMs),
+        ),
     ];
   }
 
@@ -383,6 +429,51 @@ class _InterpretationSection extends StatelessWidget {
     if (mbps >= 5) return 'Good for video calls and sharing files. Cloud uploads will be reasonable.';
     if (mbps >= 1) return 'Enough for basic video calls. Large file uploads will take a while.';
     return 'Very slow upload. Live video and cloud sync will struggle.';
+  }
+  // ── Packet Loss ──
+  Color _packetLossColor(double percent) {
+    if (percent == 0) return AppColors.neonGreen;
+    if (percent <= 1) return AppColors.neonCyan;
+    if (percent <= 2) return Colors.orange;
+    return AppColors.neonRed;
+  }
+
+  String _packetLossTitle(double percent) {
+    if (percent == 0) return 'Packet Loss: 0% — Perfect';
+    if (percent <= 1) return 'Packet Loss: ${percent.toStringAsFixed(1)}% — Minimal';
+    return 'Packet Loss: ${percent.toStringAsFixed(1)}% — High';
+  }
+
+  String _packetLossBody(double percent) {
+    if (percent == 0) return 'Solid connection. No data packets were lost during the assessment.';
+    if (percent <= 1) return 'Very minor loss. Likely unnoticeable for most activities.';
+    return 'Data is being dropped. This causes stuttering in calls and gaming. Check for Wi-Fi interference.';
+  }
+
+  // ── Loaded Latency (Bufferbloat) ──
+  Color _loadedLatencyColor(double loaded, double idle) {
+    final diff = loaded - idle;
+    if (diff <= 10) return AppColors.neonGreen;
+    if (diff <= 50) return AppColors.neonCyan;
+    if (diff <= 150) return Colors.orange;
+    return AppColors.neonRed;
+  }
+
+  String _loadedLatencyTitle(double loaded, double idle) {
+    final diff = loaded - idle;
+    final prefix = 'Loaded Latency: ${loaded.toStringAsFixed(0)} ms';
+    if (diff <= 10) return '$prefix — Excellent';
+    if (diff <= 50) return '$prefix — Good';
+    if (diff <= 150) return '$prefix — Fair';
+    return '$prefix — Poor';
+  }
+
+  String _loadedLatencyBody(double loaded, double idle) {
+    final diff = loaded - idle;
+    if (diff <= 10) return 'Your network stays responsive even when downloading. Excellent router quality.';
+    if (diff <= 50) return 'Response time increases slightly under load, but stays very usable.';
+    if (diff <= 150) return 'Noticeable delay when others are using the network. Gaming while downloading may suffer.';
+    return 'High Bufferbloat. Connection becomes unresponsive during large downloads. Consider enabling QoS on your router.';
   }
 }
 

@@ -37,6 +37,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
   bool _vulnOnly = false;
   String _searchQuery = '';
   NetworkScanProfile _profile = NetworkScanProfile.fast;
+  bool _deepScan = false;
 
   @override
   void initState() {
@@ -98,11 +99,14 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                   isScanning: isLoading,
                   profile: _profile,
                   onProfileChanged: (p) => setState(() => _profile = p),
+                  deepScan: _deepScan,
+                  onDeepScanChanged: (v) => setState(() => _deepScan = v),
                   onScan: () {
                     context.read<NetworkScanBloc>().add(
                       StartNetworkScan(
                         target: _targetController.text,
                         profile: _profile,
+                        deepScan: _deepScan,
                       ),
                     );
                   },
@@ -208,6 +212,8 @@ class _ScanControlPanel extends StatelessWidget {
   final VoidCallback onScan;
   final NetworkScanProfile profile;
   final ValueChanged<NetworkScanProfile> onProfileChanged;
+  final bool deepScan;
+  final ValueChanged<bool> onDeepScanChanged;
 
   const _ScanControlPanel({
     required this.controller,
@@ -215,6 +221,8 @@ class _ScanControlPanel extends StatelessWidget {
     required this.onScan,
     required this.profile,
     required this.onProfileChanged,
+    required this.deepScan,
+    required this.onDeepScanChanged,
   });
 
   @override
@@ -305,6 +313,44 @@ class _ScanControlPanel extends StatelessWidget {
                     : (p) {
                         if (p != null) onProfileChanged(p);
                       },
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+
+          // ── Deep Scan Toggle ──
+          Row(
+            children: [
+              Icon(
+                Icons.security_rounded,
+                size: 16,
+                color: scheme.primary.withValues(alpha: 0.6),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                l10n.deepScan,
+                style: GoogleFonts.orbitron(
+                  fontSize: 11,
+                  color: scheme.primary.withValues(alpha: 0.7),
+                  letterSpacing: 1,
+                ),
+              ),
+              const SizedBox(width: 4),
+              InfoIconButton(
+                title: l10n.deepScan,
+                body: 'Comprehensive port scanning and service fingerprinting. '
+                    'Enabling this will significantly increase scan time but '
+                    'provides much deeper reconnaissance data.',
+                color: scheme.primary,
+              ),
+              const Spacer(),
+              Transform.scale(
+                scale: 0.8,
+                child: Switch.adaptive(
+                  value: deepScan,
+                  activeColor: scheme.primary,
+                  onChanged: isScanning ? null : onDeepScanChanged,
+                ),
               ),
             ],
           ),

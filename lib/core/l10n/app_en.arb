@@ -20,6 +20,14 @@
     "@deepScan": {
         "description": "Active scan label."
     },
+    "deepScanExperimentalTitle": "Deep Scan (Experimental)",
+    "@deepScanExperimentalTitle": {
+        "description": "Title for the experimental deep scan toggle in Security Center."
+    },
+    "deepScanExperimentalSubtitle": "Actively probe LAN for devices and ports. Increased battery usage.",
+    "@deepScanExperimentalSubtitle": {
+        "description": "Subtitle for the experimental deep scan toggle in Security Center."
+    },
     "scanModesTitle": "Scan Modes",
     "@scanModesTitle": {
         "description": "Title for scan mode info."
@@ -653,9 +661,17 @@
     "@backendLabel": {
         "description": "Backend Label"
     },
-    "defenseTitle": "DEFENSE",
+    "defenseTitle": "SECURITY CENTER",
     "@defenseTitle": {
         "description": "Defense Title"
+    },
+    "shieldLabReady": "Ready for Assessment",
+    "@shieldLabReady": {
+        "description": "Shield Lab Ready"
+    },
+    "deepScanRunning": "Scan in progress...",
+    "@deepScanRunning": {
+        "description": "Deep Scan Running"
     },
     "knownNetworks": "Known Networks",
     "@knownNetworks": {
@@ -665,6 +681,14 @@
     "@noKnownNetworksYet": {
         "description": "No Known Networks Yet"
     },
+    "noIdentifiedNetworks": "No identified networks in laboratory archives",
+    "@noIdentifiedNetworks": {
+        "description": "No Identified Networks"
+    },
+    "knownNetworksDashboard": "KNOWN NETWORKS ARCHIVE",
+    "@knownNetworksDashboard": {
+        "description": "Known Networks Dashboard"
+    },
     "securityTimeline": "Security Timeline",
     "@securityTimeline": {
         "description": "Security Timeline"
@@ -672,6 +696,26 @@
     "noSecurityEvents": "No security events recorded",
     "@noSecurityEvents": {
         "description": "No Security Events"
+    },
+    "dnsSecurityTitle": "DNS INTEGRITY",
+    "@dnsSecurityTitle": {
+        "description": "Title for DNS Security card"
+    },
+    "dnsSecurityBody": "Verify that your DNS queries are not being hijacked or spoofed.",
+    "@dnsSecurityBody": {
+        "description": "Body for DNS Security card"
+    },
+    "dnsIntegrity": "DNS INTEGRITY",
+    "@dnsIntegrity": {
+        "description": "DNS Integrity status label"
+    },
+    "runTest": "RUN TEST",
+    "@runTest": {
+        "description": "Label for run test button"
+    },
+    "integrityCheck": "INTEGRITY CHECK",
+    "@integrityCheck": {
+        "description": "Label for integrity check"
     },
     "authLocalSystem": "AUTH_LOCAL_SYSTEM",
     "@authLocalSystem": {
@@ -750,6 +794,54 @@
     "securityScoreDesc": "The security score (0–100) rates how well this network is protected. Higher is better. It considers encryption type, WPS status, and other security features.",
     "@securityScoreDesc": {
         "description": "Security Score Desc"
+    },
+    "networkSecurity": "Network Security",
+    "@networkSecurity": {
+        "description": "Label for network security section"
+    },
+    "portScanAction": "PORT SCAN",
+    "@portScanAction": {
+        "description": "Action to scan ports on a device"
+    },
+    "hostnameLookupAction": "LOOKUP HOSTNAME",
+    "@hostnameLookupAction": {
+        "description": "Action to lookup hostname of a device"
+    },
+    "arpInfoAction": "ARP INFO",
+    "@arpInfoAction": {
+        "description": "Action to get ARP information for a device"
+    },
+    "portsFoundLabel": "OPEN PORTS",
+    "@portsFoundLabel": {
+        "description": "Label for discovered open ports"
+  },
+    "noPortsFound": "No open ports found",
+    "@noPortsFound": {
+        "description": "Message when no ports are found open"
+    },
+    "hostnameLabel": "HOSTNAME",
+    "@hostnameLabel": {
+        "description": "Label for hostname result"
+    },
+    "arpInfoLabel": "ARP DATA",
+    "@arpInfoLabel": {
+        "description": "Label for ARP information"
+    },
+    "scanningPortsTitle": "SCANNING PORTS...",
+    "@scanningPortsTitle": {
+        "description": "Loading title for port scanning"
+    },
+    "lookingUpHostnameTitle": "LOOKING UP HOSTNAME...",
+    "@lookingUpHostnameTitle": {
+        "description": "Loading title for hostname lookup"
+    },
+    "fetchingArpTitle": "FETCHING ARP DATA...",
+    "@fetchingArpTitle": {
+        "description": "Loading title for fetching ARP info"
+    },
+    "portRangeHint": "Port range (e.g. 80,443 or 1-1000)",
+    "@portRangeHint": {
+        "description": "Hint for port range input field"
     },
     "capabilitiesLabel": "CAPABILITIES",
     "@capabilitiesLabel": {
@@ -1370,7 +1462,7 @@
     "@channelInterferenceDescription": {
         "description": "Explanation of channel interference"
     },
-    "securityEventType": "{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst} handshakeCaptureStarted{Handshake Capture Started} handshakeCaptureCompleted{Handshake Captured} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} unsupportedOperation{Unsupported Operation} other{{type}}}",
+    "securityEventType": "{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst} handshakeCaptureStarted{Handshake Capture Started} handshakeCaptureCompleted{Handshake Captured} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} arpSpoofingDetected{ARP Spoofing Detected} dnsHijackingDetected{DNS Hijacking Detected} unsupportedOperation{Unsupported Operation} other{{type}}}",
     "@securityEventType": {
         "description": "Name of security event type",
         "placeholders": {
@@ -1548,19 +1640,19 @@
     "@channelCongestionHint": {
             "description": "Channel congestion hint"
     },
-    "evilTwinAlertTitle": "EVIL TWIN DETECTED",
+    "evilTwinAlertTitle": "CRITICAL: EVIL TWIN DETECTED",
     "@evilTwinAlertTitle": {
             "description": "Evil twin alert title"
     },
-    "evilTwinAlertBody": "A network is impersonating a known access point. Do not connect to unrecognized networks.",
+    "evilTwinAlertBody": "A suspicious access point with a matching SSID but different security parameters has been identified.",
     "@evilTwinAlertBody": {
             "description": "Evil twin alert body"
     },
-    "wpsWarningTitle": "WPS IS ENABLED",
+    "wpsWarningTitle": "WPS VULNERABILITY DETECTED",
     "@wpsWarningTitle": {
             "description": "WPS warning title"
     },
-    "wpsWarningBody": "WPS has known vulnerabilities that allow attackers to crack your Wi-Fi password even on WPA2. Disable it in your router settings.",
+    "wpsWarningBody": "One or more nearby networks have WPS active. This can be exploited to gain unauthorized access.",
     "@wpsWarningBody": {
             "description": "WPS warning body"
     },
@@ -1648,12 +1740,32 @@
     "@untrustNetwork": {
         "description": "Button to remove a network from trusted profiles"
     },
-    "trustedBaselineBadge": "TRUSTED BASELINE",
+    "trustedBaselineBadge": "TRUSTED BASELINES",
     "@trustedBaselineBadge": {
         "description": "Badge for a network with an established trusted profile"
     },
     "dnsEvidenceTitle": "DNS EVIDENCE",
     "@dnsEvidenceTitle": {
         "description": "Title for the DNS diagnostic evidence section"
+    },
+    "shieldLabTitle": "SHIELD LABORATORY",
+    "@shieldLabTitle": {
+        "description": "Experimental security testing and analysis title"
+    },
+    "discoveredDevices": "DISCOVERED DEVICES",
+    "@discoveredDevices": {
+        "description": "Header for LAN devices discovery section"
+    },
+    "openPortsFound": "OPEN PORTS DETECTED",
+    "@openPortsFound": {
+        "description": "Header for open ports list"
+    },
+    "experimentalFeature": "EXPERIMENTAL",
+    "@experimentalFeature": {
+        "description": "Badge for experimental features"
+    },
+    "deepScanDescription": "Active port scanning and LAN discovery (May trigger network alerts)",
+    "@deepScanDescription": {
+        "description": "Description for deep scan toggle"
     }
 }

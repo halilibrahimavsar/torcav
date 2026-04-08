@@ -58,8 +58,8 @@ class OperationsHubPage extends StatelessWidget {
               _OperationCard(
                 title: l10n.defenseTitle,
                 subtitle: l10n.activeShielding,
-                icon: Icons.shield_rounded,
-                color: Theme.of(context).colorScheme.error,
+                icon: Icons.security_rounded,
+                color: Colors.indigoAccent,
                 onTap:
                     () => Navigator.of(context).push(
                       MaterialPageRoute(

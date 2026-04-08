@@ -24,6 +24,12 @@ class AppLocalizationsKu extends AppLocalizations {
   String get deepScan => 'Tarana Kûr';
 
   @override
+  String get deepScanExperimentalTitle => 'Deep Scan (Experimental)';
+
+  @override
+  String get deepScanExperimentalSubtitle => 'Actively probe LAN for devices and ports. Increased battery usage.';
+
+  @override
   String get scanModesTitle => 'Modên Taranê';
 
   @override
@@ -471,16 +477,43 @@ class AppLocalizationsKu extends AppLocalizations {
   String get defenseTitle => 'PARASTIN';
 
   @override
+  String get shieldLabReady => 'Ready for Assessment';
+
+  @override
+  String get deepScanRunning => 'Scan in progress...';
+
+  @override
   String get knownNetworks => 'Torên Nas';
 
   @override
   String get noKnownNetworksYet => 'Hîn torên nas tune ne';
 
   @override
+  String get noIdentifiedNetworks => 'No identified networks in laboratory archives';
+
+  @override
+  String get knownNetworksDashboard => 'KNOWN NETWORKS ARCHIVE';
+
+  @override
   String get securityTimeline => 'Rêzika Demê ya Ewlehiyê';
 
   @override
   String get noSecurityEvents => 'Tu bûyerên ewlehiyê nehatine tomarkirin';
+
+  @override
+  String get dnsSecurityTitle => 'DNS INTEGRITY';
+
+  @override
+  String get dnsSecurityBody => 'Verify that your DNS queries are not being hijacked or spoofed.';
+
+  @override
+  String get dnsIntegrity => 'DNS INTEGRITY';
+
+  @override
+  String get runTest => 'RUN TEST';
+
+  @override
+  String get integrityCheck => 'INTEGRITY CHECK';
 
   @override
   String get authLocalSystem => 'AUTH_SÎSTEMA_XWECÎHÎ';
@@ -536,6 +569,42 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get securityScoreDesc => 'Puana ewlehiyê (0–100) nîşan dide ka ev tor çiqas baş tê parastin. Her ku zêde be çêtir e. Cureyê şîfrekirinê, rewşa WPS û taybetmendiyên din ên ewlehiyê li ber çavan digire.';
+
+  @override
+  String get networkSecurity => 'Network Security';
+
+  @override
+  String get portScanAction => 'PORT SCAN';
+
+  @override
+  String get hostnameLookupAction => 'LOOKUP HOSTNAME';
+
+  @override
+  String get arpInfoAction => 'ARP INFO';
+
+  @override
+  String get portsFoundLabel => 'OPEN PORTS';
+
+  @override
+  String get noPortsFound => 'No open ports found';
+
+  @override
+  String get hostnameLabel => 'HOSTNAME';
+
+  @override
+  String get arpInfoLabel => 'ARP DATA';
+
+  @override
+  String get scanningPortsTitle => 'SCANNING PORTS...';
+
+  @override
+  String get lookingUpHostnameTitle => 'LOOKING UP HOSTNAME...';
+
+  @override
+  String get fetchingArpTitle => 'FETCHING ARP DATA...';
+
+  @override
+  String get portRangeHint => 'Port range (e.g. 80,443 or 1-1000)';
 
   @override
   String get capabilitiesLabel => 'TAYBETMENDÎ';
@@ -1196,8 +1265,23 @@ class AppLocalizationsKu extends AppLocalizations {
   String get untrustNetwork => 'UNTRUST NETWORK';
 
   @override
-  String get trustedBaselineBadge => 'TRUSTED BASELINE';
+  String get trustedBaselineBadge => 'TRUSTED BASELINES';
 
   @override
   String get dnsEvidenceTitle => 'DNS EVIDENCE';
+
+  @override
+  String get shieldLabTitle => 'SHIELD LABORATORY';
+
+  @override
+  String get discoveredDevices => 'DISCOVERED DEVICES';
+
+  @override
+  String get openPortsFound => 'OPEN PORTS DETECTED';
+
+  @override
+  String get experimentalFeature => 'EXPERIMENTAL';
+
+  @override
+  String get deepScanDescription => 'Active port scanning and LAN discovery (May trigger network alerts)';
 }

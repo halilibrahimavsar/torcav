@@ -20,6 +20,8 @@ class SpeedTestHistoryRepositoryImpl implements SpeedTestHistoryRepository {
       'jitter_ms': result.jitterMs,
       'download_mbps': result.downloadMbps,
       'upload_mbps': result.uploadMbps,
+      'packet_loss': result.packetLoss,
+      'loaded_latency_ms': result.loadedLatencyMs,
     });
   }
 
@@ -53,5 +55,7 @@ class SpeedTestHistoryRepositoryImpl implements SpeedTestHistoryRepository {
         jitterMs: (row['jitter_ms'] as num).toDouble(),
         downloadMbps: (row['download_mbps'] as num).toDouble(),
         uploadMbps: (row['upload_mbps'] as num).toDouble(),
+        packetLoss: (row['packet_loss'] as num?)?.toDouble() ?? 0.0,
+        loadedLatencyMs: (row['loaded_latency_ms'] as num?)?.toDouble() ?? 0.0,
       );
 }

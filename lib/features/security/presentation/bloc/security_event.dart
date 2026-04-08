@@ -11,10 +11,19 @@ class SecurityStarted extends SecurityEvent {}
 
 class SecurityAnalyzeRequested extends SecurityEvent {
   final List<WifiNetwork> networks;
-  const SecurityAnalyzeRequested(this.networks);
+  final bool? isDeepScan;
+  const SecurityAnalyzeRequested(this.networks, {this.isDeepScan});
 
   @override
-  List<Object?> get props => [networks];
+  List<Object?> get props => [networks, isDeepScan];
+}
+
+class SecurityDeepScanToggled extends SecurityEvent {
+  final bool value;
+  const SecurityDeepScanToggled(this.value);
+
+  @override
+  List<Object?> get props => [value];
 }
 
 class SecurityUntrustRequested extends SecurityEvent {
