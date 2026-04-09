@@ -4,6 +4,7 @@ class KnownNetwork extends Equatable {
   final String ssid;
   final String bssid;
   final String security;
+  final String? gateway;
   final DateTime firstSeen;
   final DateTime lastSeen;
   final int seenCount;
@@ -12,6 +13,7 @@ class KnownNetwork extends Equatable {
     required this.ssid,
     required this.bssid,
     required this.security,
+    this.gateway,
     required this.firstSeen,
     required this.lastSeen,
     this.seenCount = 1,
@@ -21,6 +23,7 @@ class KnownNetwork extends Equatable {
     String? ssid,
     String? bssid,
     String? security,
+    String? gateway,
     DateTime? firstSeen,
     DateTime? lastSeen,
     int? seenCount,
@@ -29,6 +32,7 @@ class KnownNetwork extends Equatable {
       ssid: ssid ?? this.ssid,
       bssid: bssid ?? this.bssid,
       security: security ?? this.security,
+      gateway: gateway ?? this.gateway,
       firstSeen: firstSeen ?? this.firstSeen,
       lastSeen: lastSeen ?? this.lastSeen,
       seenCount: seenCount ?? this.seenCount,
@@ -40,6 +44,7 @@ class KnownNetwork extends Equatable {
         ssid,
         bssid,
         security,
+        gateway,
         firstSeen,
         lastSeen,
         seenCount,

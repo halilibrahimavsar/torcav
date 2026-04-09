@@ -21,18 +21,38 @@ class TopologyViewData {
   static Map<String, Offset> calculatePositions(
     NetworkTopology topology,
     Size size, {
-    required bool forceView,
     String searchQuery = '',
     TopologyNodeVisualKind? filterType,
   }) {
     final positions = <String, Offset>{};
     final center = Offset(size.width / 2, size.height / 2);
+    final nodes = topology.nodes;
+    
+    if (nodes.isEmpty) return positions;
 
-    if (forceView) {
-      final nodes = topology.nodes;
-      final radius = math.min(size.width, size.height) * 0.45;
+    // Find center node (Gateway or Current Device if no Gateway)
+    TopologyNode? centerNode = nodes.where((n) => n.isGateway).firstOrNull ?? 
+                               nodes.where((n) => n.isCurrentDevice).firstOrNull;
+    
+    // If we have a center node, map it to the center
+    if (centerNode != null) {
+      positions[centerNode.id] = center;
+    }
 
-      // Initial circular layout
+    // Identify inner ring nodes (Access Points, Routers) and outer ring nodes (Devices, IoT, Mobile)
+    final innerRing = nodes.where((n) => 
+      n.id != centerNode?.id && 
+      (n.type == TopologyNodeType.router || n.type == TopologyNodeType.accessPoint)
+    ).toList();
+    
+    final outerRing = nodes.where((n) => 
+      n.id != centerNode?.id && 
+      !innerRing.contains(n)
+    ).toList();
+
+    // If there is no center node, just put everyone in one big circle
+    if (centerNode == null) {
+      final radius = math.min(size.width, size.height) * 0.40;
       for (int i = 0; i < nodes.length; i++) {
         final angle = (i * 2 * math.pi) / nodes.length;
         positions[nodes[i].id] = Offset(
@@ -40,81 +60,32 @@ class TopologyViewData {
           center.dy + radius * math.sin(angle),
         );
       }
-
-      // Stronger force-directed repulsion loop
-      for (int step = 0; step < 50; step++) {
-        final forces = <String, Offset>{};
-        for (final node in nodes) {
-          forces[node.id] = Offset.zero;
-        }
-
-        for (int i = 0; i < nodes.length; i++) {
-          final idA = nodes[i].id;
-          final posA = positions[idA]!;
-
-          // Repulsion from other nodes
-          for (int j = i + 1; j < nodes.length; j++) {
-            final idB = nodes[j].id;
-            final posB = positions[idB]!;
-            final delta = posB - posA;
-            final dist = delta.distance;
-            const minAllowed = 180.0; // Increased significantly to prevent overlap
-
-            if (dist < minAllowed && dist > 0.1) {
-              final strength = (minAllowed - dist) / dist * 0.8;
-              final force = delta * strength;
-              forces[idA] = forces[idA]! - force;
-              forces[idB] = forces[idB]! + force;
-            }
-          }
-
-          // Central gravity (keep them from drifting too far)
-          final toCenter = center - posA;
-          forces[idA] = forces[idA]! + toCenter * 0.05;
-        }
-
-        // Apply forces
-        for (final node in nodes) {
-          positions[node.id] = positions[node.id]! + forces[node.id]!;
-        }
-      }
-
       return positions;
     }
 
-    final accessPoints = topology.accessPoints;
-    final otherDevices = topology.connectedDevices;
-    final currentY = size.height - 80;
-    const gatewayY = 80.0;
-    const rowSpacing = 180.0; // Increased for better clarity
-
-    final currentDevice = topology.currentDevice;
-    if (currentDevice != null) {
-      positions[currentDevice.id] = Offset(center.dx, currentY);
+    // Position inner ring
+    if (innerRing.isNotEmpty) {
+      final innerRadius = math.min(size.width, size.height) * 0.20;
+      for (int i = 0; i < innerRing.length; i++) {
+        final angle = (i * 2 * math.pi) / innerRing.length;
+        positions[innerRing[i].id] = Offset(
+          center.dx + innerRadius * math.cos(angle),
+          center.dy + innerRadius * math.sin(angle),
+        );
+      }
     }
 
-    final gateway = topology.gateway;
-    if (gateway != null) {
-      positions[gateway.id] = Offset(center.dx, gatewayY);
-    }
-
-    // Access points in a wide row below gateway
-    for (var i = 0; i < accessPoints.length; i++) {
-      final width = size.width * 0.8;
-      final x = center.dx + (accessPoints.length <= 1 ? 0 : (i / (accessPoints.length - 1) - 0.5) * width);
-      final y = gatewayY + rowSpacing;
-      positions[accessPoints[i].id] = Offset(x, y);
-    }
-
-    // Grid layout for devices with more spacing
-    final cols = otherDevices.length <= 2 ? 1 : (otherDevices.length <= 6 ? 2 : 3);
-    for (var i = 0; i < otherDevices.length; i++) {
-      final col = i % cols;
-      final row = i ~/ cols;
-      final colWidth = size.width * 0.9 / cols;
-      final x = center.dx + (col - (cols - 1) / 2) * colWidth;
-      final y = (accessPoints.isNotEmpty ? gatewayY + 2 * rowSpacing : gatewayY + rowSpacing) + row * rowSpacing;
-      positions[otherDevices[i].id] = Offset(x, y);
+    // Position outer ring
+    if (outerRing.isNotEmpty) {
+      final outerRadius = math.min(size.width, size.height) * 0.42;
+      for (int i = 0; i < outerRing.length; i++) {
+        // Offset angle slightly based on inner ring to distribute visually
+        final angle = (i * 2 * math.pi) / outerRing.length;
+        positions[outerRing[i].id] = Offset(
+          center.dx + outerRadius * math.cos(angle),
+          center.dy + outerRadius * math.sin(angle),
+        );
+      }
     }
 
     return positions;

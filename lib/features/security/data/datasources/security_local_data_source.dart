@@ -45,6 +45,7 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
         firstSeen: DateTime.parse(map['first_seen'] as String),
         lastSeen: DateTime.parse(map['last_seen'] as String),
         seenCount: map['seen_count'] as int? ?? 1,
+        gateway: map['gateway'] as String?,
       );
 
   @override
@@ -88,6 +89,7 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
           'ssid': profile.ssid,
           'bssid': profile.bssid,
           'security': profile.fingerprint.security,
+          'gateway': profile.gateway,
           'first_seen': profile.trustedAt.toIso8601String(),
           'last_seen': profile.lastConfirmedAt.toIso8601String(),
           'seen_count': 100, // Trusted profiles are considered highly seen/stable
@@ -231,6 +233,7 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
     'first_seen': network.firstSeen.toIso8601String(),
     'last_seen': network.lastSeen.toIso8601String(),
     'seen_count': network.seenCount,
+    'gateway': network.gateway,
   };
 
   Map<String, dynamic> _trustedProfileToMap(TrustedNetworkProfile profile) => {

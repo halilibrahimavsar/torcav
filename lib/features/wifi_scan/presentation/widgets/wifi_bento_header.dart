@@ -51,7 +51,7 @@ class WifiBentoHeader extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: SizedBox(
-                    height: radarSize,
+                    height: radarSize < 155 ? 155 : radarSize,
                     child: Column(
                       children: [
                         Expanded(

@@ -709,6 +709,35 @@
     "@dnsIntegrity": {
         "description": "DNS Integrity status label"
     },
+    "dnsPerformanceBenchmark": "PERFORMANCE BENCHMARK",
+    "@dnsPerformanceBenchmark": {
+        "description": "Section title for DNS benchmark"
+    },
+    "dnsLatency": "LATENCY",
+    "@dnsLatency": {
+        "description": "Label for latency"
+    },
+    "dnsRecommended": "RECOMMENDED",
+    "@dnsRecommended": {
+        "description": "Badge for recommended provider"
+    },
+    "dnsFastest": "FASTEST",
+    "@dnsFastest": {
+        "description": "Label for fastest provider"
+    },
+    "dnsProvider": "PROVIDER",
+    "@dnsProvider": {
+        "description": "Provider column header"
+    },
+    "dnsResultLatency": "{ms} ms",
+    "@dnsResultLatency": {
+        "description": "Formatted latency value",
+        "placeholders": {
+            "ms": {
+                "type": "int"
+            }
+        }
+    },
     "runTest": "RUN TEST",
     "@runTest": {
         "description": "Label for run test button"
@@ -814,7 +843,7 @@
     "portsFoundLabel": "OPEN PORTS",
     "@portsFoundLabel": {
         "description": "Label for discovered open ports"
-  },
+    },
     "noPortsFound": "No open ports found",
     "@noPortsFound": {
         "description": "Message when no ports are found open"
@@ -1593,144 +1622,145 @@
     "dnsIspProvider": "ISP PROVIDER",
     "@dnsIspProvider": {
         "description": "Label for ISP provider in DNS test"
-    }
-,
+    },
     "phaseIdle": "READY",
     "@phaseIdle": {
-            "description": "Idle phase label"
+        "description": "Idle phase label"
     },
     "performanceTitle": "SPEED TEST",
     "@performanceTitle": {
-            "description": "Performance page title"
+        "description": "Performance page title"
     },
     "performanceStart": "START TEST",
     "@performanceStart": {
-            "description": "Start speed test button"
+        "description": "Start speed test button"
     },
     "performanceRetry": "RUN AGAIN",
     "@performanceRetry": {
-            "description": "Retry speed test button"
+        "description": "Retry speed test button"
     },
     "latencyLabel": "LATENCY",
     "@latencyLabel": {
-            "description": "Latency stat label"
+        "description": "Latency stat label"
     },
     "jitterLabel": "JITTER",
     "@jitterLabel": {
-            "description": "Jitter stat label"
+        "description": "Jitter stat label"
     },
     "whatThisMeans": "WHAT THIS MEANS",
     "@whatThisMeans": {
-            "description": "Interpretation section header"
+        "description": "Interpretation section header"
     },
     "channelRecommendation": "CHANNEL RECOMMENDATION",
     "@channelRecommendation": {
-            "description": "Channel recommendation card header"
+        "description": "Channel recommendation card header"
     },
     "switchToChannel": "Switch to Channel {channel}",
     "@switchToChannel": {
-            "description": "Channel switch recommendation",
-            "placeholders": {
-                    "channel": {
-                            "type": "int"
-                    }
+        "description": "Channel switch recommendation",
+        "placeholders": {
+            "channel": {
+                "type": "int"
             }
+        }
     },
     "channelCongestionHint": "Your current channel is congested. Switching may improve speed.",
     "@channelCongestionHint": {
-            "description": "Channel congestion hint"
+        "description": "Channel congestion hint"
     },
     "evilTwinAlertTitle": "CRITICAL: EVIL TWIN DETECTED",
     "@evilTwinAlertTitle": {
-            "description": "Evil twin alert title"
+        "description": "Evil twin alert title"
     },
     "evilTwinAlertBody": "A suspicious access point with a matching SSID but different security parameters has been identified.",
     "@evilTwinAlertBody": {
-            "description": "Evil twin alert body"
+        "description": "Evil twin alert body"
     },
     "wpsWarningTitle": "WPS VULNERABILITY DETECTED",
     "@wpsWarningTitle": {
-            "description": "WPS warning title"
+        "description": "WPS warning title"
     },
     "wpsWarningBody": "One or more nearby networks have WPS active. This can be exploited to gain unauthorized access.",
     "@wpsWarningBody": {
-            "description": "WPS warning body"
+        "description": "WPS warning body"
     },
     "wpsAffectedNetworks": "{count} network(s) with WPS enabled",
     "@wpsAffectedNetworks": {
-            "description": "WPS affected networks count",
-            "placeholders": {
-                    "count": {
-                            "type": "int"
-                    }
+        "description": "WPS affected networks count",
+        "placeholders": {
+            "count": {
+                "type": "int"
             }
+        }
     },
     "heatmapTutorialTitle": "HOW TO USE THE HEATMAP",
     "@heatmapTutorialTitle": {
-            "description": "Heatmap tutorial title"
+        "description": "Heatmap tutorial title"
     },
     "heatmapTutorialStep1": "Tap START RECORDING to begin a new survey session.",
     "@heatmapTutorialStep1": {
-            "description": "Heatmap tutorial step 1"
+        "description": "Heatmap tutorial step 1"
     },
     "heatmapTutorialStep2": "Walk to each area of your space. Tap the canvas at your current position to record the signal strength at that spot.",
     "@heatmapTutorialStep2": {
-            "description": "Heatmap tutorial step 2"
+        "description": "Heatmap tutorial step 2"
     },
     "heatmapTutorialStep3": "Red = weak signal. Green = strong signal. Find dead zones and move your router to fix them.",
     "@heatmapTutorialStep3": {
-            "description": "Heatmap tutorial step 3"
+        "description": "Heatmap tutorial step 3"
     },
     "heatmapTutorialStep4": "Tap STOP & SAVE when done. View past sessions with the history button.",
     "@heatmapTutorialStep4": {
-            "description": "Heatmap tutorial step 4"
+        "description": "Heatmap tutorial step 4"
     },
     "gotIt": "GOT IT",
     "@gotIt": {
-            "description": "Dismiss tutorial button"
+        "description": "Dismiss tutorial button"
     },
     "speedTestHistory": "TEST HISTORY",
     "@speedTestHistory": {
-            "description": "Speed test history section header"
+        "description": "Speed test history section header"
     },
     "noSpeedTestHistory": "No tests recorded yet. Run your first test above.",
     "@noSpeedTestHistory": {
-            "description": "Empty speed test history"
+        "description": "Empty speed test history"
     },
     "networkScoreLabel": "NETWORK SCORE",
     "@networkScoreLabel": {
-            "description": "Security score label on dashboard"
+        "description": "Security score label on dashboard"
     },
     "vulnLabTitle": "VULNERABILITY LAB",
     "@vulnLabTitle": {
-            "description": "Vulnerability Lab screen title"
+        "description": "Vulnerability Lab screen title"
     },
     "vulnLabSubtitle": "Run security tests against your connected network",
     "@vulnLabSubtitle": {
-            "description": "Vulnerability Lab subtitle"
+        "description": "Vulnerability Lab subtitle"
     },
     "vulnLabRunAll": "RUN ALL TESTS",
     "@vulnLabRunAll": {
-            "description": "Button to run all vulnerability tests"
+        "description": "Button to run all vulnerability tests"
     },
     "vulnLabRunning": "SCANNING...",
     "@vulnLabRunning": {
-            "description": "Shown while vulnerability tests are running"
+        "description": "Shown while vulnerability tests are running"
     },
     "vulnLabNoNetwork": "Not connected to a Wi-Fi network. Connect first to run tests.",
     "@vulnLabNoNetwork": {
-            "description": "Shown when no network is connected"
+        "description": "Shown when no network is connected"
     },
     "vulnLabAllClear": "All tests passed. No vulnerabilities found on this network.",
     "@vulnLabAllClear": {
-            "description": "Shown when no vulnerabilities are found"
+        "description": "Shown when no vulnerabilities are found"
     },
     "vulnLabFoundCount": "{count} issue(s) found",
     "@vulnLabFoundCount": {
-            "description": "Count of vulnerabilities found",
-            "placeholders": {
-                    "count": {"type": "int"}
+        "description": "Count of vulnerabilities found",
+        "placeholders": {
+            "count": {
+                "type": "int"
             }
+        }
     },
     "trustNetwork": "TRUST NETWORK",
     "@trustNetwork": {
@@ -1767,5 +1797,28 @@
     "deepScanDescription": "Active port scanning and LAN discovery (May trigger network alerts)",
     "@deepScanDescription": {
         "description": "Description for deep scan toggle"
-    }
+    },
+    "dnsProtocol": "PROTOCOL",
+    "dnsSsec": "DNSSEC",
+    "dnsWhatIsThat": "What is that?",
+    "dnsInfoHijackingTitle": "DNS Hijacking",
+    "dnsInfoHijackingDesc": "When your network provider or a malicious actor redirects your DNS queries to rogue servers. This allows them to monitor your activity or block certain websites.",
+    "dnsInfoLeakTitle": "DNS Leak",
+    "dnsInfoLeakDesc": "Even when using a VPN, your queries might bypass the secure tunnel and go to your ISP's servers. This 'leaks' your browsing history to the network provider.",
+    "dnsInfoEncryptedTitle": "Encrypted DNS (DoH/DoT)",
+    "dnsInfoEncryptedDesc": "DNS over HTTPS (DoH) and DNS over TLS (DoT) wrap your queries in an encrypted layer. This makes your requests unreadable to local snoopers and network admins.",
+    "dnsInfoDnssecTitle": "DNSSEC",
+    "dnsInfoDnssecDesc": "DNS Security Extensions add cryptographic signatures to your queries. This prevents 'spoofing' where a server sends you fake IP addresses for legitimate sites.",
+    "dnsInfoLatencyTitle": "DNS Latency (RTT)",
+    "dnsInfoLatencyDesc": "Round Trip Time (RTT) measures how long it takes for a query to travel to the server and back. Lower latency means faster web browsing and better performance.",
+    "dnsInfoResolverDriftTitle": "DNS Resolver Drift",
+    "dnsInfoResolverDriftDesc": "Detected when your DNS requests are being handled by different providers than configured, possibly due to transparent proxying or routing changes.",
+    "netInfoSsidTitle": "SSID (Service Set Identifier)",
+    "netInfoSsidDesc": "The public name of your Wi-Fi network. While common, it can be spoofed by attackers to lure you into connecting to a rogue access point.",
+    "netInfoBssidTitle": "BSSID (Basic Service Set ID)",
+    "netInfoBssidDesc": "The unique hardware address (MAC) of the wireless router. Useful for verifying that you are connected to the legitimate hardware and not a software clone.",
+    "netInfoGatewayTitle": "Default Gateway",
+    "netInfoGatewayDesc": "The local IP address of your router. All your traffic passes through this point. If this changes unexpectedly, it could indicate a Man-in-the-Middle attack.",
+    "dnsReadyStatus": "READY FOR ASSESSMENT",
+    "dnsIdleDescription": "Run a scan to verify DNS integrity and performance."
 }

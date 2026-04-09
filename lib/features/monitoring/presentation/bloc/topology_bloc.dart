@@ -28,20 +28,10 @@ class PingNodeEvent extends TopologyEvent {
   List<Object?> get props => [nodeId, ip];
 }
 
-class TraceRouteEvent extends TopologyEvent {
-  final String nodeId;
-  final String ip;
-
-  const TraceRouteEvent({required this.nodeId, required this.ip});
-
-  @override
-  List<Object?> get props => [nodeId, ip];
-}
-
 class ScanPortsEvent extends TopologyEvent {
   final String nodeId;
   final String ip;
-  final List<int>? customPorts;
+  final String? customPorts;
 
   const ScanPortsEvent({required this.nodeId, required this.ip, this.customPorts});
 
@@ -59,11 +49,11 @@ class LookupHostnameEvent extends TopologyEvent {
   List<Object?> get props => [nodeId, ip];
 }
 
-class GetArpInfoEvent extends TopologyEvent {
+class DetectOsEvent extends TopologyEvent {
   final String nodeId;
   final String ip;
 
-  const GetArpInfoEvent({required this.nodeId, required this.ip});
+  const DetectOsEvent({required this.nodeId, required this.ip});
 
   @override
   List<Object?> get props => [nodeId, ip];
@@ -83,33 +73,29 @@ class TopologyLoading extends TopologyState {}
 class TopologyLoaded extends TopologyState {
   final NetworkTopology topology;
   final String? pingingNodeId;
-  final String? tracingNodeId;
-  final List<TraceHop>? traceResult;
   final String? scanningNodeId;
   final List<int>? openPorts;
   final String? lookingUpNodeId;
   final String? hostname;
-  final String? gettingArpNodeId;
-  final String? arpInfo;
   final bool isScanningPorts;
   final bool isLookingUpHostname;
-  final bool isGettingArp;
+  final String? osHint;
+  final String? detectingOsNodeId;
+  final bool isDetectingOs;
   final String? lastErrorMessage;
 
   const TopologyLoaded({
     required this.topology,
     this.pingingNodeId,
-    this.tracingNodeId,
-    this.traceResult,
     this.scanningNodeId,
     this.openPorts,
     this.lookingUpNodeId,
     this.hostname,
-    this.gettingArpNodeId,
-    this.arpInfo,
     this.isScanningPorts = false,
     this.isLookingUpHostname = false,
-    this.isGettingArp = false,
+    this.osHint,
+    this.detectingOsNodeId,
+    this.isDetectingOs = false,
     this.lastErrorMessage,
   });
 
@@ -117,10 +103,6 @@ class TopologyLoaded extends TopologyState {
     NetworkTopology? topology,
     String? pingingNodeId,
     bool clearPinging = false,
-    String? tracingNodeId,
-    bool clearTracing = false,
-    List<TraceHop>? traceResult,
-    bool clearTraceResult = false,
     String? scanningNodeId,
     bool clearScanning = false,
     List<int>? openPorts,
@@ -129,30 +111,28 @@ class TopologyLoaded extends TopologyState {
     bool clearLookingUp = false,
     String? hostname,
     bool clearHostname = false,
-    String? gettingArpNodeId,
-    bool clearGettingArp = false,
-    String? arpInfo,
-    bool clearArpInfo = false,
     bool? isScanningPorts,
     bool? isLookingUpHostname,
-    bool? isGettingArp,
+    String? osHint,
+    bool clearOsHint = false,
+    String? detectingOsNodeId,
+    bool clearDetectingOs = false,
+    bool? isDetectingOs,
     String? lastErrorMessage,
     bool clearErrorMessage = false,
   }) {
     return TopologyLoaded(
       topology: topology ?? this.topology,
       pingingNodeId: clearPinging ? null : (pingingNodeId ?? this.pingingNodeId),
-      tracingNodeId: clearTracing ? null : (tracingNodeId ?? this.tracingNodeId),
-      traceResult: clearTraceResult ? null : (traceResult ?? this.traceResult),
       scanningNodeId: clearScanning ? null : (scanningNodeId ?? this.scanningNodeId),
       openPorts: clearOpenPorts ? null : (openPorts ?? this.openPorts),
       lookingUpNodeId: clearLookingUp ? null : (lookingUpNodeId ?? this.lookingUpNodeId),
       hostname: clearHostname ? null : (hostname ?? this.hostname),
-      gettingArpNodeId: clearGettingArp ? null : (gettingArpNodeId ?? this.gettingArpNodeId),
-      arpInfo: clearArpInfo ? null : (arpInfo ?? this.arpInfo),
       isScanningPorts: isScanningPorts ?? this.isScanningPorts,
       isLookingUpHostname: isLookingUpHostname ?? this.isLookingUpHostname,
-      isGettingArp: isGettingArp ?? this.isGettingArp,
+      osHint: clearOsHint ? null : (osHint ?? this.osHint),
+      detectingOsNodeId: clearDetectingOs ? null : (detectingOsNodeId ?? this.detectingOsNodeId),
+      isDetectingOs: isDetectingOs ?? this.isDetectingOs,
       lastErrorMessage: clearErrorMessage ? null : (lastErrorMessage ?? this.lastErrorMessage),
     );
   }
@@ -161,17 +141,15 @@ class TopologyLoaded extends TopologyState {
   List<Object?> get props => [
         topology,
         pingingNodeId,
-        tracingNodeId,
-        traceResult,
         scanningNodeId,
         openPorts,
         lookingUpNodeId,
         hostname,
-        gettingArpNodeId,
-        arpInfo,
         isScanningPorts,
         isLookingUpHostname,
-        isGettingArp,
+        osHint,
+        detectingOsNodeId,
+        isDetectingOs,
         lastErrorMessage,
       ];
 }
@@ -196,10 +174,9 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
   ) : super(TopologyInitial()) {
     on<LoadTopologyEvent>(_onLoadTopology);
     on<PingNodeEvent>(_onPingNode);
-    on<TraceRouteEvent>(_onTraceRoute);
     on<ScanPortsEvent>(_onScanPorts);
     on<LookupHostnameEvent>(_onLookupHostname);
-    on<GetArpInfoEvent>(_onGetArpInfo);
+    on<DetectOsEvent>(_onDetectOs);
   }
 
   Future<void> _onLoadTopology(
@@ -224,13 +201,14 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
     emit(currentState.copyWith(pingingNodeId: event.nodeId));
 
     final result = await _pingNode(event.ip);
-    
+    final afterState = state is TopologyLoaded ? state as TopologyLoaded : currentState;
+
     result.fold(
       (f) {
-        emit(currentState.copyWith(clearPinging: true, lastErrorMessage: f.message));
+        emit(afterState.copyWith(clearPinging: true, lastErrorMessage: f.message));
       },
       (ms) {
-        final updatedNodes = currentState.topology.nodes.map((node) {
+        final updatedNodes = afterState.topology.nodes.map((node) {
           if (node.id == event.nodeId) {
             return TopologyNode(
               id: node.id,
@@ -251,9 +229,9 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
 
         final updatedTopology = NetworkTopology(
           nodes: updatedNodes,
-          edges: currentState.topology.edges,
-          timestamp: currentState.topology.timestamp,
-          currentDeviceIp: currentState.topology.currentDeviceIp,
+          edges: afterState.topology.edges,
+          timestamp: afterState.topology.timestamp,
+          currentDeviceIp: afterState.topology.currentDeviceIp,
         );
 
         emit(currentState.copyWith(
@@ -265,37 +243,12 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
     );
   }
 
-  Future<void> _onTraceRoute(
-    TraceRouteEvent event,
-    Emitter<TopologyState> emit,
-  ) async {
-    final currentState = state;
-    if (currentState is! TopologyLoaded) return;
-
-    emit(currentState.copyWith(
-      tracingNodeId: event.nodeId,
-      clearTraceResult: true,
-      clearErrorMessage: true,
-    ));
-
-    final result = await _repository.traceRoute(event.ip);
-
-    result.fold(
-      (f) => emit(currentState.copyWith(clearTracing: true, lastErrorMessage: f.message)),
-      (hops) => emit(currentState.copyWith(
-        clearTracing: true,
-        traceResult: hops,
-        clearErrorMessage: true,
-      )),
-    );
-  }
-
   Future<void> _onScanPorts(
     ScanPortsEvent event,
     Emitter<TopologyState> emit,
   ) async {
-    final currentState = state;
-    if (currentState is! TopologyLoaded) return;
+    if (state is! TopologyLoaded) return;
+    final currentState = state as TopologyLoaded;
 
     emit(currentState.copyWith(
       scanningNodeId: event.nodeId,
@@ -304,11 +257,44 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
       clearErrorMessage: true,
     ));
 
-    final result = await _repository.scanPorts(event.ip, ports: event.customPorts);
+    List<int>? targetPorts;
+    if (event.customPorts != null && event.customPorts!.isNotEmpty) {
+      targetPorts = [];
+      final parts = event.customPorts!.split(',');
+      for (final part in parts) {
+        final trimmed = part.trim();
+        if (trimmed.contains('-')) {
+          final range = trimmed.split('-');
+          if (range.length == 2) {
+            final start = int.tryParse(range[0].trim());
+            final end = int.tryParse(range[1].trim());
+            if (start != null && end != null) {
+              for (int i = start; i <= end; i++) {
+                if (i > 0 && i < 65536) targetPorts.add(i);
+              }
+            }
+          }
+        } else {
+          final port = int.tryParse(trimmed);
+          if (port != null && port > 0 && port < 65536) {
+            targetPorts.add(port);
+          }
+        }
+      }
+      // Remove duplicates and sort
+      targetPorts = targetPorts.toSet().toList()..sort();
+      // Safety limit for reasonable scan time
+      if (targetPorts.length > 500) {
+        targetPorts = targetPorts.sublist(0, 500);
+      }
+    }
+
+    final result = await _repository.scanPorts(event.ip, ports: targetPorts);
+    final afterState = state is TopologyLoaded ? state as TopologyLoaded : currentState;
 
     result.fold(
-      (f) => emit(currentState.copyWith(isScanningPorts: false, lastErrorMessage: f.message)),
-      (ports) => emit(currentState.copyWith(
+      (f) => emit(afterState.copyWith(isScanningPorts: false, lastErrorMessage: f.message)),
+      (ports) => emit(afterState.copyWith(
         isScanningPorts: false,
         openPorts: ports,
         clearErrorMessage: true,
@@ -331,10 +317,11 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
     ));
 
     final result = await _repository.reverseLookup(event.ip);
+    final afterState = state is TopologyLoaded ? state as TopologyLoaded : currentState;
 
     result.fold(
-      (f) => emit(currentState.copyWith(isLookingUpHostname: false, lastErrorMessage: f.message)),
-      (host) => emit(currentState.copyWith(
+      (f) => emit(afterState.copyWith(isLookingUpHostname: false, lastErrorMessage: f.message)),
+      (host) => emit(afterState.copyWith(
         isLookingUpHostname: false,
         hostname: host,
         clearErrorMessage: true,
@@ -342,27 +329,28 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
     );
   }
 
-  Future<void> _onGetArpInfo(
-    GetArpInfoEvent event,
+  Future<void> _onDetectOs(
+    DetectOsEvent event,
     Emitter<TopologyState> emit,
   ) async {
     final currentState = state;
     if (currentState is! TopologyLoaded) return;
 
     emit(currentState.copyWith(
-      gettingArpNodeId: event.nodeId,
-      isGettingArp: true,
-      clearArpInfo: true,
+      detectingOsNodeId: event.nodeId,
+      isDetectingOs: true,
+      clearOsHint: true,
       clearErrorMessage: true,
     ));
 
-    final result = await _repository.getArpInfo(event.ip);
+    final result = await _repository.detectOsFromTtl(event.ip);
+    final afterState = state is TopologyLoaded ? state as TopologyLoaded : currentState;
 
     result.fold(
-      (f) => emit(currentState.copyWith(isGettingArp: false, lastErrorMessage: f.message)),
-      (info) => emit(currentState.copyWith(
-        isGettingArp: false,
-        arpInfo: info,
+      (f) => emit(afterState.copyWith(isDetectingOs: false, lastErrorMessage: f.message)),
+      (hint) => emit(afterState.copyWith(
+        isDetectingOs: false,
+        osHint: hint,
         clearErrorMessage: true,
       )),
     );

@@ -141,7 +141,7 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: scheme,
       brightness: Brightness.dark,
-      scaffoldBackgroundColor: AppColors.deepBlack,
+      scaffoldBackgroundColor: Colors.transparent,
       textTheme: _textTheme(scheme),
       fontFamily: GoogleFonts.outfit().fontFamily,
       appBarTheme: _appBarTheme(scheme),

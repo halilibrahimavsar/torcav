@@ -83,6 +83,7 @@ class NetworkCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final scheme = Theme.of(context).colorScheme;
     final activeColor = isTrusted ? scheme.tertiary : scheme.secondary;
 
@@ -101,24 +102,67 @@ class NetworkCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    NeonText(
-                      network.ssid.toUpperCase(),
-                      style: GoogleFonts.orbitron(
-                        color: scheme.onSurface,
-                        fontWeight: FontWeight.w900,
-                        fontSize: 13,
-                        letterSpacing: 1,
-                      ),
-                      glowRadius: isTrusted ? 6 : 0,
-                      glowColor: activeColor,
+                    Row(
+                      children: [
+                        Flexible(
+                          child: NeonText(
+                            network.ssid.toUpperCase(),
+                            style: GoogleFonts.orbitron(
+                              color: scheme.onSurface,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 13,
+                              letterSpacing: 1,
+                            ),
+                            glowRadius: isTrusted ? 6 : 0,
+                            glowColor: activeColor,
+                          ),
+                        ),
+                        InfoIconButton(
+                          title: l10n.netInfoSsidTitle,
+                          body: l10n.netInfoSsidDesc,
+                          color: activeColor,
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      'BSSID: ${network.bssid.toUpperCase()}',
-                      style: GoogleFonts.firaCode(
-                        color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
-                        fontSize: 10,
-                      ),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            'BSSID: ${network.bssid.toUpperCase()}',
+                            style: GoogleFonts.firaCode(
+                              color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
+                              fontSize: 10,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        InfoIconButton(
+                          title: l10n.netInfoBssidTitle,
+                          body: l10n.netInfoBssidDesc,
+                          color: activeColor,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            'GATEWAY: ${network.gateway?.toUpperCase() ?? 'N/A'}',
+                            style: GoogleFonts.firaCode(
+                              color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
+                              fontSize: 10,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        InfoIconButton(
+                          title: l10n.netInfoGatewayTitle,
+                          body: l10n.netInfoGatewayDesc,
+                          color: activeColor,
+                        ),
+                      ],
                     ),
                   ],
                 ),

@@ -4,15 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
 import '../../../../core/di/injection.dart';
 import '../bloc/security_bloc.dart';
+import '../../../../core/theme/neon_widgets.dart';
 import '../widgets/dns_security_card.dart';
 import '../widgets/network_security_card.dart';
 import '../widgets/scan_overview_card.dart';
 import '../widgets/security_alerts.dart';
 import '../widgets/security_header.dart';
 import '../widgets/security_timeline_view.dart';
-import '../widgets/foldable_neon_section.dart';
-import '../widgets/cyber_grid_background.dart';
-import '../../domain/entities/security_event.dart' as domain_event;
 
 class SecurityCenterPage extends StatelessWidget {
   const SecurityCenterPage({super.key});
@@ -35,6 +33,7 @@ class _SecurityCenterView extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -75,68 +74,59 @@ class _SecurityCenterView extends StatelessWidget {
           }
 
           if (state is SecurityLoaded) {
-            final score = state.overallScore;
-            final hasCritical = state.recentEvents.any((e) => e.severity == domain_event.SecurityEventSeverity.critical);
-            final hasHigh = state.recentEvents.any((e) => e.severity == domain_event.SecurityEventSeverity.high);
-            
-            final activeColor = hasCritical
-                ? scheme.error
-                : (hasHigh
-                    ? const Color(0xFFFFB300)
-                    : (score >= 85 ? scheme.primary : scheme.outline));
 
-            return CyberGridBackground(
-              color: activeColor,
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // ── System Status & Score ──
-                    SecurityCenterBentoHeader(state: state),
-                    const SizedBox(height: 24),
-
-                  // ── Critical Alerts ──
-                  EvilTwinAlertBanner(state: state),
-                  WpsWarningCard(state: state),
-
-                  // ── Quick Telemetry ──
-                  if (state.scanSummary != null) ...[
-                    ScanOverviewCard(summary: state.scanSummary!),
-                    const SizedBox(height: 24),
-                  ],
-
-                  // ── Network Topology ──
-                  FoldableNeonSection(
-                    label: l10n.networkSecurity,
-                    icon: Icons.hub_rounded,
-                    color: scheme.primary,
-                    child: NetworkSecurityCard(
-                      knownNetworks: state.knownNetworks,
-                      trustedProfiles: state.trustedNetworkProfiles,
-                    ),
-                  ),
+            return SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ── System Status & Score ──
+                  SecurityCenterBentoHeader(state: state),
                   const SizedBox(height: 24),
 
-                  // ── Protocol Integrity ──
-                  FoldableNeonSection(
-                    label: l10n.dnsSecurityTest,
-                    icon: Icons.dns_rounded,
-                    color: scheme.secondary,
-                    child: DnsSecurityCard(state: state),
-                  ),
-                  const SizedBox(height: 24),
+                // ── Critical Alerts ──
+                EvilTwinAlertBanner(state: state),
+                WpsWarningCard(state: state),
 
-                  // ── Mission Log ──
-                  FoldableNeonSection(
-                    label: l10n.securityTimeline,
-                    icon: Icons.terminal_rounded,
-                    color: scheme.tertiary,
-                    child: SecurityTimelineView(events: state.recentEvents),
-                  ),
+                // ── Quick Telemetry ──
+                if (state.scanSummary != null) ...[
+                  ScanOverviewCard(summary: state.scanSummary!),
+                  const SizedBox(height: 24),
                 ],
-              ),
+
+                // ── Network Topology ──
+                NeonSectionHeader(
+                  label: l10n.networkSecurity,
+                  icon: Icons.hub_rounded,
+                  color: scheme.primary,
+                ),
+                const SizedBox(height: 16),
+                NetworkSecurityCard(
+                  knownNetworks: state.knownNetworks,
+                  trustedProfiles: state.trustedNetworkProfiles,
+                ),
+                const SizedBox(height: 32),
+
+                // ── Protocol Integrity ──
+                NeonSectionHeader(
+                  label: l10n.dnsSecurityTest,
+                  icon: Icons.dns_rounded,
+                  color: scheme.secondary,
+                ),
+                const SizedBox(height: 16),
+                DnsSecurityCard(state: state),
+                const SizedBox(height: 32),
+
+                // ── Mission Log ──
+                NeonSectionHeader(
+                  label: l10n.securityTimeline,
+                  icon: Icons.terminal_rounded,
+                  color: scheme.tertiary,
+                ),
+                const SizedBox(height: 16),
+                SecurityTimelineView(events: state.recentEvents),
+              ],
             ),
           );
         }

@@ -35,6 +35,10 @@ class DnsSecurityCard extends StatelessWidget {
         statusText = l10n.dnsWarning;
         statusIcon = Icons.warning_amber_rounded;
       }
+    } else if (!isLoading) {
+      statusColor = scheme.onSurfaceVariant;
+      statusText = l10n.dnsReadyStatus;
+      statusIcon = Icons.sensors_rounded;
     }
 
     return StaggeredEntry(
@@ -72,7 +76,7 @@ class DnsSecurityCard extends StatelessWidget {
                           const SizedBox(height: 4),
                           Text(
                             dnsResult == null
-                                ? l10n.dnsVerifyIntegrity
+                                ? l10n.dnsIdleDescription
                                 : l10n.dnsLastCheck(
                                   DateTime.now().hour.toString().padLeft(2, '0'),
                                   DateTime.now().minute.toString().padLeft(2, '0'),
@@ -89,28 +93,61 @@ class DnsSecurityCard extends StatelessWidget {
                     _RunDnsButton(isLoading: isLoading, color: statusColor),
                   ],
                 ),
-                if (dnsResult != null) ...[
-                  const SizedBox(height: 20),
-                  const NeonDivider(height: 0.5),
-                  const SizedBox(height: 20),
-                  _DnsDetailRow(
-                    label: l10n.dnsCurrentDns,
-                    value: dnsResult.currentDns,
-                    icon: Icons.dns_outlined,
-                    color: statusColor,
-                  ),
+                const SizedBox(height: 20),
+                const NeonDivider(height: 0.5),
+                const SizedBox(height: 20),
+                
+                // --- Core DNS Metrics (Always Visible) ---
+                _DnsDetailRow(
+                  label: l10n.dnsCurrentDns,
+                  value: dnsResult?.currentDns ?? "PENDING",
+                  icon: Icons.dns_outlined,
+                  color: dnsResult != null ? statusColor : scheme.outline,
+                  infoTitle: l10n.dnsInfoHijackingTitle,
+                  infoBody: l10n.dnsInfoHijackingDesc,
+                ),
+                const SizedBox(height: 12),
+                _DnsDetailRow(
+                  label: l10n.dnsIspProvider,
+                  value: dnsResult?.ispName ?? "NOT ASSESSED",
+                  icon: Icons.business_rounded,
+                  color: dnsResult != null ? statusColor : scheme.outline,
+                  infoTitle: l10n.dnsInfoLeakTitle,
+                  infoBody: l10n.dnsInfoLeakDesc,
+                ),
+                const SizedBox(height: 12),
+                
+                // Protocol & DNSSEC section (Always visible)
+                _DnsProtocolSection(
+                  protocol: dnsResult?.encryptedProtocol ?? "---",
+                  dnssec: dnsResult?.dnssecSupported ?? false,
+                  color: dnsResult != null ? statusColor : scheme.outline,
+                ),
+
+                if (dnsResult != null && dnsResult.resolverDriftDetected) ...[
                   const SizedBox(height: 12),
                   _DnsDetailRow(
-                    label: l10n.dnsIspProvider,
-                    value: dnsResult.ispName,
-                    icon: Icons.business_rounded,
+                    label: l10n.dnsInfoResolverDriftTitle,
+                    value: "INCONSISTENT",
+                    icon: Icons.analytics_outlined,
+                    color: scheme.error,
+                    infoTitle: l10n.dnsInfoResolverDriftTitle,
+                    infoBody: l10n.dnsInfoResolverDriftDesc,
+                  ),
+                ],
+
+                if (dnsResult?.evidence.isNotEmpty ?? false)
+                  _DnsEvidenceTerminal(
+                    evidence: dnsResult!.evidence,
                     color: statusColor,
                   ),
-                  if (dnsResult.evidence.isNotEmpty)
-                    _DnsEvidenceTerminal(
-                      evidence: dnsResult.evidence,
-                      color: statusColor,
-                    ),
+                
+                if (dnsResult?.benchmarks.isNotEmpty ?? false) ...[
+                  const SizedBox(height: 24),
+                  _DnsBenchmarkSection(
+                    benchmarks: dnsResult!.benchmarks,
+                    color: statusColor,
+                  ),
                 ],
               ],
             ),
@@ -202,12 +239,16 @@ class _DnsDetailRow extends StatelessWidget {
   final String value;
   final IconData icon;
   final Color color;
+  final String? infoTitle;
+  final String? infoBody;
 
   const _DnsDetailRow({
     required this.label,
     required this.value,
     required this.icon,
     required this.color,
+    this.infoTitle,
+    this.infoBody,
   });
 
   @override
@@ -226,13 +267,24 @@ class _DnsDetailRow extends StatelessWidget {
             letterSpacing: 0.5,
           ),
         ),
-        const Spacer(),
-        Text(
-          value,
-          style: GoogleFonts.sourceCodePro(
-            color: scheme.onSurface,
-            fontSize: 11,
-            fontWeight: FontWeight.w500,
+        if (infoTitle != null && infoBody != null)
+          InfoIconButton(
+            title: infoTitle!,
+            body: infoBody!,
+            color: color,
+          ),
+        const Expanded(child: SizedBox()),
+        Flexible(
+          child: Text(
+            value,
+            style: GoogleFonts.sourceCodePro(
+              color: scheme.onSurface,
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.end,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         ),
       ],
@@ -282,6 +334,327 @@ class _DnsEvidenceTerminal extends StatelessWidget {
               fontSize: 10,
               color: color.withValues(alpha: 0.8),
               height: 1.4,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DnsBenchmarkSection extends StatelessWidget {
+  final List<DnsBenchmarkResult> benchmarks;
+  final Color color;
+
+  const _DnsBenchmarkSection({required this.benchmarks, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final scheme = Theme.of(context).colorScheme;
+
+    // Sort benchmarks by latency
+    final sortedBenchmarks = List<DnsBenchmarkResult>.from(benchmarks)
+      ..sort((a, b) => a.latencyMs.compareTo(b.latencyMs));
+
+    final maxLatency = sortedBenchmarks.last.latencyMs;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.speed_rounded, size: 16, color: color),
+            const SizedBox(width: 8),
+            Text(
+              l10n.dnsPerformanceBenchmark.toUpperCase(),
+              style: GoogleFonts.orbitron(
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                color: scheme.onSurface,
+                letterSpacing: 1,
+              ),
+            ),
+            InfoIconButton(
+              title: l10n.dnsInfoLatencyTitle,
+              body: l10n.dnsInfoLatencyDesc,
+              color: color,
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: sortedBenchmarks.length,
+          separatorBuilder: (context, index) => const SizedBox(height: 12),
+          itemBuilder: (context, index) {
+            final benchmark = sortedBenchmarks[index];
+            final isFastest = index == 0;
+
+            return _BenchmarkItem(
+              benchmark: benchmark,
+              isFastest: isFastest,
+              maxLatency: maxLatency,
+              color: color,
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _BenchmarkItem extends StatelessWidget {
+  final DnsBenchmarkResult benchmark;
+  final bool isFastest;
+  final int maxLatency;
+  final Color color;
+
+  const _BenchmarkItem({
+    required this.benchmark,
+    required this.isFastest,
+    required this.maxLatency,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final scheme = Theme.of(context).colorScheme;
+    final progress = 1.0 - (benchmark.latencyMs / maxLatency).clamp(0.0, 0.9);
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isFastest ? color.withValues(alpha: 0.5) : scheme.outlineVariant.withValues(alpha: 0.2),
+          width: isFastest ? 1.5 : 1,
+        ),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          benchmark.name,
+                          style: GoogleFonts.rajdhani(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: scheme.onSurface,
+                          ),
+                        ),
+                        if (isFastest) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: color.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(color: color.withValues(alpha: 0.4)),
+                            ),
+                            child: Text(
+                              l10n.dnsRecommended.toUpperCase(),
+                              style: GoogleFonts.orbitron(
+                                fontSize: 8,
+                                fontWeight: FontWeight.bold,
+                                color: color,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      benchmark.primaryIp,
+                      style: GoogleFonts.sourceCodePro(
+                        fontSize: 10,
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    l10n.dnsResultLatency(benchmark.latencyMs),
+                    style: GoogleFonts.orbitron(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w900,
+                      color: isFastest ? color : scheme.onSurface,
+                    ),
+                  ),
+                  Text(
+                    benchmark.features.take(2).join(" • "),
+                    style: GoogleFonts.rajdhani(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Stack(
+            children: [
+              Container(
+                height: 4,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: scheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              FractionallySizedBox(
+                widthFactor: progress,
+                child: Container(
+                  height: 4,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        color.withValues(alpha: 0.5),
+                        color,
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(2),
+                    boxShadow: [
+                      if (isFastest)
+                        BoxShadow(
+                          color: color.withValues(alpha: 0.3),
+                          blurRadius: 4,
+                          spreadRadius: 1,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DnsProtocolSection extends StatelessWidget {
+  final String protocol;
+  final bool dnssec;
+  final Color color;
+
+  const _DnsProtocolSection({
+    required this.protocol,
+    required this.dnssec,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final scheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.15)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      l10n.dnsProtocol.toUpperCase(),
+                      style: GoogleFonts.rajdhani(
+                        color: scheme.onSurfaceVariant,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    InfoIconButton(
+                      title: l10n.dnsInfoEncryptedTitle,
+                      body: l10n.dnsInfoEncryptedDesc,
+                      color: color,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                NeonChip(
+                  label: protocol,
+                  color: protocol == 'UDP' ? scheme.onSurfaceVariant : color,
+                  icon: protocol == 'UDP' 
+                      ? Icons.lock_open_rounded 
+                      : Icons.lock_outline_rounded,
+                ),
+              ],
+            ),
+          ),
+          Container(
+            height: 30,
+            width: 1,
+            color: color.withValues(alpha: 0.2),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      l10n.dnsSsec.toUpperCase(),
+                      style: GoogleFonts.rajdhani(
+                        color: scheme.onSurfaceVariant,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    InfoIconButton(
+                      title: l10n.dnsInfoDnssecTitle,
+                      body: l10n.dnsInfoDnssecDesc,
+                      color: color,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Icon(
+                      dnssec ? Icons.verified_user_rounded : Icons.gpp_maybe_rounded,
+                      size: 14,
+                      color: dnssec ? color : scheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      dnssec ? "ENABLED" : "DISABLED",
+                      style: GoogleFonts.orbitron(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        color: dnssec ? color : scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ],

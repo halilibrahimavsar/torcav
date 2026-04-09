@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
@@ -68,80 +69,39 @@ class TopologyRepositoryImpl implements TopologyRepository {
   @override
   Future<Either<Failure, int>> pingNode(String ip) async {
     try {
-      // Standard ICMP ping via system shell
-      // -c 1: one packet
-      // -W 1: 1 second timeout
+      // 1. Try Standard ICMP ping first
       final result = await Process.run('ping', ['-c', '1', '-W', '1', ip]);
       
       if (result.exitCode == 0) {
         final output = result.stdout as String;
-        // Parse time=XX.X ms
         final match = RegExp(r'time=([\d.]+)').firstMatch(output);
         if (match != null) {
           final ms = double.parse(match.group(1)!).round();
           return Right(ms);
         }
       }
-      return const Left(ServerFailure('Host Unreachable'));
-    } catch (e) {
-      return Left(ServerFailure(e.toString()));
-    }
-  }
 
-  @override
-  Future<Either<Failure, List<TraceHop>>> traceRoute(String ip) async {
-    try {
-      // Use traceroute with max 15 hops, 1s timeout per hop
-      final result = await Process.run(
-        'traceroute',
-        ['-m', '15', '-w', '1', ip],
-      ).timeout(const Duration(seconds: 20));
-
-      final hops = <TraceHop>[];
-      final lines = (result.stdout as String).split('\n');
-
-      for (final line in lines) {
-        final trimmed = line.trim();
-        if (trimmed.isEmpty || trimmed.contains('*')) continue;
-
-        final parts = trimmed.split(RegExp(r'\s+'));
-        if (parts.length < 4) continue;
-
-        final hopNumber = int.tryParse(parts[0]);
-        if (hopNumber == null) continue;
-
-        // Find IP address (often in parentheses or as a standalone string)
-        String? ipAddress;
-        for (final part in parts) {
-          final cleanPart = part.replaceAll('(', '').replaceAll(')', '');
-          if (RegExp(r'^\d{1,3}(?:\.\d{1,3}){3}$').hasMatch(cleanPart)) {
-            ipAddress = cleanPart;
-            break;
-          }
-        }
-
-        // Find first occurrence of "ms" and get previous value
-        int? latency;
-        for (int i = 1; i < parts.length; i++) {
-          if (parts[i] == 'ms') {
-            final val = double.tryParse(parts[i - 1]);
-            if (val != null) {
-              latency = val.round();
-              break;
-            }
-          }
-        }
-
-        if (ipAddress != null && latency != null) {
-          hops.add(TraceHop(
-            hopNumber: hopNumber,
-            ip: ipAddress,
-            latencyMs: latency,
-          ));
+      // 2. Fallback to TCP Connection check (TCP "Ping")
+      // We try a few common ports to see if the host is alive
+      final commonPorts = [80, 443, 22, 135, 445];
+      final stopwatch = Stopwatch()..start();
+      
+      for (final port in commonPorts) {
+        try {
+          final socket = await Socket.connect(
+            ip, 
+            port, 
+            timeout: const Duration(seconds: 1),
+          );
+          socket.destroy();
+          stopwatch.stop();
+          return Right(stopwatch.elapsedMilliseconds);
+        } catch (_) {
+          continue;
         }
       }
 
-      return Right(hops);
+      return const Left(ServerFailure('Host Unreachable'));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
@@ -153,9 +113,14 @@ class TopologyRepositoryImpl implements TopologyRepository {
     final openPorts = <int>[];
 
     try {
+      // Use shorter timeout for scanning to keep it responsive
       final futures = targetPorts.map((port) async {
         try {
-          final socket = await Socket.connect(ip, port, timeout: const Duration(milliseconds: 500));
+          final socket = await Socket.connect(
+            ip, 
+            port, 
+            timeout: const Duration(milliseconds: 300),
+          );
           socket.destroy();
           return port;
         } catch (_) {
@@ -185,36 +150,29 @@ class TopologyRepositoryImpl implements TopologyRepository {
     }
   }
 
+
+
   @override
-  Future<Either<Failure, String>> getArpInfo(String ip) async {
+  Future<Either<Failure, String>> detectOsFromTtl(String ip) async {
     try {
-      // Try to get info from ARP cache
-      if (Platform.isLinux || Platform.isAndroid) {
-        final result = await Process.run('arp', ['-n', ip]);
-        if (result.exitCode == 0) {
-          final output = result.stdout as String;
-          // Look for MAC address in output
-          final macMatch = RegExp(r'(([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))').firstMatch(output);
-          if (macMatch != null) {
-            return Right('ARP: ${macMatch.group(1)}');
-          }
-        }
-        
-        // Fallback: Read /proc/net/arp
-        final arpTable = await File('/proc/net/arp').readAsString();
-        final lines = arpTable.split('\n');
-        for (final line in lines) {
-          if (line.contains(ip)) {
-             final macMatch = RegExp(r'(([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))').firstMatch(line);
-             if (macMatch != null) {
-               return Right('ARP Cache Match: ${macMatch.group(1)}');
-             }
-          }
+      final result = await Process.run('ping', ['-c', '1', '-W', '1', ip]);
+      if (result.exitCode == 0) {
+        final output = result.stdout as String;
+        final ttlMatch = RegExp(r'ttl=(\d+)', caseSensitive: false).firstMatch(output);
+        if (ttlMatch != null) {
+          final ttl = int.parse(ttlMatch.group(1)!);
+          if (ttl >= 240) return const Right('Network Device (TTL≈255)');
+          if (ttl >= 110) return const Right('Windows (TTL≈128)');
+          if (ttl >= 50) return const Right('Linux / macOS (TTL≈64)');
+          return const Right('Unknown OS');
         }
       }
-      return const Left(ServerFailure('ARP Info unavailable'));
+      return const Left(ServerFailure('Could not determine OS'));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
+
+
+
 }

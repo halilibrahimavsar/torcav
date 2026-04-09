@@ -2,6 +2,63 @@ import 'package:equatable/equatable.dart';
 
 enum DnsSecurityStatus { secure, warning, dangerous }
 
+class DnsBenchmarkResult extends Equatable {
+  final String name;
+  final String primaryIp;
+  final int latencyMs;
+  final List<String> features;
+  final bool isRecommended;
+
+  const DnsBenchmarkResult({
+    required this.name,
+    required this.primaryIp,
+    required this.latencyMs,
+    required this.features,
+    this.isRecommended = false,
+  });
+
+  DnsBenchmarkResult copyWith({
+    String? name,
+    String? primaryIp,
+    int? latencyMs,
+    List<String>? features,
+    bool? isRecommended,
+  }) {
+    return DnsBenchmarkResult(
+      name: name ?? this.name,
+      primaryIp: primaryIp ?? this.primaryIp,
+      latencyMs: latencyMs ?? this.latencyMs,
+      features: features ?? this.features,
+      isRecommended: isRecommended ?? this.isRecommended,
+    );
+  }
+
+  factory DnsBenchmarkResult.fromJson(Map<String, dynamic> json) {
+    return DnsBenchmarkResult(
+      name: json['name'] as String? ?? 'Unknown',
+      primaryIp: json['primaryIp'] as String? ?? '',
+      latencyMs: json['latencyMs'] as int? ?? 0,
+      features: (json['features'] as List<dynamic>? ?? const [])
+          .whereType<String>()
+          .toList(),
+      isRecommended: json['isRecommended'] as bool? ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'primaryIp': primaryIp,
+      'latencyMs': latencyMs,
+      'features': features,
+      'isRecommended': isRecommended,
+    };
+  }
+
+  @override
+  List<Object?> get props => [name, primaryIp, latencyMs, features, isRecommended];
+}
+
 class DnsTestResult extends Equatable {
   final String currentDns;
   final String ispName;
@@ -10,9 +67,11 @@ class DnsTestResult extends Equatable {
   final DnsSecurityStatus status;
   final List<String> detectedServers;
   final bool encryptedDnsActive;
-  final String encryptedDnsStatus;
+  final String encryptedProtocol;
   final bool resolverDriftDetected;
+  final bool dnssecSupported;
   final String evidence;
+  final List<DnsBenchmarkResult> benchmarks;
 
   const DnsTestResult({
     required this.currentDns,
@@ -22,9 +81,11 @@ class DnsTestResult extends Equatable {
     required this.status,
     required this.detectedServers,
     this.encryptedDnsActive = false,
-    this.encryptedDnsStatus = 'unknown',
+    this.encryptedProtocol = 'unknown',
     this.resolverDriftDetected = false,
+    this.dnssecSupported = false,
     this.evidence = '',
+    this.benchmarks = const [],
   });
 
   DnsTestResult copyWith({
@@ -35,9 +96,11 @@ class DnsTestResult extends Equatable {
     DnsSecurityStatus? status,
     List<String>? detectedServers,
     bool? encryptedDnsActive,
-    String? encryptedDnsStatus,
+    String? encryptedProtocol,
     bool? resolverDriftDetected,
+    bool? dnssecSupported,
     String? evidence,
+    List<DnsBenchmarkResult>? benchmarks,
   }) {
     return DnsTestResult(
       currentDns: currentDns ?? this.currentDns,
@@ -47,10 +110,12 @@ class DnsTestResult extends Equatable {
       status: status ?? this.status,
       detectedServers: detectedServers ?? this.detectedServers,
       encryptedDnsActive: encryptedDnsActive ?? this.encryptedDnsActive,
-      encryptedDnsStatus: encryptedDnsStatus ?? this.encryptedDnsStatus,
+      encryptedProtocol: encryptedProtocol ?? this.encryptedProtocol,
       resolverDriftDetected:
           resolverDriftDetected ?? this.resolverDriftDetected,
+      dnssecSupported: dnssecSupported ?? this.dnssecSupported,
       evidence: evidence ?? this.evidence,
+      benchmarks: benchmarks ?? this.benchmarks,
     );
   }
 
@@ -66,12 +131,16 @@ class DnsTestResult extends Equatable {
       ),
       detectedServers:
           (json['detectedServers'] as List<dynamic>? ?? const [])
-              .whereType<String>()
-              .toList(),
+               .whereType<String>()
+               .toList(),
       encryptedDnsActive: json['encryptedDnsActive'] as bool? ?? false,
-      encryptedDnsStatus: json['encryptedDnsStatus'] as String? ?? 'unknown',
+      encryptedProtocol: json['encryptedProtocol'] as String? ?? 'unknown',
       resolverDriftDetected: json['resolverDriftDetected'] as bool? ?? false,
+      dnssecSupported: json['dnssecSupported'] as bool? ?? false,
       evidence: json['evidence'] as String? ?? '',
+      benchmarks: (json['benchmarks'] as List<dynamic>? ?? const [])
+          .map((e) => DnsBenchmarkResult.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
 
@@ -84,23 +153,28 @@ class DnsTestResult extends Equatable {
       'status': status.name,
       'detectedServers': detectedServers,
       'encryptedDnsActive': encryptedDnsActive,
-      'encryptedDnsStatus': encryptedDnsStatus,
+      'encryptedProtocol': encryptedProtocol,
       'resolverDriftDetected': resolverDriftDetected,
+      'dnssecSupported': dnssecSupported,
       'evidence': evidence,
+      'benchmarks': benchmarks.map((e) => e.toJson()).toList(),
     };
   }
 
   @override
   List<Object?> get props => [
-    currentDns,
-    ispName,
-    isHijacked,
-    isLeaking,
-    status,
-    detectedServers,
-    encryptedDnsActive,
-    encryptedDnsStatus,
-    resolverDriftDetected,
-    evidence,
-  ];
+        currentDns,
+        ispName,
+        isHijacked,
+        isLeaking,
+        status,
+        detectedServers,
+        encryptedDnsActive,
+        encryptedProtocol,
+        resolverDriftDetected,
+        dnssecSupported,
+        evidence,
+        benchmarks,
+      ];
 }
+

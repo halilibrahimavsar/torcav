@@ -126,6 +126,7 @@ class _DashboardPageState extends State<DashboardPage> {
     return BlocProvider(
       create: (context) => getIt<NotificationBloc>()..add(LoadNotifications()),
       child: Scaffold(
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
           centerTitle: true,
           leading: Builder(

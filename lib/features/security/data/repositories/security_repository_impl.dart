@@ -79,6 +79,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
   @override
   Future<Either<Failure, void>> trustNetwork(WifiNetwork network) async {
     try {
+      final gateway = await _networkInfo.getWifiGatewayIP();
       await _localDataSource.saveTrustedNetworkProfile(
         TrustedNetworkProfile(
           ssid: network.ssid,
@@ -86,6 +87,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
           fingerprint: NetworkFingerprint.fromWifiNetwork(network),
           trustedAt: DateTime.now(),
           lastConfirmedAt: DateTime.now(),
+          gateway: gateway,
         ),
       );
       return const Right(null);
@@ -556,10 +558,12 @@ class SecurityRepositoryImpl implements SecurityRepository {
   Future<void> _handleAutoTrust(WifiNetwork network, List<KnownNetwork> knowns) async {
     final known = knowns.where((k) => k.bssid == network.bssid).firstOrNull;
     if (known == null) {
+      final gateway = await _networkInfo.getWifiGatewayIP();
       await saveKnownNetwork(KnownNetwork(
         ssid: network.ssid,
         bssid: network.bssid,
         security: network.security.name,
+        gateway: gateway,
         firstSeen: DateTime.now(),
         lastSeen: DateTime.now(),
         seenCount: 1,

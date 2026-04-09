@@ -26,7 +26,7 @@ class AppDatabase {
 
     return openDatabase(
       dbPath,
-      version: 6,
+      version: 7,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onConfigure: (db) async {
@@ -56,7 +56,8 @@ class AppDatabase {
         security TEXT NOT NULL,
         first_seen TEXT NOT NULL,
         last_seen TEXT NOT NULL,
-        seen_count INTEGER NOT NULL DEFAULT 1
+        seen_count INTEGER NOT NULL DEFAULT 1,
+        gateway TEXT
       )
     ''');
 
@@ -235,6 +236,11 @@ class AppDatabase {
       );
       await db.execute(
         'ALTER TABLE speed_test_results ADD COLUMN loaded_latency_ms REAL NOT NULL DEFAULT 0',
+      );
+    }
+    if (oldVersion < 7) {
+      await db.execute(
+        'ALTER TABLE known_networks ADD COLUMN gateway TEXT',
       );
     }
   }

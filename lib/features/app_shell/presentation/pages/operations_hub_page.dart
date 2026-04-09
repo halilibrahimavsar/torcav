@@ -20,6 +20,7 @@ class OperationsHubPage extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
         children: [

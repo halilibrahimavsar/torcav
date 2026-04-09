@@ -68,6 +68,7 @@ class _ProfileHubPageState extends State<ProfileHubPage> {
                 : l10n.disconnectedStatusCaps;
 
         return Scaffold(
+          backgroundColor: Colors.transparent,
           appBar: AppBar(
             title: NeonText(
               l10n.profileTitle.toUpperCase(),

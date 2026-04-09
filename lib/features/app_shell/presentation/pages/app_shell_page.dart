@@ -54,6 +54,7 @@ class _AppShellPageState extends State<AppShellPage> {
 
     return Scaffold(
       key: _scaffoldKey,
+      backgroundColor: Colors.transparent,
       drawer: CyberDrawer(onNavigate: _navigateTo),
       body: PageView(
         controller: _pageController,
@@ -156,6 +157,7 @@ class _DiscoveryTabPageState extends State<_DiscoveryTabPage>
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: NeonText(
           l10n.navDiscovery.toUpperCase(),

@@ -510,6 +510,26 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dnsIntegrity => 'DNS INTEGRITY';
 
   @override
+  String get dnsPerformanceBenchmark => 'PERFORMANCE BENCHMARK';
+
+  @override
+  String get dnsLatency => 'LATENCY';
+
+  @override
+  String get dnsRecommended => 'RECOMMENDED';
+
+  @override
+  String get dnsFastest => 'FASTEST';
+
+  @override
+  String get dnsProvider => 'PROVIDER';
+
+  @override
+  String dnsResultLatency(int ms) {
+    return '$ms ms';
+  }
+
+  @override
   String get runTest => 'RUN TEST';
 
   @override
@@ -1284,4 +1304,73 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get deepScanDescription => 'Active port scanning and LAN discovery (May trigger network alerts)';
+
+  @override
+  String get dnsProtocol => 'PROTOCOL';
+
+  @override
+  String get dnsSsec => 'DNSSEC';
+
+  @override
+  String get dnsWhatIsThat => 'What is that?';
+
+  @override
+  String get dnsInfoHijackingTitle => 'DNS Hijacking';
+
+  @override
+  String get dnsInfoHijackingDesc => 'When your network provider or a malicious actor redirects your DNS queries to rogue servers. This allows them to monitor your activity or block certain websites.';
+
+  @override
+  String get dnsInfoLeakTitle => 'DNS Leak';
+
+  @override
+  String get dnsInfoLeakDesc => 'Even when using a VPN, your queries might bypass the secure tunnel and go to your ISP\'s servers. This \'leaks\' your browsing history to the network provider.';
+
+  @override
+  String get dnsInfoEncryptedTitle => 'Encrypted DNS (DoH/DoT)';
+
+  @override
+  String get dnsInfoEncryptedDesc => 'DNS over HTTPS (DoH) and DNS over TLS (DoT) wrap your queries in an encrypted layer. This makes your requests unreadable to local snoopers and network admins.';
+
+  @override
+  String get dnsInfoDnssecTitle => 'DNSSEC';
+
+  @override
+  String get dnsInfoDnssecDesc => 'DNS Security Extensions add cryptographic signatures to your queries. This prevents \'spoofing\' where a server sends you fake IP addresses for legitimate sites.';
+
+  @override
+  String get dnsInfoLatencyTitle => 'DNS Latency (RTT)';
+
+  @override
+  String get dnsInfoLatencyDesc => 'Round Trip Time (RTT) measures how long it takes for a query to travel to the server and back. Lower latency means faster web browsing and better performance.';
+
+  @override
+  String get dnsInfoResolverDriftTitle => 'DNS Resolver Drift';
+
+  @override
+  String get dnsInfoResolverDriftDesc => 'Detected when your DNS requests are being handled by different providers than configured, possibly due to transparent proxying or routing changes.';
+
+  @override
+  String get netInfoSsidTitle => 'SSID (Service Set Identifier)';
+
+  @override
+  String get netInfoSsidDesc => 'The public name of your Wi-Fi network. While common, it can be spoofed by attackers to lure you into connecting to a rogue access point.';
+
+  @override
+  String get netInfoBssidTitle => 'BSSID (Basic Service Set ID)';
+
+  @override
+  String get netInfoBssidDesc => 'The unique hardware address (MAC) of the wireless router. Useful for verifying that you are connected to the legitimate hardware and not a software clone.';
+
+  @override
+  String get netInfoGatewayTitle => 'Default Gateway';
+
+  @override
+  String get netInfoGatewayDesc => 'The local IP address of your router. All your traffic passes through this point. If this changes unexpectedly, it could indicate a Man-in-the-Middle attack.';
+
+  @override
+  String get dnsReadyStatus => 'READY FOR ASSESSMENT';
+
+  @override
+  String get dnsIdleDescription => 'Run a scan to verify DNS integrity and performance.';
 }

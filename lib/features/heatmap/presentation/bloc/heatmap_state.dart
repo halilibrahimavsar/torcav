@@ -15,8 +15,11 @@ class HeatmapState extends Equatable {
     this.currentRssi,
     this.pendingWalls = const [],
     this.isArViewEnabled = true,
+    this.isArSupported = false,
     this.lastStepTimestamp,
     this.currentFloor = 0,
+    this.isScreenRecording = false,
+    this.screenRecordPath,
   });
 
   final List<HeatmapSession> sessions;
@@ -53,6 +56,15 @@ class HeatmapState extends Equatable {
   /// Current floor index relative to scan start (0 = starting floor).
   final int currentFloor;
 
+  /// Whether the user is currently recording the AR session to a video.
+  final bool isScreenRecording;
+
+  /// Path to the most recently saved AR session video.
+  final String? screenRecordPath;
+
+  /// Whether the device supports AR features.
+  final bool isArSupported;
+
   HeatmapState copyWith({
     List<HeatmapSession>? sessions,
     HeatmapSession? currentSession,
@@ -73,9 +85,13 @@ class HeatmapState extends Equatable {
     bool clearCurrentRssi = false,
     List<WallSegment>? pendingWalls,
     bool? isArViewEnabled,
+    bool? isArSupported,
     DateTime? lastStepTimestamp,
     bool clearLastStepTimestamp = false,
     int? currentFloor,
+    bool? isScreenRecording,
+    String? screenRecordPath,
+    bool clearScreenRecordPath = false,
   }) => HeatmapState(
     sessions: sessions ?? this.sessions,
     currentSession:
@@ -94,11 +110,14 @@ class HeatmapState extends Equatable {
     currentRssi: clearCurrentRssi ? null : currentRssi ?? this.currentRssi,
     pendingWalls: pendingWalls ?? this.pendingWalls,
     isArViewEnabled: isArViewEnabled ?? this.isArViewEnabled,
+    isArSupported: isArSupported ?? this.isArSupported,
     lastStepTimestamp:
         clearLastStepTimestamp
             ? null
             : lastStepTimestamp ?? this.lastStepTimestamp,
     currentFloor: currentFloor ?? this.currentFloor,
+    isScreenRecording: isScreenRecording ?? this.isScreenRecording,
+    screenRecordPath: clearScreenRecordPath ? null : screenRecordPath ?? this.screenRecordPath,
   );
 
   @override
@@ -116,7 +135,10 @@ class HeatmapState extends Equatable {
     currentRssi,
     pendingWalls,
     isArViewEnabled,
+    isArSupported,
     lastStepTimestamp,
     currentFloor,
+    isScreenRecording,
+    screenRecordPath,
   ];
 }

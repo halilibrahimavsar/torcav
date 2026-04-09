@@ -4,20 +4,42 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../domain/entities/wall_segment.dart';
+import '../../domain/services/survey_guidance_service.dart';
 import '../bloc/heatmap_bloc.dart';
 import '../bloc/scan_phase.dart';
+import 'ar_hud_overlay.dart';
 
+/// Camera-preview fallback for devices without ARCore support.
+///
+/// Streams camera frames into the bloc for wall detection, renders an
+/// AR-style crosshair + wall overlay via [_ArOverlayPainter], then tops it
+/// with the shared [ArHudOverlay] so non-ARCore devices receive the same
+/// premium information surface.
 class ArCameraView extends StatefulWidget {
-  const ArCameraView({super.key});
+  const ArCameraView({
+    super.key,
+    this.onExpand,
+    this.onCollapse,
+    this.immersive = false,
+  });
+
+  final VoidCallback? onExpand;
+  final VoidCallback? onCollapse;
+  final bool immersive;
 
   @override
   State<ArCameraView> createState() => _ArCameraViewState();
 }
 
 class _ArCameraViewState extends State<ArCameraView> {
+  static const _guidanceService = SurveyGuidanceService();
+
   CameraController? _controller;
   bool _isInit = false;
   String? _cameraError;
+
+  /// Transient flagged weak-zone markers in normalized screen coordinates.
+  final List<Offset> _flagOverlay = [];
 
   @override
   void initState() {
@@ -62,6 +84,21 @@ class _ArCameraViewState extends State<ArCameraView> {
     }
   }
 
+  void _flagCurrentPosition() {
+    // Fallback path has no ARCore anchor — place marker at screen center.
+    // TODO(v2): persist flagged zones to HeatmapPoint.isFlagged + session DB.
+    setState(() {
+      _flagOverlay.add(const Offset(0.5, 0.5));
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Weak zone flagged'),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.black87,
+      ),
+    );
+  }
+
   @override
   void dispose() {
     if (_controller?.value.isStreamingImages ?? false) {
@@ -83,26 +120,40 @@ class _ArCameraViewState extends State<ArCameraView> {
 
     return BlocBuilder<HeatmapBloc, HeatmapState>(
       builder: (context, state) {
-        final sampleCount = state.currentSession?.points.length ?? 0;
+        final guidance = _guidanceService.analyze(
+          points: state.currentSession?.points ?? const [],
+          floorPlan: state.liveFloorPlan,
+          isRecording: state.isRecording,
+          isArViewEnabled: state.isArViewEnabled,
+          pendingWallCount: state.pendingWalls.length,
+          currentRssi: state.currentRssi,
+          currentX: state.currentPosition?.dx,
+          currentY: state.currentPosition?.dy,
+        );
 
         return Stack(
           fit: StackFit.expand,
           children: [
             CameraPreview(_controller!),
             const IgnorePointer(child: _CameraVignette()),
-            CustomPaint(
-              painter: _ArOverlayPainter(
-                phase: state.phase,
-                pendingWalls: state.pendingWalls,
-                currentRssi: state.currentRssi,
-                lastStepTimestamp: state.lastStepTimestamp,
+            IgnorePointer(
+              child: CustomPaint(
+                painter: _ArOverlayPainter(
+                  phase: state.phase,
+                  pendingWalls: state.pendingWalls,
+                  currentRssi: state.currentRssi,
+                  lastStepTimestamp: state.lastStepTimestamp,
+                  flagMarkers: _flagOverlay,
+                ),
               ),
             ),
             if (state.phase == ScanPhase.scanning)
-              _ScanningHud(
-                currentRssi: state.currentRssi,
-                wallCount: state.pendingWalls.length,
-                sampleCount: sampleCount,
+              ArHudOverlay(
+                guidance: guidance,
+                immersive: widget.immersive,
+                onExpand: widget.onExpand,
+                onCollapse: widget.onCollapse,
+                onFlagWeakZone: _flagCurrentPosition,
               ),
           ],
         );
@@ -115,6 +166,7 @@ class _ArOverlayPainter extends CustomPainter {
   _ArOverlayPainter({
     required this.phase,
     required this.pendingWalls,
+    required this.flagMarkers,
     this.currentRssi,
     this.lastStepTimestamp,
   });
@@ -123,17 +175,17 @@ class _ArOverlayPainter extends CustomPainter {
   final List<WallSegment> pendingWalls;
   final int? currentRssi;
   final DateTime? lastStepTimestamp;
+  final List<Offset> flagMarkers;
 
   @override
   void paint(Canvas canvas, Size size) {
     if (phase != ScanPhase.scanning) return;
 
-    final wallPaint =
-        Paint()
-          ..color = AppColors.neonCyan.withValues(alpha: 0.65)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 3
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.4);
+    final wallPaint = Paint()
+      ..color = AppColors.neonCyan.withValues(alpha: 0.65)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.4);
 
     for (final wall in pendingWalls) {
       canvas.drawLine(
@@ -143,74 +195,18 @@ class _ArOverlayPainter extends CustomPainter {
       );
     }
 
-    if (currentRssi != null) {
-      final strength = ((currentRssi! + 90) / 55).clamp(0.0, 1.0);
-      final signalPaint =
-          Paint()
-            ..color =
-                Color.lerp(
-                  const Color(0xFFFF3B30),
-                  const Color(0xFF00E676),
-                  strength,
-                )!
-            ..style = PaintingStyle.fill;
-
-      canvas.drawCircle(
-        Offset(size.width / 2, size.height / 2),
-        9,
-        signalPaint,
-      );
+    // Flag markers — red crosshair pins in normalized screen space.
+    final flagPaint = Paint()
+      ..color = AppColors.neonRed
+      ..style = PaintingStyle.fill;
+    final flagGlow = Paint()
+      ..color = AppColors.neonRed.withValues(alpha: 0.35)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+    for (final f in flagMarkers) {
+      final c = Offset(f.dx * size.width, f.dy * size.height);
+      canvas.drawCircle(c, 10, flagGlow);
+      canvas.drawCircle(c, 6, flagPaint);
     }
-
-    if (lastStepTimestamp != null) {
-      final diff = DateTime.now().difference(lastStepTimestamp!).inMilliseconds;
-      if (diff < 800) {
-        final progress = diff / 800.0;
-        final pulsePaint =
-            Paint()
-              ..color = AppColors.neonCyan.withValues(
-                alpha: (1 - progress) * 0.35,
-              )
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 2;
-        canvas.drawCircle(
-          Offset(size.width / 2, size.height / 2),
-          18 + (progress * 120),
-          pulsePaint,
-        );
-      }
-    }
-
-    _drawCrosshair(canvas, size);
-  }
-
-  void _drawCrosshair(Canvas canvas, Size size) {
-    final linePaint =
-        Paint()
-          ..color = AppColors.neonCyan.withValues(alpha: 0.28)
-          ..strokeWidth = 1.1;
-
-    final center = Offset(size.width / 2, size.height / 2);
-    canvas.drawLine(
-      Offset(center.dx - 20, center.dy),
-      Offset(center.dx + 20, center.dy),
-      linePaint,
-    );
-    canvas.drawLine(
-      Offset(center.dx, center.dy - 20),
-      Offset(center.dx, center.dy + 20),
-      linePaint,
-    );
-    canvas.drawLine(
-      Offset(center.dx - 96, center.dy),
-      Offset(center.dx - 38, center.dy),
-      linePaint,
-    );
-    canvas.drawLine(
-      Offset(center.dx + 38, center.dy),
-      Offset(center.dx + 96, center.dy),
-      linePaint,
-    );
   }
 
   @override
@@ -218,126 +214,8 @@ class _ArOverlayPainter extends CustomPainter {
       oldDelegate.phase != phase ||
       oldDelegate.pendingWalls != pendingWalls ||
       oldDelegate.currentRssi != currentRssi ||
-      oldDelegate.lastStepTimestamp != lastStepTimestamp;
-}
-
-class _ScanningHud extends StatelessWidget {
-  const _ScanningHud({
-    required this.currentRssi,
-    required this.wallCount,
-    required this.sampleCount,
-  });
-
-  final int? currentRssi;
-  final int wallCount;
-  final int sampleCount;
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                _HudChip(
-                  label: 'RSSI',
-                  value: currentRssi == null ? '--' : '$currentRssi dBm',
-                  valueColor:
-                      currentRssi == null
-                          ? AppColors.textSecondary
-                          : _signalColor(currentRssi!),
-                ),
-                const SizedBox(width: 10),
-                _HudChip(label: 'Walls', value: '$wallCount'),
-                const SizedBox(width: 10),
-                _HudChip(label: 'Samples', value: '$sampleCount'),
-              ],
-            ),
-            const Spacer(),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.44),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: AppColors.neonCyan.withValues(alpha: 0.22),
-                ),
-              ),
-              child: const Text(
-                'Walk across each room. Keep the phone facing the walls from time to time so the outline can lock in.',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 13,
-                  height: 1.45,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Color _signalColor(int rssi) {
-    final normalized = ((rssi + 90) / 55).clamp(0.0, 1.0);
-    return Color.lerp(
-      const Color(0xFFFF3B30),
-      const Color(0xFF00E676),
-      normalized,
-    )!;
-  }
-}
-
-class _HudChip extends StatelessWidget {
-  const _HudChip({
-    required this.label,
-    required this.value,
-    this.valueColor = Colors.white,
-  });
-
-  final String label;
-  final String value;
-  final Color valueColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.42),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.2)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 1.1,
-              ),
-            ),
-            const SizedBox(height: 3),
-            Text(
-              value,
-              style: TextStyle(
-                color: valueColor,
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+      oldDelegate.lastStepTimestamp != lastStepTimestamp ||
+      oldDelegate.flagMarkers != flagMarkers;
 }
 
 class _CameraFallback extends StatelessWidget {

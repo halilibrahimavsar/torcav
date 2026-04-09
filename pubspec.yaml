@@ -68,6 +68,8 @@ dependencies:
   sensors_plus: ^6.1.1
   flutter_compass: ^0.8.0
   onnxruntime: ^1.4.1
+  arcore_flutter_plugin: ^0.1.0
+  flutter_screen_recording: ^2.0.16
 
 
 dev_dependencies:
@@ -101,6 +103,9 @@ flutter:
   assets:
     - assets/models/
     - assets/data/
+
+  shaders:
+    - shaders/cyber_post.frag
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

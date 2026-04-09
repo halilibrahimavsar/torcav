@@ -510,6 +510,26 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dnsIntegrity => 'DNS INTEGRITY';
 
   @override
+  String get dnsPerformanceBenchmark => 'PERFORMANS TESTİ';
+
+  @override
+  String get dnsLatency => 'LATENCY';
+
+  @override
+  String get dnsRecommended => 'ÖNERİLEN';
+
+  @override
+  String get dnsFastest => 'FASTEST';
+
+  @override
+  String get dnsProvider => 'PROVIDER';
+
+  @override
+  String dnsResultLatency(int ms) {
+    return '$ms ms';
+  }
+
+  @override
   String get runTest => 'RUN TEST';
 
   @override
@@ -1125,39 +1145,39 @@ class AppLocalizationsTr extends AppLocalizations {
   String get historyChannelRatings => 'Kanal Puanları';
 
   @override
-  String get dnsSecurityTest => 'DNS SECURITY TEST';
+  String get dnsSecurityTest => 'DNS GÜVENLİK TESTİ';
 
   @override
-  String get dnsSecure => 'SECURE';
+  String get dnsSecure => 'GÜVENLİ';
 
   @override
-  String get dnsWarning => 'WARNING';
+  String get dnsWarning => 'UYARI';
 
   @override
-  String get dnsLeakDetected => 'LEAK DETECTED';
+  String get dnsLeakDetected => 'SIZI TESPİT EDİLDİ';
 
   @override
-  String get dnsHijacked => 'HIJACKED';
+  String get dnsHijacked => 'ELE GEÇİRİLDİ';
 
   @override
-  String get dnsVerifyIntegrity => 'Run a scan to verify DNS integrity';
+  String get dnsVerifyIntegrity => 'DNS bütünlüğünü doğrulamak için tara';
 
   @override
   String dnsLastCheck(String hour, String minute) {
-    return 'Last check: $hour:$minute';
+    return 'Son kontrol: $hour:$minute';
   }
 
   @override
-  String get dnsTestNow => 'TEST NOW';
+  String get dnsTestNow => 'HEMEN TEST ET';
 
   @override
-  String get dnsTesting => 'TESTING...';
+  String get dnsTesting => 'TEST EDİLİYOR...';
 
   @override
-  String get dnsCurrentDns => 'CURRENT DNS';
+  String get dnsCurrentDns => 'MEVCUT DNS';
 
   @override
-  String get dnsIspProvider => 'ISP PROVIDER';
+  String get dnsIspProvider => 'İSS SAĞLAYICI';
 
   @override
   String get phaseIdle => 'HAZIR';
@@ -1268,7 +1288,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get trustedBaselineBadge => 'TRUSTED BASELINES';
 
   @override
-  String get dnsEvidenceTitle => 'DNS EVIDENCE';
+  String get dnsEvidenceTitle => 'DNS KANITI';
 
   @override
   String get shieldLabTitle => 'SHIELD LABORATORY';
@@ -1284,4 +1304,73 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get deepScanDescription => 'Active port scanning and LAN discovery (May trigger network alerts)';
+
+  @override
+  String get dnsProtocol => 'PROTOKOL';
+
+  @override
+  String get dnsSsec => 'DNSSEC';
+
+  @override
+  String get dnsWhatIsThat => 'Bu nedir?';
+
+  @override
+  String get dnsInfoHijackingTitle => 'DNS Ele Geçirme (Hijacking)';
+
+  @override
+  String get dnsInfoHijackingDesc => 'Ağ sağlayıcınızın veya kötü niyetli bir aktörün DNS sorgularınızı sahte sunuculara yönlendirmesidir. Bu, etkinliğinizi izlemelerine veya belirli web sitelerini engellemelerine olanak tanır.';
+
+  @override
+  String get dnsInfoLeakTitle => 'DNS Sızıntısı';
+
+  @override
+  String get dnsInfoLeakDesc => 'Bir VPN kullanırken bile sorgularınız güvenli tüneli baypas ederek ISS\'nizin sunucularına gidebilir. Bu, tarama geçmişinizi ağ sağlayıcısına \'sızdırır\'.';
+
+  @override
+  String get dnsInfoEncryptedTitle => 'Şifreli DNS (DoH/DoT)';
+
+  @override
+  String get dnsInfoEncryptedDesc => 'HTTPS üzerinden DNS (DoH) ve TLS üzerinden DNS (DoT), sorgularınızı şifreli bir katmana sarar. Bu, isteklerinizin yerel izleyiciler ve ağ yöneticileri tarafından okunamaz hale gelmesini sağlar.';
+
+  @override
+  String get dnsInfoDnssecTitle => 'DNSSEC';
+
+  @override
+  String get dnsInfoDnssecDesc => 'DNS Güvenlik Uzantıları, sorgularınıza kriptografik imzalar ekler. Bu, bir sunucunun size meşru siteler için sahte IP adresleri gönderdiği \'spoofing\' saldırılarını önler.';
+
+  @override
+  String get dnsInfoLatencyTitle => 'DNS Gecikmesi (RTT)';
+
+  @override
+  String get dnsInfoLatencyDesc => 'Gecikme (RTT), bir sorgunun sunucuya gidip gelmesi için geçen süreyi ölçer. Daha düşük gecikme, daha hızlı web gezintisi ve daha iyi performans demektir.';
+
+  @override
+  String get dnsInfoResolverDriftTitle => 'DNS Çözücü Kayması';
+
+  @override
+  String get dnsInfoResolverDriftDesc => 'DNS isteklerinizin yapılandırılanlardan farklı sağlayıcılar tarafından işlendiği tespit edildiğinde ortaya çıkar; bu durum şeffaf proxy kullanımı veya yönlendirme değişikliklerinden kaynaklanabilir.';
+
+  @override
+  String get netInfoSsidTitle => 'SSID (Ağ Adı)';
+
+  @override
+  String get netInfoSsidDesc => 'Wi-Fi ağınızın genel adıdır. Yaygın olsa da, saldırganlar tarafından sizi sahte bir erişim noktasına bağlamak için taklit edilebilir.';
+
+  @override
+  String get netInfoBssidTitle => 'BSSID (Donanım Adresi)';
+
+  @override
+  String get netInfoBssidDesc => 'Kablosuz yönlendiricinin benzersiz donanım adresidir (MAC). Meşru donanıma bağlı olduğunuzu ve bir yazılım kopyasına bağlı olmadığınızı doğrulamak için kullanışlıdır.';
+
+  @override
+  String get netInfoGatewayTitle => 'Varsayılan Ağ Geçidi';
+
+  @override
+  String get netInfoGatewayDesc => 'Yönlendiricinizin yerel IP adresidir. Tüm trafiğiniz bu noktadan geçer. Bu adres beklenmedik şekilde değişirse, bir Ortadaki Adam (MitM) saldırısına işaret edebilir.';
+
+  @override
+  String get dnsReadyStatus => 'ANALİZE HAZIR';
+
+  @override
+  String get dnsIdleDescription => 'DNS bütünlüğünü ve performansını doğrulamak için bir tarama başlatın.';
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vector_math/vector_math_64.dart' hide Colors;
+
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/extensions/context_extensions.dart';
@@ -11,7 +11,6 @@ import '../widgets/topology_info_sheet.dart';
 import '../bloc/topology_bloc.dart';
 import '../../../../core/di/injection.dart';
 import '../../domain/entities/network_topology.dart';
-import '../../domain/repositories/topology_repository.dart';
 
 /// Route-level wrapper that owns the [TopologyBloc] lifetime.
 ///
@@ -65,7 +64,6 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
   String _searchQuery = '';
   TopologyNodeVisualKind? _filterType;
   bool _showTraffic = true;
-  bool _forceView = false;
   bool _isScanning = false;
   double _flowSpeed = 1.0;
   late AnimationController _pulseController;
@@ -115,47 +113,6 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
     super.dispose();
   }
 
-  List<int>? get _parsedPorts {
-    final text = _portController.text.trim();
-    if (text.isEmpty) return null;
-    
-    final ports = <int>[];
-    final parts = text.split(',');
-    
-    for (final part in parts) {
-      final trimmed = part.trim();
-      if (trimmed.contains('-')) {
-        final range = trimmed.split('-');
-        if (range.length == 2) {
-          final start = int.tryParse(range[0].trim());
-          final end = int.tryParse(range[1].trim());
-          if (start != null && end != null && start <= end) {
-            for (int i = start; i <= end; i++) {
-              if (i > 0 && i <= 65535) ports.add(i);
-            }
-          }
-        }
-      } else {
-        final port = int.tryParse(trimmed);
-        if (port != null && port > 0 && port <= 65535) {
-          ports.add(port);
-        }
-      }
-    }
-    
-    return ports.isEmpty ? null : ports;
-  }
-
-  void _onForceViewToggled(bool value, NetworkTopology topology, Size size) {
-    _oldPositions = Map.from(_currentPositions);
-    _forceView = value;
-    _targetPositions = TopologyViewData.calculatePositions(
-      topology,
-      size,
-      forceView: _forceView,
-    );
-    _positionController.forward(from: 0);
-  }
 
   void _loadTopology() {
     context.read<TopologyBloc>().add(const LoadTopologyEvent());
@@ -169,14 +126,14 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
         builder: (context, state) {
           bool loading = false;
           String? error;
-          String? pingingNodeId;
           NetworkTopology? topology;
+          String? pingingNodeId;
 
-          if (state is TopologyLoading) {
-            loading = true;
-          } else if (state is TopologyLoaded) {
+          if (state is TopologyLoaded) {
             topology = state.topology;
             pingingNodeId = state.pingingNodeId;
+          } else if (state is TopologyLoading) {
+            loading = true;
           } else if (state is TopologyError) {
             error = state.message;
           }
@@ -309,23 +266,7 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
           onTap: () => setState(() => _showTraffic = !_showTraffic),
           label: AppLocalizations.of(context)!.trafficLabel,
         ),
-        const SizedBox(height: 12),
-        _controlButton(
-          icon:
-              _forceView ? Icons.grid_view_rounded : Icons.bubble_chart_rounded,
-          active: _forceView,
-          onTap: () {
-            final state = context.read<TopologyBloc>().state;
-            if (state is TopologyLoaded) {
-              _onForceViewToggled(
-                !_forceView,
-                state.topology,
-                MediaQuery.of(context).size,
-              );
-            }
-          },
-          label: AppLocalizations.of(context)!.forceLabel,
-        ),
+
         const SizedBox(height: 12),
         _controlButton(
           icon: _flowSpeed > 1.0 ? Icons.speed : Icons.shutter_speed,
@@ -596,13 +537,13 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                   child: AnimatedBuilder(
                     animation: _pulseController,
                     builder: (context, child) {
-                      // If positions aren't initialized yet, or topology changed
-                      if (_currentPositions.isEmpty ||
-                          _targetPositions == null) {
+                      final needsRecalc = _currentPositions.isEmpty ||
+                          _targetPositions == null ||
+                          _currentPositions.length != topology.nodes.length;
+                      if (needsRecalc) {
                         _currentPositions = TopologyViewData.calculatePositions(
                           topology,
                           size,
-                          forceView: _forceView,
                         );
                         _targetPositions = Map.from(_currentPositions);
                       }
@@ -617,7 +558,6 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                           filterType: _filterType,
                           pulseValue: _pulseController.value,
                           showTraffic: _showTraffic,
-                          forceView: _forceView,
                           flowSpeed: _flowSpeed,
                           isScanning: _isScanning,
                           colorScheme: Theme.of(context).colorScheme,
@@ -717,35 +657,14 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
     Size canvasSize,
     NetworkTopology topology,
   ) {
-    final center = Offset(canvasSize.width / 2, canvasSize.height / 2);
-
-    // Matrix used in Painter
-    final matrix =
-        Matrix4.identity()
-          ..setEntry(3, 2, 0.001)
-          ..rotateX(-0.5);
-
     String? tappedNodeId;
-    double minDistance = 45.0;
+    double minDistance = 55.0;
 
     for (final node in topology.nodes) {
-      // 1. Get Current Position
       final pos = _currentPositions[node.id];
       if (pos == null) continue;
 
-      // 2. Map to 3D Space (matching the Painter's translate/transform)
-      final relativePos = pos - center;
-      final vector = Vector3(relativePos.dx, relativePos.dy, 0);
-      final projectedVector = matrix.transform3(vector);
-
-      // 3. Project back to Screen Space
-      final screenPos = Offset(
-        projectedVector.x + center.dx,
-        projectedVector.y + center.dy,
-      );
-
-      // 4. Hit Test
-      final dist = (localPosition - screenPos).distance;
+      final dist = (localPosition - pos).distance;
       if (dist < minDistance) {
         minDistance = dist;
         tappedNodeId = node.id;
@@ -831,10 +750,6 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
     final l10n = AppLocalizations.of(context)!;
     final isPinging = pingingNodeId == node.id;
     final blocState = context.read<TopologyBloc>().state;
-    final isTracing =
-        blocState is TopologyLoaded && blocState.tracingNodeId == node.id;
-    final traceResult =
-        blocState is TopologyLoaded ? blocState.traceResult : null;
 
     return Column(
       children: [
@@ -934,7 +849,7 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
               const NeonDivider(),
               const SizedBox(height: 12),
 
-              // ── Diagnostic Results (Hostname, ARP) ──
+              // ── Diagnostic Results (Latency, Hostname, OS) ──
               _buildIdentityResults(blocState, node),
 
               const SizedBox(height: 12),
@@ -943,12 +858,7 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
 
               // ── Action buttons ──
               if (node.ip != null && !node.isCurrentDevice) ...[
-                _buildDiagnosticActions(context, node, blocState, isPinging, isTracing),
-              ],
-
-              // ── Traceroute results ──
-              if (traceResult != null && traceResult.isNotEmpty) ...[
-                _buildTracerouteResults(traceResult),
+                _buildDiagnosticActions(context, node, blocState, isPinging),
               ],
 
               // ── Port Scan results ──
@@ -965,7 +875,6 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
     TopologyNode node,
     TopologyState blocState,
     bool isPinging,
-    bool isTracing,
   ) {
     final l10n = context.l10n;
     final isScanning = blocState is TopologyLoaded &&
@@ -974,9 +883,6 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
     final isLookingUp = blocState is TopologyLoaded &&
         blocState.lookingUpNodeId == node.id &&
         blocState.isLookingUpHostname;
-    final isGettingArp = blocState is TopologyLoaded &&
-        blocState.gettingArpNodeId == node.id &&
-        blocState.isGettingArp;
 
     return Column(
       children: [
@@ -991,20 +897,6 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                 onTap: () {
                   context.read<TopologyBloc>().add(
                     PingNodeEvent(nodeId: node.id, ip: node.ip!),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: _NodeActionButton(
-                label: 'TRACEROUTE',
-                icon: Icons.alt_route_rounded,
-                color: Theme.of(context).colorScheme.tertiary,
-                isLoading: isTracing,
-                onTap: () {
-                  context.read<TopologyBloc>().add(
-                    TraceRouteEvent(nodeId: node.id, ip: node.ip!),
                   );
                 },
               ),
@@ -1030,13 +922,15 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
             const SizedBox(width: 8),
             Expanded(
               child: _NodeActionButton(
-                label: l10n.arpInfoAction,
-                icon: Icons.list_alt_rounded,
-                color: Colors.orangeAccent,
-                isLoading: isGettingArp,
+                label: 'OS DETECT',
+                icon: Icons.computer_rounded,
+                color: Colors.tealAccent,
+                isLoading: blocState is TopologyLoaded &&
+                    blocState.detectingOsNodeId == node.id &&
+                    blocState.isDetectingOs,
                 onTap: () {
                   context.read<TopologyBloc>().add(
-                    GetArpInfoEvent(nodeId: node.id, ip: node.ip!),
+                    DetectOsEvent(nodeId: node.id, ip: node.ip!),
                   );
                 },
               ),
@@ -1085,7 +979,7 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                       ScanPortsEvent(
                         nodeId: node.id,
                         ip: node.ip!,
-                        customPorts: _parsedPorts,
+                        customPorts: _portController.text,
                       ),
                     );
                   },
@@ -1100,47 +994,25 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
 
   Widget _buildIdentityResults(TopologyState state, TopologyNode node) {
     if (state is! TopologyLoaded) return const SizedBox.shrink();
-    
+
     final hostname = state.lookingUpNodeId == node.id ? state.hostname : null;
-    final arpInfo = state.gettingArpNodeId == node.id ? state.arpInfo : null;
+    final osHint = state.detectingOsNodeId == node.id ? state.osHint : null;
     final l10n = context.l10n;
 
-    return Column(
-      children: [
-        // Latency
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'LATENCY',
-                  style: GoogleFonts.orbitron(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
-                    fontSize: 8,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  node.latencyMs != null ? '${node.latencyMs}ms' : '--',
-                  style: GoogleFonts.orbitron(
-                    color: node.latencyMs != null
-                        ? (node.latencyMs! < 50 ? Colors.greenAccent : Colors.orangeAccent)
-                        : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            if (hostname != null)
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+      child: Column(
+        children: [
+          // Latency
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
               Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    l10n.hostnameLabel,
+                    'LATENCY',
                     style: GoogleFonts.orbitron(
                       color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
                       fontSize: 8,
@@ -1149,115 +1021,79 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    hostname,
-                    style: GoogleFonts.shareTechMono(
-                      color: Colors.blueAccent,
-                      fontSize: 14,
+                    node.latencyMs != null ? '${node.latencyMs}ms' : '--',
+                    style: GoogleFonts.orbitron(
+                      color: node.latencyMs != null
+                          ? (node.latencyMs! < 50 ? Colors.greenAccent : Colors.orangeAccent)
+                          : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
+              if (hostname != null)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      l10n.hostnameLabel,
+                      style: GoogleFonts.orbitron(
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                        fontSize: 8,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      hostname,
+                      style: GoogleFonts.shareTechMono(
+                        color: Colors.blueAccent,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          ),
+
+          if (osHint != null) ...[
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'OS DETECTED',
+                style: GoogleFonts.orbitron(
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                  fontSize: 8,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Container(
+              padding: const EdgeInsets.all(8),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.tealAccent.withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                osHint,
+                style: GoogleFonts.shareTechMono(
+                  color: Colors.tealAccent.withValues(alpha: 0.9),
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ],
-        ),
-        if (arpInfo != null) ...[
-          const SizedBox(height: 8),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              l10n.arpInfoLabel,
-              style: GoogleFonts.orbitron(
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
-                fontSize: 8,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Container(
-            padding: const EdgeInsets.all(8),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.orangeAccent.withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              arpInfo,
-              style: GoogleFonts.shareTechMono(
-                color: Colors.orangeAccent.withValues(alpha: 0.8),
-                fontSize: 10,
-              ),
-            ),
-          ),
         ],
-      ],
+      ),
     );
   }
 
-  Widget _buildTracerouteResults(List<TraceHop> traceResult) {
-    return Column(
-      children: [
-        const SizedBox(height: 16),
-        const NeonDivider(),
-        const SizedBox(height: 12),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            'ROUTE HOPS',
-            style: GoogleFonts.orbitron(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
-              fontSize: 8,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        const SizedBox(height: 8),
-        ...traceResult.map(
-          (hop) => Padding(
-            padding: const EdgeInsets.only(bottom: 4),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 20,
-                  child: Text(
-                    '${hop.hopNumber}',
-                    style: GoogleFonts.orbitron(
-                      color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.6),
-                      fontSize: 8,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  size: 12,
-                  color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.4),
-                ),
-                const SizedBox(width: 4),
-                Expanded(
-                  child: Text(
-                    hop.ip,
-                    style: GoogleFonts.shareTechMono(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
-                      fontSize: 11,
-                    ),
-                  ),
-                ),
-                Text(
-                  '${hop.latencyMs}ms',
-                  style: GoogleFonts.orbitron(
-                    color: hop.latencyMs < 50 ? Colors.greenAccent : Colors.orangeAccent,
-                    fontSize: 9,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget _buildPortScanResults(TopologyState state, TopologyNode node) {
     if (state is! TopologyLoaded) return const SizedBox.shrink();
@@ -1268,58 +1104,61 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
     final ports = state.openPorts!;
     final l10n = context.l10n;
 
-    return Column(
-      children: [
-        const SizedBox(height: 16),
-        const NeonDivider(),
-        const SizedBox(height: 12),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            l10n.portsFoundLabel,
-            style: GoogleFonts.orbitron(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
-              fontSize: 8,
-              fontWeight: FontWeight.bold,
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+      child: Column(
+        children: [
+          const SizedBox(height: 16),
+          const NeonDivider(),
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              l10n.portsFoundLabel,
+              style: GoogleFonts.orbitron(
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                fontSize: 8,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 8),
-        if (ports.isEmpty)
-          Text(
-            l10n.noPortsFound,
-            style: GoogleFonts.shareTechMono(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
-              fontSize: 11,
+          const SizedBox(height: 8),
+          if (ports.isEmpty)
+            Text(
+              l10n.noPortsFound,
+              style: GoogleFonts.shareTechMono(
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                fontSize: 11,
+              ),
+            )
+          else
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: ports.map((port) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Text(
+                    'PORT $port',
+                    style: GoogleFonts.shareTechMono(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                );
+              }).toList(),
             ),
-          )
-        else
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children:
-                ports.map((port) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: Text(
-                      'PORT $port',
-                      style: GoogleFonts.shareTechMono(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  );
-                }).toList(),
-          ),
-      ],
+        ],
+      ),
     );
   }
 

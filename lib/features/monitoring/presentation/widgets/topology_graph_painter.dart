@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../domain/entities/network_topology.dart';
 import 'topology_view_data.dart';
 
+
 class TopologyGraphPainter extends CustomPainter {
   final NetworkTopology topology;
   final Map<String, Offset> nodePositions;
@@ -12,7 +13,6 @@ class TopologyGraphPainter extends CustomPainter {
   final TopologyNodeVisualKind? filterType;
   final double pulseValue;
   final bool showTraffic;
-  final bool forceView;
   final double flowSpeed;
   final bool isScanning;
   final ColorScheme colorScheme;
@@ -26,7 +26,6 @@ class TopologyGraphPainter extends CustomPainter {
     this.searchQuery = '',
     this.filterType,
     this.showTraffic = true,
-    this.forceView = false,
     this.flowSpeed = 1.0,
     this.isScanning = false,
     required this.colorScheme,
@@ -37,17 +36,7 @@ class TopologyGraphPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (nodePositions.isEmpty) return;
 
-    final center = Offset(size.width / 2, size.height / 2);
-
     canvas.save();
-    canvas.translate(center.dx, center.dy);
-
-    final matrix = Matrix4.identity()
-      ..setEntry(3, 2, 0.001)
-      ..rotateX(-0.5);
-
-    canvas.transform(matrix.storage);
-    canvas.translate(-center.dx, -center.dy);
 
     _drawEdges(canvas, nodePositions, size);
     _drawScanningWave(canvas, nodePositions, size);
@@ -99,10 +88,29 @@ class TopologyGraphPainter extends CustomPainter {
   }
 
   void _drawAdvWirelessEdge(Canvas canvas, Offset start, Offset end, Color color, double opacity) {
+    if (start == end) return;
+
+    // Background Glow
+    final glowPaint = Paint()
+      ..color = color.withValues(alpha: 0.2 * opacity)
+      ..strokeWidth = 4.0
+      ..style = PaintingStyle.stroke
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
+    canvas.drawLine(start, end, glowPaint);
+
+    final rect = Rect.fromPoints(start, end);
+    final validRect = rect.width == 0 && rect.height == 0 
+        ? Rect.fromCenter(center: start, width: 1, height: 1)
+        : rect.width == 0 
+            ? Rect.fromLTRB(rect.left - 1, rect.top, rect.right + 1, rect.bottom)
+            : rect.height == 0
+                ? Rect.fromLTRB(rect.left, rect.top - 1, rect.right, rect.bottom + 1)
+                : rect;
+
     final paint = Paint()
       ..shader = LinearGradient(
-        colors: [color.withValues(alpha: 0.1 * opacity), color.withValues(alpha: 0.6 * opacity)],
-      ).createShader(Rect.fromPoints(start, end))
+        colors: [color.withValues(alpha: 0.1 * opacity), color.withValues(alpha: 0.8 * opacity)],
+      ).createShader(validRect)
       ..strokeWidth = 1.5
       ..style = PaintingStyle.stroke;
 
@@ -111,8 +119,18 @@ class TopologyGraphPainter extends CustomPainter {
   }
 
   void _drawAdvWiredEdge(Canvas canvas, Offset start, Offset end, Color color, double opacity) {
+    if (start == end) return;
+
+    // Background Glow
+    final glowPaint = Paint()
+      ..color = color.withValues(alpha: 0.15 * opacity)
+      ..strokeWidth = 4.0
+      ..style = PaintingStyle.stroke
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
+    canvas.drawLine(start, end, glowPaint);
+
     final paint = Paint()
-      ..color = color.withValues(alpha: 0.3 * opacity)
+      ..color = color.withValues(alpha: 0.4 * opacity)
       ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
 
@@ -134,6 +152,7 @@ class TopologyGraphPainter extends CustomPainter {
     final pos2 = Offset.lerp(start, end, t2)!;
     canvas.drawCircle(pos2, 1.5, flowPaint..color = flowPaint.color.withAlpha((150 * opacity).toInt()));
   }
+
 
   void _drawScanningWave(Canvas canvas, Map<String, Offset> positions, Size size) {
     if (!isScanning) return;
@@ -163,6 +182,7 @@ class TopologyGraphPainter extends CustomPainter {
 
       final isSelected = node.id == selectedNodeId;
       final isMatch = _isNodeMatch(node);
+
       final kind = TopologyViewData.visualKindFor(node);
       final isFiltered = filterType != null && kind != filterType;
 

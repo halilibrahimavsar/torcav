@@ -190,21 +190,21 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i363.DeauthDetector>(() => _i363.DeauthDetector());
     gh.lazySingleton<_i471.SecurityAnalyzer>(() => _i471.SecurityAnalyzer());
+    gh.lazySingleton<_i927.DnsSecurityUseCase>(
+      () => _i927.DnsSecurityUseCase(),
+    );
     gh.lazySingleton<_i991.DnsDataSource>(() => _i991.DnsDataSource());
     gh.lazySingleton<_i1066.ArpDataSource>(() => _i1066.ArpDataSource());
     gh.lazySingleton<_i165.MdnsDataSource>(() => _i165.MdnsDataSource());
     gh.lazySingleton<_i119.UpnpDataSource>(() => _i119.UpnpDataSource());
+    gh.lazySingleton<_i978.PortScanDataSource>(
+      () => _i978.PortScanDataSource(),
+    );
     gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
     gh.lazySingleton<_i960.FinalizeFloorPlan>(() => _i960.FinalizeFloorPlan());
     gh.lazySingleton<_i265.OnnxDeviceClassifierService>(
       () => _i265.OnnxDeviceClassifierService(),
       dispose: (i) => i.dispose(),
-    );
-    gh.lazySingleton<_i978.PortScanDataSource>(
-      () => _i978.PortScanDataSource(),
-    );
-    gh.lazySingleton<_i927.DnsSecurityUseCase>(
-      () => _i927.DnsSecurityUseCase(),
     );
     gh.lazySingleton<_i1073.NetworkScanRepository>(
       () => _i551.NetworkScanRepositoryImpl(

@@ -619,14 +619,18 @@ class NeonChip extends StatelessWidget {
             Icon(icon, size: 14, color: effectiveColor.withValues(alpha: 0.8)),
             const SizedBox(width: 6),
           ],
-          Text(
-            label,
-            style: textStyle ??
-                GoogleFonts.outfit(
-                  color: effectiveColor.withValues(alpha: 0.9),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
+          Flexible(
+            child: Text(
+              label,
+              style: textStyle ??
+                  GoogleFonts.outfit(
+                    color: effectiveColor.withValues(alpha: 0.9),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
           ),
         ],
       ),
@@ -768,7 +772,7 @@ class BentoStatTile extends StatelessWidget {
     final effectiveColor = color ?? Theme.of(context).colorScheme.primary;
     return NeonCard(
       glowColor: effectiveColor,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -792,7 +796,7 @@ class BentoStatTile extends StatelessWidget {
                 ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 4),
           FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
@@ -806,15 +810,19 @@ class BentoStatTile extends StatelessWidget {
               ),
             ),
           ),
-          Text(
-            label.toUpperCase(),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.rajdhani(
-              color: Colors.white70,
-              fontSize: 10,
-              letterSpacing: 1,
-              fontWeight: FontWeight.bold,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              label.toUpperCase(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.rajdhani(
+                color: Colors.white70,
+                fontSize: 10,
+                letterSpacing: 1,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],

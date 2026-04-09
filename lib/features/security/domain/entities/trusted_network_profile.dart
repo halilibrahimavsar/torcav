@@ -9,6 +9,7 @@ class TrustedNetworkProfile extends Equatable {
     required this.fingerprint,
     required this.trustedAt,
     required this.lastConfirmedAt,
+    this.gateway,
     this.notes = '',
   });
 
@@ -16,6 +17,7 @@ class TrustedNetworkProfile extends Equatable {
     return TrustedNetworkProfile(
       ssid: json['ssid'] as String? ?? '',
       bssid: json['bssid'] as String? ?? '',
+      gateway: json['gateway'] as String?,
       fingerprint: NetworkFingerprint.fromJson(
         json['fingerprint'] as Map<String, dynamic>? ?? const {},
       ),
@@ -31,6 +33,7 @@ class TrustedNetworkProfile extends Equatable {
 
   final String ssid;
   final String bssid;
+  final String? gateway;
   final NetworkFingerprint fingerprint;
   final DateTime trustedAt;
   final DateTime lastConfirmedAt;
@@ -39,6 +42,7 @@ class TrustedNetworkProfile extends Equatable {
   TrustedNetworkProfile copyWith({
     String? ssid,
     String? bssid,
+    String? gateway,
     NetworkFingerprint? fingerprint,
     DateTime? trustedAt,
     DateTime? lastConfirmedAt,
@@ -47,6 +51,7 @@ class TrustedNetworkProfile extends Equatable {
     return TrustedNetworkProfile(
       ssid: ssid ?? this.ssid,
       bssid: bssid ?? this.bssid,
+      gateway: gateway ?? this.gateway,
       fingerprint: fingerprint ?? this.fingerprint,
       trustedAt: trustedAt ?? this.trustedAt,
       lastConfirmedAt: lastConfirmedAt ?? this.lastConfirmedAt,
@@ -58,6 +63,7 @@ class TrustedNetworkProfile extends Equatable {
     return {
       'ssid': ssid,
       'bssid': bssid,
+      'gateway': gateway,
       'fingerprint': fingerprint.toJson(),
       'trustedAt': trustedAt.toIso8601String(),
       'lastConfirmedAt': lastConfirmedAt.toIso8601String(),
@@ -69,6 +75,7 @@ class TrustedNetworkProfile extends Equatable {
   List<Object?> get props => [
     ssid,
     bssid,
+    gateway,
     fingerprint,
     trustedAt,
     lastConfirmedAt,

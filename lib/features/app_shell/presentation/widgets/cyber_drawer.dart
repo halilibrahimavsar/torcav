@@ -34,7 +34,7 @@ class CyberDrawer extends StatelessWidget {
         child: Column(
           children: [
             // ── Drawer Header: Agent Profile ──
-            const SizedBox(height: 60),
+            const SizedBox(height: 20),
             InkWell(
               onTap: () {
                 Navigator.pop(context); // Close drawer

@@ -49,17 +49,16 @@ class SecurityCenterBentoHeader extends StatelessWidget {
         height: 340,
         child: NeonCard(
           glowColor: activeColor,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-          child: Stack(
-            children: [
-              // ── Animated Background Layer ──
-              Positioned.fill(
-                child: _NeonHeaderBackground(color: activeColor),
-              ),
-              
-              // ── Foreground Content ──
-              Column(
-                children: [
+          padding: EdgeInsets.zero,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Stack(
+              children: [
+                // Foreground Content ──
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                  child: Column(
+                    children: [
             // ── Top Header Row (Premium Subtle) ──
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -134,15 +133,31 @@ class SecurityCenterBentoHeader extends StatelessWidget {
                 ),
               ],
             ),
-            
-            // ── Maximized & Perfectly Centered Animation ──
-            Expanded(
+             Expanded(
               child: Center(
-                child: SecurityStatusRadar(
-                  score: score.toDouble(),
-                  isScanning: state is SecurityLoading,
-                  color: activeColor,
-                  size: 240, // Maximized for visual impact
+                child: Stack(
+                  alignment: Alignment.center,
+                  clipBehavior: Clip.none,
+                  children: [
+                    // Moving background here ensures perfect alignment with the radar
+                    IgnorePointer(
+                      child: OverflowBox(
+                        maxWidth: 600,
+                        maxHeight: 600,
+                        alignment: Alignment.center,
+                        child: SizedBox.square(
+                          dimension: 600,
+                          child: _NeonHeaderBackground(color: activeColor),
+                        ),
+                      ),
+                    ),
+                    SecurityStatusRadar(
+                      score: score.toDouble(),
+                      isScanning: state is SecurityLoading,
+                      color: activeColor,
+                      size: 240,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -178,11 +193,13 @@ class SecurityCenterBentoHeader extends StatelessWidget {
             ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
+    ),
+  ),
+);
   }
 }
 
@@ -220,6 +237,7 @@ class _NeonHeaderBackgroundState extends State<_NeonHeaderBackground>
       animation: _controller,
       builder: (context, child) {
         return CustomPaint(
+          size: const Size.square(600), // Explicit size for painter consistency
           painter: _HeaderGlowPainter(
             color: widget.color,
             progress: _controller.value,
@@ -238,7 +256,8 @@ class _HeaderGlowPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height * 0.45);
+    // Now using true center since we've aligned the containers
+    final center = Offset(size.width / 2, size.height / 2);
     final maxRadius = size.width * 0.55;
 
     canvas.save();

@@ -13,6 +13,7 @@ class HeatmapPoint extends Equatable {
     required this.floorY,
     required this.rssi,
     required this.timestamp,
+    this.floorZ = 0.0,
     this.heading = 0.0,
     this.ssid = '',
     this.floor = 0,
@@ -29,6 +30,9 @@ class HeatmapPoint extends Equatable {
 
   /// Metric vertical position in meters from origin.
   final double floorY;
+
+  /// Metric vertical position (height) in meters from origin for 3D/AR.
+  final double floorZ;
 
   /// Compass heading in degrees [0-360] at time of measurement.
   final double heading;
@@ -50,6 +54,7 @@ class HeatmapPoint extends Equatable {
     double? y,
     double? floorX,
     double? floorY,
+    double? floorZ,
     double? heading,
     int? rssi,
     DateTime? timestamp,
@@ -61,6 +66,7 @@ class HeatmapPoint extends Equatable {
         y: y ?? this.y,
         floorX: floorX ?? this.floorX,
         floorY: floorY ?? this.floorY,
+        floorZ: floorZ ?? this.floorZ,
         heading: heading ?? this.heading,
         rssi: rssi ?? this.rssi,
         timestamp: timestamp ?? this.timestamp,
@@ -69,5 +75,5 @@ class HeatmapPoint extends Equatable {
       );
 
   @override
-  List<Object?> get props => [x, y, floorX, floorY, heading, rssi, timestamp, ssid, floor];
+  List<Object?> get props => [x, y, floorX, floorY, floorZ, heading, rssi, timestamp, ssid, floor];
 }

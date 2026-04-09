@@ -20,8 +20,6 @@ import 'package:torcav/features/wifi_scan/domain/entities/wifi_observation.dart'
 import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
 
-import 'package:vector_math/vector_math_64.dart' hide Colors;
-
 class MockNetworkInfo extends Mock implements NetworkInfo {}
 
 class MockNetworkScanRepository extends Mock implements NetworkScanRepository {}
@@ -52,7 +50,7 @@ void main() {
     await _configureDependencies(networkInfo, networkScanRepository);
     getIt<ScanSessionStore>().add(_snapshot);
 
-    await tester.pumpWidget(_buildTestApp(const TopologyPage()));
+    await tester.pumpWidget(_buildTestApp(const TopologyRoute()));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
     await tester.pump(const Duration(milliseconds: 300));
@@ -80,9 +78,20 @@ void main() {
       nodeId: 'device_192.168.1.20',
     );
 
+    debugPrint('Canvas size is $size');
+    debugPrint('Canvas topLeft is $topLeft');
+    debugPrint('Tapping at offset $tapOffset, global: ${topLeft + tapOffset}');
+
+    // Tap slightly offset if size scale was off, but let's try direct
     await tester.tapAt(topLeft + tapOffset);
     await tester.pump();
+    // Wait for the scanning animation (600ms) to complete
     await tester.pump(const Duration(milliseconds: 700));
+
+    // After animation, UI should rebuild showing Inspector. Let's dump the widget tree
+    debugPrint('WIDGET TREE AFTER TAP:');
+    debugDumpApp();
+
 
     expect(find.text('ALICE PHONE'), findsOneWidget);
     expect(find.text('Apple'), findsOneWidget);
@@ -122,21 +131,11 @@ Offset _projectedOffset({
   required Size size,
   required String nodeId,
 }) {
-  final center = Offset(size.width / 2, size.height / 2);
   final positions = TopologyViewData.calculatePositions(
     topology,
     size,
-    forceView: false,
   );
-  final base = positions[nodeId]!;
-  final matrix =
-      Matrix4.identity()
-        ..setEntry(3, 2, 0.001)
-        ..rotateX(-0.5);
-  final relative = base - center;
-  final projected = matrix.transform3(Vector3(relative.dx, relative.dy, 0));
-
-  return Offset(projected.x + center.dx, projected.y + center.dy);
+  return positions[nodeId]!;
 }
 
 const _mobileNode = NetworkDevice(

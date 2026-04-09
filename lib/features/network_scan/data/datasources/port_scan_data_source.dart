@@ -21,7 +21,7 @@ class PortScanDataSource {
     53: 'dns',
     80: 'http',
     111: 'rpcbind',
-    139: 'netbios-ssn',
+    139: 'smb/tcp-139',
     443: 'https',
     445: 'microsoft-ds', // SMBv1/v2 target
     514: 'syslog',

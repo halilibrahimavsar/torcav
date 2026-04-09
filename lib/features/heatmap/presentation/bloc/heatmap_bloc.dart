@@ -6,6 +6,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:network_info_plus/network_info_plus.dart';
+import 'package:flutter_screen_recording/flutter_screen_recording.dart';
+import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../../data/datasources/barometer_datasource.dart';
@@ -60,10 +62,15 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
   Future<void> loadSessions() async {
     emit(state.copyWith(isLoading: true, clearFailure: true));
+    
+    // Check ARCore support in background
+    final bool isArSupported = await ArCoreController.checkArCoreAvailability() && 
+                      await ArCoreController.checkIsArCoreInstalled();
+
     final result = await _getSessions();
     result.fold(
-      (failure) => emit(state.copyWith(failure: failure, isLoading: false)),
-      (sessions) => emit(state.copyWith(sessions: sessions, isLoading: false)),
+      (failure) => emit(state.copyWith(failure: failure, isLoading: false, isArSupported: isArSupported)),
+      (sessions) => emit(state.copyWith(sessions: sessions, isLoading: false, isArSupported: isArSupported)),
     );
   }
 
@@ -381,5 +388,44 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         }
       },
     );
+  }
+
+  Future<void> startScreenRecording() async {
+    if (state.isScreenRecording) return;
+    try {
+      final fileName = 'torcav_ar_${DateTime.now().millisecondsSinceEpoch}';
+      
+      final bool result = await FlutterScreenRecording.startRecordScreen(
+        fileName,
+        titleNotification: 'Torcav AR Scanning',
+        messageNotification: 'Recording AR Wifi Heatmap...',
+      );
+      
+      if (result) {
+        emit(state.copyWith(
+          isScreenRecording: true,
+          clearScreenRecordPath: true,
+        ));
+      }
+    } catch (e) {
+      // Ignore start errors
+    }
+  }
+
+  Future<void> stopScreenRecording() async {
+    if (!state.isScreenRecording) return;
+    try {
+      final String path = await FlutterScreenRecording.stopRecordScreen;
+      if (path.isNotEmpty) {
+        emit(state.copyWith(
+          isScreenRecording: false,
+          screenRecordPath: path,
+        ));
+      } else {
+        emit(state.copyWith(isScreenRecording: false));
+      }
+    } catch (e) {
+      emit(state.copyWith(isScreenRecording: false));
+    }
   }
 }

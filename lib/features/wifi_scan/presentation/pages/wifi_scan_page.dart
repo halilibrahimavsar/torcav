@@ -107,6 +107,7 @@ class _WifiScanViewState extends State<_WifiScanView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           BlocBuilder<WifiScanBloc, WifiScanState>(

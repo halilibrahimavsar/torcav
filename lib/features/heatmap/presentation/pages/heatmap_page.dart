@@ -18,7 +18,9 @@ import '../../domain/services/survey_guidance_service.dart';
 import '../bloc/heatmap_bloc.dart';
 import '../bloc/scan_phase.dart';
 import '../widgets/ar_camera_view.dart';
+import '../widgets/arcore_heatmap_view.dart';
 import '../widgets/heatmap_canvas.dart';
+import 'ar_fullscreen_page.dart';
 
 class HeatmapPage extends StatefulWidget {
   const HeatmapPage({super.key});
@@ -70,10 +72,23 @@ class _HeatmapPageState extends State<HeatmapPage> {
   }
 }
 
-class _HeatmapView extends StatelessWidget {
+class _HeatmapView extends StatefulWidget {
   const _HeatmapView();
 
+  @override
+  State<_HeatmapView> createState() => _HeatmapViewState();
+}
+
+class _HeatmapViewState extends State<_HeatmapView> {
   static const _guidanceService = SurveyGuidanceService();
+
+  /// True while [ArFullScreenPage] is on top of the navigation stack.
+  ///
+  /// While true we unmount the embedded [ArCoreHeatmapView]/[ArCameraView]
+  /// so only one ARCore platform view owns Camera 0 at a time. Having two
+  /// live ARCore sessions simultaneously crashed the camera2 HAL with
+  /// `CAMERA_ERROR(3): createDefaultRequest ... Function not implemented`.
+  bool _isFullScreenOpen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -181,8 +196,17 @@ class _HeatmapView extends StatelessWidget {
                     child:
                         state.isArViewEnabled &&
                                 state.isRecording &&
-                                state.phase == ScanPhase.scanning
-                            ? const ArCameraView()
+                                state.phase == ScanPhase.scanning &&
+                                !_isFullScreenOpen
+                            ? (state.isArSupported
+                                ? ArCoreHeatmapView(
+                                    onExpand: () =>
+                                        _openFullScreen(context),
+                                  )
+                                : ArCameraView(
+                                    onExpand: () =>
+                                        _openFullScreen(context),
+                                  ))
                             : Stack(
                               children: [
                                 _CanvasBackdrop(summary: summary),
@@ -263,6 +287,26 @@ class _HeatmapView extends StatelessWidget {
       return summary.sampleCount == 0 && !state.isArViewEnabled;
     }
     return summary.sampleCount == 0 && summary.wallCount == 0;
+  }
+
+  Future<void> _openFullScreen(BuildContext context) async {
+    final bloc = context.read<HeatmapBloc>();
+    // Tear down the embedded ARCore platform view before pushing the
+    // fullscreen route — otherwise two ARCore sessions briefly fight over
+    // Camera 0 and camera2 HAL crashes with CAMERA_ERROR(3) on template 3.
+    setState(() => _isFullScreenOpen = true);
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => BlocProvider.value(
+          value: bloc,
+          child: const ArFullScreenPage(),
+        ),
+        fullscreenDialog: true,
+      ),
+    );
+    if (mounted) {
+      setState(() => _isFullScreenOpen = false);
+    }
   }
 
   void _showSessionsPicker(BuildContext context, _HeatmapCopy copy) {
