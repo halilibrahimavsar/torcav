@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -20,7 +21,6 @@ import '../bloc/scan_phase.dart';
 import '../widgets/ar_camera_view.dart';
 import '../widgets/arcore_heatmap_view.dart';
 import '../widgets/heatmap_canvas.dart';
-import 'ar_fullscreen_page.dart';
 
 class HeatmapPage extends StatefulWidget {
   const HeatmapPage({super.key});
@@ -82,12 +82,14 @@ class _HeatmapView extends StatefulWidget {
 class _HeatmapViewState extends State<_HeatmapView> {
   static const _guidanceService = SurveyGuidanceService();
 
-  /// True while [ArFullScreenPage] is on top of the navigation stack.
+  final _arViewKey = GlobalKey();
+  final _cameraFallbackKey = GlobalKey();
+
+  /// True while in immersive full-screen AR mode.
   ///
-  /// While true we unmount the embedded [ArCoreHeatmapView]/[ArCameraView]
-  /// so only one ARCore platform view owns Camera 0 at a time. Having two
-  /// live ARCore sessions simultaneously crashed the camera2 HAL with
-  /// `CAMERA_ERROR(3): createDefaultRequest ... Function not implemented`.
+  /// Instead of pushing [ArFullScreenPage], we now expand the AR view in-place
+  /// to avoid unmounting the platform view, which triggered native SIGABRTs
+  /// on certain Xiaomi/MIUI builds during the disposal/re-init cycle.
   bool _isFullScreenOpen = false;
 
   @override
@@ -97,42 +99,44 @@ class _HeatmapViewState extends State<_HeatmapView> {
     return Scaffold(
       backgroundColor: AppColors.deepBlack,
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            NeonText(
-              copy.pageTitle,
-              style: GoogleFonts.orbitron(
-                color: AppColors.neonCyan,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.6,
+      appBar: _isFullScreenOpen
+          ? null
+          : AppBar(
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                onPressed: () => Navigator.of(context).pop(),
               ),
-              glowRadius: 8,
-            ),
-            Text(
-              copy.pageSubtitle,
-              style: GoogleFonts.outfit(
-                color: AppColors.textSecondary,
-                fontSize: 11,
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  NeonText(
+                    copy.pageTitle,
+                    style: GoogleFonts.orbitron(
+                      color: AppColors.neonCyan,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.6,
+                    ),
+                    glowRadius: 8,
+                  ),
+                  Text(
+                    copy.pageSubtitle,
+                    style: GoogleFonts.outfit(
+                      color: AppColors.textSecondary,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
               ),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.history_rounded),
+                  color: AppColors.neonCyan,
+                  tooltip: copy.historyTooltip,
+                  onPressed: () => _showSessionsPicker(context, copy),
+                ),
+              ],
             ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.history_rounded),
-            color: AppColors.neonCyan,
-            tooltip: copy.historyTooltip,
-            onPressed: () => _showSessionsPicker(context, copy),
-          ),
-        ],
-      ),
       body: BlocBuilder<HeatmapBloc, HeatmapState>(
         builder: (context, state) {
           final session =
@@ -166,102 +170,107 @@ class _HeatmapViewState extends State<_HeatmapView> {
 
           return Column(
             children: [
-              _StatusBar(state: state, summary: summary, copy: copy),
-              if (state.failure != null)
+              if (!_isFullScreenOpen) ...[
+                _StatusBar(state: state, summary: summary, copy: copy),
+                if (state.failure != null)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                    child: _InfoBanner(
+                      color: AppColors.neonRed,
+                      icon: Icons.error_outline_rounded,
+                      title: copy.issueTitle,
+                      body:
+                          state.failure!.message.isEmpty
+                              ? copy.genericIssueBody
+                              : state.failure!.message,
+                    ),
+                  ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-                  child: _InfoBanner(
-                    color: AppColors.neonRed,
-                    icon: Icons.error_outline_rounded,
-                    title: copy.issueTitle,
-                    body:
-                        state.failure!.message.isEmpty
-                            ? copy.genericIssueBody
-                            : state.failure!.message,
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                  child: _SurveyPilotCard(
+                    guidance: guidance,
+                    summary: summary,
+                    copy: copy,
                   ),
                 ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                child: _SurveyPilotCard(
-                  guidance: guidance,
-                  summary: summary,
-                  copy: copy,
-                ),
-              ),
+              ],
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: _isFullScreenOpen ? EdgeInsets.zero : const EdgeInsets.all(12),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: _isFullScreenOpen ? BorderRadius.zero : BorderRadius.circular(24),
                     child:
                         state.isArViewEnabled &&
                                 state.isRecording &&
-                                state.phase == ScanPhase.scanning &&
-                                !_isFullScreenOpen
+                                state.phase == ScanPhase.scanning
                             ? (state.isArSupported
                                 ? ArCoreHeatmapView(
-                                    onExpand: () =>
-                                        _openFullScreen(context),
+                                    key: _arViewKey,
+                                    immersive: _isFullScreenOpen,
+                                    onExpand: () => _toggleFullScreen(true),
+                                    onCollapse: () => _toggleFullScreen(false),
                                   )
                                 : ArCameraView(
-                                    onExpand: () =>
-                                        _openFullScreen(context),
+                                    key: _cameraFallbackKey,
+                                    immersive: _isFullScreenOpen,
+                                    onExpand: () => _toggleFullScreen(true),
+                                    onCollapse: () => _toggleFullScreen(false),
                                   ))
                             : Stack(
-                              children: [
-                                _CanvasBackdrop(summary: summary),
-                                HeatmapCanvas(
-                                  session: session,
-                                  floorPlan: floorPlan,
-                                  showPath: session.points.isNotEmpty,
-                                  activeFloor:
-                                      state.isRecording
-                                          ? state.currentFloor
-                                          : null,
-                                  currentPosition:
-                                      state.isRecording
-                                          ? state.currentPosition
-                                          : null,
-                                ),
-                                if (_shouldShowCanvasEmptyState(state, summary))
-                                  _CanvasEmptyState(state: state, copy: copy),
-                                Positioned(
-                                  top: 14,
-                                  left: 14,
-                                  child: _ViewModeBadge(
-                                    label:
+                                children: [
+                                  _CanvasBackdrop(summary: summary),
+                                  HeatmapCanvas(
+                                    session: session,
+                                    floorPlan: floorPlan,
+                                    showPath: session.points.isNotEmpty,
+                                    activeFloor:
                                         state.isRecording
-                                            ? (state.isArViewEnabled
-                                                ? copy.cameraViewLabel
-                                                : copy.mapViewLabel)
-                                            : copy.resultViewLabel,
+                                            ? state.currentFloor
+                                            : null,
+                                    currentPosition:
+                                        state.isRecording
+                                            ? state.currentPosition
+                                            : null,
                                   ),
-                                ),
-                                if (state.isRecording)
+                                  if (_shouldShowCanvasEmptyState(state, summary))
+                                    _CanvasEmptyState(state: state, copy: copy),
                                   Positioned(
                                     top: 14,
-                                    right: 14,
-                                    child: _RouteCueBadge(
-                                      guidance: guidance,
+                                    left: 14,
+                                    child: _ViewModeBadge(
+                                      label:
+                                          state.isRecording
+                                              ? (state.isArViewEnabled
+                                                  ? copy.cameraViewLabel
+                                                  : copy.mapViewLabel)
+                                              : copy.resultViewLabel,
+                                    ),
+                                  ),
+                                  if (state.isRecording)
+                                    Positioned(
+                                      top: 14,
+                                      right: 14,
+                                      child: _RouteCueBadge(
+                                        guidance: guidance,
+                                        copy: copy,
+                                      ),
+                                    ),
+                                  Positioned(
+                                    left: 12,
+                                    right: 12,
+                                    bottom: 12,
+                                    child: _MetricsStrip(
+                                      state: state,
+                                      summary: summary,
                                       copy: copy,
                                     ),
                                   ),
-                                Positioned(
-                                  left: 12,
-                                  right: 12,
-                                  bottom: 12,
-                                  child: _MetricsStrip(
-                                    state: state,
-                                    summary: summary,
-                                    copy: copy,
-                                  ),
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
                   ),
                 ),
               ),
-              if (state.isRecording)
+              if (state.isRecording && !_isFullScreenOpen)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
                   child: _ArToggleButton(
@@ -270,8 +279,10 @@ class _HeatmapViewState extends State<_HeatmapView> {
                     copy: copy,
                   ),
                 ),
-              _ActionBar(state: state, copy: copy),
-              const SizedBox(height: 18),
+              if (!_isFullScreenOpen) ...[
+                _ActionBar(state: state, copy: copy),
+                const SizedBox(height: 18),
+              ],
             ],
           );
         },
@@ -289,23 +300,16 @@ class _HeatmapViewState extends State<_HeatmapView> {
     return summary.sampleCount == 0 && summary.wallCount == 0;
   }
 
-  Future<void> _openFullScreen(BuildContext context) async {
-    final bloc = context.read<HeatmapBloc>();
-    // Tear down the embedded ARCore platform view before pushing the
-    // fullscreen route — otherwise two ARCore sessions briefly fight over
-    // Camera 0 and camera2 HAL crashes with CAMERA_ERROR(3) on template 3.
-    setState(() => _isFullScreenOpen = true);
-    await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => BlocProvider.value(
-          value: bloc,
-          child: const ArFullScreenPage(),
-        ),
-        fullscreenDialog: true,
-      ),
-    );
-    if (mounted) {
-      setState(() => _isFullScreenOpen = false);
+  void _toggleFullScreen(bool full) {
+    setState(() => _isFullScreenOpen = full);
+    if (full) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+      SystemChrome.setPreferredOrientations(const [
+        DeviceOrientation.portraitUp,
+      ]);
+    } else {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+      SystemChrome.setPreferredOrientations(DeviceOrientation.values);
     }
   }
 

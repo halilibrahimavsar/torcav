@@ -25,6 +25,8 @@ class ArCameraView extends StatefulWidget {
 
   final VoidCallback? onExpand;
   final VoidCallback? onCollapse;
+
+  /// True when hosted inside the expanded (pseudo-fullscreen) mode in [HeatmapPage].
   final bool immersive;
 
   @override

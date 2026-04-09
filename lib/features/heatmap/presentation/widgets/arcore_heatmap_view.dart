@@ -26,7 +26,7 @@ class ArCoreHeatmapView extends StatefulWidget {
   /// Called when the user taps the dock's collapse button (immersive mode only).
   final VoidCallback? onCollapse;
 
-  /// True when hosted inside [ArFullScreenPage].
+  /// True when hosted inside the expanded (pseudo-fullscreen) mode in [HeatmapPage].
   final bool immersive;
 
   @override

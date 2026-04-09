@@ -29,7 +29,7 @@ import 'screen_record_button.dart';
 ///   ArCoreView(...),
 ///   ArHudOverlay(
 ///     guidance: SurveyGuidanceService().analyze(...),
-///     onExpand: () => push(ArFullScreenPage()),
+///     onExpand: () => _toggleFullScreen(true),
 ///     onFlagWeakZone: _flagCurrentPosition,
 ///   ),
 /// ])
@@ -48,8 +48,8 @@ class ArHudOverlay extends StatefulWidget {
   /// [SurveyGuidanceService.analyze] — the overlay does not recompute it.
   final SurveyGuidance guidance;
 
-  /// True when hosted inside [ArFullScreenPage]. Hides the expand button and
-  /// shows the collapse button instead.
+  /// True when hosted inside the expanded (pseudo-fullscreen) mode in [HeatmapPage].
+  /// Hides the expand button and shows the collapse button instead.
   final bool immersive;
 
   /// Called when the user taps the expand-to-fullscreen dock button. Null when
