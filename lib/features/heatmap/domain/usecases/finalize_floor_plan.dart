@@ -35,10 +35,25 @@ class FinalizeFloorPlan {
     ));
   }
 
+  /// Iterative merge: runs _singlePassMerge until stable (up to 8 passes).
+  /// Handles cases where A+C would merge but B sits between them in angle order,
+  /// causing a single pass to miss the A–C pair.
+  List<WallSegment> _clusterSegments(List<WallSegment> segments) {
+    var current = List<WallSegment>.from(segments);
+    var changed = true;
+    var maxIter = 8;
+    while (changed && maxIter-- > 0) {
+      final next = _singlePassMerge(current);
+      changed = next.length < current.length;
+      current = next;
+    }
+    return current;
+  }
+
   /// Greedy single-pass merge: sort segments by angle, then merge consecutive
   /// pairs whose angle difference and perpendicular midpoint distance are within
   /// threshold. Reduces duplicate walls accumulated across many camera frames.
-  List<WallSegment> _clusterSegments(List<WallSegment> segments) {
+  List<WallSegment> _singlePassMerge(List<WallSegment> segments) {
     double angle(WallSegment s) {
       final dx = s.x2 - s.x1;
       final dy = s.y2 - s.y1;

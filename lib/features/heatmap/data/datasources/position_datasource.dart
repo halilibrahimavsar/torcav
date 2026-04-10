@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:math' as math;
 import 'package:injectable/injectable.dart';
 
@@ -42,6 +43,10 @@ class PositionDataSourceImpl implements PositionDataSource {
   @override
   void setStepLength(double meters) => _stepLength = meters;
 
+  static const _stepMagMin = 12.5;
+  static const _stepMagMax = 18.0;
+  static const _stepMinInterval = 350;
+
   @override
   void startTracking() {
     stopTracking();
@@ -57,7 +62,9 @@ class PositionDataSourceImpl implements PositionDataSource {
             event.x * event.x + event.y * event.y + event.z * event.z,
           );
           final now = DateTime.now().millisecondsSinceEpoch;
-          if (mag > 12.5 && (now - _lastStepTime > 250)) {
+          if (mag > _stepMagMin &&
+              mag < _stepMagMax &&
+              (now - _lastStepTime > _stepMinInterval)) {
             _lastStepTime = now;
             _onStep();
           }
@@ -66,7 +73,9 @@ class PositionDataSourceImpl implements PositionDataSource {
             (_) {}, // Sensor unavailable on this device — degrade silently.
         cancelOnError: false,
       );
-    } catch (_) {}
+    } catch (e) {
+      log('accel unavailable: $e');
+    }
 
     // Compass-only heading is more stable on some MIUI devices than opening the
     // optional gyroscope stream, which can report an unsupported-sensor error.

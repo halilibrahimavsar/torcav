@@ -1,6 +1,8 @@
 import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
 import '../../../../core/theme/app_theme.dart';
@@ -56,37 +58,105 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
   }
 
   Future<void> _handlePlaneTap(List<ArCoreHitTestResult> hits) async {
-    if (_arCoreController == null || hits.isEmpty || _originAttached) return;
-    final hit = hits.first;
+    if (_arCoreController == null || hits.isEmpty) return;
+
+    if (!_originAttached) {
+      await _placeOrigin(hits.first);
+      return;
+    }
+
+    // Post-origin tap: manually record a measurement point at current position.
+    await _recordManualPoint();
+  }
+
+  Future<void> _placeOrigin(ArCoreHitTestResult hit) async {
     final originNode = ArCoreNode(
       name: _originNodeName,
       position: hit.pose.translation,
       rotation: hit.pose.rotation,
       children: [
+        // Central anchor sphere.
         ArCoreNode(
           name: 'survey_origin_marker',
           shape: ArCoreSphere(
-            radius: 0.035,
+            radius: 0.05,
             materials: [
               ArCoreMaterial(
-                color: AppColors.neonCyan.withValues(alpha: 0.9),
-                metallic: 0.8,
-                reflectance: 0.8,
+                color: AppColors.neonCyan.withValues(alpha: 0.95),
+                metallic: 0.9,
+                reflectance: 0.85,
               ),
             ],
           ),
           position: vector.Vector3.zero(),
+        ),
+        // Sci-fi landing-pad ring at ground level.
+        ArCoreNode(
+          name: 'survey_origin_pad',
+          shape: ArCoreCylinder(
+            radius: 0.15,
+            height: 0.005,
+            materials: [
+              ArCoreMaterial(
+                color: AppColors.neonCyan.withValues(alpha: 0.25),
+                metallic: 0.9,
+                reflectance: 0.8,
+              ),
+            ],
+          ),
+          position: vector.Vector3(0, 0.0025, 0),
         ),
       ],
     );
     await _arCoreController!.addArCoreNodeWithAnchor(originNode);
     _originAttached = true;
     if (!mounted) return;
+    HapticFeedback.heavyImpact();
     context.read<HeatmapBloc>().markArOriginPlaced();
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Survey origin anchored'),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.gps_fixed_rounded, color: AppColors.neonCyan, size: 16),
+            const SizedBox(width: 8),
+            Text(
+              'Origin anchored — tap to record points',
+              style: GoogleFonts.outfit(color: Colors.white, fontSize: 13),
+            ),
+          ],
+        ),
+        backgroundColor: AppColors.darkSurface,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: AppColors.neonCyan.withValues(alpha: 0.5)),
+        ),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  Future<void> _recordManualPoint() async {
+    final bloc = context.read<HeatmapBloc>();
+    final s = bloc.state;
+    if (s.currentRssi == null || s.currentPosition == null) return;
+
+    HapticFeedback.mediumImpact();
+    await bloc.addPoint(
+      HeatmapPoint(
+        x: 0,
+        y: 0,
+        floorX: s.currentPosition!.dx,
+        floorY: s.currentPosition!.dy,
+        floorZ: 0,
+        heading: s.currentHeading,
+        rssi: s.currentRssi!,
+        timestamp: DateTime.now(),
+        ssid: s.targetSsid ?? '',
+        bssid: s.targetBssid ?? '',
+        floor: s.currentFloor,
+        sampleCount: s.lastSignalSampleCount,
+        rssiStdDev: s.lastSignalStdDev,
       ),
     );
   }
@@ -98,20 +168,19 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
     final color = signalGradientColor(point.rssi);
     final pillarName = _pillarName(point);
 
-    final pillarMaterial = ArCoreMaterial(
-      color: color.withValues(alpha: 0.4),
-      metallic: 0.5,
-      reflectance: 0.2,
-    );
-    final cylinder = ArCoreCylinder(
-      materials: [pillarMaterial],
-      radius: 0.04,
-      height: pillarHeight,
-    );
-
     final pillarNode = ArCoreNode(
       name: '${pillarName}_body',
-      shape: cylinder,
+      shape: ArCoreCylinder(
+        materials: [
+          ArCoreMaterial(
+            color: color.withValues(alpha: 0.5),
+            metallic: 0.7,
+            reflectance: 0.55,
+          ),
+        ],
+        radius: 0.05,
+        height: pillarHeight,
+      ),
       position: vector.Vector3(
         point.floorX,
         point.floorZ + pillarHeight / 2,
@@ -134,6 +203,27 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
       ),
     );
 
+    // Ground halo disc — gives each pillar a sci-fi landing-ring effect.
+    final baseDisc = ArCoreNode(
+      name: '${pillarName}_base',
+      shape: ArCoreCylinder(
+        radius: 0.08,
+        height: 0.012,
+        materials: [
+          ArCoreMaterial(
+            color: color.withValues(alpha: 0.18),
+            metallic: 0.6,
+            reflectance: 0.4,
+          ),
+        ],
+      ),
+      position: vector.Vector3(
+        point.floorX,
+        point.floorZ + 0.006,
+        -point.floorY,
+      ),
+    );
+
     await _arCoreController!.addArCoreNode(
       pillarNode,
       parentNodeName: _originNodeName,
@@ -142,12 +232,18 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
       glowNode,
       parentNodeName: _originNodeName,
     );
+    await _arCoreController!.addArCoreNode(
+      baseDisc,
+      parentNodeName: _originNodeName,
+    );
   }
 
   Future<void> _addFlagMarker(HeatmapPoint point) async {
     if (_arCoreController == null || !_originAttached) return;
     final key = _flagKey(point);
     if (_renderedFlagKeys.contains(key)) return;
+
+    final pos = vector.Vector3(point.floorX, point.floorZ + 0.2, -point.floorY);
 
     final flagNode = ArCoreNode(
       name: 'flag_$key',
@@ -161,11 +257,31 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
           ),
         ],
       ),
-      position: vector.Vector3(point.floorX, point.floorZ + 0.2, -point.floorY),
+      position: pos,
+    );
+
+    // Warning halo — translucent outer shell to draw attention.
+    final haloNode = ArCoreNode(
+      name: 'flag_halo_$key',
+      shape: ArCoreSphere(
+        radius: 0.17,
+        materials: [
+          ArCoreMaterial(
+            color: AppColors.neonRed.withValues(alpha: 0.12),
+            metallic: 0.3,
+            reflectance: 0.2,
+          ),
+        ],
+      ),
+      position: pos,
     );
 
     await _arCoreController!.addArCoreNode(
       flagNode,
+      parentNodeName: _originNodeName,
+    );
+    await _arCoreController!.addArCoreNode(
+      haloNode,
       parentNodeName: _originNodeName,
     );
     _renderedFlagKeys.add(key);
@@ -178,19 +294,19 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
       '${point.timestamp.microsecondsSinceEpoch}_${point.floorX.toStringAsFixed(2)}_${point.floorY.toStringAsFixed(2)}';
 
   Future<void> _syncAnchoredNodes(List<HeatmapPoint> points) async {
-    if (!_originAttached) return;
+    if (!_originAttached || _arCoreController == null) return;
 
-    for (final point in points.skip(_renderedPointCount)) {
-      await _addDiagnosticPillar(point);
-      if (point.isFlagged) {
-        await _addFlagMarker(point);
-      }
+    final newPoints = points.skip(_renderedPointCount).toList();
+    if (newPoints.isNotEmpty) {
+      // Add all new pillars in parallel — ARCore handles concurrency internally.
+      await Future.wait(newPoints.map(_addDiagnosticPillar));
+      _renderedPointCount = points.length;
     }
-    _renderedPointCount = points.length;
 
-    for (final point in points.where((point) => point.isFlagged)) {
-      await _addFlagMarker(point);
-    }
+    // Sync any newly flagged points (flag may be set after pillar creation).
+    await Future.wait(
+      points.where((p) => p.isFlagged).map(_addFlagMarker),
+    );
   }
 
   Future<void> _flagCurrentPosition() async {
@@ -202,11 +318,26 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
       await _addFlagMarker(point!);
     }
     if (!mounted) return;
+    HapticFeedback.mediumImpact();
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Weak zone flagged'),
-        duration: Duration(seconds: 2),
-        backgroundColor: Colors.black87,
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.warning_amber_rounded, color: AppColors.neonRed, size: 16),
+            const SizedBox(width: 8),
+            Text(
+              'Weak zone flagged',
+              style: GoogleFonts.outfit(color: Colors.white, fontSize: 13),
+            ),
+          ],
+        ),
+        backgroundColor: AppColors.darkSurface,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: AppColors.neonRed.withValues(alpha: 0.5)),
+        ),
+        duration: const Duration(seconds: 2),
       ),
     );
   }

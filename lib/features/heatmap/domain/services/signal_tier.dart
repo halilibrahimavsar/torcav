@@ -71,7 +71,7 @@ Color signalGradientColor(int rssi) {
 /// Excellent signal produces a taller pillar (0.5m), while poor signal
 /// produces a shorter stub (0.1m).
 double signalTierArHeight(int rssi) {
-  // Map -90..-35 dBm to 0.1..0.5 meters
+  // Map -90..-35 dBm to 0.08..0.80 meters — wider range for visible AR contrast.
   final normalized = ((rssi + 90) / 55).clamp(0.0, 1.0);
-  return 0.1 + (normalized * 0.4);
+  return 0.08 + (normalized * 0.72);
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:camera/camera.dart';
@@ -66,6 +67,8 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   static const _minimumPointDistanceMeters = 0.5;
   static const _flagMergeDistanceMeters = 0.65;
   static const _signalWindowSize = 5;
+  static const _wallConfirmThreshold = 2;
+  static const _wallCandidateTtl = Duration(milliseconds: 700);
 
   StreamSubscription<PositionUpdate>? _positionSubscription;
   Timer? _signalPollTimer;
@@ -73,6 +76,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   DateTime? _lastWallFrameAt;
   DateTime? _lastScanTime;
   final List<int> _signalWindow = [];
+  final Map<String, _WallCandidate> _wallCandidates = {};
 
   Future<void> loadSessions() async {
     emit(state.copyWith(isLoading: true, clearFailure: true));
@@ -107,6 +111,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     );
 
     _signalWindow.clear();
+    _wallCandidates.clear();
     _lastScanTime = null;
     _isProcessingCameraFrame = false;
     _lastWallFrameAt = null;
@@ -162,7 +167,8 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     ConnectedSignal? connectedSignal;
     try {
       connectedSignal = await _connectedSignalService.getConnectedSignal();
-    } catch (_) {
+    } catch (e) {
+      log('signal resolve error: $e');
       connectedSignal = null;
     }
 
@@ -172,13 +178,17 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     if (bssid == null || bssid.isEmpty) {
       try {
         bssid = (await _networkInfo.getWifiBSSID())?.toUpperCase();
-      } catch (_) {}
+      } catch (e) {
+        log('bssid resolve error: $e');
+      }
     }
     if (ssid == null || ssid.isEmpty) {
       try {
         final rawSsid = await _networkInfo.getWifiName();
         ssid = rawSsid?.replaceAll('"', '');
-      } catch (_) {}
+      } catch (e) {
+        log('ssid resolve error: $e');
+      }
     }
 
     emit(
@@ -434,10 +444,42 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
       final worldWalls = List<WallSegment>.from(currentPlan.walls);
 
+      // Expire stale candidates before processing new frame.
+      _wallCandidates.removeWhere(
+        (_, c) => now.difference(c.lastSeen) > _wallCandidateTtl,
+      );
+
       for (final sw in screenWalls) {
-        final depth = 5.0 - (sw.y1 * 3);
-        final worldX = pos.dx + depth * math.sin(rad);
-        final worldY = pos.dy - depth * math.cos(rad);
+        // Part 4: Perspective-based depth from vertical apparent size.
+        final double depth;
+        if (sw.y2 - sw.y1 > 0.15) {
+          const vFovRad = 50.0 * math.pi / 180.0;
+          final angularSize = (sw.y2 - sw.y1) * vFovRad;
+          const knownWallHeightMeters = 2.5;
+          final perspectiveDepth = angularSize > 0.01
+              ? knownWallHeightMeters / (2 * math.tan(angularSize / 2))
+              : null;
+          depth = (perspectiveDepth?.clamp(1.0, 8.0) ??
+                  (5.0 - (sw.y1 * 3)).clamp(1.5, 6.0))
+              .toDouble();
+        } else {
+          depth = (5.0 - (sw.y1 * 3)).clamp(1.5, 6.0).toDouble();
+        }
+
+        // Part 2: Horizontal FOV offset — project wall left/right of center.
+        const hFovRad = 60.0 * math.pi / 180.0;
+        final screenOffsetX = sw.x1 - 0.5;
+        final lateralAngle = screenOffsetX * hFovRad;
+        final lateralOffset = depth * math.tan(lateralAngle);
+        final perpRad = rad + math.pi / 2;
+
+        // Part 1: Fixed coordinate system — cos for X, sin for Y (matches PDR).
+        final worldX = pos.dx +
+            depth * math.cos(rad) +
+            lateralOffset * math.cos(perpRad);
+        final worldY = pos.dy +
+            depth * math.sin(rad) +
+            lateralOffset * math.sin(perpRad);
 
         final newWall = WallSegment(
           x1: worldX - 0.7 * math.cos(rad),
@@ -446,22 +488,55 @@ class HeatmapBloc extends Cubit<HeatmapState> {
           y2: worldY + 0.7 * math.sin(rad),
         );
 
-        final exists = worldWalls.any(
-          (wall) =>
-              (wall.x1 - newWall.x1).abs() < 0.4 &&
-              (wall.y1 - newWall.y1).abs() < 0.4,
-        );
-        if (!exists) {
-          worldWalls.add(newWall);
+        // Part 3: Temporal confirmation — require _wallConfirmThreshold hits.
+        final cx = (newWall.x1 + newWall.x2) / 2;
+        final cy = (newWall.y1 + newWall.y2) / 2;
+        final key = '${cx.toStringAsFixed(1)}_${cy.toStringAsFixed(1)}';
+
+        final existing = _wallCandidates[key];
+        if (existing == null) {
+          _wallCandidates[key] = _WallCandidate(
+            segment: newWall,
+            hits: 1,
+            lastSeen: now,
+          );
+        } else {
+          final updated = _WallCandidate(
+            segment: newWall,
+            hits: existing.hits + 1,
+            lastSeen: now,
+          );
+          _wallCandidates[key] = updated;
+
+          if (updated.hits >= _wallConfirmThreshold) {
+            // Part 5: Center-based dedup at 0.5m radius.
+            final alreadyExists = worldWalls.any(
+              (w) => _segCenterDist(w, newWall) < 0.5,
+            );
+            if (!alreadyExists) {
+              worldWalls.add(newWall);
+            }
+          }
         }
       }
 
       emit(
-        state.copyWith(liveFloorPlan: currentPlan.copyWith(walls: worldWalls)),
+        state.copyWith(
+          liveFloorPlan: currentPlan.copyWith(walls: worldWalls),
+        ),
       );
     } finally {
       _isProcessingCameraFrame = false;
     }
+  }
+
+  double _segCenterDist(WallSegment a, WallSegment b) {
+    final acx = (a.x1 + a.x2) / 2;
+    final acy = (a.y1 + a.y2) / 2;
+    final bcx = (b.x1 + b.x2) / 2;
+    final bcy = (b.y1 + b.y2) / 2;
+    final dx = acx - bcx, dy = acy - bcy;
+    return math.sqrt(dx * dx + dy * dy);
   }
 
   void pauseScanning() => emit(state.copyWith(phase: ScanPhase.paused));
@@ -652,7 +727,9 @@ class HeatmapBloc extends Cubit<HeatmapState> {
           state.copyWith(isScreenRecording: true, clearScreenRecordPath: true),
         );
       }
-    } catch (_) {}
+    } catch (e) {
+      log('screen record start failed: $e');
+    }
   }
 
   Future<void> stopScreenRecording() async {
@@ -668,4 +745,16 @@ class HeatmapBloc extends Cubit<HeatmapState> {
       emit(state.copyWith(isScreenRecording: false));
     }
   }
+}
+
+class _WallCandidate {
+  const _WallCandidate({
+    required this.segment,
+    required this.hits,
+    required this.lastSeen,
+  });
+
+  final WallSegment segment;
+  final int hits;
+  final DateTime lastSeen;
 }
