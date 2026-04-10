@@ -22,14 +22,12 @@ import 'ar_hud_overlay.dart';
 class ArCoreHeatmapView extends StatefulWidget {
   const ArCoreHeatmapView({
     super.key,
-    this.onExpand,
-    this.onCollapse,
-    this.immersive = false,
+    this.onFinish,
+    this.onDiscard,
   });
 
-  final VoidCallback? onExpand;
-  final VoidCallback? onCollapse;
-  final bool immersive;
+  final VoidCallback? onFinish;
+  final VoidCallback? onDiscard;
 
   @override
   State<ArCoreHeatmapView> createState() => _ArCoreHeatmapViewState();
@@ -47,8 +45,25 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
 
   @override
   void dispose() {
+    // Defensive check: if the controller wasn't disposed during a manual
+    // discard/finish flow, do it now.
     _arCoreController?.dispose();
+    _arCoreController = null;
     super.dispose();
+  }
+
+  void _handleDiscard() {
+    // Explicitly dispose before the state change triggers widget removal.
+    // This ensures native resources are released while the view is still active.
+    _arCoreController?.dispose();
+    _arCoreController = null;
+    widget.onDiscard?.call();
+  }
+
+  void _handleFinish() {
+    _arCoreController?.dispose();
+    _arCoreController = null;
+    widget.onFinish?.call();
   }
 
   void _onArCoreViewCreated(ArCoreController controller) {
@@ -380,7 +395,6 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
           points: state.currentSession?.points ?? const [],
           floorPlan: state.liveFloorPlan,
           isRecording: state.isRecording,
-          isArViewEnabled: state.isArViewEnabled,
           hasArOrigin: state.hasArOrigin,
           pendingWallCount: state.pendingWalls.length,
           currentRssi: state.currentRssi,
@@ -404,9 +418,8 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
             if (state.phase == ScanPhase.scanning)
               ArHudOverlay(
                 guidance: guidance,
-                immersive: widget.immersive,
-                onExpand: widget.onExpand,
-                onCollapse: widget.onCollapse,
+                onFinish: _handleFinish,
+                onDiscard: _handleDiscard,
                 onFlagWeakZone: _flagCurrentPosition,
               ),
           ],

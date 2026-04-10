@@ -18,16 +18,12 @@ import 'ar_hud_overlay.dart';
 class ArCameraView extends StatefulWidget {
   const ArCameraView({
     super.key,
-    this.onExpand,
-    this.onCollapse,
-    this.immersive = false,
+    this.onFinish,
+    this.onDiscard,
   });
 
-  final VoidCallback? onExpand;
-  final VoidCallback? onCollapse;
-
-  /// True when hosted inside the expanded (pseudo-fullscreen) mode in [HeatmapPage].
-  final bool immersive;
+  final VoidCallback? onFinish;
+  final VoidCallback? onDiscard;
 
   @override
   State<ArCameraView> createState() => _ArCameraViewState();
@@ -126,7 +122,6 @@ class _ArCameraViewState extends State<ArCameraView> {
           points: state.currentSession?.points ?? const [],
           floorPlan: state.liveFloorPlan,
           isRecording: state.isRecording,
-          isArViewEnabled: state.isArViewEnabled,
           hasArOrigin: state.hasArOrigin,
           pendingWallCount: state.pendingWalls.length,
           currentRssi: state.currentRssi,
@@ -156,10 +151,9 @@ class _ArCameraViewState extends State<ArCameraView> {
             if (state.phase == ScanPhase.scanning)
               ArHudOverlay(
                 guidance: guidance,
-                immersive: widget.immersive,
                 estimatedMode: true,
-                onExpand: widget.onExpand,
-                onCollapse: widget.onCollapse,
+                onFinish: widget.onFinish,
+                onDiscard: widget.onDiscard,
                 onFlagWeakZone: _flagCurrentPosition,
               ),
           ],

@@ -7,14 +7,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
-import '../../domain/entities/heatmap_point.dart';
-import '../../domain/entities/heatmap_session.dart';
-import '../../domain/entities/wall_segment.dart';
 import '../../domain/services/signal_tier.dart';
 import '../../domain/services/survey_guidance_service.dart';
 import '../bloc/heatmap_bloc.dart';
 import '../bloc/survey_gate.dart';
-import 'heatmap_canvas.dart';
 
 /// Premium full-screen HUD overlay for the AR camera heatmap experience.
 ///
@@ -39,35 +35,26 @@ class ArHudOverlay extends StatefulWidget {
   const ArHudOverlay({
     super.key,
     required this.guidance,
-    this.immersive = false,
     this.estimatedMode = false,
-    this.onExpand,
-    this.onCollapse,
     this.onFlagWeakZone,
+    this.onFinish,
+    this.onDiscard,
   });
 
-  /// Latest guidance snapshot. The parent is responsible for calling
-  /// [SurveyGuidanceService.analyze] — the overlay does not recompute it.
+  /// Latest guidance snapshot.
   final SurveyGuidance guidance;
 
-  /// True when hosted inside the expanded (pseudo-fullscreen) mode in [HeatmapPage].
-  /// Hides the expand button and shows the collapse button instead.
-  final bool immersive;
-
-  /// True when the AR view is actually the camera fallback and spatial
-  /// placement is estimated rather than anchored.
+  /// Whether we are in PDR-estimated mode.
   final bool estimatedMode;
 
-  /// Called when the user taps the expand-to-fullscreen dock button. Null when
-  /// already in fullscreen mode.
-  final VoidCallback? onExpand;
-
-  /// Called when the user taps the collapse dock button inside fullscreen mode.
-  final VoidCallback? onCollapse;
-
-  /// Called when the user taps the center reticle while RSSI indicates a weak
-  /// or poor tier, or taps the flag dock button.
+  /// Called when the user taps the flag dock button.
   final VoidCallback? onFlagWeakZone;
+
+  /// Called when the user taps the Finish & Review dock button.
+  final VoidCallback? onFinish;
+
+  /// Called when the user taps the Discard dock button.
+  final VoidCallback? onDiscard;
 
   @override
   State<ArHudOverlay> createState() => _ArHudOverlayState();
@@ -135,6 +122,8 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Flexible(child: _SsidChip()),
+                  const SizedBox(width: 8),
+                  const Flexible(child: _SessionChip()),
                   const SizedBox(width: 10),
                   const _CompassRing(),
                 ],
@@ -170,8 +159,6 @@ class _ArHudOverlayState extends State<ArHudOverlay>
         // ── 4. Left rail dBm gauge ─────────────────────────────────────
         const Positioned(left: 10, top: 170, bottom: 220, child: _DbmGauge()),
 
-        // ── 5. Right rail mini-map ─────────────────────────────────────
-        Positioned(right: 14, top: 280, child: _MiniMapPanel()),
 
         // ── 6. Sparse-region directional arrow (above dock) ─────────────
         if (guidance.sparseRegion != null)
@@ -208,10 +195,9 @@ class _ArHudOverlayState extends State<ArHudOverlay>
           bottom: 24,
           right: 16,
           child: _Dock(
-            immersive: widget.immersive,
-            onExpand: widget.onExpand,
-            onCollapse: widget.onCollapse,
             onFlagWeakZone: widget.onFlagWeakZone,
+            onFinish: widget.onFinish,
+            onDiscard: widget.onDiscard,
           ),
         ),
 
@@ -839,120 +825,6 @@ class _GaugePainter extends CustomPainter {
 // 5. Right rail mini-map. Bucketed rebuild to avoid per-sample churn.
 // ────────────────────────────────────────────────────────────────────
 
-class _MiniMapPanel extends StatelessWidget {
-  const _MiniMapPanel();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocSelector<HeatmapBloc, HeatmapState, _MiniMapSlice>(
-      selector: (s) {
-        final points = s.currentSession?.points ?? const <HeatmapPoint>[];
-        final walls = (s.liveFloorPlan?.walls ?? const <WallSegment>[]).length;
-        final pos = s.currentPosition;
-        final bucket = points.length ~/ 3;
-        final posKey =
-            pos == null
-                ? '-'
-                : '${(pos.dx * 10).round()}_${(pos.dy * 10).round()}';
-        return _MiniMapSlice(
-          pointCountBucket: bucket,
-          wallCount: walls,
-          positionKey: posKey,
-          rawState: s,
-        );
-      },
-      builder: (context, slice) {
-        final s = slice.rawState;
-        final session =
-            s.currentSession ??
-            HeatmapSession(
-              id: '',
-              name: '',
-              points: const [],
-              createdAt: DateTime.now(),
-            );
-        return SizedBox(
-          width: 120,
-          height: 150,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.55),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: AppColors.neonCyan.withValues(alpha: 0.28),
-                ),
-              ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 6, 8, 2),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.map_outlined,
-                          color: AppColors.neonCyan,
-                          size: 12,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          s.isArSupported ? 'MAP' : 'MAP EST',
-                          style: GoogleFonts.orbitron(
-                            color: AppColors.neonCyan,
-                            fontSize: 9,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 1.1,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
-                      child: HeatmapCanvas(
-                        session: session,
-                        floorPlan: s.liveFloorPlan,
-                        showPath: true,
-                        activeFloor: s.currentFloor,
-                        currentPosition: s.currentPosition,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _MiniMapSlice {
-  const _MiniMapSlice({
-    required this.pointCountBucket,
-    required this.wallCount,
-    required this.positionKey,
-    required this.rawState,
-  });
-
-  final int pointCountBucket;
-  final int wallCount;
-  final String positionKey;
-  final HeatmapState rawState;
-
-  @override
-  bool operator ==(Object other) =>
-      other is _MiniMapSlice &&
-      other.pointCountBucket == pointCountBucket &&
-      other.wallCount == wallCount &&
-      other.positionKey == positionKey;
-
-  @override
-  int get hashCode => Object.hash(pointCountBucket, wallCount, positionKey);
-}
 
 // ────────────────────────────────────────────────────────────────────
 // 6. Sparse-region directional arrow.
@@ -1315,13 +1187,77 @@ class _SampleBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<HeatmapBloc, HeatmapState, int>(
-      selector: (s) => s.currentSession?.points.length ?? 0,
-      builder: (context, count) {
-        return NeonChip(
-          icon: Icons.sensors_rounded,
-          label: '$count pts',
-          color: AppColors.neonCyan,
+    return BlocSelector<HeatmapBloc, HeatmapState, (int, int)>(
+      selector:
+          (s) => (
+            s.currentSession?.points.length ?? 0,
+            s.currentSession?.floorPlan?.walls.length ??
+                s.liveFloorPlan?.walls.length ??
+                0,
+          ),
+      builder: (context, stats) {
+        final (points, walls) = stats;
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            NeonChip(
+              icon: Icons.sensors_rounded,
+              label: '$points pts',
+              color: AppColors.neonCyan,
+            ),
+            if (walls > 0) ...[
+              const SizedBox(width: 8),
+              NeonChip(
+                icon: Icons.architecture_rounded,
+                label: '$walls walls',
+                color: AppColors.neonPurple,
+              ),
+            ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _SessionChip extends StatelessWidget {
+  const _SessionChip();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<HeatmapBloc, HeatmapState, String?>(
+      selector: (s) => s.currentSession?.name,
+      builder: (context, name) {
+        if (name == null) return const SizedBox.shrink();
+
+        return GlassmorphicContainer(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          borderRadius: BorderRadius.circular(18),
+          borderColor: AppColors.glassWhiteBorder,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.assignment_rounded,
+                color: AppColors.textSecondary,
+                size: 14,
+              ),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  name.toUpperCase(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.orbitron(
+                    color: AppColors.textSecondary,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.1,
+                  ),
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -1482,16 +1418,14 @@ class _ModeBadge extends StatelessWidget {
 
 class _Dock extends StatelessWidget {
   const _Dock({
-    required this.immersive,
-    required this.onExpand,
-    required this.onCollapse,
     required this.onFlagWeakZone,
+    this.onFinish,
+    this.onDiscard,
   });
 
-  final bool immersive;
-  final VoidCallback? onExpand;
-  final VoidCallback? onCollapse;
   final VoidCallback? onFlagWeakZone;
+  final VoidCallback? onFinish;
+  final VoidCallback? onDiscard;
 
   @override
   Widget build(BuildContext context) {
@@ -1499,21 +1433,61 @@ class _Dock extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        if (!immersive && onExpand != null)
+        if (onDiscard != null) ...[
           _DockButton(
-            icon: Icons.fullscreen_rounded,
-            tooltip: 'Full screen',
-            color: AppColors.neonCyan,
-            onTap: onExpand!,
+            icon: Icons.delete_forever_rounded,
+            tooltip: 'Discard Survey',
+            color: AppColors.neonOrange,
+            onTap: () async {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder:
+                    (context) => AlertDialog(
+                      backgroundColor: Colors.black.withValues(alpha: 0.9),
+                      title: Text(
+                        'DISCARD SURVEY?',
+                        style: GoogleFonts.orbitron(
+                          color: AppColors.neonOrange,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      content: Text(
+                        'All recorded data for this session will be permanently deleted.',
+                        style: GoogleFonts.outfit(color: Colors.white70),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: Text(
+                            'CANCEL',
+                            style: GoogleFonts.orbitron(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          child: Text(
+                            'DISCARD',
+                            style: GoogleFonts.orbitron(
+                              color: AppColors.neonOrange,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+              );
+              if (confirm == true) {
+                onDiscard?.call();
+              }
+            },
           ),
-        if (immersive && onCollapse != null)
-          _DockButton(
-            icon: Icons.fullscreen_exit_rounded,
-            tooltip: 'Exit full screen',
-            color: AppColors.neonCyan,
-            onTap: onCollapse!,
-          ),
-        const SizedBox(height: 10),
+          const SizedBox(height: 10),
+        ],
         if (onFlagWeakZone != null)
           _DockButton(
             icon: Icons.flag_rounded,
@@ -1531,6 +1505,15 @@ class _Dock extends StatelessWidget {
             context.read<HeatmapBloc>().recalibrateHeading();
           },
         ),
+        if (onFinish != null) ...[
+          const SizedBox(height: 10),
+          _DockButton(
+            icon: Icons.stop_rounded,
+            tooltip: 'Finish & Review',
+            color: AppColors.neonRed,
+            onTap: onFinish!,
+          ),
+        ],
       ],
     );
   }

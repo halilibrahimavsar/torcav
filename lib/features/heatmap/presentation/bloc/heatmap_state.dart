@@ -14,7 +14,6 @@ class HeatmapState extends Equatable {
     this.currentHeading = 0.0,
     this.currentRssi,
     this.pendingWalls = const [],
-    this.isArViewEnabled = true,
     this.isArSupported = false,
     this.targetBssid,
     this.targetSsid,
@@ -52,9 +51,6 @@ class HeatmapState extends Equatable {
 
   /// Recently detected wall segments from camera feed.
   final List<WallSegment> pendingWalls;
-
-  /// Whether the AR camera view is currently active (vs 2D map).
-  final bool isArViewEnabled;
 
   /// Locked target access point for the current survey.
   final String? targetBssid;
@@ -107,7 +103,6 @@ class HeatmapState extends Equatable {
     int? currentRssi,
     bool clearCurrentRssi = false,
     List<WallSegment>? pendingWalls,
-    bool? isArViewEnabled,
     bool? isArSupported,
     String? targetBssid,
     bool clearTargetBssid = false,
@@ -140,7 +135,6 @@ class HeatmapState extends Equatable {
     currentHeading: currentHeading ?? this.currentHeading,
     currentRssi: clearCurrentRssi ? null : currentRssi ?? this.currentRssi,
     pendingWalls: pendingWalls ?? this.pendingWalls,
-    isArViewEnabled: isArViewEnabled ?? this.isArViewEnabled,
     isArSupported: isArSupported ?? this.isArSupported,
     targetBssid: clearTargetBssid ? null : targetBssid ?? this.targetBssid,
     targetSsid: clearTargetSsid ? null : targetSsid ?? this.targetSsid,
@@ -171,7 +165,6 @@ class HeatmapState extends Equatable {
     currentHeading,
     currentRssi,
     pendingWalls,
-    isArViewEnabled,
     isArSupported,
     targetBssid,
     targetSsid,

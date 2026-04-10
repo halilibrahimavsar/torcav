@@ -145,7 +145,7 @@ void main() {
     () async {
       await bloc.loadSessions();
       await bloc.startScanning('Home survey');
-      bloc.markArOriginPlaced();
+      bloc.markArOriginPlaced(0.0);
 
       await bloc.addPoint(
         HeatmapPoint(
@@ -214,7 +214,7 @@ void main() {
     expect(bloc.state.surveyGate, SurveyGate.originNotPlaced);
     expect(bloc.state.currentSession?.points, isEmpty);
 
-    bloc.markArOriginPlaced();
+    bloc.markArOriginPlaced(0.0);
     await bloc.refreshConnectedSignal();
     positionController.add(
       const PositionUpdate(x: 1, y: 0, heading: 0, isStep: true),
@@ -231,7 +231,7 @@ void main() {
     () async {
       await bloc.loadSessions();
       await bloc.startScanning('Home survey');
-      bloc.markArOriginPlaced();
+      bloc.markArOriginPlaced(0.0);
       await bloc.refreshConnectedSignal();
 
       positionController.add(

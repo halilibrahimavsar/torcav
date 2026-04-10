@@ -1,7 +1,7 @@
 import 'dart:math' as math;
+import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -72,36 +72,6 @@ class _HeatmapPageState extends State<HeatmapPage> {
   }
 }
 
-class _HudToggleButton extends StatelessWidget {
-  const _HudToggleButton({required this.isMinimized, required this.onToggle});
-
-  final bool isMinimized;
-  final VoidCallback onToggle;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onToggle,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GlassmorphicContainer(
-          width: 42,
-          height: 42,
-          borderRadius: BorderRadius.circular(12),
-          borderColor: isMinimized ? AppColors.neonCyan : Colors.white24,
-          padding: EdgeInsets.zero,
-          child: Center(
-            child: Icon(
-              isMinimized ? Icons.layers_rounded : Icons.layers_clear_rounded,
-              color: isMinimized ? AppColors.neonCyan : Colors.white,
-              size: 20,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class _HeatmapView extends StatefulWidget {
   const _HeatmapView();
@@ -116,1067 +86,162 @@ class _HeatmapViewState extends State<_HeatmapView> {
   final _arViewKey = GlobalKey();
   final _cameraFallbackKey = GlobalKey();
 
-  /// True while in immersive full-screen AR mode.
-  ///
-  /// Instead of pushing [ArFullScreenPage], we now expand the AR view in-place
-  /// to avoid unmounting the platform view, which triggered native SIGABRTs
-  /// on certain Xiaomi/MIUI builds during the disposal/re-init cycle.
-  bool _isFullScreenOpen = false;
-
   /// When not null, we show a premium 'Signal Probe' tooltip.
   Offset? _probePoint;
 
   /// When true, the detailed information cards are minimized into compact badges
   /// to maximize screen real estate for the heatmap/floorplan.
-  bool _isHudMinimized = false;
-
   @override
   Widget build(BuildContext context) {
     final copy = _HeatmapCopy.of(context);
 
-    return Scaffold(
-      backgroundColor: AppColors.deepBlack,
-      resizeToAvoidBottomInset: false,
-      appBar:
-          _isFullScreenOpen
-              ? null
-              : AppBar(
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    NeonText(
-                      copy.pageTitle,
-                      style: GoogleFonts.orbitron(
-                        color: AppColors.neonCyan,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.6,
-                      ),
-                      glowRadius: 8,
-                    ),
-                    Text(
-                      copy.pageSubtitle,
-                      style: GoogleFonts.outfit(
-                        color: AppColors.textSecondary,
-                        fontSize: 11,
-                      ),
-                    ),
-                  ],
-                ),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.history_rounded),
-                    color: AppColors.neonCyan,
-                    tooltip: copy.historyTooltip,
-                    onPressed: () => _showSessionsPicker(context, copy),
-                  ),
-                ],
-              ),
-      body: BlocBuilder<HeatmapBloc, HeatmapState>(
-        builder: (context, state) {
-          final session =
-              state.selectedSession ??
-              state.currentSession ??
+    return BlocBuilder<HeatmapBloc, HeatmapState>(
+      builder: (context, state) {
+        final bloc = context.read<HeatmapBloc>();
+        final isRecording = state.isRecording;
+        final isScanning = isRecording && state.phase == ScanPhase.scanning;
+        final isReviewing = state.phase == ScanPhase.reviewing;
+
+        final session = isRecording ? state.currentSession : state.selectedSession;
+        final floorPlan = isRecording ? state.liveFloorPlan : session?.floorPlan;
+
+        final summary = _HeatmapSummary.from(
+          session: session ??
               HeatmapSession(
-                id: '',
-                name: copy.previewSessionName,
+                id: 'idle',
+                name: '',
                 points: const [],
                 createdAt: DateTime.now(),
-              );
-          final floorPlan =
-              state.selectedSession?.floorPlan ??
-              state.currentSession?.floorPlan ??
-              state.liveFloorPlan;
-          final summary = _HeatmapSummary.from(
-            session: session,
-            floorPlan: floorPlan,
-            currentRssi: state.currentRssi,
-          );
-          final guidance = _guidanceService.analyze(
-            points: session.points,
-            floorPlan: floorPlan,
-            isRecording: state.isRecording,
-            isArViewEnabled: state.isArViewEnabled,
-            hasArOrigin: state.hasArOrigin,
-            pendingWallCount: state.pendingWalls.length,
-            currentRssi: state.currentRssi,
-            surveyGate: state.surveyGate,
-            lastSignalAt: state.lastSignalAt,
-            currentSignalStdDev: state.lastSignalStdDev,
-            currentX: state.currentPosition?.dx,
-            currentY: state.currentPosition?.dy,
-          );
-
-          return Column(
-            children: [
-              if (!_isFullScreenOpen) ...[
-                _StatusBar(state: state, summary: summary, copy: copy),
-                if (state.failure != null)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-                    child: _InfoBanner(
-                      color: AppColors.neonRed,
-                      icon: Icons.error_outline_rounded,
-                      title: copy.issueTitle,
-                      body:
-                          state.failure!.message.isEmpty
-                              ? copy.genericIssueBody
-                              : state.failure!.message,
-                    ),
-                  ),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child:
-                      !_isHudMinimized
-                          ? Padding(
-                            key: const ValueKey('expanded_pilot'),
-                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                            child: _SurveyPilotCard(
-                              guidance: guidance,
-                              summary: summary,
-                              copy: copy,
-                              onToggle:
-                                  () => setState(() => _isHudMinimized = true),
-                            ),
-                          )
-                          : const SizedBox.shrink(
-                            key: ValueKey('minimized_pilot_spacer'),
-                          ),
-                ),
-              ],
-              Expanded(
-                child: Padding(
-                  padding:
-                      _isFullScreenOpen
-                          ? EdgeInsets.zero
-                          : const EdgeInsets.all(12),
-                  child: ClipRRect(
-                    borderRadius:
-                        _isFullScreenOpen
-                            ? BorderRadius.zero
-                            : BorderRadius.circular(24),
-                    child:
-                        state.isArViewEnabled &&
-                                state.isRecording &&
-                                state.phase == ScanPhase.scanning
-                            ? (state.isArSupported
-                                ? ArCoreHeatmapView(
-                                  key: _arViewKey,
-                                  immersive: _isFullScreenOpen,
-                                  onExpand: () => _toggleFullScreen(true),
-                                  onCollapse: () => _toggleFullScreen(false),
-                                )
-                                : ArCameraView(
-                                  key: _cameraFallbackKey,
-                                  immersive: _isFullScreenOpen,
-                                  onExpand: () => _toggleFullScreen(true),
-                                  onCollapse: () => _toggleFullScreen(false),
-                                ))
-                            : Stack(
-                              children: [
-                                _CanvasBackdrop(summary: summary),
-                                HeatmapCanvas(
-                                  session: session,
-                                  floorPlan: floorPlan,
-                                  showPath: session.points.isNotEmpty,
-                                  activeFloor:
-                                      state.isRecording
-                                          ? state.currentFloor
-                                          : null,
-                                  currentPosition:
-                                      state.isRecording
-                                          ? state.currentPosition
-                                          : null,
-                                  onTap: (metric) {
-                                    setState(() => _probePoint = metric);
-                                  },
-                                ),
-                                if (_shouldShowCanvasEmptyState(state, summary))
-                                  _CanvasEmptyState(state: state, copy: copy),
-                                Positioned(
-                                  top: 14,
-                                  left: 14,
-                                  child: _ViewModeBadge(
-                                    label:
-                                        state.isRecording
-                                            ? (state.isArViewEnabled
-                                                ? copy.cameraViewLabel
-                                                : copy.mapViewLabel)
-                                            : copy.resultViewLabel,
-                                  ),
-                                ),
-                                if (state.isRecording)
-                                  Positioned(
-                                    top: 14,
-                                    right: 14,
-                                    child: _RouteCueBadge(
-                                      guidance: guidance,
-                                      copy: copy,
-                                    ),
-                                  ),
-                                if (!_isFullScreenOpen) ...[
-                                  Positioned(
-                                    top: state.isRecording ? 70 : 14,
-                                    right: 14,
-                                    child: _HudToggleButton(
-                                      isMinimized: _isHudMinimized,
-                                      onToggle: () {
-                                        HapticFeedback.lightImpact();
-                                        setState(
-                                          () =>
-                                              _isHudMinimized =
-                                                  !_isHudMinimized,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  if (_isHudMinimized)
-                                    Positioned(
-                                      top: 70,
-                                      left: 14,
-                                      child: _SurveyPilotCard(
-                                        guidance: guidance,
-                                        summary: summary,
-                                        copy: copy,
-                                        isMinimized: true,
-                                        onToggle: () {
-                                          HapticFeedback.lightImpact();
-                                          setState(
-                                            () => _isHudMinimized = false,
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  AnimatedPositioned(
-                                    duration: const Duration(milliseconds: 400),
-                                    curve: Curves.easeInOutCubic,
-                                    left: 12,
-                                    right:
-                                        _isHudMinimized
-                                            ? MediaQuery.sizeOf(context).width -
-                                                60
-                                            : 12,
-                                    bottom: 12,
-                                    child: _MetricsStrip(
-                                      state: state,
-                                      summary: summary,
-                                      copy: copy,
-                                      isMinimized: _isHudMinimized,
-                                      onToggle: () {
-                                        HapticFeedback.lightImpact();
-                                        setState(
-                                          () =>
-                                              _isHudMinimized =
-                                                  !_isHudMinimized,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                                if (!state.isRecording && _probePoint != null)
-                                  _SignalProbeOverlay(
-                                    point: _findNearestPoint(
-                                      session.points,
-                                      _probePoint!,
-                                    ),
-                                    onDismiss:
-                                        () =>
-                                            setState(() => _probePoint = null),
-                                    copy: copy,
-                                  ),
-                              ],
-                            ),
-                  ),
-                ),
               ),
-              if (state.isRecording && !_isFullScreenOpen)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
-                  child: _ArToggleButton(
-                    isEnabled: state.isArViewEnabled,
-                    onToggle: () => context.read<HeatmapBloc>().toggleArView(),
-                    copy: copy,
-                  ),
-                ),
-              if (!_isFullScreenOpen) ...[
-                _ActionBar(state: state, copy: copy),
-                const SizedBox(height: 18),
-              ],
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  bool _shouldShowCanvasEmptyState(
-    HeatmapState state,
-    _HeatmapSummary summary,
-  ) {
-    if (state.isRecording) {
-      return summary.sampleCount == 0 && !state.isArViewEnabled;
-    }
-    return summary.sampleCount == 0 && summary.wallCount == 0;
-  }
-
-  void _toggleFullScreen(bool full) {
-    setState(() => _isFullScreenOpen = full);
-    if (full) {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-      SystemChrome.setPreferredOrientations(const [
-        DeviceOrientation.portraitUp,
-      ]);
-    } else {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-      SystemChrome.setPreferredOrientations(DeviceOrientation.values);
-    }
-  }
-
-  HeatmapPoint? _findNearestPoint(List<HeatmapPoint> points, Offset metric) {
-    if (points.isEmpty) return null;
-    HeatmapPoint? closest;
-    double minSqDist = double.infinity;
-    for (final p in points) {
-      final dx = p.floorX - metric.dx;
-      final dy = p.floorY - metric.dy;
-      final d2 = dx * dx + dy * dy;
-      if (d2 < minSqDist) {
-        minSqDist = d2;
-        closest = p;
-      }
-    }
-    // Only return if within reasonable distance (e.g. 5 meters)
-    return minSqDist < 25.0 ? closest : null;
-  }
-
-  void _showSessionsPicker(BuildContext context, _HeatmapCopy copy) {
-    final bloc = context.read<HeatmapBloc>();
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: AppColors.darkSurface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (_) {
-        return BlocProvider.value(
-          value: bloc,
-          child: BlocBuilder<HeatmapBloc, HeatmapState>(
-            builder:
-                (ctx, state) => _SessionPickerSheet(
-                  sessions: state.sessions,
-                  copy: copy,
-                  onSelect: (session) {
-                    bloc.selectSession(session);
-                    Navigator.of(ctx).pop();
-                  },
-                ),
-          ),
+          floorPlan: floorPlan,
+          currentRssi: state.currentRssi,
         );
-      },
-    );
-  }
-}
 
-class _StatusBar extends StatelessWidget {
-  const _StatusBar({
-    required this.state,
-    required this.summary,
-    required this.copy,
-  });
+        final guidance = _guidanceService.analyze(
+          points: session?.points ?? const [],
+          floorPlan: floorPlan,
+          isRecording: isRecording,
+          hasArOrigin: state.hasArOrigin,
+          pendingWallCount: state.pendingWalls.length,
+          currentRssi: state.currentRssi,
+          surveyGate: state.surveyGate,
+          lastSignalAt: state.lastSignalAt,
+          currentSignalStdDev: state.lastSignalStdDev,
+          currentX: state.currentPosition?.dx,
+          currentY: state.currentPosition?.dy,
+        );
 
-  final HeatmapState state;
-  final _HeatmapSummary summary;
-  final _HeatmapCopy copy;
-
-  @override
-  Widget build(BuildContext context) {
-    final session = state.currentSession ?? state.selectedSession;
-    final isViewing = state.selectedSession != null && !state.isRecording;
-    final accent =
-        state.isRecording
-            ? AppColors.neonGreen
-            : isViewing
-            ? AppColors.neonBlue
-            : AppColors.textMuted;
-    final statusText =
-        state.isRecording
-            ? copy.recordingStatus
-            : isViewing
-            ? copy.reviewingStatus
-            : copy.idleStatus;
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 2, 16, 10),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(
-              color: accent.withValues(alpha: 0.14),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: accent.withValues(alpha: 0.4)),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (state.isRecording)
-                  _PulsingDot(color: accent)
-                else
-                  Icon(
-                    isViewing
-                        ? Icons.visibility_rounded
-                        : Icons.radio_button_unchecked_rounded,
-                    color: accent,
-                    size: 10,
-                  ),
-                const SizedBox(width: 6),
-                Text(
-                  statusText,
-                  style: GoogleFonts.orbitron(
-                    fontSize: 10,
-                    letterSpacing: 1.5,
-                    color: accent,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              session?.name ?? copy.previewSessionName,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.outfit(
-                color: AppColors.textSecondary,
-                fontSize: 13,
-              ),
-            ),
-          ),
-          Text(
-            '${summary.sampleCount} ${copy.samplesShort} · ${summary.wallCount} ${copy.wallsShort}',
-            style: GoogleFonts.orbitron(
-              fontSize: 10,
-              color: AppColors.textMuted,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SurveyPilotCard extends StatelessWidget {
-  const _SurveyPilotCard({
-    required this.guidance,
-    required this.summary,
-    required this.copy,
-    this.isMinimized = false,
-    this.onToggle,
-  });
-
-  final SurveyGuidance guidance;
-  final _HeatmapSummary summary;
-  final _HeatmapCopy copy;
-  final bool isMinimized;
-  final VoidCallback? onToggle;
-
-  @override
-  Widget build(BuildContext context) {
-    final accent = copy.guidanceColor(guidance);
-
-    if (isMinimized) {
-      return GestureDetector(
-        onTap: onToggle,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: StaggeredEntry(
-            duration: const Duration(milliseconds: 400),
-            child: GlassmorphicContainer(
-              borderRadius: BorderRadius.circular(40),
-              borderColor: accent,
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _ProgressRing(
-                    progress: guidance.overallProgress,
-                    color: accent,
-                    size: 32,
-                  ),
-                  const SizedBox(width: 8),
-                  Icon(copy.guidanceIcon(guidance), color: accent, size: 16),
-                  const SizedBox(width: 6),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return GestureDetector(
-      onTap: () {
-        HapticFeedback.lightImpact();
-        onToggle?.call();
-      },
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: StaggeredEntry(
-          duration: const Duration(milliseconds: 600),
-          child: GlassmorphicContainer(
-            borderRadius: BorderRadius.circular(22),
-            borderColor: accent,
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 34,
-                      height: 34,
-                      decoration: BoxDecoration(
-                        color: accent.withValues(alpha: 0.14),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        copy.guidanceIcon(guidance),
-                        color: accent,
-                        size: 18,
-                      ),
+        return Scaffold(
+          backgroundColor: AppColors.deepBlack,
+          resizeToAvoidBottomInset: false,
+          appBar:
+              isScanning
+                  ? null
+                  : AppBar(
+                    leading: IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                      onPressed: () => Navigator.of(context).pop(),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            copy.guidanceTitle(guidance),
-                            style: GoogleFonts.orbitron(
-                              color: accent,
-                              fontSize: 11,
-                              letterSpacing: 1.1,
-                              fontWeight: FontWeight.w700,
-                            ),
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        NeonText(
+                          copy.pageTitle,
+                          style: GoogleFonts.orbitron(
+                            color: AppColors.neonCyan,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.6,
                           ),
-                          const SizedBox(height: 3),
-                          Text(
-                            copy.guidanceBody(guidance, summary),
-                            style: GoogleFonts.outfit(
-                              color: AppColors.textPrimary,
-                              fontSize: 13,
-                              height: 1.42,
-                            ),
+                          glowRadius: 8,
+                        ),
+                        Text(
+                          copy.pageSubtitle,
+                          style: GoogleFonts.outfit(
+                            color: AppColors.textSecondary,
+                            fontSize: 11,
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    _ProgressRing(
-                      progress: guidance.overallProgress,
-                      color: accent,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(999),
-                  child: LinearProgressIndicator(
-                    value: guidance.overallProgress,
-                    minHeight: 7,
-                    backgroundColor: Colors.white.withValues(alpha: 0.08),
-                    valueColor: AlwaysStoppedAnimation<Color>(accent),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      _FeedDot(
-                        label: copy.motionFeedLabel,
-                        active: guidance.feeds.motionLive,
-                      ),
-                      const SizedBox(width: 10),
-                      _FeedDot(
-                        label: copy.wifiFeedLabel,
-                        active: guidance.feeds.wifiLive,
-                      ),
-                      const SizedBox(width: 10),
-                      _FeedDot(
-                        label: copy.cameraFeedLabel,
-                        active: guidance.feeds.cameraLive,
-                      ),
-                      const SizedBox(width: 10),
-                      _FeedDot(
-                        label: copy.planFeedLabel,
-                        active: guidance.feeds.planLive,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _MetricsStrip extends StatelessWidget {
-  const _MetricsStrip({
-    required this.state,
-    required this.summary,
-    required this.copy,
-    this.isMinimized = false,
-    this.onToggle,
-  });
-
-  final HeatmapState state;
-  final _HeatmapSummary summary;
-  final _HeatmapCopy copy;
-  final bool isMinimized;
-  final VoidCallback? onToggle;
-
-  @override
-  Widget build(BuildContext context) {
-    if (isMinimized) {
-      return GestureDetector(
-        onTap: onToggle,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: StaggeredEntry(
-            duration: const Duration(milliseconds: 400),
-            child: GlassmorphicContainer(
-              borderRadius: BorderRadius.circular(20),
-              borderColor: AppColors.neonCyan,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: summary.signalColor,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: summary.signalColor.withValues(alpha: 0.5),
-                          blurRadius: 4,
                         ),
                       ],
                     ),
+                    actions: [
+                      IconButton(
+                        icon: const Icon(Icons.history_rounded),
+                        color: AppColors.neonCyan,
+                        tooltip: copy.historyTooltip,
+                        onPressed: () => _showSessionsPicker(context, copy),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  Text(
-                    summary.signalDisplay(copy),
-                    style: GoogleFonts.orbitron(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
+          body:
+              isRecording || isScanning
+                  ? (state.isArSupported
+                      ? ArCoreHeatmapView(
+                        key: _arViewKey,
+                        onFinish: bloc.stopSession,
+                        onDiscard: bloc.discardSession,
+                      )
+                      : ArCameraView(
+                        key: _cameraFallbackKey,
+                        onFinish: bloc.stopSession,
+                        onDiscard: bloc.discardSession,
+                      ))
+                  : Stack(
+                    children: [
+                      _CanvasBackdrop(summary: summary),
+                      if (session != null)
+                        HeatmapCanvas(
+                          session: session,
+                          floorPlan: floorPlan,
+                          showPath: session.points.isNotEmpty,
+                          activeFloor: null,
+                          onTap: (metric) {
+                            setState(() => _probePoint = metric);
+                          },
+                        ),
+                      if (_shouldShowCanvasEmptyState(state, summary))
+                        _CanvasEmptyState(
+                          state: state,
+                          copy: copy,
+                          onStart:
+                              () => _showNewSessionDialog(context, bloc, copy),
+                        ),
+                      Positioned(
+                        top: 14,
+                        left: 14,
+                        child: _ViewModeBadge(label: copy.resultViewLabel),
+                      ),
+                      if (isReviewing && _probePoint == null && session != null)
+                        _SurveyConclusionOverlay(
+                          session: session,
+                          summary: summary,
+                          guidance: guidance,
+                          copy: copy,
+                          onDismiss: bloc.clearSelection,
+                          onNewSurvey: () =>
+                              _showNewSessionDialog(context, bloc, copy),
+                        ),
+                      if (_probePoint != null && session != null)
+                        _SignalProbeOverlay(
+                          point: _findNearestPoint(
+                            session.points,
+                            _probePoint!,
+                          ),
+                          onDismiss: () => setState(() => _probePoint = null),
+                          copy: copy,
+                        ),
+                    ],
                   ),
-                  const SizedBox(width: 4),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    final feeds = [
-      copy.feedStatusLabel(
-        copy.motionFeedLabel,
-        state.currentPosition != null || summary.sampleCount > 0,
-      ),
-      copy.feedStatusLabel(
-        copy.wifiFeedLabel,
-        state.currentRssi != null || summary.sampleCount > 0,
-      ),
-      copy.feedStatusLabel(
-        copy.cameraFeedLabel,
-        state.isRecording && state.phase == ScanPhase.scanning,
-      ),
-      copy.feedStatusLabel(
-        copy.planFeedLabel,
-        summary.wallCount > 0 || state.pendingWalls.isNotEmpty,
-      ),
-    ];
-
-    return GestureDetector(
-      onTap: () {
-        HapticFeedback.lightImpact();
-        onToggle?.call();
+          floatingActionButton:
+              !(isRecording || isScanning)
+                  ? NeonButton(
+                    onPressed: () => _showNewSessionDialog(context, bloc, copy),
+                    icon: Icons.add_rounded,
+                    label: copy.startSurvey,
+                  )
+                  : null,
+        );
       },
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GlassmorphicContainer(
-          borderRadius: BorderRadius.circular(24),
-          borderColor: AppColors.neonCyan,
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                copy.infoSheetTitle,
-                style: GoogleFonts.orbitron(
-                  color: AppColors.neonCyan,
-                  fontSize: 10,
-                  letterSpacing: 1.2,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 10),
-              _SheetTextRow(
-                label:
-                    state.isRecording
-                        ? copy.currentSignalLabel
-                        : copy.avgSignalLabel,
-                value: summary.signalDisplay(copy),
-                helper: summary.signalHelper(copy),
-                accent: summary.signalColor,
-              ),
-              const SizedBox(height: 6),
-              _SheetTextRow(
-                label: copy.samplesLabel,
-                value: '${summary.sampleCount}',
-                helper:
-                    summary.sampleCount == 0
-                        ? copy.noSamplesHelper
-                        : copy.samplesHelper(summary.sampleCount),
-                accent: AppColors.neonCyan,
-              ),
-              const SizedBox(height: 6),
-              _SheetTextRow(
-                label: copy.wallsLabel,
-                value: '${summary.wallCount}',
-                helper:
-                    summary.wallCount == 0
-                        ? copy.noWallsHelper
-                        : copy.wallsHelper(summary.wallCount),
-                accent: AppColors.neonBlue,
-              ),
-              const SizedBox(height: 6),
-              _SheetTextRow(
-                label: copy.weakZonesLabel,
-                value: '${summary.weakZoneCount}',
-                helper: copy.weakZoneHelper(summary.weakZoneCount),
-                accent:
-                    summary.weakZoneCount == 0
-                        ? AppColors.neonGreen
-                        : AppColors.neonOrange,
-              ),
-              const SizedBox(height: 6),
-              _SheetTextRow(
-                label: copy.planSizeLabel,
-                value: summary.planSizeDisplay(copy),
-                helper: copy.planSizeHelper,
-                accent: AppColors.neonPurple,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                feeds.join('  ·  '),
-                style: GoogleFonts.outfit(
-                  color: AppColors.textSecondary,
-                  fontSize: 12,
-                  height: 1.3,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _RouteCueBadge extends StatelessWidget {
-  const _RouteCueBadge({required this.guidance, required this.copy});
-
-  final SurveyGuidance guidance;
-  final _HeatmapCopy copy;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 168),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.42),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: copy.guidanceColor(guidance).withValues(alpha: 0.32),
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            copy.guidanceIcon(guidance),
-            size: 16,
-            color: copy.guidanceColor(guidance),
-          ),
-          const SizedBox(width: 8),
-          Flexible(
-            child: Text(
-              copy.routeLabelValue(guidance),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.outfit(
-                color: AppColors.textPrimary,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                height: 1.2,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CanvasBackdrop extends StatelessWidget {
-  const _CanvasBackdrop({required this.summary});
-
-  final _HeatmapSummary summary;
-
-  @override
-  Widget build(BuildContext context) {
-    final glow = summary.coverageColor;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: RadialGradient(
-          center: Alignment.topLeft,
-          radius: 1.25,
-          colors: [
-            glow.withValues(alpha: 0.12),
-            AppColors.darkSurfaceLight,
-            AppColors.deepBlack,
-          ],
-        ),
-        border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.16)),
-      ),
-    );
-  }
-}
-
-class _SheetTextRow extends StatelessWidget {
-  const _SheetTextRow({
-    required this.label,
-    required this.value,
-    required this.helper,
-    required this.accent,
-  });
-
-  final String label;
-  final String value;
-  final String helper;
-  final Color accent;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 8,
-          height: 8,
-          margin: const EdgeInsets.only(top: 5),
-          decoration: BoxDecoration(color: accent, shape: BoxShape.circle),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: RichText(
-            text: TextSpan(
-              style: GoogleFonts.outfit(
-                color: AppColors.textPrimary,
-                fontSize: 13,
-                height: 1.35,
-              ),
-              children: [
-                TextSpan(
-                  text: '$label: ',
-                  style: const TextStyle(fontWeight: FontWeight.w700),
-                ),
-                TextSpan(text: value),
-                TextSpan(
-                  text: '  •  $helper',
-                  style: const TextStyle(color: AppColors.textSecondary),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _CanvasEmptyState extends StatelessWidget {
-  const _CanvasEmptyState({required this.state, required this.copy});
-
-  final HeatmapState state;
-  final _HeatmapCopy copy;
-
-  @override
-  Widget build(BuildContext context) {
-    final title =
-        state.isRecording ? copy.walkToBeginTitle : copy.noSurveyYetTitle;
-    final body =
-        state.isRecording ? copy.walkToBeginBody : copy.noSurveyYetBody;
-
-    return Center(
-      child: Container(
-        width: 280,
-        padding: const EdgeInsets.all(18),
-        decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.34),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.18)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              state.isRecording
-                  ? Icons.directions_walk_rounded
-                  : Icons.map_rounded,
-              color: AppColors.neonCyan,
-              size: 38,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.orbitron(
-                color: AppColors.textPrimary,
-                fontSize: 12,
-                letterSpacing: 1.2,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              body,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.outfit(
-                color: AppColors.textSecondary,
-                fontSize: 13,
-                height: 1.45,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ViewModeBadge extends StatelessWidget {
-  const _ViewModeBadge({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.38),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.glassWhiteBorder),
-      ),
-      child: Text(
-        label,
-        style: GoogleFonts.orbitron(
-          color: AppColors.textPrimary,
-          fontSize: 10,
-          letterSpacing: 1.1,
-        ),
-      ),
-    );
-  }
-}
-
-class _ActionBar extends StatelessWidget {
-  const _ActionBar({required this.state, required this.copy});
-
-  final HeatmapState state;
-  final _HeatmapCopy copy;
-
-  @override
-  Widget build(BuildContext context) {
-    final bloc = context.read<HeatmapBloc>();
-
-    if (state.selectedSession != null && !state.isRecording) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          children: [
-            Expanded(
-              child: ElevatedButton.icon(
-                onPressed: bloc.clearSelection,
-                icon: const Icon(Icons.close_rounded, size: 18),
-                label: Text(copy.closeReview),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: ElevatedButton.icon(
-                onPressed: () => _showNewSessionDialog(context, bloc, copy),
-                icon: const Icon(Icons.play_arrow_rounded, size: 18),
-                label: Text(copy.newSurvey),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.neonGreen.withValues(alpha: 0.12),
-                  foregroundColor: AppColors.neonGreen,
-                  side: BorderSide(
-                    color: AppColors.neonGreen.withValues(alpha: 0.4),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (state.isRecording) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: ElevatedButton.icon(
-          onPressed: bloc.stopSession,
-          icon: const Icon(Icons.stop_rounded, size: 18),
-          label: Text(copy.finishAndReview),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.neonRed.withValues(alpha: 0.12),
-            foregroundColor: AppColors.neonRed,
-            side: BorderSide(color: AppColors.neonRed.withValues(alpha: 0.4)),
-          ),
-        ),
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: ElevatedButton.icon(
-        onPressed: () => _showNewSessionDialog(context, bloc, copy),
-        icon: const Icon(Icons.play_arrow_rounded, size: 20),
-        label: Text(copy.startSurvey),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.neonGreen.withValues(alpha: 0.12),
-          foregroundColor: AppColors.neonGreen,
-          side: BorderSide(color: AppColors.neonGreen.withValues(alpha: 0.4)),
-        ),
-      ),
     );
   }
 
@@ -1250,7 +315,209 @@ class _ActionBar extends StatelessWidget {
           ),
     );
   }
+
+  bool _shouldShowCanvasEmptyState(
+    HeatmapState state,
+    _HeatmapSummary summary,
+  ) {
+    if (state.isRecording) {
+      // During recording, we are either in AR or Camera fallback.
+      // The 2D canvas is hidden during active scanning (phase == scanning).
+      // If we are recording but NOT scanning (e.g. paused), we show the canvas.
+      return summary.sampleCount == 0;
+    }
+    return summary.sampleCount == 0 && summary.wallCount == 0;
+  }
+
+
+  HeatmapPoint? _findNearestPoint(List<HeatmapPoint> points, Offset metric) {
+    if (points.isEmpty) return null;
+    HeatmapPoint? closest;
+    double minSqDist = double.infinity;
+    for (final p in points) {
+      final dx = p.floorX - metric.dx;
+      final dy = p.floorY - metric.dy;
+      final d2 = dx * dx + dy * dy;
+      if (d2 < minSqDist) {
+        minSqDist = d2;
+        closest = p;
+      }
+    }
+    // Only return if within reasonable distance (e.g. 5 meters)
+    return minSqDist < 25.0 ? closest : null;
+  }
+
+  void _showSessionsPicker(BuildContext context, _HeatmapCopy copy) {
+    final bloc = context.read<HeatmapBloc>();
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: AppColors.darkSurface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) {
+        return BlocProvider.value(
+          value: bloc,
+          child: BlocBuilder<HeatmapBloc, HeatmapState>(
+            builder:
+                (ctx, state) => _SessionPickerSheet(
+                  sessions: state.sessions,
+                  copy: copy,
+                  onSelect: (session) {
+                    bloc.selectSession(session);
+                    Navigator.of(ctx).pop();
+                  },
+                ),
+          ),
+        );
+      },
+    );
+  }
 }
+
+
+
+
+
+class _CanvasBackdrop extends StatelessWidget {
+  const _CanvasBackdrop({required this.summary});
+
+  final _HeatmapSummary summary;
+
+  @override
+  Widget build(BuildContext context) {
+    final glow = summary.coverageColor;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: RadialGradient(
+          center: Alignment.topLeft,
+          radius: 1.25,
+          colors: [
+            glow.withValues(alpha: 0.12),
+            AppColors.darkSurfaceLight,
+            AppColors.deepBlack,
+          ],
+        ),
+        border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.16)),
+      ),
+    );
+  }
+}
+
+
+class _CanvasEmptyState extends StatelessWidget {
+  const _CanvasEmptyState({
+    required this.state,
+    required this.copy,
+    required this.onStart,
+  });
+
+  final HeatmapState state;
+  final _HeatmapCopy copy;
+  final VoidCallback onStart;
+
+  @override
+  Widget build(BuildContext context) {
+    final title =
+        state.isRecording ? copy.walkToBeginTitle : copy.noSurveyYetTitle;
+    final body =
+        state.isRecording ? copy.walkToBeginBody : copy.noSurveyYetBody;
+
+    return Center(
+      child: Container(
+        width: 280,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.45),
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.25)),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.neonCyan.withValues(alpha: 0.08),
+              blurRadius: 32,
+              spreadRadius: 4,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.neonCyan.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                state.isRecording
+                    ? Icons.directions_walk_rounded
+                    : Icons.map_rounded,
+                color: AppColors.neonCyan,
+                size: 40,
+              ),
+            ),
+            const SizedBox(height: 18),
+            Text(
+              title.toUpperCase(),
+              textAlign: TextAlign.center,
+              style: GoogleFonts.orbitron(
+                color: AppColors.textPrimary,
+                fontSize: 13,
+                letterSpacing: 1.4,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              body,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.outfit(
+                color: AppColors.textSecondary,
+                fontSize: 14,
+                height: 1.5,
+              ),
+            ),
+            if (!state.isRecording) ...[
+              const SizedBox(height: 24),
+              NeonButton(
+                onPressed: onStart,
+                label: copy.startSurvey,
+                icon: Icons.play_arrow_rounded,
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ViewModeBadge extends StatelessWidget {
+  const _ViewModeBadge({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.38),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.glassWhiteBorder),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.orbitron(
+          color: AppColors.textPrimary,
+          fontSize: 10,
+          letterSpacing: 1.1,
+        ),
+      ),
+    );
+  }
+}
+
 
 class _SessionPickerSheet extends StatelessWidget {
   const _SessionPickerSheet({
@@ -1350,77 +617,6 @@ class _SessionPickerSheet extends StatelessWidget {
       '${dt.day}.${dt.month}.${dt.year} ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}';
 }
 
-class _FeedDot extends StatelessWidget {
-  const _FeedDot({required this.label, required this.active});
-
-  final String label;
-  final bool active;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = active ? AppColors.neonGreen : AppColors.textMuted;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 8,
-          height: 8,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-        ),
-        const SizedBox(width: 6),
-        Text(
-          label,
-          style: GoogleFonts.outfit(
-            color: active ? AppColors.textPrimary : AppColors.textSecondary,
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ProgressRing extends StatelessWidget {
-  const _ProgressRing({
-    required this.progress,
-    required this.color,
-    this.size = 54,
-  });
-
-  final double progress;
-  final Color color;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    final clamped = progress.clamp(0.0, 1.0);
-
-    return SizedBox(
-      width: size,
-      height: size,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          CircularProgressIndicator(
-            value: clamped,
-            strokeWidth: size < 40 ? 3 : 4,
-            backgroundColor: Colors.white.withValues(alpha: 0.08),
-            valueColor: AlwaysStoppedAnimation<Color>(color),
-          ),
-          Text(
-            '${(clamped * 100).round()}%',
-            style: GoogleFonts.orbitron(
-              color: AppColors.textPrimary,
-              fontSize: size * 0.18,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class _InfoBanner extends StatelessWidget {
   const _InfoBanner({
@@ -1672,76 +868,6 @@ class _TutorialStep extends StatelessWidget {
   }
 }
 
-class _ArToggleButton extends StatelessWidget {
-  const _ArToggleButton({
-    required this.isEnabled,
-    required this.onToggle,
-    required this.copy,
-  });
-
-  final bool isEnabled;
-  final VoidCallback onToggle;
-  final _HeatmapCopy copy;
-
-  @override
-  Widget build(BuildContext context) {
-    final accent = isEnabled ? AppColors.neonCyan : AppColors.neonGreen;
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onToggle,
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          decoration: BoxDecoration(
-            color: AppColors.darkSurface.withValues(alpha: 0.84),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: accent.withValues(alpha: 0.35)),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                isEnabled ? Icons.view_in_ar_rounded : Icons.map_rounded,
-                color: accent,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      isEnabled ? copy.arViewLabel : copy.mapViewLabel,
-                      style: GoogleFonts.orbitron(
-                        color: accent,
-                        fontSize: 11,
-                        letterSpacing: 1.2,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      isEnabled ? copy.switchToMapHint : copy.switchToArHint,
-                      style: GoogleFonts.outfit(
-                        color: AppColors.textSecondary,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Icon(
-                Icons.swap_horiz_rounded,
-                color: AppColors.textSecondary,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class _HeatmapSummary {
   const _HeatmapSummary({
@@ -2423,45 +1549,282 @@ class _SignalProbeOverlay extends StatelessWidget {
   }
 }
 
+class _SurveyConclusionOverlay extends StatelessWidget {
+  const _SurveyConclusionOverlay({
+    required this.session,
+    required this.summary,
+    required this.guidance,
+    required this.copy,
+    required this.onDismiss,
+    required this.onNewSurvey,
+  });
+
+  final HeatmapSession session;
+  final _HeatmapSummary summary;
+  final SurveyGuidance guidance;
+  final _HeatmapCopy copy;
+  final VoidCallback onDismiss;
+  final VoidCallback onNewSurvey;
+
+  @override
+  Widget build(BuildContext context) {
+    final averageRssi = session.points.isEmpty
+        ? 0
+        : (session.points.map((p) => p.rssi).reduce((a, b) => a + b) /
+                session.points.length)
+            .round();
+
+    final statusColor = averageRssi > -60
+        ? AppColors.neonGreen
+        : averageRssi > -75
+        ? AppColors.neonOrange
+        : AppColors.neonRed;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: StaggeredEntry(
+          duration: const Duration(milliseconds: 600),
+          child: GlassmorphicContainer(
+            borderRadius: BorderRadius.circular(32),
+            borderColor: AppColors.neonCyan.withValues(alpha: 0.3),
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Top Badge/Header
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: AppColors.neonCyan.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: AppColors.neonCyan.withValues(alpha: 0.2),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.check_circle_outline_rounded,
+                        color: AppColors.neonCyan,
+                        size: 18,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'SURVEY COMPLETE',
+                        style: GoogleFonts.orbitron(
+                          color: AppColors.neonCyan,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Session Name
+                Text(
+                  session.name.toUpperCase(),
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.orbitron(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  DateFormat('MMMM dd, HH:mm').format(session.createdAt),
+                  style: GoogleFonts.outfit(
+                    color: AppColors.textMuted,
+                    fontSize: 12,
+                  ),
+                ),
+
+                const SizedBox(height: 32),
+
+                // Metrics Row
+                Row(
+                  children: [
+                    Expanded(
+                      child: _StatBrick(
+                        label: 'AVG SIGNAL',
+                        value: '$averageRssi dBm',
+                        color: statusColor,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _StatBrick(
+                        label: 'COVERAGE',
+                        value: '${(guidance.overallProgress * 100).round()}%',
+                        color: AppColors.neonBlue,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _StatBrick(
+                        label: 'SAMPLES',
+                        value: '${summary.sampleCount}',
+                        color: AppColors.neonGreen,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _StatBrick(
+                        label: 'WALLS',
+                        value: '${summary.wallCount}',
+                        color: AppColors.neonCyan,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 32),
+
+                // Insight Text
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.04),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.08),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        copy.findingsTitle,
+                        style: GoogleFonts.orbitron(
+                          color: AppColors.textMuted,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.5,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        guidance.summaryText,
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.outfit(
+                          color: Colors.white,
+                          fontSize: 13,
+                          height: 1.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 32),
+
+                // Actions
+                Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: onDismiss,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              AppColors.neonCyan.withValues(alpha: 0.15),
+                          foregroundColor: AppColors.neonCyan,
+                          side: BorderSide(
+                            color: AppColors.neonCyan.withValues(alpha: 0.4),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: Text(
+                          copy.closeReview,
+                          style: GoogleFonts.orbitron(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            letterSpacing: 1.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextButton(
+                      onPressed: onNewSurvey,
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.textSecondary,
+                      ),
+                      child: Text(
+                        copy.newSurvey,
+                        style: GoogleFonts.orbitron(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _StatBrick extends StatelessWidget {
   const _StatBrick({
     required this.label,
     required this.value,
-    required this.color,
+    this.color,
   });
 
   final String label;
   final String value;
-  final Color color;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
+        color: Colors.white.withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: (color ?? Colors.white).withValues(alpha: 0.1),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label,
+            label.toUpperCase(),
             style: GoogleFonts.orbitron(
-              color: color.withValues(alpha: 0.6),
+              color: AppColors.textMuted,
               fontSize: 9,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.2,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 6),
           Text(
             value,
             style: GoogleFonts.outfit(
-              color: Colors.white,
+              color: color ?? Colors.white,
               fontSize: 18,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w800,
             ),
           ),
         ],

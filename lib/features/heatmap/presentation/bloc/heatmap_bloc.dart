@@ -126,7 +126,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         clearLastStepTimestamp: true,
         currentPosition: Offset.zero,
         currentFloor: 0,
-        isArViewEnabled: true,
         liveFloorPlan: const FloorPlan(
           walls: [],
           widthMeters: 40,
@@ -469,8 +468,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     _refreshSurveyGate();
   }
 
-  void toggleArView() =>
-      emit(state.copyWith(isArViewEnabled: !state.isArViewEnabled));
 
   void markArOriginPlaced(double currentHeading) {
     // ARCore -Z (forward) is typically 0 radians in its local frame if started
@@ -588,6 +585,33 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     );
   }
 
+  Future<void> _discardScanning() async {
+    if (!state.isRecording) return;
+
+    await _positionSubscription?.cancel();
+    _positionEngine.stopTracking();
+    _barometerSource.stopTracking();
+    _cancelSignalPolling();
+
+    emit(
+      state.copyWith(
+        isRecording: false,
+        phase: ScanPhase.idle,
+        clearCurrentSession: true,
+        clearLiveFloorPlan: true,
+        pendingWalls: const [],
+        surveyGate: SurveyGate.none,
+        hasArOrigin: false,
+        clearTargetBssid: true,
+        clearTargetSsid: true,
+        clearCurrentRssi: true,
+        clearLastSignalAt: true,
+        lastSignalStdDev: 0,
+        lastSignalSampleCount: 0,
+      ),
+    );
+  }
+
   @override
   Future<void> close() {
     _cancelSignalPolling();
@@ -600,6 +624,8 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   void startSession(String name) => unawaited(startScanning(name));
 
   void stopSession() => unawaited(stopScanning());
+
+  void discardSession() => unawaited(_discardScanning());
 
   Future<void> addPoint(HeatmapPoint point) async {
     final session = state.currentSession;

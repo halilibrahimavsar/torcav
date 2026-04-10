@@ -46,6 +46,14 @@ class SurveyGuidance {
     required this.readyToFinish,
   });
 
+  /// Natural language summary of the survey results.
+  String get summaryText {
+    if (overallProgress < 0.4) return "Initial data points captured. Continue scanning for higher detail.";
+    if (overallProgress < 0.6) return "Good progress. Adding more samples in weak zones will improve insights.";
+    if (overallProgress < 0.8) return "Strong data density. Coverage is consistent across most areas.";
+    return "Optimal survey quality. Your network floor plan and signal mapping are highly accurate.";
+  }
+
   final SurveyStage stage;
   final SurveyTone tone;
   final double overallProgress;
@@ -65,7 +73,6 @@ class SurveyGuidanceService {
     required List<HeatmapPoint> points,
     required FloorPlan? floorPlan,
     required bool isRecording,
-    required bool isArViewEnabled,
     required bool hasArOrigin,
     required int pendingWallCount,
     required int? currentRssi,
@@ -176,7 +183,7 @@ class SurveyGuidanceService {
       feeds: SurveyFeedHealth(
         motionLive: hasMotion || points.isNotEmpty,
         wifiLive: hasWifi,
-        cameraLive: isArViewEnabled,
+        cameraLive: isRecording,
         planLive: hasPlan,
       ),
       suggestAr: suggestAr,

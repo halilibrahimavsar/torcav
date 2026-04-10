@@ -29,9 +29,21 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = maxOf(flutter.minSdkVersion, 24)
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        ndk {
+            // Sceneform/ARCore legacy plugins usually only support these architectures.
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+        }
+    }
+
+    packaging {
+        jniLibs {
+            // Required for legacy Sceneform native libraries to be loaded correctly on AGP 8.0+
+            useLegacyPackaging = true
+        }
     }
 
     buildTypes {

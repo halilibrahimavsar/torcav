@@ -50,7 +50,6 @@ void main() {
       currentRssi: rssi,
       currentPosition: const Offset(1, 1),
       currentHeading: 90,
-      isArViewEnabled: true,
       isArSupported: true,
       targetSsid: ssid,
       targetBssid: 'AA:BB:CC:DD:EE:FF',
@@ -116,7 +115,6 @@ void main() {
       wrap(
         ArHudOverlay(
           guidance: guidance(),
-          onExpand: () {},
           onFlagWeakZone: () {},
         ),
       ),
@@ -277,31 +275,4 @@ void main() {
     expect(find.text('ESTIMATED MODE'), findsOneWidget);
   });
 
-  testWidgets('dock shows expand button in embedded mode only', (tester) async {
-    final state = baseState();
-    when(() => bloc.state).thenReturn(state);
-    whenListen(
-      bloc,
-      Stream<HeatmapState>.fromIterable([state]),
-      initialState: state,
-    );
-
-    // Embedded.
-    await tester.pumpWidget(
-      wrap(ArHudOverlay(guidance: guidance(), onExpand: () {})),
-    );
-    await tester.pump();
-    expect(find.byTooltip('Full screen'), findsOneWidget);
-    expect(find.byTooltip('Exit full screen'), findsNothing);
-
-    // Immersive.
-    await tester.pumpWidget(
-      wrap(
-        ArHudOverlay(guidance: guidance(), immersive: true, onCollapse: () {}),
-      ),
-    );
-    await tester.pump();
-    expect(find.byTooltip('Full screen'), findsNothing);
-    expect(find.byTooltip('Exit full screen'), findsOneWidget);
-  });
 }

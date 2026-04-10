@@ -16,7 +16,6 @@ class HeatmapCanvas extends StatefulWidget {
     this.onTap,
     this.showPath = false,
     this.activeFloor,
-    this.currentPosition,
     super.key,
   });
 
@@ -25,7 +24,6 @@ class HeatmapCanvas extends StatefulWidget {
   final void Function(Offset metricPos)? onTap;
   final bool showPath;
   final int? activeFloor;
-  final Offset? currentPosition;
 
   @override
   State<HeatmapCanvas> createState() => _HeatmapCanvasState();
@@ -61,7 +59,6 @@ class _HeatmapCanvasState extends State<HeatmapCanvas> {
         final worldBounds = _WorldBounds.fromData(
           points: points,
           walls: widget.floorPlan?.walls ?? const [],
-          currentPosition: widget.currentPosition,
         );
         final viewport = _Viewport.fit(size, worldBounds);
 
@@ -103,7 +100,6 @@ class _HeatmapCanvasState extends State<HeatmapCanvas> {
                 floorPlan: widget.floorPlan,
                 viewport: viewport,
                 showPath: widget.showPath,
-                currentPosition: widget.currentPosition,
               ),
               child: const SizedBox.expand(),
             ),
@@ -120,14 +116,12 @@ class _HeatmapPainter extends CustomPainter {
     required this.floorPlan,
     required this.viewport,
     required this.showPath,
-    required this.currentPosition,
   });
 
   final List<HeatmapPoint> points;
   final FloorPlan? floorPlan;
   final _Viewport viewport;
   final bool showPath;
-  final Offset? currentPosition;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -147,10 +141,6 @@ class _HeatmapPainter extends CustomPainter {
 
     if (points.any((point) => point.isFlagged)) {
       _drawFlags(canvas, points.where((point) => point.isFlagged).toList());
-    }
-
-    if (currentPosition != null) {
-      _drawCurrentPosition(canvas, currentPosition!);
     }
   }
 
@@ -285,47 +275,6 @@ class _HeatmapPainter extends CustomPainter {
     }
   }
 
-  void _drawCurrentPosition(Canvas canvas, Offset currentPosition) {
-    final center = viewport.worldToCanvas(currentPosition);
-
-    // Premium Scanner Pulse
-    final pulsePaint =
-        Paint()
-          ..color = Colors.white.withValues(alpha: 0.4)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.5;
-
-    // Draw three ripples
-    canvas.drawCircle(center, 12, pulsePaint);
-    canvas.drawCircle(center, 24, pulsePaint..color = pulsePaint.color.withValues(alpha: 0.2));
-
-    // Core Marker
-    canvas.drawCircle(
-      center,
-      8.0,
-      Paint()
-        ..color = Colors.white.withValues(alpha: 0.95)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2.5,
-    );
-    canvas.drawCircle(
-      center,
-      3.0,
-      Paint()
-        ..color = Colors.white
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.0),
-    );
-
-    // Crosshair lines
-    final crossPaint =
-        Paint()
-          ..color = Colors.white.withValues(alpha: 0.6)
-          ..strokeWidth = 1.0;
-    canvas.drawLine(center - const Offset(14, 0), center - const Offset(6, 0), crossPaint);
-    canvas.drawLine(center + const Offset(6, 0), center + const Offset(14, 0), crossPaint);
-    canvas.drawLine(center - const Offset(0, 14), center - const Offset(0, 6), crossPaint);
-    canvas.drawLine(center + const Offset(0, 6), center + const Offset(0, 14), crossPaint);
-  }
 
   void _drawFlags(Canvas canvas, List<HeatmapPoint> points) {
     final fill =
@@ -430,8 +379,7 @@ class _HeatmapPainter extends CustomPainter {
       oldDelegate.points != points ||
       oldDelegate.floorPlan != floorPlan ||
       oldDelegate.viewport != viewport ||
-      oldDelegate.showPath != showPath ||
-      oldDelegate.currentPosition != currentPosition;
+      oldDelegate.showPath != showPath;
 }
 
 class _Viewport {
@@ -512,7 +460,6 @@ class _WorldBounds {
   factory _WorldBounds.fromData({
     required List<HeatmapPoint> points,
     required List<WallSegment> walls,
-    required Offset? currentPosition,
   }) {
     final xs = <double>[0];
     final ys = <double>[0];
@@ -528,10 +475,6 @@ class _WorldBounds {
       ys
         ..add(wall.y1)
         ..add(wall.y2);
-    }
-    if (currentPosition != null) {
-      xs.add(currentPosition.dx);
-      ys.add(currentPosition.dy);
     }
 
     var minX = xs.reduce(math.min);
