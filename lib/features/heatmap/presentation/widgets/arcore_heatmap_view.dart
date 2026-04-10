@@ -9,6 +9,7 @@ import 'package:vector_math/vector_math_64.dart' as vector;
 
 import '../../../../core/theme/app_theme.dart';
 import '../../domain/entities/heatmap_point.dart';
+import '../../domain/entities/wall_segment.dart';
 import '../../domain/services/signal_tier.dart';
 import '../../domain/services/survey_guidance_service.dart';
 import '../bloc/heatmap_bloc.dart';
@@ -42,6 +43,7 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
   int _renderedPointCount = 0;
   final Set<String> _renderedFlagKeys = <String>{};
   bool _originAttached = false;
+  vector.Vector3? _originWorldPos;
 
   @override
   void dispose() {
@@ -52,9 +54,11 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
   void _onArCoreViewCreated(ArCoreController controller) {
     _arCoreController = controller;
     controller.onPlaneTap = _handlePlaneTap;
+    controller.onPlaneDetected = _handlePlaneDetected;
     _renderedPointCount = 0;
     _renderedFlagKeys.clear();
     _originAttached = false;
+    _originWorldPos = null;
     if (context.read<HeatmapBloc>().state.hasArOrigin) {
       context.read<HeatmapBloc>().resetArOrigin();
     }
@@ -65,11 +69,9 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
 
     if (!_originAttached) {
       await _placeOrigin(hits.first);
-      return;
+    } else {
+      await _recordManualPoint(hits.first);
     }
-
-    // Post-origin tap: manually record a measurement point at current position.
-    await _recordManualPoint();
   }
 
   Future<void> _placeOrigin(ArCoreHitTestResult hit) async {
@@ -115,6 +117,7 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
     );
     await _arCoreController!.addArCoreNodeWithAnchor(originNode);
     _originAttached = true;
+    _originWorldPos = hit.pose.translation.clone();
     if (!mounted) return;
     HapticFeedback.heavyImpact();
     context.read<HeatmapBloc>().markArOriginPlaced();
@@ -145,18 +148,28 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
     );
   }
 
-  Future<void> _recordManualPoint() async {
+  Future<void> _recordManualPoint(ArCoreHitTestResult hit) async {
+    if (_originWorldPos == null) return;
     final bloc = context.read<HeatmapBloc>();
     final s = bloc.state;
-    if (s.currentRssi == null || s.currentPosition == null) return;
+    if (s.currentRssi == null) return;
+
+    // AR world displacement from origin → floor coordinates.
+    // Convention (used throughout _addFloorMarker):
+    //   AR node position = Vector3(floorX, y, -floorY)
+    // So: floorX = AR dx, floorY = -(AR dz)
+    final dx = hit.pose.translation.x - _originWorldPos!.x;
+    final dz = hit.pose.translation.z - _originWorldPos!.z;
+    final floorX = dx;
+    final floorY = -dz;
 
     HapticFeedback.mediumImpact();
     await bloc.addPoint(
       HeatmapPoint(
         x: 0,
         y: 0,
-        floorX: s.currentPosition!.dx,
-        floorY: s.currentPosition!.dy,
+        floorX: floorX,
+        floorY: floorY,
         floorZ: 0,
         heading: s.currentHeading,
         rssi: s.currentRssi!,
@@ -168,6 +181,36 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
         rssiStdDev: s.lastSignalStdDev,
       ),
     );
+
+    // Resync PDR to the verified AR position to prevent drift accumulation.
+    bloc.syncPositionFromAr(floorX, floorY);
+  }
+
+  void _handlePlaneDetected(ArCorePlane plane) {
+    if (plane.type != ArCorePlaneType.VERTICAL) return;
+    if (!_originAttached || _originWorldPos == null) return;
+    final centerPose = plane.centerPose;
+    if (centerPose == null) return;
+
+    // Rotate the plane's local X axis (wall length direction) into world space.
+    final q = centerPose.rotation; // (x,y,z,w)
+    final quat = vector.Quaternion(q.x, q.y, q.z, q.w);
+    final wallDir = vector.Vector3(1, 0, 0);
+    quat.rotate(wallDir); // world-space direction
+
+    final halfLen = (plane.extendX ?? 0.5) / 2;
+    final cx = centerPose.translation.x;
+    final cz = centerPose.translation.z;
+
+    // Convert world endpoints to floor coordinates relative to origin.
+    final floorSegment = WallSegment(
+      x1: (cx - wallDir.x * halfLen) - _originWorldPos!.x,
+      y1: -((cz - wallDir.z * halfLen) - _originWorldPos!.z),
+      x2: (cx + wallDir.x * halfLen) - _originWorldPos!.x,
+      y2: -((cz + wallDir.z * halfLen) - _originWorldPos!.z),
+    );
+
+    context.read<HeatmapBloc>().addWallFromAr(floorSegment);
   }
 
   /// Adds a single flat disc marker on the AR floor for [point].

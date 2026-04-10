@@ -11,6 +11,7 @@ abstract class PositionDataSource {
   void startTracking();
   void stopTracking();
   void setStepLength(double meters);
+  void setPosition(double x, double y);
 }
 
 class PositionUpdate {
@@ -43,8 +44,14 @@ class PositionDataSourceImpl implements PositionDataSource {
   @override
   void setStepLength(double meters) => _stepLength = meters;
 
+  @override
+  void setPosition(double x, double y) {
+    _x = x;
+    _y = y;
+    _controller.add(PositionUpdate(x: _x, y: _y, heading: _heading));
+  }
+
   static const _stepMagMin = 12.5;
-  static const _stepMagMax = 18.0;
   static const _stepMinInterval = 350;
 
   @override
@@ -62,9 +69,7 @@ class PositionDataSourceImpl implements PositionDataSource {
             event.x * event.x + event.y * event.y + event.z * event.z,
           );
           final now = DateTime.now().millisecondsSinceEpoch;
-          if (mag > _stepMagMin &&
-              mag < _stepMagMax &&
-              (now - _lastStepTime > _stepMinInterval)) {
+          if (mag > _stepMagMin && (now - _lastStepTime > _stepMinInterval)) {
             _lastStepTime = now;
             _onStep();
           }
