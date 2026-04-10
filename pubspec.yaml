@@ -69,7 +69,6 @@ dependencies:
   flutter_compass: ^0.8.0
   onnxruntime: ^1.4.1
   arcore_flutter_plugin: ^0.1.0
-  flutter_screen_recording: ^2.0.16
 
 
 dev_dependencies:

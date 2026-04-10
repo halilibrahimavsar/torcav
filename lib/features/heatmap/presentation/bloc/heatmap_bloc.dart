@@ -6,7 +6,6 @@ import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screen_recording/flutter_screen_recording.dart';
 import 'package:injectable/injectable.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
@@ -473,14 +472,32 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   void toggleArView() =>
       emit(state.copyWith(isArViewEnabled: !state.isArViewEnabled));
 
-  void markArOriginPlaced() {
-    emit(state.copyWith(hasArOrigin: true));
+  void markArOriginPlaced(double currentHeading) {
+    // ARCore -Z (forward) is typically 0 radians in its local frame if started
+    // facing forward. Our projection math in _SignalLabelOverlay expects
+    // 'Forward' to be 90 degrees (relative to local X axis).
+    //
+    // So we calculate the offset needed to rotate the absolute compass heading
+    // so that the current heading becomes '90' in our projection space.
+    final offset = currentHeading - 90.0;
+
+    emit(
+      state.copyWith(
+        hasArOrigin: true,
+        arOriginHeadingOffset: offset,
+      ),
+    );
     _refreshSurveyGate();
   }
 
   void resetArOrigin() {
-    emit(state.copyWith(hasArOrigin: false));
+    emit(state.copyWith(hasArOrigin: false, arOriginHeadingOffset: 0.0));
     _refreshSurveyGate();
+  }
+
+  void recalibrateHeading() {
+    if (!state.hasArOrigin) return;
+    markArOriginPlaced(state.currentHeading);
   }
 
   Future<void> flagCurrentWeakZone() async {
@@ -635,39 +652,5 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     );
   }
 
-  Future<void> startScreenRecording() async {
-    if (state.isScreenRecording) return;
-    try {
-      final fileName = 'torcav_ar_${DateTime.now().millisecondsSinceEpoch}';
-
-      final result = await FlutterScreenRecording.startRecordScreen(
-        fileName,
-        titleNotification: 'Torcav AR Scanning',
-        messageNotification: 'Recording AR Wifi Heatmap...',
-      );
-
-      if (result) {
-        emit(
-          state.copyWith(isScreenRecording: true, clearScreenRecordPath: true),
-        );
-      }
-    } catch (e) {
-      log('screen record start failed: $e');
-    }
-  }
-
-  Future<void> stopScreenRecording() async {
-    if (!state.isScreenRecording) return;
-    try {
-      final path = await FlutterScreenRecording.stopRecordScreen;
-      if (path.isNotEmpty) {
-        emit(state.copyWith(isScreenRecording: false, screenRecordPath: path));
-      } else {
-        emit(state.copyWith(isScreenRecording: false));
-      }
-    } catch (_) {
-      emit(state.copyWith(isScreenRecording: false));
-    }
-  }
 }
 

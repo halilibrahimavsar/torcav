@@ -120,7 +120,8 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
     _originWorldPos = hit.pose.translation.clone();
     if (!mounted) return;
     HapticFeedback.heavyImpact();
-    context.read<HeatmapBloc>().markArOriginPlaced();
+    final bloc = context.read<HeatmapBloc>();
+    bloc.markArOriginPlaced(bloc.state.currentHeading);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -435,6 +436,7 @@ class _SignalLabelOverlay extends StatelessWidget {
         camX: s.currentPosition?.dx ?? 0,
         camY: s.currentPosition?.dy ?? 0,
         heading: s.currentHeading,
+        headingOffset: s.arOriginHeadingOffset,
         hasOrigin: s.hasArOrigin,
       ),
       builder: (context, slice) {
@@ -451,7 +453,7 @@ class _SignalLabelOverlay extends StatelessWidget {
                 point,
                 slice.camX,
                 slice.camY,
-                slice.heading,
+                slice.heading - slice.headingOffset,
                 size,
               );
               if (screen == null) continue;
@@ -528,20 +530,34 @@ class _DbmPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.darkSurface.withValues(alpha: 0.82),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.7), width: 1),
+        color: Colors.black.withValues(alpha: 0.85),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.6), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.25),
+            blurRadius: 8,
+            spreadRadius: 1,
+          ),
+        ],
       ),
-      child: Text(
-        '$rssi dBm',
-        style: GoogleFonts.orbitron(
-          color: color,
-          fontSize: 10,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.8,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.waves_rounded, color: color, size: 10),
+          const SizedBox(width: 4),
+          Text(
+            '$rssi dBm',
+            style: GoogleFonts.orbitron(
+              color: color,
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -553,6 +569,7 @@ class _LabelOverlaySlice {
     required this.camX,
     required this.camY,
     required this.heading,
+    required this.headingOffset,
     required this.hasOrigin,
   });
 
@@ -560,6 +577,7 @@ class _LabelOverlaySlice {
   final double camX;
   final double camY;
   final double heading;
+  final double headingOffset;
   final bool hasOrigin;
 
   @override
@@ -569,9 +587,10 @@ class _LabelOverlaySlice {
       other.camX == camX &&
       other.camY == camY &&
       other.heading == heading &&
+      other.headingOffset == headingOffset &&
       other.hasOrigin == hasOrigin;
 
   @override
   int get hashCode =>
-      Object.hash(points, camX, camY, heading, hasOrigin);
+      Object.hash(points, camX, camY, heading, headingOffset, hasOrigin);
 }

@@ -23,10 +23,9 @@ class HeatmapState extends Equatable {
     this.lastSignalStdDev = 0.0,
     this.lastSignalSampleCount = 0,
     this.hasArOrigin = false,
+    this.arOriginHeadingOffset = 0.0,
     this.lastStepTimestamp,
     this.currentFloor = 0,
-    this.isScreenRecording = false,
-    this.screenRecordPath,
   });
 
   final List<HeatmapSession> sessions;
@@ -76,17 +75,15 @@ class HeatmapState extends Equatable {
   /// Whether the AR survey origin has been placed.
   final bool hasArOrigin;
 
+  /// Degrees to rotate compass heading to align magnetic North with AR forward.
+  final double arOriginHeadingOffset;
+
   /// Timestamp of the last physical step detected by the sensors.
   final DateTime? lastStepTimestamp;
 
   /// Current floor index relative to scan start (0 = starting floor).
   final int currentFloor;
 
-  /// Whether the user is currently recording the AR session to a video.
-  final bool isScreenRecording;
-
-  /// Path to the most recently saved AR session video.
-  final String? screenRecordPath;
 
   /// Whether the device supports AR features.
   final bool isArSupported;
@@ -122,12 +119,10 @@ class HeatmapState extends Equatable {
     double? lastSignalStdDev,
     int? lastSignalSampleCount,
     bool? hasArOrigin,
+    double? arOriginHeadingOffset,
     DateTime? lastStepTimestamp,
     bool clearLastStepTimestamp = false,
     int? currentFloor,
-    bool? isScreenRecording,
-    String? screenRecordPath,
-    bool clearScreenRecordPath = false,
   }) => HeatmapState(
     sessions: sessions ?? this.sessions,
     currentSession:
@@ -154,16 +149,12 @@ class HeatmapState extends Equatable {
     lastSignalStdDev: lastSignalStdDev ?? this.lastSignalStdDev,
     lastSignalSampleCount: lastSignalSampleCount ?? this.lastSignalSampleCount,
     hasArOrigin: hasArOrigin ?? this.hasArOrigin,
+    arOriginHeadingOffset: arOriginHeadingOffset ?? this.arOriginHeadingOffset,
     lastStepTimestamp:
         clearLastStepTimestamp
             ? null
             : lastStepTimestamp ?? this.lastStepTimestamp,
     currentFloor: currentFloor ?? this.currentFloor,
-    isScreenRecording: isScreenRecording ?? this.isScreenRecording,
-    screenRecordPath:
-        clearScreenRecordPath
-            ? null
-            : screenRecordPath ?? this.screenRecordPath,
   );
 
   @override
@@ -189,9 +180,8 @@ class HeatmapState extends Equatable {
     lastSignalStdDev,
     lastSignalSampleCount,
     hasArOrigin,
+    arOriginHeadingOffset,
     lastStepTimestamp,
     currentFloor,
-    isScreenRecording,
-    screenRecordPath,
   ];
 }

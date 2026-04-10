@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -14,7 +15,6 @@ import '../../domain/services/survey_guidance_service.dart';
 import '../bloc/heatmap_bloc.dart';
 import '../bloc/survey_gate.dart';
 import 'heatmap_canvas.dart';
-import 'screen_record_button.dart';
 
 /// Premium full-screen HUD overlay for the AR camera heatmap experience.
 ///
@@ -1522,7 +1522,15 @@ class _Dock extends StatelessWidget {
             onTap: onFlagWeakZone!,
           ),
         const SizedBox(height: 10),
-        const ScreenRecordButton(),
+        _DockButton(
+          icon: Icons.sync_problem_rounded,
+          tooltip: 'Recalibrate labels',
+          color: AppColors.neonCyan,
+          onTap: () {
+            HapticFeedback.mediumImpact();
+            context.read<HeatmapBloc>().recalibrateHeading();
+          },
+        ),
       ],
     );
   }
