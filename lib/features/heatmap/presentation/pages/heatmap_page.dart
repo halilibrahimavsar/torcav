@@ -73,10 +73,7 @@ class _HeatmapPageState extends State<HeatmapPage> {
 }
 
 class _HudToggleButton extends StatelessWidget {
-  const _HudToggleButton({
-    required this.isMinimized,
-    required this.onToggle,
-  });
+  const _HudToggleButton({required this.isMinimized, required this.onToggle});
 
   final bool isMinimized;
   final VoidCallback onToggle;
@@ -233,18 +230,22 @@ class _HeatmapViewState extends State<_HeatmapView> {
                   ),
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
-                  child: !_isHudMinimized
-                      ? Padding(
-                        key: const ValueKey('expanded_pilot'),
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                        child: _SurveyPilotCard(
-                          guidance: guidance,
-                          summary: summary,
-                          copy: copy,
-                          onToggle: () => setState(() => _isHudMinimized = true),
-                        ),
-                      )
-                      : const SizedBox.shrink(key: ValueKey('minimized_pilot_spacer')),
+                  child:
+                      !_isHudMinimized
+                          ? Padding(
+                            key: const ValueKey('expanded_pilot'),
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                            child: _SurveyPilotCard(
+                              guidance: guidance,
+                              summary: summary,
+                              copy: copy,
+                              onToggle:
+                                  () => setState(() => _isHudMinimized = true),
+                            ),
+                          )
+                          : const SizedBox.shrink(
+                            key: ValueKey('minimized_pilot_spacer'),
+                          ),
                 ),
               ],
               Expanded(
@@ -568,72 +569,6 @@ class _StatusBar extends StatelessWidget {
   }
 }
 
-// ignore: unused_element
-class _MissionCard extends StatelessWidget {
-  const _MissionCard({
-    required this.state,
-    required this.summary,
-    required this.copy,
-  });
-
-  final HeatmapState state;
-  final _HeatmapSummary summary;
-  final _HeatmapCopy copy;
-
-  @override
-  Widget build(BuildContext context) {
-    final mission = _mission();
-    return _InfoBanner(
-      color: mission.color,
-      icon: mission.icon,
-      title: mission.title,
-      body: mission.body,
-    );
-  }
-
-  _MissionData _mission() {
-    if (state.isRecording) {
-      if (!state.isArViewEnabled &&
-          state.currentRssi == null &&
-          summary.sampleCount == 0) {
-        return _MissionData(
-          color: AppColors.neonOrange,
-          icon: Icons.wifi_find_rounded,
-          title: copy.waitingForDataTitle,
-          body: copy.waitingForDataBody,
-        );
-      }
-
-      return _MissionData(
-        color: state.isArViewEnabled ? AppColors.neonCyan : AppColors.neonGreen,
-        icon:
-            state.isArViewEnabled
-                ? Icons.view_in_ar_rounded
-                : Icons.map_rounded,
-        title:
-            state.isArViewEnabled ? copy.arCaptureTitle : copy.mapCaptureTitle,
-        body: state.isArViewEnabled ? copy.arCaptureBody : copy.mapCaptureBody,
-      );
-    }
-
-    if (state.selectedSession != null) {
-      return _MissionData(
-        color: summary.coverageColor,
-        icon: Icons.analytics_rounded,
-        title: copy.reviewTitle,
-        body: copy.reviewBody(summary),
-      );
-    }
-
-    return _MissionData(
-      color: AppColors.neonCyan,
-      icon: Icons.home_work_outlined,
-      title: copy.goalTitle,
-      body: copy.goalBody,
-    );
-  }
-}
-
 class _SurveyPilotCard extends StatelessWidget {
   const _SurveyPilotCard({
     required this.guidance,
@@ -673,11 +608,7 @@ class _SurveyPilotCard extends StatelessWidget {
                     size: 32,
                   ),
                   const SizedBox(width: 8),
-                  Icon(
-                    copy.guidanceIcon(guidance),
-                    color: accent,
-                    size: 16,
-                  ),
+                  Icon(copy.guidanceIcon(guidance), color: accent, size: 16),
                   const SizedBox(width: 6),
                 ],
               ),
@@ -1176,60 +1107,6 @@ class _ViewModeBadge extends StatelessWidget {
   }
 }
 
-// ignore: unused_element
-class _InsightCard extends StatelessWidget {
-  const _InsightCard({
-    required this.state,
-    required this.summary,
-    required this.guidance,
-    required this.copy,
-  });
-
-  final HeatmapState state;
-  final _HeatmapSummary summary;
-  final SurveyGuidance guidance;
-  final _HeatmapCopy copy;
-
-  @override
-  Widget build(BuildContext context) {
-    return _InfoBanner(
-      color: summary.coverageColor,
-      icon: Icons.lightbulb_outline_rounded,
-      title: copy.findingsTitle,
-      body: _body(),
-    );
-  }
-
-  String _body() {
-    if (state.isRecording) {
-      if (guidance.readyToFinish) {
-        return copy.recordingInsightReady;
-      }
-      if (summary.sampleCount < 3) {
-        return copy.recordingInsightTooEarly;
-      }
-      if (summary.wallCount == 0) {
-        return copy.recordingInsightNoWalls;
-      }
-      return copy.recordingInsight(summary);
-    }
-
-    if (!summary.hasSamples) {
-      return copy.reviewInsightNoSamples;
-    }
-    if (!summary.hasPlan) {
-      return copy.reviewInsightNoPlan;
-    }
-    if (summary.weakZoneCount == 0 && (summary.averageRssi ?? -80) >= -60) {
-      return copy.reviewInsightStrong;
-    }
-    if (summary.weakZoneCount >= math.max(2, summary.sampleCount ~/ 3)) {
-      return copy.reviewInsightWeak(summary.weakZoneCount);
-    }
-    return copy.reviewInsightBalanced(summary.weakZoneCount);
-  }
-}
-
 class _ActionBar extends StatelessWidget {
   const _ActionBar({required this.state, required this.copy});
 
@@ -1471,177 +1348,6 @@ class _SessionPickerSheet extends StatelessWidget {
 
   String _formatTimestamp(DateTime dt) =>
       '${dt.day}.${dt.month}.${dt.year} ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}';
-}
-
-// ignore: unused_element
-class _RssiLegend extends StatelessWidget {
-  const _RssiLegend({required this.summary, required this.copy});
-
-  final _HeatmapSummary summary;
-  final _HeatmapCopy copy;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 176,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.darkSurface.withValues(alpha: 0.88),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.glassWhiteBorder),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            copy.legendTitle,
-            style: GoogleFonts.orbitron(
-              fontSize: 10,
-              color: AppColors.textMuted,
-              letterSpacing: 1.2,
-            ),
-          ),
-          const SizedBox(height: 8),
-          _LegendRow(
-            color: const Color(0xFF00E676),
-            label: copy.legendStrong,
-            trailing: '>-60 dBm',
-          ),
-          const SizedBox(height: 6),
-          _LegendRow(
-            color: const Color(0xFFFFD60A),
-            label: copy.legendFair,
-            trailing: '-60…-72 dBm',
-          ),
-          const SizedBox(height: 6),
-          _LegendRow(
-            color: const Color(0xFFFF3B30),
-            label: copy.legendWeak,
-            trailing: '<-72 dBm',
-          ),
-          if (summary.averageRssi != null) ...[
-            const SizedBox(height: 10),
-            Text(
-              '${copy.avgSignalLabel}: ${summary.averageRssi!.round()} dBm',
-              style: GoogleFonts.outfit(
-                color: AppColors.textSecondary,
-                fontSize: 11,
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _LegendRow extends StatelessWidget {
-  const _LegendRow({
-    required this.color,
-    required this.label,
-    required this.trailing,
-  });
-
-  final Color color;
-  final String label;
-  final String trailing;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 10,
-          height: 10,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            label,
-            style: GoogleFonts.outfit(
-              color: AppColors.textPrimary,
-              fontSize: 12,
-            ),
-          ),
-        ),
-        Text(
-          trailing,
-          style: GoogleFonts.outfit(color: AppColors.textMuted, fontSize: 11),
-        ),
-      ],
-    );
-  }
-}
-
-// ignore: unused_element
-class _MetricCard extends StatelessWidget {
-  const _MetricCard({
-    required this.label,
-    required this.value,
-    required this.helper,
-    required this.color,
-  });
-
-  final String label;
-  final String value;
-  final String helper;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 166,
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: AppColors.darkSurface.withValues(alpha: 0.9),
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: color.withValues(alpha: 0.24)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.orbitron(
-                color: color,
-                fontSize: 10,
-                letterSpacing: 1.1,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              value,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.outfit(
-                color: AppColors.textPrimary,
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Expanded(
-              child: Text(
-                helper,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.outfit(
-                  color: AppColors.textSecondary,
-                  fontSize: 12,
-                  height: 1.35,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class _FeedDot extends StatelessWidget {
@@ -2165,20 +1871,6 @@ class _MetricBounds {
   final double heightMeters;
 }
 
-class _MissionData {
-  const _MissionData({
-    required this.color,
-    required this.icon,
-    required this.title,
-    required this.body,
-  });
-
-  final Color color;
-  final IconData icon;
-  final String title;
-  final String body;
-}
-
 class _HeatmapCopy {
   const _HeatmapCopy._({required this.isTurkish});
 
@@ -2615,9 +2307,7 @@ class _SignalProbeOverlay extends StatelessWidget {
           GestureDetector(
             onTap: onDismiss,
             behavior: HitTestBehavior.opaque,
-            child: Container(
-              color: Colors.black.withValues(alpha: 0.2),
-            ),
+            child: Container(color: Colors.black.withValues(alpha: 0.2)),
           ),
           Center(
             child: Padding(
