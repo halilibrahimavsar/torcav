@@ -1,29 +1,33 @@
 import 'dart:async';
 import 'dart:math' as math;
+
 import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screen_recording/flutter_screen_recording.dart';
 import 'package:injectable/injectable.dart';
 import 'package:network_info_plus/network_info_plus.dart';
-import 'package:flutter_screen_recording/flutter_screen_recording.dart';
-import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../../data/datasources/barometer_datasource.dart';
 import '../../data/datasources/position_datasource.dart';
 import '../../data/datasources/wall_detector_datasource.dart';
+import '../../domain/entities/connected_signal.dart';
 import '../../domain/entities/floor_plan.dart';
 import '../../domain/entities/heatmap_point.dart';
 import '../../domain/entities/heatmap_session.dart';
 import '../../domain/entities/wall_segment.dart';
 import '../../domain/repositories/heatmap_repository.dart';
+import '../../domain/services/ar_capability_service.dart';
+import '../../domain/services/connected_signal_service.dart';
+import '../../domain/services/connected_signal_smoother.dart';
 import '../../domain/usecases/finalize_floor_plan.dart';
 import '../../domain/usecases/get_heatmap_sessions_usecase.dart';
 import '../../../wifi_scan/domain/entities/scan_request.dart';
-import '../../../wifi_scan/domain/entities/wifi_network.dart';
 import '../../../wifi_scan/domain/usecases/scan_wifi.dart';
 import 'scan_phase.dart';
+import 'survey_gate.dart';
 
 part 'heatmap_state.dart';
 
@@ -38,6 +42,9 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     this._networkInfo,
     this._barometerSource,
     this._finalizeFloorPlan,
+    this._arCapabilityService,
+    this._connectedSignalService,
+    this._signalSmoother,
   ) : super(const HeatmapState());
 
   final GetHeatmapSessionsUsecase _getSessions;
@@ -48,29 +55,45 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   final NetworkInfo _networkInfo;
   final BarometerDataSource _barometerSource;
   final FinalizeFloorPlan _finalizeFloorPlan;
+  final ArCapabilityService _arCapabilityService;
+  final ConnectedSignalService _connectedSignalService;
+  final ConnectedSignalSmoother _signalSmoother;
 
-  StreamSubscription<PositionUpdate>? _positionSubscription;
-  bool _isProcessingCameraFrame = false;
-  DateTime? _lastWallFrameAt;
-
-  // WiFi RSSI cache — avoids hitting Android's scan throttle (4 scans/2 min)
-  List<WifiNetwork> _cachedNetworks = [];
-  DateTime? _lastScanTime;
-  String? _targetBssid;
   static const _scanCooldown = Duration(seconds: 30);
   static const _wallProcessingCooldown = Duration(milliseconds: 250);
+  static const _signalPollInterval = Duration(seconds: 1);
+  static const _signalFreshness = Duration(seconds: 3);
+  static const _minimumPointDistanceMeters = 0.5;
+  static const _flagMergeDistanceMeters = 0.65;
+  static const _signalWindowSize = 5;
+
+  StreamSubscription<PositionUpdate>? _positionSubscription;
+  Timer? _signalPollTimer;
+  bool _isProcessingCameraFrame = false;
+  DateTime? _lastWallFrameAt;
+  DateTime? _lastScanTime;
+  final List<int> _signalWindow = [];
 
   Future<void> loadSessions() async {
     emit(state.copyWith(isLoading: true, clearFailure: true));
-    
-    // Check ARCore support in background
-    final bool isArSupported = await ArCoreController.checkArCoreAvailability() && 
-                      await ArCoreController.checkIsArCoreInstalled();
 
+    final isArSupported = await _arCapabilityService.isArSupported();
     final result = await _getSessions();
     result.fold(
-      (failure) => emit(state.copyWith(failure: failure, isLoading: false, isArSupported: isArSupported)),
-      (sessions) => emit(state.copyWith(sessions: sessions, isLoading: false, isArSupported: isArSupported)),
+      (failure) => emit(
+        state.copyWith(
+          failure: failure,
+          isLoading: false,
+          isArSupported: isArSupported,
+        ),
+      ),
+      (sessions) => emit(
+        state.copyWith(
+          sessions: sessions,
+          isLoading: false,
+          isArSupported: isArSupported,
+        ),
+      ),
     );
   }
 
@@ -83,11 +106,11 @@ class HeatmapBloc extends Cubit<HeatmapState> {
       createdAt: DateTime.now(),
     );
 
-    _cachedNetworks = [];
+    _signalWindow.clear();
     _lastScanTime = null;
-    _targetBssid = null;
     _isProcessingCameraFrame = false;
     _lastWallFrameAt = null;
+    _cancelSignalPolling();
 
     emit(
       state.copyWith(
@@ -97,6 +120,9 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         clearFailure: true,
         clearSelectedSession: true,
         clearCurrentRssi: true,
+        clearLastSignalAt: true,
+        lastSignalStdDev: 0,
+        lastSignalSampleCount: 0,
         clearLastStepTimestamp: true,
         currentPosition: Offset.zero,
         currentFloor: 0,
@@ -106,15 +132,21 @@ class HeatmapBloc extends Cubit<HeatmapState> {
           widthMeters: 40,
           heightMeters: 40,
         ),
+        hasArOrigin: false,
+        surveyGate:
+            state.isArSupported
+                ? SurveyGate.originNotPlaced
+                : SurveyGate.noConnectedBssid,
+        clearTargetBssid: true,
+        clearTargetSsid: true,
       ),
     );
 
-    // Resolve target BSSID once so we can prefer the connected AP's RSSI.
-    unawaited(_initTargetBssid());
+    await _resolveTargetAccessPoint();
+    _startSignalPolling();
+    unawaited(refreshConnectedSignal());
+    unawaited(runMetadataScan());
 
-    // Floor tracking is intentionally disabled for now.
-    // On some MIUI/MediaTek devices optional sensor channels (especially
-    // pressure) introduce startup jank before any survey data is collected.
     _barometerSource.stopTracking();
 
     await _positionSubscription?.cancel();
@@ -123,15 +155,156 @@ class HeatmapBloc extends Cubit<HeatmapState> {
       _handlePositionUpdate,
     );
     _positionEngine.startTracking();
+    _refreshSurveyGate();
   }
 
-  Future<void> _initTargetBssid() async {
+  Future<void> _resolveTargetAccessPoint() async {
+    ConnectedSignal? connectedSignal;
     try {
-      final bssid = await _networkInfo.getWifiBSSID();
-      _targetBssid = bssid?.toUpperCase();
+      connectedSignal = await _connectedSignalService.getConnectedSignal();
     } catch (_) {
-      // Permission or platform error — fall back to strongest AP.
+      connectedSignal = null;
     }
+
+    String? bssid = connectedSignal?.bssid.toUpperCase();
+    String? ssid = connectedSignal?.ssid;
+
+    if (bssid == null || bssid.isEmpty) {
+      try {
+        bssid = (await _networkInfo.getWifiBSSID())?.toUpperCase();
+      } catch (_) {}
+    }
+    if (ssid == null || ssid.isEmpty) {
+      try {
+        final rawSsid = await _networkInfo.getWifiName();
+        ssid = rawSsid?.replaceAll('"', '');
+      } catch (_) {}
+    }
+
+    emit(
+      state.copyWith(
+        targetBssid: bssid,
+        targetSsid: ssid,
+        clearTargetBssid: bssid == null || bssid.isEmpty,
+        clearTargetSsid: ssid == null || ssid.isEmpty,
+      ),
+    );
+    _refreshSurveyGate();
+  }
+
+  void _startSignalPolling() {
+    _cancelSignalPolling();
+    _signalPollTimer = Timer.periodic(_signalPollInterval, (_) {
+      unawaited(refreshConnectedSignal());
+    });
+  }
+
+  void _cancelSignalPolling() {
+    _signalPollTimer?.cancel();
+    _signalPollTimer = null;
+  }
+
+  Future<void> refreshConnectedSignal() async {
+    if (!state.isRecording || state.phase != ScanPhase.scanning) return;
+
+    final sample = await _connectedSignalService.getConnectedSignal();
+    if (sample == null) {
+      _signalWindow.clear();
+      emit(
+        state.copyWith(
+          clearCurrentRssi: true,
+          clearLastSignalAt: true,
+          lastSignalStdDev: 0,
+          lastSignalSampleCount: 0,
+        ),
+      );
+      _refreshSurveyGate(forceGate: SurveyGate.noConnectedBssid);
+      return;
+    }
+
+    final normalizedBssid = sample.bssid.toUpperCase();
+    final targetBssid = state.targetBssid?.toUpperCase();
+    if (targetBssid == null || targetBssid.isEmpty) {
+      emit(
+        state.copyWith(
+          targetBssid: normalizedBssid,
+          targetSsid: sample.ssid.isEmpty ? state.targetSsid : sample.ssid,
+        ),
+      );
+    } else if (normalizedBssid != targetBssid) {
+      _signalWindow.clear();
+      emit(
+        state.copyWith(
+          clearCurrentRssi: true,
+          clearLastSignalAt: true,
+          lastSignalStdDev: 0,
+          lastSignalSampleCount: 0,
+        ),
+      );
+      _refreshSurveyGate(forceGate: SurveyGate.noConnectedBssid);
+      return;
+    }
+
+    _signalWindow.add(sample.rssi);
+    if (_signalWindow.length > _signalWindowSize) {
+      _signalWindow.removeAt(0);
+    }
+
+    final smoothed = _signalSmoother.smooth(_signalWindow);
+    if (smoothed == null) {
+      _refreshSurveyGate(forceGate: SurveyGate.staleSignal);
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        targetBssid: normalizedBssid,
+        targetSsid: sample.ssid.isEmpty ? state.targetSsid : sample.ssid,
+        currentRssi: smoothed.rssi,
+        lastSignalAt: sample.timestamp,
+        lastSignalStdDev: smoothed.stdDev,
+        lastSignalSampleCount: smoothed.sampleCount,
+      ),
+    );
+
+    final now = DateTime.now();
+    final shouldRescan =
+        _lastScanTime == null || now.difference(_lastScanTime!) > _scanCooldown;
+    if (shouldRescan) {
+      unawaited(runMetadataScan());
+    }
+
+    _refreshSurveyGate();
+  }
+
+  Future<void> runMetadataScan() async {
+    if (!state.isRecording) return;
+
+    _lastScanTime = DateTime.now();
+    final result = await _scanWifi(
+      request: const ScanRequest(passes: 3, passIntervalMs: 300),
+    );
+    result.fold((_) {}, (snapshot) {
+      final match =
+          snapshot.networks
+              .where(
+                (network) =>
+                    network.bssid.toUpperCase() ==
+                    state.targetBssid?.toUpperCase(),
+              )
+              .firstOrNull;
+      if (match == null) return;
+
+      emit(
+        state.copyWith(
+          targetSsid: match.ssid.isEmpty ? state.targetSsid : match.ssid,
+          lastSignalStdDev: math.max(
+            state.lastSignalStdDev,
+            match.signalStdDev,
+          ),
+        ),
+      );
+    });
   }
 
   void _handlePositionUpdate(PositionUpdate pos) {
@@ -146,85 +319,89 @@ class HeatmapBloc extends Cubit<HeatmapState> {
       ),
     );
 
-    // Only sample RSSI and record a point on actual physical steps,
-    // not on every compass heading update.
-    if (pos.isStep) unawaited(_sampleRssi(offset));
+    _refreshSurveyGate();
+    if (pos.isStep) {
+      _recordCurrentPosition(offset);
+    }
   }
 
-  Future<void> _sampleRssi(Offset pos) async {
-    final now = DateTime.now();
-    final shouldRescan =
-        _lastScanTime == null || now.difference(_lastScanTime!) > _scanCooldown;
-
-    if (shouldRescan) {
-      _lastScanTime = now;
-      final result = await _scanWifi(
-        request: const ScanRequest(passes: 1, passIntervalMs: 200),
-      );
-      result.fold(
-        (_) {}, // On failure keep using cached results.
-        (snapshot) => _cachedNetworks = snapshot.toLegacyNetworks(),
-      );
-    }
-
-    if (_cachedNetworks.isEmpty) return;
-
-    final int rssi;
-    if (_targetBssid != null) {
-      final match =
-          _cachedNetworks
-              .where((n) => n.bssid.toUpperCase() == _targetBssid)
-              .firstOrNull;
-      rssi =
-          match?.signalStrength ??
-          _cachedNetworks.map((n) => n.signalStrength).reduce(math.max);
-    } else {
-      rssi = _cachedNetworks.map((n) => n.signalStrength).reduce(math.max);
-    }
-
-    emit(state.copyWith(currentRssi: rssi));
-    _recordLivePoint(pos, rssi);
-  }
-
-  void _recordLivePoint(Offset pos, int rssi) {
+  void _recordCurrentPosition(Offset pos) {
     final session = state.currentSession;
-    if (session == null) return;
+    final signalAge = _currentSignalAge;
+    if (session == null ||
+        state.surveyGate != SurveyGate.none ||
+        state.currentRssi == null ||
+        signalAge == null ||
+        signalAge > _signalFreshness) {
+      return;
+    }
 
     final newPoint = HeatmapPoint(
       x: 0,
       y: 0,
       floorX: pos.dx,
       floorY: pos.dy,
-      rssi: rssi,
+      floorZ: 0,
+      heading: state.currentHeading,
+      rssi: state.currentRssi!,
+      timestamp: state.lastSignalAt ?? DateTime.now(),
+      ssid: state.targetSsid ?? '',
+      bssid: state.targetBssid ?? '',
       floor: state.currentFloor,
-      timestamp: DateTime.now(),
+      sampleCount: state.lastSignalSampleCount,
+      rssiStdDev: state.lastSignalStdDev,
     );
 
     if (!_shouldRecordPoint(session, newPoint)) return;
 
-    final updatedSession = session.copyWith(
-      points: [...session.points, newPoint],
+    emit(
+      state.copyWith(
+        currentSession: session.copyWith(points: [...session.points, newPoint]),
+      ),
     );
-
-    emit(state.copyWith(currentSession: updatedSession));
   }
 
   bool _shouldRecordPoint(HeatmapSession session, HeatmapPoint nextPoint) {
     if (session.points.isEmpty) return true;
-
     final lastPoint = session.points.last;
     final dx = nextPoint.floorX - lastPoint.floorX;
     final dy = nextPoint.floorY - lastPoint.floorY;
     final distance = math.sqrt(dx * dx + dy * dy);
-    final elapsed = nextPoint.timestamp.difference(lastPoint.timestamp);
-    final rssiDelta = (nextPoint.rssi - lastPoint.rssi).abs();
+    return distance >= _minimumPointDistanceMeters;
+  }
 
-    final tooClose = distance < 0.35;
-    final tooSoon = elapsed < const Duration(seconds: 2);
-    final sameFloor = nextPoint.floor == lastPoint.floor;
-    final verySimilarSignal = rssiDelta < 3;
+  Duration? get _currentSignalAge {
+    final lastSignalAt = state.lastSignalAt;
+    if (lastSignalAt == null) return null;
+    return DateTime.now().difference(lastSignalAt);
+  }
 
-    return !(tooClose && tooSoon && sameFloor && verySimilarSignal);
+  void _refreshSurveyGate({SurveyGate? forceGate}) {
+    final gate = forceGate ?? _resolveSurveyGate();
+    if (gate != state.surveyGate) {
+      emit(state.copyWith(surveyGate: gate));
+    }
+  }
+
+  SurveyGate _resolveSurveyGate() {
+    if (!state.isRecording) return SurveyGate.none;
+    if (state.targetBssid == null || state.targetBssid!.isEmpty) {
+      return SurveyGate.noConnectedBssid;
+    }
+    if (state.isArSupported && !state.hasArOrigin) {
+      return SurveyGate.originNotPlaced;
+    }
+    if (state.currentPosition == null) {
+      return SurveyGate.trackingLost;
+    }
+    if (state.currentRssi == null) {
+      return SurveyGate.noConnectedBssid;
+    }
+    final signalAge = _currentSignalAge;
+    if (signalAge == null || signalAge > _signalFreshness) {
+      return SurveyGate.staleSignal;
+    }
+    return SurveyGate.none;
   }
 
   Future<void> processCameraImage(dynamic cameraImage) async {
@@ -258,9 +435,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
       final worldWalls = List<WallSegment>.from(currentPlan.walls);
 
       for (final sw in screenWalls) {
-        // Higher y in image (smaller sw.y1) roughly means the wall is further away.
         final depth = 5.0 - (sw.y1 * 3);
-
         final worldX = pos.dx + depth * math.sin(rad);
         final worldY = pos.dy - depth * math.cos(rad);
 
@@ -272,9 +447,9 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         );
 
         final exists = worldWalls.any(
-          (w) =>
-              (w.x1 - newWall.x1).abs() < 0.4 &&
-              (w.y1 - newWall.y1).abs() < 0.4,
+          (wall) =>
+              (wall.x1 - newWall.x1).abs() < 0.4 &&
+              (wall.y1 - newWall.y1).abs() < 0.4,
         );
         if (!exists) {
           worldWalls.add(newWall);
@@ -290,9 +465,63 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   }
 
   void pauseScanning() => emit(state.copyWith(phase: ScanPhase.paused));
-  void resumeScanning() => emit(state.copyWith(phase: ScanPhase.scanning));
+
+  void resumeScanning() {
+    emit(state.copyWith(phase: ScanPhase.scanning));
+    _refreshSurveyGate();
+  }
+
   void toggleArView() =>
       emit(state.copyWith(isArViewEnabled: !state.isArViewEnabled));
+
+  void markArOriginPlaced() {
+    emit(state.copyWith(hasArOrigin: true));
+    _refreshSurveyGate();
+  }
+
+  void resetArOrigin() {
+    emit(state.copyWith(hasArOrigin: false));
+    _refreshSurveyGate();
+  }
+
+  Future<void> flagCurrentWeakZone() async {
+    final session = state.currentSession;
+    final pos = state.currentPosition;
+    final rssi = state.currentRssi;
+    if (session == null || pos == null || rssi == null) return;
+
+    final points = [...session.points];
+    final existingIndex = points.indexWhere((point) {
+      final dx = point.floorX - pos.dx;
+      final dy = point.floorY - pos.dy;
+      return math.sqrt(dx * dx + dy * dy) <= _flagMergeDistanceMeters;
+    });
+
+    if (existingIndex != -1) {
+      points[existingIndex] = points[existingIndex].copyWith(isFlagged: true);
+    } else {
+      points.add(
+        HeatmapPoint(
+          x: 0,
+          y: 0,
+          floorX: pos.dx,
+          floorY: pos.dy,
+          floorZ: 0,
+          heading: state.currentHeading,
+          rssi: rssi,
+          timestamp: state.lastSignalAt ?? DateTime.now(),
+          ssid: state.targetSsid ?? '',
+          bssid: state.targetBssid ?? '',
+          floor: state.currentFloor,
+          sampleCount: state.lastSignalSampleCount,
+          rssiStdDev: state.lastSignalStdDev,
+          isFlagged: true,
+        ),
+      );
+    }
+
+    emit(state.copyWith(currentSession: session.copyWith(points: points)));
+  }
 
   Future<void> stopScanning() async {
     if (!state.isRecording) return;
@@ -300,11 +529,11 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     await _positionSubscription?.cancel();
     _positionEngine.stopTracking();
     _barometerSource.stopTracking();
+    _cancelSignalPolling();
 
     var session = state.currentSession;
     if (session == null) return;
 
-    // Cluster accumulated walls into a clean floor plan before saving.
     final walls = state.liveFloorPlan?.walls ?? [];
     if (walls.isNotEmpty) {
       final planResult = await _finalizeFloorPlan(walls);
@@ -329,6 +558,14 @@ class HeatmapBloc extends Cubit<HeatmapState> {
             liveFloorPlan: savedSession.floorPlan,
             clearLiveFloorPlan: savedSession.floorPlan == null,
             pendingWalls: const [],
+            surveyGate: SurveyGate.none,
+            hasArOrigin: false,
+            clearTargetBssid: true,
+            clearTargetSsid: true,
+            clearCurrentRssi: true,
+            clearLastSignalAt: true,
+            lastSignalStdDev: 0,
+            lastSignalSampleCount: 0,
           ),
         );
       },
@@ -337,16 +574,25 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
   @override
   Future<void> close() {
+    _cancelSignalPolling();
     _positionSubscription?.cancel();
     _positionEngine.stopTracking();
     _barometerSource.stopTracking();
     return super.close();
   }
 
-  void startSession(String name) => startScanning(name);
-  void stopSession() => stopScanning();
+  void startSession(String name) => unawaited(startScanning(name));
+
+  void stopSession() => unawaited(stopScanning());
+
   Future<void> addPoint(HeatmapPoint point) async {
-    _recordLivePoint(Offset(point.floorX, point.floorY), point.rssi);
+    final session = state.currentSession;
+    if (session == null) return;
+    emit(
+      state.copyWith(
+        currentSession: session.copyWith(points: [...session.points, point]),
+      ),
+    );
   }
 
   void selectSession(HeatmapSession session) {
@@ -394,37 +640,31 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     if (state.isScreenRecording) return;
     try {
       final fileName = 'torcav_ar_${DateTime.now().millisecondsSinceEpoch}';
-      
-      final bool result = await FlutterScreenRecording.startRecordScreen(
+
+      final result = await FlutterScreenRecording.startRecordScreen(
         fileName,
         titleNotification: 'Torcav AR Scanning',
         messageNotification: 'Recording AR Wifi Heatmap...',
       );
-      
+
       if (result) {
-        emit(state.copyWith(
-          isScreenRecording: true,
-          clearScreenRecordPath: true,
-        ));
+        emit(
+          state.copyWith(isScreenRecording: true, clearScreenRecordPath: true),
+        );
       }
-    } catch (e) {
-      // Ignore start errors
-    }
+    } catch (_) {}
   }
 
   Future<void> stopScreenRecording() async {
     if (!state.isScreenRecording) return;
     try {
-      final String path = await FlutterScreenRecording.stopRecordScreen;
+      final path = await FlutterScreenRecording.stopRecordScreen;
       if (path.isNotEmpty) {
-        emit(state.copyWith(
-          isScreenRecording: false,
-          screenRecordPath: path,
-        ));
+        emit(state.copyWith(isScreenRecording: false, screenRecordPath: path));
       } else {
         emit(state.copyWith(isScreenRecording: false));
       }
-    } catch (e) {
+    } catch (_) {
       emit(state.copyWith(isScreenRecording: false));
     }
   }

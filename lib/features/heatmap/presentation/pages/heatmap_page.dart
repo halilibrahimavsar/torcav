@@ -99,44 +99,45 @@ class _HeatmapViewState extends State<_HeatmapView> {
     return Scaffold(
       backgroundColor: AppColors.deepBlack,
       resizeToAvoidBottomInset: false,
-      appBar: _isFullScreenOpen
-          ? null
-          : AppBar(
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  NeonText(
-                    copy.pageTitle,
-                    style: GoogleFonts.orbitron(
-                      color: AppColors.neonCyan,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.6,
+      appBar:
+          _isFullScreenOpen
+              ? null
+              : AppBar(
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    NeonText(
+                      copy.pageTitle,
+                      style: GoogleFonts.orbitron(
+                        color: AppColors.neonCyan,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.6,
+                      ),
+                      glowRadius: 8,
                     ),
-                    glowRadius: 8,
-                  ),
-                  Text(
-                    copy.pageSubtitle,
-                    style: GoogleFonts.outfit(
-                      color: AppColors.textSecondary,
-                      fontSize: 11,
+                    Text(
+                      copy.pageSubtitle,
+                      style: GoogleFonts.outfit(
+                        color: AppColors.textSecondary,
+                        fontSize: 11,
+                      ),
                     ),
+                  ],
+                ),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.history_rounded),
+                    color: AppColors.neonCyan,
+                    tooltip: copy.historyTooltip,
+                    onPressed: () => _showSessionsPicker(context, copy),
                   ),
                 ],
               ),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.history_rounded),
-                  color: AppColors.neonCyan,
-                  tooltip: copy.historyTooltip,
-                  onPressed: () => _showSessionsPicker(context, copy),
-                ),
-              ],
-            ),
       body: BlocBuilder<HeatmapBloc, HeatmapState>(
         builder: (context, state) {
           final session =
@@ -162,8 +163,12 @@ class _HeatmapViewState extends State<_HeatmapView> {
             floorPlan: floorPlan,
             isRecording: state.isRecording,
             isArViewEnabled: state.isArViewEnabled,
+            hasArOrigin: state.hasArOrigin,
             pendingWallCount: state.pendingWalls.length,
             currentRssi: state.currentRssi,
+            surveyGate: state.surveyGate,
+            lastSignalAt: state.lastSignalAt,
+            currentSignalStdDev: state.lastSignalStdDev,
             currentX: state.currentPosition?.dx,
             currentY: state.currentPosition?.dy,
           );
@@ -196,77 +201,83 @@ class _HeatmapViewState extends State<_HeatmapView> {
               ],
               Expanded(
                 child: Padding(
-                  padding: _isFullScreenOpen ? EdgeInsets.zero : const EdgeInsets.all(12),
+                  padding:
+                      _isFullScreenOpen
+                          ? EdgeInsets.zero
+                          : const EdgeInsets.all(12),
                   child: ClipRRect(
-                    borderRadius: _isFullScreenOpen ? BorderRadius.zero : BorderRadius.circular(24),
+                    borderRadius:
+                        _isFullScreenOpen
+                            ? BorderRadius.zero
+                            : BorderRadius.circular(24),
                     child:
                         state.isArViewEnabled &&
                                 state.isRecording &&
                                 state.phase == ScanPhase.scanning
                             ? (state.isArSupported
                                 ? ArCoreHeatmapView(
-                                    key: _arViewKey,
-                                    immersive: _isFullScreenOpen,
-                                    onExpand: () => _toggleFullScreen(true),
-                                    onCollapse: () => _toggleFullScreen(false),
-                                  )
+                                  key: _arViewKey,
+                                  immersive: _isFullScreenOpen,
+                                  onExpand: () => _toggleFullScreen(true),
+                                  onCollapse: () => _toggleFullScreen(false),
+                                )
                                 : ArCameraView(
-                                    key: _cameraFallbackKey,
-                                    immersive: _isFullScreenOpen,
-                                    onExpand: () => _toggleFullScreen(true),
-                                    onCollapse: () => _toggleFullScreen(false),
-                                  ))
+                                  key: _cameraFallbackKey,
+                                  immersive: _isFullScreenOpen,
+                                  onExpand: () => _toggleFullScreen(true),
+                                  onCollapse: () => _toggleFullScreen(false),
+                                ))
                             : Stack(
-                                children: [
-                                  _CanvasBackdrop(summary: summary),
-                                  HeatmapCanvas(
-                                    session: session,
-                                    floorPlan: floorPlan,
-                                    showPath: session.points.isNotEmpty,
-                                    activeFloor:
+                              children: [
+                                _CanvasBackdrop(summary: summary),
+                                HeatmapCanvas(
+                                  session: session,
+                                  floorPlan: floorPlan,
+                                  showPath: session.points.isNotEmpty,
+                                  activeFloor:
+                                      state.isRecording
+                                          ? state.currentFloor
+                                          : null,
+                                  currentPosition:
+                                      state.isRecording
+                                          ? state.currentPosition
+                                          : null,
+                                ),
+                                if (_shouldShowCanvasEmptyState(state, summary))
+                                  _CanvasEmptyState(state: state, copy: copy),
+                                Positioned(
+                                  top: 14,
+                                  left: 14,
+                                  child: _ViewModeBadge(
+                                    label:
                                         state.isRecording
-                                            ? state.currentFloor
-                                            : null,
-                                    currentPosition:
-                                        state.isRecording
-                                            ? state.currentPosition
-                                            : null,
+                                            ? (state.isArViewEnabled
+                                                ? copy.cameraViewLabel
+                                                : copy.mapViewLabel)
+                                            : copy.resultViewLabel,
                                   ),
-                                  if (_shouldShowCanvasEmptyState(state, summary))
-                                    _CanvasEmptyState(state: state, copy: copy),
+                                ),
+                                if (state.isRecording)
                                   Positioned(
                                     top: 14,
-                                    left: 14,
-                                    child: _ViewModeBadge(
-                                      label:
-                                          state.isRecording
-                                              ? (state.isArViewEnabled
-                                                  ? copy.cameraViewLabel
-                                                  : copy.mapViewLabel)
-                                              : copy.resultViewLabel,
-                                    ),
-                                  ),
-                                  if (state.isRecording)
-                                    Positioned(
-                                      top: 14,
-                                      right: 14,
-                                      child: _RouteCueBadge(
-                                        guidance: guidance,
-                                        copy: copy,
-                                      ),
-                                    ),
-                                  Positioned(
-                                    left: 12,
-                                    right: 12,
-                                    bottom: 12,
-                                    child: _MetricsStrip(
-                                      state: state,
-                                      summary: summary,
+                                    right: 14,
+                                    child: _RouteCueBadge(
+                                      guidance: guidance,
                                       copy: copy,
                                     ),
                                   ),
-                                ],
-                              ),
+                                Positioned(
+                                  left: 12,
+                                  right: 12,
+                                  bottom: 12,
+                                  child: _MetricsStrip(
+                                    state: state,
+                                    summary: summary,
+                                    copy: copy,
+                                  ),
+                                ),
+                              ],
+                            ),
                   ),
                 ),
               ),
@@ -1887,7 +1898,8 @@ class _HeatmapSummary {
             ? null
             : points.map((point) => point.rssi).reduce((a, b) => a + b) /
                 points.length;
-    final weakZoneCount = points.where((point) => point.rssi < -72).length;
+    final weakZoneCount =
+        points.where((point) => point.rssi < -72 || point.isFlagged).length;
     final bounds = _MetricBounds.from(
       points: points,
       walls: floorPlan?.walls ?? const [],

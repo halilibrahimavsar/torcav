@@ -16,6 +16,13 @@ class HeatmapState extends Equatable {
     this.pendingWalls = const [],
     this.isArViewEnabled = true,
     this.isArSupported = false,
+    this.targetBssid,
+    this.targetSsid,
+    this.surveyGate = SurveyGate.none,
+    this.lastSignalAt,
+    this.lastSignalStdDev = 0.0,
+    this.lastSignalSampleCount = 0,
+    this.hasArOrigin = false,
     this.lastStepTimestamp,
     this.currentFloor = 0,
     this.isScreenRecording = false,
@@ -49,6 +56,25 @@ class HeatmapState extends Equatable {
 
   /// Whether the AR camera view is currently active (vs 2D map).
   final bool isArViewEnabled;
+
+  /// Locked target access point for the current survey.
+  final String? targetBssid;
+  final String? targetSsid;
+
+  /// Gate that currently blocks measurements.
+  final SurveyGate surveyGate;
+
+  /// Timestamp of the freshest stabilized signal sample.
+  final DateTime? lastSignalAt;
+
+  /// Standard deviation for the current stabilized RSSI sample window.
+  final double lastSignalStdDev;
+
+  /// Number of raw RSSI samples backing the current stabilized value.
+  final int lastSignalSampleCount;
+
+  /// Whether the AR survey origin has been placed.
+  final bool hasArOrigin;
 
   /// Timestamp of the last physical step detected by the sensors.
   final DateTime? lastStepTimestamp;
@@ -86,6 +112,16 @@ class HeatmapState extends Equatable {
     List<WallSegment>? pendingWalls,
     bool? isArViewEnabled,
     bool? isArSupported,
+    String? targetBssid,
+    bool clearTargetBssid = false,
+    String? targetSsid,
+    bool clearTargetSsid = false,
+    SurveyGate? surveyGate,
+    DateTime? lastSignalAt,
+    bool clearLastSignalAt = false,
+    double? lastSignalStdDev,
+    int? lastSignalSampleCount,
+    bool? hasArOrigin,
     DateTime? lastStepTimestamp,
     bool clearLastStepTimestamp = false,
     int? currentFloor,
@@ -111,13 +147,23 @@ class HeatmapState extends Equatable {
     pendingWalls: pendingWalls ?? this.pendingWalls,
     isArViewEnabled: isArViewEnabled ?? this.isArViewEnabled,
     isArSupported: isArSupported ?? this.isArSupported,
+    targetBssid: clearTargetBssid ? null : targetBssid ?? this.targetBssid,
+    targetSsid: clearTargetSsid ? null : targetSsid ?? this.targetSsid,
+    surveyGate: surveyGate ?? this.surveyGate,
+    lastSignalAt: clearLastSignalAt ? null : lastSignalAt ?? this.lastSignalAt,
+    lastSignalStdDev: lastSignalStdDev ?? this.lastSignalStdDev,
+    lastSignalSampleCount: lastSignalSampleCount ?? this.lastSignalSampleCount,
+    hasArOrigin: hasArOrigin ?? this.hasArOrigin,
     lastStepTimestamp:
         clearLastStepTimestamp
             ? null
             : lastStepTimestamp ?? this.lastStepTimestamp,
     currentFloor: currentFloor ?? this.currentFloor,
     isScreenRecording: isScreenRecording ?? this.isScreenRecording,
-    screenRecordPath: clearScreenRecordPath ? null : screenRecordPath ?? this.screenRecordPath,
+    screenRecordPath:
+        clearScreenRecordPath
+            ? null
+            : screenRecordPath ?? this.screenRecordPath,
   );
 
   @override
@@ -136,6 +182,13 @@ class HeatmapState extends Equatable {
     pendingWalls,
     isArViewEnabled,
     isArSupported,
+    targetBssid,
+    targetSsid,
+    surveyGate,
+    lastSignalAt,
+    lastSignalStdDev,
+    lastSignalSampleCount,
+    hasArOrigin,
     lastStepTimestamp,
     currentFloor,
     isScreenRecording,

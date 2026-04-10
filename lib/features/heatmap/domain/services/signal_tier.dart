@@ -65,3 +65,13 @@ Color signalGradientColor(int rssi) {
     normalized,
   )!;
 }
+
+/// Returns the height (in meters) for a "Diagnostic Pillar" based on the signal strength.
+///
+/// Excellent signal produces a taller pillar (0.5m), while poor signal
+/// produces a shorter stub (0.1m).
+double signalTierArHeight(int rssi) {
+  // Map -90..-35 dBm to 0.1..0.5 meters
+  final normalized = ((rssi + 90) / 55).clamp(0.0, 1.0);
+  return 0.1 + (normalized * 0.4);
+}

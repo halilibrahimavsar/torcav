@@ -3,6 +3,7 @@ import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
 import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
+import 'package:torcav/features/heatmap/presentation/bloc/survey_gate.dart';
 
 void main() {
   const service = SurveyGuidanceService();
@@ -20,8 +21,12 @@ void main() {
         floorPlan: null,
         isRecording: true,
         isArViewEnabled: false,
+        hasArOrigin: false,
         pendingWallCount: 0,
         currentRssi: -63,
+        surveyGate: SurveyGate.none,
+        lastSignalAt: DateTime.now(),
+        currentSignalStdDev: 1.8,
         currentX: 2.5,
         currentY: 1.1,
       );
@@ -74,8 +79,12 @@ void main() {
       ),
       isRecording: true,
       isArViewEnabled: false,
+      hasArOrigin: true,
       pendingWallCount: 0,
       currentRssi: -59,
+      surveyGate: SurveyGate.none,
+      lastSignalAt: DateTime.now(),
+      currentSignalStdDev: 1.4,
       currentX: 5,
       currentY: 3,
     );
@@ -83,6 +92,27 @@ void main() {
     expect(guidance.readyToFinish, isTrue);
     expect(guidance.stage, SurveyStage.wrapUp);
     expect(guidance.overallProgress, greaterThan(0.75));
+  });
+
+  test('locks guidance when connected signal is missing', () {
+    final guidance = service.analyze(
+      points: [_point(0, 0, -65), _point(1, 0, -66)],
+      floorPlan: null,
+      isRecording: true,
+      isArViewEnabled: true,
+      hasArOrigin: true,
+      pendingWallCount: 0,
+      currentRssi: null,
+      surveyGate: SurveyGate.noConnectedBssid,
+      lastSignalAt: null,
+      currentSignalStdDev: 0,
+      currentX: 1,
+      currentY: 0,
+    );
+
+    expect(guidance.tone, SurveyTone.caution);
+    expect(guidance.readyToFinish, isFalse);
+    expect(guidance.stage, SurveyStage.calibration);
   });
 }
 

@@ -4,14 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
 import '../../../../core/theme/app_theme.dart';
+import '../../domain/entities/heatmap_point.dart';
 import '../../domain/services/signal_tier.dart';
 import '../../domain/services/survey_guidance_service.dart';
 import '../bloc/heatmap_bloc.dart';
 import '../bloc/scan_phase.dart';
 import 'ar_hud_overlay.dart';
 
-/// ARCore-backed heatmap view. Renders 3D RSSI spheres in metric world space
-/// and delegates all 2D HUD information to [ArHudOverlay].
+/// ARCore-backed heatmap view. Renders anchored diagnostic pillars in metric
+/// world space and delegates the 2D HUD to [ArHudOverlay].
 class ArCoreHeatmapView extends StatefulWidget {
   const ArCoreHeatmapView({
     super.key,
@@ -20,13 +21,8 @@ class ArCoreHeatmapView extends StatefulWidget {
     this.immersive = false,
   });
 
-  /// Called when the user taps the dock's expand button (embedded mode only).
   final VoidCallback? onExpand;
-
-  /// Called when the user taps the dock's collapse button (immersive mode only).
   final VoidCallback? onCollapse;
-
-  /// True when hosted inside the expanded (pseudo-fullscreen) mode in [HeatmapPage].
   final bool immersive;
 
   @override
@@ -35,8 +31,12 @@ class ArCoreHeatmapView extends StatefulWidget {
 
 class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
   static const _guidanceService = SurveyGuidanceService();
+  static const _originNodeName = 'survey_origin';
 
   ArCoreController? _arCoreController;
+  int _renderedPointCount = 0;
+  final Set<String> _renderedFlagKeys = <String>{};
+  bool _originAttached = false;
 
   @override
   void dispose() {
@@ -46,58 +46,161 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
 
   void _onArCoreViewCreated(ArCoreController controller) {
     _arCoreController = controller;
+    controller.onPlaneTap = _handlePlaneTap;
+    _renderedPointCount = 0;
+    _renderedFlagKeys.clear();
+    _originAttached = false;
+    if (context.read<HeatmapBloc>().state.hasArOrigin) {
+      context.read<HeatmapBloc>().resetArOrigin();
+    }
   }
 
-  void _addRssiSphere(double x, double y, double z, int rssi) {
-    if (_arCoreController == null) return;
-
-    final color = signalGradientColor(rssi);
-    final material = ArCoreMaterial(
-      color: color.withValues(alpha: 0.78),
-      metallic: 0.8,
-      reflectance: 1.0,
+  Future<void> _handlePlaneTap(List<ArCoreHitTestResult> hits) async {
+    if (_arCoreController == null || hits.isEmpty || _originAttached) return;
+    final hit = hits.first;
+    final originNode = ArCoreNode(
+      name: _originNodeName,
+      position: hit.pose.translation,
+      rotation: hit.pose.rotation,
+      children: [
+        ArCoreNode(
+          name: 'survey_origin_marker',
+          shape: ArCoreSphere(
+            radius: 0.035,
+            materials: [
+              ArCoreMaterial(
+                color: AppColors.neonCyan.withValues(alpha: 0.9),
+                metallic: 0.8,
+                reflectance: 0.8,
+              ),
+            ],
+          ),
+          position: vector.Vector3.zero(),
+        ),
+      ],
     );
-    final sphere = ArCoreSphere(
-      materials: [material],
-      radius: 0.15,
+    await _arCoreController!.addArCoreNodeWithAnchor(originNode);
+    _originAttached = true;
+    if (!mounted) return;
+    context.read<HeatmapBloc>().markArOriginPlaced();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Survey origin anchored'),
+        duration: Duration(seconds: 2),
+      ),
     );
-
-    // ARCore axes: Y up, X right, Z toward camera.
-    // HeatmapBloc provides floorX, floorY (walk plane) and floorZ (height).
-    // Map: floorX → X, floorZ → Y, floorY → -Z.
-    final node = ArCoreNode(
-      shape: sphere,
-      position: vector.Vector3(x, z, -y),
-    );
-
-    _arCoreController!.addArCoreNode(node);
   }
 
-  /// Places a bright red flag sphere at the user's current metric position.
-  /// v1 is visual-only — the HeatmapSession schema is not mutated.
-  /// TODO(v2): persist flagged zones to HeatmapPoint.isFlagged + session DB.
-  void _flagCurrentPosition() {
-    if (_arCoreController == null) return;
-    final state = context.read<HeatmapBloc>().state;
-    final pos = state.currentPosition;
-    if (pos == null) return;
+  Future<void> _addDiagnosticPillar(HeatmapPoint point) async {
+    if (_arCoreController == null || !_originAttached) return;
 
-    final material = ArCoreMaterial(
-      color: AppColors.neonRed,
-      metallic: 0.9,
-      reflectance: 1.0,
+    final pillarHeight = signalTierArHeight(point.rssi);
+    final color = signalGradientColor(point.rssi);
+    final pillarName = _pillarName(point);
+
+    final pillarMaterial = ArCoreMaterial(
+      color: color.withValues(alpha: 0.4),
+      metallic: 0.5,
+      reflectance: 0.2,
     );
-    final flag = ArCoreSphere(
-      materials: [material],
-      radius: 0.22,
+    final cylinder = ArCoreCylinder(
+      materials: [pillarMaterial],
+      radius: 0.04,
+      height: pillarHeight,
     );
-    _arCoreController!.addArCoreNode(
-      ArCoreNode(
-        shape: flag,
-        position: vector.Vector3(pos.dx, 0.4, -pos.dy),
+
+    final pillarNode = ArCoreNode(
+      name: '${pillarName}_body',
+      shape: cylinder,
+      position: vector.Vector3(
+        point.floorX,
+        point.floorZ + pillarHeight / 2,
+        -point.floorY,
       ),
     );
 
+    final glowNode = ArCoreNode(
+      name: '${pillarName}_glow',
+      shape: ArCoreSphere(
+        radius: 0.08,
+        materials: [
+          ArCoreMaterial(color: color, metallic: 1.0, reflectance: 1.0),
+        ],
+      ),
+      position: vector.Vector3(
+        point.floorX,
+        point.floorZ + pillarHeight,
+        -point.floorY,
+      ),
+    );
+
+    await _arCoreController!.addArCoreNode(
+      pillarNode,
+      parentNodeName: _originNodeName,
+    );
+    await _arCoreController!.addArCoreNode(
+      glowNode,
+      parentNodeName: _originNodeName,
+    );
+  }
+
+  Future<void> _addFlagMarker(HeatmapPoint point) async {
+    if (_arCoreController == null || !_originAttached) return;
+    final key = _flagKey(point);
+    if (_renderedFlagKeys.contains(key)) return;
+
+    final flagNode = ArCoreNode(
+      name: 'flag_$key',
+      shape: ArCoreSphere(
+        radius: 0.11,
+        materials: [
+          ArCoreMaterial(
+            color: AppColors.neonRed,
+            metallic: 0.9,
+            reflectance: 1.0,
+          ),
+        ],
+      ),
+      position: vector.Vector3(point.floorX, point.floorZ + 0.2, -point.floorY),
+    );
+
+    await _arCoreController!.addArCoreNode(
+      flagNode,
+      parentNodeName: _originNodeName,
+    );
+    _renderedFlagKeys.add(key);
+  }
+
+  String _pillarName(HeatmapPoint point) =>
+      'pillar_${point.timestamp.microsecondsSinceEpoch}';
+
+  String _flagKey(HeatmapPoint point) =>
+      '${point.timestamp.microsecondsSinceEpoch}_${point.floorX.toStringAsFixed(2)}_${point.floorY.toStringAsFixed(2)}';
+
+  Future<void> _syncAnchoredNodes(List<HeatmapPoint> points) async {
+    if (!_originAttached) return;
+
+    for (final point in points.skip(_renderedPointCount)) {
+      await _addDiagnosticPillar(point);
+      if (point.isFlagged) {
+        await _addFlagMarker(point);
+      }
+    }
+    _renderedPointCount = points.length;
+
+    for (final point in points.where((point) => point.isFlagged)) {
+      await _addFlagMarker(point);
+    }
+  }
+
+  Future<void> _flagCurrentPosition() async {
+    await context.read<HeatmapBloc>().flagCurrentWeakZone();
+    if (!mounted) return;
+    final session = context.read<HeatmapBloc>().state.currentSession;
+    final point = session?.points.lastOrNull;
+    if (point?.isFlagged == true) {
+      await _addFlagMarker(point!);
+    }
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -112,14 +215,16 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
   Widget build(BuildContext context) {
     return BlocConsumer<HeatmapBloc, HeatmapState>(
       listenWhen: (previous, current) {
-        final prevSamples = previous.currentSession?.points.length ?? 0;
-        final currSamples = current.currentSession?.points.length ?? 0;
-        return currSamples > prevSamples &&
-            current.currentSession!.points.isNotEmpty;
+        final prevPoints =
+            previous.currentSession?.points ?? const <HeatmapPoint>[];
+        final currPoints =
+            current.currentSession?.points ?? const <HeatmapPoint>[];
+        final prevFlags = prevPoints.where((point) => point.isFlagged).length;
+        final currFlags = currPoints.where((point) => point.isFlagged).length;
+        return currPoints.length != prevPoints.length || currFlags != prevFlags;
       },
-      listener: (context, state) {
-        final p = state.currentSession!.points.last;
-        _addRssiSphere(p.floorX, p.floorY, p.floorZ, p.rssi);
+      listener: (context, state) async {
+        await _syncAnchoredNodes(state.currentSession?.points ?? const []);
       },
       builder: (context, state) {
         final guidance = _guidanceService.analyze(
@@ -127,8 +232,12 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
           floorPlan: state.liveFloorPlan,
           isRecording: state.isRecording,
           isArViewEnabled: state.isArViewEnabled,
+          hasArOrigin: state.hasArOrigin,
           pendingWallCount: state.pendingWalls.length,
           currentRssi: state.currentRssi,
+          surveyGate: state.surveyGate,
+          lastSignalAt: state.lastSignalAt,
+          currentSignalStdDev: state.lastSignalStdDev,
           currentX: state.currentPosition?.dx,
           currentY: state.currentPosition?.dy,
         );

@@ -12,6 +12,7 @@ import '../../domain/entities/wall_segment.dart';
 import '../../domain/services/signal_tier.dart';
 import '../../domain/services/survey_guidance_service.dart';
 import '../bloc/heatmap_bloc.dart';
+import '../bloc/survey_gate.dart';
 import 'heatmap_canvas.dart';
 import 'screen_record_button.dart';
 
@@ -39,6 +40,7 @@ class ArHudOverlay extends StatefulWidget {
     super.key,
     required this.guidance,
     this.immersive = false,
+    this.estimatedMode = false,
     this.onExpand,
     this.onCollapse,
     this.onFlagWeakZone,
@@ -51,6 +53,10 @@ class ArHudOverlay extends StatefulWidget {
   /// True when hosted inside the expanded (pseudo-fullscreen) mode in [HeatmapPage].
   /// Hides the expand button and shows the collapse button instead.
   final bool immersive;
+
+  /// True when the AR view is actually the camera fallback and spatial
+  /// placement is estimated rather than anchored.
+  final bool estimatedMode;
 
   /// Called when the user taps the expand-to-fullscreen dock button. Null when
   /// already in fullscreen mode.
@@ -137,11 +143,28 @@ class _ArHudOverlayState extends State<ArHudOverlay>
           ),
         ),
 
+        if (widget.estimatedMode)
+          Positioned(
+            top: 84,
+            left: 14,
+            child: _ModeBadge(
+              label: 'ESTIMATED MODE',
+              color: AppColors.neonOrange,
+            ),
+          ),
+
         // ── 3. Survey Pilot card (top-right) ───────────────────────────
         Positioned(
           top: 96,
           right: 14,
           child: _SurveyPilotCard(guidance: guidance),
+        ),
+
+        const Positioned(
+          top: 168,
+          left: 14,
+          right: 14,
+          child: _MeasurementLockBanner(),
         ),
 
         // ── 4. Left rail dBm gauge ─────────────────────────────────────
@@ -200,6 +223,18 @@ class _ArHudOverlayState extends State<ArHudOverlay>
             right: 24,
             child: _ReadyBanner(controller: _bannerCtl),
           ),
+
+        // ── 11. Live Diagnostic Tag (bottom-center) ────────────────────
+        Positioned(
+          bottom: 110,
+          left: 0,
+          right: 0,
+          child: IgnorePointer(
+            child: Center(
+              child: _LiveSignalTag(estimatedMode: widget.estimatedMode),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -243,11 +278,12 @@ class _SsidChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocSelector<HeatmapBloc, HeatmapState, _SsidSlice>(
       selector: (s) {
-        final last =
-            s.currentSession?.points.isNotEmpty == true
-                ? s.currentSession!.points.last
-                : null;
-        return _SsidSlice(ssid: last?.ssid ?? '', rssi: s.currentRssi);
+        return _SsidSlice(
+          ssid: s.targetSsid ?? '',
+          bssid: s.targetBssid ?? '',
+          rssi: s.currentRssi,
+          locked: s.surveyGate == SurveyGate.none,
+        );
       },
       builder: (context, slice) {
         final tier = signalTierFor(slice.rssi);
@@ -281,7 +317,9 @@ class _SsidChip extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      signalTierLabel(tier),
+                      slice.bssid.isEmpty
+                          ? signalTierLabel(tier)
+                          : '${slice.locked ? 'LOCK' : 'HOLD'} ${_compactBssid(slice.bssid)}',
                       style: GoogleFonts.outfit(
                         color: color,
                         fontSize: 10,
@@ -301,16 +339,34 @@ class _SsidChip extends StatelessWidget {
 }
 
 class _SsidSlice {
-  const _SsidSlice({required this.ssid, required this.rssi});
+  const _SsidSlice({
+    required this.ssid,
+    required this.bssid,
+    required this.rssi,
+    required this.locked,
+  });
   final String ssid;
+  final String bssid;
   final int? rssi;
+  final bool locked;
 
   @override
   bool operator ==(Object other) =>
-      other is _SsidSlice && other.ssid == ssid && other.rssi == rssi;
+      other is _SsidSlice &&
+      other.ssid == ssid &&
+      other.bssid == bssid &&
+      other.rssi == rssi &&
+      other.locked == locked;
 
   @override
-  int get hashCode => Object.hash(ssid, rssi);
+  int get hashCode => Object.hash(ssid, bssid, rssi, locked);
+}
+
+String _compactBssid(String bssid) {
+  if (bssid.length < 8) return bssid;
+  final parts = bssid.split(':');
+  if (parts.length < 3) return bssid;
+  return '${parts.first}:${parts[1]}:..:${parts.last}';
 }
 
 // ────────────────────────────────────────────────────────────────────
@@ -841,7 +897,7 @@ class _MiniMapPanel extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          'MAP',
+                          s.isArSupported ? 'MAP' : 'MAP EST',
                           style: GoogleFonts.orbitron(
                             color: AppColors.neonCyan,
                             fontSize: 9,
@@ -1045,11 +1101,14 @@ class _ReticleHitArea extends StatelessWidget {
           (s) => _ReticleSlice(
             rssi: s.currentRssi,
             lastStepTimestamp: s.lastStepTimestamp,
+            surveyGate: s.surveyGate,
           ),
       builder: (context, slice) {
         final tier = signalTierFor(slice.rssi);
         final color = signalTierColor(tier);
-        final isWeak = tier == SignalTier.weak || tier == SignalTier.poor;
+        final isWeak =
+            slice.surveyGate == SurveyGate.none &&
+            (tier == SignalTier.weak || tier == SignalTier.poor);
         final hitSize = isWeak ? 140.0 : 120.0;
 
         return GestureDetector(
@@ -1127,19 +1186,25 @@ class _ReticleHitArea extends StatelessWidget {
 }
 
 class _ReticleSlice {
-  const _ReticleSlice({required this.rssi, required this.lastStepTimestamp});
+  const _ReticleSlice({
+    required this.rssi,
+    required this.lastStepTimestamp,
+    required this.surveyGate,
+  });
 
   final int? rssi;
   final DateTime? lastStepTimestamp;
+  final SurveyGate surveyGate;
 
   @override
   bool operator ==(Object other) =>
       other is _ReticleSlice &&
       other.rssi == rssi &&
-      other.lastStepTimestamp == lastStepTimestamp;
+      other.lastStepTimestamp == lastStepTimestamp &&
+      other.surveyGate == surveyGate;
 
   @override
-  int get hashCode => Object.hash(rssi, lastStepTimestamp);
+  int get hashCode => Object.hash(rssi, lastStepTimestamp, surveyGate);
 }
 
 class _ReticlePainter extends CustomPainter {
@@ -1259,6 +1324,154 @@ class _SampleBadge extends StatelessWidget {
           color: AppColors.neonCyan,
         );
       },
+    );
+  }
+}
+
+class _MeasurementLockBanner extends StatelessWidget {
+  const _MeasurementLockBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<HeatmapBloc, HeatmapState, _GateSlice>(
+      selector:
+          (s) => _GateSlice(
+            gate: s.surveyGate,
+            targetBssid: s.targetBssid,
+            targetSsid: s.targetSsid,
+          ),
+      builder: (context, slice) {
+        if (slice.gate == SurveyGate.none) {
+          return const SizedBox.shrink();
+        }
+
+        final (title, body, color, icon) = switch (slice.gate) {
+          SurveyGate.noConnectedBssid => (
+            'MEASUREMENT LOCKED',
+            slice.targetBssid == null
+                ? 'Connect to a Wi-Fi network to lock the survey target.'
+                : 'Reconnect to ${_compactBssid(slice.targetBssid!)} to resume sampling.',
+            AppColors.neonRed,
+            Icons.link_off_rounded,
+          ),
+          SurveyGate.staleSignal => (
+            'WAITING FOR FRESH SIGNAL',
+            'Connected RSSI is older than 3 seconds. Hold position for a new sample.',
+            AppColors.neonOrange,
+            Icons.hourglass_top_rounded,
+          ),
+          SurveyGate.originNotPlaced => (
+            'PLACE SURVEY ORIGIN',
+            'Tap a detected plane to anchor the AR survey before recording points.',
+            AppColors.neonCyan,
+            Icons.gps_fixed_rounded,
+          ),
+          SurveyGate.trackingLost => (
+            'TRACKING LOST',
+            'Motion tracking is unavailable. Move slowly until tracking returns.',
+            AppColors.neonOrange,
+            Icons.route_rounded,
+          ),
+          SurveyGate.none => (
+            '',
+            '',
+            AppColors.neonGreen,
+            Icons.check_circle_outline_rounded,
+          ),
+        };
+
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.72),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: color.withValues(alpha: 0.5)),
+          ),
+          child: Row(
+            children: [
+              Icon(icon, color: color, size: 18),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.orbitron(
+                        color: color,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.1,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      body,
+                      style: GoogleFonts.outfit(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _GateSlice {
+  const _GateSlice({
+    required this.gate,
+    required this.targetBssid,
+    required this.targetSsid,
+  });
+
+  final SurveyGate gate;
+  final String? targetBssid;
+  final String? targetSsid;
+
+  @override
+  bool operator ==(Object other) =>
+      other is _GateSlice &&
+      other.gate == gate &&
+      other.targetBssid == targetBssid &&
+      other.targetSsid == targetSsid;
+
+  @override
+  int get hashCode => Object.hash(gate, targetBssid, targetSsid);
+}
+
+class _ModeBadge extends StatelessWidget {
+  const _ModeBadge({required this.label, required this.color});
+
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.62),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: color.withValues(alpha: 0.55)),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.orbitron(
+          color: color,
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 1.1,
+        ),
+      ),
     );
   }
 }
@@ -1444,3 +1657,187 @@ class _ReadyBanner extends StatelessWidget {
   }
 }
 
+// ────────────────────────────────────────────────────────────────────
+// 11. Live Signal Tag — Floating diagnostic data centered at bottom.
+// ────────────────────────────────────────────────────────────────────
+
+class _LiveSignalTag extends StatelessWidget {
+  const _LiveSignalTag({required this.estimatedMode});
+
+  final bool estimatedMode;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<HeatmapBloc, HeatmapState, _SignalSlice>(
+      selector:
+          (s) => _SignalSlice(
+            rssi: s.currentRssi,
+            stdDev: s.lastSignalStdDev,
+            sampleCount: s.lastSignalSampleCount,
+            ageSeconds:
+                s.lastSignalAt == null
+                    ? null
+                    : DateTime.now().difference(s.lastSignalAt!).inSeconds,
+            surveyGate: s.surveyGate,
+          ),
+      builder: (context, slice) {
+        if (slice.rssi == null) return const SizedBox.shrink();
+
+        final tier = signalTierFor(slice.rssi);
+        final color = signalTierColor(tier);
+
+        return GlassmorphicContainer(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          borderRadius: BorderRadius.circular(24),
+          borderColor: color.withValues(alpha: 0.6),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _SignalIcon(rssi: slice.rssi!, color: color),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '${slice.rssi}',
+                        style: GoogleFonts.orbitron(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'dBm',
+                        style: GoogleFonts.orbitron(
+                          color: Colors.white70,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    signalTierLabel(tier).toUpperCase(),
+                    style: GoogleFonts.outfit(
+                      color: color,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'STD ${slice.stdDev.toStringAsFixed(1)} · ${slice.sampleCount} samp · ${slice.ageSeconds ?? '-'}s',
+                    style: GoogleFonts.outfit(
+                      color: Colors.white60,
+                      fontSize: 9,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 16),
+              Container(width: 1, height: 30, color: Colors.white24),
+              const SizedBox(width: 16),
+              _ArStatusIndicator(
+                gate: slice.surveyGate,
+                estimatedMode: estimatedMode,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _SignalSlice {
+  const _SignalSlice({
+    required this.rssi,
+    required this.stdDev,
+    required this.sampleCount,
+    required this.ageSeconds,
+    required this.surveyGate,
+  });
+  final int? rssi;
+  final double stdDev;
+  final int sampleCount;
+  final int? ageSeconds;
+  final SurveyGate surveyGate;
+
+  @override
+  bool operator ==(Object other) =>
+      other is _SignalSlice &&
+      other.rssi == rssi &&
+      other.stdDev == stdDev &&
+      other.sampleCount == sampleCount &&
+      other.ageSeconds == ageSeconds &&
+      other.surveyGate == surveyGate;
+
+  @override
+  int get hashCode =>
+      Object.hash(rssi, stdDev, sampleCount, ageSeconds, surveyGate);
+}
+
+class _SignalIcon extends StatelessWidget {
+  const _SignalIcon({required this.rssi, required this.color});
+  final int rssi;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Icon(
+          Icons.radar_rounded,
+          color: color.withValues(alpha: 0.3),
+          size: 28,
+        ),
+        Icon(Icons.wifi_tethering_rounded, color: color, size: 18),
+      ],
+    );
+  }
+}
+
+class _ArStatusIndicator extends StatelessWidget {
+  const _ArStatusIndicator({required this.gate, required this.estimatedMode});
+
+  final SurveyGate gate;
+  final bool estimatedMode;
+
+  @override
+  Widget build(BuildContext context) {
+    final label = switch (gate) {
+      SurveyGate.none => estimatedMode ? 'EST' : 'LOCKED',
+      SurveyGate.noConnectedBssid => 'NO AP',
+      SurveyGate.staleSignal => 'STALE',
+      SurveyGate.originNotPlaced => 'ORIGIN',
+      SurveyGate.trackingLost => 'TRACK',
+    };
+    final icon =
+        estimatedMode ? Icons.layers_clear_rounded : Icons.view_in_ar_rounded;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(icon, color: Colors.white70, size: 14),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: GoogleFonts.orbitron(
+            color: Colors.white70,
+            fontSize: 8,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+          ),
+        ),
+      ],
+    );
+  }
+}

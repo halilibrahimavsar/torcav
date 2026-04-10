@@ -10,6 +10,7 @@ import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
 import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/scan_phase.dart';
+import 'package:torcav/features/heatmap/presentation/bloc/survey_gate.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/ar_hud_overlay.dart';
 
 class MockHeatmapBloc extends MockCubit<HeatmapState> implements HeatmapBloc {}
@@ -23,6 +24,7 @@ void main() {
     int? rssi = -55,
     int sampleCount = 6,
     String ssid = 'HomeNet',
+    SurveyGate gate = SurveyGate.none,
   }) {
     final points = List.generate(
       sampleCount,
@@ -50,6 +52,13 @@ void main() {
       currentHeading: 90,
       isArViewEnabled: true,
       isArSupported: true,
+      targetSsid: ssid,
+      targetBssid: 'AA:BB:CC:DD:EE:FF',
+      surveyGate: gate,
+      lastSignalAt: DateTime.now(),
+      lastSignalStdDev: 1.8,
+      lastSignalSampleCount: 5,
+      hasArOrigin: true,
     );
   }
 
@@ -84,10 +93,7 @@ void main() {
   Widget wrap(Widget child) {
     return MaterialApp(
       home: Scaffold(
-        body: BlocProvider<HeatmapBloc>.value(
-          value: bloc,
-          child: child,
-        ),
+        body: BlocProvider<HeatmapBloc>.value(value: bloc, child: child),
       ),
     );
   }
@@ -96,8 +102,9 @@ void main() {
     bloc = MockHeatmapBloc();
   });
 
-  testWidgets('renders SSID chip, compass, survey pilot card, and dock',
-      (tester) async {
+  testWidgets('renders SSID chip, compass, survey pilot card, and dock', (
+    tester,
+  ) async {
     when(() => bloc.state).thenReturn(baseState(ssid: 'TestAP'));
     whenListen(
       bloc,
@@ -124,8 +131,9 @@ void main() {
     expect(find.text('6 pts'), findsOneWidget);
   });
 
-  testWidgets('shows weak-tier "TAP TO FLAG" label and fires callback',
-      (tester) async {
+  testWidgets('shows weak-tier "TAP TO FLAG" label and fires callback', (
+    tester,
+  ) async {
     final state = baseState(rssi: -85);
     when(() => bloc.state).thenReturn(state);
     whenListen(
@@ -151,8 +159,9 @@ void main() {
     expect(flagged, 1);
   });
 
-  testWidgets('does NOT show tap-to-flag in strong signal tier',
-      (tester) async {
+  testWidgets('does NOT show tap-to-flag in strong signal tier', (
+    tester,
+  ) async {
     final state = baseState(rssi: -45);
     when(() => bloc.state).thenReturn(state);
     whenListen(
@@ -174,8 +183,28 @@ void main() {
     expect(find.text('TAP TO FLAG'), findsNothing);
   });
 
-  testWidgets('renders sparse-region arrow labels for each region',
-      (tester) async {
+  testWidgets('shows measurement-locked banner when target AP is missing', (
+    tester,
+  ) async {
+    final state = baseState(gate: SurveyGate.noConnectedBssid);
+    when(() => bloc.state).thenReturn(state);
+    whenListen(
+      bloc,
+      Stream<HeatmapState>.fromIterable([state]),
+      initialState: state,
+    );
+
+    await tester.pumpWidget(
+      wrap(ArHudOverlay(guidance: guidance(tone: SurveyTone.caution))),
+    );
+    await tester.pump();
+
+    expect(find.text('MEASUREMENT LOCKED'), findsOneWidget);
+  });
+
+  testWidgets('renders sparse-region arrow labels for each region', (
+    tester,
+  ) async {
     final state = baseState();
     when(() => bloc.state).thenReturn(state);
     whenListen(
@@ -193,11 +222,7 @@ void main() {
 
     for (final entry in cases.entries) {
       await tester.pumpWidget(
-        wrap(
-          ArHudOverlay(
-            guidance: guidance(sparseRegion: entry.key),
-          ),
-        ),
+        wrap(ArHudOverlay(guidance: guidance(sparseRegion: entry.key))),
       );
       await tester.pump();
       expect(
@@ -208,8 +233,9 @@ void main() {
     }
   });
 
-  testWidgets('renders ready-to-finish banner when guidance.readyToFinish',
-      (tester) async {
+  testWidgets('renders ready-to-finish banner when guidance.readyToFinish', (
+    tester,
+  ) async {
     final state = baseState();
     when(() => bloc.state).thenReturn(state);
     whenListen(
@@ -221,10 +247,7 @@ void main() {
     await tester.pumpWidget(
       wrap(
         ArHudOverlay(
-          guidance: guidance(
-            tone: SurveyTone.success,
-            readyToFinish: true,
-          ),
+          guidance: guidance(tone: SurveyTone.success, readyToFinish: true),
         ),
       ),
     );
@@ -233,6 +256,25 @@ void main() {
 
     expect(find.text('COVERAGE COMPLETE'), findsOneWidget);
     expect(find.text('Tap to finish scan'), findsOneWidget);
+  });
+
+  testWidgets('shows estimated mode badge in camera fallback mode', (
+    tester,
+  ) async {
+    final state = baseState();
+    when(() => bloc.state).thenReturn(state);
+    whenListen(
+      bloc,
+      Stream<HeatmapState>.fromIterable([state]),
+      initialState: state,
+    );
+
+    await tester.pumpWidget(
+      wrap(ArHudOverlay(guidance: guidance(), estimatedMode: true)),
+    );
+    await tester.pump();
+
+    expect(find.text('ESTIMATED MODE'), findsOneWidget);
   });
 
   testWidgets('dock shows expand button in embedded mode only', (tester) async {
@@ -246,12 +288,7 @@ void main() {
 
     // Embedded.
     await tester.pumpWidget(
-      wrap(
-        ArHudOverlay(
-          guidance: guidance(),
-          onExpand: () {},
-        ),
-      ),
+      wrap(ArHudOverlay(guidance: guidance(), onExpand: () {})),
     );
     await tester.pump();
     expect(find.byTooltip('Full screen'), findsOneWidget);
@@ -260,11 +297,7 @@ void main() {
     // Immersive.
     await tester.pumpWidget(
       wrap(
-        ArHudOverlay(
-          guidance: guidance(),
-          immersive: true,
-          onCollapse: () {},
-        ),
+        ArHudOverlay(guidance: guidance(), immersive: true, onCollapse: () {}),
       ),
     );
     await tester.pump();

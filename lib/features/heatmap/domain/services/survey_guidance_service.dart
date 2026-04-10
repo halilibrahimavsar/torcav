@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import '../entities/floor_plan.dart';
 import '../entities/heatmap_point.dart';
+import '../../presentation/bloc/survey_gate.dart';
 
 enum SurveyStage {
   idle,
@@ -65,8 +66,12 @@ class SurveyGuidanceService {
     required FloorPlan? floorPlan,
     required bool isRecording,
     required bool isArViewEnabled,
+    required bool hasArOrigin,
     required int pendingWallCount,
     required int? currentRssi,
+    required SurveyGate surveyGate,
+    required DateTime? lastSignalAt,
+    required double currentSignalStdDev,
     double? currentX,
     double? currentY,
   }) {
@@ -79,10 +84,23 @@ class SurveyGuidanceService {
       return SurveyGuidance(
         stage: points.isEmpty ? SurveyStage.idle : SurveyStage.review,
         tone: points.isEmpty ? SurveyTone.info : SurveyTone.success,
-        overallProgress: _overallProgress(points, wallCount, pendingWallCount),
-        planScore: _planScore(wallCount, pendingWallCount, isArViewEnabled),
+        overallProgress: _overallProgress(
+          points,
+          wallCount,
+          pendingWallCount,
+          hasArOrigin,
+          surveyGate,
+          lastSignalAt,
+          currentSignalStdDev,
+        ),
+        planScore: _planScore(wallCount, pendingWallCount, hasArOrigin),
         coverageScore: _coverageScore(points, currentX, currentY),
-        signalScore: _signalScore(points),
+        signalScore: _signalScore(
+          points,
+          surveyGate,
+          lastSignalAt,
+          currentSignalStdDev,
+        ),
         sparseRegion: _sparseRegion(points),
         feeds: SurveyFeedHealth(
           motionLive: hasMotion || points.isNotEmpty,
@@ -95,19 +113,32 @@ class SurveyGuidanceService {
       );
     }
 
-    final planScore = _planScore(wallCount, pendingWallCount, isArViewEnabled);
+    final planScore = _planScore(wallCount, pendingWallCount, hasArOrigin);
     final coverageScore = _coverageScore(points, currentX, currentY);
-    final signalScore = _signalScore(points);
+    final signalScore = _signalScore(
+      points,
+      surveyGate,
+      lastSignalAt,
+      currentSignalStdDev,
+    );
     final overall = _combineScores(planScore, coverageScore, signalScore);
     final sparseRegion = _sparseRegion(points);
-    final suggestAr =
-        points.length >= 3 && planScore < 0.55 && !isArViewEnabled;
+    final suggestAr = points.length >= 3 && planScore < 0.55 && !hasArOrigin;
     final weakZoneCount = points.where((point) => point.rssi < -72).length;
 
     SurveyStage stage;
     SurveyTone tone;
 
-    if (!hasMotion || points.length < 3) {
+    if (surveyGate == SurveyGate.noConnectedBssid) {
+      stage = SurveyStage.calibration;
+      tone = SurveyTone.caution;
+    } else if (surveyGate == SurveyGate.originNotPlaced) {
+      stage = SurveyStage.planCapture;
+      tone = SurveyTone.caution;
+    } else if (surveyGate == SurveyGate.staleSignal) {
+      stage = SurveyStage.calibration;
+      tone = SurveyTone.caution;
+    } else if (!hasMotion || points.length < 3) {
       stage = SurveyStage.calibration;
       tone = SurveyTone.info;
     } else if (planScore < 0.45) {
@@ -128,7 +159,11 @@ class SurveyGuidanceService {
     }
 
     final readyToFinish =
-        overall >= 0.78 && planScore >= 0.55 && coverageScore >= 0.68;
+        surveyGate == SurveyGate.none &&
+        overall >= 0.78 &&
+        planScore >= 0.58 &&
+        coverageScore >= 0.72 &&
+        signalScore >= 0.72;
 
     return SurveyGuidance(
       stage: stage,
@@ -153,27 +188,37 @@ class SurveyGuidanceService {
     List<HeatmapPoint> points,
     int wallCount,
     int pendingWallCount,
+    bool hasArOrigin,
+    SurveyGate surveyGate,
+    DateTime? lastSignalAt,
+    double currentSignalStdDev,
   ) {
-    final plan = _planScore(wallCount, pendingWallCount, false);
+    final plan = _planScore(wallCount, pendingWallCount, hasArOrigin);
     final coverage = _coverageScore(points, null, null);
-    final signal = _signalScore(points);
+    final signal = _signalScore(
+      points,
+      surveyGate,
+      lastSignalAt,
+      currentSignalStdDev,
+    );
     return _combineScores(plan, coverage, signal);
   }
 
   double _combineScores(double plan, double coverage, double signal) {
-    return ((plan * 0.35) + (coverage * 0.35) + (signal * 0.30)).clamp(
+    return ((plan * 0.35) + (coverage * 0.40) + (signal * 0.25)).clamp(
       0.0,
       1.0,
     );
   }
 
-  double _planScore(int wallCount, int pendingWallCount, bool isArViewEnabled) {
+  double _planScore(int wallCount, int pendingWallCount, bool hasArOrigin) {
+    final origin = hasArOrigin ? 1.0 : 0.0;
     final committed = (wallCount / 10).clamp(0.0, 1.0);
-    final live = (pendingWallCount / 6).clamp(0.0, 1.0);
-    final arBonus = isArViewEnabled ? 0.08 : 0.0;
-    return math.max(committed, live * 0.55).clamp(0.0, 1.0) + arBonus > 1.0
-        ? 1.0
-        : math.max(committed, live * 0.55) + arBonus;
+    final live = (pendingWallCount / 8).clamp(0.0, 1.0);
+    return ((origin * 0.45) + (committed * 0.4) + (live * 0.15)).clamp(
+      0.0,
+      1.0,
+    );
   }
 
   double _coverageScore(
@@ -192,28 +237,46 @@ class SurveyGuidanceService {
 
     final width = (xs.reduce(math.max) - xs.reduce(math.min)).abs();
     final height = (ys.reduce(math.max) - ys.reduce(math.min)).abs();
-    final area = math.max(1.0, width * height);
-    final density = (points.length / area).clamp(0.0, 1.2) / 1.2;
+    final cells =
+        points
+            .map(
+              (point) =>
+                  '${point.floorX.floor()}:${point.floorY.floor()}:${point.floor}',
+            )
+            .toSet()
+            .length;
+    final uniqueCoverage = (cells / 14).clamp(0.0, 1.0);
     final span = (math.max(width, height) / 10).clamp(0.0, 1.0);
 
     final sparseRegion = _sparseRegion(points);
     final balance = sparseRegion == null ? 1.0 : 0.65;
 
-    return ((density * 0.45) + (span * 0.30) + (balance * 0.25)).clamp(
+    return ((uniqueCoverage * 0.5) + (span * 0.25) + (balance * 0.25)).clamp(
       0.0,
       1.0,
     );
   }
 
-  double _signalScore(List<HeatmapPoint> points) {
-    if (points.isEmpty) return 0;
+  double _signalScore(
+    List<HeatmapPoint> points,
+    SurveyGate surveyGate,
+    DateTime? lastSignalAt,
+    double currentSignalStdDev,
+  ) {
+    if (points.isEmpty && lastSignalAt == null) return 0;
 
-    final sampleScore = (points.length / 18).clamp(0.0, 1.0);
-    final values = points.map((point) => point.rssi).toList();
-    final variation = (values.reduce(math.max) - values.reduce(math.min)).abs();
-    final variationScore = (variation / 25).clamp(0.0, 1.0);
+    final lockScore = surveyGate == SurveyGate.noConnectedBssid ? 0.0 : 1.0;
+    final freshness =
+        lastSignalAt == null
+            ? 0.0
+            : (1 -
+                    (DateTime.now().difference(lastSignalAt).inMilliseconds /
+                        3000.0))
+                .clamp(0.0, 1.0);
+    final varianceScore = (1 - (currentSignalStdDev / 12)).clamp(0.0, 1.0);
 
-    return ((sampleScore * 0.7) + (variationScore * 0.3)).clamp(0.0, 1.0);
+    return ((lockScore * 0.45) + (freshness * 0.35) + (varianceScore * 0.20))
+        .clamp(0.0, 1.0);
   }
 
   SparseRegion? _sparseRegion(List<HeatmapPoint> points) {

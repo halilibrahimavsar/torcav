@@ -28,6 +28,12 @@ import '../../features/heatmap/data/repositories/heatmap_repository_impl.dart'
     as _i531;
 import '../../features/heatmap/domain/repositories/heatmap_repository.dart'
     as _i747;
+import '../../features/heatmap/domain/services/ar_capability_service.dart'
+    as _i748;
+import '../../features/heatmap/domain/services/connected_signal_service.dart'
+    as _i192;
+import '../../features/heatmap/domain/services/connected_signal_smoother.dart'
+    as _i106;
 import '../../features/heatmap/domain/usecases/finalize_floor_plan.dart'
     as _i960;
 import '../../features/heatmap/domain/usecases/get_heatmap_sessions_usecase.dart'
@@ -202,6 +208,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
     gh.lazySingleton<_i960.FinalizeFloorPlan>(() => _i960.FinalizeFloorPlan());
+    gh.lazySingleton<_i106.ConnectedSignalSmoother>(
+      () => const _i106.ConnectedSignalSmoother(),
+    );
     gh.lazySingleton<_i265.OnnxDeviceClassifierService>(
       () => _i265.OnnxDeviceClassifierService(),
       dispose: (i) => i.dispose(),
@@ -271,6 +280,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i5.VulnerabilityDataSource>(
       () => _i5.VulnerabilityDataSourceImpl(),
     );
+    gh.lazySingleton<_i192.ConnectedSignalService>(
+      () => _i192.ConnectedSignalServiceImpl(),
+    );
     gh.lazySingleton<_i543.WallDetectorDataSource>(
       () => _i543.WallDetectorDataSourceImpl(),
     );
@@ -285,6 +297,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i239.WifiScanHistoryLocalDataSource>(
       () => _i239.WifiScanHistoryLocalDataSourceImpl(gh<_i690.AppDatabase>()),
+    );
+    gh.lazySingleton<_i748.ArCapabilityService>(
+      () => _i748.ArCapabilityServiceImpl(),
     );
     gh.lazySingleton<_i363.CaptivePortalDetector>(
       () => _i363.CaptivePortalDetector(gh<_i846.NetworkInfo>()),
@@ -409,18 +424,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i534.PingNodeUseCase>(
       () => _i534.PingNodeUseCase(gh<_i244.TopologyRepository>()),
     );
-    gh.factory<_i931.HeatmapBloc>(
-      () => _i931.HeatmapBloc(
-        gh<_i716.GetHeatmapSessionsUsecase>(),
-        gh<_i747.HeatmapRepository>(),
-        gh<_i543.WallDetectorDataSource>(),
-        gh<_i989.PositionDataSource>(),
-        gh<_i451.ScanWifi>(),
-        gh<_i846.NetworkInfo>(),
-        gh<_i761.BarometerDataSource>(),
-        gh<_i960.FinalizeFloorPlan>(),
-      ),
-    );
     gh.factory<_i613.MonitoringBloc>(
       () => _i613.MonitoringBloc(
         gh<_i365.MonitoringRepository>(),
@@ -435,6 +438,21 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i422.GetTopologyUseCase>(),
         gh<_i534.PingNodeUseCase>(),
         gh<_i244.TopologyRepository>(),
+      ),
+    );
+    gh.factory<_i931.HeatmapBloc>(
+      () => _i931.HeatmapBloc(
+        gh<_i716.GetHeatmapSessionsUsecase>(),
+        gh<_i747.HeatmapRepository>(),
+        gh<_i543.WallDetectorDataSource>(),
+        gh<_i989.PositionDataSource>(),
+        gh<_i451.ScanWifi>(),
+        gh<_i846.NetworkInfo>(),
+        gh<_i761.BarometerDataSource>(),
+        gh<_i960.FinalizeFloorPlan>(),
+        gh<_i748.ArCapabilityService>(),
+        gh<_i192.ConnectedSignalService>(),
+        gh<_i106.ConnectedSignalSmoother>(),
       ),
     );
     return this;

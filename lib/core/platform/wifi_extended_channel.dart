@@ -1,5 +1,7 @@
 import 'package:flutter/services.dart';
 
+import '../../features/heatmap/domain/entities/connected_signal.dart';
+
 /// Dart-side bridge to the `torcav/wifi_extended` method channel.
 ///
 /// The Android side (MainActivity.kt) provides additional ScanResult fields
@@ -19,7 +21,9 @@ class WifiExtendedChannel {
   ///   - `timestampUs`   (int?): microseconds since boot
   static Future<Map<String, Map<String, dynamic>>> getExtendedResults() async {
     try {
-      final raw = await _channel.invokeMethod<List<dynamic>>('getExtendedResults');
+      final raw = await _channel.invokeMethod<List<dynamic>>(
+        'getExtendedResults',
+      );
       if (raw == null) return {};
 
       final result = <String, Map<String, dynamic>>{};
@@ -43,6 +47,42 @@ class WifiExtendedChannel {
       return {};
     } catch (_) {
       return {};
+    }
+  }
+
+  /// Returns the currently connected Wi-Fi signal sample when available.
+  static Future<ConnectedSignal?> getConnectedSignal() async {
+    try {
+      final raw = await _channel.invokeMethod<Map<Object?, Object?>>(
+        'getConnectedSignal',
+      );
+      if (raw == null) return null;
+
+      final bssid = (raw['bssid'] as String?)?.toUpperCase();
+      final ssid = (raw['ssid'] as String?) ?? '';
+      final rssi = raw['rssi'] as int?;
+      final frequency = raw['frequency'] as int? ?? 0;
+      final linkSpeedMbps = raw['linkSpeedMbps'] as int? ?? 0;
+      final timestampMs = raw['timestampMs'] as int?;
+      if (bssid == null ||
+          bssid.isEmpty ||
+          rssi == null ||
+          timestampMs == null) {
+        return null;
+      }
+
+      return ConnectedSignal(
+        ssid: ssid,
+        bssid: bssid,
+        rssi: rssi,
+        frequency: frequency,
+        linkSpeedMbps: linkSpeedMbps,
+        timestamp: DateTime.fromMillisecondsSinceEpoch(timestampMs),
+      );
+    } on PlatformException {
+      return null;
+    } catch (_) {
+      return null;
     }
   }
 

@@ -55,10 +55,11 @@ class HeatmapLocalDataSource {
   // ── JSON helpers ───────────────────────────────────────────────────────────
 
   Map<String, dynamic> _toJson(HeatmapSession s) => {
-        'id': s.id,
-        'name': s.name,
-        'createdAt': s.createdAt.toIso8601String(),
-        'points': s.points
+    'id': s.id,
+    'name': s.name,
+    'createdAt': s.createdAt.toIso8601String(),
+    'points':
+        s.points
             .map(
               (p) => {
                 'x': p.x,
@@ -70,41 +71,49 @@ class HeatmapLocalDataSource {
                 'rssi': p.rssi,
                 'timestamp': p.timestamp.toIso8601String(),
                 'ssid': p.ssid,
+                'bssid': p.bssid,
                 'floor': p.floor,
+                'sampleCount': p.sampleCount,
+                'rssiStdDev': p.rssiStdDev,
+                'isFlagged': p.isFlagged,
               },
             )
             .toList(),
-        'floorPlan': s.floorPlan != null
+    'floorPlan':
+        s.floorPlan != null
             ? FloorPlanDto.fromEntity(s.floorPlan!).toJson()
             : null,
-      };
+  };
 
   HeatmapSession _fromJson(Map<String, dynamic> map) => HeatmapSession(
-        id: map['id'] as String,
-        name: map['name'] as String,
-        createdAt: DateTime.parse(map['createdAt'] as String),
-        points: (map['points'] as List<dynamic>)
-            .map(
-              (e) {
-                final rssiNum = e['rssi'] as num;
-                return HeatmapPoint(
-                  x: (e['x'] as num).toDouble(),
-                  y: (e['y'] as num).toDouble(),
-                  floorX: (e['floorX'] as num? ?? 0.0).toDouble(),
-                  floorY: (e['floorY'] as num? ?? 0.0).toDouble(),
-                  floorZ: (e['floorZ'] as num? ?? 0.0).toDouble(),
-                  heading: (e['heading'] as num? ?? 0.0).toDouble(),
-                  rssi: rssiNum.toInt(),
-                  timestamp: DateTime.parse(e['timestamp'] as String),
-                  ssid: e['ssid'] as String? ?? '',
-                  floor: (e['floor'] as num? ?? 0).toInt(),
-                );
-              },
-            )
-            .toList(),
-        floorPlan: map['floorPlan'] != null
-            ? FloorPlanDto.fromJson(map['floorPlan'] as Map<String, dynamic>)
-                .toEntity()
+    id: map['id'] as String,
+    name: map['name'] as String,
+    createdAt: DateTime.parse(map['createdAt'] as String),
+    points:
+        (map['points'] as List<dynamic>).map((e) {
+          final rssiNum = e['rssi'] as num;
+          return HeatmapPoint(
+            x: (e['x'] as num).toDouble(),
+            y: (e['y'] as num).toDouble(),
+            floorX: (e['floorX'] as num? ?? 0.0).toDouble(),
+            floorY: (e['floorY'] as num? ?? 0.0).toDouble(),
+            floorZ: (e['floorZ'] as num? ?? 0.0).toDouble(),
+            heading: (e['heading'] as num? ?? 0.0).toDouble(),
+            rssi: rssiNum.toInt(),
+            timestamp: DateTime.parse(e['timestamp'] as String),
+            ssid: e['ssid'] as String? ?? '',
+            bssid: e['bssid'] as String? ?? '',
+            floor: (e['floor'] as num? ?? 0).toInt(),
+            sampleCount: (e['sampleCount'] as num? ?? 1).toInt(),
+            rssiStdDev: (e['rssiStdDev'] as num? ?? 0.0).toDouble(),
+            isFlagged: e['isFlagged'] as bool? ?? false,
+          );
+        }).toList(),
+    floorPlan:
+        map['floorPlan'] != null
+            ? FloorPlanDto.fromJson(
+              map['floorPlan'] as Map<String, dynamic>,
+            ).toEntity()
             : null,
-      );
+  );
 }

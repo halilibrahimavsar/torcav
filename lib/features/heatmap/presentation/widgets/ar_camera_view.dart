@@ -88,7 +88,7 @@ class _ArCameraViewState extends State<ArCameraView> {
 
   void _flagCurrentPosition() {
     // Fallback path has no ARCore anchor — place marker at screen center.
-    // TODO(v2): persist flagged zones to HeatmapPoint.isFlagged + session DB.
+    context.read<HeatmapBloc>().flagCurrentWeakZone();
     setState(() {
       _flagOverlay.add(const Offset(0.5, 0.5));
     });
@@ -127,8 +127,12 @@ class _ArCameraViewState extends State<ArCameraView> {
           floorPlan: state.liveFloorPlan,
           isRecording: state.isRecording,
           isArViewEnabled: state.isArViewEnabled,
+          hasArOrigin: state.hasArOrigin,
           pendingWallCount: state.pendingWalls.length,
           currentRssi: state.currentRssi,
+          surveyGate: state.surveyGate,
+          lastSignalAt: state.lastSignalAt,
+          currentSignalStdDev: state.lastSignalStdDev,
           currentX: state.currentPosition?.dx,
           currentY: state.currentPosition?.dy,
         );
@@ -153,6 +157,7 @@ class _ArCameraViewState extends State<ArCameraView> {
               ArHudOverlay(
                 guidance: guidance,
                 immersive: widget.immersive,
+                estimatedMode: true,
                 onExpand: widget.onExpand,
                 onCollapse: widget.onCollapse,
                 onFlagWeakZone: _flagCurrentPosition,
@@ -183,11 +188,12 @@ class _ArOverlayPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (phase != ScanPhase.scanning) return;
 
-    final wallPaint = Paint()
-      ..color = AppColors.neonCyan.withValues(alpha: 0.65)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.4);
+    final wallPaint =
+        Paint()
+          ..color = AppColors.neonCyan.withValues(alpha: 0.65)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.4);
 
     for (final wall in pendingWalls) {
       canvas.drawLine(
@@ -198,12 +204,14 @@ class _ArOverlayPainter extends CustomPainter {
     }
 
     // Flag markers — red crosshair pins in normalized screen space.
-    final flagPaint = Paint()
-      ..color = AppColors.neonRed
-      ..style = PaintingStyle.fill;
-    final flagGlow = Paint()
-      ..color = AppColors.neonRed.withValues(alpha: 0.35)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+    final flagPaint =
+        Paint()
+          ..color = AppColors.neonRed
+          ..style = PaintingStyle.fill;
+    final flagGlow =
+        Paint()
+          ..color = AppColors.neonRed.withValues(alpha: 0.35)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
     for (final f in flagMarkers) {
       final c = Offset(f.dx * size.width, f.dy * size.height);
       canvas.drawCircle(c, 10, flagGlow);

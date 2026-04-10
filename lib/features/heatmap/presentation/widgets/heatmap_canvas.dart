@@ -106,6 +106,10 @@ class _HeatmapPainter extends CustomPainter {
       _drawHeatmap(canvas, points);
     }
 
+    if (points.any((point) => point.isFlagged)) {
+      _drawFlags(canvas, points.where((point) => point.isFlagged).toList());
+    }
+
     if (currentPosition != null) {
       _drawCurrentPosition(canvas, currentPosition!);
     }
@@ -222,6 +226,38 @@ class _HeatmapPainter extends CustomPainter {
       2.5,
       Paint()..color = Colors.white.withValues(alpha: 0.95),
     );
+  }
+
+  void _drawFlags(Canvas canvas, List<HeatmapPoint> points) {
+    final fill =
+        Paint()
+          ..color = const Color(0xFFFF5F57)
+          ..style = PaintingStyle.fill;
+    final stroke =
+        Paint()
+          ..color = Colors.white.withValues(alpha: 0.92)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.8;
+
+    for (final point in points) {
+      final center = viewport.worldToCanvas(Offset(point.floorX, point.floorY));
+      canvas.drawCircle(
+        center,
+        10,
+        Paint()
+          ..color = const Color(0xFFFF5F57).withValues(alpha: 0.22)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10),
+      );
+      final path =
+          Path()
+            ..moveTo(center.dx, center.dy - 9)
+            ..lineTo(center.dx + 7, center.dy + 3)
+            ..lineTo(center.dx, center.dy + 11)
+            ..lineTo(center.dx - 7, center.dy + 3)
+            ..close();
+      canvas.drawPath(path, fill);
+      canvas.drawPath(path, stroke);
+    }
   }
 
   void _drawGrid(Canvas canvas) {
