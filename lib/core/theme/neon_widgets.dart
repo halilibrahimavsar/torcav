@@ -187,6 +187,8 @@ class GlassmorphicContainer extends StatelessWidget {
   final double borderWidth;
   final double blurSigma;
   final Color? backgroundColor;
+  final double? width;
+  final double? height;
 
   const GlassmorphicContainer({
     super.key,
@@ -197,6 +199,8 @@ class GlassmorphicContainer extends StatelessWidget {
     this.borderWidth = 1,
     this.blurSigma = 12,
     this.backgroundColor,
+    this.width,
+    this.height,
   });
 
   @override
@@ -213,6 +217,8 @@ class GlassmorphicContainer extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
         child: Container(
+          width: width,
+          height: height,
           padding: padding,
           decoration: BoxDecoration(
             color: effectiveBg,

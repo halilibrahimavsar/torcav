@@ -72,6 +72,40 @@ class _HeatmapPageState extends State<HeatmapPage> {
   }
 }
 
+class _HudToggleButton extends StatelessWidget {
+  const _HudToggleButton({
+    required this.isMinimized,
+    required this.onToggle,
+  });
+
+  final bool isMinimized;
+  final VoidCallback onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onToggle,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GlassmorphicContainer(
+          width: 42,
+          height: 42,
+          borderRadius: BorderRadius.circular(12),
+          borderColor: isMinimized ? AppColors.neonCyan : Colors.white24,
+          padding: EdgeInsets.zero,
+          child: Center(
+            child: Icon(
+              isMinimized ? Icons.layers_rounded : Icons.layers_clear_rounded,
+              color: isMinimized ? AppColors.neonCyan : Colors.white,
+              size: 20,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _HeatmapView extends StatefulWidget {
   const _HeatmapView();
 
@@ -91,6 +125,13 @@ class _HeatmapViewState extends State<_HeatmapView> {
   /// to avoid unmounting the platform view, which triggered native SIGABRTs
   /// on certain Xiaomi/MIUI builds during the disposal/re-init cycle.
   bool _isFullScreenOpen = false;
+
+  /// When not null, we show a premium 'Signal Probe' tooltip.
+  Offset? _probePoint;
+
+  /// When true, the detailed information cards are minimized into compact badges
+  /// to maximize screen real estate for the heatmap/floorplan.
+  bool _isHudMinimized = false;
 
   @override
   Widget build(BuildContext context) {
@@ -190,13 +231,20 @@ class _HeatmapViewState extends State<_HeatmapView> {
                               : state.failure!.message,
                     ),
                   ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                  child: _SurveyPilotCard(
-                    guidance: guidance,
-                    summary: summary,
-                    copy: copy,
-                  ),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: !_isHudMinimized
+                      ? Padding(
+                        key: const ValueKey('expanded_pilot'),
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                        child: _SurveyPilotCard(
+                          guidance: guidance,
+                          summary: summary,
+                          copy: copy,
+                          onToggle: () => setState(() => _isHudMinimized = true),
+                        ),
+                      )
+                      : const SizedBox.shrink(key: ValueKey('minimized_pilot_spacer')),
                 ),
               ],
               Expanded(
@@ -242,6 +290,9 @@ class _HeatmapViewState extends State<_HeatmapView> {
                                       state.isRecording
                                           ? state.currentPosition
                                           : null,
+                                  onTap: (metric) {
+                                    setState(() => _probePoint = metric);
+                                  },
                                 ),
                                 if (_shouldShowCanvasEmptyState(state, summary))
                                   _CanvasEmptyState(state: state, copy: copy),
@@ -266,16 +317,76 @@ class _HeatmapViewState extends State<_HeatmapView> {
                                       copy: copy,
                                     ),
                                   ),
-                                Positioned(
-                                  left: 12,
-                                  right: 12,
-                                  bottom: 12,
-                                  child: _MetricsStrip(
-                                    state: state,
-                                    summary: summary,
+                                if (!_isFullScreenOpen) ...[
+                                  Positioned(
+                                    top: state.isRecording ? 70 : 14,
+                                    right: 14,
+                                    child: _HudToggleButton(
+                                      isMinimized: _isHudMinimized,
+                                      onToggle: () {
+                                        HapticFeedback.lightImpact();
+                                        setState(
+                                          () =>
+                                              _isHudMinimized =
+                                                  !_isHudMinimized,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  if (_isHudMinimized)
+                                    Positioned(
+                                      top: 70,
+                                      left: 14,
+                                      child: _SurveyPilotCard(
+                                        guidance: guidance,
+                                        summary: summary,
+                                        copy: copy,
+                                        isMinimized: true,
+                                        onToggle: () {
+                                          HapticFeedback.lightImpact();
+                                          setState(
+                                            () => _isHudMinimized = false,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  AnimatedPositioned(
+                                    duration: const Duration(milliseconds: 400),
+                                    curve: Curves.easeInOutCubic,
+                                    left: 12,
+                                    right:
+                                        _isHudMinimized
+                                            ? MediaQuery.sizeOf(context).width -
+                                                60
+                                            : 12,
+                                    bottom: 12,
+                                    child: _MetricsStrip(
+                                      state: state,
+                                      summary: summary,
+                                      copy: copy,
+                                      isMinimized: _isHudMinimized,
+                                      onToggle: () {
+                                        HapticFeedback.lightImpact();
+                                        setState(
+                                          () =>
+                                              _isHudMinimized =
+                                                  !_isHudMinimized,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                                if (!state.isRecording && _probePoint != null)
+                                  _SignalProbeOverlay(
+                                    point: _findNearestPoint(
+                                      session.points,
+                                      _probePoint!,
+                                    ),
+                                    onDismiss:
+                                        () =>
+                                            setState(() => _probePoint = null),
                                     copy: copy,
                                   ),
-                                ),
                               ],
                             ),
                   ),
@@ -322,6 +433,23 @@ class _HeatmapViewState extends State<_HeatmapView> {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
       SystemChrome.setPreferredOrientations(DeviceOrientation.values);
     }
+  }
+
+  HeatmapPoint? _findNearestPoint(List<HeatmapPoint> points, Offset metric) {
+    if (points.isEmpty) return null;
+    HeatmapPoint? closest;
+    double minSqDist = double.infinity;
+    for (final p in points) {
+      final dx = p.floorX - metric.dx;
+      final dy = p.floorY - metric.dy;
+      final d2 = dx * dx + dy * dy;
+      if (d2 < minSqDist) {
+        minSqDist = d2;
+        closest = p;
+      }
+    }
+    // Only return if within reasonable distance (e.g. 5 meters)
+    return minSqDist < 25.0 ? closest : null;
   }
 
   void _showSessionsPicker(BuildContext context, _HeatmapCopy copy) {
@@ -511,141 +639,159 @@ class _SurveyPilotCard extends StatelessWidget {
     required this.guidance,
     required this.summary,
     required this.copy,
+    this.isMinimized = false,
+    this.onToggle,
   });
 
   final SurveyGuidance guidance;
   final _HeatmapSummary summary;
   final _HeatmapCopy copy;
+  final bool isMinimized;
+  final VoidCallback? onToggle;
 
   @override
   Widget build(BuildContext context) {
     final accent = copy.guidanceColor(guidance);
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: accent.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: accent.withValues(alpha: 0.28)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.14),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  copy.guidanceIcon(guidance),
-                  color: accent,
-                  size: 18,
-                ),
+    if (isMinimized) {
+      return GestureDetector(
+        onTap: onToggle,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: StaggeredEntry(
+            duration: const Duration(milliseconds: 400),
+            child: GlassmorphicContainer(
+              borderRadius: BorderRadius.circular(40),
+              borderColor: accent,
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _ProgressRing(
+                    progress: guidance.overallProgress,
+                    color: accent,
+                    size: 32,
+                  ),
+                  const SizedBox(width: 8),
+                  Icon(
+                    copy.guidanceIcon(guidance),
+                    color: accent,
+                    size: 16,
+                  ),
+                  const SizedBox(width: 6),
+                ],
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return GestureDetector(
+      onTap: () {
+        HapticFeedback.lightImpact();
+        onToggle?.call();
+      },
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: StaggeredEntry(
+          duration: const Duration(milliseconds: 600),
+          child: GlassmorphicContainer(
+            borderRadius: BorderRadius.circular(22),
+            borderColor: accent,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    Text(
-                      copy.guidanceTitle(guidance),
-                      style: GoogleFonts.orbitron(
+                    Container(
+                      width: 34,
+                      height: 34,
+                      decoration: BoxDecoration(
+                        color: accent.withValues(alpha: 0.14),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        copy.guidanceIcon(guidance),
                         color: accent,
-                        fontSize: 11,
-                        letterSpacing: 1.1,
-                        fontWeight: FontWeight.w700,
+                        size: 18,
                       ),
                     ),
-                    const SizedBox(height: 3),
-                    Text(
-                      copy.guidanceBody(guidance, summary),
-                      style: GoogleFonts.outfit(
-                        color: AppColors.textPrimary,
-                        fontSize: 13,
-                        height: 1.42,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            copy.guidanceTitle(guidance),
+                            style: GoogleFonts.orbitron(
+                              color: accent,
+                              fontSize: 11,
+                              letterSpacing: 1.1,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            copy.guidanceBody(guidance, summary),
+                            style: GoogleFonts.outfit(
+                              color: AppColors.textPrimary,
+                              fontSize: 13,
+                              height: 1.42,
+                            ),
+                          ),
+                        ],
                       ),
+                    ),
+                    const SizedBox(width: 12),
+                    _ProgressRing(
+                      progress: guidance.overallProgress,
+                      color: accent,
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 12),
-              _ProgressRing(progress: guidance.overallProgress, color: accent),
-            ],
-          ),
-          const SizedBox(height: 12),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(999),
-            child: LinearProgressIndicator(
-              value: guidance.overallProgress,
-              minHeight: 7,
-              backgroundColor: Colors.white.withValues(alpha: 0.08),
-              valueColor: AlwaysStoppedAnimation<Color>(accent),
-            ),
-          ),
-          const SizedBox(height: 12),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                _ScorePill(
-                  label: copy.routeLabel,
-                  value: copy.routeLabelValue(guidance),
-                  color: accent,
+                const SizedBox(height: 12),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(999),
+                  child: LinearProgressIndicator(
+                    value: guidance.overallProgress,
+                    minHeight: 7,
+                    backgroundColor: Colors.white.withValues(alpha: 0.08),
+                    valueColor: AlwaysStoppedAnimation<Color>(accent),
+                  ),
                 ),
-                const SizedBox(width: 8),
-                _ScorePill(
-                  label: copy.planConfidenceLabel,
-                  value: copy.percent(guidance.planScore),
-                  color: AppColors.neonBlue,
-                ),
-                const SizedBox(width: 8),
-                _ScorePill(
-                  label: copy.coverageConfidenceLabel,
-                  value: copy.percent(guidance.coverageScore),
-                  color: AppColors.neonGreen,
-                ),
-                const SizedBox(width: 8),
-                _ScorePill(
-                  label: copy.signalConfidenceLabel,
-                  value: copy.percent(guidance.signalScore),
-                  color: summary.signalColor,
+                const SizedBox(height: 12),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _FeedDot(
+                        label: copy.motionFeedLabel,
+                        active: guidance.feeds.motionLive,
+                      ),
+                      const SizedBox(width: 10),
+                      _FeedDot(
+                        label: copy.wifiFeedLabel,
+                        active: guidance.feeds.wifiLive,
+                      ),
+                      const SizedBox(width: 10),
+                      _FeedDot(
+                        label: copy.cameraFeedLabel,
+                        active: guidance.feeds.cameraLive,
+                      ),
+                      const SizedBox(width: 10),
+                      _FeedDot(
+                        label: copy.planFeedLabel,
+                        active: guidance.feeds.planLive,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 12),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                _FeedDot(
-                  label: copy.motionFeedLabel,
-                  active: guidance.feeds.motionLive,
-                ),
-                const SizedBox(width: 10),
-                _FeedDot(
-                  label: copy.wifiFeedLabel,
-                  active: guidance.feeds.wifiLive,
-                ),
-                const SizedBox(width: 10),
-                _FeedDot(
-                  label: copy.cameraFeedLabel,
-                  active: guidance.feeds.cameraLive,
-                ),
-                const SizedBox(width: 10),
-                _FeedDot(
-                  label: copy.planFeedLabel,
-                  active: guidance.feeds.planLive,
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -656,14 +802,64 @@ class _MetricsStrip extends StatelessWidget {
     required this.state,
     required this.summary,
     required this.copy,
+    this.isMinimized = false,
+    this.onToggle,
   });
 
   final HeatmapState state;
   final _HeatmapSummary summary;
   final _HeatmapCopy copy;
+  final bool isMinimized;
+  final VoidCallback? onToggle;
 
   @override
   Widget build(BuildContext context) {
+    if (isMinimized) {
+      return GestureDetector(
+        onTap: onToggle,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: StaggeredEntry(
+            duration: const Duration(milliseconds: 400),
+            child: GlassmorphicContainer(
+              borderRadius: BorderRadius.circular(20),
+              borderColor: AppColors.neonCyan,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: summary.signalColor,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: summary.signalColor.withValues(alpha: 0.5),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    summary.signalDisplay(copy),
+                    style: GoogleFonts.orbitron(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     final feeds = [
       copy.feedStatusLabel(
         copy.motionFeedLabel,
@@ -683,83 +879,89 @@ class _MetricsStrip extends StatelessWidget {
       ),
     ];
 
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.darkSurface.withValues(alpha: 0.92),
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: AppColors.glassWhiteBorder),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            copy.infoSheetTitle,
-            style: GoogleFonts.orbitron(
-              color: AppColors.neonCyan,
-              fontSize: 10,
-              letterSpacing: 1.2,
-              fontWeight: FontWeight.w700,
-            ),
+    return GestureDetector(
+      onTap: () {
+        HapticFeedback.lightImpact();
+        onToggle?.call();
+      },
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GlassmorphicContainer(
+          borderRadius: BorderRadius.circular(24),
+          borderColor: AppColors.neonCyan,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                copy.infoSheetTitle,
+                style: GoogleFonts.orbitron(
+                  color: AppColors.neonCyan,
+                  fontSize: 10,
+                  letterSpacing: 1.2,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 10),
+              _SheetTextRow(
+                label:
+                    state.isRecording
+                        ? copy.currentSignalLabel
+                        : copy.avgSignalLabel,
+                value: summary.signalDisplay(copy),
+                helper: summary.signalHelper(copy),
+                accent: summary.signalColor,
+              ),
+              const SizedBox(height: 6),
+              _SheetTextRow(
+                label: copy.samplesLabel,
+                value: '${summary.sampleCount}',
+                helper:
+                    summary.sampleCount == 0
+                        ? copy.noSamplesHelper
+                        : copy.samplesHelper(summary.sampleCount),
+                accent: AppColors.neonCyan,
+              ),
+              const SizedBox(height: 6),
+              _SheetTextRow(
+                label: copy.wallsLabel,
+                value: '${summary.wallCount}',
+                helper:
+                    summary.wallCount == 0
+                        ? copy.noWallsHelper
+                        : copy.wallsHelper(summary.wallCount),
+                accent: AppColors.neonBlue,
+              ),
+              const SizedBox(height: 6),
+              _SheetTextRow(
+                label: copy.weakZonesLabel,
+                value: '${summary.weakZoneCount}',
+                helper: copy.weakZoneHelper(summary.weakZoneCount),
+                accent:
+                    summary.weakZoneCount == 0
+                        ? AppColors.neonGreen
+                        : AppColors.neonOrange,
+              ),
+              const SizedBox(height: 6),
+              _SheetTextRow(
+                label: copy.planSizeLabel,
+                value: summary.planSizeDisplay(copy),
+                helper: copy.planSizeHelper,
+                accent: AppColors.neonPurple,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                feeds.join('  ·  '),
+                style: GoogleFonts.outfit(
+                  color: AppColors.textSecondary,
+                  fontSize: 12,
+                  height: 1.3,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 10),
-          _SheetTextRow(
-            label:
-                state.isRecording
-                    ? copy.currentSignalLabel
-                    : copy.avgSignalLabel,
-            value: summary.signalDisplay(copy),
-            helper: summary.signalHelper(copy),
-            accent: summary.signalColor,
-          ),
-          const SizedBox(height: 6),
-          _SheetTextRow(
-            label: copy.samplesLabel,
-            value: '${summary.sampleCount}',
-            helper:
-                summary.sampleCount == 0
-                    ? copy.noSamplesHelper
-                    : copy.samplesHelper(summary.sampleCount),
-            accent: AppColors.neonCyan,
-          ),
-          const SizedBox(height: 6),
-          _SheetTextRow(
-            label: copy.wallsLabel,
-            value: '${summary.wallCount}',
-            helper:
-                summary.wallCount == 0
-                    ? copy.noWallsHelper
-                    : copy.wallsHelper(summary.wallCount),
-            accent: AppColors.neonBlue,
-          ),
-          const SizedBox(height: 6),
-          _SheetTextRow(
-            label: copy.weakZonesLabel,
-            value: '${summary.weakZoneCount}',
-            helper: copy.weakZoneHelper(summary.weakZoneCount),
-            accent:
-                summary.weakZoneCount == 0
-                    ? AppColors.neonGreen
-                    : AppColors.neonOrange,
-          ),
-          const SizedBox(height: 6),
-          _SheetTextRow(
-            label: copy.planSizeLabel,
-            value: summary.planSizeDisplay(copy),
-            helper: copy.planSizeHelper,
-            accent: AppColors.neonPurple,
-          ),
-          const SizedBox(height: 10),
-          Text(
-            feeds.join('  ·  '),
-            style: GoogleFonts.outfit(
-              color: AppColors.textSecondary,
-              fontSize: 12,
-              height: 1.3,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -1442,52 +1644,6 @@ class _MetricCard extends StatelessWidget {
   }
 }
 
-class _ScorePill extends StatelessWidget {
-  const _ScorePill({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  final String label;
-  final String value;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: color.withValues(alpha: 0.24)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: GoogleFonts.orbitron(
-              color: color,
-              fontSize: 9,
-              letterSpacing: 1,
-            ),
-          ),
-          const SizedBox(height: 3),
-          Text(
-            value,
-            style: GoogleFonts.outfit(
-              color: AppColors.textPrimary,
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _FeedDot extends StatelessWidget {
   const _FeedDot({required this.label, required this.active});
 
@@ -1520,24 +1676,29 @@ class _FeedDot extends StatelessWidget {
 }
 
 class _ProgressRing extends StatelessWidget {
-  const _ProgressRing({required this.progress, required this.color});
+  const _ProgressRing({
+    required this.progress,
+    required this.color,
+    this.size = 54,
+  });
 
   final double progress;
   final Color color;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
     final clamped = progress.clamp(0.0, 1.0);
 
     return SizedBox(
-      width: 54,
-      height: 54,
+      width: size,
+      height: size,
       child: Stack(
         alignment: Alignment.center,
         children: [
           CircularProgressIndicator(
             value: clamped,
-            strokeWidth: 4,
+            strokeWidth: size < 40 ? 3 : 4,
             backgroundColor: Colors.white.withValues(alpha: 0.08),
             valueColor: AlwaysStoppedAnimation<Color>(color),
           ),
@@ -1545,7 +1706,7 @@ class _ProgressRing extends StatelessWidget {
             '${(clamped * 100).round()}%',
             style: GoogleFonts.orbitron(
               color: AppColors.textPrimary,
-              fontSize: 10,
+              fontSize: size * 0.18,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -2415,5 +2576,206 @@ class _HeatmapCopy {
       case null:
         return isTurkish ? 'dengeyi koru' : 'keep sweeping';
     }
+  }
+}
+
+class _SignalProbeOverlay extends StatelessWidget {
+  const _SignalProbeOverlay({
+    required this.point,
+    required this.onDismiss,
+    required this.copy,
+  });
+
+  final HeatmapPoint? point;
+  final VoidCallback onDismiss;
+  final _HeatmapCopy copy;
+
+  @override
+  Widget build(BuildContext context) {
+    if (point == null) {
+      return Positioned(
+        left: 20,
+        right: 20,
+        bottom: 120,
+        child: _InfoBanner(
+          color: AppColors.neonOrange,
+          icon: Icons.search_off_rounded,
+          title: 'NO DATA AT THIS LOCATION',
+          body: 'Try tapping closer to a captured signal point.',
+        ),
+      );
+    }
+
+    final rssi = point!.rssi;
+    final color = _signalColor(rssi);
+
+    return Positioned.fill(
+      child: Stack(
+        children: [
+          GestureDetector(
+            onTap: onDismiss,
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              color: Colors.black.withValues(alpha: 0.2),
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: StaggeredEntry(
+                duration: const Duration(milliseconds: 400),
+                child: GlassmorphicContainer(
+                  borderRadius: BorderRadius.circular(28),
+                  borderColor: color,
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: color.withValues(alpha: 0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.analytics_rounded,
+                              color: color,
+                              size: 24,
+                            ),
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'SIGNAL PROBE',
+                                  style: GoogleFonts.orbitron(
+                                    color: color,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 2,
+                                  ),
+                                ),
+                                Text(
+                                  'Metric Position: ${point!.floorX.toStringAsFixed(1)}m, ${point!.floorY.toStringAsFixed(1)}m',
+                                  style: GoogleFonts.outfit(
+                                    color: AppColors.textMuted,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.close_rounded,
+                              color: AppColors.textMuted,
+                            ),
+                            onPressed: onDismiss,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _StatBrick(
+                              label: 'RSSI',
+                              value: '$rssi dBm',
+                              color: color,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _StatBrick(
+                              label: 'FLOOR',
+                              value: '${point!.floor}',
+                              color: AppColors.neonBlue,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      _StatBrick(
+                        label: 'STATUS',
+                        value:
+                            rssi > -60
+                                ? 'OPTIMAL'
+                                : rssi > -75
+                                ? 'FAIR'
+                                : 'CRITICAL',
+                        color:
+                            rssi > -60
+                                ? AppColors.neonGreen
+                                : rssi > -75
+                                ? AppColors.neonOrange
+                                : AppColors.neonRed,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _signalColor(int rssi) {
+    if (rssi > -50) return AppColors.neonGreen;
+    if (rssi > -65) return const Color(0xFFC6FF00); // Lime
+    if (rssi > -75) return AppColors.neonOrange;
+    return AppColors.neonRed;
+  }
+}
+
+class _StatBrick extends StatelessWidget {
+  const _StatBrick({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  final String label;
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: GoogleFonts.orbitron(
+              color: color.withValues(alpha: 0.6),
+              fontSize: 9,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: GoogleFonts.outfit(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

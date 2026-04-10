@@ -9,7 +9,7 @@ import '../../domain/entities/heatmap_session.dart';
 import '../../domain/entities/wall_segment.dart';
 
 /// Renders signal-strength data and floor plan walls.
-class HeatmapCanvas extends StatelessWidget {
+class HeatmapCanvas extends StatefulWidget {
   const HeatmapCanvas({
     required this.session,
     this.floorPlan,
@@ -22,52 +22,91 @@ class HeatmapCanvas extends StatelessWidget {
 
   final HeatmapSession session;
   final FloorPlan? floorPlan;
-
-  /// Called with the metric [Offset] (meters) when the user taps.
   final void Function(Offset metricPos)? onTap;
-
-  /// Whether to draw the walking path overlay.
   final bool showPath;
-
-  /// When set, only points on this floor are rendered (barometer-based).
   final int? activeFloor;
-
-  /// Current live metric position in meters from the session origin.
   final Offset? currentPosition;
+
+  @override
+  State<HeatmapCanvas> createState() => _HeatmapCanvasState();
+}
+
+class _HeatmapCanvasState extends State<HeatmapCanvas> {
+  late final TransformationController _transformationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _transformationController = TransformationController();
+  }
+
+  @override
+  void dispose() {
+    _transformationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final points =
-        activeFloor == null
-            ? session.points
-            : session.points.where((p) => p.floor == activeFloor).toList();
+        widget.activeFloor == null
+            ? widget.session.points
+            : widget.session.points
+                .where((p) => p.floor == widget.activeFloor)
+                .toList();
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = constraints.biggest;
         final worldBounds = _WorldBounds.fromData(
           points: points,
-          walls: floorPlan?.walls ?? const [],
-          currentPosition: currentPosition,
+          walls: widget.floorPlan?.walls ?? const [],
+          currentPosition: widget.currentPosition,
         );
         final viewport = _Viewport.fit(size, worldBounds);
 
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTapDown:
-              onTap == null
-                  ? null
-                  : (details) =>
-                      onTap!(viewport.canvasToWorld(details.localPosition)),
-          child: CustomPaint(
-            painter: _HeatmapPainter(
-              points: points,
-              floorPlan: floorPlan,
-              viewport: viewport,
-              showPath: showPath,
-              currentPosition: currentPosition,
+        return InteractiveViewer(
+          transformationController: _transformationController,
+          maxScale: 5.0,
+          minScale: 0.5,
+          clipBehavior: Clip.none,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTapDown:
+                widget.onTap == null
+                    ? null
+                    : (details) {
+                        // FIX: Account for InteractiveViewer transform
+                        final RenderBox box =
+                            context.findRenderObject() as RenderBox;
+                        final Offset localOffset = box.globalToLocal(
+                          details.globalPosition,
+                        );
+
+                        // The InteractiveViewer scales and translates the child.
+                        // We must inverse-transform the tap to find the position
+                        // in the original 'fitted' coordinate space.
+                        final Matrix4 matrix = _transformationController.value;
+                        final Matrix4 inverse = Matrix4.inverted(matrix);
+                        final Offset transformed = MatrixUtils.transformPoint(
+                          inverse,
+                          localOffset,
+                        );
+
+                        widget.onTap!(
+                          viewport.canvasToWorld(transformed),
+                        );
+                      },
+            child: CustomPaint(
+              painter: _HeatmapPainter(
+                points: points,
+                floorPlan: widget.floorPlan,
+                viewport: viewport,
+                showPath: widget.showPath,
+                currentPosition: widget.currentPosition,
+              ),
+              child: const SizedBox.expand(),
             ),
-            child: const SizedBox.expand(),
           ),
         );
       },
@@ -116,30 +155,48 @@ class _HeatmapPainter extends CustomPainter {
   }
 
   void _drawHeatmap(Canvas canvas, List<HeatmapPoint> points) {
-    final radius = (viewport.scale * 1.4).clamp(22.0, 64.0);
+    if (points.isEmpty) return;
+
+    // Premium Blending: Create an off-screen layer to draw points, then blur them
+    // to create a continuous signal field instead of isolated circles.
+    final heatmapRadius = (viewport.scale * 1.8).clamp(28.0, 72.0);
+    final blurSigma = heatmapRadius * 0.45;
+
+    canvas.saveLayer(
+      Rect.fromLTWH(0, 0, viewport.size.width, viewport.size.height),
+      Paint()..imageFilter = ui.ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
+    );
 
     for (final point in points) {
       final centre = viewport.worldToCanvas(Offset(point.floorX, point.floorY));
       final signalColor = _signalColor(point.rssi);
 
+      // We use a stronger inner core and let the layer blur handle the "spread"
       final paint =
           Paint()
             ..shader = ui.Gradient.radial(
               centre,
-              radius,
+              heatmapRadius,
               [
-                signalColor.withValues(alpha: 0.66),
-                signalColor.withValues(alpha: 0.14),
+                signalColor.withValues(alpha: 0.85),
+                signalColor.withValues(alpha: 0.45),
                 signalColor.withValues(alpha: 0),
               ],
-              const [0, 0.55, 1],
+              const [0, 0.4, 1],
             );
-      canvas.drawCircle(centre, radius, paint);
+      canvas.drawCircle(centre, heatmapRadius, paint);
+    }
+    canvas.restore();
 
+    // Draw high-precision point markers on top
+    for (final point in points) {
+      final centre = viewport.worldToCanvas(Offset(point.floorX, point.floorY));
       canvas.drawCircle(
         centre,
-        3.2,
-        Paint()..color = Colors.white.withValues(alpha: 0.9),
+        2.4,
+        Paint()
+          ..color = Colors.white.withValues(alpha: 0.8)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.2),
       );
     }
   }
@@ -195,37 +252,79 @@ class _HeatmapPainter extends CustomPainter {
   }
 
   void _drawWalls(Canvas canvas, List<WallSegment> walls) {
-    final wallPaint =
+    // Architectural Style: Thick walls with inner glow and glass-like border
+    final outerWallPaint =
         Paint()
-          ..color = Colors.cyanAccent.withValues(alpha: 0.82)
-          ..strokeWidth = 3.2
+          ..color = const Color(0xFF00E5FF).withValues(alpha: 0.6)
+          ..strokeWidth = 5.0
+          ..strokeCap = StrokeCap.round;
+
+    final innerWallPaint =
+        Paint()
+          ..color = Colors.white.withValues(alpha: 0.9)
+          ..strokeWidth = 1.2
+          ..strokeCap = StrokeCap.round;
+
+    final wallGlowPaint =
+        Paint()
+          ..color = const Color(0xFF00E5FF).withValues(alpha: 0.15)
+          ..strokeWidth = 12.0
           ..strokeCap = StrokeCap.round
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.6);
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0);
 
     for (final wall in walls) {
-      canvas.drawLine(
-        viewport.worldToCanvas(Offset(wall.x1, wall.y1)),
-        viewport.worldToCanvas(Offset(wall.x2, wall.y2)),
-        wallPaint,
-      );
+      final p1 = viewport.worldToCanvas(Offset(wall.x1, wall.y1));
+      final p2 = viewport.worldToCanvas(Offset(wall.x2, wall.y2));
+
+      // 1. Shadow/Glow
+      canvas.drawLine(p1, p2, wallGlowPaint);
+      // 2. Thick physical wall
+      canvas.drawLine(p1, p2, outerWallPaint);
+      // 3. Sharp edge detail
+      canvas.drawLine(p1, p2, innerWallPaint);
     }
   }
 
   void _drawCurrentPosition(Canvas canvas, Offset currentPosition) {
     final center = viewport.worldToCanvas(currentPosition);
+
+    // Premium Scanner Pulse
+    final pulsePaint =
+        Paint()
+          ..color = Colors.white.withValues(alpha: 0.4)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5;
+
+    // Draw three ripples
+    canvas.drawCircle(center, 12, pulsePaint);
+    canvas.drawCircle(center, 24, pulsePaint..color = pulsePaint.color.withValues(alpha: 0.2));
+
+    // Core Marker
     canvas.drawCircle(
       center,
-      7.0,
+      8.0,
       Paint()
         ..color = Colors.white.withValues(alpha: 0.95)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 2.0,
+        ..strokeWidth = 2.5,
     );
     canvas.drawCircle(
       center,
-      2.5,
-      Paint()..color = Colors.white.withValues(alpha: 0.95),
+      3.0,
+      Paint()
+        ..color = Colors.white
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.0),
     );
+
+    // Crosshair lines
+    final crossPaint =
+        Paint()
+          ..color = Colors.white.withValues(alpha: 0.6)
+          ..strokeWidth = 1.0;
+    canvas.drawLine(center - const Offset(14, 0), center - const Offset(6, 0), crossPaint);
+    canvas.drawLine(center + const Offset(6, 0), center + const Offset(14, 0), crossPaint);
+    canvas.drawLine(center - const Offset(0, 14), center - const Offset(0, 6), crossPaint);
+    canvas.drawLine(center + const Offset(0, 6), center + const Offset(0, 14), crossPaint);
   }
 
   void _drawFlags(Canvas canvas, List<HeatmapPoint> points) {
@@ -263,13 +362,13 @@ class _HeatmapPainter extends CustomPainter {
   void _drawGrid(Canvas canvas) {
     final gridPaint =
         Paint()
-          ..color = Colors.white.withValues(alpha: 0.05)
-          ..strokeWidth = 0.7;
+          ..color = Colors.white.withValues(alpha: 0.04)
+          ..strokeWidth = 0.6;
 
-    final accentPaint =
+    final techGridPaint =
         Paint()
-          ..color = Colors.white.withValues(alpha: 0.08)
-          ..strokeWidth = 1.0;
+          ..color = const Color(0xFF00E5FF).withValues(alpha: 0.025)
+          ..strokeWidth = 1.2;
 
     final stepMeters = _gridStepMeters(viewport.scale);
     final startX = (viewport.bounds.minX / stepMeters).floor() * stepMeters;
@@ -277,24 +376,32 @@ class _HeatmapPainter extends CustomPainter {
     final startY = (viewport.bounds.minY / stepMeters).floor() * stepMeters;
     final endY = (viewport.bounds.maxY / stepMeters).ceil() * stepMeters;
 
+    // Background patterns
     for (double x = startX; x <= endX; x += stepMeters) {
-      final canvasX =
-          viewport.worldToCanvas(Offset(x, viewport.bounds.minY)).dx;
+      final canvasX = viewport.worldToCanvas(Offset(x, viewport.bounds.minY)).dx;
       canvas.drawLine(
-        Offset(canvasX, viewport.topInset),
-        Offset(canvasX, viewport.bottomInset),
-        x.abs() < 0.001 ? accentPaint : gridPaint,
+        Offset(canvasX, 0),
+        Offset(canvasX, viewport.size.height),
+        (x.toInt() % 10 == 0) ? techGridPaint : gridPaint,
       );
     }
     for (double y = startY; y <= endY; y += stepMeters) {
-      final canvasY =
-          viewport.worldToCanvas(Offset(viewport.bounds.minX, y)).dy;
+      final canvasY = viewport.worldToCanvas(Offset(viewport.bounds.minX, y)).dy;
       canvas.drawLine(
-        Offset(viewport.leftInset, canvasY),
-        Offset(viewport.rightInset, canvasY),
-        y.abs() < 0.001 ? accentPaint : gridPaint,
+        Offset(0, canvasY),
+        Offset(viewport.size.width, canvasY),
+        (y.toInt() % 10 == 0) ? techGridPaint : gridPaint,
       );
     }
+
+    // Origin axis marker
+    final origin = viewport.worldToCanvas(Offset.zero);
+    final originPaint =
+        Paint()
+          ..color = Colors.white.withValues(alpha: 0.12)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.8;
+    canvas.drawCircle(origin, 4, originPaint);
   }
 
   double _gridStepMeters(double scale) {
