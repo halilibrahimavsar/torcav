@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,8 +15,9 @@ import '../bloc/heatmap_bloc.dart';
 import '../bloc/scan_phase.dart';
 import 'ar_hud_overlay.dart';
 
-/// ARCore-backed heatmap view. Renders anchored diagnostic pillars in metric
-/// world space and delegates the 2D HUD to [ArHudOverlay].
+/// ARCore-backed heatmap view. Renders anchored floor-disc markers in metric
+/// world space and delegates the 2D HUD + dBm label overlay to screen-space
+/// Flutter widgets.
 class ArCoreHeatmapView extends StatefulWidget {
   const ArCoreHeatmapView({
     super.key,
@@ -91,11 +94,13 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
           position: vector.Vector3.zero(),
         ),
         // Sci-fi landing-pad ring at ground level.
+        // ArCoreCylinder bug: toMap() swaps radius ↔ height.
+        // Desired native: radius=0.15m, height=0.005m → pass swapped.
         ArCoreNode(
           name: 'survey_origin_pad',
           shape: ArCoreCylinder(
-            radius: 0.15,
-            height: 0.005,
+            radius: 0.005,
+            height: 0.15,
             materials: [
               ArCoreMaterial(
                 color: AppColors.neonCyan.withValues(alpha: 0.25),
@@ -117,7 +122,11 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.gps_fixed_rounded, color: AppColors.neonCyan, size: 16),
+            const Icon(
+              Icons.gps_fixed_rounded,
+              color: AppColors.neonCyan,
+              size: 16,
+            ),
             const SizedBox(width: 8),
             Text(
               'Origin anchored — tap to record points',
@@ -161,79 +170,40 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
     );
   }
 
-  Future<void> _addDiagnosticPillar(HeatmapPoint point) async {
+  /// Adds a single flat disc marker on the AR floor for [point].
+  ///
+  /// ArCoreCylinder bug: `toMap()` swaps `radius` and `height` before sending
+  /// to native. To get native radius=R and height=H, pass `radius: H, height: R`.
+  Future<void> _addFloorMarker(HeatmapPoint point) async {
     if (_arCoreController == null || !_originAttached) return;
 
-    final pillarHeight = signalTierArHeight(point.rssi);
     final color = signalGradientColor(point.rssi);
-    final pillarName = _pillarName(point);
+    final discRadius = signalDiscRadius(point.rssi); // 0.06–0.22m native radius
+    const discNativeHeight = 0.015; // 1.5cm tall flat disc
 
-    final pillarNode = ArCoreNode(
-      name: '${pillarName}_body',
+    final disc = ArCoreNode(
+      name: '${_markerName(point)}_disc',
       shape: ArCoreCylinder(
+        // Swapped for plugin bug: native radius = height arg, native height = radius arg.
+        radius: discNativeHeight,
+        height: discRadius,
         materials: [
           ArCoreMaterial(
-            color: color.withValues(alpha: 0.5),
-            metallic: 0.7,
-            reflectance: 0.55,
-          ),
-        ],
-        radius: 0.05,
-        height: pillarHeight,
-      ),
-      position: vector.Vector3(
-        point.floorX,
-        point.floorZ + pillarHeight / 2,
-        -point.floorY,
-      ),
-    );
-
-    final glowNode = ArCoreNode(
-      name: '${pillarName}_glow',
-      shape: ArCoreSphere(
-        radius: 0.08,
-        materials: [
-          ArCoreMaterial(color: color, metallic: 1.0, reflectance: 1.0),
-        ],
-      ),
-      position: vector.Vector3(
-        point.floorX,
-        point.floorZ + pillarHeight,
-        -point.floorY,
-      ),
-    );
-
-    // Ground halo disc — gives each pillar a sci-fi landing-ring effect.
-    final baseDisc = ArCoreNode(
-      name: '${pillarName}_base',
-      shape: ArCoreCylinder(
-        radius: 0.08,
-        height: 0.012,
-        materials: [
-          ArCoreMaterial(
-            color: color.withValues(alpha: 0.18),
-            metallic: 0.6,
-            reflectance: 0.4,
+            color: color.withValues(alpha: 0.75),
+            metallic: 0.5,
+            reflectance: 0.65,
           ),
         ],
       ),
       position: vector.Vector3(
         point.floorX,
-        point.floorZ + 0.006,
+        point.floorZ + discNativeHeight / 2, // sit flush on floor
         -point.floorY,
       ),
     );
 
     await _arCoreController!.addArCoreNode(
-      pillarNode,
-      parentNodeName: _originNodeName,
-    );
-    await _arCoreController!.addArCoreNode(
-      glowNode,
-      parentNodeName: _originNodeName,
-    );
-    await _arCoreController!.addArCoreNode(
-      baseDisc,
+      disc,
       parentNodeName: _originNodeName,
     );
   }
@@ -287,8 +257,8 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
     _renderedFlagKeys.add(key);
   }
 
-  String _pillarName(HeatmapPoint point) =>
-      'pillar_${point.timestamp.microsecondsSinceEpoch}';
+  String _markerName(HeatmapPoint point) =>
+      'marker_${point.timestamp.microsecondsSinceEpoch}';
 
   String _flagKey(HeatmapPoint point) =>
       '${point.timestamp.microsecondsSinceEpoch}_${point.floorX.toStringAsFixed(2)}_${point.floorY.toStringAsFixed(2)}';
@@ -298,12 +268,12 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
 
     final newPoints = points.skip(_renderedPointCount).toList();
     if (newPoints.isNotEmpty) {
-      // Add all new pillars in parallel — ARCore handles concurrency internally.
-      await Future.wait(newPoints.map(_addDiagnosticPillar));
+      // Add all new floor markers in parallel — ARCore handles concurrency internally.
+      await Future.wait(newPoints.map(_addFloorMarker));
       _renderedPointCount = points.length;
     }
 
-    // Sync any newly flagged points (flag may be set after pillar creation).
+    // Sync any newly flagged points (flag may be set after marker creation).
     await Future.wait(
       points.where((p) => p.isFlagged).map(_addFlagMarker),
     );
@@ -323,7 +293,11 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.warning_amber_rounded, color: AppColors.neonRed, size: 16),
+            const Icon(
+              Icons.warning_amber_rounded,
+              color: AppColors.neonRed,
+              size: 16,
+            ),
             const SizedBox(width: 8),
             Text(
               'Weak zone flagged',
@@ -350,8 +324,8 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
             previous.currentSession?.points ?? const <HeatmapPoint>[];
         final currPoints =
             current.currentSession?.points ?? const <HeatmapPoint>[];
-        final prevFlags = prevPoints.where((point) => point.isFlagged).length;
-        final currFlags = currPoints.where((point) => point.isFlagged).length;
+        final prevFlags = prevPoints.where((p) => p.isFlagged).length;
+        final currFlags = currPoints.where((p) => p.isFlagged).length;
         return currPoints.length != prevPoints.length || currFlags != prevFlags;
       },
       listener: (context, state) async {
@@ -380,6 +354,9 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
               onArCoreViewCreated: _onArCoreViewCreated,
               enableTapRecognizer: true,
             ),
+            // dBm label overlay — screen-space projections of floor markers.
+            if (state.phase == ScanPhase.scanning)
+              const IgnorePointer(child: _SignalLabelOverlay()),
             if (state.phase == ScanPhase.scanning)
               ArHudOverlay(
                 guidance: guidance,
@@ -393,4 +370,165 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
       },
     );
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Screen-space dBm label overlay.
+//
+// Since arcore_flutter_plugin has no 3D text support, we project each floor
+// marker's world position into screen space using the current device heading
+// and PDR position from HeatmapBloc, then render Flutter Text pills at those
+// positions on top of the ArCoreView.
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _SignalLabelOverlay extends StatelessWidget {
+  const _SignalLabelOverlay();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<HeatmapBloc, HeatmapState, _LabelOverlaySlice>(
+      selector: (s) => _LabelOverlaySlice(
+        points: s.currentSession?.points ?? const [],
+        camX: s.currentPosition?.dx ?? 0,
+        camY: s.currentPosition?.dy ?? 0,
+        heading: s.currentHeading,
+        hasOrigin: s.hasArOrigin,
+      ),
+      builder: (context, slice) {
+        if (!slice.hasOrigin || slice.points.isEmpty) {
+          return const SizedBox.shrink();
+        }
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final size = Size(constraints.maxWidth, constraints.maxHeight);
+            final labels = <Widget>[];
+
+            for (final point in slice.points) {
+              final screen = _projectToScreen(
+                point,
+                slice.camX,
+                slice.camY,
+                slice.heading,
+                size,
+              );
+              if (screen == null) continue;
+
+              final color = signalGradientColor(point.rssi);
+              labels.add(
+                Positioned(
+                  left: screen.dx,
+                  top: screen.dy,
+                  child: FractionalTranslation(
+                    // Anchor the bottom-center of the label to the projected point.
+                    translation: const Offset(-0.5, -1.0),
+                    child: _DbmPill(rssi: point.rssi, color: color),
+                  ),
+                ),
+              );
+            }
+
+            return Stack(children: labels);
+          },
+        );
+      },
+    );
+  }
+
+  /// Projects a floor-space point onto screen coordinates.
+  ///
+  /// PDR coordinate system: heading=0° → camera faces +X axis.
+  /// Camera forward vector = (cos θ, sin θ).
+  /// Camera right vector  = (−sin θ, cos θ).
+  ///
+  /// Returns null if the point is behind the camera, too close, too far, or
+  /// outside the horizontal field of view.
+  static Offset? _projectToScreen(
+    HeatmapPoint point,
+    double camX,
+    double camY,
+    double headingDeg,
+    Size screenSize,
+  ) {
+    final dx = point.floorX - camX;
+    final dy = point.floorY - camY;
+    final headingRad = headingDeg * math.pi / 180;
+
+    // Depth: how far the point is in front of the camera.
+    final depth =
+        dx * math.cos(headingRad) + dy * math.sin(headingRad);
+    // Lateral: how far the point is to the right of the camera.
+    final lateral =
+        -dx * math.sin(headingRad) + dy * math.cos(headingRad);
+
+    if (depth < 0.4 || depth > 7.0) return null;
+
+    const hFovRad = 60.0 * math.pi / 180.0;
+    final focalPx = screenSize.width / (2 * math.tan(hFovRad / 2));
+
+    final screenX = screenSize.width / 2 + (lateral / depth) * focalPx;
+    if (screenX < -40 || screenX > screenSize.width + 40) return null;
+
+    // Vertical position: farther points appear closer to horizon (higher).
+    final t = ((depth - 0.4) / 6.6).clamp(0.0, 1.0);
+    final screenY = screenSize.height * (0.82 - t * 0.38);
+
+    return Offset(screenX, screenY);
+  }
+}
+
+class _DbmPill extends StatelessWidget {
+  const _DbmPill({required this.rssi, required this.color});
+
+  final int rssi;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      decoration: BoxDecoration(
+        color: AppColors.darkSurface.withValues(alpha: 0.82),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.7), width: 1),
+      ),
+      child: Text(
+        '$rssi dBm',
+        style: GoogleFonts.orbitron(
+          color: color,
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.8,
+        ),
+      ),
+    );
+  }
+}
+
+class _LabelOverlaySlice {
+  const _LabelOverlaySlice({
+    required this.points,
+    required this.camX,
+    required this.camY,
+    required this.heading,
+    required this.hasOrigin,
+  });
+
+  final List<HeatmapPoint> points;
+  final double camX;
+  final double camY;
+  final double heading;
+  final bool hasOrigin;
+
+  @override
+  bool operator ==(Object other) =>
+      other is _LabelOverlaySlice &&
+      other.points == points &&
+      other.camX == camX &&
+      other.camY == camY &&
+      other.heading == heading &&
+      other.hasOrigin == hasOrigin;
+
+  @override
+  int get hashCode =>
+      Object.hash(points, camX, camY, heading, hasOrigin);
 }

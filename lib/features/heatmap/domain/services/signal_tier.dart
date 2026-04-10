@@ -66,12 +66,9 @@ Color signalGradientColor(int rssi) {
   )!;
 }
 
-/// Returns the height (in meters) for a "Diagnostic Pillar" based on the signal strength.
-///
-/// Excellent signal produces a taller pillar (0.5m), while poor signal
-/// produces a shorter stub (0.1m).
-double signalTierArHeight(int rssi) {
-  // Map -90..-35 dBm to 0.08..0.80 meters — wider range for visible AR contrast.
+/// Maps RSSI to floor disc radius for AR floor markers.
+/// -90 dBm (poor) → 0.06m radius, -35 dBm (excellent) → 0.22m radius.
+double signalDiscRadius(int rssi) {
   final normalized = ((rssi + 90) / 55).clamp(0.0, 1.0);
-  return 0.08 + (normalized * 0.72);
+  return 0.06 + normalized * 0.16;
 }
