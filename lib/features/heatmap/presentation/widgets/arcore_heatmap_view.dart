@@ -43,30 +43,34 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
   bool _originAttached = false;
   vector.Vector3? _originWorldPos;
 
+  /// Max visual markers to render in the AR scene to avoid mapping degradation.
+  /// Scanned data continues to be recorded in the background.
+  static const _maxRenderedMarkers = 80;
+
   @override
   void dispose() {
-    // Defensive check: if the controller wasn't disposed during a manual
-    // discard/finish flow, do it now.
-    _arCoreController?.dispose();
+    _isDisposed = true;
     _arCoreController = null;
     super.dispose();
   }
 
+  bool _isDisposed = false;
+
   void _handleDiscard() {
-    // Explicitly dispose before the state change triggers widget removal.
-    // This ensures native resources are released while the view is still active.
-    _arCoreController?.dispose();
+    _isDisposed = true;
     _arCoreController = null;
     widget.onDiscard?.call();
   }
 
   void _handleFinish() {
-    _arCoreController?.dispose();
-    _arCoreController = null;
+    _isDisposed = true;
+    // We don't nullify controller here anymore to prevent race during dispose().
+    // The framework will call dispose() shortly after.
     widget.onFinish?.call();
   }
 
   void _onArCoreViewCreated(ArCoreController controller) {
+    if (_isDisposed) return;
     _arCoreController = controller;
     controller.onPlaneTap = _handlePlaneTap;
     controller.onPlaneDetected = _handlePlaneDetected;
@@ -74,7 +78,7 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
     _renderedFlagKeys.clear();
     _originAttached = false;
     _originWorldPos = null;
-    if (context.read<HeatmapBloc>().state.hasArOrigin) {
+    if (mounted && context.read<HeatmapBloc>().state.hasArOrigin) {
       context.read<HeatmapBloc>().resetArOrigin();
     }
   }
@@ -326,13 +330,17 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
     if (!_originAttached || _arCoreController == null) return;
 
     final newPoints = points.skip(_renderedPointCount).toList();
-    if (newPoints.isNotEmpty) {
+    if (newPoints.isNotEmpty && _renderedPointCount < _maxRenderedMarkers) {
       // Add all new floor markers in parallel — ARCore handles concurrency internally.
-      await Future.wait(newPoints.map(_addFloorMarker));
-      _renderedPointCount = points.length;
+      // Cap the visual rendering to keep native RAM usage manageable.
+      final pointsToAdd = newPoints.take(_maxRenderedMarkers - _renderedPointCount);
+      await Future.wait(pointsToAdd.map(_addFloorMarker));
+      if (!_isDisposed) {
+        _renderedPointCount += pointsToAdd.length;
+      }
     }
 
-    // Sync any newly flagged points (flag may be set after marker creation).
+    // Sync any newly flagged points.
     await Future.wait(
       points.where((p) => p.isFlagged).map(_addFlagMarker),
     );
@@ -388,36 +396,39 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
         return currPoints.length != prevPoints.length || currFlags != prevFlags;
       },
       listener: (context, state) async {
+        if (_isDisposed) return;
         await _syncAnchoredNodes(state.currentSession?.points ?? const []);
       },
+      // Using the underlying Stack as a stable base, preventing ArCoreView
+      // from being recreated on every sensor update.
       builder: (context, state) {
-        final guidance = _guidanceService.analyze(
-          points: state.currentSession?.points ?? const [],
-          floorPlan: state.liveFloorPlan,
-          isRecording: state.isRecording,
-          hasArOrigin: state.hasArOrigin,
-          pendingWallCount: state.pendingWalls.length,
-          currentRssi: state.currentRssi,
-          surveyGate: state.surveyGate,
-          lastSignalAt: state.lastSignalAt,
-          currentSignalStdDev: state.lastSignalStdDev,
-          currentX: state.currentPosition?.dx,
-          currentY: state.currentPosition?.dy,
-        );
-
         return Stack(
           fit: StackFit.expand,
           children: [
-            ArCoreView(
-              onArCoreViewCreated: _onArCoreViewCreated,
-              enableTapRecognizer: true,
+            // Stable PlatformView child.
+            _ArCoreNativeView(
+              onCreated: _onArCoreViewCreated,
             ),
-            // dBm label overlay — screen-space projections of floor markers.
+
+            // Performance-isolated overlays.
             if (state.phase == ScanPhase.scanning)
-              const IgnorePointer(child: _SignalLabelOverlay()),
+              const RepaintBoundary(child: _SignalLabelOverlay()),
+
             if (state.phase == ScanPhase.scanning)
               ArHudOverlay(
-                guidance: guidance,
+                guidance: _guidanceService.analyze(
+                  points: state.currentSession?.points ?? const [],
+                  floorPlan: state.liveFloorPlan,
+                  isRecording: state.isRecording,
+                  hasArOrigin: state.hasArOrigin,
+                  pendingWallCount: state.pendingWalls.length,
+                  currentRssi: state.currentRssi,
+                  surveyGate: state.surveyGate,
+                  lastSignalAt: state.lastSignalAt,
+                  currentSignalStdDev: state.lastSignalStdDev,
+                  currentX: state.currentPosition?.dx,
+                  currentY: state.currentPosition?.dy,
+                ),
                 onFinish: _handleFinish,
                 onDiscard: _handleDiscard,
                 onFlagWeakZone: _flagCurrentPosition,
@@ -425,6 +436,20 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
           ],
         );
       },
+    );
+  }
+}
+
+/// A stable hosting widget for ArCoreView that doesn't rebuild when its parent does.
+class _ArCoreNativeView extends StatelessWidget {
+  const _ArCoreNativeView({required this.onCreated});
+  final void Function(ArCoreController) onCreated;
+
+  @override
+  Widget build(BuildContext context) {
+    return ArCoreView(
+      onArCoreViewCreated: onCreated,
+      enableTapRecognizer: true,
     );
   }
 }
@@ -461,25 +486,56 @@ class _SignalLabelOverlay extends StatelessWidget {
             final size = Size(constraints.maxWidth, constraints.maxHeight);
             final labels = <Widget>[];
 
-            for (final point in slice.points) {
-              final screen = _projectToScreen(
+            // Only render the last 80 points to match the 3D disc cap and prevent jank.
+            final pointsToRender = slice.points.length > 80
+                ? slice.points.sublist(slice.points.length - 80)
+                : slice.points;
+
+            for (final point in pointsToRender) {
+              final result = _projectToScreen(
                 point,
                 slice.camX,
                 slice.camY,
                 slice.heading - slice.headingOffset,
                 size,
               );
-              if (screen == null) continue;
+              if (result == null) continue;
 
+              final screen = result.offset;
+              final depth = result.depth;
+              final depthFactor = (1.5 / depth).clamp(0.5, 1.8);
               final color = signalGradientColor(point.rssi);
+
+              // Step B: Vertical projection.
+              // Approximate mobile vFOV (~55-60 deg).
+              const vFovRad = 55.0 * math.pi / 180.0;
+              final focalPxY = size.height / (2 * math.tan(vFovRad / 2));
+              // The disc is on the floor (~1m below camera).
+              const cameraHeight = 1.0;
+              final discScreenY = size.height / 2 + (cameraHeight / depth) * focalPxY;
+              final labelScreenY = discScreenY - 32 * depthFactor;
+
               labels.add(
                 Positioned(
                   left: screen.dx,
-                  top: screen.dy,
+                  top: labelScreenY,
                   child: FractionalTranslation(
-                    // Anchor the bottom-center of the label to the projected point.
                     translation: const Offset(-0.5, -1.0),
-                    child: _DbmPill(rssi: point.rssi, color: color),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _DbmPill(
+                          rssi: point.rssi,
+                          color: color,
+                          depthFactor: depthFactor,
+                          bssid: point.bssid,
+                        ),
+                        CustomPaint(
+                          size: Size(2, discScreenY - labelScreenY),
+                          painter: _VerticalStemPainter(color: color),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -493,14 +549,8 @@ class _SignalLabelOverlay extends StatelessWidget {
   }
 
   /// Projects a floor-space point onto screen coordinates.
-  ///
-  /// PDR coordinate system: heading=0° → camera faces +X axis.
-  /// Camera forward vector = (cos θ, sin θ).
-  /// Camera right vector  = (−sin θ, cos θ).
-  ///
-  /// Returns null if the point is behind the camera, too close, too far, or
-  /// outside the horizontal field of view.
-  static Offset? _projectToScreen(
+  /// Returns null if the point is behind the camera or out of bounds.
+  static _ProjectionResult? _projectToScreen(
     HeatmapPoint point,
     double camX,
     double camY,
@@ -524,52 +574,111 @@ class _SignalLabelOverlay extends StatelessWidget {
     final focalPx = screenSize.width / (2 * math.tan(hFovRad / 2));
 
     final screenX = screenSize.width / 2 + (lateral / depth) * focalPx;
-    if (screenX < -40 || screenX > screenSize.width + 40) return null;
+    if (screenX < -60 || screenX > screenSize.width + 60) return null;
 
-    // Vertical position: farther points appear closer to horizon (higher).
-    final t = ((depth - 0.4) / 6.6).clamp(0.0, 1.0);
-    final screenY = screenSize.height * (0.82 - t * 0.38);
-
-    return Offset(screenX, screenY);
+    return _ProjectionResult(Offset(screenX, 0), depth);
   }
 }
 
-class _DbmPill extends StatelessWidget {
-  const _DbmPill({required this.rssi, required this.color});
+class _ProjectionResult {
+  const _ProjectionResult(this.offset, this.depth);
+  final Offset offset;
+  final double depth;
+}
 
-  final int rssi;
+class _VerticalStemPainter extends CustomPainter {
+  const _VerticalStemPainter({required this.color});
   final Color color;
 
   @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color.withValues(alpha: 0.5)
+      ..strokeWidth = 1.2
+      ..style = PaintingStyle.stroke;
+
+    canvas.drawLine(
+      Offset(size.width / 2, 0),
+      Offset(size.width / 2, size.height),
+      paint,
+    );
+    // Tiny dot at the base for visual grounding.
+    canvas.drawCircle(Offset(size.width / 2, size.height), 1.5, paint..style = PaintingStyle.fill);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _DbmPill extends StatelessWidget {
+  const _DbmPill({
+    required this.rssi,
+    required this.color,
+    required this.depthFactor,
+    required this.bssid,
+  });
+
+  final int rssi;
+  final Color color;
+  final double depthFactor;
+  final String bssid;
+
+  @override
   Widget build(BuildContext context) {
+    final scale = depthFactor;
+    final bssidSuffix = bssid.length > 5 ? bssid.substring(bssid.length - 5) : '';
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: EdgeInsets.symmetric(
+        horizontal: 8 * scale,
+        vertical: 4 * scale,
+      ),
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: 0.85),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withValues(alpha: 0.6), width: 1.5),
+        borderRadius: BorderRadius.circular(10 * scale),
+        border: Border.all(
+          color: color.withValues(alpha: 0.6),
+          width: 1.5 * scale,
+        ),
         boxShadow: [
           BoxShadow(
             color: color.withValues(alpha: 0.25),
-            blurRadius: 8,
-            spreadRadius: 1,
+            blurRadius: 8 * scale,
+            spreadRadius: 1 * scale,
           ),
         ],
       ),
-      child: Row(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.waves_rounded, color: color, size: 10),
-          const SizedBox(width: 4),
-          Text(
-            '$rssi dBm',
-            style: GoogleFonts.orbitron(
-              color: color,
-              fontSize: 11,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.5,
-            ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.waves_rounded, color: color, size: 10 * scale),
+              SizedBox(width: 4 * scale),
+              Text(
+                '$rssi dBm',
+                style: GoogleFonts.orbitron(
+                  color: color,
+                  fontSize: 11 * scale,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.5 * scale,
+                ),
+              ),
+            ],
           ),
+          if (bssidSuffix.isNotEmpty) ...[
+            SizedBox(height: 2 * scale),
+            Text(
+              bssidSuffix.toUpperCase(),
+              style: GoogleFonts.orbitron(
+                color: color.withValues(alpha: 0.6),
+                fontSize: 7 * scale,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2 * scale,
+              ),
+            ),
+          ],
         ],
       ),
     );

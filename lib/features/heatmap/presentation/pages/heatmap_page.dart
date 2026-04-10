@@ -173,67 +173,78 @@ class _HeatmapViewState extends State<_HeatmapView> {
                       ),
                     ],
                   ),
-          body:
-              isRecording || isScanning
-                  ? (state.isArSupported
-                      ? ArCoreHeatmapView(
-                        key: _arViewKey,
-                        onFinish: bloc.stopSession,
-                        onDiscard: bloc.discardSession,
-                      )
-                      : ArCameraView(
-                        key: _cameraFallbackKey,
-                        onFinish: bloc.stopSession,
-                        onDiscard: bloc.discardSession,
-                      ))
-                  : Stack(
-                    children: [
-                      _CanvasBackdrop(summary: summary),
-                      if (session != null)
-                        HeatmapCanvas(
-                          session: session,
-                          floorPlan: floorPlan,
-                          showPath: session.points.isNotEmpty,
-                          activeFloor: null,
-                          onTap: (metric) {
-                            setState(() => _probePoint = metric);
-                          },
-                        ),
-                      if (_shouldShowCanvasEmptyState(state, summary))
-                        _CanvasEmptyState(
-                          state: state,
-                          copy: copy,
-                          onStart:
-                              () => _showNewSessionDialog(context, bloc, copy),
-                        ),
-                      Positioned(
-                        top: 14,
-                        left: 14,
-                        child: _ViewModeBadge(label: copy.resultViewLabel),
-                      ),
-                      if (isReviewing && _probePoint == null && session != null)
-                        _SurveyConclusionOverlay(
-                          session: session,
-                          summary: summary,
-                          guidance: guidance,
-                          copy: copy,
-                          onDismiss: bloc.clearSelection,
-                          onNewSurvey: () =>
-                              _showNewSessionDialog(context, bloc, copy),
-                        ),
-                      if (_probePoint != null && session != null)
-                        _SignalProbeOverlay(
-                          point: _findNearestPoint(
-                            session.points,
-                            _probePoint!,
-                          ),
-                          onDismiss: () => setState(() => _probePoint = null),
-                          copy: copy,
-                        ),
-                    ],
+          body: Stack(
+            fit: StackFit.expand,
+            children: [
+              // 2D Result / Idle Layer
+              Stack(
+                children: [
+                  _CanvasBackdrop(summary: summary),
+                  if (session != null)
+                    HeatmapCanvas(
+                      session: session,
+                      floorPlan: floorPlan,
+                      showPath: session.points.isNotEmpty,
+                      activeFloor: null,
+                      onTap: (metric) {
+                        setState(() => _probePoint = metric);
+                      },
+                    ),
+                  if (_shouldShowCanvasEmptyState(state, summary))
+                    _CanvasEmptyState(
+                      state: state,
+                      copy: copy,
+                      onStart:
+                          () => _showNewSessionDialog(context, bloc, copy),
+                    ),
+                  Positioned(
+                    top: 14,
+                    left: 14,
+                    child: _ViewModeBadge(label: copy.resultViewLabel),
                   ),
+                  if (isReviewing && _probePoint == null && session != null)
+                    _SurveyConclusionOverlay(
+                      session: session,
+                      summary: summary,
+                      guidance: guidance,
+                      copy: copy,
+                      onDismiss: bloc.clearSelection,
+                      onNewSurvey: () =>
+                          _showNewSessionDialog(context, bloc, copy),
+                    ),
+                  if (_probePoint != null && session != null)
+                    _SignalProbeOverlay(
+                      point: _findNearestPoint(
+                        session.points,
+                        _probePoint!,
+                      ),
+                      onDismiss: () => setState(() => _probePoint = null),
+                      copy: copy,
+                    ),
+                ],
+              ),
+
+              // AR / Camera Layer
+              if (state.isArSupported)
+                Visibility(
+                  visible: isRecording,
+                  maintainState: true,
+                  child: ArCoreHeatmapView(
+                    key: _arViewKey,
+                    onFinish: bloc.stopSession,
+                    onDiscard: bloc.discardSession,
+                  ),
+                )
+              else if (isRecording)
+                ArCameraView(
+                  key: _cameraFallbackKey,
+                  onFinish: bloc.stopSession,
+                  onDiscard: bloc.discardSession,
+                ),
+            ],
+          ),
           floatingActionButton:
-              !(isRecording || isScanning)
+              !isRecording
                   ? NeonButton(
                     onPressed: () => _showNewSessionDialog(context, bloc, copy),
                     icon: Icons.add_rounded,
