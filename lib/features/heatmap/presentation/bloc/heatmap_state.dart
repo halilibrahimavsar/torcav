@@ -7,6 +7,7 @@ class HeatmapState extends Equatable {
     this.selectedSession,
     this.isLoading = false,
     this.isRecording = false,
+    this.isViewingInAr = false,
     this.failure,
     this.phase = ScanPhase.idle,
     this.liveFloorPlan,
@@ -35,6 +36,10 @@ class HeatmapState extends Equatable {
   final HeatmapSession? selectedSession;
   final bool isLoading;
   final bool isRecording;
+
+  /// Whether we are currently in an AR viewing/replay session.
+  final bool isViewingInAr;
+
   final Failure? failure;
 
   /// Current lifecycle stage of the scanning process.
@@ -103,6 +108,7 @@ class HeatmapState extends Equatable {
     bool clearSelectedSession = false,
     bool? isLoading,
     bool? isRecording,
+    bool? isViewingInAr,
     Failure? failure,
     bool clearFailure = false,
     ScanPhase? phase,
@@ -141,6 +147,7 @@ class HeatmapState extends Equatable {
         clearSelectedSession ? null : selectedSession ?? this.selectedSession,
     isLoading: isLoading ?? this.isLoading,
     isRecording: isRecording ?? this.isRecording,
+    isViewingInAr: isViewingInAr ?? this.isViewingInAr,
     failure: clearFailure ? null : failure ?? this.failure,
     phase: phase ?? this.phase,
     liveFloorPlan:
@@ -178,6 +185,7 @@ class HeatmapState extends Equatable {
     selectedSession,
     isLoading,
     isRecording,
+    isViewingInAr,
     failure,
     phase,
     liveFloorPlan,

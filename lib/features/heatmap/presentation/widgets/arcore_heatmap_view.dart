@@ -50,24 +50,14 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
   @override
   void dispose() {
     _isDisposed = true;
+    _arCoreController?.onPlaneTap = null;
+    _arCoreController?.onPlaneDetected = null;
+    _arCoreController?.dispose();
     _arCoreController = null;
     super.dispose();
   }
 
   bool _isDisposed = false;
-
-  void _handleDiscard() {
-    _isDisposed = true;
-    _arCoreController = null;
-    widget.onDiscard?.call();
-  }
-
-  void _handleFinish() {
-    _isDisposed = true;
-    // We don't nullify controller here anymore to prevent race during dispose().
-    // The framework will call dispose() shortly after.
-    widget.onFinish?.call();
-  }
 
   void _onArCoreViewCreated(ArCoreController controller) {
     if (_isDisposed) return;
@@ -78,8 +68,11 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
     _renderedFlagKeys.clear();
     _originAttached = false;
     _originWorldPos = null;
-    if (mounted && context.read<HeatmapBloc>().state.hasArOrigin) {
-      context.read<HeatmapBloc>().resetArOrigin();
+    if (mounted) {
+      final state = context.read<HeatmapBloc>().state;
+      if (state.hasArOrigin) {
+        context.read<HeatmapBloc>().resetArOrigin();
+      }
     }
   }
 
@@ -152,7 +145,9 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
             ),
             const SizedBox(width: 8),
             Text(
-              'Origin anchored — tap to record points',
+              bloc.state.isViewingInAr
+                  ? 'Origin anchored — historical session active'
+                  : 'Origin anchored — tap to record points',
               style: GoogleFonts.outfit(color: Colors.white, fontSize: 13),
             ),
           ],
@@ -166,6 +161,12 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
         duration: const Duration(seconds: 3),
       ),
     );
+
+    // Immediately sync nodes for pre-existing points (crucial for 3D Replay).
+    final points = bloc.state.isViewingInAr
+        ? (bloc.state.selectedSession?.points ?? const [])
+        : (bloc.state.currentSession?.points ?? const []);
+    await _syncAnchoredNodes(points);
   }
 
   Future<void> _recordManualPoint(ArCoreHitTestResult hit) async {
@@ -238,7 +239,7 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
   /// ArCoreCylinder bug: `toMap()` swaps `radius` and `height` before sending
   /// to native. To get native radius=R and height=H, pass `radius: H, height: R`.
   Future<void> _addFloorMarker(HeatmapPoint point) async {
-    if (_arCoreController == null || !_originAttached) return;
+    if (_isDisposed || _arCoreController == null || !_originAttached) return;
 
     final color = signalGradientColor(point.rssi);
     final discRadius = signalDiscRadius(point.rssi); // 0.06–0.22m native radius
@@ -272,7 +273,7 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
   }
 
   Future<void> _addFlagMarker(HeatmapPoint point) async {
-    if (_arCoreController == null || !_originAttached) return;
+    if (_isDisposed || _arCoreController == null || !_originAttached) return;
     final key = _flagKey(point);
     if (_renderedFlagKeys.contains(key)) return;
 
@@ -328,7 +329,7 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
 
   Future<void> _syncAnchoredNodes(List<HeatmapPoint> points) async {
     if (!_originAttached || _arCoreController == null) return;
-
+    if (_isDisposed) return;
     final newPoints = points.skip(_renderedPointCount).toList();
     if (newPoints.isNotEmpty && _renderedPointCount < _maxRenderedMarkers) {
       // Add all new floor markers in parallel — ARCore handles concurrency internally.
@@ -397,7 +398,10 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
       },
       listener: (context, state) async {
         if (_isDisposed) return;
-        await _syncAnchoredNodes(state.currentSession?.points ?? const []);
+        final points = state.isViewingInAr
+            ? (state.selectedSession?.points ?? const [])
+            : (state.currentSession?.points ?? const []);
+        await _syncAnchoredNodes(points);
       },
       // Using the underlying Stack as a stable base, preventing ArCoreView
       // from being recreated on every sensor update.
@@ -417,8 +421,13 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
             if (state.phase == ScanPhase.scanning)
               ArHudOverlay(
                 guidance: _guidanceService.analyze(
-                  points: state.currentSession?.points ?? const [],
-                  floorPlan: state.liveFloorPlan,
+                  points: (state.isViewingInAr
+                          ? state.selectedSession?.points
+                          : state.currentSession?.points) ??
+                      const [],
+                  floorPlan: state.isViewingInAr
+                      ? state.selectedSession?.floorPlan
+                      : state.liveFloorPlan,
                   isRecording: state.isRecording,
                   hasArOrigin: state.hasArOrigin,
                   pendingWallCount: state.pendingWalls.length,
@@ -429,8 +438,8 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
                   currentX: state.currentPosition?.dx,
                   currentY: state.currentPosition?.dy,
                 ),
-                onFinish: _handleFinish,
-                onDiscard: _handleDiscard,
+                onFinish: widget.onFinish,
+                onDiscard: widget.onDiscard,
                 onFlagWeakZone: _flagCurrentPosition,
               ),
           ],
@@ -469,14 +478,19 @@ class _SignalLabelOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocSelector<HeatmapBloc, HeatmapState, _LabelOverlaySlice>(
-      selector: (s) => _LabelOverlaySlice(
-        points: s.currentSession?.points ?? const [],
-        camX: s.currentPosition?.dx ?? 0,
-        camY: s.currentPosition?.dy ?? 0,
-        heading: s.currentHeading,
-        headingOffset: s.arOriginHeadingOffset,
-        hasOrigin: s.hasArOrigin,
-      ),
+      selector: (s) {
+        final points = s.isViewingInAr
+            ? (s.selectedSession?.points ?? const [])
+            : (s.currentSession?.points ?? const []);
+        return _LabelOverlaySlice(
+          points: points,
+          camX: s.currentPosition?.dx ?? 0,
+          camY: s.currentPosition?.dy ?? 0,
+          heading: s.currentHeading,
+          headingOffset: s.arOriginHeadingOffset,
+          hasOrigin: s.hasArOrigin,
+        );
+      },
       builder: (context, slice) {
         if (!slice.hasOrigin || slice.points.isEmpty) {
           return const SizedBox.shrink();

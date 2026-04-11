@@ -38,8 +38,11 @@ class HeatmapCanvas extends StatefulWidget {
     this.minRssi,
     this.maxRssi,
     this.showControls = true,
+    this.isMiniMap = false,
     super.key,
   });
+
+  final bool isMiniMap;
 
   @override
   State<HeatmapCanvas> createState() => _HeatmapCanvasState();
@@ -92,11 +95,16 @@ class _HeatmapCanvasState extends State<HeatmapCanvas> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = constraints.biggest;
-        final worldBounds = _WorldBounds.fromData(
-          points: points,
-          walls: widget.floorPlan?.walls ?? const [],
-          currentPosition: widget.currentPosition,
-        );
+        final worldBounds = widget.isMiniMap
+            ? _WorldBounds.forMiniMap(
+                points: points,
+                currentPosition: widget.currentPosition,
+              )
+            : _WorldBounds.fromData(
+                points: points,
+                walls: widget.floorPlan?.walls ?? const [],
+                currentPosition: widget.currentPosition,
+              );
         final viewport = _Viewport.fit(size, worldBounds);
 
         return Stack(
@@ -124,18 +132,39 @@ class _HeatmapCanvasState extends State<HeatmapCanvas> {
                                 MatrixUtils.transformPoint(inverse, localOffset);
                             widget.onTap!(viewport.canvasToWorld(transformed));
                           },
-                child: CustomPaint(
-                  painter: _HeatmapPainter(
-                    points: points,
-                    floorPlan: widget.floorPlan,
-                    viewport: viewport,
-                    showPath: widget.showPath,
-                    currentPosition: widget.currentPosition,
-                    currentHeading: widget.currentHeading,
-                    minRssi: effectiveMinRssi,
-                    maxRssi: effectiveMaxRssi,
-                  ),
-                  child: const SizedBox.expand(),
+                child: Stack(
+                  children: [
+                    // ── Static layer: grid, walls, heatmap, path, HUD overlays ──
+                    // RepaintBoundary isolates this from position/heading updates.
+                    RepaintBoundary(
+                      child: CustomPaint(
+                        painter: _StaticHeatmapPainter(
+                          points: points,
+                          floorPlan: widget.floorPlan,
+                          viewport: viewport,
+                          showPath: widget.showPath,
+                          minRssi: effectiveMinRssi,
+                          maxRssi: effectiveMaxRssi,
+                        ),
+                        child: const SizedBox.expand(),
+                      ),
+                    ),
+
+                    // ── Dynamic layer: current-position dot + heading arrow ──
+                    // Repaints only when position/heading changes; keeps static
+                    // layer untouched (no expensive blur re-computation).
+                    if (widget.currentPosition != null)
+                      RepaintBoundary(
+                        child: CustomPaint(
+                          painter: _PositionPainter(
+                            position: widget.currentPosition!,
+                            heading: widget.currentHeading ?? 0.0,
+                            viewport: viewport,
+                          ),
+                          child: const SizedBox.expand(),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),
@@ -188,26 +217,22 @@ class _FitButton extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Painter
+// Static painter — heavy content, isolated behind RepaintBoundary
 // ---------------------------------------------------------------------------
 
-class _HeatmapPainter extends CustomPainter {
+class _StaticHeatmapPainter extends CustomPainter {
   final List<HeatmapPoint> points;
   final FloorPlan? floorPlan;
   final _Viewport viewport;
   final bool showPath;
-  final Offset? currentPosition;
-  final double? currentHeading;
   final int minRssi;
   final int maxRssi;
 
-  _HeatmapPainter({
+  _StaticHeatmapPainter({
     required this.points,
     required this.floorPlan,
     required this.viewport,
     required this.showPath,
-    this.currentPosition,
-    this.currentHeading,
     required this.minRssi,
     required this.maxRssi,
   });
@@ -228,61 +253,16 @@ class _HeatmapPainter extends CustomPainter {
       _drawHeatmap(canvas, points);
     }
 
-    if (points.any((point) => point.isFlagged)) {
-      _drawFlags(canvas, points.where((point) => point.isFlagged).toList());
+    if (points.any((p) => p.isFlagged)) {
+      _drawFlags(canvas, points.where((p) => p.isFlagged).toList());
     }
 
-    if (currentPosition != null) {
-      _drawCurrentPosition(canvas, currentPosition!, currentHeading ?? 0.0);
-    }
-
-    // HUD overlays — drawn on top of all data
+    // HUD overlays
     _drawScaleBar(canvas, size);
     _drawCompassRose(canvas);
     if (points.isNotEmpty) {
       _drawRssiLegend(canvas, size);
     }
-  }
-
-  // -------------------------------------------------------------------------
-  // Current position
-  // -------------------------------------------------------------------------
-
-  void _drawCurrentPosition(Canvas canvas, Offset pos, double heading) {
-    final center = viewport.worldToCanvas(pos);
-
-    final pulsePaint =
-        Paint()
-          ..color = const Color(0xFF00E5FF).withValues(alpha: 0.25)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12);
-    canvas.drawCircle(center, 14, pulsePaint);
-
-    final ringPaint =
-        Paint()
-          ..color = const Color(0xFF00E5FF).withValues(alpha: 0.5)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2;
-    canvas.drawCircle(center, 8, ringPaint);
-
-    final pointerPaint =
-        Paint()
-          ..color = const Color(0xFF00E5FF)
-          ..style = PaintingStyle.fill;
-
-    canvas.save();
-    canvas.translate(center.dx, center.dy);
-    canvas.rotate(heading);
-
-    final path =
-        Path()
-          ..moveTo(0, -10)
-          ..lineTo(6, 4)
-          ..lineTo(0, 1)
-          ..lineTo(-6, 4)
-          ..close();
-
-    canvas.drawPath(path, pointerPaint);
-    canvas.restore();
   }
 
   // -------------------------------------------------------------------------
@@ -293,34 +273,38 @@ class _HeatmapPainter extends CustomPainter {
     if (points.isEmpty) return;
 
     final heatmapRadius = (viewport.scale * 1.8).clamp(28.0, 72.0);
-    final blurSigma = heatmapRadius * 0.45;
 
-    canvas.saveLayer(
-      Rect.fromLTWH(0, 0, viewport.size.width, viewport.size.height),
-      Paint()
-        ..imageFilter =
-            ui.ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
-    );
-
+    // Thermal Bloom: We layer semi-transparent disks with different blur radii
+    // to create a smooth, organic 'glow' that looks premium.
     for (final point in points) {
       final centre = viewport.worldToCanvas(Offset(point.floorX, point.floorY));
       final signalColor = _signalColor(point.rssi);
 
-      final paint =
-          Paint()
-            ..shader = ui.Gradient.radial(
-              centre,
-              heatmapRadius,
-              [
-                signalColor.withValues(alpha: 0.85),
-                signalColor.withValues(alpha: 0.45),
-                signalColor.withValues(alpha: 0),
-              ],
-              const [0, 0.4, 1],
-            );
-      canvas.drawCircle(centre, heatmapRadius, paint);
+      // Core: High opacity, small blur
+      canvas.drawCircle(
+        centre,
+        heatmapRadius * 0.45,
+        Paint()
+          ..color = signalColor.withValues(alpha: 0.28)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12),
+      );
+
+      // Bloom: Lower opacity, wide spread
+      canvas.drawCircle(
+        centre,
+        heatmapRadius,
+        Paint()
+          ..shader = ui.Gradient.radial(
+            centre,
+            heatmapRadius,
+            [
+              signalColor.withValues(alpha: 0.22),
+              signalColor.withValues(alpha: 0),
+            ],
+            const [0.2, 1],
+          ),
+      );
     }
-    canvas.restore();
 
     for (final point in points) {
       final centre = viewport.worldToCanvas(Offset(point.floorX, point.floorY));
@@ -354,10 +338,10 @@ class _HeatmapPainter extends CustomPainter {
         viewport.worldToCanvas(Offset(points.first.floorX, points.first.floorY));
     path.moveTo(firstPt.dx, firstPt.dy);
     for (int i = 1; i < points.length; i++) {
-      final canvasPoint = viewport.worldToCanvas(
+      final cp = viewport.worldToCanvas(
         Offset(points[i].floorX, points[i].floorY),
       );
-      path.lineTo(canvasPoint.dx, canvasPoint.dy);
+      path.lineTo(cp.dx, cp.dy);
     }
     canvas.drawPath(path, pathPaint);
 
@@ -367,9 +351,8 @@ class _HeatmapPainter extends CustomPainter {
       Paint()..color = const Color(0xFF39FF14).withValues(alpha: 0.9),
     );
 
-    final last = viewport.worldToCanvas(
-      Offset(points.last.floorX, points.last.floorY),
-    );
+    final last =
+        viewport.worldToCanvas(Offset(points.last.floorX, points.last.floorY));
     canvas.drawCircle(
       last,
       6.5,
@@ -412,15 +395,13 @@ class _HeatmapPainter extends CustomPainter {
   // -------------------------------------------------------------------------
 
   void _drawFlags(Canvas canvas, List<HeatmapPoint> points) {
-    final fill =
-        Paint()
-          ..color = const Color(0xFFFF5F57)
-          ..style = PaintingStyle.fill;
-    final stroke =
-        Paint()
-          ..color = Colors.white.withValues(alpha: 0.92)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.8;
+    final fill = Paint()
+      ..color = const Color(0xFFFF5F57)
+      ..style = PaintingStyle.fill;
+    final stroke = Paint()
+      ..color = Colors.white.withValues(alpha: 0.92)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.8;
 
     for (final point in points) {
       final center = viewport.worldToCanvas(Offset(point.floorX, point.floorY));
@@ -444,7 +425,7 @@ class _HeatmapPainter extends CustomPainter {
   }
 
   // -------------------------------------------------------------------------
-  // Grid + labels
+  // Grid (lines only — no labels for performance)
   // -------------------------------------------------------------------------
 
   void _drawGrid(Canvas canvas, Size size) {
@@ -491,38 +472,6 @@ class _HeatmapPainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 0.8,
     );
-
-    // Grid labels — show at every major step (5m, 10m, etc.)
-    final labelStep = stepMeters * 5;
-    final textStyle = GoogleFonts.outfit(
-      color: Colors.white.withValues(alpha: 0.22),
-      fontSize: 9,
-    );
-
-    for (double x = startX; x <= endX; x += labelStep) {
-      if (x.abs() < 0.01) continue; // skip origin
-      final canvasX = viewport.worldToCanvas(Offset(x, viewport.bounds.minY)).dx;
-      if (canvasX < 12 || canvasX > size.width - 12) continue;
-      _drawText(
-        canvas,
-        '${x.round()}m',
-        Offset(canvasX, size.height - 14),
-        textStyle,
-        centerX: true,
-      );
-    }
-    for (double y = startY; y <= endY; y += labelStep) {
-      if (y.abs() < 0.01) continue;
-      final canvasY = viewport.worldToCanvas(Offset(viewport.bounds.minX, y)).dy;
-      if (canvasY < 12 || canvasY > size.height - 12) continue;
-      _drawText(
-        canvas,
-        '${y.round()}m',
-        Offset(14, canvasY - 5),
-        textStyle,
-        centerX: false,
-      );
-    }
   }
 
   double _gridStepMeters(double scale) {
@@ -540,7 +489,6 @@ class _HeatmapPainter extends CustomPainter {
     const barHeight = 4.0;
     const maxBarPx = 80.0;
 
-    // Pick a nice round distance that fits in maxBarPx
     final candidateMeters = [1, 2, 5, 10, 20, 50];
     int barMeters = 1;
     for (final m in candidateMeters) {
@@ -558,9 +506,7 @@ class _HeatmapPainter extends CustomPainter {
           ..strokeWidth = 1.5
           ..strokeCap = StrokeCap.square;
 
-    // Horizontal bar
     canvas.drawLine(Offset(left, bottom), Offset(right, bottom), linePaint);
-    // End caps
     canvas.drawLine(
       Offset(left, bottom - barHeight),
       Offset(left, bottom + barHeight),
@@ -572,7 +518,6 @@ class _HeatmapPainter extends CustomPainter {
       linePaint,
     );
 
-    // Label
     _drawText(
       canvas,
       '$barMeters m',
@@ -595,7 +540,6 @@ class _HeatmapPainter extends CustomPainter {
     const radius = 16.0;
     final center = Offset(viewport.size.width - margin - radius, margin + radius);
 
-    // Background circle
     canvas.drawCircle(
       center,
       radius,
@@ -610,10 +554,9 @@ class _HeatmapPainter extends CustomPainter {
         ..strokeWidth = 1.0,
     );
 
-    // North triangle (points up)
     final northPath =
         Path()
-          ..moveTo(center.dx, center.dy - 10) // tip
+          ..moveTo(center.dx, center.dy - 10)
           ..lineTo(center.dx + 5, center.dy + 2)
           ..lineTo(center.dx - 5, center.dy + 2)
           ..close();
@@ -622,7 +565,6 @@ class _HeatmapPainter extends CustomPainter {
       Paint()..color = const Color(0xFF00E5FF).withValues(alpha: 0.9),
     );
 
-    // South triangle (points down, dimmer)
     final southPath =
         Path()
           ..moveTo(center.dx, center.dy + 10)
@@ -634,7 +576,6 @@ class _HeatmapPainter extends CustomPainter {
       Paint()..color = Colors.white.withValues(alpha: 0.25),
     );
 
-    // "N" label above the rose
     _drawText(
       canvas,
       'N',
@@ -649,7 +590,7 @@ class _HeatmapPainter extends CustomPainter {
   }
 
   // -------------------------------------------------------------------------
-  // RSSI legend (left edge, vertically centered)
+  // RSSI legend (left edge)
   // -------------------------------------------------------------------------
 
   void _drawRssiLegend(Canvas canvas, Size size) {
@@ -660,7 +601,6 @@ class _HeatmapPainter extends CustomPainter {
     final top = (size.height - barH) / 2;
     final rect = Rect.fromLTWH(marginLeft, top, barW, barH);
 
-    // Gradient bar (strong signal = top = green, weak = bottom = red)
     final gradPaint =
         Paint()
           ..shader = ui.Gradient.linear(
@@ -674,13 +614,11 @@ class _HeatmapPainter extends CustomPainter {
             [0, 0.5, 1],
           );
 
-    // Rounded rect clip
     canvas.save();
     canvas.clipRRect(RRect.fromRectAndRadius(rect, const Radius.circular(4)));
     canvas.drawRect(rect, gradPaint);
     canvas.restore();
 
-    // Border
     canvas.drawRRect(
       RRect.fromRectAndRadius(rect, const Radius.circular(4)),
       Paint()
@@ -689,7 +627,6 @@ class _HeatmapPainter extends CustomPainter {
         ..strokeWidth = 0.8,
     );
 
-    // Tick labels: max (top), mid, min (bottom)
     final labelStyle = GoogleFonts.outfit(
       color: Colors.white.withValues(alpha: 0.6),
       fontSize: 8.5,
@@ -704,7 +641,6 @@ class _HeatmapPainter extends CustomPainter {
     );
     _drawText(canvas, '$minRssi', Offset(tickX, top + barH - 10), labelStyle);
 
-    // Header
     _drawText(
       canvas,
       'dBm',
@@ -719,21 +655,20 @@ class _HeatmapPainter extends CustomPainter {
   }
 
   // -------------------------------------------------------------------------
-  // Signal color
+  // Signal color (adaptive range)
   // -------------------------------------------------------------------------
 
   Color _signalColor(int rssi) {
-    // Normalize against adaptive range, clamped to [0,1]
     final range = (maxRssi - minRssi).abs();
     final normalized =
         range == 0 ? 0.5 : ((rssi - minRssi) / range).clamp(0.0, 1.0);
 
     const stops = [
-      Color(0xFFFF3B30), // weak (red)
-      Color(0xFFFF9F0A), // orange
-      Color(0xFFFFD60A), // yellow
-      Color(0xFF7DFF60), // lime
-      Color(0xFF00E676), // strong (green)
+      Color(0xFFFF3B30),
+      Color(0xFFFF9F0A),
+      Color(0xFFFFD60A),
+      Color(0xFF7DFF60),
+      Color(0xFF00E676),
     ];
     final scaled = normalized * (stops.length - 1);
     final index = scaled.floor().clamp(0, stops.length - 2);
@@ -766,17 +701,91 @@ class _HeatmapPainter extends CustomPainter {
   // -------------------------------------------------------------------------
 
   @override
-  bool shouldRepaint(_HeatmapPainter oldDelegate) =>
-      oldDelegate.points != points ||
-      oldDelegate.floorPlan != floorPlan ||
-      oldDelegate.viewport != viewport ||
-      oldDelegate.showPath != showPath ||
-      oldDelegate.minRssi != minRssi ||
-      oldDelegate.maxRssi != maxRssi;
+  bool shouldRepaint(_StaticHeatmapPainter old) =>
+      old.points != points ||
+      old.floorPlan != floorPlan ||
+      old.viewport != viewport ||
+      old.showPath != showPath ||
+      old.minRssi != minRssi ||
+      old.maxRssi != maxRssi;
 }
 
 // ---------------------------------------------------------------------------
-// Viewport
+// Dynamic painter — lightweight position indicator only
+// ---------------------------------------------------------------------------
+
+class _PositionPainter extends CustomPainter {
+  final Offset position;
+  final double heading;
+  final _Viewport viewport;
+
+  const _PositionPainter({
+    required this.position,
+    required this.heading,
+    required this.viewport,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = viewport.worldToCanvas(position);
+
+    // Outer glow
+    canvas.drawCircle(
+      center,
+      14,
+      Paint()
+        ..color = const Color(0xFF00E5FF).withValues(alpha: 0.25)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12),
+    );
+
+    // Directional cone (Premium HUD style)
+    canvas.save();
+    canvas.translate(center.dx, center.dy);
+    canvas.rotate(heading);
+    final conePath =
+        Path()
+          ..moveTo(0, 0)
+          ..lineTo(-25, -60)
+          ..quadraticBezierTo(0, -75, 25, -60)
+          ..close();
+    canvas.drawPath(
+      conePath,
+      Paint()
+        ..shader = ui.Gradient.linear(
+          Offset.zero,
+          const Offset(0, -70),
+          [
+            const Color(0xFF00E5FF).withValues(alpha: 0.35),
+            const Color(0xFF00E5FF).withValues(alpha: 0.05),
+          ],
+        )
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8),
+    );
+
+    // Directional pointer (Center arrow)
+    canvas.drawPath(
+      Path()
+        ..moveTo(0, -10)
+        ..lineTo(6, 4)
+        ..lineTo(0, 1)
+        ..lineTo(-6, 4)
+        ..close(),
+      Paint()
+        ..color = const Color(0xFF00E5FF)
+        ..style = PaintingStyle.fill,
+    );
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_PositionPainter old) =>
+      old.position != position ||
+      old.heading != heading ||
+      old.viewport != viewport;
+}
+
+// ---------------------------------------------------------------------------
+// Viewport — Y-axis flipped so north (high Y) = top of screen
 // ---------------------------------------------------------------------------
 
 class _Viewport {
@@ -816,7 +825,7 @@ class _Viewport {
   final double offsetY;
   final Size size;
 
-  /// World → canvas. Y is flipped so that north (high Y) = top of screen.
+  /// World → canvas. Y is flipped: north (high world-Y) maps to top of screen.
   Offset worldToCanvas(Offset world) => Offset(
     offsetX + ((world.dx - bounds.minX) * scale),
     offsetY + ((bounds.maxY - world.dy) * scale),
@@ -904,6 +913,31 @@ class _WorldBounds {
       maxX: maxX + padding,
       minY: minY - padding,
       maxY: maxY + padding,
+    );
+  }
+
+  factory _WorldBounds.forMiniMap({
+    required List<HeatmapPoint> points,
+    Offset? currentPosition,
+  }) {
+    if (currentPosition == null) {
+      return _WorldBounds.fromData(points: points, walls: const []);
+    }
+
+    // Auto-zoom: padding grows with the survey area's extent, but stays within
+    // reasonable bounds for a "mini-map" feel.
+    final surveyX = points.isEmpty ? 0.0 : points.map((p) => p.floorX).reduce(math.max) - points.map((p) => p.floorX).reduce(math.min);
+    final surveyY = points.isEmpty ? 0.0 : points.map((p) => p.floorY).reduce(math.max) - points.map((p) => p.floorY).reduce(math.min);
+    final extent = math.max(surveyX, surveyY);
+
+    // Dynamic radius: starts at 5m, increases slightly as survey grows, capped at 15m.
+    final radius = (5.0 + (extent * 0.15)).clamp(5.0, 15.0);
+
+    return _WorldBounds(
+      minX: currentPosition.dx - radius,
+      maxX: currentPosition.dx + radius,
+      minY: currentPosition.dy - radius,
+      maxY: currentPosition.dy + radius,
     );
   }
 

@@ -450,12 +450,70 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
     final walls = List<WallSegment>.from(currentPlan.walls);
 
-    // Center-based dedup at 0.5m radius.
-    final alreadyExists = walls.any((w) => _segCenterDist(w, wall) < 0.5);
-    if (alreadyExists) return;
+    // Advanced Clustering: Merge with existing colinear and overlapping walls.
+    bool merged = false;
+    for (int i = 0; i < walls.length; i++) {
+      if (_areSegmentsColinear(walls[i], wall)) {
+        walls[i] = _mergeSegments(walls[i], wall);
+        merged = true;
+        break;
+      }
+    }
 
-    walls.add(wall);
+    if (!merged) {
+      // Basic distance dedup as fallback.
+      final alreadyExists = walls.any((w) => _segCenterDist(w, wall) < 0.4);
+      if (alreadyExists) return;
+      walls.add(wall);
+    }
+
     emit(state.copyWith(liveFloorPlan: currentPlan.copyWith(walls: walls)));
+  }
+
+  bool _areSegmentsColinear(WallSegment a, WallSegment b) {
+    final dx1 = a.x2 - a.x1, dy1 = a.y2 - a.y1;
+    final dx2 = b.x2 - b.x1, dy2 = b.y2 - b.y1;
+
+    final len1 = math.sqrt(dx1 * dx1 + dy1 * dy1);
+    final len2 = math.sqrt(dx2 * dx2 + dy2 * dy2);
+    if (len1 < 0.1 || len2 < 0.1) return false;
+
+    // 1. Angle check (dot product of normalized directions).
+    final dot = (dx1 * dx2 + dy1 * dy2) / (len1 * len2);
+    if (dot.abs() < 0.985) return false; // ~10 degrees tolerance
+
+    // 2. Lateral distance check (is center of B on infinite line A?).
+    final bcx = (b.x1 + b.x2) / 2;
+    final bcy = (b.y1 + b.y2) / 2;
+    // perp distance from point (bcx, bcy) to line (a.x1, a.y1) -> (a.x2, a.y2)
+    final dist = ((a.y2 - a.y1) * bcx - (a.x2 - a.x1) * bcy + a.x2 * a.y1 - a.y2 * a.x1).abs() / len1;
+    if (dist > 0.35) return false;
+
+    // 3. Proximity check (are they close or overlapping?).
+    return _segCenterDist(a, b) < 1.0;
+  }
+
+  WallSegment _mergeSegments(WallSegment a, WallSegment b) {
+    // Return a segment that encapsulates the min/max extents of both.
+    final points = [Offset(a.x1, a.y1), Offset(a.x2, a.y2), Offset(b.x1, b.y1), Offset(b.x2, b.y2)];
+    
+    // Sort by X or Y depending on orientation.
+    final dx = (a.x2 - a.x1).abs(), dy = (a.y2 - a.y1).abs();
+    if (dx > dy) {
+      points.sort((p1, p2) => p1.dx.compareTo(p2.dx));
+    } else {
+      points.sort((p1, p2) => p1.dy.compareTo(p2.dy));
+    }
+
+    final pStart = points.first;
+    final pEnd = points.last;
+
+    return WallSegment(
+      x1: pStart.dx,
+      y1: pStart.dy,
+      x2: pEnd.dx,
+      y2: pEnd.dy,
+    );
   }
 
   void syncPositionFromAr(double x, double y) {
@@ -669,6 +727,24 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         phase: ScanPhase.idle,
       ),
     );
+  }
+
+  void viewInAr() {
+    if (state.selectedSession == null) return;
+    emit(state.copyWith(
+      isViewingInAr: true,
+      hasArOrigin: false,
+      arOriginHeadingOffset: 0.0,
+      clearFailure: true,
+    ));
+  }
+
+  void exitArView() {
+    emit(state.copyWith(
+      isViewingInAr: false,
+      hasArOrigin: false,
+      arOriginHeadingOffset: 0.0,
+    ));
   }
 
   Future<void> deleteSession(String sessionId) async {

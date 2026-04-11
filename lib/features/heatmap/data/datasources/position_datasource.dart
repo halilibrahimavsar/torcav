@@ -34,6 +34,11 @@ class PositionDataSourceImpl implements PositionDataSource {
   double _heading = 0;
   double _stepLength = 0.75;
 
+  // EMA smoothing state
+  double _smoothedHeading = 0;
+  double _lastEmittedHeading = 0;
+  int _lastHeadingEmitTime = 0;
+
   final _controller = StreamController<PositionUpdate>.broadcast();
   StreamSubscription? _accelSub;
   StreamSubscription? _compassSub;
@@ -54,12 +59,30 @@ class PositionDataSourceImpl implements PositionDataSource {
   static const _stepMagMin = 12.5;
   static const _stepMinInterval = 350;
 
+  /// EMA low-pass filter for compass heading with 0°/360° wraparound handling.
+  /// alpha = 0.12: low = smoother (sluggish), high = more responsive (jumpy).
+  double _smoothHeading(double raw) {
+    const alpha = 0.12;
+    final rawRad = raw * math.pi / 180.0;
+    final smoothRad = _smoothedHeading * math.pi / 180.0;
+    final sinSmooth =
+        (1 - alpha) * math.sin(smoothRad) + alpha * math.sin(rawRad);
+    final cosSmooth =
+        (1 - alpha) * math.cos(smoothRad) + alpha * math.cos(rawRad);
+    _smoothedHeading = math.atan2(sinSmooth, cosSmooth) * 180.0 / math.pi;
+    if (_smoothedHeading < 0) _smoothedHeading += 360.0;
+    return _smoothedHeading;
+  }
+
   @override
   void startTracking() {
     stopTracking();
     _x = 0;
     _y = 0;
     _heading = 0;
+    _smoothedHeading = 0;
+    _lastEmittedHeading = 0;
+    _lastHeadingEmitTime = 0;
     _lastStepTime = 0;
 
     try {
@@ -74,29 +97,42 @@ class PositionDataSourceImpl implements PositionDataSource {
             _onStep();
           }
         },
-        onError:
-            (_) {}, // Sensor unavailable on this device — degrade silently.
+        onError: (_) {},
         cancelOnError: false,
       );
     } catch (e) {
       log('accel unavailable: $e');
     }
 
-    // Compass-only heading is more stable on some MIUI devices than opening the
-    // optional gyroscope stream, which can report an unsupported-sensor error.
     _compassSub = FlutterCompass.events?.listen((event) {
-      final compassHeading = event.heading ?? _heading;
-      _heading = compassHeading;
-      _controller.add(PositionUpdate(x: _x, y: _y, heading: _heading));
+      final raw = event.heading ?? _heading;
+      _heading = _smoothHeading(raw);
+
+      // Suppress micro-jitter: only emit if heading changed by >1.5°
+      // AND throttle to max ~10 Hz (100 ms minimum between heading-only emits)
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final delta = (_heading - _lastEmittedHeading).abs();
+      // Handle wrap: 359° → 1° = 2° delta, not 358°
+      final wrappedDelta = delta > 180 ? 360 - delta : delta;
+      final elapsed = now - _lastHeadingEmitTime;
+
+      if (wrappedDelta >= 1.5 && elapsed >= 100) {
+        _lastEmittedHeading = _heading;
+        _lastHeadingEmitTime = now;
+        _controller.add(PositionUpdate(x: _x, y: _y, heading: _heading));
+      }
     });
   }
 
   int _lastStepTime = 0;
 
   void _onStep() {
+    // Correct PDR displacement for compass bearing:
+    //   East  (X) = sin(heading)  — heading 90° → X increases
+    //   North (Y) = cos(heading)  — heading  0° → Y increases
     final radians = _heading * (math.pi / 180.0);
-    _x += _stepLength * math.cos(radians);
-    _y += _stepLength * math.sin(radians);
+    _x += _stepLength * math.sin(radians);
+    _y += _stepLength * math.cos(radians);
 
     _controller.add(
       PositionUpdate(x: _x, y: _y, heading: _heading, isStep: true),

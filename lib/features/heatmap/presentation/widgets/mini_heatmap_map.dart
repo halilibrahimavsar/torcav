@@ -78,6 +78,7 @@ class _MiniHeatmapMapState extends State<MiniHeatmapMap>
                 floorPlan: widget.session.floorPlan,
                 showPath: true,
                 showControls: false,
+                isMiniMap: true,
                 currentPosition: widget.currentPosition,
                 currentHeading: widget.currentHeading,
               ),

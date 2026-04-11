@@ -88,9 +88,33 @@ class _ArHudOverlayState extends State<ArHudOverlay>
     super.didUpdateWidget(oldWidget);
     if (widget.guidance.readyToFinish && !oldWidget.guidance.readyToFinish) {
       _bannerCtl.forward(from: 0);
+      HapticFeedback.heavyImpact();
     } else if (!widget.guidance.readyToFinish &&
         oldWidget.guidance.readyToFinish) {
       _bannerCtl.reverse();
+    }
+
+    _checkMilestoneHaptics(
+      oldWidget.guidance.overallProgress,
+      widget.guidance.overallProgress,
+    );
+  }
+
+  void _checkMilestoneHaptics(double oldProgress, double newProgress) {
+    if (oldProgress >= newProgress) return;
+
+    final milestones = [0.25, 0.50, 0.75, 1.0];
+    for (final milestone in milestones) {
+      if (oldProgress < milestone && newProgress >= milestone) {
+        if (milestone >= 1.0) {
+          HapticFeedback.heavyImpact();
+        } else if (milestone >= 0.5) {
+          HapticFeedback.mediumImpact();
+        } else {
+          HapticFeedback.lightImpact();
+        }
+        break;
+      }
     }
   }
 
@@ -376,10 +400,13 @@ class _CompassRing extends StatelessWidget {
     return BlocSelector<HeatmapBloc, HeatmapState, double>(
       selector: (s) => s.currentHeading,
       builder: (context, heading) {
-        return SizedBox(
-          width: 56,
-          height: 56,
-          child: CustomPaint(painter: _CompassPainter(heading: heading)),
+        return GestureDetector(
+          onTap: () => context.read<HeatmapBloc>().recalibrateHeading(),
+          child: SizedBox(
+            width: 56,
+            height: 56,
+            child: CustomPaint(painter: _CompassPainter(heading: heading)),
+          ),
         );
       },
     );
@@ -510,7 +537,36 @@ class _SurveyPilotCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
+              // Primary Completion Metric
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    '${(guidance.overallProgress * 100).toInt()}%',
+                    style: GoogleFonts.orbitron(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -1,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Text(
+                      'COMPLETE',
+                      style: GoogleFonts.orbitron(
+                        color: accent.withValues(alpha: 0.7),
+                        fontSize: 9,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

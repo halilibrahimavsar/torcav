@@ -34,6 +34,7 @@ class _ArCameraViewState extends State<ArCameraView> {
 
   CameraController? _controller;
   bool _isInit = false;
+  bool _isDisposed = false;
   String? _cameraError;
 
   /// Transient flagged weak-zone markers in normalized screen coordinates.
@@ -48,6 +49,8 @@ class _ArCameraViewState extends State<ArCameraView> {
   Future<void> _initCamera() async {
     try {
       final cameras = await availableCameras();
+      if (_isDisposed) return;
+
       if (cameras.isEmpty) {
         if (mounted) {
           setState(() => _cameraError = 'No camera available on this device.');
@@ -63,26 +66,30 @@ class _ArCameraViewState extends State<ArCameraView> {
       );
 
       await _controller!.initialize();
-      if (!mounted) return;
+      if (_isDisposed || !mounted) {
+        _controller?.dispose();
+        return;
+      }
 
       setState(() => _isInit = true);
 
       final bloc = context.read<HeatmapBloc>();
       if (!_controller!.value.isStreamingImages) {
         await _controller!.startImageStream((image) {
-          if (!mounted) return;
+          if (_isDisposed || !mounted) return;
           bloc.processCameraImage(image);
         });
       }
     } catch (error) {
       debugPrint('Camera error: $error');
-      if (mounted) {
+      if (!_isDisposed && mounted) {
         setState(() => _cameraError = 'Camera preview could not start.');
       }
     }
   }
 
   void _flagCurrentPosition() {
+    if (_isDisposed) return;
     // Fallback path has no ARCore anchor — place marker at screen center.
     context.read<HeatmapBloc>().flagCurrentWeakZone();
     setState(() {
@@ -99,10 +106,13 @@ class _ArCameraViewState extends State<ArCameraView> {
 
   @override
   void dispose() {
-    if (_controller?.value.isStreamingImages ?? false) {
-      _controller?.stopImageStream();
+    _isDisposed = true;
+    if (_controller?.value.isInitialized ?? false) {
+      if (_controller?.value.isStreamingImages ?? false) {
+        _controller?.stopImageStream();
+      }
+      _controller?.dispose();
     }
-    _controller?.dispose();
     super.dispose();
   }
 

@@ -138,16 +138,102 @@ class _HeatmapViewState extends State<_HeatmapView> {
           currentY: state.currentPosition?.dy,
         );
 
-        return Scaffold(
-          backgroundColor: AppColors.deepBlack,
-          resizeToAvoidBottomInset: false,
-          appBar:
-              isScanning
-                  ? null
-                  : AppBar(
-                    leading: IconButton(
-                      icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                      onPressed: () => Navigator.of(context).pop(),
+        return PopScope(
+          canPop: !isRecording && session?.points.isEmpty == true,
+          onPopInvokedWithResult: (didPop, result) async {
+            if (didPop) return;
+
+            final shouldPop = await showDialog<bool>(
+                  context: context,
+                  builder:
+                      (context) => AlertDialog(
+                        backgroundColor: AppColors.deepBlack,
+                        title: Text(
+                          'End Survey?',
+                          style: GoogleFonts.orbitron(
+                            color: AppColors.neonCyan,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        content: Text(
+                          isRecording
+                              ? 'Your current survey data will be lost if you discard it. Save or Discard?'
+                              : 'Exit session review?',
+                          style: GoogleFonts.outfit(color: Colors.white, fontSize: 14),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: Text(
+                              'CANCEL',
+                              style: GoogleFonts.orbitron(
+                                color: Colors.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                          if (isRecording)
+                            TextButton(
+                              onPressed: () {
+                                bloc.stopSession();
+                                bloc.exitArView();
+                                Navigator.of(context).pop(true);
+                              },
+                              child: Text(
+                                'SAVE',
+                                style: GoogleFonts.orbitron(
+                                  color: AppColors.neonGreen,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          TextButton(
+                            onPressed: () {
+                              if (isRecording) {
+                                bloc.discardSession();
+                              }
+                              bloc.exitArView();
+                              Navigator.of(context).pop(true);
+                            },
+                            child: Text(
+                              isRecording ? 'DISCARD' : 'EXIT',
+                              style: GoogleFonts.orbitron(
+                                color: AppColors.neonRed,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                ) ??
+                false;
+
+            if (shouldPop && context.mounted) {
+              Navigator.of(context).pop();
+            }
+          },
+          child: Scaffold(
+            backgroundColor: AppColors.deepBlack,
+            resizeToAvoidBottomInset: false,
+            appBar:
+                isScanning
+                    ? null
+                    : AppBar(
+                      leading: IconButton(
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                        onPressed: () async {
+                          // Trigger PopScope manually for consistency
+                          final canPop =
+                              !isRecording && session?.points.isEmpty == true;
+                          if (canPop) {
+                            bloc.exitArView();
+                            Navigator.of(context).pop();
+                          } else {
+                            // This will trigger onPopInvokedWithResult
+                            Navigator.of(context).maybePop();
+                          }
+                        },
                     ),
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,16 +326,12 @@ class _HeatmapViewState extends State<_HeatmapView> {
                 ],
               ),
 
-              // AR / Camera Layer
-              if (state.isArSupported)
-                Visibility(
-                  visible: isRecording,
-                  maintainState: true,
-                  child: ArCoreHeatmapView(
-                    key: _arViewKey,
-                    onFinish: bloc.stopSession,
-                    onDiscard: bloc.discardSession,
-                  ),
+              // AR / Camera Layer — present during recording OR AR replay mode.
+              if (state.isArSupported && (isRecording || state.isViewingInAr))
+                ArCoreHeatmapView(
+                  key: _arViewKey,
+                  onFinish: isRecording ? bloc.stopSession : bloc.exitArView,
+                  onDiscard: isRecording ? bloc.discardSession : bloc.exitArView,
                 )
               else if (isRecording)
                 ArCameraView(
@@ -267,6 +349,7 @@ class _HeatmapViewState extends State<_HeatmapView> {
                     label: copy.startSurvey,
                   )
                   : null,
+          ),
         );
       },
     );
@@ -1861,6 +1944,34 @@ class _SurveyConclusionOverlay extends StatelessWidget {
                         ),
                       ),
                     ),
+                    if (context.read<HeatmapBloc>().state.isArSupported) ...[
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () => context.read<HeatmapBloc>().viewInAr(),
+                          icon: const Icon(Icons.view_in_ar_rounded, size: 18),
+                          label: Text(
+                            'VIEW IN 3D',
+                            style: GoogleFonts.orbitron(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                              letterSpacing: 2,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                AppColors.neonCyan.withValues(alpha: 0.8),
+                            foregroundColor: Colors.black,
+                            elevation: 8,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 12),
                     TextButton(
                       onPressed: onNewSurvey,
