@@ -7,10 +7,12 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
+import '../../domain/entities/heatmap_session.dart';
 import '../../domain/services/signal_tier.dart';
 import '../../domain/services/survey_guidance_service.dart';
 import '../bloc/heatmap_bloc.dart';
 import '../bloc/survey_gate.dart';
+import 'mini_heatmap_map.dart';
 
 /// Premium full-screen HUD overlay for the AR camera heatmap experience.
 ///
@@ -109,7 +111,7 @@ class _ArHudOverlayState extends State<ArHudOverlay>
         // ── 1. Scrim gradient for readability ──────────────────────────
         const IgnorePointer(child: _HudScrim()),
 
-        // ── 2. Top bar: SSID + compass ─────────────────────────────────
+        // ── 2. Top bar: SSID + REC Status + compass ───────────────────
         Positioned(
           top: 0,
           left: 0,
@@ -123,8 +125,8 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                 children: [
                   const Flexible(child: _SsidChip()),
                   const SizedBox(width: 8),
-                  const Flexible(child: _SessionChip()),
-                  const SizedBox(width: 10),
+                  const _RecordingStatus(),
+                  const Spacer(),
                   const _CompassRing(),
                 ],
               ),
@@ -147,6 +149,13 @@ class _ArHudOverlayState extends State<ArHudOverlay>
           top: 96,
           right: 14,
           child: _SurveyPilotCard(guidance: guidance),
+        ),
+
+        // ── 3b. Mini Map (top-right, below pilot card) ───────────────
+        const Positioned(
+          top: 260,
+          right: 14,
+          child: _MiniMapLayer(),
         ),
 
         const Positioned(
@@ -1220,49 +1229,6 @@ class _SampleBadge extends StatelessWidget {
   }
 }
 
-class _SessionChip extends StatelessWidget {
-  const _SessionChip();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocSelector<HeatmapBloc, HeatmapState, String?>(
-      selector: (s) => s.currentSession?.name,
-      builder: (context, name) {
-        if (name == null) return const SizedBox.shrink();
-
-        return GlassmorphicContainer(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          borderRadius: BorderRadius.circular(18),
-          borderColor: AppColors.glassWhiteBorder,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.assignment_rounded,
-                color: AppColors.textSecondary,
-                size: 14,
-              ),
-              const SizedBox(width: 6),
-              Flexible(
-                child: Text(
-                  name.toUpperCase(),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.orbitron(
-                    color: AppColors.textSecondary,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 1.1,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
 
 class _MeasurementLockBanner extends StatelessWidget {
   const _MeasurementLockBanner();
@@ -1503,6 +1469,21 @@ class _Dock extends StatelessWidget {
           onTap: () {
             HapticFeedback.mediumImpact();
             context.read<HeatmapBloc>().recalibrateHeading();
+          },
+        ),
+        const SizedBox(height: 10),
+        BlocSelector<HeatmapBloc, HeatmapState, bool>(
+          selector: (s) => s.isAutoSampling,
+          builder: (context, isAuto) {
+            return _DockButton(
+              icon: isAuto ? Icons.auto_mode_rounded : Icons.touch_app_rounded,
+              tooltip: isAuto ? 'Auto-Sampling ON' : 'Manual Mode',
+              color: isAuto ? AppColors.neonGreen : Colors.white70,
+              onTap: () {
+                HapticFeedback.lightImpact();
+                context.read<HeatmapBloc>().toggleAutoSampling();
+              },
+            );
           },
         ),
         if (onFinish != null) ...[
@@ -1831,4 +1812,157 @@ class _ArStatusIndicator extends StatelessWidget {
       ],
     );
   }
+}
+
+// ────────────────────────────────────────────────────────────────────
+// 12. Recording Status — Top bar indicator with pulsing REC and count.
+// ────────────────────────────────────────────────────────────────────
+
+class _RecordingStatus extends StatefulWidget {
+  const _RecordingStatus();
+
+  @override
+  State<_RecordingStatus> createState() => _RecordingStatusState();
+}
+
+class _RecordingStatusState extends State<_RecordingStatus>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pulseCtl;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseCtl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _pulseCtl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<HeatmapBloc, HeatmapState, int>(
+      selector: (s) => s.currentSession?.points.length ?? 0,
+      builder: (context, count) {
+        return GlassmorphicContainer(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          borderRadius: BorderRadius.circular(18),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FadeTransition(
+                opacity: _pulseCtl,
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    color: AppColors.neonRed,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.neonRed,
+                        blurRadius: 6,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'REC',
+                style: GoogleFonts.orbitron(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.2,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(width: 1, height: 12, color: Colors.white24),
+              const SizedBox(width: 8),
+              Text(
+                '$count',
+                style: GoogleFonts.orbitron(
+                  color: AppColors.neonCyan,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                'PTS',
+                style: GoogleFonts.orbitron(
+                  color: Colors.white54,
+                  fontSize: 8,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────
+// 13. Mini Map Layer — Real-time 2D visualization in AR HUD.
+// ────────────────────────────────────────────────────────────────────
+
+class _MiniMapLayer extends StatelessWidget {
+  const _MiniMapLayer();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<HeatmapBloc, HeatmapState, _MiniMapSlice>(
+      selector: (state) => _MiniMapSlice(
+        session: state.currentSession,
+        currentPosition: state.currentPosition,
+        currentHeading: state.currentHeading,
+      ),
+      builder: (context, slice) {
+        if (slice.session == null) return const SizedBox.shrink();
+
+        return MiniHeatmapMap(
+          session: slice.session!,
+          currentPosition: slice.currentPosition,
+          currentHeading: slice.currentHeading,
+          onTap: () {
+            // Optional: Toggle full-screen map or expand
+          },
+        );
+      },
+    );
+  }
+}
+
+class _MiniMapSlice {
+  final HeatmapSession? session;
+  final Offset? currentPosition;
+  final double? currentHeading;
+
+  const _MiniMapSlice({
+    this.session,
+    this.currentPosition,
+    this.currentHeading,
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _MiniMapSlice &&
+          runtimeType == other.runtimeType &&
+          session == other.session &&
+          currentPosition == other.currentPosition &&
+          currentHeading == other.currentHeading;
+
+  @override
+  int get hashCode =>
+      session.hashCode ^ currentPosition.hashCode ^ currentHeading.hashCode;
 }

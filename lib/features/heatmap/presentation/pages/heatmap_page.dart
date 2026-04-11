@@ -117,6 +117,13 @@ class _HeatmapViewState extends State<_HeatmapView> {
           currentRssi: state.currentRssi,
         );
 
+        // Adaptive RSSI range for canvas color scaling
+        final points = session?.points ?? const [];
+        final int minRssi =
+            points.isEmpty ? -90 : points.map((p) => p.rssi).reduce(math.min);
+        final int maxRssi =
+            points.isEmpty ? -35 : points.map((p) => p.rssi).reduce(math.max);
+
         final guidance = _guidanceService.analyze(
           points: session?.points ?? const [],
           floorPlan: floorPlan,
@@ -181,14 +188,18 @@ class _HeatmapViewState extends State<_HeatmapView> {
                 children: [
                   _CanvasBackdrop(summary: summary),
                   if (session != null)
-                    HeatmapCanvas(
-                      session: session,
-                      floorPlan: floorPlan,
-                      showPath: session.points.isNotEmpty,
-                      activeFloor: null,
-                      onTap: (metric) {
-                        setState(() => _probePoint = metric);
-                      },
+                    Positioned.fill(
+                      child: HeatmapCanvas(
+                        session: session,
+                        floorPlan: floorPlan,
+                        showPath: session.points.isNotEmpty,
+                        activeFloor: null,
+                        minRssi: minRssi,
+                        maxRssi: maxRssi,
+                        onTap: (metric) {
+                          setState(() => _probePoint = metric);
+                        },
+                      ),
                     ),
                   if (_shouldShowCanvasEmptyState(state, summary))
                     _CanvasEmptyState(
@@ -203,14 +214,19 @@ class _HeatmapViewState extends State<_HeatmapView> {
                     child: _ViewModeBadge(label: copy.resultViewLabel),
                   ),
                   if (isReviewing && _probePoint == null && session != null)
-                    _SurveyConclusionOverlay(
-                      session: session,
-                      summary: summary,
-                      guidance: guidance,
-                      copy: copy,
-                      onDismiss: bloc.clearSelection,
-                      onNewSurvey: () =>
-                          _showNewSessionDialog(context, bloc, copy),
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: _SurveyConclusionOverlay(
+                        session: session,
+                        summary: summary,
+                        guidance: guidance,
+                        copy: copy,
+                        onDismiss: bloc.clearSelection,
+                        onNewSurvey: () =>
+                            _showNewSessionDialog(context, bloc, copy),
+                      ),
                     ),
                   if (_probePoint != null && session != null)
                     _SignalProbeOverlay(
@@ -1435,8 +1451,23 @@ class _SignalProbeOverlay extends StatelessWidget {
       );
     }
 
-    final rssi = point!.rssi;
+    final p = point!;
+    final rssi = p.rssi;
     final color = _signalColor(rssi);
+
+    final statusLabel = rssi > -60 ? 'OPTIMAL' : rssi > -75 ? 'FAIR' : 'CRITICAL';
+    final statusColor = rssi > -60
+        ? AppColors.neonGreen
+        : rssi > -75
+        ? AppColors.neonOrange
+        : AppColors.neonRed;
+
+    final apName = (p.ssid.isNotEmpty) ? p.ssid : p.bssid;
+    final timeLabel = DateFormat('HH:mm:ss').format(p.timestamp);
+    final posLabel =
+        'X ${p.floorX.toStringAsFixed(1)} m  ·  Y ${p.floorY.toStringAsFixed(1)} m';
+    final samplesLabel =
+        '${p.sampleCount} samples  ·  ±${p.rssiStdDev.toStringAsFixed(1)} dBm';
 
     return Positioned.fill(
       child: Stack(
@@ -1458,6 +1489,7 @@ class _SignalProbeOverlay extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // ── Header ──────────────────────────────────────────
                       Row(
                         children: [
                           Container(
@@ -1486,13 +1518,15 @@ class _SignalProbeOverlay extends StatelessWidget {
                                     letterSpacing: 2,
                                   ),
                                 ),
-                                Text(
-                                  'Metric Position: ${point!.floorX.toStringAsFixed(1)}m, ${point!.floorY.toStringAsFixed(1)}m',
-                                  style: GoogleFonts.outfit(
-                                    color: AppColors.textMuted,
-                                    fontSize: 11,
+                                if (apName.isNotEmpty)
+                                  Text(
+                                    apName,
+                                    style: GoogleFonts.outfit(
+                                      color: AppColors.textMuted,
+                                      fontSize: 11,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ),
                               ],
                             ),
                           ),
@@ -1505,7 +1539,9 @@ class _SignalProbeOverlay extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 16),
+
+                      // ── Primary stats row ────────────────────────────────
                       Row(
                         children: [
                           Expanded(
@@ -1515,31 +1551,43 @@ class _SignalProbeOverlay extends StatelessWidget {
                               color: color,
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: _StatBrick(
+                              label: 'STATUS',
+                              value: statusLabel,
+                              color: statusColor,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: _StatBrick(
                               label: 'FLOOR',
-                              value: '${point!.floor}',
+                              value: '${p.floor}',
                               color: AppColors.neonBlue,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
-                      _StatBrick(
-                        label: 'STATUS',
-                        value:
-                            rssi > -60
-                                ? 'OPTIMAL'
-                                : rssi > -75
-                                ? 'FAIR'
-                                : 'CRITICAL',
-                        color:
-                            rssi > -60
-                                ? AppColors.neonGreen
-                                : rssi > -75
-                                ? AppColors.neonOrange
-                                : AppColors.neonRed,
+                      const SizedBox(height: 10),
+
+                      // ── Detail rows ──────────────────────────────────────
+                      _ProbeDetailRow(
+                        icon: Icons.location_on_outlined,
+                        label: 'POSITION',
+                        value: posLabel,
+                      ),
+                      const SizedBox(height: 6),
+                      _ProbeDetailRow(
+                        icon: Icons.wifi_outlined,
+                        label: 'SAMPLES',
+                        value: samplesLabel,
+                      ),
+                      const SizedBox(height: 6),
+                      _ProbeDetailRow(
+                        icon: Icons.schedule_outlined,
+                        label: 'CAPTURED',
+                        value: timeLabel,
                       ),
                     ],
                   ),
@@ -1557,6 +1605,47 @@ class _SignalProbeOverlay extends StatelessWidget {
     if (rssi > -65) return const Color(0xFFC6FF00); // Lime
     if (rssi > -75) return AppColors.neonOrange;
     return AppColors.neonRed;
+  }
+}
+
+class _ProbeDetailRow extends StatelessWidget {
+  const _ProbeDetailRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 13, color: AppColors.textMuted),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: GoogleFonts.orbitron(
+            color: AppColors.textMuted,
+            fontSize: 9,
+            letterSpacing: 1.1,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            value,
+            style: GoogleFonts.outfit(
+              color: AppColors.textPrimary,
+              fontSize: 12,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -1591,12 +1680,15 @@ class _SurveyConclusionOverlay extends StatelessWidget {
         ? AppColors.neonOrange
         : AppColors.neonRed;
 
-    return Center(
+    return Align(
+      alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(20),
         child: StaggeredEntry(
           duration: const Duration(milliseconds: 600),
-          child: GlassmorphicContainer(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 500),
+            child: GlassmorphicContainer(
             borderRadius: BorderRadius.circular(32),
             borderColor: AppColors.neonCyan.withValues(alpha: 0.3),
             padding: const EdgeInsets.all(24),
@@ -1791,8 +1883,9 @@ class _SurveyConclusionOverlay extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 class _StatBrick extends StatelessWidget {

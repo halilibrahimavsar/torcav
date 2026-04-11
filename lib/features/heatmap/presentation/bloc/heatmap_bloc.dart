@@ -4,8 +4,8 @@ import 'dart:math' as math;
 
 import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
@@ -310,21 +310,30 @@ class HeatmapBloc extends Cubit<HeatmapState> {
       );
     });
   }
-
   void _handlePositionUpdate(PositionUpdate pos) {
-    if (state.phase != ScanPhase.scanning) return;
+    if (!state.isRecording || state.phase != ScanPhase.scanning) return;
 
     final offset = Offset(pos.x, pos.y);
-    emit(
-      state.copyWith(
-        currentPosition: offset,
-        currentHeading: pos.heading,
-        lastStepTimestamp: pos.isStep ? DateTime.now() : null,
-      ),
-    );
+    emit(state.copyWith(
+      currentPosition: offset,
+      currentHeading: pos.heading,
+      lastStepTimestamp: pos.isStep ? DateTime.now() : state.lastStepTimestamp,
+    ));
 
     _refreshSurveyGate();
-    if (pos.isStep) {
+
+    // Auto-sampling logic
+    if (state.isAutoSampling) {
+      final lastPos = state.lastRecordedPosition ?? const Offset(0, 0);
+      final dist = math.sqrt(
+        math.pow(offset.dx - lastPos.dx, 2) +
+            math.pow(offset.dy - lastPos.dy, 2),
+      );
+
+      if (dist >= state.autoSamplingDistance) {
+        _recordCurrentPosition(offset);
+      }
+    } else if (pos.isStep) {
       _recordCurrentPosition(offset);
     }
   }
@@ -361,8 +370,10 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     emit(
       state.copyWith(
         currentSession: session.copyWith(points: [...session.points, newPoint]),
+        lastRecordedPosition: pos,
       ),
     );
+    unawaited(HapticFeedback.lightImpact());
   }
 
   bool _shouldRecordPoint(HeatmapSession session, HeatmapPoint nextPoint) {
@@ -678,5 +689,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     );
   }
 
+  void toggleAutoSampling() {
+    emit(state.copyWith(isAutoSampling: !state.isAutoSampling));
+  }
 }
-

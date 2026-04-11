@@ -25,6 +25,9 @@ class HeatmapState extends Equatable {
     this.arOriginHeadingOffset = 0.0,
     this.lastStepTimestamp,
     this.currentFloor = 0,
+    this.isAutoSampling = false,
+    this.lastRecordedPosition,
+    this.autoSamplingDistance = 0.8,
   });
 
   final List<HeatmapSession> sessions;
@@ -80,6 +83,14 @@ class HeatmapState extends Equatable {
   /// Current floor index relative to scan start (0 = starting floor).
   final int currentFloor;
 
+  /// Whether data points should be automatically recorded based on movement.
+  final bool isAutoSampling;
+
+  /// Last position where a data point was successfully recorded.
+  final Offset? lastRecordedPosition;
+
+  /// Distance threshold in meters to trigger an automatic sample.
+  final double autoSamplingDistance;
 
   /// Whether the device supports AR features.
   final bool isArSupported;
@@ -118,6 +129,10 @@ class HeatmapState extends Equatable {
     DateTime? lastStepTimestamp,
     bool clearLastStepTimestamp = false,
     int? currentFloor,
+    bool? isAutoSampling,
+    Offset? lastRecordedPosition,
+    bool clearLastRecordedPosition = false,
+    double? autoSamplingDistance,
   }) => HeatmapState(
     sessions: sessions ?? this.sessions,
     currentSession:
@@ -149,6 +164,11 @@ class HeatmapState extends Equatable {
             ? null
             : lastStepTimestamp ?? this.lastStepTimestamp,
     currentFloor: currentFloor ?? this.currentFloor,
+    isAutoSampling: isAutoSampling ?? this.isAutoSampling,
+    lastRecordedPosition: clearLastRecordedPosition
+        ? null
+        : lastRecordedPosition ?? this.lastRecordedPosition,
+    autoSamplingDistance: autoSamplingDistance ?? this.autoSamplingDistance,
   );
 
   @override
@@ -176,5 +196,8 @@ class HeatmapState extends Equatable {
     arOriginHeadingOffset,
     lastStepTimestamp,
     currentFloor,
+    isAutoSampling,
+    lastRecordedPosition,
+    autoSamplingDistance,
   ];
 }
