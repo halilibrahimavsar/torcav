@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../domain/entities/heatmap_session.dart';
 import 'heatmap_canvas.dart';
+import 'heatmap_compass.dart';
 
 /// A compact, premium version of the heatmap map for AR HUD display.
 class MiniHeatmapMap extends StatefulWidget {
@@ -99,28 +100,11 @@ class _MiniHeatmapMapState extends State<MiniHeatmapMap>
               ),
             ),
 
-            // North indicator (top-center)
-            Positioned(
+            // Compass indicator (top-right)
+            const Positioned(
               top: 6,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.45),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    'N',
-                    style: GoogleFonts.orbitron(
-                      color: const Color(0xFF00E5FF).withValues(alpha: 0.9),
-                      fontSize: 8,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
+              right: 6,
+              child: HeatmapCompass(size: 40),
             ),
 
             // Animated LIVE badge (top-left)

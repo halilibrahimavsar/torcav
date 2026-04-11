@@ -151,7 +151,6 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                   const SizedBox(width: 8),
                   const _RecordingStatus(),
                   const Spacer(),
-                  const _CompassRing(),
                 ],
               ),
             ),
@@ -389,112 +388,7 @@ String _compactBssid(String bssid) {
 }
 
 // ────────────────────────────────────────────────────────────────────
-// 2b. Compass ring — heading indicator, 52px.
-// ────────────────────────────────────────────────────────────────────
 
-class _CompassRing extends StatelessWidget {
-  const _CompassRing();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocSelector<HeatmapBloc, HeatmapState, double>(
-      selector: (s) => s.currentHeading,
-      builder: (context, heading) {
-        return GestureDetector(
-          onTap: () => context.read<HeatmapBloc>().recalibrateHeading(),
-          child: SizedBox(
-            width: 56,
-            height: 56,
-            child: CustomPaint(painter: _CompassPainter(heading: heading)),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _CompassPainter extends CustomPainter {
-  _CompassPainter({required this.heading});
-
-  final double heading;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2 - 4;
-
-    // Glass backing disc.
-    final bgPaint = Paint()..color = Colors.black.withValues(alpha: 0.55);
-    canvas.drawCircle(center, radius, bgPaint);
-
-    // Ring.
-    final ringPaint =
-        Paint()
-          ..color = AppColors.neonCyan.withValues(alpha: 0.6)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.5;
-    canvas.drawCircle(center, radius, ringPaint);
-
-    // Cardinal ticks.
-    final tickPaint =
-        Paint()
-          ..color = AppColors.neonCyan.withValues(alpha: 0.5)
-          ..strokeWidth = 1;
-    for (var i = 0; i < 12; i++) {
-      final angle = (i * 30) * math.pi / 180;
-      final inner =
-          center +
-          Offset(
-            math.sin(angle) * (radius - 4),
-            -math.cos(angle) * (radius - 4),
-          );
-      final outer =
-          center + Offset(math.sin(angle) * radius, -math.cos(angle) * radius);
-      canvas.drawLine(inner, outer, tickPaint);
-    }
-
-    // North indicator (rotates opposite to heading).
-    final headingRad = -heading * math.pi / 180;
-    final needlePaint =
-        Paint()
-          ..color = AppColors.neonRed
-          ..style = PaintingStyle.fill;
-    final path =
-        Path()
-          ..moveTo(
-            center.dx + math.sin(headingRad) * (radius - 6),
-            center.dy - math.cos(headingRad) * (radius - 6),
-          )
-          ..lineTo(
-            center.dx + math.sin(headingRad + 0.35) * 4,
-            center.dy - math.cos(headingRad + 0.35) * 4,
-          )
-          ..lineTo(
-            center.dx + math.sin(headingRad - 0.35) * 4,
-            center.dy - math.cos(headingRad - 0.35) * 4,
-          )
-          ..close();
-    canvas.drawPath(path, needlePaint);
-
-    // "N" label (always at top of world).
-    final textPainter = TextPainter(
-      text: TextSpan(
-        text: 'N',
-        style: TextStyle(
-          color: AppColors.neonCyan,
-          fontSize: 10,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-    textPainter.paint(canvas, Offset(center.dx - textPainter.width / 2, 2));
-  }
-
-  @override
-  bool shouldRepaint(covariant _CompassPainter oldDelegate) =>
-      oldDelegate.heading != heading;
-}
 
 // ────────────────────────────────────────────────────────────────────
 // 3. Survey Pilot card — stage, tone, 3 progress rings, feed dots.
