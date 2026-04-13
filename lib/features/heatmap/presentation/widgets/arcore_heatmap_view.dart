@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart';
@@ -20,11 +21,7 @@ import 'ar_hud_overlay.dart';
 /// world space and delegates the 2D HUD + dBm label overlay to screen-space
 /// Flutter widgets.
 class ArCoreHeatmapView extends StatefulWidget {
-  const ArCoreHeatmapView({
-    super.key,
-    this.onFinish,
-    this.onDiscard,
-  });
+  const ArCoreHeatmapView({super.key, this.onFinish, this.onDiscard});
 
   final VoidCallback? onFinish;
   final VoidCallback? onDiscard;
@@ -40,6 +37,9 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
   ArCoreController? _arCoreController;
   int _renderedPointCount = 0;
   final Set<String> _renderedFlagKeys = <String>{};
+
+  /// Set of AR node name suffixes for wall detection dot markers already placed.
+  final Set<String> _renderedWallDotKeys = <String>{};
   bool _originAttached = false;
   vector.Vector3? _originWorldPos;
 
@@ -66,6 +66,7 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
     controller.onPlaneDetected = _handlePlaneDetected;
     _renderedPointCount = 0;
     _renderedFlagKeys.clear();
+    _renderedWallDotKeys.clear();
     _originAttached = false;
     _originWorldPos = null;
     if (mounted) {
@@ -163,9 +164,10 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
     );
 
     // Immediately sync nodes for pre-existing points (crucial for 3D Replay).
-    final points = bloc.state.isViewingInAr
-        ? (bloc.state.selectedSession?.points ?? const [])
-        : (bloc.state.currentSession?.points ?? const []);
+    final points =
+        bloc.state.isViewingInAr
+            ? (bloc.state.selectedSession?.points ?? const [])
+            : (bloc.state.currentSession?.points ?? const []);
     await _syncAnchoredNodes(points);
   }
 
@@ -220,10 +222,36 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
     quat.rotate(wallDir); // world-space direction
 
     final halfLen = (plane.extendX ?? 0.5) / 2;
+
+    // Require a minimum wall length to filter out noise.
+    if (halfLen * 2 < 0.3) return;
+
     final cx = centerPose.translation.x;
     final cz = centerPose.translation.z;
 
-    // Convert world endpoints to floor coordinates relative to origin.
+    // Sample multiple evenly-spaced points along the plane for a stable
+    // wall representation. More dots = better coverage of long walls.
+    const sampleCount = 5;
+    for (int i = 0; i < sampleCount; i++) {
+      // t goes from -1 to +1 across the full plane extent.
+      final t = sampleCount == 1 ? 0.0 : -1.0 + (2.0 * i / (sampleCount - 1));
+      final wx = cx + wallDir.x * (halfLen * t);
+      final wz = cz + wallDir.z * (halfLen * t);
+
+      // Floor coordinates relative to origin.
+      final floorX = wx - _originWorldPos!.x;
+      final floorY = -((wz) - _originWorldPos!.z);
+
+      // Place a visual detection dot in the AR scene for user feedback.
+      // Use a stable key so we do not duplicate the same sample point.
+      final dotKey = '${(floorX * 4).round()}_${(floorY * 4).round()}';
+      if (!_renderedWallDotKeys.contains(dotKey)) {
+        _renderedWallDotKeys.add(dotKey);
+        unawaited(_addWallDetectionDot(floorX, floorY, dotKey));
+      }
+    }
+
+    // Convert endpoints to floor coordinates.
     final floorSegment = WallSegment(
       x1: (cx - wallDir.x * halfLen) - _originWorldPos!.x,
       y1: -((cz - wallDir.z * halfLen) - _originWorldPos!.z),
@@ -232,6 +260,62 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
     );
 
     context.read<HeatmapBloc>().addWallFromAr(floorSegment);
+  }
+
+  /// Places a glowing cyan sphere at [floorX, floorY] in the AR scene
+  /// to give the user visual feedback that a wall surface was detected.
+  Future<void> _addWallDetectionDot(
+    double floorX,
+    double floorY,
+    String key,
+  ) async {
+    if (_isDisposed || _arCoreController == null || !_originAttached) return;
+
+    // Wall dots sit at ~1m height on the detected vertical plane.
+    const dotHeight = 1.0;
+    const dotRadius = 0.016; // 1.6 cm — compact, readable at arm's length
+    const wiredRadius = 0.028; // outer aura ring
+
+    // --- Core dot ---
+    final coreNode = ArCoreNode(
+      name: 'wdot_core_$key',
+      shape: ArCoreSphere(
+        radius: dotRadius,
+        materials: [
+          ArCoreMaterial(
+            color: AppColors.neonCyan.withValues(alpha: 0.9),
+            metallic: 0.0,
+            reflectance: 0.95,
+          ),
+        ],
+      ),
+      position: vector.Vector3(floorX, dotHeight, -floorY),
+    );
+
+    // --- Aura halo (slightly larger, translucent) ---
+    final haloNode = ArCoreNode(
+      name: 'wdot_halo_$key',
+      shape: ArCoreSphere(
+        radius: wiredRadius,
+        materials: [
+          ArCoreMaterial(
+            color: AppColors.neonCyan.withValues(alpha: 0.18),
+            metallic: 0.0,
+            reflectance: 0.0,
+          ),
+        ],
+      ),
+      position: vector.Vector3(floorX, dotHeight, -floorY),
+    );
+
+    await _arCoreController!.addArCoreNode(
+      coreNode,
+      parentNodeName: _originNodeName,
+    );
+    await _arCoreController!.addArCoreNode(
+      haloNode,
+      parentNodeName: _originNodeName,
+    );
   }
 
   /// Adds a single flat disc marker on the AR floor for [point].
@@ -334,7 +418,9 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
     if (newPoints.isNotEmpty && _renderedPointCount < _maxRenderedMarkers) {
       // Add all new floor markers in parallel — ARCore handles concurrency internally.
       // Cap the visual rendering to keep native RAM usage manageable.
-      final pointsToAdd = newPoints.take(_maxRenderedMarkers - _renderedPointCount);
+      final pointsToAdd = newPoints.take(
+        _maxRenderedMarkers - _renderedPointCount,
+      );
       await Future.wait(pointsToAdd.map(_addFloorMarker));
       if (!_isDisposed) {
         _renderedPointCount += pointsToAdd.length;
@@ -342,9 +428,7 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
     }
 
     // Sync any newly flagged points.
-    await Future.wait(
-      points.where((p) => p.isFlagged).map(_addFlagMarker),
-    );
+    await Future.wait(points.where((p) => p.isFlagged).map(_addFlagMarker));
   }
 
   Future<void> _flagCurrentPosition() async {
@@ -398,9 +482,10 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
       },
       listener: (context, state) async {
         if (_isDisposed) return;
-        final points = state.isViewingInAr
-            ? (state.selectedSession?.points ?? const [])
-            : (state.currentSession?.points ?? const []);
+        final points =
+            state.isViewingInAr
+                ? (state.selectedSession?.points ?? const [])
+                : (state.currentSession?.points ?? const []);
         await _syncAnchoredNodes(points);
       },
       // Using the underlying Stack as a stable base, preventing ArCoreView
@@ -410,9 +495,7 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
           fit: StackFit.expand,
           children: [
             // Stable PlatformView child.
-            _ArCoreNativeView(
-              onCreated: _onArCoreViewCreated,
-            ),
+            _ArCoreNativeView(onCreated: _onArCoreViewCreated),
 
             // Performance-isolated overlays.
             if (state.phase == ScanPhase.scanning)
@@ -421,13 +504,15 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
             if (state.phase == ScanPhase.scanning)
               ArHudOverlay(
                 guidance: _guidanceService.analyze(
-                  points: (state.isViewingInAr
+                  points:
+                      (state.isViewingInAr
                           ? state.selectedSession?.points
                           : state.currentSession?.points) ??
                       const [],
-                  floorPlan: state.isViewingInAr
-                      ? state.selectedSession?.floorPlan
-                      : state.liveFloorPlan,
+                  floorPlan:
+                      state.isViewingInAr
+                          ? state.selectedSession?.floorPlan
+                          : state.liveFloorPlan,
                   isRecording: state.isRecording,
                   hasArOrigin: state.hasArOrigin,
                   pendingWallCount: state.pendingWalls.length,
@@ -479,9 +564,10 @@ class _SignalLabelOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocSelector<HeatmapBloc, HeatmapState, _LabelOverlaySlice>(
       selector: (s) {
-        final points = s.isViewingInAr
-            ? (s.selectedSession?.points ?? const [])
-            : (s.currentSession?.points ?? const []);
+        final points =
+            s.isViewingInAr
+                ? (s.selectedSession?.points ?? const [])
+                : (s.currentSession?.points ?? const []);
         return _LabelOverlaySlice(
           points: points,
           camX: s.currentPosition?.dx ?? 0,
@@ -501,9 +587,10 @@ class _SignalLabelOverlay extends StatelessWidget {
             final labels = <Widget>[];
 
             // Only render the last 80 points to match the 3D disc cap and prevent jank.
-            final pointsToRender = slice.points.length > 80
-                ? slice.points.sublist(slice.points.length - 80)
-                : slice.points;
+            final pointsToRender =
+                slice.points.length > 80
+                    ? slice.points.sublist(slice.points.length - 80)
+                    : slice.points;
 
             for (final point in pointsToRender) {
               final result = _projectToScreen(
@@ -526,7 +613,8 @@ class _SignalLabelOverlay extends StatelessWidget {
               final focalPxY = size.height / (2 * math.tan(vFovRad / 2));
               // The disc is on the floor (~1m below camera).
               const cameraHeight = 1.0;
-              final discScreenY = size.height / 2 + (cameraHeight / depth) * focalPxY;
+              final discScreenY =
+                  size.height / 2 + (cameraHeight / depth) * focalPxY;
               final labelScreenY = discScreenY - 32 * depthFactor;
 
               labels.add(
@@ -576,11 +664,9 @@ class _SignalLabelOverlay extends StatelessWidget {
     final headingRad = headingDeg * math.pi / 180;
 
     // Depth: how far the point is in front of the camera.
-    final depth =
-        dx * math.cos(headingRad) + dy * math.sin(headingRad);
+    final depth = dx * math.cos(headingRad) + dy * math.sin(headingRad);
     // Lateral: how far the point is to the right of the camera.
-    final lateral =
-        -dx * math.sin(headingRad) + dy * math.cos(headingRad);
+    final lateral = -dx * math.sin(headingRad) + dy * math.cos(headingRad);
 
     if (depth < 0.4 || depth > 7.0) return null;
 
@@ -606,10 +692,11 @@ class _VerticalStemPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color.withValues(alpha: 0.5)
-      ..strokeWidth = 1.2
-      ..style = PaintingStyle.stroke;
+    final paint =
+        Paint()
+          ..color = color.withValues(alpha: 0.5)
+          ..strokeWidth = 1.2
+          ..style = PaintingStyle.stroke;
 
     canvas.drawLine(
       Offset(size.width / 2, 0),
@@ -617,7 +704,11 @@ class _VerticalStemPainter extends CustomPainter {
       paint,
     );
     // Tiny dot at the base for visual grounding.
-    canvas.drawCircle(Offset(size.width / 2, size.height), 1.5, paint..style = PaintingStyle.fill);
+    canvas.drawCircle(
+      Offset(size.width / 2, size.height),
+      1.5,
+      paint..style = PaintingStyle.fill,
+    );
   }
 
   @override
@@ -640,13 +731,11 @@ class _DbmPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scale = depthFactor;
-    final bssidSuffix = bssid.length > 5 ? bssid.substring(bssid.length - 5) : '';
+    final bssidSuffix =
+        bssid.length > 5 ? bssid.substring(bssid.length - 5) : '';
 
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 8 * scale,
-        vertical: 4 * scale,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 8 * scale, vertical: 4 * scale),
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: 0.85),
         borderRadius: BorderRadius.circular(10 * scale),

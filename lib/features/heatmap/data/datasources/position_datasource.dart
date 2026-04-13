@@ -60,15 +60,27 @@ class PositionDataSourceImpl implements PositionDataSource {
   static const _stepMinInterval = 350;
 
   /// EMA low-pass filter for compass heading with 0°/360° wraparound handling.
-  /// alpha = 0.12: low = smoother (sluggish), high = more responsive (jumpy).
+  /// alpha: 0.03: high persistence (premium stable feel), 0.2: high responsiveness (jumpy).
   double _smoothHeading(double raw) {
-    const alpha = 0.12;
+    const alpha = 0.03;
     final rawRad = raw * math.pi / 180.0;
     final smoothRad = _smoothedHeading * math.pi / 180.0;
+    
+    // Check for large angular jumps (e.g., initial fix or rapid turn)
+    // If > 45 degrees, we "snap" the smoothed value to avoid a long slow drift.
+    final angleDiff = (raw - _smoothedHeading).abs();
+    final wrappedDiff = angleDiff > 180 ? 360 - angleDiff : angleDiff;
+    if (wrappedDiff > 45.0) {
+      _smoothedHeading = raw;
+      return _smoothedHeading;
+    }
+
+    // We compute the shortest angular distance to avoid 0/360 flip jank
     final sinSmooth =
         (1 - alpha) * math.sin(smoothRad) + alpha * math.sin(rawRad);
     final cosSmooth =
         (1 - alpha) * math.cos(smoothRad) + alpha * math.cos(rawRad);
+        
     _smoothedHeading = math.atan2(sinSmooth, cosSmooth) * 180.0 / math.pi;
     if (_smoothedHeading < 0) _smoothedHeading += 360.0;
     return _smoothedHeading;
@@ -108,15 +120,15 @@ class PositionDataSourceImpl implements PositionDataSource {
       final raw = event.heading ?? _heading;
       _heading = _smoothHeading(raw);
 
-      // Suppress micro-jitter: only emit if heading changed by >1.5°
-      // AND throttle to max ~10 Hz (100 ms minimum between heading-only emits)
+      // We emit more frequently but with heavier smoothing to allow the
+      // TweenAnimationBuilder in the UI to perform fluid interpolation.
       final now = DateTime.now().millisecondsSinceEpoch;
       final delta = (_heading - _lastEmittedHeading).abs();
-      // Handle wrap: 359° → 1° = 2° delta, not 358°
       final wrappedDelta = delta > 180 ? 360 - delta : delta;
       final elapsed = now - _lastHeadingEmitTime;
 
-      if (wrappedDelta >= 1.5 && elapsed >= 100) {
+      // Threshold lowered to 0.4° for fluidity, but throttled to 15Hz (66ms).
+      if (wrappedDelta >= 0.4 && elapsed >= 66) {
         _lastEmittedHeading = _heading;
         _lastHeadingEmitTime = now;
         _controller.add(PositionUpdate(x: _x, y: _y, heading: _heading));

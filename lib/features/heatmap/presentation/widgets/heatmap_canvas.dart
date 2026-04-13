@@ -739,9 +739,13 @@ class _PositionPainter extends CustomPainter {
     );
 
     // Directional cone (Premium HUD style)
+    // heading is in geographic degrees (0° = North). The viewport flips Y
+    // so north = canvas -Y direction. canvas.rotate(0) points to +X (east).
+    // Therefore: canvasAngle = (heading - 90) * π/180
+    final headingRad = (heading - 90.0) * math.pi / 180.0;
     canvas.save();
     canvas.translate(center.dx, center.dy);
-    canvas.rotate(heading);
+    canvas.rotate(headingRad);
     final conePath =
         Path()
           ..moveTo(0, 0)
