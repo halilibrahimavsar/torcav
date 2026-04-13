@@ -284,7 +284,7 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
         materials: [
           ArCoreMaterial(
             color: AppColors.neonCyan.withValues(alpha: 0.9),
-            metallic: 0.0,
+            metallic: 0.1,
             reflectance: 0.95,
           ),
         ],
