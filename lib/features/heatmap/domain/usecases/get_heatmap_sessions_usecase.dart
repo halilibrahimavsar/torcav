@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/errors/failures.dart';
-import '../entities/heatmap_session.dart';
-import '../repositories/heatmap_repository.dart';
+import 'package:torcav/core/errors/failures.dart';
+import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
+import 'package:torcav/features/heatmap/domain/repositories/heatmap_repository.dart';
 
 /// Returns all stored heatmap sessions, newest first.
 @lazySingleton

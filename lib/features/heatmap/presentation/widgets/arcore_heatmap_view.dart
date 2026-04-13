@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart';
 import 'package:flutter/material.dart';
@@ -8,17 +7,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
-import '../../../../core/theme/app_theme.dart';
-import '../../domain/entities/heatmap_point.dart';
-import '../../domain/entities/wall_segment.dart';
-import '../../domain/services/signal_tier.dart';
-import '../../domain/services/survey_guidance_service.dart';
-import '../bloc/heatmap_bloc.dart';
-import '../bloc/scan_phase.dart';
-import 'ar_hud_overlay.dart';
+import 'package:torcav/core/theme/app_theme.dart';
+import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
+import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
+import 'package:torcav/features/heatmap/domain/services/signal_tier.dart';
+import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
+import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
+import 'package:torcav/features/heatmap/presentation/bloc/scan_phase.dart';
+import 'package:torcav/features/heatmap/presentation/widgets/ar_hud_overlay.dart';
+import 'package:torcav/features/heatmap/presentation/widgets/ar/ar_core_native_view.dart';
+import 'package:torcav/features/heatmap/presentation/widgets/ar/signal_label_overlay.dart';
 
 /// ARCore-backed heatmap view. Renders anchored floor-disc markers in metric
-/// world space and delegates the 2D HUD + dBm label overlay to screen-space
+/// world space and delegates the 2D HUD + dBm label overlay to modular
 /// Flutter widgets.
 class ArCoreHeatmapView extends StatefulWidget {
   const ArCoreHeatmapView({super.key, this.onFinish, this.onDiscard});
@@ -210,6 +211,10 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
   }
 
   void _handlePlaneDetected(ArCorePlane plane) {
+    if (plane.type == ArCorePlaneType.HORIZONTAL_UPWARD_FACING) {
+      _handleFloorDetected(plane);
+      return;
+    }
     if (plane.type != ArCorePlaneType.VERTICAL) return;
     if (!_originAttached || _originWorldPos == null) return;
     final centerPose = plane.centerPose;
@@ -262,6 +267,76 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
     context.read<HeatmapBloc>().addWallFromAr(floorSegment);
   }
 
+  void _handleFloorDetected(ArCorePlane plane) {
+    if (!_originAttached || _originWorldPos == null) return;
+    final centerPose = plane.centerPose;
+    if (centerPose == null) return;
+
+    final cy = centerPose.translation.y;
+    final extX = plane.extendX ?? 0.0;
+    final extZ = plane.extendZ ?? 0.0;
+
+    // Use horizontal planes to refine the world Y level (floor level).
+    // If we detect a stable, large plane that is close to our current origin height,
+    // we snap the origin height to it for better vertical stability.
+    if (extX * extZ > 0.4) {
+      final yDiff = (cy - _originWorldPos!.y).abs();
+      // If the plane is within 15cm of our origin height, it's likely the real floor.
+      if (yDiff < 0.15 && yDiff > 0.001) {
+        _originWorldPos!.y = cy;
+      }
+    }
+
+    // Visualization: place floor dots in a grid across the plane extent.
+    const gridStep = 0.4;
+    for (double dx = -extX / 2; dx <= extX / 2; dx += gridStep) {
+      for (double dz = -extZ / 2; dz <= extZ / 2; dz += gridStep) {
+        final wx = centerPose.translation.x + dx;
+        final wz = centerPose.translation.z + dz;
+        final fx = wx - _originWorldPos!.x;
+        final fy = -((wz) - _originWorldPos!.z);
+
+        final dotKey = 'fdot_${(fx * 5).round()}_${(fy * 5).round()}';
+        if (!_renderedWallDotKeys.contains(dotKey)) {
+          _renderedWallDotKeys.add(dotKey);
+          unawaited(_addFloorDetectionDot(fx, fy, cy - _originWorldPos!.y, dotKey));
+        }
+      }
+    }
+  }
+
+  /// Places a subtle ground marker for detected floor planes.
+  Future<void> _addFloorDetectionDot(
+    double floorX,
+    double floorY,
+    double relativeY,
+    String key,
+  ) async {
+    if (_isDisposed || _arCoreController == null || !_originAttached) return;
+
+    final dotNode = ArCoreNode(
+      name: 'fdot_$key',
+      shape: ArCoreCylinder(
+        radius: 0.003, // 3mm thin disc
+        height: 0.12, // 12cm radius — larger and more visible
+        materials: [
+          ArCoreMaterial(
+            color: AppColors.neonCyan.withValues(alpha: 0.25),
+            metallic: 0.8,
+            roughness: 0.2,
+          ),
+        ],
+      ),
+      // Set dot at the relative height of the detected plane.
+      position: vector.Vector3(floorX, relativeY + 0.005, -floorY),
+    );
+
+    await _arCoreController!.addArCoreNode(
+      dotNode,
+      parentNodeName: _originNodeName,
+    );
+  }
+
   /// Places a glowing cyan sphere at [floorX, floorY] in the AR scene
   /// to give the user visual feedback that a wall surface was detected.
   Future<void> _addWallDetectionDot(
@@ -283,9 +358,10 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
         radius: dotRadius,
         materials: [
           ArCoreMaterial(
-            color: AppColors.neonCyan.withValues(alpha: 0.9),
-            metallic: 0.1,
+            color: AppColors.neonCyan.withValues(alpha: 0.8),
+            metallic: 0.9,
             reflectance: 0.95,
+            roughness: 0.1,
           ),
         ],
       ),
@@ -488,18 +564,16 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
                 : (state.currentSession?.points ?? const []);
         await _syncAnchoredNodes(points);
       },
-      // Using the underlying Stack as a stable base, preventing ArCoreView
-      // from being recreated on every sensor update.
       builder: (context, state) {
         return Stack(
           fit: StackFit.expand,
           children: [
             // Stable PlatformView child.
-            _ArCoreNativeView(onCreated: _onArCoreViewCreated),
+            ArCoreNativeView(onCreated: _onArCoreViewCreated),
 
             // Performance-isolated overlays.
             if (state.phase == ScanPhase.scanning)
-              const RepaintBoundary(child: _SignalLabelOverlay()),
+              const RepaintBoundary(child: SignalLabelOverlay()),
 
             if (state.phase == ScanPhase.scanning)
               ArHudOverlay(
@@ -532,290 +606,4 @@ class _ArCoreHeatmapViewState extends State<ArCoreHeatmapView> {
       },
     );
   }
-}
-
-/// A stable hosting widget for ArCoreView that doesn't rebuild when its parent does.
-class _ArCoreNativeView extends StatelessWidget {
-  const _ArCoreNativeView({required this.onCreated});
-  final void Function(ArCoreController) onCreated;
-
-  @override
-  Widget build(BuildContext context) {
-    return ArCoreView(
-      onArCoreViewCreated: onCreated,
-      enableTapRecognizer: true,
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Screen-space dBm label overlay.
-//
-// Since arcore_flutter_plugin has no 3D text support, we project each floor
-// marker's world position into screen space using the current device heading
-// and PDR position from HeatmapBloc, then render Flutter Text pills at those
-// positions on top of the ArCoreView.
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _SignalLabelOverlay extends StatelessWidget {
-  const _SignalLabelOverlay();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocSelector<HeatmapBloc, HeatmapState, _LabelOverlaySlice>(
-      selector: (s) {
-        final points =
-            s.isViewingInAr
-                ? (s.selectedSession?.points ?? const [])
-                : (s.currentSession?.points ?? const []);
-        return _LabelOverlaySlice(
-          points: points,
-          camX: s.currentPosition?.dx ?? 0,
-          camY: s.currentPosition?.dy ?? 0,
-          heading: s.currentHeading,
-          headingOffset: s.arOriginHeadingOffset,
-          hasOrigin: s.hasArOrigin,
-        );
-      },
-      builder: (context, slice) {
-        if (!slice.hasOrigin || slice.points.isEmpty) {
-          return const SizedBox.shrink();
-        }
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            final size = Size(constraints.maxWidth, constraints.maxHeight);
-            final labels = <Widget>[];
-
-            // Only render the last 80 points to match the 3D disc cap and prevent jank.
-            final pointsToRender =
-                slice.points.length > 80
-                    ? slice.points.sublist(slice.points.length - 80)
-                    : slice.points;
-
-            for (final point in pointsToRender) {
-              final result = _projectToScreen(
-                point,
-                slice.camX,
-                slice.camY,
-                slice.heading - slice.headingOffset,
-                size,
-              );
-              if (result == null) continue;
-
-              final screen = result.offset;
-              final depth = result.depth;
-              final depthFactor = (1.5 / depth).clamp(0.5, 1.8);
-              final color = signalGradientColor(point.rssi);
-
-              // Step B: Vertical projection.
-              // Approximate mobile vFOV (~55-60 deg).
-              const vFovRad = 55.0 * math.pi / 180.0;
-              final focalPxY = size.height / (2 * math.tan(vFovRad / 2));
-              // The disc is on the floor (~1m below camera).
-              const cameraHeight = 1.0;
-              final discScreenY =
-                  size.height / 2 + (cameraHeight / depth) * focalPxY;
-              final labelScreenY = discScreenY - 32 * depthFactor;
-
-              labels.add(
-                Positioned(
-                  left: screen.dx,
-                  top: labelScreenY,
-                  child: FractionalTranslation(
-                    translation: const Offset(-0.5, -1.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _DbmPill(
-                          rssi: point.rssi,
-                          color: color,
-                          depthFactor: depthFactor,
-                          bssid: point.bssid,
-                        ),
-                        CustomPaint(
-                          size: Size(2, discScreenY - labelScreenY),
-                          painter: _VerticalStemPainter(color: color),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            }
-
-            return Stack(children: labels);
-          },
-        );
-      },
-    );
-  }
-
-  /// Projects a floor-space point onto screen coordinates.
-  /// Returns null if the point is behind the camera or out of bounds.
-  static _ProjectionResult? _projectToScreen(
-    HeatmapPoint point,
-    double camX,
-    double camY,
-    double headingDeg,
-    Size screenSize,
-  ) {
-    final dx = point.floorX - camX;
-    final dy = point.floorY - camY;
-    final headingRad = headingDeg * math.pi / 180;
-
-    // Depth: how far the point is in front of the camera.
-    final depth = dx * math.cos(headingRad) + dy * math.sin(headingRad);
-    // Lateral: how far the point is to the right of the camera.
-    final lateral = -dx * math.sin(headingRad) + dy * math.cos(headingRad);
-
-    if (depth < 0.4 || depth > 7.0) return null;
-
-    const hFovRad = 60.0 * math.pi / 180.0;
-    final focalPx = screenSize.width / (2 * math.tan(hFovRad / 2));
-
-    final screenX = screenSize.width / 2 + (lateral / depth) * focalPx;
-    if (screenX < -60 || screenX > screenSize.width + 60) return null;
-
-    return _ProjectionResult(Offset(screenX, 0), depth);
-  }
-}
-
-class _ProjectionResult {
-  const _ProjectionResult(this.offset, this.depth);
-  final Offset offset;
-  final double depth;
-}
-
-class _VerticalStemPainter extends CustomPainter {
-  const _VerticalStemPainter({required this.color});
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = color.withValues(alpha: 0.5)
-          ..strokeWidth = 1.2
-          ..style = PaintingStyle.stroke;
-
-    canvas.drawLine(
-      Offset(size.width / 2, 0),
-      Offset(size.width / 2, size.height),
-      paint,
-    );
-    // Tiny dot at the base for visual grounding.
-    canvas.drawCircle(
-      Offset(size.width / 2, size.height),
-      1.5,
-      paint..style = PaintingStyle.fill,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class _DbmPill extends StatelessWidget {
-  const _DbmPill({
-    required this.rssi,
-    required this.color,
-    required this.depthFactor,
-    required this.bssid,
-  });
-
-  final int rssi;
-  final Color color;
-  final double depthFactor;
-  final String bssid;
-
-  @override
-  Widget build(BuildContext context) {
-    final scale = depthFactor;
-    final bssidSuffix =
-        bssid.length > 5 ? bssid.substring(bssid.length - 5) : '';
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8 * scale, vertical: 4 * scale),
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.85),
-        borderRadius: BorderRadius.circular(10 * scale),
-        border: Border.all(
-          color: color.withValues(alpha: 0.6),
-          width: 1.5 * scale,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.25),
-            blurRadius: 8 * scale,
-            spreadRadius: 1 * scale,
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.waves_rounded, color: color, size: 10 * scale),
-              SizedBox(width: 4 * scale),
-              Text(
-                '$rssi dBm',
-                style: GoogleFonts.orbitron(
-                  color: color,
-                  fontSize: 11 * scale,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.5 * scale,
-                ),
-              ),
-            ],
-          ),
-          if (bssidSuffix.isNotEmpty) ...[
-            SizedBox(height: 2 * scale),
-            Text(
-              bssidSuffix.toUpperCase(),
-              style: GoogleFonts.orbitron(
-                color: color.withValues(alpha: 0.6),
-                fontSize: 7 * scale,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.2 * scale,
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _LabelOverlaySlice {
-  const _LabelOverlaySlice({
-    required this.points,
-    required this.camX,
-    required this.camY,
-    required this.heading,
-    required this.headingOffset,
-    required this.hasOrigin,
-  });
-
-  final List<HeatmapPoint> points;
-  final double camX;
-  final double camY;
-  final double heading;
-  final double headingOffset;
-  final bool hasOrigin;
-
-  @override
-  bool operator ==(Object other) =>
-      other is _LabelOverlaySlice &&
-      other.points == points &&
-      other.camX == camX &&
-      other.camY == camY &&
-      other.heading == heading &&
-      other.headingOffset == headingOffset &&
-      other.hasOrigin == hasOrigin;
-
-  @override
-  int get hashCode =>
-      Object.hash(points, camX, camY, heading, headingOffset, hasOrigin);
 }

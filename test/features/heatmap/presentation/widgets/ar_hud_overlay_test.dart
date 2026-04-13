@@ -10,7 +10,7 @@ import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
 import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/scan_phase.dart';
-import 'package:torcav/features/heatmap/presentation/bloc/survey_gate.dart';
+import 'package:torcav/features/heatmap/domain/entities/survey_gate.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/ar_hud_overlay.dart';
 
 class MockHeatmapBloc extends MockCubit<HeatmapState> implements HeatmapBloc {}

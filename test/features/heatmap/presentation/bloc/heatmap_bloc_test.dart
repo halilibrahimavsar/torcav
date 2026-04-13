@@ -2,32 +2,22 @@ import 'dart:async';
 
 import 'package:camera/camera.dart';
 import 'package:dartz/dartz.dart';
-import 'package:fpdart/fpdart.dart' as fp;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:network_info_plus/network_info_plus.dart';
-import 'package:torcav/features/heatmap/data/datasources/barometer_datasource.dart';
-import 'package:torcav/features/heatmap/data/datasources/position_datasource.dart';
 import 'package:torcav/features/heatmap/data/datasources/wall_detector_datasource.dart';
-import 'package:torcav/features/heatmap/domain/entities/connected_signal.dart';
 import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
 import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
 import 'package:torcav/features/heatmap/domain/repositories/heatmap_repository.dart';
 import 'package:torcav/features/heatmap/domain/services/ar_capability_service.dart';
-import 'package:torcav/features/heatmap/domain/services/connected_signal_service.dart';
-import 'package:torcav/features/heatmap/domain/services/connected_signal_smoother.dart';
-import 'package:torcav/features/heatmap/domain/usecases/finalize_floor_plan.dart';
 import 'package:torcav/features/heatmap/domain/usecases/get_heatmap_sessions_usecase.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/scan_phase.dart';
-import 'package:torcav/features/heatmap/presentation/bloc/survey_gate.dart';
-import 'package:torcav/features/wifi_scan/domain/entities/scan_request.dart';
-import 'package:torcav/features/wifi_scan/domain/entities/scan_snapshot.dart';
-import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
-import 'package:torcav/features/wifi_scan/domain/entities/wifi_observation.dart';
-import 'package:torcav/features/wifi_scan/domain/usecases/scan_wifi.dart';
+import 'package:torcav/features/heatmap/domain/entities/survey_gate.dart';
+import 'package:torcav/features/heatmap/domain/entities/position_update.dart';
+import 'package:torcav/features/heatmap/domain/services/heatmap_manager.dart';
+import 'package:torcav/features/heatmap/domain/services/signal_tracker.dart';
 
 class MockGetHeatmapSessionsUsecase extends Mock
     implements GetHeatmapSessionsUsecase {}
@@ -37,18 +27,11 @@ class MockHeatmapRepository extends Mock implements HeatmapRepository {}
 class MockWallDetectorDataSource extends Mock
     implements WallDetectorDataSource {}
 
-class MockPositionDataSource extends Mock implements PositionDataSource {}
+class MockHeatmapManager extends Mock implements HeatmapManager {}
 
-class MockScanWifi extends Mock implements ScanWifi {}
-
-class MockNetworkInfo extends Mock implements NetworkInfo {}
-
-class MockBarometerDataSource extends Mock implements BarometerDataSource {}
+class MockSignalTracker extends Mock implements SignalTracker {}
 
 class MockArCapabilityService extends Mock implements ArCapabilityService {}
-
-class MockConnectedSignalService extends Mock
-    implements ConnectedSignalService {}
 
 class FakeCameraImage extends Fake implements CameraImage {}
 
@@ -59,13 +42,15 @@ void main() {
   late MockGetHeatmapSessionsUsecase getSessions;
   late MockHeatmapRepository repository;
   late MockWallDetectorDataSource wallDetector;
-  late MockPositionDataSource positionDataSource;
-  late MockScanWifi scanWifi;
-  late MockNetworkInfo networkInfo;
-  late MockBarometerDataSource barometerDataSource;
+  late MockHeatmapManager heatmapManager;
+  late MockSignalTracker signalTracker;
   late MockArCapabilityService arCapabilityService;
-  late MockConnectedSignalService connectedSignalService;
+
+  late StreamController<HeatmapSession?> sessionController;
+  late StreamController<SurveyGate> gateController;
   late StreamController<PositionUpdate> positionController;
+  late StreamController<SignalState> signalController;
+
   late HeatmapSession fallbackSession;
 
   setUpAll(() {
@@ -77,61 +62,43 @@ void main() {
     );
     registerFallbackValue(fallbackSession);
     registerFallbackValue(FakeCameraImage());
-    registerFallbackValue(const ScanRequest());
   });
 
+
   setUp(() {
-    positionController = StreamController<PositionUpdate>.broadcast();
     getSessions = MockGetHeatmapSessionsUsecase();
     repository = MockHeatmapRepository();
     wallDetector = MockWallDetectorDataSource();
-    positionDataSource = MockPositionDataSource();
-    scanWifi = MockScanWifi();
-    networkInfo = MockNetworkInfo();
-    barometerDataSource = MockBarometerDataSource();
+    heatmapManager = MockHeatmapManager();
+    signalTracker = MockSignalTracker();
     arCapabilityService = MockArCapabilityService();
-    connectedSignalService = MockConnectedSignalService();
+
+    sessionController = StreamController<HeatmapSession?>.broadcast();
+    gateController = StreamController<SurveyGate>.broadcast();
+    positionController = StreamController<PositionUpdate>.broadcast();
+    signalController = StreamController<SignalState>.broadcast();
 
     when(() => getSessions.call()).thenAnswer((_) async => const Right([]));
-    when(
-      () => repository.saveSession(any()),
-    ).thenAnswer((_) async => const Right(unit));
-    when(
-      () => positionDataSource.positionStream,
-    ).thenAnswer((_) => positionController.stream);
-    when(() => positionDataSource.startTracking()).thenReturn(null);
-    when(() => positionDataSource.stopTracking()).thenReturn(null);
-    when(() => positionDataSource.setStepLength(any())).thenReturn(null);
-    when(
-      () => barometerDataSource.floorStream,
-    ).thenAnswer((_) => const Stream.empty());
-    when(() => barometerDataSource.startTracking(any())).thenReturn(null);
-    when(() => barometerDataSource.stopTracking()).thenReturn(null);
-    when(() => networkInfo.getWifiBSSID()).thenAnswer((_) async => null);
-    when(() => networkInfo.getWifiName()).thenAnswer((_) async => 'HomeNet');
+    when(() => heatmapManager.sessionStream).thenAnswer((_) => sessionController.stream);
+    when(() => heatmapManager.gateStream).thenAnswer((_) => gateController.stream);
+    when(() => heatmapManager.rawPositionStream).thenAnswer((_) => positionController.stream);
+    when(() => signalTracker.stateStream).thenAnswer((_) => signalController.stream);
+    when(() => signalTracker.runMetadataScan()).thenAnswer((_) async {});
+    
+    when(() => arCapabilityService.isArSupported()).thenAnswer((_) async => true);
     when(() => wallDetector.detectWalls(any())).thenAnswer((_) async => []);
-    when(
-      () => arCapabilityService.isArSupported(),
-    ).thenAnswer((_) async => true);
-    when(
-      () => connectedSignalService.getConnectedSignal(),
-    ).thenAnswer((_) async => _connectedSignal(rssi: -63));
-    when(
-      () => scanWifi.call(request: any(named: 'request')),
-    ).thenAnswer((_) async => fp.Right(_snapshot()));
+    when(() => heatmapManager.startSession(any(), any(), any())).thenAnswer((_) async {});
+    when(() => heatmapManager.stopSession(liveWalls: any(named: 'liveWalls'))).thenAnswer((_) async {});
+    when(() => heatmapManager.discardSession()).thenReturn(null);
+    when(() => heatmapManager.dispose()).thenReturn(null);
 
     bloc = HeatmapBloc(
       getSessions,
       repository,
       wallDetector,
-      positionDataSource,
-      scanWifi,
-      networkInfo,
-      barometerDataSource,
-      FinalizeFloorPlan(),
+      heatmapManager,
+      signalTracker,
       arCapabilityService,
-      connectedSignalService,
-      const ConnectedSignalSmoother(),
     );
   });
 
@@ -145,7 +112,18 @@ void main() {
     () async {
       await bloc.loadSessions();
       await bloc.startScanning('Home survey');
+      final session = HeatmapSession(
+        id: 'live-1',
+        name: 'Home survey',
+        points: const [],
+        createdAt: DateTime.now(),
+      );
+      sessionController.add(session);
+      await _flush();
+
       bloc.markArOriginPlaced(0.0);
+      gateController.add(SurveyGate.none);
+      await _flush();
 
       await bloc.addPoint(
         HeatmapPoint(
@@ -204,6 +182,13 @@ void main() {
   test('does not record step samples before AR origin is placed', () async {
     await bloc.loadSessions();
     await bloc.startScanning('Home survey');
+    final session = HeatmapSession(
+      id: 'live-1',
+      name: 'Home survey',
+      points: const [],
+      createdAt: DateTime.now(),
+    );
+    sessionController.add(session);
     await _flush();
 
     positionController.add(
@@ -215,9 +200,28 @@ void main() {
     expect(bloc.state.currentSession?.points, isEmpty);
 
     bloc.markArOriginPlaced(0.0);
-    await bloc.refreshConnectedSignal();
+    gateController.add(SurveyGate.none);
+    signalController.add(const SignalState(targetBssid: 'AA:BB:CC:DD:EE:FF', currentRssi: -63));
+    await _flush();
+    
     positionController.add(
       const PositionUpdate(x: 1, y: 0, heading: 0, isStep: true),
+    );
+    sessionController.add(
+      session.copyWith(
+        points: [
+          HeatmapPoint(
+            x: 0,
+            y: 0,
+            floorX: 1,
+            floorY: 0,
+            rssi: -63,
+            timestamp: DateTime.now(),
+            ssid: 'HomeNet',
+            bssid: 'AA:BB:CC:DD:EE:FF',
+          ),
+        ],
+      ),
     );
     await _flush();
 
@@ -231,19 +235,47 @@ void main() {
     () async {
       await bloc.loadSessions();
       await bloc.startScanning('Home survey');
+      final session = HeatmapSession(
+        id: 'live-1',
+        name: 'Home survey',
+        points: const [],
+        createdAt: DateTime.now(),
+      );
+      sessionController.add(session);
+      await _flush();
+
       bloc.markArOriginPlaced(0.0);
+      gateController.add(SurveyGate.none);
+      await _flush();
       await bloc.refreshConnectedSignal();
 
       positionController.add(
         const PositionUpdate(x: 1, y: 0, heading: 0, isStep: true),
       );
+      sessionController.add(
+        session.copyWith(
+          points: [
+            HeatmapPoint(
+              x: 0,
+              y: 0,
+              floorX: 1,
+              floorY: 0,
+              rssi: -63,
+              timestamp: DateTime.now(),
+              ssid: 'HomeNet',
+              bssid: 'AA:BB:CC:DD:EE:FF',
+            ),
+          ],
+        ),
+      );
       await _flush();
       expect(bloc.state.currentSession?.points, hasLength(1));
 
-      when(
-        () => connectedSignalService.getConnectedSignal(),
-      ).thenAnswer((_) async => null);
-      await bloc.refreshConnectedSignal();
+      // Simulate connection drop via SignalTracker state
+      signalController.add(const SignalState(targetBssid: 'AA:BB:CC:DD:EE:FF', currentRssi: null));
+      gateController.add(SurveyGate.noConnectedBssid);
+      await _flush();
+
       positionController.add(
         const PositionUpdate(x: 2, y: 0, heading: 0, isStep: true),
       );
@@ -252,49 +284,45 @@ void main() {
       expect(bloc.state.surveyGate, SurveyGate.noConnectedBssid);
       expect(bloc.state.currentSession?.points, hasLength(1));
 
-      when(
-        () => connectedSignalService.getConnectedSignal(),
-      ).thenAnswer((_) async => _connectedSignal(rssi: -66));
-      await bloc.refreshConnectedSignal();
+      // Signal returns
+      signalController.add(const SignalState(targetBssid: 'AA:BB:CC:DD:EE:FF', currentRssi: -66));
+      gateController.add(SurveyGate.none);
+      await _flush();
+
       positionController.add(
         const PositionUpdate(x: 2, y: 0, heading: 0, isStep: true),
+      );
+      sessionController.add(
+        session.copyWith(
+          points: [
+            HeatmapPoint(
+              x: 0,
+              y: 0,
+              floorX: 1,
+              floorY: 0,
+              rssi: -63,
+              timestamp: DateTime.now(),
+              ssid: 'HomeNet',
+              bssid: 'AA:BB:CC:DD:EE:FF',
+            ),
+            HeatmapPoint(
+              x: 0,
+              y: 0,
+              floorX: 2,
+              floorY: 0,
+              rssi: -66,
+              timestamp: DateTime.now(),
+              ssid: 'HomeNet',
+              bssid: 'AA:BB:CC:DD:EE:FF',
+            ),
+          ],
+        ),
       );
       await _flush();
 
       expect(bloc.state.surveyGate, SurveyGate.none);
       expect(bloc.state.currentSession?.points, hasLength(2));
     },
-  );
-}
-
-ConnectedSignal _connectedSignal({required int rssi}) {
-  return ConnectedSignal(
-    ssid: 'HomeNet',
-    bssid: 'AA:BB:CC:DD:EE:FF',
-    rssi: rssi,
-    frequency: 5180,
-    linkSpeedMbps: 866,
-    timestamp: DateTime.now(),
-  );
-}
-
-ScanSnapshot _snapshot() {
-  final network = WifiNetwork(
-    ssid: 'HomeNet',
-    bssid: 'AA:BB:CC:DD:EE:FF',
-    signalStrength: -63,
-    channel: 36,
-    frequency: 5180,
-    security: SecurityType.wpa2,
-  );
-
-  return ScanSnapshot(
-    timestamp: DateTime.now(),
-    backendUsed: 'android',
-    interfaceName: 'wlan0',
-    networks: [WifiObservation.fromSingleNetwork(network)],
-    channelStats: const [],
-    bandStats: const [],
   );
 }
 

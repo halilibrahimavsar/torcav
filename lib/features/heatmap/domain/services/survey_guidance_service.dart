@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 
-import '../entities/floor_plan.dart';
-import '../entities/heatmap_point.dart';
-import '../../presentation/bloc/survey_gate.dart';
+import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
+import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
+import 'package:torcav/features/heatmap/domain/entities/survey_gate.dart';
 
 enum SurveyStage {
   idle,

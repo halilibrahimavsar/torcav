@@ -3,9 +3,9 @@ import 'dart:math' as math;
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/errors/failures.dart';
-import '../entities/floor_plan.dart';
-import '../entities/wall_segment.dart';
+import 'package:torcav/core/errors/failures.dart';
+import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
+import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
 
 @lazySingleton
 class FinalizeFloorPlan {

@@ -1,4 +1,4 @@
-import '../../domain/entities/wall_segment.dart';
+import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
 
 class WallSegmentDto {
   const WallSegmentDto({

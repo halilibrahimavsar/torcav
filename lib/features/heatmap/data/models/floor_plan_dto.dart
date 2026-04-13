@@ -1,5 +1,5 @@
-import '../../domain/entities/floor_plan.dart';
-import 'wall_segment_dto.dart';
+import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
+import 'package:torcav/features/heatmap/data/models/wall_segment_dto.dart';
 
 class FloorPlanDto {
   const FloorPlanDto({

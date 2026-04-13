@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../domain/entities/heatmap_session.dart';
-import 'heatmap_canvas.dart';
-import 'heatmap_compass.dart';
+import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
+import 'package:torcav/features/heatmap/presentation/widgets/heatmap_canvas.dart';
+import 'package:torcav/features/heatmap/presentation/widgets/heatmap_compass.dart';
 
 /// A compact, premium version of the heatmap map for AR HUD display.
 class MiniHeatmapMap extends StatefulWidget {

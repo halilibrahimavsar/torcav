@@ -34,6 +34,10 @@ import '../../features/heatmap/domain/services/connected_signal_service.dart'
     as _i192;
 import '../../features/heatmap/domain/services/connected_signal_smoother.dart'
     as _i106;
+import '../../features/heatmap/domain/services/heatmap_manager.dart' as _i869;
+import '../../features/heatmap/domain/services/position_tracker.dart' as _i104;
+import '../../features/heatmap/domain/services/signal_tracker.dart' as _i1072;
+import '../../features/heatmap/domain/services/wall_processor.dart' as _i794;
 import '../../features/heatmap/domain/usecases/finalize_floor_plan.dart'
     as _i960;
 import '../../features/heatmap/domain/usecases/get_heatmap_sessions_usecase.dart'
@@ -211,6 +215,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i106.ConnectedSignalSmoother>(
       () => const _i106.ConnectedSignalSmoother(),
     );
+    gh.lazySingleton<_i794.WallProcessor>(() => const _i794.WallProcessor());
     gh.lazySingleton<_i265.OnnxDeviceClassifierService>(
       () => _i265.OnnxDeviceClassifierService(),
       dispose: (i) => i.dispose(),
@@ -282,6 +287,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i192.ConnectedSignalService>(
       () => _i192.ConnectedSignalServiceImpl(),
+    );
+    gh.lazySingleton<_i104.PositionTracker>(
+      () => _i104.PositionTracker(gh<_i989.PositionDataSource>()),
     );
     gh.lazySingleton<_i543.WallDetectorDataSource>(
       () => _i543.WallDetectorDataSourceImpl(),
@@ -356,6 +364,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i885.SpeedTestHistoryRepository>(),
       ),
     );
+    gh.lazySingleton<_i1072.SignalTracker>(
+      () => _i1072.SignalTracker(
+        gh<_i192.ConnectedSignalService>(),
+        gh<_i106.ConnectedSignalSmoother>(),
+        gh<_i451.ScanWifi>(),
+        gh<_i846.NetworkInfo>(),
+      ),
+    );
     gh.lazySingleton<_i519.GetBestHistoricalChannel>(
       () => _i519.GetBestHistoricalChannel(gh<_i332.ChannelRatingRepository>()),
     );
@@ -377,6 +393,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i151.ArpSpoofingDetector>(),
         gh<_i927.DnsSecurityUseCase>(),
         gh<_i1073.NetworkScanRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i869.HeatmapManager>(
+      () => _i869.HeatmapManager(
+        gh<_i1072.SignalTracker>(),
+        gh<_i104.PositionTracker>(),
+        gh<_i794.WallProcessor>(),
+        gh<_i747.HeatmapRepository>(),
+        gh<_i761.BarometerDataSource>(),
+        gh<_i960.FinalizeFloorPlan>(),
       ),
     );
     gh.lazySingleton<_i87.AnalyzeNetworkSecurityUseCase>(
@@ -424,6 +450,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i534.PingNodeUseCase>(
       () => _i534.PingNodeUseCase(gh<_i244.TopologyRepository>()),
     );
+    gh.factory<_i931.HeatmapBloc>(
+      () => _i931.HeatmapBloc(
+        gh<_i716.GetHeatmapSessionsUsecase>(),
+        gh<_i747.HeatmapRepository>(),
+        gh<_i543.WallDetectorDataSource>(),
+        gh<_i869.HeatmapManager>(),
+        gh<_i1072.SignalTracker>(),
+        gh<_i748.ArCapabilityService>(),
+      ),
+    );
     gh.factory<_i613.MonitoringBloc>(
       () => _i613.MonitoringBloc(
         gh<_i365.MonitoringRepository>(),
@@ -438,21 +474,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i422.GetTopologyUseCase>(),
         gh<_i534.PingNodeUseCase>(),
         gh<_i244.TopologyRepository>(),
-      ),
-    );
-    gh.factory<_i931.HeatmapBloc>(
-      () => _i931.HeatmapBloc(
-        gh<_i716.GetHeatmapSessionsUsecase>(),
-        gh<_i747.HeatmapRepository>(),
-        gh<_i543.WallDetectorDataSource>(),
-        gh<_i989.PositionDataSource>(),
-        gh<_i451.ScanWifi>(),
-        gh<_i846.NetworkInfo>(),
-        gh<_i761.BarometerDataSource>(),
-        gh<_i960.FinalizeFloorPlan>(),
-        gh<_i748.ArCapabilityService>(),
-        gh<_i192.ConnectedSignalService>(),
-        gh<_i106.ConnectedSignalSmoother>(),
       ),
     );
     return this;

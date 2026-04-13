@@ -2,12 +2,12 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/theme/app_theme.dart';
-import '../../domain/entities/wall_segment.dart';
-import '../../domain/services/survey_guidance_service.dart';
-import '../bloc/heatmap_bloc.dart';
-import '../bloc/scan_phase.dart';
-import 'ar_hud_overlay.dart';
+import 'package:torcav/core/theme/app_theme.dart';
+import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
+import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
+import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
+import 'package:torcav/features/heatmap/presentation/bloc/scan_phase.dart';
+import 'package:torcav/features/heatmap/presentation/widgets/ar_hud_overlay.dart';
 
 /// Camera-preview fallback for devices without ARCore support.
 ///

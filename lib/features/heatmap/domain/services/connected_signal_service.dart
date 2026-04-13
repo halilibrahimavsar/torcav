@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/platform/wifi_extended_channel.dart';
-import '../entities/connected_signal.dart';
+import 'package:torcav/core/platform/wifi_extended_channel.dart';
+import 'package:torcav/features/heatmap/domain/entities/connected_signal.dart';
 
 abstract class ConnectedSignalService {
   Future<ConnectedSignal?> getConnectedSignal();

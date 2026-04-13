@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/errors/failures.dart';
-import '../../domain/entities/heatmap_session.dart';
-import '../../domain/repositories/heatmap_repository.dart';
-import '../datasources/heatmap_local_data_source.dart';
+import 'package:torcav/core/errors/failures.dart';
+import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
+import 'package:torcav/features/heatmap/domain/repositories/heatmap_repository.dart';
+import 'package:torcav/features/heatmap/data/datasources/heatmap_local_data_source.dart';
 
 @LazySingleton(as: HeatmapRepository)
 class HeatmapRepositoryImpl implements HeatmapRepository {

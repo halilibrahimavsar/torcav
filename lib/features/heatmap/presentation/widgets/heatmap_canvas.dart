@@ -4,10 +4,10 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../domain/entities/floor_plan.dart';
-import '../../domain/entities/heatmap_point.dart';
-import '../../domain/entities/heatmap_session.dart';
-import '../../domain/entities/wall_segment.dart';
+import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
+import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
+import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
+import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
 
 /// Renders signal-strength data and floor plan walls.
 class HeatmapCanvas extends StatefulWidget {

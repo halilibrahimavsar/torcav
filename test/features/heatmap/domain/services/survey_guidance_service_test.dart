@@ -3,7 +3,7 @@ import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
 import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
-import 'package:torcav/features/heatmap/presentation/bloc/survey_gate.dart';
+import 'package:torcav/features/heatmap/domain/entities/survey_gate.dart';
 
 void main() {
   const service = SurveyGuidanceService();

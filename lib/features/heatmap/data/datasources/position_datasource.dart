@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:math' as math;
 import 'package:injectable/injectable.dart';
-
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:flutter_compass/flutter_compass.dart';
+import '../../domain/entities/position_update.dart';
 
 abstract class PositionDataSource {
   Stream<PositionUpdate> get positionStream;
@@ -12,19 +12,6 @@ abstract class PositionDataSource {
   void stopTracking();
   void setStepLength(double meters);
   void setPosition(double x, double y);
-}
-
-class PositionUpdate {
-  const PositionUpdate({
-    required this.x,
-    required this.y,
-    required this.heading,
-    this.isStep = false,
-  });
-  final double x;
-  final double y;
-  final double heading;
-  final bool isStep;
 }
 
 @LazySingleton(as: PositionDataSource)

@@ -397,7 +397,7 @@ class SecurityAnalyzer {
       vulnerabilities: assessment.evidenceFindings
           .map((f) => f.toVulnerability())
           .toList(),
-      overallStatus: assessment.status.name,
+      overallStatus: assessment.statusLabel,
     );
   }
 

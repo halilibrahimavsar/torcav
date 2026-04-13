@@ -1,33 +1,25 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:math' as math;
-
 import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
-import 'package:network_info_plus/network_info_plus.dart';
 
-import '../../../../core/errors/failures.dart';
-import '../../data/datasources/barometer_datasource.dart';
-import '../../data/datasources/position_datasource.dart';
-import '../../data/datasources/wall_detector_datasource.dart';
-import '../../domain/entities/connected_signal.dart';
-import '../../domain/entities/floor_plan.dart';
-import '../../domain/entities/heatmap_point.dart';
-import '../../domain/entities/heatmap_session.dart';
-import '../../domain/entities/wall_segment.dart';
-import '../../domain/repositories/heatmap_repository.dart';
-import '../../domain/services/ar_capability_service.dart';
-import '../../domain/services/connected_signal_service.dart';
-import '../../domain/services/connected_signal_smoother.dart';
-import '../../domain/usecases/finalize_floor_plan.dart';
-import '../../domain/usecases/get_heatmap_sessions_usecase.dart';
-import '../../../wifi_scan/domain/entities/scan_request.dart';
-import '../../../wifi_scan/domain/usecases/scan_wifi.dart';
-import 'scan_phase.dart';
-import 'survey_gate.dart';
+import 'package:torcav/core/errors/failures.dart';
+import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
+import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
+import 'package:torcav/features/heatmap/domain/entities/survey_gate.dart';
+
+import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
+import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
+import 'package:torcav/features/heatmap/domain/repositories/heatmap_repository.dart';
+import 'package:torcav/features/heatmap/domain/services/ar_capability_service.dart';
+import 'package:torcav/features/heatmap/domain/services/heatmap_manager.dart';
+import 'package:torcav/features/heatmap/domain/services/signal_tracker.dart';
+import 'package:torcav/features/heatmap/domain/usecases/get_heatmap_sessions_usecase.dart';
+import 'package:torcav/features/heatmap/data/datasources/wall_detector_datasource.dart';
+import 'package:torcav/features/heatmap/presentation/bloc/scan_phase.dart';
 
 part 'heatmap_state.dart';
 
@@ -37,42 +29,64 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     this._getSessions,
     this._repository,
     this._wallDetector,
-    this._positionEngine,
-    this._scanWifi,
-    this._networkInfo,
-    this._barometerSource,
-    this._finalizeFloorPlan,
+    this._heatmapManager,
+    this._signalTracker,
     this._arCapabilityService,
-    this._connectedSignalService,
-    this._signalSmoother,
-  ) : super(const HeatmapState());
+  ) : super(const HeatmapState()) {
+    _setupListeners();
+  }
 
   final GetHeatmapSessionsUsecase _getSessions;
   final HeatmapRepository _repository;
   final WallDetectorDataSource _wallDetector;
-  final PositionDataSource _positionEngine;
-  final ScanWifi _scanWifi;
-  final NetworkInfo _networkInfo;
-  final BarometerDataSource _barometerSource;
-  final FinalizeFloorPlan _finalizeFloorPlan;
+  final HeatmapManager _heatmapManager;
+  final SignalTracker _signalTracker;
   final ArCapabilityService _arCapabilityService;
-  final ConnectedSignalService _connectedSignalService;
-  final ConnectedSignalSmoother _signalSmoother;
 
-  static const _scanCooldown = Duration(seconds: 30);
   static const _wallProcessingCooldown = Duration(milliseconds: 250);
-  static const _signalPollInterval = Duration(seconds: 1);
-  static const _signalFreshness = Duration(seconds: 3);
-  static const _minimumPointDistanceMeters = 0.5;
-  static const _flagMergeDistanceMeters = 0.65;
-  static const _signalWindowSize = 5;
+  static const _flagMergeDistanceMeters = 0.5;
 
-  StreamSubscription<PositionUpdate>? _positionSubscription;
-  Timer? _signalPollTimer;
+  StreamSubscription? _managerSessionSub;
+  StreamSubscription? _managerGateSub;
+  StreamSubscription? _managerPositionSub;
+  StreamSubscription? _signalStateSub;
   bool _isProcessingCameraFrame = false;
   DateTime? _lastWallFrameAt;
-  DateTime? _lastScanTime;
-  final List<int> _signalWindow = [];
+
+  void _setupListeners() {
+    _managerSessionSub = _heatmapManager.sessionStream.listen((session) {
+      emit(state.copyWith(
+        currentSession: session,
+        clearCurrentSession: session == null,
+      ));
+    });
+
+    _managerGateSub = _heatmapManager.gateStream.listen((gate) {
+      if (gate != state.surveyGate) {
+        emit(state.copyWith(surveyGate: gate));
+      }
+    });
+
+    _managerPositionSub = _heatmapManager.rawPositionStream.listen((pos) {
+      if (!state.isRecording || state.phase != ScanPhase.scanning) return;
+      emit(state.copyWith(
+        currentPosition: Offset(pos.x, pos.y),
+        currentHeading: pos.heading,
+        lastStepTimestamp: pos.isStep ? DateTime.now() : state.lastStepTimestamp,
+      ));
+    });
+
+    _signalStateSub = _signalTracker.stateStream.listen((signal) {
+      emit(state.copyWith(
+        currentRssi: signal.currentRssi,
+        lastSignalAt: signal.lastSignalAt,
+        lastSignalStdDev: signal.stdDev,
+        lastSignalSampleCount: signal.sampleCount,
+        targetBssid: signal.targetBssid,
+        targetSsid: signal.targetSsid,
+      ));
+    });
+  }
 
   Future<void> loadSessions() async {
     emit(state.copyWith(isLoading: true, clearFailure: true));
@@ -98,23 +112,11 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   }
 
   Future<void> startScanning(String name) async {
-    final id = DateTime.now().millisecondsSinceEpoch.toString();
-    final session = HeatmapSession(
-      id: id,
-      name: name,
-      points: const [],
-      createdAt: DateTime.now(),
-    );
-
-    _signalWindow.clear();
-    _lastScanTime = null;
     _isProcessingCameraFrame = false;
     _lastWallFrameAt = null;
-    _cancelSignalPolling();
 
     emit(
       state.copyWith(
-        currentSession: session,
         isRecording: true,
         phase: ScanPhase.scanning,
         clearFailure: true,
@@ -141,282 +143,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
       ),
     );
 
-    await _resolveTargetAccessPoint();
-    _startSignalPolling();
-    unawaited(refreshConnectedSignal());
-    unawaited(runMetadataScan());
-
-    _barometerSource.stopTracking();
-
-    await _positionSubscription?.cancel();
-    _positionEngine.stopTracking();
-    _positionSubscription = _positionEngine.positionStream.listen(
-      _handlePositionUpdate,
-    );
-    _positionEngine.startTracking();
-    _refreshSurveyGate();
-  }
-
-  Future<void> _resolveTargetAccessPoint() async {
-    ConnectedSignal? connectedSignal;
-    try {
-      connectedSignal = await _connectedSignalService.getConnectedSignal();
-    } catch (e) {
-      log('signal resolve error: $e');
-      connectedSignal = null;
-    }
-
-    String? bssid = connectedSignal?.bssid.toUpperCase();
-    String? ssid = connectedSignal?.ssid;
-
-    if (bssid == null || bssid.isEmpty) {
-      try {
-        bssid = (await _networkInfo.getWifiBSSID())?.toUpperCase();
-      } catch (e) {
-        log('bssid resolve error: $e');
-      }
-    }
-    if (ssid == null || ssid.isEmpty) {
-      try {
-        final rawSsid = await _networkInfo.getWifiName();
-        ssid = rawSsid?.replaceAll('"', '');
-      } catch (e) {
-        log('ssid resolve error: $e');
-      }
-    }
-
-    emit(
-      state.copyWith(
-        targetBssid: bssid,
-        targetSsid: ssid,
-        clearTargetBssid: bssid == null || bssid.isEmpty,
-        clearTargetSsid: ssid == null || ssid.isEmpty,
-      ),
-    );
-    _refreshSurveyGate();
-  }
-
-  void _startSignalPolling() {
-    _cancelSignalPolling();
-    _signalPollTimer = Timer.periodic(_signalPollInterval, (_) {
-      unawaited(refreshConnectedSignal());
-    });
-  }
-
-  void _cancelSignalPolling() {
-    _signalPollTimer?.cancel();
-    _signalPollTimer = null;
-  }
-
-  Future<void> refreshConnectedSignal() async {
-    if (!state.isRecording || state.phase != ScanPhase.scanning) return;
-
-    final sample = await _connectedSignalService.getConnectedSignal();
-    if (sample == null) {
-      _signalWindow.clear();
-      emit(
-        state.copyWith(
-          clearCurrentRssi: true,
-          clearLastSignalAt: true,
-          lastSignalStdDev: 0,
-          lastSignalSampleCount: 0,
-        ),
-      );
-      _refreshSurveyGate(forceGate: SurveyGate.noConnectedBssid);
-      return;
-    }
-
-    final normalizedBssid = sample.bssid.toUpperCase();
-    final targetBssid = state.targetBssid?.toUpperCase();
-    if (targetBssid == null || targetBssid.isEmpty) {
-      emit(
-        state.copyWith(
-          targetBssid: normalizedBssid,
-          targetSsid: sample.ssid.isEmpty ? state.targetSsid : sample.ssid,
-        ),
-      );
-    } else if (normalizedBssid != targetBssid) {
-      _signalWindow.clear();
-      emit(
-        state.copyWith(
-          clearCurrentRssi: true,
-          clearLastSignalAt: true,
-          lastSignalStdDev: 0,
-          lastSignalSampleCount: 0,
-        ),
-      );
-      _refreshSurveyGate(forceGate: SurveyGate.noConnectedBssid);
-      return;
-    }
-
-    _signalWindow.add(sample.rssi);
-    if (_signalWindow.length > _signalWindowSize) {
-      _signalWindow.removeAt(0);
-    }
-
-    final smoothed = _signalSmoother.smooth(_signalWindow);
-    if (smoothed == null) {
-      _refreshSurveyGate(forceGate: SurveyGate.staleSignal);
-      return;
-    }
-
-    emit(
-      state.copyWith(
-        targetBssid: normalizedBssid,
-        targetSsid: sample.ssid.isEmpty ? state.targetSsid : sample.ssid,
-        currentRssi: smoothed.rssi,
-        lastSignalAt: sample.timestamp,
-        lastSignalStdDev: smoothed.stdDev,
-        lastSignalSampleCount: smoothed.sampleCount,
-      ),
-    );
-
-    final now = DateTime.now();
-    final shouldRescan =
-        _lastScanTime == null || now.difference(_lastScanTime!) > _scanCooldown;
-    if (shouldRescan) {
-      unawaited(runMetadataScan());
-    }
-
-    _refreshSurveyGate();
-  }
-
-  Future<void> runMetadataScan() async {
-    if (!state.isRecording) return;
-
-    _lastScanTime = DateTime.now();
-    final result = await _scanWifi(
-      request: const ScanRequest(passes: 3, passIntervalMs: 300),
-    );
-    result.fold((_) {}, (snapshot) {
-      final match =
-          snapshot.networks
-              .where(
-                (network) =>
-                    network.bssid.toUpperCase() ==
-                    state.targetBssid?.toUpperCase(),
-              )
-              .firstOrNull;
-      if (match == null) return;
-
-      emit(
-        state.copyWith(
-          targetSsid: match.ssid.isEmpty ? state.targetSsid : match.ssid,
-          lastSignalStdDev: math.max(
-            state.lastSignalStdDev,
-            match.signalStdDev,
-          ),
-        ),
-      );
-    });
-  }
-  void _handlePositionUpdate(PositionUpdate pos) {
-    if (!state.isRecording || state.phase != ScanPhase.scanning) return;
-
-    final offset = Offset(pos.x, pos.y);
-    emit(state.copyWith(
-      currentPosition: offset,
-      currentHeading: pos.heading,
-      lastStepTimestamp: pos.isStep ? DateTime.now() : state.lastStepTimestamp,
-    ));
-
-    _refreshSurveyGate();
-
-    // Auto-sampling logic
-    if (state.isAutoSampling) {
-      final lastPos = state.lastRecordedPosition ?? const Offset(0, 0);
-      final dist = math.sqrt(
-        math.pow(offset.dx - lastPos.dx, 2) +
-            math.pow(offset.dy - lastPos.dy, 2),
-      );
-
-      if (dist >= state.autoSamplingDistance) {
-        _recordCurrentPosition(offset);
-      }
-    } else if (pos.isStep) {
-      _recordCurrentPosition(offset);
-    }
-  }
-
-  void _recordCurrentPosition(Offset pos) {
-    final session = state.currentSession;
-    final signalAge = _currentSignalAge;
-    if (session == null ||
-        state.surveyGate != SurveyGate.none ||
-        state.currentRssi == null ||
-        signalAge == null ||
-        signalAge > _signalFreshness) {
-      return;
-    }
-
-    final newPoint = HeatmapPoint(
-      x: 0,
-      y: 0,
-      floorX: pos.dx,
-      floorY: pos.dy,
-      floorZ: 0,
-      heading: state.currentHeading,
-      rssi: state.currentRssi!,
-      timestamp: state.lastSignalAt ?? DateTime.now(),
-      ssid: state.targetSsid ?? '',
-      bssid: state.targetBssid ?? '',
-      floor: state.currentFloor,
-      sampleCount: state.lastSignalSampleCount,
-      rssiStdDev: state.lastSignalStdDev,
-    );
-
-    if (!_shouldRecordPoint(session, newPoint)) return;
-
-    emit(
-      state.copyWith(
-        currentSession: session.copyWith(points: [...session.points, newPoint]),
-        lastRecordedPosition: pos,
-      ),
-    );
-    unawaited(HapticFeedback.lightImpact());
-  }
-
-  bool _shouldRecordPoint(HeatmapSession session, HeatmapPoint nextPoint) {
-    if (session.points.isEmpty) return true;
-    final lastPoint = session.points.last;
-    final dx = nextPoint.floorX - lastPoint.floorX;
-    final dy = nextPoint.floorY - lastPoint.floorY;
-    final distance = math.sqrt(dx * dx + dy * dy);
-    return distance >= _minimumPointDistanceMeters;
-  }
-
-  Duration? get _currentSignalAge {
-    final lastSignalAt = state.lastSignalAt;
-    if (lastSignalAt == null) return null;
-    return DateTime.now().difference(lastSignalAt);
-  }
-
-  void _refreshSurveyGate({SurveyGate? forceGate}) {
-    final gate = forceGate ?? _resolveSurveyGate();
-    if (gate != state.surveyGate) {
-      emit(state.copyWith(surveyGate: gate));
-    }
-  }
-
-  SurveyGate _resolveSurveyGate() {
-    if (!state.isRecording) return SurveyGate.none;
-    if (state.targetBssid == null || state.targetBssid!.isEmpty) {
-      return SurveyGate.noConnectedBssid;
-    }
-    if (state.isArSupported && !state.hasArOrigin) {
-      return SurveyGate.originNotPlaced;
-    }
-    if (state.currentPosition == null) {
-      return SurveyGate.trackingLost;
-    }
-    if (state.currentRssi == null) {
-      return SurveyGate.noConnectedBssid;
-    }
-    final signalAge = _currentSignalAge;
-    if (signalAge == null || signalAge > _signalFreshness) {
-      return SurveyGate.staleSignal;
-    }
-    return SurveyGate.none;
+    await _heatmapManager.startSession(name, null, null);
   }
 
   Future<void> processCameraImage(dynamic cameraImage) async {
@@ -448,93 +175,20 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         state.liveFloorPlan ??
         const FloorPlan(walls: [], widthMeters: 40, heightMeters: 40);
 
-    final walls = List<WallSegment>.from(currentPlan.walls);
-
-    // Advanced Clustering: Merge with existing colinear and overlapping walls.
-    bool merged = false;
-    for (int i = 0; i < walls.length; i++) {
-      if (_areSegmentsColinear(walls[i], wall)) {
-        walls[i] = _mergeSegments(walls[i], wall);
-        merged = true;
-        break;
-      }
-    }
-
-    if (!merged) {
-      // Basic distance dedup as fallback.
-      final alreadyExists = walls.any((w) => _segCenterDist(w, wall) < 0.4);
-      if (alreadyExists) return;
-      walls.add(wall);
-    }
+    final walls = _heatmapManager.addWall(currentPlan.walls, wall);
 
     emit(state.copyWith(liveFloorPlan: currentPlan.copyWith(walls: walls)));
   }
 
-  bool _areSegmentsColinear(WallSegment a, WallSegment b) {
-    final dx1 = a.x2 - a.x1, dy1 = a.y2 - a.y1;
-    final dx2 = b.x2 - b.x1, dy2 = b.y2 - b.y1;
-
-    final len1 = math.sqrt(dx1 * dx1 + dy1 * dy1);
-    final len2 = math.sqrt(dx2 * dx2 + dy2 * dy2);
-    if (len1 < 0.1 || len2 < 0.1) return false;
-
-    // 1. Angle check (dot product of normalized directions).
-    final dot = (dx1 * dx2 + dy1 * dy2) / (len1 * len2);
-    if (dot.abs() < 0.985) return false; // ~10 degrees tolerance
-
-    // 2. Lateral distance check (is center of B on infinite line A?).
-    final bcx = (b.x1 + b.x2) / 2;
-    final bcy = (b.y1 + b.y2) / 2;
-    // perp distance from point (bcx, bcy) to line (a.x1, a.y1) -> (a.x2, a.y2)
-    final dist = ((a.y2 - a.y1) * bcx - (a.x2 - a.x1) * bcy + a.x2 * a.y1 - a.y2 * a.x1).abs() / len1;
-    if (dist > 0.35) return false;
-
-    // 3. Proximity check (are they close or overlapping?).
-    return _segCenterDist(a, b) < 1.0;
-  }
-
-  WallSegment _mergeSegments(WallSegment a, WallSegment b) {
-    // Return a segment that encapsulates the min/max extents of both.
-    final points = [Offset(a.x1, a.y1), Offset(a.x2, a.y2), Offset(b.x1, b.y1), Offset(b.x2, b.y2)];
-    
-    // Sort by X or Y depending on orientation.
-    final dx = (a.x2 - a.x1).abs(), dy = (a.y2 - a.y1).abs();
-    if (dx > dy) {
-      points.sort((p1, p2) => p1.dx.compareTo(p2.dx));
-    } else {
-      points.sort((p1, p2) => p1.dy.compareTo(p2.dy));
-    }
-
-    final pStart = points.first;
-    final pEnd = points.last;
-
-    return WallSegment(
-      x1: pStart.dx,
-      y1: pStart.dy,
-      x2: pEnd.dx,
-      y2: pEnd.dy,
-    );
-  }
-
   void syncPositionFromAr(double x, double y) {
-    _positionEngine.setPosition(x, y);
+    _heatmapManager.syncPosition(x, y);
     emit(state.copyWith(currentPosition: Offset(x, y)));
-  }
-
-  double _segCenterDist(WallSegment a, WallSegment b) {
-    final acx = (a.x1 + a.x2) / 2;
-    final acy = (a.y1 + a.y2) / 2;
-    final bcx = (b.x1 + b.x2) / 2;
-    final bcy = (b.y1 + b.y2) / 2;
-    final dx = acx - bcx, dy = acy - bcy;
-    return math.sqrt(dx * dx + dy * dy);
   }
 
   void pauseScanning() => emit(state.copyWith(phase: ScanPhase.paused));
 
   void resumeScanning() {
     emit(state.copyWith(phase: ScanPhase.scanning));
-    _refreshSurveyGate();
   }
 
 
@@ -553,12 +207,10 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         arOriginHeadingOffset: offset,
       ),
     );
-    _refreshSurveyGate();
   }
 
   void resetArOrigin() {
     emit(state.copyWith(hasArOrigin: false, arOriginHeadingOffset: 0.0));
-    _refreshSurveyGate();
   }
 
   void recalibrateHeading() {
@@ -608,59 +260,39 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   Future<void> stopScanning() async {
     if (!state.isRecording) return;
 
-    await _positionSubscription?.cancel();
-    _positionEngine.stopTracking();
-    _barometerSource.stopTracking();
-    _cancelSignalPolling();
-
-    var session = state.currentSession;
-    if (session == null) return;
-
     final walls = state.liveFloorPlan?.walls ?? [];
-    if (walls.isNotEmpty) {
-      final planResult = await _finalizeFloorPlan(walls);
-      planResult.fold(
-        (_) {},
-        (plan) => session = session!.copyWith(floorPlan: plan),
-      );
+    await _heatmapManager.stopSession(liveWalls: walls);
+    
+    final savedSession = state.currentSession;
+
+    if (savedSession != null) {
+      await loadSessions();
     }
 
-    final savedSession = session!;
-    final result = await _repository.saveSession(savedSession);
-    await result.fold(
-      (failure) async => emit(state.copyWith(failure: failure)),
-      (_) async {
-        await loadSessions();
-        emit(
-          state.copyWith(
-            isRecording: false,
-            phase: ScanPhase.reviewing,
-            clearCurrentSession: true,
-            selectedSession: savedSession,
-            liveFloorPlan: savedSession.floorPlan,
-            clearLiveFloorPlan: savedSession.floorPlan == null,
-            pendingWalls: const [],
-            surveyGate: SurveyGate.none,
-            hasArOrigin: false,
-            clearTargetBssid: true,
-            clearTargetSsid: true,
-            clearCurrentRssi: true,
-            clearLastSignalAt: true,
-            lastSignalStdDev: 0,
-            lastSignalSampleCount: 0,
-          ),
-        );
-      },
+    emit(
+      state.copyWith(
+        isRecording: false,
+        phase: ScanPhase.reviewing,
+        clearCurrentSession: true,
+        selectedSession: savedSession,
+        liveFloorPlan: savedSession?.floorPlan,
+        clearLiveFloorPlan: savedSession?.floorPlan == null,
+        pendingWalls: const [],
+        surveyGate: SurveyGate.none,
+        hasArOrigin: false,
+        clearTargetBssid: true,
+        clearTargetSsid: true,
+        clearCurrentRssi: true,
+        clearLastSignalAt: true,
+        lastSignalStdDev: 0,
+        lastSignalSampleCount: 0,
+      ),
     );
   }
 
   Future<void> _discardScanning() async {
     if (!state.isRecording) return;
-
-    await _positionSubscription?.cancel();
-    _positionEngine.stopTracking();
-    _barometerSource.stopTracking();
-    _cancelSignalPolling();
+    _heatmapManager.discardSession();
 
     emit(
       state.copyWith(
@@ -683,18 +315,28 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
   @override
   Future<void> close() {
-    _cancelSignalPolling();
-    _positionSubscription?.cancel();
-    _positionEngine.stopTracking();
-    _barometerSource.stopTracking();
+    _managerSessionSub?.cancel();
+    _managerGateSub?.cancel();
+    _managerPositionSub?.cancel();
+    _signalStateSub?.cancel();
+    _heatmapManager.dispose();
     return super.close();
   }
 
   void startSession(String name) => unawaited(startScanning(name));
-
   void stopSession() => unawaited(stopScanning());
-
   void discardSession() => unawaited(_discardScanning());
+
+  void finishSession() => unawaited(stopScanning());
+  void abortSession() => unawaited(_discardScanning());
+  
+  void restartSurvey() {
+    final oldName = state.currentSession?.name ?? 'Survey';
+    unawaited(() async {
+      await _discardScanning();
+      await startScanning(oldName);
+    }());
+  }
 
   Future<void> addPoint(HeatmapPoint point) async {
     final session = state.currentSession;
@@ -767,5 +409,10 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
   void toggleAutoSampling() {
     emit(state.copyWith(isAutoSampling: !state.isAutoSampling));
+  }
+
+  /// Manually triggers a Wi-Fi metadata scan to refresh SSID/BSSID resolution.
+  Future<void> refreshConnectedSignal() async {
+    await _signalTracker.runMetadataScan();
   }
 }

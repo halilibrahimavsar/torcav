@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../domain/entities/heatmap_point.dart';
-import '../../domain/entities/heatmap_session.dart';
-import '../models/floor_plan_dto.dart';
+import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
+import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
+import 'package:torcav/features/heatmap/data/models/floor_plan_dto.dart';
 
 /// Persists [HeatmapSession]s as JSON in SharedPreferences.
 ///
