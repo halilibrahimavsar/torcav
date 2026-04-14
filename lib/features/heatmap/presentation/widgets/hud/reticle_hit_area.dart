@@ -61,22 +61,7 @@ class ReticleHitArea extends StatelessWidget {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      slice.rssi == null ? '-- dBm' : '${slice.rssi} dBm',
-                      style: GoogleFonts.orbitron(
-                        color: color,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black.withValues(alpha: 0.85),
-                            blurRadius: 4,
-                          ),
-                        ],
-                      ),
-                    ),
                     if (isWeak) ...[
-                      const SizedBox(height: 4),
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,

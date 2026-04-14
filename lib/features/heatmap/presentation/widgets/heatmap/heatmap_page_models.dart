@@ -95,8 +95,14 @@ class HeatmapSummary {
 
   String get coveragePercent {
     if (!hasSamples) return '0%';
-    // Simple heuristic: 25 samples is considered "good enough" for full coverage in a typcial room
-    final progress = (sampleCount / 25).clamp(0.0, 1.0);
+    // BUG-23: The previous heuristic treated 25 samples as 100% for every room,
+    // which gave 100% after a tiny corner sweep of a large hall.
+    // New heuristic: target ≈ 1 sample per 0.7 m² of surveyed area, floored at
+    // 15 and capped at 100, so small studios saturate at ~15 samples and a
+    // 50 m² office needs ~71 samples to reach 100%.
+    final areaM2 = widthMeters * heightMeters;
+    final targetSamples = (areaM2 / 0.7).clamp(15.0, 100.0);
+    final progress = (sampleCount / targetSamples).clamp(0.0, 1.0);
     return '${(progress * 100).round()}%';
   }
 

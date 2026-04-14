@@ -64,13 +64,18 @@ class SignalTracker {
   static const _pollInterval = Duration(seconds: 1);
   static const _scanCooldown = Duration(seconds: 30);
   static const _signalWindowSize = 5;
+  // BUG-16: Discard samples older than this threshold before averaging.
+  // If the scan rate drops (Android throttles after a few minutes), stale
+  // samples in the window would smooth over real signal drops.
+  static const _signalStalenessSeconds = 5;
 
   final _stateController = StreamController<SignalState>.broadcast();
   Stream<SignalState> get stateStream => _stateController.stream;
 
   Timer? _pollTimer;
   SignalState _currentState = const SignalState();
-  final List<int> _signalWindow = [];
+  // Each entry is (timestamp, rssi). Stored as records for zero-allocation access.
+  final List<({DateTime ts, int rssi})> _signalWindow = [];
   DateTime? _lastScanTime;
 
   /// Starts the tracking process. Resolves target AP and begins polling.
@@ -139,12 +144,20 @@ class SignalTracker {
       return;
     }
 
-    _signalWindow.add(sample.rssi);
+    _signalWindow.add((ts: sample.timestamp, rssi: sample.rssi));
+    // BUG-16: Trim the window to size, then evict entries older than the
+    // staleness threshold so a throttled scan rate doesn't hide real drops.
     if (_signalWindow.length > _signalWindowSize) {
       _signalWindow.removeAt(0);
     }
+    final cutoff = DateTime.now().subtract(
+      const Duration(seconds: _signalStalenessSeconds),
+    );
+    _signalWindow.removeWhere((e) => e.ts.isBefore(cutoff));
 
-    final smoothed = _signalSmoother.smooth(_signalWindow);
+    final smoothed = _signalSmoother.smooth(
+      _signalWindow.map((e) => e.rssi).toList(),
+    );
     if (smoothed == null) {
       _updateState(_currentState.copyWith(clearRssi: true));
       return;

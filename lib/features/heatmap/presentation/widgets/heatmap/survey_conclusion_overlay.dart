@@ -26,7 +26,7 @@ class SurveyConclusionOverlay extends StatelessWidget {
       color: Colors.black.withValues(alpha: 0.85),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             padding: const EdgeInsets.all(24),
@@ -105,7 +105,7 @@ class SurveyConclusionOverlay extends StatelessWidget {
               ),
             ],
           ),
-          const Spacer(),
+          const SizedBox(height: 32),
           Column(
             children: [
               NeonButton(

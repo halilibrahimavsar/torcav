@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:math' as math;
 import 'package:injectable/injectable.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:flutter_compass/flutter_compass.dart';
+import 'package:torcav/core/logging/app_logger.dart';
 import '../../domain/entities/position_update.dart';
 
 abstract class PositionDataSource {
@@ -25,6 +25,14 @@ class PositionDataSourceImpl implements PositionDataSource {
   double _smoothedHeading = 0;
   double _lastEmittedHeading = 0;
   int _lastHeadingEmitTime = 0;
+
+  // BUG-18: Buffer the first few compass readings and initialise the EMA from
+  // their circular mean. Starting from 0° causes the EMA to drift toward North
+  // for several seconds after app launch when the device is actually facing
+  // another direction, which breaks the initial AR heading offset calculation.
+  static const _warmUpCount = 3;
+  final List<double> _warmUpHeadings = [];
+  bool _headingWarmedUp = false;
 
   final _controller = StreamController<PositionUpdate>.broadcast();
   StreamSubscription? _accelSub;
@@ -83,6 +91,8 @@ class PositionDataSourceImpl implements PositionDataSource {
     _lastEmittedHeading = 0;
     _lastHeadingEmitTime = 0;
     _lastStepTime = 0;
+    _warmUpHeadings.clear();
+    _headingWarmedUp = false;
 
     try {
       _accelSub = accelerometerEventStream().listen(
@@ -100,11 +110,37 @@ class PositionDataSourceImpl implements PositionDataSource {
         cancelOnError: false,
       );
     } catch (e) {
-      log('accel unavailable: $e');
+      AppLogger.w('Accelerometer unavailable: $e');
     }
 
     _compassSub = FlutterCompass.events?.listen((event) {
       final raw = event.heading ?? _heading;
+
+      if (!_headingWarmedUp) {
+        // Accumulate warm-up readings and compute the circular mean to get a
+        // statistically correct average over the 0°/360° boundary.
+        _warmUpHeadings.add(raw);
+        if (_warmUpHeadings.length >= _warmUpCount) {
+          double sinSum = 0, cosSum = 0;
+          for (final h in _warmUpHeadings) {
+            final rad = h * math.pi / 180.0;
+            sinSum += math.sin(rad);
+            cosSum += math.cos(rad);
+          }
+          var mean = math.atan2(sinSum, cosSum) * 180.0 / math.pi;
+          if (mean < 0) mean += 360.0;
+          _smoothedHeading = mean;
+          _lastEmittedHeading = mean;
+          _headingWarmedUp = true;
+          _warmUpHeadings.clear();
+        }
+        // Emit a preliminary update using the raw value so the UI isn't frozen
+        // during warm-up, but don't set _smoothedHeading until we're warmed up.
+        _heading = raw;
+        _controller.add(PositionUpdate(x: _x, y: _y, heading: _heading));
+        return;
+      }
+
       _heading = _smoothHeading(raw);
 
       // We emit more frequently but with heavier smoothing to allow the

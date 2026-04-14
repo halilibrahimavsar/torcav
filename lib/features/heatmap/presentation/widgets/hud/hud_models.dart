@@ -157,3 +157,74 @@ String compactBssid(String bssid) {
   if (parts.length < 3) return bssid;
   return '${parts.first}:${parts[1]}:..:${parts.last}';
 }
+
+/// Slice for [ArCameraView] guidance analysis (BUG-02 fix).
+///
+/// Only the fields below affect the output of [SurveyGuidanceService.analyze].
+/// Isolating them in a dedicated slice ensures the expensive guidance call is
+/// only re-run when relevant state changes, not on every heading or RSSI tick.
+class GuidanceCameraSlice {
+  const GuidanceCameraSlice({
+    required this.pointCount,
+    required this.hasFloorPlan,
+    required this.isRecording,
+    required this.hasArOrigin,
+    required this.pendingWallCount,
+    required this.currentRssi,
+    required this.surveyGate,
+    required this.lastSignalAt,
+    required this.lastSignalStdDev,
+    required this.currentPosition,
+    // Full session + floorPlan forwarded so guidance can read walls/points.
+    required this.phase,
+    required this.pendingWalls,
+    required this.lastStepTimestamp,
+  });
+
+  final int pointCount;
+  final bool hasFloorPlan;
+  final bool isRecording;
+  final bool hasArOrigin;
+  final int pendingWallCount;
+  final int? currentRssi;
+  final SurveyGate surveyGate;
+  final DateTime? lastSignalAt;
+  final double lastSignalStdDev;
+  final Offset? currentPosition;
+  final dynamic phase;
+  final List<dynamic> pendingWalls;
+  final DateTime? lastStepTimestamp;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is GuidanceCameraSlice &&
+          pointCount == other.pointCount &&
+          hasFloorPlan == other.hasFloorPlan &&
+          isRecording == other.isRecording &&
+          hasArOrigin == other.hasArOrigin &&
+          pendingWallCount == other.pendingWallCount &&
+          currentRssi == other.currentRssi &&
+          surveyGate == other.surveyGate &&
+          lastSignalAt == other.lastSignalAt &&
+          lastSignalStdDev == other.lastSignalStdDev &&
+          currentPosition == other.currentPosition &&
+          phase == other.phase &&
+          lastStepTimestamp == other.lastStepTimestamp;
+
+  @override
+  int get hashCode => Object.hash(
+        pointCount,
+        hasFloorPlan,
+        isRecording,
+        hasArOrigin,
+        pendingWallCount,
+        currentRssi,
+        surveyGate,
+        lastSignalAt,
+        lastSignalStdDev,
+        currentPosition,
+        phase,
+        lastStepTimestamp,
+      );
+}

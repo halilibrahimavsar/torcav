@@ -10,11 +10,9 @@ import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
-import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/scan_phase.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/ar_camera_view.dart';
-import 'package:torcav/features/heatmap/presentation/widgets/arcore_heatmap_view.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap/heatmap_tutorial_overlay.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap/heatmap_utility_widgets.dart';
@@ -83,16 +81,11 @@ class _HeatmapView extends StatefulWidget {
 }
 
 class _HeatmapViewState extends State<_HeatmapView> {
-  static const _guidanceService = SurveyGuidanceService();
-
-  final _arViewKey = GlobalKey();
-  final _cameraFallbackKey = GlobalKey();
+  final _cameraViewKey = GlobalKey();
 
   /// When not null, we show a premium 'Signal Probe' tooltip.
   Offset? _probePoint;
 
-  /// When true, the detailed information cards are minimized into compact badges
-  /// to maximize screen real estate for the heatmap/floorplan.
   @override
   Widget build(BuildContext context) {
     final copy = HeatmapCopy.of(context);
@@ -126,22 +119,8 @@ class _HeatmapViewState extends State<_HeatmapView> {
         final int maxRssi =
             points.isEmpty ? -35 : points.map((p) => p.rssi).reduce(math.max);
 
-        _guidanceService.analyze(
-          points: session?.points ?? const [],
-          floorPlan: floorPlan,
-          isRecording: isRecording,
-          hasArOrigin: state.hasArOrigin,
-          pendingWallCount: state.pendingWalls.length,
-          currentRssi: state.currentRssi,
-          surveyGate: state.surveyGate,
-          lastSignalAt: state.lastSignalAt,
-          currentSignalStdDev: state.lastSignalStdDev,
-          currentX: state.currentPosition?.dx,
-          currentY: state.currentPosition?.dy,
-        );
-
         return PopScope(
-          canPop: !isRecording && session?.points.isEmpty == true,
+          canPop: !isRecording,
           onPopInvokedWithResult: (didPop, result) async {
             if (didPop) return;
 
@@ -179,7 +158,6 @@ class _HeatmapViewState extends State<_HeatmapView> {
                             TextButton(
                               onPressed: () {
                                 bloc.stopSession();
-                                bloc.exitArView();
                                 Navigator.of(context).pop(true);
                               },
                               child: Text(
@@ -192,10 +170,7 @@ class _HeatmapViewState extends State<_HeatmapView> {
                             ),
                           TextButton(
                             onPressed: () {
-                              if (isRecording) {
-                                bloc.discardSession();
-                              }
-                              bloc.exitArView();
+                              if (isRecording) bloc.discardSession();
                               Navigator.of(context).pop(true);
                             },
                             child: Text(
@@ -225,14 +200,9 @@ class _HeatmapViewState extends State<_HeatmapView> {
                       leading: IconButton(
                         icon: const Icon(Icons.arrow_back_ios_new_rounded),
                         onPressed: () async {
-                          // Trigger PopScope manually for consistency
-                          final canPop =
-                              !isRecording && session?.points.isEmpty == true;
-                          if (canPop) {
-                            bloc.exitArView();
+                          if (!isRecording) {
                             Navigator.of(context).pop();
                           } else {
-                            // This will trigger onPopInvokedWithResult
                             Navigator.of(context).maybePop();
                           }
                         },
@@ -325,16 +295,10 @@ class _HeatmapViewState extends State<_HeatmapView> {
                 ],
               ),
 
-              // AR / Camera Layer — present during recording OR AR replay mode.
-              if (state.isArSupported && (isRecording || state.isViewingInAr))
-                ArCoreHeatmapView(
-                  key: _arViewKey,
-                  onFinish: isRecording ? bloc.stopSession : bloc.exitArView,
-                  onDiscard: isRecording ? bloc.discardSession : bloc.exitArView,
-                )
-              else if (isRecording)
+              // Camera scanning layer — shown during recording.
+              if (isRecording)
                 ArCameraView(
-                  key: _cameraFallbackKey,
+                  key: _cameraViewKey,
                   onFinish: bloc.stopSession,
                   onDiscard: bloc.discardSession,
                 ),
@@ -388,14 +352,10 @@ class _HeatmapViewState extends State<_HeatmapView> {
     HeatmapSummary summary,
   ) {
     if (state.isRecording) {
-      // During recording, we are either in AR or Camera fallback.
-      // The 2D canvas is hidden during active scanning (phase == scanning).
-      // If we are recording but NOT scanning (e.g. paused), we show the canvas.
       return summary.sampleCount == 0;
     }
     return summary.sampleCount == 0 && summary.wallCount == 0;
   }
-
 
   HeatmapPoint? _findNearestPoint(List<HeatmapPoint> points, Offset metric) {
     if (points.isEmpty) return null;
@@ -410,8 +370,6 @@ class _HeatmapViewState extends State<_HeatmapView> {
         closest = p;
       }
     }
-    // Only return if within reasonable distance (e.g. 5 meters)
     return minSqDist < 25.0 ? closest : null;
   }
-
 }

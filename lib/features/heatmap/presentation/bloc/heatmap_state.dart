@@ -7,7 +7,6 @@ class HeatmapState extends Equatable {
     this.selectedSession,
     this.isLoading = false,
     this.isRecording = false,
-    this.isViewingInAr = false,
     this.failure,
     this.phase = ScanPhase.idle,
     this.liveFloorPlan,
@@ -15,15 +14,12 @@ class HeatmapState extends Equatable {
     this.currentHeading = 0.0,
     this.currentRssi,
     this.pendingWalls = const [],
-    this.isArSupported = false,
     this.targetBssid,
     this.targetSsid,
     this.surveyGate = SurveyGate.none,
     this.lastSignalAt,
     this.lastSignalStdDev = 0.0,
     this.lastSignalSampleCount = 0,
-    this.hasArOrigin = false,
-    this.arOriginHeadingOffset = 0.0,
     this.lastStepTimestamp,
     this.currentFloor = 0,
     this.isAutoSampling = false,
@@ -36,9 +32,6 @@ class HeatmapState extends Equatable {
   final HeatmapSession? selectedSession;
   final bool isLoading;
   final bool isRecording;
-
-  /// Whether we are currently in an AR viewing/replay session.
-  final bool isViewingInAr;
 
   final Failure? failure;
 
@@ -76,12 +69,6 @@ class HeatmapState extends Equatable {
   /// Number of raw RSSI samples backing the current stabilized value.
   final int lastSignalSampleCount;
 
-  /// Whether the AR survey origin has been placed.
-  final bool hasArOrigin;
-
-  /// Degrees to rotate compass heading to align magnetic North with AR forward.
-  final double arOriginHeadingOffset;
-
   /// Timestamp of the last physical step detected by the sensors.
   final DateTime? lastStepTimestamp;
 
@@ -97,9 +84,6 @@ class HeatmapState extends Equatable {
   /// Distance threshold in meters to trigger an automatic sample.
   final double autoSamplingDistance;
 
-  /// Whether the device supports AR features.
-  final bool isArSupported;
-
   HeatmapState copyWith({
     List<HeatmapSession>? sessions,
     HeatmapSession? currentSession,
@@ -108,7 +92,6 @@ class HeatmapState extends Equatable {
     bool clearSelectedSession = false,
     bool? isLoading,
     bool? isRecording,
-    bool? isViewingInAr,
     Failure? failure,
     bool clearFailure = false,
     ScanPhase? phase,
@@ -120,7 +103,6 @@ class HeatmapState extends Equatable {
     int? currentRssi,
     bool clearCurrentRssi = false,
     List<WallSegment>? pendingWalls,
-    bool? isArSupported,
     String? targetBssid,
     bool clearTargetBssid = false,
     String? targetSsid,
@@ -130,8 +112,6 @@ class HeatmapState extends Equatable {
     bool clearLastSignalAt = false,
     double? lastSignalStdDev,
     int? lastSignalSampleCount,
-    bool? hasArOrigin,
-    double? arOriginHeadingOffset,
     DateTime? lastStepTimestamp,
     bool clearLastStepTimestamp = false,
     int? currentFloor,
@@ -147,7 +127,6 @@ class HeatmapState extends Equatable {
         clearSelectedSession ? null : selectedSession ?? this.selectedSession,
     isLoading: isLoading ?? this.isLoading,
     isRecording: isRecording ?? this.isRecording,
-    isViewingInAr: isViewingInAr ?? this.isViewingInAr,
     failure: clearFailure ? null : failure ?? this.failure,
     phase: phase ?? this.phase,
     liveFloorPlan:
@@ -157,15 +136,12 @@ class HeatmapState extends Equatable {
     currentHeading: currentHeading ?? this.currentHeading,
     currentRssi: clearCurrentRssi ? null : currentRssi ?? this.currentRssi,
     pendingWalls: pendingWalls ?? this.pendingWalls,
-    isArSupported: isArSupported ?? this.isArSupported,
     targetBssid: clearTargetBssid ? null : targetBssid ?? this.targetBssid,
     targetSsid: clearTargetSsid ? null : targetSsid ?? this.targetSsid,
     surveyGate: surveyGate ?? this.surveyGate,
     lastSignalAt: clearLastSignalAt ? null : lastSignalAt ?? this.lastSignalAt,
     lastSignalStdDev: lastSignalStdDev ?? this.lastSignalStdDev,
     lastSignalSampleCount: lastSignalSampleCount ?? this.lastSignalSampleCount,
-    hasArOrigin: hasArOrigin ?? this.hasArOrigin,
-    arOriginHeadingOffset: arOriginHeadingOffset ?? this.arOriginHeadingOffset,
     lastStepTimestamp:
         clearLastStepTimestamp
             ? null
@@ -185,7 +161,6 @@ class HeatmapState extends Equatable {
     selectedSession,
     isLoading,
     isRecording,
-    isViewingInAr,
     failure,
     phase,
     liveFloorPlan,
@@ -193,15 +168,12 @@ class HeatmapState extends Equatable {
     currentHeading,
     currentRssi,
     pendingWalls,
-    isArSupported,
     targetBssid,
     targetSsid,
     surveyGate,
     lastSignalAt,
     lastSignalStdDev,
     lastSignalSampleCount,
-    hasArOrigin,
-    arOriginHeadingOffset,
     lastStepTimestamp,
     currentFloor,
     isAutoSampling,

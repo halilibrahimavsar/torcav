@@ -18,19 +18,29 @@ class LiveSignalTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocSelector<HeatmapBloc, HeatmapState, SignalSlice>(
+      // BUG-07: Keep ageSeconds out of the selector — DateTime.now() called
+      // inside the selector would freeze the displayed value between state
+      // emissions. Age is computed in the builder instead so it always reflects
+      // wall-clock time at render time.
       selector:
           (s) => SignalSlice(
             rssi: s.currentRssi,
             stdDev: s.lastSignalStdDev,
             sampleCount: s.lastSignalSampleCount,
-            ageSeconds:
-                s.lastSignalAt == null
-                    ? null
-                    : DateTime.now().difference(s.lastSignalAt!).inSeconds,
+            // Pass the raw timestamp; age is derived in builder.
+            ageSeconds: null,
             surveyGate: s.surveyGate,
           ),
       builder: (context, slice) {
         if (slice.rssi == null) return const SizedBox.shrink();
+
+        // Compute age here so it reflects the real clock, not the last emit time.
+        final lastSignalAt =
+            context.select<HeatmapBloc, DateTime?>((b) => b.state.lastSignalAt);
+        final ageSeconds =
+            lastSignalAt == null
+                ? null
+                : DateTime.now().difference(lastSignalAt).inSeconds;
 
         final tier = signalTierFor(slice.rssi);
         final color = signalTierColor(tier);
@@ -59,15 +69,6 @@ class LiveSignalTag extends StatelessWidget {
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'dBm',
-                        style: GoogleFonts.orbitron(
-                          color: Colors.white70,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
                     ],
                   ),
                   Text(
@@ -81,7 +82,7 @@ class LiveSignalTag extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'STD ${slice.stdDev.toStringAsFixed(1)} · ${slice.sampleCount} samp · ${slice.ageSeconds ?? '-'}s',
+                    'STD ${slice.stdDev.toStringAsFixed(1)} · ${slice.sampleCount} samp · ${ageSeconds ?? '-'}s',
                     style: GoogleFonts.outfit(
                       color: Colors.white60,
                       fontSize: 9,

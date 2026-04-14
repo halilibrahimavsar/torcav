@@ -14,7 +14,6 @@ import 'package:torcav/features/heatmap/domain/entities/survey_gate.dart';
 import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
 import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
 import 'package:torcav/features/heatmap/domain/repositories/heatmap_repository.dart';
-import 'package:torcav/features/heatmap/domain/services/ar_capability_service.dart';
 import 'package:torcav/features/heatmap/domain/services/heatmap_manager.dart';
 import 'package:torcav/features/heatmap/domain/services/signal_tracker.dart';
 import 'package:torcav/features/heatmap/domain/usecases/get_heatmap_sessions_usecase.dart';
@@ -31,7 +30,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     this._wallDetector,
     this._heatmapManager,
     this._signalTracker,
-    this._arCapabilityService,
   ) : super(const HeatmapState()) {
     _setupListeners();
   }
@@ -41,7 +39,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   final WallDetectorDataSource _wallDetector;
   final HeatmapManager _heatmapManager;
   final SignalTracker _signalTracker;
-  final ArCapabilityService _arCapabilityService;
 
   static const _wallProcessingCooldown = Duration(milliseconds: 250);
   static const _flagMergeDistanceMeters = 0.5;
@@ -91,23 +88,10 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   Future<void> loadSessions() async {
     emit(state.copyWith(isLoading: true, clearFailure: true));
 
-    final isArSupported = await _arCapabilityService.isArSupported();
     final result = await _getSessions();
     result.fold(
-      (failure) => emit(
-        state.copyWith(
-          failure: failure,
-          isLoading: false,
-          isArSupported: isArSupported,
-        ),
-      ),
-      (sessions) => emit(
-        state.copyWith(
-          sessions: sessions,
-          isLoading: false,
-          isArSupported: isArSupported,
-        ),
-      ),
+      (failure) => emit(state.copyWith(failure: failure, isLoading: false)),
+      (sessions) => emit(state.copyWith(sessions: sessions, isLoading: false)),
     );
   }
 
@@ -133,11 +117,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
           widthMeters: 40,
           heightMeters: 40,
         ),
-        hasArOrigin: false,
-        surveyGate:
-            state.isArSupported
-                ? SurveyGate.originNotPlaced
-                : SurveyGate.noConnectedBssid,
+        surveyGate: SurveyGate.none,
         clearTargetBssid: true,
         clearTargetSsid: true,
       ),
@@ -191,32 +171,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     emit(state.copyWith(phase: ScanPhase.scanning));
   }
 
-
-  void markArOriginPlaced(double currentHeading) {
-    // ARCore -Z (forward) is typically 0 radians in its local frame if started
-    // facing forward. Our projection math in _SignalLabelOverlay expects
-    // 'Forward' to be 90 degrees (relative to local X axis).
-    //
-    // So we calculate the offset needed to rotate the absolute compass heading
-    // so that the current heading becomes '90' in our projection space.
-    final offset = currentHeading - 90.0;
-
-    emit(
-      state.copyWith(
-        hasArOrigin: true,
-        arOriginHeadingOffset: offset,
-      ),
-    );
-  }
-
-  void resetArOrigin() {
-    emit(state.copyWith(hasArOrigin: false, arOriginHeadingOffset: 0.0));
-  }
-
-  void recalibrateHeading() {
-    if (!state.hasArOrigin) return;
-    markArOriginPlaced(state.currentHeading);
-  }
 
   Future<void> flagCurrentWeakZone() async {
     final session = state.currentSession;
@@ -279,7 +233,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         clearLiveFloorPlan: savedSession?.floorPlan == null,
         pendingWalls: const [],
         surveyGate: SurveyGate.none,
-        hasArOrigin: false,
         clearTargetBssid: true,
         clearTargetSsid: true,
         clearCurrentRssi: true,
@@ -302,7 +255,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         clearLiveFloorPlan: true,
         pendingWalls: const [],
         surveyGate: SurveyGate.none,
-        hasArOrigin: false,
         clearTargetBssid: true,
         clearTargetSsid: true,
         clearCurrentRssi: true,
@@ -369,24 +321,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         phase: ScanPhase.idle,
       ),
     );
-  }
-
-  void viewInAr() {
-    if (state.selectedSession == null) return;
-    emit(state.copyWith(
-      isViewingInAr: true,
-      hasArOrigin: false,
-      arOriginHeadingOffset: 0.0,
-      clearFailure: true,
-    ));
-  }
-
-  void exitArView() {
-    emit(state.copyWith(
-      isViewingInAr: false,
-      hasArOrigin: false,
-      arOriginHeadingOffset: 0.0,
-    ));
   }
 
   Future<void> deleteSession(String sessionId) async {

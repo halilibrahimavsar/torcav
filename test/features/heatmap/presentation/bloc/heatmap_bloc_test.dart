@@ -10,7 +10,6 @@ import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
 import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
 import 'package:torcav/features/heatmap/domain/repositories/heatmap_repository.dart';
-import 'package:torcav/features/heatmap/domain/services/ar_capability_service.dart';
 import 'package:torcav/features/heatmap/domain/usecases/get_heatmap_sessions_usecase.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/scan_phase.dart';
@@ -31,8 +30,6 @@ class MockHeatmapManager extends Mock implements HeatmapManager {}
 
 class MockSignalTracker extends Mock implements SignalTracker {}
 
-class MockArCapabilityService extends Mock implements ArCapabilityService {}
-
 class FakeCameraImage extends Fake implements CameraImage {}
 
 void main() {
@@ -44,7 +41,6 @@ void main() {
   late MockWallDetectorDataSource wallDetector;
   late MockHeatmapManager heatmapManager;
   late MockSignalTracker signalTracker;
-  late MockArCapabilityService arCapabilityService;
 
   late StreamController<HeatmapSession?> sessionController;
   late StreamController<SurveyGate> gateController;
@@ -71,7 +67,6 @@ void main() {
     wallDetector = MockWallDetectorDataSource();
     heatmapManager = MockHeatmapManager();
     signalTracker = MockSignalTracker();
-    arCapabilityService = MockArCapabilityService();
 
     sessionController = StreamController<HeatmapSession?>.broadcast();
     gateController = StreamController<SurveyGate>.broadcast();
@@ -84,8 +79,7 @@ void main() {
     when(() => heatmapManager.rawPositionStream).thenAnswer((_) => positionController.stream);
     when(() => signalTracker.stateStream).thenAnswer((_) => signalController.stream);
     when(() => signalTracker.runMetadataScan()).thenAnswer((_) async {});
-    
-    when(() => arCapabilityService.isArSupported()).thenAnswer((_) async => true);
+
     when(() => wallDetector.detectWalls(any())).thenAnswer((_) async => []);
     when(() => heatmapManager.startSession(any(), any(), any())).thenAnswer((_) async {});
     when(() => heatmapManager.stopSession(liveWalls: any(named: 'liveWalls'))).thenAnswer((_) async {});
@@ -98,7 +92,6 @@ void main() {
       wallDetector,
       heatmapManager,
       signalTracker,
-      arCapabilityService,
     );
   });
 
@@ -121,7 +114,6 @@ void main() {
       sessionController.add(session);
       await _flush();
 
-      bloc.markArOriginPlaced(0.0);
       gateController.add(SurveyGate.none);
       await _flush();
 
@@ -179,57 +171,6 @@ void main() {
     },
   );
 
-  test('does not record step samples before AR origin is placed', () async {
-    await bloc.loadSessions();
-    await bloc.startScanning('Home survey');
-    final session = HeatmapSession(
-      id: 'live-1',
-      name: 'Home survey',
-      points: const [],
-      createdAt: DateTime.now(),
-    );
-    sessionController.add(session);
-    await _flush();
-
-    positionController.add(
-      const PositionUpdate(x: 1, y: 0, heading: 0, isStep: true),
-    );
-    await _flush();
-
-    expect(bloc.state.surveyGate, SurveyGate.originNotPlaced);
-    expect(bloc.state.currentSession?.points, isEmpty);
-
-    bloc.markArOriginPlaced(0.0);
-    gateController.add(SurveyGate.none);
-    signalController.add(const SignalState(targetBssid: 'AA:BB:CC:DD:EE:FF', currentRssi: -63));
-    await _flush();
-    
-    positionController.add(
-      const PositionUpdate(x: 1, y: 0, heading: 0, isStep: true),
-    );
-    sessionController.add(
-      session.copyWith(
-        points: [
-          HeatmapPoint(
-            x: 0,
-            y: 0,
-            floorX: 1,
-            floorY: 0,
-            rssi: -63,
-            timestamp: DateTime.now(),
-            ssid: 'HomeNet',
-            bssid: 'AA:BB:CC:DD:EE:FF',
-          ),
-        ],
-      ),
-    );
-    await _flush();
-
-    expect(bloc.state.surveyGate, SurveyGate.none);
-    expect(bloc.state.currentSession?.points, hasLength(1));
-    expect(bloc.state.currentSession?.points.single.bssid, 'AA:BB:CC:DD:EE:FF');
-  });
-
   test(
     'locks measurement when connection drops and resumes after relock',
     () async {
@@ -244,7 +185,6 @@ void main() {
       sessionController.add(session);
       await _flush();
 
-      bloc.markArOriginPlaced(0.0);
       gateController.add(SurveyGate.none);
       await _flush();
       await bloc.refreshConnectedSignal();

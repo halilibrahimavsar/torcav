@@ -49,105 +49,132 @@ class _MiniHeatmapMapState extends State<MiniHeatmapMap>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.onTap,
-      child: Container(
-        width: 160,
-        height: 160,
-        decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.45),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.15),
-            width: 1.5,
+    return AnimatedBuilder(
+      animation: _pulseAnimation,
+      builder: (context, child) {
+        final pulseVal = _pulseAnimation.value;
+        return GestureDetector(
+          onTap: widget.onTap,
+          child: Container(
+            width: 160,
+            height: 160,
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: const Color(0xFF00E676).withValues(
+                  alpha: 0.2 + (pulseVal * 0.4),
+                ),
+                width: 1.5 + (pulseVal * 0.5),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF00E676).withValues(
+                    alpha: 0.15 * pulseVal,
+                  ),
+                  blurRadius: 10 + (pulseVal * 8),
+                  spreadRadius: pulseVal * 2,
+                ),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.45),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                ),
+              ],
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Stack(
+              children: [
+                // The actual heatmap canvas, non-interactive in mini mode
+                AbsorbPointer(
+                  child: HeatmapCanvas(
+                    session: widget.session,
+                    floorPlan: widget.session.floorPlan,
+                    showPath: true,
+                    showControls: false,
+                    isMiniMap: true,
+                    currentPosition: widget.currentPosition,
+                    currentHeading: widget.currentHeading,
+                  ),
+                ),
+
+                // Vignette overlay for a premium look
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: RadialGradient(
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withValues(alpha: 0.35),
+                        ],
+                        stops: const [0.55, 1.0],
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Compass indicator (top-right): forward the already-resolved heading
+                // from the parent BlocSelector so both widgets update in lockstep.
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: HeatmapCompass(size: 42, heading: widget.currentHeading),
+                ),
+
+                // Animated LIVE badge (top-left)
+                Positioned(
+                  top: 10,
+                  left: 10,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.6),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.15),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Opacity(
+                          opacity: pulseVal,
+                          child: Container(
+                            width: 6,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF00E676),
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(0xFF00E676)
+                                      .withValues(alpha: 0.6),
+                                  blurRadius: 4,
+                                  spreadRadius: 1,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          'LIVE',
+                          style: GoogleFonts.orbitron(
+                            color: Colors.white,
+                            fontSize: 7.5,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 1.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.35),
-              blurRadius: 16,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Stack(
-          children: [
-            // The actual heatmap canvas, non-interactive in mini mode
-            AbsorbPointer(
-              child: HeatmapCanvas(
-                session: widget.session,
-                floorPlan: widget.session.floorPlan,
-                showPath: true,
-                showControls: false,
-                isMiniMap: true,
-                currentPosition: widget.currentPosition,
-                currentHeading: widget.currentHeading,
-              ),
-            ),
-
-            // Vignette overlay for a premium look
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: RadialGradient(
-                    colors: [
-                      Colors.transparent,
-                      Colors.black.withValues(alpha: 0.22),
-                    ],
-                    stops: const [0.65, 1.0],
-                  ),
-                ),
-              ),
-            ),
-
-            // Compass indicator (top-right)
-            const Positioned(
-              top: 6,
-              right: 6,
-              child: HeatmapCompass(size: 40),
-            ),
-
-            // Animated LIVE badge (top-left)
-            Positioned(
-              top: 8,
-              left: 8,
-              child: FadeTransition(
-                opacity: _pulseAnimation,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF00E676).withValues(alpha: 0.85),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 5,
-                        height: 5,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 3),
-                      Text(
-                        'LIVE',
-                        style: GoogleFonts.orbitron(
-                          color: Colors.white,
-                          fontSize: 7,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

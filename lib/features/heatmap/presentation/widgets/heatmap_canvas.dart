@@ -3,11 +3,13 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:torcav/core/theme/app_theme.dart';
 
 import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
 import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
+import 'heatmap_compass.dart';
 
 /// Renders signal-strength data and floor plan walls.
 class HeatmapCanvas extends StatefulWidget {
@@ -145,6 +147,7 @@ class _HeatmapCanvasState extends State<HeatmapCanvas> {
                           showPath: widget.showPath,
                           minRssi: effectiveMinRssi,
                           maxRssi: effectiveMaxRssi,
+                          isMiniMap: widget.isMiniMap,
                         ),
                         child: const SizedBox.expand(),
                       ),
@@ -176,6 +179,18 @@ class _HeatmapCanvasState extends State<HeatmapCanvas> {
                 bottom: 14,
                 child: _FitButton(onTap: _resetZoom),
               ),
+
+            // Premium Rotating Compass — top-right
+            if (widget.showControls && !widget.isMiniMap)
+              const Positioned(
+                top: 14,
+                right: 14,
+                child: HeatmapCompass(size: 64),
+              ),
+
+            // HUD Overlay (Vignette & Framing)
+            if (!widget.isMiniMap)
+              const IgnorePointer(child: _HudOverlay()),
           ],
         );
       },
@@ -227,6 +242,7 @@ class _StaticHeatmapPainter extends CustomPainter {
   final bool showPath;
   final int minRssi;
   final int maxRssi;
+  final bool isMiniMap;
 
   _StaticHeatmapPainter({
     required this.points,
@@ -235,11 +251,14 @@ class _StaticHeatmapPainter extends CustomPainter {
     required this.showPath,
     required this.minRssi,
     required this.maxRssi,
+    required this.isMiniMap,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    _drawGrid(canvas, size);
+    // Skip grid, scale bar, and RSSI legend in mini-map mode — they are
+    // invisible at 160×160 and the blur/TextPainter allocations are costly.
+    if (!isMiniMap) _drawGrid(canvas, size);
 
     if (floorPlan != null && floorPlan!.walls.isNotEmpty) {
       _drawWalls(canvas, floorPlan!.walls);
@@ -257,11 +276,11 @@ class _StaticHeatmapPainter extends CustomPainter {
       _drawFlags(canvas, points.where((p) => p.isFlagged).toList());
     }
 
-    // HUD overlays
-    _drawScaleBar(canvas, size);
-    _drawCompassRose(canvas);
-    if (points.isNotEmpty) {
-      _drawRssiLegend(canvas, size);
+    if (!isMiniMap) {
+      _drawScaleBar(canvas, size);
+      if (points.isNotEmpty) {
+        _drawRssiLegend(canvas, size);
+      }
     }
   }
 
@@ -532,75 +551,40 @@ class _StaticHeatmapPainter extends CustomPainter {
   }
 
   // -------------------------------------------------------------------------
-  // Compass rose (top-right)
-  // -------------------------------------------------------------------------
-
-  void _drawCompassRose(Canvas canvas) {
-    const margin = 16.0;
-    const radius = 16.0;
-    final center = Offset(viewport.size.width - margin - radius, margin + radius);
-
-    canvas.drawCircle(
-      center,
-      radius,
-      Paint()..color = Colors.black.withValues(alpha: 0.45),
-    );
-    canvas.drawCircle(
-      center,
-      radius,
-      Paint()
-        ..color = Colors.white.withValues(alpha: 0.18)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.0,
-    );
-
-    final northPath =
-        Path()
-          ..moveTo(center.dx, center.dy - 10)
-          ..lineTo(center.dx + 5, center.dy + 2)
-          ..lineTo(center.dx - 5, center.dy + 2)
-          ..close();
-    canvas.drawPath(
-      northPath,
-      Paint()..color = const Color(0xFF00E5FF).withValues(alpha: 0.9),
-    );
-
-    final southPath =
-        Path()
-          ..moveTo(center.dx, center.dy + 10)
-          ..lineTo(center.dx + 5, center.dy - 2)
-          ..lineTo(center.dx - 5, center.dy - 2)
-          ..close();
-    canvas.drawPath(
-      southPath,
-      Paint()..color = Colors.white.withValues(alpha: 0.25),
-    );
-
-    _drawText(
-      canvas,
-      'N',
-      Offset(center.dx, center.dy - radius - 11),
-      GoogleFonts.orbitron(
-        color: const Color(0xFF00E5FF).withValues(alpha: 0.9),
-        fontSize: 9,
-        fontWeight: FontWeight.bold,
-      ),
-      centerX: true,
-    );
-  }
-
-  // -------------------------------------------------------------------------
-  // RSSI legend (left edge)
+  // RSSI Legend — glassmorphic analytic style
   // -------------------------------------------------------------------------
 
   void _drawRssiLegend(Canvas canvas, Size size) {
     const barW = 8.0;
-    const barH = 110.0;
-    const marginLeft = 10.0;
+    const barH = 100.0;
+    const marginLeft = 16.0;
+    const padding = 12.0;
 
     final top = (size.height - barH) / 2;
-    final rect = Rect.fromLTWH(marginLeft, top, barW, barH);
+    
+    // Glass Background Plate
+    final plateRect = Rect.fromLTWH(
+      marginLeft - padding,
+      top - padding - 20, // room for dBm title
+      barW + padding + 35, // room for labels
+      barH + (padding * 2) + 20,
+    );
+    
+    final platePaint = Paint()
+      ..color = Colors.black.withValues(alpha: 0.35)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
+    canvas.drawRRect(RRect.fromRectAndRadius(plateRect, const Radius.circular(12)), platePaint);
+    
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(plateRect, const Radius.circular(12)),
+      Paint()
+        ..color = Colors.white.withValues(alpha: 0.08)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.5,
+    );
 
+    // Color Bar
+    final rect = Rect.fromLTWH(marginLeft, top, barW, barH);
     final gradPaint =
         Paint()
           ..shader = ui.Gradient.linear(
@@ -619,36 +603,40 @@ class _StaticHeatmapPainter extends CustomPainter {
     canvas.drawRect(rect, gradPaint);
     canvas.restore();
 
+    // Bar outline
     canvas.drawRRect(
       RRect.fromRectAndRadius(rect, const Radius.circular(4)),
       Paint()
-        ..color = Colors.white.withValues(alpha: 0.2)
+        ..color = Colors.white.withValues(alpha: 0.15)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 0.8,
     );
 
     final labelStyle = GoogleFonts.outfit(
-      color: Colors.white.withValues(alpha: 0.6),
-      fontSize: 8.5,
+      color: Colors.white.withValues(alpha: 0.85),
+      fontSize: 9,
+      fontWeight: FontWeight.w500,
     );
-    final tickX = marginLeft + barW + 5;
+    
+    final tickX = marginLeft + barW + 8;
     _drawText(canvas, '$maxRssi', Offset(tickX, top - 1), labelStyle);
     _drawText(
       canvas,
       '${(minRssi + maxRssi) ~/ 2}',
       Offset(tickX, top + barH / 2 - 5),
-      labelStyle,
+      labelStyle.copyWith(color: Colors.white.withValues(alpha: 0.6)),
     );
     _drawText(canvas, '$minRssi', Offset(tickX, top + barH - 10), labelStyle);
 
     _drawText(
       canvas,
       'dBm',
-      Offset(marginLeft + barW / 2, top - 13),
-      GoogleFonts.outfit(
-        color: Colors.white.withValues(alpha: 0.4),
-        fontSize: 8,
-        fontWeight: FontWeight.w600,
+      Offset(marginLeft + barW / 2, top - 22),
+      GoogleFonts.orbitron(
+        color: AppColors.neonCyan.withValues(alpha: 0.8),
+        fontSize: 12,
+        fontWeight: FontWeight.w900,
+        letterSpacing: 2.0,
       ),
       centerX: true,
     );
@@ -707,7 +695,8 @@ class _StaticHeatmapPainter extends CustomPainter {
       old.viewport != viewport ||
       old.showPath != showPath ||
       old.minRssi != minRssi ||
-      old.maxRssi != maxRssi;
+      old.maxRssi != maxRssi ||
+      old.isMiniMap != isMiniMap;
 }
 
 // ---------------------------------------------------------------------------
@@ -736,6 +725,13 @@ class _PositionPainter extends CustomPainter {
       Paint()
         ..color = const Color(0xFF00E5FF).withValues(alpha: 0.25)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12),
+    );
+
+    // Dynamic scan pulse marker
+    canvas.drawCircle(
+      center,
+      6.0,
+      Paint()..color = const Color(0xFF39FF14).withValues(alpha: 0.9),
     );
 
     // Directional cone (Premium HUD style)
@@ -965,4 +961,92 @@ class _WorldBounds {
 
   @override
   int get hashCode => Object.hash(minX, maxX, minY, maxY);
+}
+
+// ---------------------------------------------------------------------------
+// Premium HUD Overlay — Vignette and Framing
+// ---------------------------------------------------------------------------
+
+class _HudOverlay extends StatelessWidget {
+  const _HudOverlay();
+
+  @override
+  Widget build(BuildContext context) {
+    return const CustomPaint(
+      painter: _HudPainter(),
+      child: SizedBox.expand(),
+    );
+  }
+}
+
+class _HudPainter extends CustomPainter {
+  const _HudPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    _drawVignette(canvas, size);
+    _drawCornerBrackets(canvas, size);
+  }
+
+  void _drawVignette(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    final paint = Paint()
+      ..shader = ui.Gradient.radial(
+        rect.center,
+        size.longestSide * 0.8,
+        [
+          Colors.transparent,
+          Colors.black.withValues(alpha: 0.15),
+          Colors.black.withValues(alpha: 0.45),
+        ],
+        [0.4, 0.85, 1.0],
+      );
+    canvas.drawRect(rect, paint);
+  }
+
+  void _drawCornerBrackets(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = AppColors.neonCyan.withValues(alpha: 0.22)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
+
+    const margin = 12.0;
+    const len = 20.0;
+
+    // TL
+    canvas.drawPath(
+      Path()
+        ..moveTo(margin, margin + len)
+        ..lineTo(margin, margin)
+        ..lineTo(margin + len, margin),
+      paint,
+    );
+    // TR
+    canvas.drawPath(
+      Path()
+        ..moveTo(size.width - margin - len, margin)
+        ..lineTo(size.width - margin, margin)
+        ..lineTo(size.width - margin, margin + len),
+      paint,
+    );
+    // BL
+    canvas.drawPath(
+      Path()
+        ..moveTo(margin, size.height - margin - len)
+        ..lineTo(margin, size.height - margin)
+        ..lineTo(margin + len, size.height - margin),
+      paint,
+    );
+    // BR
+    canvas.drawPath(
+      Path()
+        ..moveTo(size.width - margin - len, size.height - margin)
+        ..lineTo(size.width - margin, size.height - margin)
+        ..lineTo(size.width - margin, size.height - margin - len),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_HudPainter oldDelegate) => false;
 }

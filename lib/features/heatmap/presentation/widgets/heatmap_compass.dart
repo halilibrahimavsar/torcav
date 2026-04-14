@@ -1,31 +1,48 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/heatmap_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../bloc/heatmap_bloc.dart' show HeatmapBloc, HeatmapState;
 import '../../../../core/theme/app_theme.dart';
 
 /// A premium, rotating compass ring that reflects the real device heading.
 /// Tapping it recalibrates the AR heading.
+///
+/// When [heading] is provided (e.g., forwarded from a parent BlocSelector),
+/// the internal BlocSelector subscription is skipped, avoiding a redundant
+/// second subscription that could fire at a different frame than the parent.
 class HeatmapCompass extends StatelessWidget {
   final double size;
 
+  /// Optional pre-resolved heading from a parent listener.
+  /// When null, the widget subscribes to [HeatmapBloc] directly.
+  final double? heading;
+
   const HeatmapCompass({
     this.size = 56,
+    this.heading,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (heading != null) {
+      return SizedBox(
+        width: size,
+        height: size,
+        child: CustomPaint(painter: _CompassPainter(heading: heading!)),
+      );
+    }
     return BlocSelector<HeatmapBloc, HeatmapState, double>(
       selector: (s) => s.currentHeading,
-      builder: (context, heading) {
-        return GestureDetector(
-          onTap: () => context.read<HeatmapBloc>().recalibrateHeading(),
-          child: SizedBox(
-            width: size,
-            height: size,
-            child: CustomPaint(painter: _CompassPainter(heading: heading)),
-          ),
+      builder: (context, resolvedHeading) {
+        return SizedBox(
+          width: size,
+          height: size,
+          child: CustomPaint(painter: _CompassPainter(heading: resolvedHeading)),
         );
       },
     );
@@ -42,79 +59,123 @@ class _CompassPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 - 4;
 
-    // Glass backing disc with a deeper blur effect.
-    final bgPaint = Paint()..color = Colors.black.withValues(alpha: 0.65);
+    // 1. Fixed Elements (Background + Lubber Line)
+    
+    // Glass backing disc with inner glow
+    final bgPaint = Paint()
+      ..shader = ui.Gradient.radial(
+        center,
+        radius,
+        [
+          Colors.black.withValues(alpha: 0.8),
+          Colors.black.withValues(alpha: 0.4),
+        ],
+      );
     canvas.drawCircle(center, radius, bgPaint);
 
-    // Outer glow/ring.
-    final ringPaint = Paint()
-      ..color = AppColors.neonCyan.withValues(alpha: 0.7)
+    final outerRingPaint = Paint()
+      ..color = AppColors.neonCyan.withValues(alpha: 0.15)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-    canvas.drawCircle(center, radius, ringPaint);
+      ..strokeWidth = 3;
+    canvas.drawCircle(center, radius, outerRingPaint);
 
-    // Cardinal ticks.
-    final tickPaint = Paint()
-      ..color = AppColors.neonCyan.withValues(alpha: 0.5)
-      ..strokeWidth = 1;
-    for (var i = 0; i < 12; i++) {
-      final angle = (i * 30) * math.pi / 180;
-      final isMajor = i % 3 == 0;
-      final tickLen = isMajor ? 5.0 : 3.0;
+    // Fixed Lubber Line (Top indicator)
+    final lubberPaint = Paint()
+      ..color = const Color(0xFFFFD60A) // Warning Amber
+      ..style = PaintingStyle.fill;
+    final lubberPath = Path()
+      ..moveTo(center.dx - 3, 2)
+      ..lineTo(center.dx + 3, 2)
+      ..lineTo(center.dx, 8)
+      ..close();
+    canvas.drawPath(lubberPath, lubberPaint);
+
+    // 2. Rotating Elements (Dial + North Arrow)
+    canvas.save();
+    canvas.translate(center.dx, center.dy);
+    canvas.rotate(-heading * math.pi / 180); // Rotate entire dial
+    canvas.translate(-center.dx, -center.dy);
+
+    final dialPaint = Paint()
+      ..color = AppColors.neonCyan.withValues(alpha: 0.6)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
+
+    // Cardinal Points + Degree Ticks
+    for (var i = 0; i < 72; i++) {
+      final angle = (i * 5) * math.pi / 180;
+      final isCardinal = i % 18 == 0; // 0, 90, 180, 270
+      final isMajor = i % 6 == 0; // Every 30 degrees
       
-      final inner = center +
-          Offset(
-            math.sin(angle) * (radius - tickLen),
-            -math.cos(angle) * (radius - tickLen),
-          );
+      final tickLen = isCardinal ? 8.0 : (isMajor ? 5.0 : 3.0);
+      dialPaint.color = isCardinal 
+          ? AppColors.neonCyan 
+          : AppColors.neonCyan.withValues(alpha: 0.3);
+      
+      final inner = center + Offset(math.sin(angle) * (radius - tickLen), -math.cos(angle) * (radius - tickLen));
       final outer = center + Offset(math.sin(angle) * radius, -math.cos(angle) * radius);
-      canvas.drawLine(inner, outer, tickPaint);
+      canvas.drawLine(inner, outer, dialPaint);
+
+      if (isCardinal) {
+        final label = const ['N', 'E', 'S', 'W'][i ~/ 18];
+        _drawLabel(canvas, center, angle, radius - 18, label, 11, true);
+      } else if (isMajor) {
+        final degrees = (i * 5).toString();
+        _drawLabel(canvas, center, angle, radius - 15, degrees, 7, false);
+      }
     }
 
-    // North indicator (rotates opposite to heading).
-    final headingRad = -heading * math.pi / 180;
+    // High Vis North Arrow (fixed to the dial's North position)
     final needlePaint = Paint()
       ..color = AppColors.neonRed
       ..style = PaintingStyle.fill;
-      
-    final path = Path()
-      ..moveTo(
-        center.dx + math.sin(headingRad) * (radius - 5),
-        center.dy - math.cos(headingRad) * (radius - 5),
-      )
-      ..lineTo(
-        center.dx + math.sin(headingRad + 0.35) * 6,
-        center.dy - math.cos(headingRad + 0.35) * 6,
-      )
-      ..lineTo(
-        center.dx + math.sin(headingRad - 0.35) * 6,
-        center.dy - math.cos(headingRad - 0.35) * 6,
-      )
+    final arrowPath = Path()
+      ..moveTo(center.dx, center.dy - radius + 10)
+      ..lineTo(center.dx - 5, center.dy - radius + 22)
+      ..lineTo(center.dx + 5, center.dy - radius + 22)
       ..close();
-    canvas.drawPath(path, needlePaint);
+    canvas.drawPath(arrowPath, needlePaint);
 
-    // "N" label (always at top of the ring, but rotates with heading relative to indicators).
-    // Actually, usually N is fixed to the ring and the ring rotates, OR the needle rotates.
-    // In our implementation, the NEEDLE rotates to show true North relative to phone screen top.
-    
-    final textPainter = TextPainter(
+    canvas.restore();
+  }
+
+  void _drawLabel(
+    Canvas canvas, 
+    Offset center, 
+    double angle, 
+    double r, 
+    String text, 
+    double fontSize,
+    bool isBold,
+  ) {
+    final tp = TextPainter(
       text: TextSpan(
-        text: 'N',
-        style: TextStyle(
-          color: AppColors.neonCyan,
-          fontSize: (size.width / 5.6).clamp(8.0, 12.0),
-          fontWeight: FontWeight.bold,
-          letterSpacing: 0.5,
+        text: text,
+        style: GoogleFonts.orbitron(
+          color: isBold ? Colors.white : Colors.white.withValues(alpha: 0.6),
+          fontSize: fontSize,
+          fontWeight: isBold ? FontWeight.w900 : FontWeight.normal,
         ),
       ),
       textDirection: TextDirection.ltr,
     )..layout();
+
+    final pos = center + Offset(math.sin(angle) * r, -math.cos(angle) * r);
     
-    // We position 'N' just below the top edge of the circle.
-    textPainter.paint(canvas, Offset(center.dx - textPainter.width / 2, 4));
+    // Rotate text so it's always upright relative to the DIAL center
+    canvas.save();
+    canvas.translate(pos.dx, pos.dy);
+    // Note: if we want text always upright for the USER even when dial rotates, 
+    // we would need to rotate it by +heading. But for premium feel, 
+    // rotating with the dial is often more "mechanical" and consistent.
+    // Let's keep it rotating with the dial for now as a "pro instrument" look.
+    canvas.translate(-tp.width / 2, -tp.height / 2);
+    tp.paint(canvas, Offset.zero);
+    canvas.restore();
   }
 
   @override
   bool shouldRepaint(covariant _CompassPainter oldDelegate) =>
       oldDelegate.heading != heading;
 }
+

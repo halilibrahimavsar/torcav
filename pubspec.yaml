@@ -68,7 +68,6 @@ dependencies:
   sensors_plus: ^6.1.1
   flutter_compass: ^0.8.0
   onnxruntime: ^1.4.1
-  arcore_flutter_plugin: ^0.1.0
 
 
 dev_dependencies:

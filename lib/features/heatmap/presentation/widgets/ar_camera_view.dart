@@ -2,9 +2,10 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:torcav/core/logging/app_logger.dart';
+
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
-import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/scan_phase.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/ar_hud_overlay.dart';
@@ -14,7 +15,7 @@ import 'package:torcav/features/heatmap/presentation/widgets/ar_hud_overlay.dart
 /// Streams camera frames into the bloc for wall detection, renders an
 /// AR-style crosshair + wall overlay via [_ArOverlayPainter], then tops it
 /// with the shared [ArHudOverlay] so non-ARCore devices receive the same
-/// premium information surface.
+/// information surface.
 class ArCameraView extends StatefulWidget {
   const ArCameraView({
     super.key,
@@ -30,8 +31,6 @@ class ArCameraView extends StatefulWidget {
 }
 
 class _ArCameraViewState extends State<ArCameraView> {
-  static const _guidanceService = SurveyGuidanceService();
-
   CameraController? _controller;
   bool _isInit = false;
   bool _isDisposed = false;
@@ -76,12 +75,14 @@ class _ArCameraViewState extends State<ArCameraView> {
       final bloc = context.read<HeatmapBloc>();
       if (!_controller!.value.isStreamingImages) {
         await _controller!.startImageStream((image) {
-          if (_isDisposed || !mounted) return;
+          // Guard against the widget being disposed or the BLoC being closed
+          // between the stream callback being scheduled and executed.
+          if (_isDisposed || !mounted || bloc.isClosed) return;
           bloc.processCameraImage(image);
         });
       }
-    } catch (error) {
-      debugPrint('Camera error: $error');
+    } catch (error, stackTrace) {
+      AppLogger.e('Camera initialisation failed', error: error, stackTrace: stackTrace);
       if (!_isDisposed && mounted) {
         setState(() => _cameraError = 'Camera preview could not start.');
       }
@@ -89,10 +90,12 @@ class _ArCameraViewState extends State<ArCameraView> {
   }
 
   void _flagCurrentPosition() {
-    if (_isDisposed) return;
-    // Fallback path has no ARCore anchor — place marker at screen center.
+    if (_isDisposed || !mounted) return;
+    // Fallback path has no ARCore anchor — place marker at screen centre.
     context.read<HeatmapBloc>().flagCurrentWeakZone();
     setState(() {
+      // BUG-03: cap overlay list to prevent unbounded memory growth over long surveys.
+      if (_flagOverlay.length >= 50) _flagOverlay.removeAt(0);
       _flagOverlay.add(const Offset(0.5, 0.5));
     });
     ScaffoldMessenger.of(context).showSnackBar(
@@ -126,22 +129,22 @@ class _ArCameraViewState extends State<ArCameraView> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return BlocBuilder<HeatmapBloc, HeatmapState>(
-      builder: (context, state) {
-        final guidance = _guidanceService.analyze(
-          points: state.currentSession?.points ?? const [],
-          floorPlan: state.liveFloorPlan,
-          isRecording: state.isRecording,
-          hasArOrigin: state.hasArOrigin,
-          pendingWallCount: state.pendingWalls.length,
-          currentRssi: state.currentRssi,
-          surveyGate: state.surveyGate,
-          lastSignalAt: state.lastSignalAt,
-          currentSignalStdDev: state.lastSignalStdDev,
-          currentX: state.currentPosition?.dx,
-          currentY: state.currentPosition?.dy,
-        );
-
+    // Only rebuild when fields relevant to the overlay painter or HUD
+    // visibility change. Heading ticks (15 Hz) and RSSI updates (1 Hz) are
+    // filtered out — the HUD widgets use their own fine-grained BlocSelectors.
+    return BlocSelector<HeatmapBloc, HeatmapState, ({
+      ScanPhase phase,
+      List<WallSegment> pendingWalls,
+      int? currentRssi,
+      DateTime? lastStepTimestamp,
+    })>(
+      selector: (s) => (
+        phase: s.phase,
+        pendingWalls: s.pendingWalls.cast<WallSegment>(),
+        currentRssi: s.currentRssi,
+        lastStepTimestamp: s.lastStepTimestamp,
+      ),
+      builder: (context, slice) {
         return Stack(
           fit: StackFit.expand,
           children: [
@@ -150,17 +153,16 @@ class _ArCameraViewState extends State<ArCameraView> {
             IgnorePointer(
               child: CustomPaint(
                 painter: _ArOverlayPainter(
-                  phase: state.phase,
-                  pendingWalls: state.pendingWalls,
-                  currentRssi: state.currentRssi,
-                  lastStepTimestamp: state.lastStepTimestamp,
+                  phase: slice.phase,
+                  pendingWalls: slice.pendingWalls,
+                  currentRssi: slice.currentRssi,
+                  lastStepTimestamp: slice.lastStepTimestamp,
                   flagMarkers: _flagOverlay,
                 ),
               ),
             ),
-            if (state.phase == ScanPhase.scanning)
+            if (slice.phase == ScanPhase.scanning)
               ArHudOverlay(
-                guidance: guidance,
                 estimatedMode: true,
                 onFinish: widget.onFinish,
                 onDiscard: widget.onDiscard,

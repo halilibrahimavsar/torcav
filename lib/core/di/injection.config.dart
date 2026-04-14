@@ -28,8 +28,6 @@ import '../../features/heatmap/data/repositories/heatmap_repository_impl.dart'
     as _i531;
 import '../../features/heatmap/domain/repositories/heatmap_repository.dart'
     as _i747;
-import '../../features/heatmap/domain/services/ar_capability_service.dart'
-    as _i748;
 import '../../features/heatmap/domain/services/connected_signal_service.dart'
     as _i192;
 import '../../features/heatmap/domain/services/connected_signal_smoother.dart'
@@ -306,9 +304,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i239.WifiScanHistoryLocalDataSource>(
       () => _i239.WifiScanHistoryLocalDataSourceImpl(gh<_i690.AppDatabase>()),
     );
-    gh.lazySingleton<_i748.ArCapabilityService>(
-      () => _i748.ArCapabilityServiceImpl(),
-    );
     gh.lazySingleton<_i363.CaptivePortalDetector>(
       () => _i363.CaptivePortalDetector(gh<_i846.NetworkInfo>()),
     );
@@ -457,7 +452,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i543.WallDetectorDataSource>(),
         gh<_i869.HeatmapManager>(),
         gh<_i1072.SignalTracker>(),
-        gh<_i748.ArCapabilityService>(),
       ),
     );
     gh.factory<_i613.MonitoringBloc>(

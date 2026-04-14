@@ -50,7 +50,20 @@ class WallProcessor {
   }
 
   bool _isDuplicate(List<WallSegment> walls, WallSegment wall) {
-    return walls.any((w) => _segCenterDist(w, wall) < _duplicateDistanceTolerance);
+    // BUG-11: Require BOTH proximity AND similar angle to qualify as duplicate.
+    // Previously only center-distance was checked, which could suppress two real
+    // parallel walls (e.g. doorframe edges) whose centres happen to be <0.4 m apart.
+    return walls.any((w) {
+      if (_segCenterDist(w, wall) >= _duplicateDistanceTolerance) return false;
+      final dx1 = w.x2 - w.x1, dy1 = w.y2 - w.y1;
+      final dx2 = wall.x2 - wall.x1, dy2 = wall.y2 - wall.y1;
+      final len1 = math.sqrt(dx1 * dx1 + dy1 * dy1);
+      final len2 = math.sqrt(dx2 * dx2 + dy2 * dy2);
+      if (len1 < 0.01 || len2 < 0.01) return true;
+      final dot = (dx1 * dx2 + dy1 * dy2) / (len1 * len2);
+      // Only treat as duplicate when angle difference is also within tolerance.
+      return dot.abs() >= _angleToleranceDot;
+    });
   }
 
   bool _areSegmentsColinear(WallSegment a, WallSegment b) {
@@ -77,30 +90,33 @@ class WallProcessor {
   }
 
   WallSegment _mergeSegments(WallSegment a, WallSegment b) {
-    // Return a segment that encapsulates the min/max extents of both.
-    final coords = [
-      [a.x1, a.y1],
-      [a.x2, a.y2],
-      [b.x1, b.y1],
-      [b.x2, b.y2],
-    ];
+    // BUG-10: The previous approach sorted endpoints by X or Y axis depending on
+    // which was dominant. For near-diagonal walls (dx ≈ dy) the axis choice was
+    // unstable, causing endpoint order to flip between frames.
+    // Fix: project all four endpoints onto segment a's direction vector and sort
+    // by scalar projection, which is unambiguous regardless of orientation.
+    final dx = a.x2 - a.x1;
+    final dy = a.y2 - a.y1;
+    final len = math.sqrt(dx * dx + dy * dy);
+    // Normalised direction of segment a (safe — caller guarantees len > 0.1).
+    final ux = dx / len;
+    final uy = dy / len;
 
-    // Sort by X or Y depending on orientation to find extrema.
-    final dx = (a.x2 - a.x1).abs(), dy = (a.y2 - a.y1).abs();
-    if (dx > dy) {
-      coords.sort((p1, p2) => p1[0].compareTo(p2[0]));
-    } else {
-      coords.sort((p1, p2) => p1[1].compareTo(p2[1]));
-    }
+    // Scalar projection of each endpoint onto the direction vector.
+    double proj(double x, double y) => (x - a.x1) * ux + (y - a.y1) * uy;
 
-    final pStart = coords.first;
-    final pEnd = coords.last;
+    final projs = [
+      (t: proj(a.x1, a.y1), x: a.x1, y: a.y1),
+      (t: proj(a.x2, a.y2), x: a.x2, y: a.y2),
+      (t: proj(b.x1, b.y1), x: b.x1, y: b.y1),
+      (t: proj(b.x2, b.y2), x: b.x2, y: b.y2),
+    ]..sort((p1, p2) => p1.t.compareTo(p2.t));
 
     return WallSegment(
-      x1: pStart[0],
-      y1: pStart[1],
-      x2: pEnd[0],
-      y2: pEnd[1],
+      x1: projs.first.x,
+      y1: projs.first.y,
+      x2: projs.last.x,
+      y2: projs.last.y,
     );
   }
 

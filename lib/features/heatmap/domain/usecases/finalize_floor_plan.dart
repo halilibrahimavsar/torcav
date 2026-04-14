@@ -85,12 +85,32 @@ class FinalizeFloorPlan {
       return perpendicularDist(a, b) <= 0.5;
     }
 
-    WallSegment merge(WallSegment a, WallSegment b) => WallSegment(
-          x1: (a.x1 + b.x1) / 2,
-          y1: (a.y1 + b.y1) / 2,
-          x2: (a.x2 + b.x2) / 2,
-          y2: (a.y2 + b.y2) / 2,
-        );
+    WallSegment merge(WallSegment a, WallSegment b) {
+      // Use the direction of `a` to project all four points and take the
+      // furthest extremes — this avoids the degenerate zero-length case
+      // (BUG-20) that arises from the midpoint-averaging approach when
+      // two coincident segments are merged.
+      final dx = a.x2 - a.x1;
+      final dy = a.y2 - a.y1;
+      final len = math.sqrt(dx * dx + dy * dy);
+      if (len < 0.001) {
+        // Degenerate segment a: fall back to segment b as the result.
+        return b;
+      }
+      final ux = dx / len;
+      final uy = dy / len;
+      double proj(double x, double y) => (x - a.x1) * ux + (y - a.y1) * uy;
+      final pts = [
+        (t: proj(a.x1, a.y1), x: a.x1, y: a.y1),
+        (t: proj(a.x2, a.y2), x: a.x2, y: a.y2),
+        (t: proj(b.x1, b.y1), x: b.x1, y: b.y1),
+        (t: proj(b.x2, b.y2), x: b.x2, y: b.y2),
+      ]..sort((p1, p2) => p1.t.compareTo(p2.t));
+      return WallSegment(
+        x1: pts.first.x, y1: pts.first.y,
+        x2: pts.last.x,  y2: pts.last.y,
+      );
+    }
 
     final sorted = List<WallSegment>.from(segments)
       ..sort((a, b) => angle(a).compareTo(angle(b)));
@@ -107,6 +127,16 @@ class FinalizeFloorPlan {
       }
     }
     result.add(current);
-    return result;
+
+    // BUG-20: Discard any degenerate (zero-length) segments that may have
+    // been produced by merging two exactly-coincident inputs. A zero-length
+    // segment causes NaN when its direction vector is later normalised in
+    // WallProcessor or the canvas projection code.
+    const minSegmentLength = 0.1;
+    return result.where((s) {
+      final sdx = s.x2 - s.x1;
+      final sdy = s.y2 - s.y1;
+      return math.sqrt(sdx * sdx + sdy * sdy) >= minSegmentLength;
+    }).toList();
   }
 }

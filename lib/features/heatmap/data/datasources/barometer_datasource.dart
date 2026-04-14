@@ -20,8 +20,14 @@ class BarometerDataSourceImpl implements BarometerDataSource {
   // 1 floor ≈ 3 m ≈ 1.05 hPa pressure difference (standard atmosphere).
   static const _hpaPerFloor = 1.05;
 
+  // BUG-12: We need at least this many readings before committing the baseline.
+  // The first reading on device pickup is often taken mid-swing, which can
+  // introduce a ±0.5 hPa error (~0.5 floors) that persists for the session.
+  static const _warmUpSamples = 5;
+
   double _baseline = 1013.25;
   bool _calibrated = false;
+  final List<double> _warmUpBuffer = [];
   final _controller = StreamController<FloorReading>.broadcast();
   StreamSubscription? _sub;
 
@@ -31,6 +37,7 @@ class BarometerDataSourceImpl implements BarometerDataSource {
   @override
   void startTracking(double baselinePressureHpa) {
     _sub?.cancel();
+    _warmUpBuffer.clear();
     _calibrated = baselinePressureHpa > 0;
     _baseline = _calibrated ? baselinePressureHpa : 1013.25;
 
@@ -38,9 +45,17 @@ class BarometerDataSourceImpl implements BarometerDataSource {
       _sub = barometerEventStream().listen(
         (event) {
           if (!_calibrated) {
-            // Self-calibrate on the first real reading.
-            _calibrated = true;
-            _baseline = event.pressure;
+            // Accumulate warm-up samples and compute an average baseline.
+            // This avoids locking onto a stale pressure from mid-swing startup.
+            _warmUpBuffer.add(event.pressure);
+            if (_warmUpBuffer.length >= _warmUpSamples) {
+              final sum = _warmUpBuffer.reduce((a, b) => a + b);
+              _baseline = sum / _warmUpBuffer.length;
+              _calibrated = true;
+              _warmUpBuffer.clear();
+            }
+            // Emit with the default baseline until calibrated so consumers
+            // have a best-effort reading during the warm-up window.
           }
           // Higher floor → lower pressure → positive delta.
           final delta = _baseline - event.pressure;
@@ -62,5 +77,6 @@ class BarometerDataSourceImpl implements BarometerDataSource {
     _sub?.cancel();
     _sub = null;
     _calibrated = false;
+    _warmUpBuffer.clear();
   }
 }

@@ -31,6 +31,9 @@ class HudDock extends StatelessWidget {
             tooltip: 'Discard Survey',
             color: AppColors.neonOrange,
             onTap: () async {
+              // BUG-05: guard against stale context if the widget is removed
+              // from the tree while this async gap is open.
+              if (!context.mounted) return;
               final confirm = await showDialog<bool>(
                 context: context,
                 builder:
@@ -73,7 +76,7 @@ class HudDock extends StatelessWidget {
                       ],
                     ),
               );
-              if (confirm == true) {
+              if (confirm == true && context.mounted) {
                 onDiscard?.call();
               }
             },
@@ -87,16 +90,6 @@ class HudDock extends StatelessWidget {
             color: AppColors.neonOrange,
             onTap: onFlagWeakZone!,
           ),
-        const SizedBox(height: 10),
-        _DockButton(
-          icon: Icons.sync_problem_rounded,
-          tooltip: 'Recalibrate labels',
-          color: AppColors.neonCyan,
-          onTap: () {
-            HapticFeedback.mediumImpact();
-            context.read<HeatmapBloc>().recalibrateHeading();
-          },
-        ),
         const SizedBox(height: 10),
         BlocSelector<HeatmapBloc, HeatmapState, bool>(
           selector: (s) => s.isAutoSampling,
