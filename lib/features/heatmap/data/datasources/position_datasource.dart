@@ -69,7 +69,7 @@ class PositionDataSourceImpl implements PositionDataSource {
     _warmUpHeadings.clear();
   }
 
-  static const _stepDynamicThreshold = 1.05; // ~0.11g change
+  static const _stepDynamicThreshold = 0.45; // Significantly increased sensitivity for slow AR walking
   static const _stepMinInterval = 450;
 
   /// Sensor fusion step using a Complementary Filter.
@@ -106,6 +106,7 @@ class PositionDataSourceImpl implements PositionDataSource {
     _lastEmittedHeading = 0;
     _lastHeadingEmitTime = 0;
     _lastStepTime = 0;
+    _baselineMag = 9.8; // Reset baseline for fresh session tracking
     _warmUpHeadings.clear();
     _headingWarmedUp = false;
     _lastGyroTime = null;
@@ -123,8 +124,6 @@ class PositionDataSourceImpl implements PositionDataSource {
 
           final now = DateTime.now().millisecondsSinceEpoch;
           
-          // BUG FIX: The previous threshold (12.5) was too high for slow AR walks.
-          // Now we use a dynamic delta > 1.05 (~0.1g) from the smoothed baseline.
           if (dynamicMag > _stepDynamicThreshold && (now - _lastStepTime > _stepMinInterval)) {
             _lastStepTime = now;
             _onStep();
@@ -203,6 +202,8 @@ class PositionDataSourceImpl implements PositionDataSource {
     final radians = _heading * (math.pi / 180.0);
     _x += _stepLength * math.sin(radians);
     _y += _stepLength * math.cos(radians);
+
+    AppLogger.i('👟 Step Detected: Heading ${_heading.toStringAsFixed(1)}°, New Pos (${_x.toStringAsFixed(2)}, ${_y.toStringAsFixed(2)})');
 
     _controller.add(
       PositionUpdate(x: _x, y: _y, heading: _heading, isStep: true),

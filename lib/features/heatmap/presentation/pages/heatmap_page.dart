@@ -105,6 +105,9 @@ class _HeatmapViewState extends State<_HeatmapView> {
 
         final session = isRecording ? state.currentSession : state.selectedSession;
         final floorPlan = isRecording ? state.liveFloorPlan : session?.floorPlan;
+        final bottomSafe = MediaQuery.viewPaddingOf(context).bottom;
+        final reviewBottomPadding =
+            SurveyConclusionOverlay.reservedHeight + bottomSafe + 16;
 
         final summary = HeatmapSummary.from(
           session: session ??
@@ -249,6 +252,7 @@ class _HeatmapViewState extends State<_HeatmapView> {
             children: [
               // 2D Result / Idle Layer
               Stack(
+                fit: StackFit.expand,
                 children: [
                   CanvasBackdrop(summary: summary),
                   if (session != null)
@@ -264,6 +268,12 @@ class _HeatmapViewState extends State<_HeatmapView> {
                           maxRssi: maxRssi,
                           coverageScore: state.coverageScore,
                           sparseRegion: state.sparseRegion,
+                          padding: EdgeInsets.only(
+                            bottom: isReviewing ? reviewBottomPadding : 20,
+                            top: isScanning ? 100 : 20,
+                            left: 20,
+                            right: 20,
+                          ),
                           onTap: (metric) {
                             setState(() => _probePoint = metric);
                           },
@@ -277,11 +287,6 @@ class _HeatmapViewState extends State<_HeatmapView> {
                       onStart:
                           () => _showNewSessionDialog(context, bloc, copy),
                     ),
-                  Positioned(
-                    top: 14,
-                    left: 14,
-                    child: ViewModeBadge(label: copy.resultViewLabel),
-                  ),
                   if (isReviewing && _probePoint == null && session != null)
                     Positioned(
                       left: 0,

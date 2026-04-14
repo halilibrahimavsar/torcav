@@ -292,6 +292,21 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                             Text('2.5m', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white54)),
                           ],
                         ),
+                        const SizedBox(height: 16),
+                        SwitchListTile(
+                          value: state.isAutoWallEnabled,
+                          title: Text(
+                            'Auto-Wall Detection',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white),
+                          ),
+                          subtitle: Text(
+                            'Automatically commit walls after 1.2s of focus',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white54),
+                          ),
+                          activeColor: AppColors.neonYellow,
+                          activeTrackColor: AppColors.neonYellow.withValues(alpha: 0.3),
+                          onChanged: (_) => context.read<HeatmapBloc>().toggleAutoWall(),
+                        ),
                       ],
                     );
                   },

@@ -1,10 +1,10 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart';
-import 'package:torcav/features/heatmap/presentation/widgets/heatmap/heatmap_utility_widgets.dart';
 
 class SurveyConclusionOverlay extends StatelessWidget {
   const SurveyConclusionOverlay({
@@ -17,6 +17,9 @@ class SurveyConclusionOverlay extends StatelessWidget {
     required this.onShare,
   });
 
+  /// Chrome height reserved by the overlay (excluding bottom safe area).
+  static const double reservedHeight = 300;
+
   final HeatmapSummary summary;
   final HeatmapCopy copy;
   final VoidCallback onRestart;
@@ -26,128 +29,209 @@ class SurveyConclusionOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black.withValues(alpha: 0.85),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: AppColors.neonCyan.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.neonCyan.withValues(alpha: 0.15),
-                  blurRadius: 40,
-                  spreadRadius: 2,
-                ),
+    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+        child: Container(
+          padding: EdgeInsets.fromLTRB(20, 12, 20, 16 + bottomInset),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.black.withValues(alpha: 0.72),
+                Colors.black.withValues(alpha: 0.94),
               ],
             ),
-            child: const Icon(
-              Icons.check_circle_outline_rounded,
-              color: AppColors.neonCyan,
-              size: 64,
-            ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            copy.surveyCompleteTitle.toUpperCase(),
-            style: GoogleFonts.orbitron(
-              color: AppColors.textPrimary,
-              fontSize: 22,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 2.5,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            copy.surveyCompleteBody,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.outfit(
-              color: AppColors.textSecondary,
-              fontSize: 16,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 48),
-          Row(
-            children: [
-              Expanded(
-                child: StatBrick(
-                  label: copy.coverageLabel,
-                  value: summary.coveragePercent,
-                  color: summary.coverageColor,
-                ),
+            border: Border(
+              top: BorderSide(
+                color: AppColors.neonCyan.withValues(alpha: 0.35),
+                width: 1,
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: StatBrick(
-                  label: copy.samplesLabel,
-                  value: summary.sampleCount.toString(),
-                ),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.neonCyan.withValues(alpha: 0.12),
+                blurRadius: 32,
+                offset: const Offset(0, -8),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: StatBrick(
-                  label: copy.wallsLabel,
-                  value: summary.wallCount.toString(),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: StatBrick(
-                  label: copy.blindSpotsLabel,
-                  value: summary.weakZoneCount.toString(),
-                  color: AppColors.neonRed,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-          Column(
-            children: [
-              NeonButton(
-                onPressed: onDone,
-                label: copy.finishAndSave,
-                icon: Icons.save_rounded,
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _SecondaryActionButton(
-                    onPressed: onRename,
-                    icon: Icons.edit_rounded,
-                    label: copy.renameSurvey,
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.white24,
+                    borderRadius: BorderRadius.circular(2),
                   ),
-                  const SizedBox(width: 24),
-                  _SecondaryActionButton(
-                    onPressed: onShare,
-                    icon: Icons.share_rounded,
-                    label: copy.shareHeatmap,
+                ),
+              ),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.neonCyan.withValues(alpha: 0.14),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: AppColors.neonCyan.withValues(alpha: 0.4),
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.check_rounded,
+                      color: AppColors.neonCyan,
+                      size: 22,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          copy.surveyCompleteTitle.toUpperCase(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.orbitron(
+                            color: AppColors.textPrimary,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.8,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '${summary.coveragePercent} · ${summary.sampleCount} ${copy.samplesShort}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.outfit(
+                            color: AppColors.textSecondary,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _IconAction(
+                    icon: Icons.edit_rounded,
+                    onTap: onRename,
+                    tooltip: copy.renameSurvey,
+                  ),
+                  const SizedBox(width: 6),
+                  _IconAction(
+                    icon: Icons.ios_share_rounded,
+                    onTap: onShare,
+                    tooltip: copy.shareHeatmap,
+                  ),
+                  const SizedBox(width: 6),
+                  _IconAction(
+                    icon: Icons.refresh_rounded,
+                    onTap: onRestart,
+                    tooltip: copy.restartSurvey,
                   ),
                 ],
               ),
               const SizedBox(height: 16),
-              TextButton.icon(
-                onPressed: onRestart,
-                icon: const Icon(Icons.refresh_rounded, color: AppColors.textMuted),
-                label: Text(
-                  copy.restartSurvey,
-                  style: GoogleFonts.orbitron(
-                    color: AppColors.textMuted,
-                    fontSize: 12,
-                    letterSpacing: 1.2,
+              Row(
+                children: [
+                  Expanded(
+                    child: _MiniStat(
+                      label: copy.coverageLabel,
+                      value: summary.coveragePercent,
+                      color: summary.coverageColor,
+                    ),
                   ),
-                ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _MiniStat(
+                      label: copy.samplesLabel,
+                      value: summary.sampleCount.toString(),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _MiniStat(
+                      label: copy.wallsLabel,
+                      value: summary.wallCount.toString(),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _MiniStat(
+                      label: copy.blindSpotsLabel,
+                      value: summary.weakZoneCount.toString(),
+                      color: summary.weakZoneCount > 0
+                          ? AppColors.neonRed
+                          : null,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 18),
+              NeonButton(
+                onPressed: onDone,
+                label: copy.finishAndSave,
+                icon: Icons.check_circle_rounded,
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MiniStat extends StatelessWidget {
+  const _MiniStat({required this.label, required this.value, this.color});
+
+  final String label;
+  final String value;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = color ?? AppColors.textPrimary;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: accent.withValues(alpha: 0.22)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label.toUpperCase(),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.orbitron(
+              color: AppColors.textMuted,
+              fontSize: 8,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.8,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.outfit(
+              color: accent,
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+            ),
           ),
         ],
       ),
@@ -155,38 +239,38 @@ class SurveyConclusionOverlay extends StatelessWidget {
   }
 }
 
-class _SecondaryActionButton extends StatelessWidget {
-  const _SecondaryActionButton({
-    required this.onPressed,
+class _IconAction extends StatelessWidget {
+  const _IconAction({
     required this.icon,
-    required this.label,
+    required this.onTap,
+    required this.tooltip,
   });
 
-  final VoidCallback onPressed;
   final IconData icon;
-  final String label;
+  final VoidCallback onTap;
+  final String tooltip;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onPressed,
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Column(
-          children: [
-            Icon(icon, color: AppColors.textSecondary, size: 24),
-            const SizedBox(height: 4),
-            Text(
-              label.toUpperCase(),
-              style: GoogleFonts.orbitron(
-                color: AppColors.textSecondary,
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 1.0,
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: Colors.transparent,
+        shape: const CircleBorder(),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.all(9),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.06),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.14),
               ),
             ),
-          ],
+            child: Icon(icon, size: 16, color: AppColors.textPrimary),
+          ),
         ),
       ),
     );

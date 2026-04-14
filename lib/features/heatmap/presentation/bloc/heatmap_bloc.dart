@@ -50,6 +50,8 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   StreamSubscription? _managerGateSub;
   StreamSubscription? _managerPositionSub;
   StreamSubscription? _signalStateSub;
+  Timer? _autoWallTimer;
+  WallSegment? _stableWallCandidate;
   bool _isProcessingCameraFrame = false;
   DateTime? _lastWallFrameAt;
 
@@ -233,9 +235,64 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         cameraImage as CameraImage,
       );
       emit(state.copyWith(pendingWalls: screenWalls));
+      _updateAutoWallTimer(screenWalls);
     } finally {
       _isProcessingCameraFrame = false;
     }
+  }
+
+  void _updateAutoWallTimer(List<WallSegment> pending) {
+    if (!state.isAutoWallEnabled || pending.isEmpty) {
+      _autoWallTimer?.cancel();
+      _stableWallCandidate = null;
+      return;
+    }
+
+    // Find the wall closest to screen center (0.5, 0.5)
+    WallSegment? nearest;
+    double minDistance = double.infinity;
+
+    for (final wall in pending) {
+      final centerX = (wall.x1 + wall.x2) / 2;
+      final centerY = (wall.y1 + wall.y2) / 2;
+      final dist = math.sqrt(
+        math.pow(centerX - 0.5, 2) + math.pow(centerY - 0.5, 2),
+      );
+      if (dist < minDistance) {
+        minDistance = dist;
+        nearest = wall;
+      }
+    }
+
+    if (nearest == null || minDistance > 0.15) { // Tighter center threshold for auto-commit
+      _autoWallTimer?.cancel();
+      _stableWallCandidate = null;
+      return;
+    }
+
+    // If the candidate is stable (didn't move much from previous center candidate)
+    if (_stableWallCandidate != null) {
+      final prevCX = (_stableWallCandidate!.x1 + _stableWallCandidate!.x2) / 2;
+      final prevCY = (_stableWallCandidate!.y1 + _stableWallCandidate!.y2) / 2;
+      final newCX = (nearest.x1 + nearest.x2) / 2;
+      final newCY = (nearest.y1 + nearest.y2) / 2;
+      
+      final delta = math.sqrt(math.pow(newCX - prevCX, 2) + math.pow(newCY - prevCY, 2));
+      
+      if (delta < 0.05) {
+        // Already timing this stable wall, don't restart timer
+        return;
+      }
+    }
+
+    // New or moved stable candidate
+    _autoWallTimer?.cancel();
+    _stableWallCandidate = nearest;
+    _autoWallTimer = Timer(const Duration(milliseconds: 1200), () {
+      if (_stableWallCandidate != null) {
+        addNearestPendingWall();
+      }
+    });
   }
 
   void addWallFromAr(WallSegment wall) {
@@ -305,10 +362,8 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     if (!state.isRecording) return;
 
     final walls = state.liveFloorPlan?.walls ?? [];
-    await _heatmapManager.stopSession(liveWalls: walls);
+    final savedSession = await _heatmapManager.stopSession(liveWalls: walls);
     
-    final savedSession = state.currentSession;
-
     if (savedSession != null) {
       await loadSessions();
     }
@@ -399,7 +454,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     _managerGateSub?.cancel();
     _managerPositionSub?.cancel();
     _signalStateSub?.cancel();
-    _heatmapManager.dispose();
+    _autoWallTimer?.cancel();
     return super.close();
   }
 
@@ -448,6 +503,10 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         phase: ScanPhase.idle,
       ),
     );
+  }
+
+  void toggleAutoWall() {
+    emit(state.copyWith(isAutoWallEnabled: !state.isAutoWallEnabled));
   }
 
 

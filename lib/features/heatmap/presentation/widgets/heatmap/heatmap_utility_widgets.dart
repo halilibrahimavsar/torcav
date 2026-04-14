@@ -124,32 +124,6 @@ class InfoBanner extends StatelessWidget {
   }
 }
 
-class ViewModeBadge extends StatelessWidget {
-  const ViewModeBadge({super.key, required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.38),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.glassWhiteBorder),
-      ),
-      child: Text(
-        label,
-        style: GoogleFonts.orbitron(
-          color: AppColors.textPrimary,
-          fontSize: 10,
-          letterSpacing: 1.1,
-        ),
-      ),
-    );
-  }
-}
-
 class CanvasBackdrop extends StatelessWidget {
   const CanvasBackdrop({super.key, required this.summary});
 

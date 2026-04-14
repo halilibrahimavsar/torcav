@@ -121,7 +121,7 @@ void main() {
 
     when(() => wallDetector.detectWalls(any())).thenAnswer((_) async => []);
     when(() => heatmapManager.startSession(any(), any(), any())).thenAnswer((_) async {});
-    when(() => heatmapManager.stopSession(liveWalls: any(named: 'liveWalls'))).thenAnswer((_) async {});
+    when(() => heatmapManager.stopSession(liveWalls: any(named: 'liveWalls'))).thenAnswer((_) async => null);
     when(() => heatmapManager.discardSession()).thenReturn(null);
     when(() => heatmapManager.dispose()).thenReturn(null);
     when(() => heatmapManager.setAutoSamplingEnabled(any())).thenReturn(null);

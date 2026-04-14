@@ -27,6 +27,7 @@ class HeatmapState extends Equatable {
     this.autoSamplingDistance = 0.8,
     this.coverageScore = 0.0,
     this.sparseRegion,
+    this.isAutoWallEnabled = true,
   });
 
   final List<HeatmapSession> sessions;
@@ -92,6 +93,9 @@ class HeatmapState extends Equatable {
   /// The quadrant identified as having the lowest data density.
   final SparseRegion? sparseRegion;
 
+  /// Whether detected walls should be automatically committed.
+  final bool isAutoWallEnabled;
+
   HeatmapState copyWith({
     List<HeatmapSession>? sessions,
     HeatmapSession? currentSession,
@@ -130,6 +134,7 @@ class HeatmapState extends Equatable {
     double? coverageScore,
     SparseRegion? sparseRegion,
     bool clearSparseRegion = false,
+    bool? isAutoWallEnabled,
   }) => HeatmapState(
     sessions: sessions ?? this.sessions,
     currentSession:
@@ -165,6 +170,7 @@ class HeatmapState extends Equatable {
     autoSamplingDistance: autoSamplingDistance ?? this.autoSamplingDistance,
     coverageScore: coverageScore ?? this.coverageScore,
     sparseRegion: clearSparseRegion ? null : sparseRegion ?? this.sparseRegion,
+    isAutoWallEnabled: isAutoWallEnabled ?? this.isAutoWallEnabled,
   );
 
   @override
@@ -194,5 +200,6 @@ class HeatmapState extends Equatable {
     autoSamplingDistance,
     coverageScore,
     sparseRegion,
+    isAutoWallEnabled,
   ];
 }

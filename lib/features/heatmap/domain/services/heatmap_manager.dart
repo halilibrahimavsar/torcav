@@ -82,13 +82,13 @@ class HeatmapManager {
     _barometerSource.stopTracking(); // Ensure fresh start
   }
 
-  /// Stop and save the session
-  Future<void> stopSession({required List<WallSegment> liveWalls}) async {
+  /// Stop and save the session, returning the finalized session
+  Future<HeatmapSession?> stopSession({required List<WallSegment> liveWalls}) async {
     _signalTracker.stop();
     _positionTracker.stop();
     _barometerSource.stopTracking();
 
-    if (_currentSession == null) return;
+    if (_currentSession == null) return null;
 
     var finalSession = _currentSession!;
 
@@ -103,6 +103,8 @@ class HeatmapManager {
     await _repository.saveSession(finalSession);
     _currentSession = null;
     _sessionController.add(null);
+    
+    return finalSession;
   }
 
   /// Discard the current session

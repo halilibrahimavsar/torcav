@@ -44,12 +44,14 @@ class HeatmapCanvas extends StatefulWidget {
     this.isMiniMap = false,
     this.coverageScore = 1.0,
     this.sparseRegion,
+    this.padding = EdgeInsets.zero,
     super.key,
   });
 
   final bool isMiniMap;
   final double coverageScore;
   final SparseRegion? sparseRegion;
+  final EdgeInsets padding;
 
   @override
   State<HeatmapCanvas> createState() => _HeatmapCanvasState();
@@ -112,34 +114,35 @@ class _HeatmapCanvasState extends State<HeatmapCanvas> {
                 walls: widget.floorPlan?.walls ?? const [],
                 currentPosition: widget.currentPosition,
               );
-        final viewport = _Viewport.fit(size, worldBounds);
+        final viewport = _Viewport.fit(size, worldBounds, widget.padding);
 
-        return Stack(
-          children: [
-            InteractiveViewer(
-              transformationController: _transformationController,
-              maxScale: 5.0,
-              minScale: 0.5,
-              clipBehavior: Clip.none,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTapDown:
-                    widget.onTap == null
-                        ? null
-                        : (details) {
-                            final RenderBox box =
-                                context.findRenderObject() as RenderBox;
-                            final Offset localOffset = box.globalToLocal(
-                              details.globalPosition,
-                            );
-                            final Matrix4 matrix =
-                                _transformationController.value;
-                            final Matrix4 inverse = Matrix4.inverted(matrix);
-                            final Offset transformed =
-                                MatrixUtils.transformPoint(inverse, localOffset);
-                            widget.onTap!(viewport.canvasToWorld(transformed));
-                          },
-                child: Stack(
+        return ClipRect(
+          child: Stack(
+            children: [
+              InteractiveViewer(
+                transformationController: _transformationController,
+                maxScale: 5.0,
+                minScale: 0.5,
+                clipBehavior: Clip.none,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTapDown:
+                      widget.onTap == null
+                          ? null
+                          : (details) {
+                              final RenderBox box =
+                                  context.findRenderObject() as RenderBox;
+                              final Offset localOffset = box.globalToLocal(
+                                details.globalPosition,
+                              );
+                              final Matrix4 matrix =
+                                  _transformationController.value;
+                              final Matrix4 inverse = Matrix4.inverted(matrix);
+                              final Offset transformed =
+                                  MatrixUtils.transformPoint(inverse, localOffset);
+                              widget.onTap!(viewport.canvasToWorld(transformed));
+                            },
+                  child: Stack(
                   children: [
                     // ── Static layer: grid, walls, heatmap, path, HUD overlays ──
                     // RepaintBoundary isolates this from position/heading updates.
@@ -199,6 +202,7 @@ class _HeatmapCanvasState extends State<HeatmapCanvas> {
             if (!widget.isMiniMap)
               const IgnorePointer(child: _HudOverlay()),
           ],
+          ),
         );
       },
     );
@@ -884,18 +888,21 @@ class _Viewport {
     required this.size,
   });
 
-  factory _Viewport.fit(Size size, _WorldBounds bounds) {
+  factory _Viewport.fit(Size size, _WorldBounds bounds, [EdgeInsets padding = EdgeInsets.zero]) {
     const outerPadding = 18.0;
-    final usableWidth = math.max(1.0, size.width - (outerPadding * 2));
-    final usableHeight = math.max(1.0, size.height - (outerPadding * 2));
+    final usableWidth = math.max(1.0, size.width - (outerPadding * 2) - padding.horizontal);
+    final usableHeight = math.max(1.0, size.height - (outerPadding * 2) - padding.vertical);
     final scale = math.min(
       usableWidth / bounds.width,
       usableHeight / bounds.height,
     );
     final contentWidth = bounds.width * scale;
     final contentHeight = bounds.height * scale;
-    final offsetX = (size.width - contentWidth) / 2;
-    final offsetY = (size.height - contentHeight) / 2;
+    
+    // Position within the padded area: left + (remaining_width / 2)
+    final offsetX = outerPadding + padding.left + (usableWidth - contentWidth) / 2;
+    // Position within the padded area: top + (remaining_height / 2)
+    final offsetY = outerPadding + padding.top + (usableHeight - contentHeight) / 2;
 
     return _Viewport(
       bounds: bounds,

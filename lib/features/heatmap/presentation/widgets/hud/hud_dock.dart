@@ -107,6 +107,35 @@ class HudDock extends StatelessWidget {
             );
           },
         ),
+        BlocSelector<HeatmapBloc, HeatmapState, bool>(
+          selector: (s) => s.pendingWalls.any((wall) {
+            final cx = (wall.x1 + wall.x2) / 2;
+            final cy = (wall.y1 + wall.y2) / 2;
+            return (cx - 0.5).abs() < 0.2 && (cy - 0.5).abs() < 0.2;
+          }),
+          builder: (context, hasWall) {
+            if (!hasWall) return const SizedBox.shrink();
+            return Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: _DockButton(
+                icon: Icons.architecture_rounded,
+                tooltip: 'Commit Wall Segment',
+                color: AppColors.neonYellow,
+                onTap: () {
+                  HapticFeedback.heavyImpact();
+                  context.read<HeatmapBloc>().addNearestPendingWall();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Wall added manually'),
+                      duration: Duration(seconds: 2),
+                      backgroundColor: Colors.black87,
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        ),
         if (onFinish != null) ...[
           const SizedBox(height: 10),
           _DockButton(

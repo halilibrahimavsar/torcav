@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -48,7 +49,15 @@ class ReticleHitArea extends StatelessWidget {
           behavior: HitTestBehavior.opaque,
           onTap: () {
             if (slice.hasPendingWall) {
+              HapticFeedback.heavyImpact();
               context.read<HeatmapBloc>().addNearestPendingWall();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Wall added manually'),
+                  duration: Duration(seconds: 2),
+                  backgroundColor: Colors.black87,
+                ),
+              );
             } else if (isWeak) {
               onFlagWeakZone?.call();
             }
@@ -75,50 +84,77 @@ class ReticleHitArea extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (slice.hasPendingWall) ...[
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.neonYellow.withValues(alpha: 0.18),
-                          border: Border.all(
-                            color: AppColors.neonYellow.withValues(alpha: 0.8),
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          'ADD WALL',
-                          style: GoogleFonts.orbitron(
-                            color: AppColors.neonYellow,
-                            fontSize: 8,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
+                      AnimatedBuilder(
+                        animation: controller,
+                        builder: (context, child) {
+                          final scale = 1.0 + (math.sin(controller.value * 2 * math.pi) * 0.08);
+                          return Transform.scale(
+                            scale: scale,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.neonYellow.withValues(alpha: 0.25),
+                                border: Border.all(
+                                  color: AppColors.neonYellow.withValues(alpha: 0.9),
+                                  width: 1.2,
+                                ),
+                                borderRadius: BorderRadius.circular(14),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.neonYellow.withValues(alpha: 0.2),
+                                    blurRadius: 8,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
+                              ),
+                              child: Text(
+                                'ADD WALL',
+                                style: GoogleFonts.orbitron(
+                                  color: AppColors.neonYellow,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 1.5,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ] else if (isWeak) ...[
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: color.withValues(alpha: 0.18),
-                          border: Border.all(
-                            color: color.withValues(alpha: 0.8),
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          'TAP TO FLAG',
-                          style: GoogleFonts.orbitron(
-                            color: color,
-                            fontSize: 8,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
+                      AnimatedBuilder(
+                        animation: controller,
+                        builder: (context, child) {
+                          final scale = 1.0 + (math.sin(controller.value * 2 * math.pi) * 0.05);
+                          return Transform.scale(
+                            scale: scale,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: color.withValues(alpha: 0.22),
+                                border: Border.all(
+                                  color: color.withValues(alpha: 0.8),
+                                  width: 1.2,
+                                ),
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: Text(
+                                'TAP TO FLAG',
+                                style: GoogleFonts.orbitron(
+                                  color: color,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 1.5,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ],
