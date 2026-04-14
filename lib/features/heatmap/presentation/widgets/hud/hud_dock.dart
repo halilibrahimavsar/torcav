@@ -108,11 +108,16 @@ class HudDock extends StatelessWidget {
           },
         ),
         BlocSelector<HeatmapBloc, HeatmapState, bool>(
-          selector: (s) => s.pendingWalls.any((wall) {
-            final cx = (wall.x1 + wall.x2) / 2;
-            final cy = (wall.y1 + wall.y2) / 2;
-            return (cx - 0.5).abs() < 0.2 && (cy - 0.5).abs() < 0.2;
-          }),
+          selector: (s) {
+            final pos = s.currentPosition;
+            if (pos == null) return false;
+            for (final wall in s.pendingWalls) {
+              final cx = (wall.x1 + wall.x2) / 2 - pos.dx;
+              final cy = (wall.y1 + wall.y2) / 2 - pos.dy;
+              if (cx * cx + cy * cy < 6.25) return true;
+            }
+            return false;
+          },
           builder: (context, hasWall) {
             if (!hasWall) return const SizedBox.shrink();
             return Padding(

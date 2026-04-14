@@ -3,6 +3,7 @@ package com.example.torcav
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.text.TextUtils
+import com.example.torcav.ar.ArScenePlugin
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -13,6 +14,11 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+
+        ArScenePlugin().register(
+            flutterEngine.dartExecutor.binaryMessenger,
+            flutterEngine.platformViewsController.registry,
+        )
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,

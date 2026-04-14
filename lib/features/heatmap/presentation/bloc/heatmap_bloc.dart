@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math' as math;
-import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +16,7 @@ import 'package:torcav/features/heatmap/domain/repositories/heatmap_repository.d
 import 'package:torcav/features/heatmap/domain/services/heatmap_manager.dart';
 import 'package:torcav/features/heatmap/domain/services/signal_tracker.dart';
 import 'package:torcav/features/heatmap/domain/usecases/get_heatmap_sessions_usecase.dart';
-import 'package:torcav/features/heatmap/data/datasources/wall_detector_datasource.dart';
+import 'package:torcav/features/heatmap/data/datasources/ar_plane_scanner_datasource.dart';
 import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/scan_phase.dart';
 
@@ -28,7 +27,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   HeatmapBloc(
     this._getSessions,
     this._repository,
-    this._wallDetector,
+    this._arPlaneScanner,
     this._heatmapManager,
     this._signalTracker,
     this._guidanceService,
@@ -38,22 +37,22 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
   final GetHeatmapSessionsUsecase _getSessions;
   final HeatmapRepository _repository;
-  final WallDetectorDataSource _wallDetector;
+  final ArPlaneScannerDataSource _arPlaneScanner;
   final HeatmapManager _heatmapManager;
   final SignalTracker _signalTracker;
   final SurveyGuidanceService _guidanceService;
 
-  static const _wallProcessingCooldown = Duration(milliseconds: 250);
   static const _flagMergeDistanceMeters = 0.5;
+  static const _wallCommitRadiusMeters = 2.5;
+  static const _wallStabilityMeters = 0.12;
 
   StreamSubscription? _managerSessionSub;
   StreamSubscription? _managerGateSub;
   StreamSubscription? _managerPositionSub;
   StreamSubscription? _signalStateSub;
+  StreamSubscription? _wallScannerSub;
   Timer? _autoWallTimer;
   WallSegment? _stableWallCandidate;
-  bool _isProcessingCameraFrame = false;
-  DateTime? _lastWallFrameAt;
 
   void _setupListeners() {
     _managerSessionSub = _heatmapManager.sessionStream.listen((session) {
@@ -103,6 +102,12 @@ class HeatmapBloc extends Cubit<HeatmapState> {
       }
     });
 
+    _wallScannerSub = _arPlaneScanner.wallStream.listen((walls) {
+      if (state.phase != ScanPhase.scanning) return;
+      emit(state.copyWith(pendingWalls: walls));
+      _updateAutoWallTimer(walls);
+    });
+
     _signalStateSub = _signalTracker.stateStream.listen((signal) {
       emit(state.copyWith(
         currentRssi: signal.currentRssi,
@@ -126,8 +131,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   }
 
   Future<void> startScanning(String name) async {
-    _isProcessingCameraFrame = false;
-    _lastWallFrameAt = null;
+    _arPlaneScanner.start();
 
     emit(
       state.copyWith(
@@ -157,88 +161,34 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     await _heatmapManager.startSession(name, null, null);
   }
 
-  /// Adds the wall segment currently closest to the reticle center (0.5, 0.5) 
-  /// into the live floor plan.
+  /// Commits the pending wall whose midpoint is closest to the user's
+  /// current world position, provided it's within [_wallCommitRadiusMeters].
   void addNearestPendingWall() {
-    if (state.phase != ScanPhase.scanning || state.pendingWalls.isEmpty) return;
+    final best = _nearestPendingWall();
+    if (best != null) addWallFromAr(best);
+  }
 
-    // Find the wall closest to screen center (0.5, 0.5)
+  WallSegment? _nearestPendingWall() {
+    if (state.phase != ScanPhase.scanning || state.pendingWalls.isEmpty) {
+      return null;
+    }
+    final pos = state.currentPosition ?? Offset.zero;
+
     WallSegment? best;
-    double minDistance = double.infinity;
-
+    double bestDist = double.infinity;
     for (final wall in state.pendingWalls) {
-      final centerX = (wall.x1 + wall.x2) / 2;
-      final centerY = (wall.y1 + wall.y2) / 2;
-      final dist = math.sqrt(
-        math.pow(centerX - 0.5, 2) + math.pow(centerY - 0.5, 2),
-      );
-      if (dist < minDistance) {
-        minDistance = dist;
+      final cx = (wall.x1 + wall.x2) / 2;
+      final cy = (wall.y1 + wall.y2) / 2;
+      final dx = cx - pos.dx;
+      final dy = cy - pos.dy;
+      final d = math.sqrt(dx * dx + dy * dy);
+      if (d < bestDist) {
+        bestDist = d;
         best = wall;
       }
     }
-
-    if (best != null && minDistance < 0.25) {
-      final worldWall = _projectScreenToWorld(best);
-      addWallFromAr(worldWall);
-    }
-  }
-
-  /// Projects a normalized screen-space wall segment into metric world space
-  /// using the current position, heading, and assumed camera FOV.
-  WallSegment _projectScreenToWorld(WallSegment screen) {
-    final pos = state.currentPosition ?? Offset.zero;
-    final headingDeg = state.currentHeading;
-    
-    // Assumptions for basic projection without full AR anchors:
-    // 1. Wall is roughly 1.8m away (typical arm's reach + room perspective).
-    // 2. Camera horizontal FOV is ~60 degrees.
-    const distance = 1.8;
-    const hFov = 60.0;
-    
-    double projectPoint(double nx, double ny) {
-      // Offset from center screen (0.5) to angle
-      final angleOffset = (nx - 0.5) * hFov;
-      final worldAngle = (headingDeg + angleOffset) * (math.pi / 180.0);
-      
-      // Calculate world X, Y
-      // resultX = currentX + d * sin(angle)
-      // resultY = currentY + d * cos(angle)
-      return worldAngle; // Returning angle to use in sin/cos for X and Y
-    }
-
-    final a1 = projectPoint(screen.x1, screen.y1);
-    final a2 = projectPoint(screen.x2, screen.y2);
-
-    return WallSegment(
-      x1: pos.dx + distance * math.sin(a1),
-      y1: pos.dy + distance * math.cos(a1),
-      x2: pos.dx + distance * math.sin(a2),
-      y2: pos.dy + distance * math.cos(a2),
-    );
-  }
-
-  Future<void> processCameraImage(dynamic cameraImage) async {
-    if (state.phase != ScanPhase.scanning) return;
-    final now = DateTime.now();
-    if (_isProcessingCameraFrame) return;
-    if (_lastWallFrameAt != null &&
-        now.difference(_lastWallFrameAt!) < _wallProcessingCooldown) {
-      return;
-    }
-
-    _isProcessingCameraFrame = true;
-    _lastWallFrameAt = now;
-
-    try {
-      final screenWalls = await _wallDetector.detectWalls(
-        cameraImage as CameraImage,
-      );
-      emit(state.copyWith(pendingWalls: screenWalls));
-      _updateAutoWallTimer(screenWalls);
-    } finally {
-      _isProcessingCameraFrame = false;
-    }
+    if (best == null || bestDist > _wallCommitRadiusMeters) return null;
+    return best;
   }
 
   void _updateAutoWallTimer(List<WallSegment> pending) {
@@ -248,50 +198,28 @@ class HeatmapBloc extends Cubit<HeatmapState> {
       return;
     }
 
-    // Find the wall closest to screen center (0.5, 0.5)
-    WallSegment? nearest;
-    double minDistance = double.infinity;
-
-    for (final wall in pending) {
-      final centerX = (wall.x1 + wall.x2) / 2;
-      final centerY = (wall.y1 + wall.y2) / 2;
-      final dist = math.sqrt(
-        math.pow(centerX - 0.5, 2) + math.pow(centerY - 0.5, 2),
-      );
-      if (dist < minDistance) {
-        minDistance = dist;
-        nearest = wall;
-      }
-    }
-
-    if (nearest == null || minDistance > 0.15) { // Tighter center threshold for auto-commit
+    final nearest = _nearestPendingWall();
+    if (nearest == null) {
       _autoWallTimer?.cancel();
       _stableWallCandidate = null;
       return;
     }
 
-    // If the candidate is stable (didn't move much from previous center candidate)
     if (_stableWallCandidate != null) {
       final prevCX = (_stableWallCandidate!.x1 + _stableWallCandidate!.x2) / 2;
       final prevCY = (_stableWallCandidate!.y1 + _stableWallCandidate!.y2) / 2;
       final newCX = (nearest.x1 + nearest.x2) / 2;
       final newCY = (nearest.y1 + nearest.y2) / 2;
-      
-      final delta = math.sqrt(math.pow(newCX - prevCX, 2) + math.pow(newCY - prevCY, 2));
-      
-      if (delta < 0.05) {
-        // Already timing this stable wall, don't restart timer
-        return;
-      }
+      final delta = math.sqrt(
+        math.pow(newCX - prevCX, 2) + math.pow(newCY - prevCY, 2),
+      );
+      if (delta < _wallStabilityMeters) return;
     }
 
-    // New or moved stable candidate
     _autoWallTimer?.cancel();
     _stableWallCandidate = nearest;
     _autoWallTimer = Timer(const Duration(milliseconds: 1200), () {
-      if (_stableWallCandidate != null) {
-        addNearestPendingWall();
-      }
+      if (_stableWallCandidate != null) addNearestPendingWall();
     });
   }
 
@@ -360,6 +288,9 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
   Future<void> stopScanning() async {
     if (!state.isRecording) return;
+    await _arPlaneScanner.stop();
+    _autoWallTimer?.cancel();
+    _stableWallCandidate = null;
 
     final walls = state.liveFloorPlan?.walls ?? [];
     final savedSession = await _heatmapManager.stopSession(liveWalls: walls);
@@ -428,6 +359,9 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
   Future<void> _discardScanning() async {
     if (!state.isRecording) return;
+    await _arPlaneScanner.stop();
+    _autoWallTimer?.cancel();
+    _stableWallCandidate = null;
     _heatmapManager.discardSession();
 
     emit(
@@ -454,6 +388,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     _managerGateSub?.cancel();
     _managerPositionSub?.cancel();
     _signalStateSub?.cancel();
+    _wallScannerSub?.cancel();
     _autoWallTimer?.cancel();
     return super.close();
   }

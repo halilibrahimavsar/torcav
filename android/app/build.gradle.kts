@@ -61,4 +61,10 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+
+    // Native ARCore scene view (replaces deprecated Sceneform).
+    // SceneView wraps ARCore + Filament so we can ship a PlatformView that
+    // streams real vertical-plane polygons into Dart via EventChannel.
+    implementation("io.github.sceneview:arsceneview:2.2.1")
+    implementation("com.google.ar:core:1.45.0")
 }

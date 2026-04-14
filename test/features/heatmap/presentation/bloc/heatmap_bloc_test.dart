@@ -1,10 +1,9 @@
 import 'dart:async';
 
-import 'package:camera/camera.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:torcav/features/heatmap/data/datasources/wall_detector_datasource.dart';
+import 'package:torcav/features/heatmap/data/datasources/ar_plane_scanner_datasource.dart';
 import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
@@ -24,8 +23,8 @@ class MockGetHeatmapSessionsUsecase extends Mock
 
 class MockHeatmapRepository extends Mock implements HeatmapRepository {}
 
-class MockWallDetectorDataSource extends Mock
-    implements WallDetectorDataSource {}
+class MockArPlaneScannerDataSource extends Mock
+    implements ArPlaneScannerDataSource {}
 
 class MockHeatmapManager extends Mock implements HeatmapManager {}
 
@@ -33,15 +32,13 @@ class MockSignalTracker extends Mock implements SignalTracker {}
 
 class MockSurveyGuidanceService extends Mock implements SurveyGuidanceService {}
 
-class FakeCameraImage extends Fake implements CameraImage {}
-
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late HeatmapBloc bloc;
   late MockGetHeatmapSessionsUsecase getSessions;
   late MockHeatmapRepository repository;
-  late MockWallDetectorDataSource wallDetector;
+  late MockArPlaneScannerDataSource arPlaneScanner;
   late MockHeatmapManager heatmapManager;
   late MockSignalTracker signalTracker;
   late MockSurveyGuidanceService guidanceService;
@@ -61,7 +58,6 @@ void main() {
       createdAt: DateTime(2024),
     );
     registerFallbackValue(fallbackSession);
-    registerFallbackValue(FakeCameraImage());
     registerFallbackValue(SurveyGate.none);
     registerFallbackValue(const <HeatmapPoint>[]);
   });
@@ -70,7 +66,7 @@ void main() {
   setUp(() {
     getSessions = MockGetHeatmapSessionsUsecase();
     repository = MockHeatmapRepository();
-    wallDetector = MockWallDetectorDataSource();
+    arPlaneScanner = MockArPlaneScannerDataSource();
     heatmapManager = MockHeatmapManager();
     signalTracker = MockSignalTracker();
     guidanceService = MockSurveyGuidanceService();
@@ -83,7 +79,7 @@ void main() {
     // Reset mocks before each test
     reset(getSessions);
     reset(repository);
-    reset(wallDetector);
+    reset(arPlaneScanner);
     reset(heatmapManager);
     reset(signalTracker);
     reset(guidanceService);
@@ -119,7 +115,10 @@ void main() {
       readyToFinish: false,
     ));
 
-    when(() => wallDetector.detectWalls(any())).thenAnswer((_) async => []);
+    when(() => arPlaneScanner.wallStream)
+        .thenAnswer((_) => const Stream<List<WallSegment>>.empty());
+    when(() => arPlaneScanner.start()).thenAnswer((_) {});
+    when(() => arPlaneScanner.stop()).thenAnswer((_) async {});
     when(() => heatmapManager.startSession(any(), any(), any())).thenAnswer((_) async {});
     when(() => heatmapManager.stopSession(liveWalls: any(named: 'liveWalls'))).thenAnswer((_) async => null);
     when(() => heatmapManager.discardSession()).thenReturn(null);
@@ -129,7 +128,7 @@ void main() {
     bloc = HeatmapBloc(
       getSessions,
       repository,
-      wallDetector,
+      arPlaneScanner,
       heatmapManager,
       signalTracker,
       guidanceService,

@@ -20,6 +20,9 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="true">
+        <!-- ARCore availability: "optional" lets devices without ARCore install
+             the app; Dart falls back to the Sobel wall detector. -->
+        <meta-data android:name="com.google.ar.core" android:value="optional"/>
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />

@@ -10,6 +10,18 @@ import 'package:torcav/features/heatmap/domain/services/signal_tier.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
 import 'hud_models.dart';
 
+/// Returns true when any pending wall is within commit range of the user.
+bool _hasNearbyPendingWall(HeatmapState s) {
+  final pos = s.currentPosition;
+  if (pos == null || s.pendingWalls.isEmpty) return false;
+  for (final wall in s.pendingWalls) {
+    final cx = (wall.x1 + wall.x2) / 2 - pos.dx;
+    final cy = (wall.y1 + wall.y2) / 2 - pos.dy;
+    if (cx * cx + cy * cy < 6.25) return true; // within 2.5 m
+  }
+  return false;
+}
+
 /// Center reticle that pulses and handles manual weak zone flagging.
 class ReticleHitArea extends StatelessWidget {
   const ReticleHitArea({
@@ -29,11 +41,7 @@ class ReticleHitArea extends StatelessWidget {
             rssi: s.currentRssi,
             lastStepTimestamp: s.lastStepTimestamp,
             surveyGate: s.surveyGate,
-            hasPendingWall: s.pendingWalls.any((wall) {
-              final cx = (wall.x1 + wall.x2) / 2;
-              final cy = (wall.y1 + wall.y2) / 2;
-              return (cx - 0.5).abs() < 0.15 && (cy - 0.5).abs() < 0.15;
-            }),
+            hasPendingWall: _hasNearbyPendingWall(s),
           ),
       builder: (context, slice) {
         final tier = signalTierFor(slice.rssi);
