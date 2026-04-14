@@ -36,9 +36,21 @@ class MeasurementLockBanner extends StatelessWidget {
           ),
           SurveyGate.staleSignal => (
             'WAITING FOR FRESH SIGNAL',
-            'Connected RSSI is older than 3 seconds. Hold position for a new sample.',
+            'RSSI is older than 3 seconds. Walk briefly or hold position for a new scan.',
             AppColors.neonOrange,
             Icons.hourglass_top_rounded,
+          ),
+          SurveyGate.weakSignal => (
+            'SIGNAL DROPPED',
+            'Wi-Fi signal is below -85dBm. Move closer to the Access Point.',
+            AppColors.neonRed,
+            Icons.signal_wifi_bad_rounded,
+          ),
+          SurveyGate.pdrDrift => (
+            'COMPASS DRIFT DETECTED',
+            'Magnetic interference found. Walk in a figure-8 or tap Realign.',
+            AppColors.neonYellow,
+            Icons.compass_calibration_rounded,
           ),
           SurveyGate.originNotPlaced => (
             'PLACE SURVEY ORIGIN',

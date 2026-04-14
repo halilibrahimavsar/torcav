@@ -22,9 +22,11 @@ class HeatmapState extends Equatable {
     this.lastSignalSampleCount = 0,
     this.lastStepTimestamp,
     this.currentFloor = 0,
-    this.isAutoSampling = false,
+    this.isAutoSampling = true,
     this.lastRecordedPosition,
     this.autoSamplingDistance = 0.8,
+    this.coverageScore = 0.0,
+    this.sparseRegion,
   });
 
   final List<HeatmapSession> sessions;
@@ -84,6 +86,12 @@ class HeatmapState extends Equatable {
   /// Distance threshold in meters to trigger an automatic sample.
   final double autoSamplingDistance;
 
+  /// Overall coverage score (0.0 to 1.0) derived from spatial density.
+  final double coverageScore;
+
+  /// The quadrant identified as having the lowest data density.
+  final SparseRegion? sparseRegion;
+
   HeatmapState copyWith({
     List<HeatmapSession>? sessions,
     HeatmapSession? currentSession,
@@ -119,6 +127,9 @@ class HeatmapState extends Equatable {
     Offset? lastRecordedPosition,
     bool clearLastRecordedPosition = false,
     double? autoSamplingDistance,
+    double? coverageScore,
+    SparseRegion? sparseRegion,
+    bool clearSparseRegion = false,
   }) => HeatmapState(
     sessions: sessions ?? this.sessions,
     currentSession:
@@ -152,6 +163,8 @@ class HeatmapState extends Equatable {
         ? null
         : lastRecordedPosition ?? this.lastRecordedPosition,
     autoSamplingDistance: autoSamplingDistance ?? this.autoSamplingDistance,
+    coverageScore: coverageScore ?? this.coverageScore,
+    sparseRegion: clearSparseRegion ? null : sparseRegion ?? this.sparseRegion,
   );
 
   @override
@@ -179,5 +192,7 @@ class HeatmapState extends Equatable {
     isAutoSampling,
     lastRecordedPosition,
     autoSamplingDistance,
+    coverageScore,
+    sparseRegion,
   ];
 }

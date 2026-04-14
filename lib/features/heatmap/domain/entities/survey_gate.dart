@@ -4,6 +4,8 @@ enum SurveyGate {
   none,
   noConnectedBssid,
   staleSignal,
+  weakSignal,
+  pdrDrift,
   originNotPlaced,
   trackingLost,
 }

@@ -10,31 +10,32 @@ import '../../bloc/heatmap_bloc.dart';
 import 'hud_models.dart';
 
 /// Floating diagnostic data centered at the bottom of the AR view.
-class LiveSignalTag extends StatelessWidget {
+class LiveSignalTag extends StatefulWidget {
   const LiveSignalTag({super.key, required this.estimatedMode});
 
   final bool estimatedMode;
 
   @override
+  State<LiveSignalTag> createState() => _LiveSignalTagState();
+}
+
+class _LiveSignalTagState extends State<LiveSignalTag> {
+  bool _expanded = false;
+
+  @override
   Widget build(BuildContext context) {
     return BlocSelector<HeatmapBloc, HeatmapState, SignalSlice>(
-      // BUG-07: Keep ageSeconds out of the selector — DateTime.now() called
-      // inside the selector would freeze the displayed value between state
-      // emissions. Age is computed in the builder instead so it always reflects
-      // wall-clock time at render time.
       selector:
           (s) => SignalSlice(
             rssi: s.currentRssi,
             stdDev: s.lastSignalStdDev,
             sampleCount: s.lastSignalSampleCount,
-            // Pass the raw timestamp; age is derived in builder.
             ageSeconds: null,
             surveyGate: s.surveyGate,
           ),
       builder: (context, slice) {
         if (slice.rssi == null) return const SizedBox.shrink();
 
-        // Compute age here so it reflects the real clock, not the last emit time.
         final lastSignalAt =
             context.select<HeatmapBloc, DateTime?>((b) => b.state.lastSignalAt);
         final ageSeconds =
@@ -45,60 +46,65 @@ class LiveSignalTag extends StatelessWidget {
         final tier = signalTierFor(slice.rssi);
         final color = signalTierColor(tier);
 
-        return GlassmorphicContainer(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          borderRadius: BorderRadius.circular(24),
-          borderColor: color.withValues(alpha: 0.6),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _SignalIcon(rssi: slice.rssi!, color: color),
-              const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
+        return GestureDetector(
+          onTap: () => setState(() => _expanded = !_expanded),
+          child: GlassmorphicContainer(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            borderRadius: BorderRadius.circular(24),
+            borderColor: color.withValues(alpha: 0.6),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _SignalIcon(rssi: slice.rssi!, color: color),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '${slice.rssi}',
+                          style: GoogleFonts.orbitron(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      signalTierLabel(tier).toUpperCase(),
+                      style: GoogleFonts.outfit(
+                        color: color,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    if (_expanded) ...[
+                      const SizedBox(height: 4),
                       Text(
-                        '${slice.rssi}',
-                        style: GoogleFonts.orbitron(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
+                        'STD ${slice.stdDev.toStringAsFixed(1)} · ${slice.sampleCount} samp · ${ageSeconds ?? '-'}s',
+                        style: GoogleFonts.outfit(
+                          color: Colors.white60,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
-                  ),
-                  Text(
-                    signalTierLabel(tier).toUpperCase(),
-                    style: GoogleFonts.outfit(
-                      color: color,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'STD ${slice.stdDev.toStringAsFixed(1)} · ${slice.sampleCount} samp · ${ageSeconds ?? '-'}s',
-                    style: GoogleFonts.outfit(
-                      color: Colors.white60,
-                      fontSize: 9,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 16),
-              Container(width: 1, height: 30, color: Colors.white24),
-              const SizedBox(width: 16),
-              _ArStatusIndicator(
-                gate: slice.surveyGate,
-                estimatedMode: estimatedMode,
-              ),
-            ],
+                  ],
+                ),
+                const SizedBox(width: 16),
+                Container(width: 1, height: 30, color: Colors.white24),
+                const SizedBox(width: 16),
+                _ArStatusIndicator(
+                  gate: slice.surveyGate,
+                  estimatedMode: widget.estimatedMode,
+                ),
+              ],
+            ),
           ),
         );
       },

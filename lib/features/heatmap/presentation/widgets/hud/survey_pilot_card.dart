@@ -33,7 +33,7 @@ class SurveyPilotCard extends StatelessWidget {
                   const SizedBox(width: 6),
                   Flexible(
                     child: Text(
-                      _stageLabel(guidance.stage),
+                      (guidance.customInstruction ?? _stageLabel(guidance.stage)).toUpperCase(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.orbitron(

@@ -182,6 +182,15 @@ class HeatmapCopy {
   String get blindSpotsLabel => isTurkish ? 'OLU NOKTALAR' : 'BLIND SPOTS';
   String get finishAndSave => isTurkish ? 'KAYDET VE BITIR' : 'SAVE & FINISH';
   String get restartSurvey => isTurkish ? 'YENIDEN BASLAT' : 'RESTART SURVEY';
+  String get renameSurvey => isTurkish ? 'ISIM DEGISTIR' : 'RENAME SURVEY';
+  String get shareHeatmap => isTurkish ? 'HARITAYI PAYLAS' : 'SHARE HEATMAP';
+  String get renameDialogTitle => isTurkish ? 'TUR ISMINI GUNCELLE' : 'RENAME SURVEY';
+  String get save => isTurkish ? 'Kaydet' : 'Save';
+  String get shareSubject => isTurkish ? 'Torcav WiFi Isi Haritasi' : 'Torcav WiFi Heatmap';
+  String get shareText =>
+      isTurkish
+          ? 'Evimin WiFi isi haritasini paylasiyorum.'
+          : 'Sharing my WiFi heatmap result.';
 
   String get issueTitle => isTurkish ? 'Duzeltilmesi Gereken Durum' : 'Issue';
   String get genericIssueBody =>

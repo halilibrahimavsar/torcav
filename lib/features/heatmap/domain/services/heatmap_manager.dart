@@ -52,6 +52,14 @@ class HeatmapManager {
   SignalState _lastSignalState = const SignalState();
   StreamSubscription? _signalSub;
   StreamSubscription? _positionSub;
+  bool _autoSamplingEnabled = true;
+
+  /// Toggles automatic recording on step candidates. When false the manager
+  /// stops auto-recording points; the user must explicitly record via the
+  /// reticle (flag) action.
+  void setAutoSamplingEnabled(bool enabled) {
+    _autoSamplingEnabled = enabled;
+  }
 
   /// Start a new scanning session
   Future<void> startSession(String name, String? bssid, String? ssid) async {
@@ -113,7 +121,8 @@ class HeatmapManager {
 
   void _onPositionCandidate(PointCandidate candidate) {
     if (_currentSession == null) return;
-    
+    if (!_autoSamplingEnabled) return;
+
     // Validate if we should record
     if (!_validateSignalFreshness()) {
       _gateController.add(SurveyGate.staleSignal);
@@ -151,6 +160,43 @@ class HeatmapManager {
     _sessionController.add(_currentSession);
   }
 
+  /// Manually records a point for the current session.
+  void recordPoint({
+    required double floorX,
+    required double floorY,
+    required double heading,
+    required int rssi,
+    required DateTime timestamp,
+    required String ssid,
+    required String bssid,
+    required int floor,
+    required int sampleCount,
+    required double rssiStdDev,
+  }) {
+    if (_currentSession == null) return;
+
+    final newPoint = HeatmapPoint(
+      x: 0,
+      y: 0,
+      floorX: floorX,
+      floorY: floorY,
+      floorZ: 0,
+      heading: heading,
+      rssi: rssi,
+      timestamp: timestamp,
+      ssid: ssid,
+      bssid: bssid,
+      floor: floor,
+      sampleCount: sampleCount,
+      rssiStdDev: rssiStdDev,
+    );
+
+    _currentSession = _currentSession!.copyWith(
+      points: [..._currentSession!.points, newPoint],
+    );
+    _sessionController.add(_currentSession);
+  }
+
   bool _validateSignalFreshness() {
     if (_lastSignalState.currentRssi == null || _lastSignalState.lastSignalAt == null) return false;
     final age = DateTime.now().difference(_lastSignalState.lastSignalAt!).inSeconds;
@@ -165,6 +211,8 @@ class HeatmapManager {
       _gateController.add(SurveyGate.noConnectedBssid);
     } else if (!_validateSignalFreshness()) {
       _gateController.add(SurveyGate.staleSignal);
+    } else if ((_lastSignalState.currentRssi ?? 0) < -85) {
+      _gateController.add(SurveyGate.weakSignal);
     } else {
       _gateController.add(SurveyGate.none);
     }
@@ -178,6 +226,11 @@ class HeatmapManager {
   /// Syncs global position from AR
   void syncPosition(double x, double y) {
     _positionTracker.setPosition(x, y);
+  }
+
+  /// Manually realigns the underlying PDR heading to the absolute compass.
+  void realignHeading() {
+    _positionTracker.realign();
   }
 
   void dispose() {

@@ -96,6 +96,11 @@ class PositionTracker {
     _lastRecordedY = y;
   }
 
+  /// Manually realigns the underlying PDR heading to the absolute compass.
+  void realign() {
+    _positionDataSource.realignHeading();
+  }
+
   void dispose() {
     stop();
     _candidateController.close();

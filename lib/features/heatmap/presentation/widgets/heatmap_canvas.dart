@@ -9,6 +9,7 @@ import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
 import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
+import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
 import 'heatmap_compass.dart';
 
 /// Renders signal-strength data and floor plan walls.
@@ -41,10 +42,14 @@ class HeatmapCanvas extends StatefulWidget {
     this.maxRssi,
     this.showControls = true,
     this.isMiniMap = false,
+    this.coverageScore = 1.0,
+    this.sparseRegion,
     super.key,
   });
 
   final bool isMiniMap;
+  final double coverageScore;
+  final SparseRegion? sparseRegion;
 
   @override
   State<HeatmapCanvas> createState() => _HeatmapCanvasState();
@@ -148,6 +153,8 @@ class _HeatmapCanvasState extends State<HeatmapCanvas> {
                           minRssi: effectiveMinRssi,
                           maxRssi: effectiveMaxRssi,
                           isMiniMap: widget.isMiniMap,
+                          coverageScore: widget.coverageScore,
+                          sparseRegion: widget.sparseRegion,
                         ),
                         child: const SizedBox.expand(),
                       ),
@@ -243,6 +250,8 @@ class _StaticHeatmapPainter extends CustomPainter {
   final int minRssi;
   final int maxRssi;
   final bool isMiniMap;
+  final double coverageScore;
+  final SparseRegion? sparseRegion;
 
   _StaticHeatmapPainter({
     required this.points,
@@ -252,6 +261,8 @@ class _StaticHeatmapPainter extends CustomPainter {
     required this.minRssi,
     required this.maxRssi,
     required this.isMiniMap,
+    required this.coverageScore,
+    this.sparseRegion,
   });
 
   @override
@@ -281,6 +292,53 @@ class _StaticHeatmapPainter extends CustomPainter {
       if (points.isNotEmpty) {
         _drawRssiLegend(canvas, size);
       }
+    }
+
+    if (coverageScore < 0.35) {
+      _drawSparseTint(canvas, size);
+    }
+  }
+
+  void _drawSparseTint(Canvas canvas, Size size) {
+    // Subtle darkening overlay when coverage is critically low (<35%)
+    // This visually signals that the data is "under-baked"
+    final paint =
+        Paint()
+          ..color = Colors.black.withValues(alpha: 0.25)
+          ..style = PaintingStyle.fill;
+
+    final region = sparseRegion;
+    if (region == null) {
+      // Global vignette if no specific sparse region
+      canvas.drawRect(Offset.zero & size, paint);
+    } else {
+      // Targeted tint for the sparse quadrant
+      final halfW = size.width / 2;
+      final halfH = size.height / 2;
+      final Rect tintRect;
+      switch (region) {
+        case SparseRegion.leftWing:
+          tintRect = Rect.fromLTWH(0, 0, halfW, size.height);
+          break;
+        case SparseRegion.rightWing:
+          tintRect = Rect.fromLTWH(halfW, 0, halfW, size.height);
+          break;
+        case SparseRegion.topWing:
+          tintRect = Rect.fromLTWH(0, 0, size.width, halfH);
+          break;
+        case SparseRegion.bottomWing:
+          tintRect = Rect.fromLTWH(0, halfH, size.width, halfH);
+          break;
+      }
+      canvas.drawRect(
+        tintRect,
+        Paint()
+          ..shader = ui.Gradient.linear(
+            tintRect.center,
+            tintRect.bottomCenter, // Dummy start/end
+            [Colors.black.withValues(alpha: 0.4), Colors.transparent],
+          ),
+      );
     }
   }
 
@@ -344,7 +402,8 @@ class _StaticHeatmapPainter extends CustomPainter {
   void _drawPath(Canvas canvas, List<HeatmapPoint> points) {
     if (points.length < 2) return;
 
-    final pathPaint =
+    // Base trail — faded polyline for all older segments.
+    final basePaint =
         Paint()
           ..color = Colors.white.withValues(alpha: 0.28)
           ..strokeWidth = 1.8
@@ -362,7 +421,33 @@ class _StaticHeatmapPainter extends CustomPainter {
       );
       path.lineTo(cp.dx, cp.dy);
     }
-    canvas.drawPath(path, pathPaint);
+    canvas.drawPath(path, basePaint);
+
+    // Recent-segment emphasis — redraw the last 3 segments with a brighter,
+    // thicker cyan stroke so the user can see "where I just walked" at a glance
+    // on the mini-map. Applied in all modes but most visible when isMiniMap.
+    if (points.length >= 2) {
+      final recentPaint =
+          Paint()
+            ..color = const Color(0xFF00E5FF).withValues(alpha: 0.85)
+            ..strokeWidth = isMiniMap ? 3.2 : 2.6
+            ..style = PaintingStyle.stroke
+            ..strokeCap = StrokeCap.round
+            ..strokeJoin = StrokeJoin.round;
+      final recentStart = math.max(0, points.length - 4);
+      final recentPath = Path();
+      final startPt = viewport.worldToCanvas(
+        Offset(points[recentStart].floorX, points[recentStart].floorY),
+      );
+      recentPath.moveTo(startPt.dx, startPt.dy);
+      for (int i = recentStart + 1; i < points.length; i++) {
+        final cp = viewport.worldToCanvas(
+          Offset(points[i].floorX, points[i].floorY),
+        );
+        recentPath.lineTo(cp.dx, cp.dy);
+      }
+      canvas.drawPath(recentPath, recentPaint);
+    }
 
     canvas.drawCircle(
       firstPt,
@@ -696,7 +781,9 @@ class _StaticHeatmapPainter extends CustomPainter {
       old.showPath != showPath ||
       old.minRssi != minRssi ||
       old.maxRssi != maxRssi ||
-      old.isMiniMap != isMiniMap;
+      old.isMiniMap != isMiniMap ||
+      old.coverageScore != coverageScore ||
+      old.sparseRegion != sparseRegion;
 }
 
 // ---------------------------------------------------------------------------
@@ -895,15 +982,17 @@ class _WorldBounds {
     var minY = ys.reduce(math.min);
     var maxY = ys.reduce(math.max);
 
-    if ((maxX - minX).abs() < 2) {
+    // Ensure we always have at least a 5m x 5m view even if no movement 
+    // was recorded, to avoid the "dots-in-one-place" over-zoom.
+    if ((maxX - minX).abs() < 5) {
       final center = (minX + maxX) / 2;
-      minX = center - 1.5;
-      maxX = center + 1.5;
+      minX = center - 2.5;
+      maxX = center + 2.5;
     }
-    if ((maxY - minY).abs() < 2) {
+    if ((maxY - minY).abs() < 5) {
       final center = (minY + maxY) / 2;
-      minY = center - 1.5;
-      maxY = center + 1.5;
+      minY = center - 2.5;
+      maxY = center + 2.5;
     }
 
     final padding = math.max(maxX - minX, maxY - minY) * 0.12 + 0.75;

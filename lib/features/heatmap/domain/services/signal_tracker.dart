@@ -61,13 +61,12 @@ class SignalTracker {
   final ScanWifi _scanWifi;
   final NetworkInfo _networkInfo;
 
-  static const _pollInterval = Duration(seconds: 1);
+  static const _pollInterval = Duration(milliseconds: 800);
   static const _scanCooldown = Duration(seconds: 30);
-  static const _signalWindowSize = 5;
+  static const _signalWindowSize = 3;
   // BUG-16: Discard samples older than this threshold before averaging.
-  // If the scan rate drops (Android throttles after a few minutes), stale
-  // samples in the window would smooth over real signal drops.
-  static const _signalStalenessSeconds = 5;
+  // Reduced to 3s for higher movement sensitivity.
+  static const _signalStalenessSeconds = 3;
 
   final _stateController = StreamController<SignalState>.broadcast();
   Stream<SignalState> get stateStream => _stateController.stream;

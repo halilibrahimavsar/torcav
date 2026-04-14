@@ -28,18 +28,31 @@ class ReticleHitArea extends StatelessWidget {
             rssi: s.currentRssi,
             lastStepTimestamp: s.lastStepTimestamp,
             surveyGate: s.surveyGate,
+            hasPendingWall: s.pendingWalls.any((wall) {
+              final cx = (wall.x1 + wall.x2) / 2;
+              final cy = (wall.y1 + wall.y2) / 2;
+              return (cx - 0.5).abs() < 0.15 && (cy - 0.5).abs() < 0.15;
+            }),
           ),
       builder: (context, slice) {
         final tier = signalTierFor(slice.rssi);
-        final color = signalTierColor(tier);
+        final color = slice.hasPendingWall ? AppColors.neonYellow : signalTierColor(tier);
         final isWeak =
             slice.surveyGate == SurveyGate.none &&
-            (tier == SignalTier.weak || tier == SignalTier.poor);
-        final hitSize = isWeak ? 140.0 : 120.0;
+            (tier == SignalTier.weak || tier == SignalTier.poor) &&
+            !slice.hasPendingWall;
+        
+        final hitSize = (isWeak || slice.hasPendingWall) ? 140.0 : 120.0;
 
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: isWeak ? onFlagWeakZone : null,
+          onTap: () {
+            if (slice.hasPendingWall) {
+              context.read<HeatmapBloc>().addNearestPendingWall();
+            } else if (isWeak) {
+              onFlagWeakZone?.call();
+            }
+          },
           child: SizedBox(
             width: hitSize,
             height: hitSize,
@@ -61,7 +74,30 @@ class ReticleHitArea extends StatelessWidget {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (isWeak) ...[
+                    if (slice.hasPendingWall) ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.neonYellow.withValues(alpha: 0.18),
+                          border: Border.all(
+                            color: AppColors.neonYellow.withValues(alpha: 0.8),
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          'ADD WALL',
+                          style: GoogleFonts.orbitron(
+                            color: AppColors.neonYellow,
+                            fontSize: 8,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                      ),
+                    ] else if (isWeak) ...[
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,

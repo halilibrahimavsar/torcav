@@ -18,6 +18,7 @@ import 'package:torcav/features/heatmap/domain/services/heatmap_manager.dart';
 import 'package:torcav/features/heatmap/domain/services/signal_tracker.dart';
 import 'package:torcav/features/heatmap/domain/usecases/get_heatmap_sessions_usecase.dart';
 import 'package:torcav/features/heatmap/data/datasources/wall_detector_datasource.dart';
+import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/scan_phase.dart';
 
 part 'heatmap_state.dart';
@@ -30,6 +31,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     this._wallDetector,
     this._heatmapManager,
     this._signalTracker,
+    this._guidanceService,
   ) : super(const HeatmapState()) {
     _setupListeners();
   }
@@ -39,6 +41,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   final WallDetectorDataSource _wallDetector;
   final HeatmapManager _heatmapManager;
   final SignalTracker _signalTracker;
+  final SurveyGuidanceService _guidanceService;
 
   static const _wallProcessingCooldown = Duration(milliseconds: 250);
   static const _flagMergeDistanceMeters = 0.5;
@@ -52,9 +55,28 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
   void _setupListeners() {
     _managerSessionSub = _heatmapManager.sessionStream.listen((session) {
+      final guidance = session == null
+          ? null
+          : _guidanceService.analyze(
+            points: session.points,
+            floorPlan: state.liveFloorPlan,
+            isRecording: state.isRecording,
+            hasArOrigin: true, // Assuming AR origin is set for guidance
+            pendingWallCount: state.pendingWalls.length,
+            currentRssi: state.currentRssi,
+            surveyGate: state.surveyGate,
+            lastSignalAt: state.lastSignalAt,
+            currentSignalStdDev: state.lastSignalStdDev,
+            currentX: state.currentPosition?.dx,
+            currentY: state.currentPosition?.dy,
+          );
+
       emit(state.copyWith(
         currentSession: session,
         clearCurrentSession: session == null,
+        coverageScore: guidance?.coverageScore ?? 0.0,
+        sparseRegion: guidance?.sparseRegion,
+        clearSparseRegion: guidance?.sparseRegion == null,
       ));
     });
 
@@ -66,11 +88,17 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
     _managerPositionSub = _heatmapManager.rawPositionStream.listen((pos) {
       if (!state.isRecording || state.phase != ScanPhase.scanning) return;
+      
+      final currentPos = Offset(pos.x, pos.y);
       emit(state.copyWith(
-        currentPosition: Offset(pos.x, pos.y),
+        currentPosition: currentPos,
         currentHeading: pos.heading,
         lastStepTimestamp: pos.isStep ? DateTime.now() : state.lastStepTimestamp,
       ));
+
+      if (state.isAutoSampling) {
+        _maybeAutoSample(currentPos, pos.heading);
+      }
     });
 
     _signalStateSub = _signalTracker.stateStream.listen((signal) {
@@ -120,10 +148,72 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         surveyGate: SurveyGate.none,
         clearTargetBssid: true,
         clearTargetSsid: true,
+        clearLastRecordedPosition: true,
       ),
     );
 
     await _heatmapManager.startSession(name, null, null);
+  }
+
+  /// Adds the wall segment currently closest to the reticle center (0.5, 0.5) 
+  /// into the live floor plan.
+  void addNearestPendingWall() {
+    if (state.phase != ScanPhase.scanning || state.pendingWalls.isEmpty) return;
+
+    // Find the wall closest to screen center (0.5, 0.5)
+    WallSegment? best;
+    double minDistance = double.infinity;
+
+    for (final wall in state.pendingWalls) {
+      final centerX = (wall.x1 + wall.x2) / 2;
+      final centerY = (wall.y1 + wall.y2) / 2;
+      final dist = math.sqrt(
+        math.pow(centerX - 0.5, 2) + math.pow(centerY - 0.5, 2),
+      );
+      if (dist < minDistance) {
+        minDistance = dist;
+        best = wall;
+      }
+    }
+
+    if (best != null && minDistance < 0.25) {
+      final worldWall = _projectScreenToWorld(best);
+      addWallFromAr(worldWall);
+    }
+  }
+
+  /// Projects a normalized screen-space wall segment into metric world space
+  /// using the current position, heading, and assumed camera FOV.
+  WallSegment _projectScreenToWorld(WallSegment screen) {
+    final pos = state.currentPosition ?? Offset.zero;
+    final headingDeg = state.currentHeading;
+    
+    // Assumptions for basic projection without full AR anchors:
+    // 1. Wall is roughly 1.8m away (typical arm's reach + room perspective).
+    // 2. Camera horizontal FOV is ~60 degrees.
+    const distance = 1.8;
+    const hFov = 60.0;
+    
+    double projectPoint(double nx, double ny) {
+      // Offset from center screen (0.5) to angle
+      final angleOffset = (nx - 0.5) * hFov;
+      final worldAngle = (headingDeg + angleOffset) * (math.pi / 180.0);
+      
+      // Calculate world X, Y
+      // resultX = currentX + d * sin(angle)
+      // resultY = currentY + d * cos(angle)
+      return worldAngle; // Returning angle to use in sin/cos for X and Y
+    }
+
+    final a1 = projectPoint(screen.x1, screen.y1);
+    final a2 = projectPoint(screen.x2, screen.y2);
+
+    return WallSegment(
+      x1: pos.dx + distance * math.sin(a1),
+      y1: pos.dy + distance * math.cos(a1),
+      x2: pos.dx + distance * math.sin(a2),
+      y2: pos.dy + distance * math.cos(a2),
+    );
   }
 
   Future<void> processCameraImage(dynamic cameraImage) async {
@@ -243,6 +333,44 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     );
   }
 
+  Future<void> renameSession(String newName) async {
+    final session = state.selectedSession;
+    if (session == null) return;
+
+    final updated = session.copyWith(name: newName);
+    final result = await _repository.saveSession(updated);
+
+    result.fold(
+      (failure) => emit(state.copyWith(failure: failure)),
+      (_) {
+        emit(state.copyWith(selectedSession: updated));
+        loadSessions(); // Refresh the list
+      },
+    );
+  }
+
+  Future<void> deleteSession(String sessionId) async {
+    final result = await _repository.deleteSession(sessionId);
+
+    result.fold(
+      (failure) => emit(state.copyWith(failure: failure)),
+      (_) {
+        if (state.selectedSession?.id == sessionId) {
+          emit(state.copyWith(
+            clearSelectedSession: true,
+            clearLiveFloorPlan: true,
+            phase: ScanPhase.idle,
+          ));
+        }
+        loadSessions();
+      },
+    );
+  }
+
+  void finishSession() {
+    emit(state.copyWith(phase: ScanPhase.idle, clearSelectedSession: true));
+  }
+
   Future<void> _discardScanning() async {
     if (!state.isRecording) return;
     _heatmapManager.discardSession();
@@ -279,7 +407,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   void stopSession() => unawaited(stopScanning());
   void discardSession() => unawaited(_discardScanning());
 
-  void finishSession() => unawaited(stopScanning());
   void abortSession() => unawaited(_discardScanning());
   
   void restartSurvey() {
@@ -323,30 +450,63 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     );
   }
 
-  Future<void> deleteSession(String sessionId) async {
-    final result = await _repository.deleteSession(sessionId);
-    await result.fold(
-      (failure) async => emit(state.copyWith(failure: failure)),
-      (_) async {
-        await loadSessions();
-        if (state.selectedSession?.id == sessionId) {
-          emit(
-            state.copyWith(
-              clearSelectedSession: true,
-              clearLiveFloorPlan: true,
-            ),
-          );
-        }
-      },
-    );
-  }
+
 
   void toggleAutoSampling() {
-    emit(state.copyWith(isAutoSampling: !state.isAutoSampling));
+    final next = !state.isAutoSampling;
+    _heatmapManager.setAutoSamplingEnabled(next);
+    emit(state.copyWith(isAutoSampling: next));
+  }
+
+  /// Manually triggers a realign of the fusion heading to absolute North.
+  void realignHeading() {
+    _heatmapManager.realignHeading();
+  }
+
+  /// Updates the distance threshold for automatic point sampling.
+  void updateAutoSamplingDistance(double distance) {
+    emit(state.copyWith(autoSamplingDistance: distance));
   }
 
   /// Manually triggers a Wi-Fi metadata scan to refresh SSID/BSSID resolution.
   Future<void> refreshConnectedSignal() async {
     await _signalTracker.runMetadataScan();
+  }
+
+  void _maybeAutoSample(Offset currentPos, double heading) {
+    if (state.currentRssi == null) return;
+
+    // BUG-25: Guard against stale signal locks.
+    // If signal hasn't updated in > 2s, don't record a point.
+    final lastSignal = state.lastSignalAt;
+    if (lastSignal != null &&
+        DateTime.now().difference(lastSignal).inSeconds > 2) {
+      return;
+    }
+
+    final lastPos = state.lastRecordedPosition;
+    if (lastPos != null) {
+      final dx = currentPos.dx - lastPos.dx;
+      final dy = currentPos.dy - lastPos.dy;
+      final distance = math.sqrt(dx * dx + dy * dy);
+
+      if (distance < state.autoSamplingDistance) return;
+    }
+
+    // Threshold met or first point: record it.
+    _heatmapManager.recordPoint(
+      floorX: currentPos.dx,
+      floorY: currentPos.dy,
+      heading: heading,
+      rssi: state.currentRssi!,
+      timestamp: DateTime.now(),
+      ssid: state.targetSsid ?? '',
+      bssid: state.targetBssid ?? '',
+      floor: state.currentFloor,
+      sampleCount: state.lastSignalSampleCount,
+      rssiStdDev: state.lastSignalStdDev,
+    );
+
+    emit(state.copyWith(lastRecordedPosition: currentPos));
   }
 }

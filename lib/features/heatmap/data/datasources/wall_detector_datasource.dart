@@ -41,8 +41,8 @@ class WallDetectorDataSourceImpl implements WallDetectorDataSource {
     final xStart = width ~/ 8;
     final xEnd = width * 7 ~/ 8;
 
-    // Adaptive threshold: more sensitive in dark scenes, stricter in bright ones.
-    final edgeThreshold = math.max(35.0, avgLuminance * 0.45);
+    // Adaptive threshold: slightly more sensitive to catch subtle wall edges.
+    final edgeThreshold = math.max(25.0, avgLuminance * 0.35);
     const step = 8;
 
     final vCandidates = <_EdgeCandidate>[];
@@ -64,9 +64,10 @@ class WallDetectorDataSourceImpl implements WallDetectorDataSource {
         final mag = math.sqrt((gx * gx + gy * gy).toDouble());
 
         if (mag > edgeThreshold) {
-          if (gx.abs() > gy.abs() * 1.6) {
+          // Stricter ratio for vertical/horizontal selection to reduce noise
+          if (gx.abs() > gy.abs() * 1.5) {
             vCandidates.add(_EdgeCandidate(x: x / width, y: y / height));
-          } else if (gy.abs() > gx.abs() * 1.6) {
+          } else if (gy.abs() > gx.abs() * 1.5) {
             hCandidates.add(_EdgeCandidate(x: x / width, y: y / height));
           }
         }

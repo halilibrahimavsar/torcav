@@ -1,4 +1,7 @@
 import 'dart:math' as math;
+import 'package:equatable/equatable.dart';
+import 'package:injectable/injectable.dart';
+
 
 import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
@@ -18,7 +21,7 @@ enum SurveyTone { info, progress, caution, success }
 
 enum SparseRegion { leftWing, rightWing, topWing, bottomWing }
 
-class SurveyFeedHealth {
+class SurveyFeedHealth extends Equatable {
   const SurveyFeedHealth({
     required this.motionLive,
     required this.wifiLive,
@@ -30,9 +33,12 @@ class SurveyFeedHealth {
   final bool wifiLive;
   final bool cameraLive;
   final bool planLive;
+
+  @override
+  List<Object?> get props => [motionLive, wifiLive, cameraLive, planLive];
 }
 
-class SurveyGuidance {
+class SurveyGuidance extends Equatable {
   const SurveyGuidance({
     required this.stage,
     required this.tone,
@@ -44,14 +50,21 @@ class SurveyGuidance {
     required this.feeds,
     required this.suggestAr,
     required this.readyToFinish,
+    this.customInstruction,
   });
 
   /// Natural language summary of the survey results.
   String get summaryText {
-    if (overallProgress < 0.4) return "Initial data points captured. Continue scanning for higher detail.";
-    if (overallProgress < 0.6) return "Good progress. Adding more samples in weak zones will improve insights.";
-    if (overallProgress < 0.8) return "Strong data density. Coverage is consistent across most areas.";
-    return "Optimal survey quality. Your network floor plan and signal mapping are highly accurate.";
+    if (overallProgress < 0.4) {
+      return 'Initial data points captured. Continue scanning for higher detail.';
+    }
+    if (overallProgress < 0.6) {
+      return 'Good progress. Adding more samples in weak zones will improve insights.';
+    }
+    if (overallProgress < 0.8) {
+      return 'Strong data density. Coverage is consistent across most areas.';
+    }
+    return 'Optimal survey quality. Your network floor plan and signal mapping are highly accurate.';
   }
 
   final SurveyStage stage;
@@ -64,8 +77,25 @@ class SurveyGuidance {
   final SurveyFeedHealth feeds;
   final bool suggestAr;
   final bool readyToFinish;
+  final String? customInstruction;
+
+  @override
+  List<Object?> get props => [
+        stage,
+        tone,
+        overallProgress,
+        planScore,
+        coverageScore,
+        signalScore,
+        sparseRegion,
+        feeds,
+        suggestAr,
+        readyToFinish,
+        customInstruction,
+      ];
 }
 
+@LazySingleton()
 class SurveyGuidanceService {
   const SurveyGuidanceService();
 
@@ -133,6 +163,11 @@ class SurveyGuidanceService {
     final suggestAr = points.length >= 3 && planScore < 0.55 && !hasArOrigin;
     final weakZoneCount = points.where((point) => point.rssi < -72).length;
 
+    String? customInstruction;
+    if (pendingWallCount > 0 && planScore < 0.65) {
+      customInstruction = 'Tap Reticle to Add Wall';
+    }
+
     SurveyStage stage;
     SurveyTone tone;
 
@@ -188,6 +223,7 @@ class SurveyGuidanceService {
       ),
       suggestAr: suggestAr,
       readyToFinish: readyToFinish,
+      customInstruction: customInstruction,
     );
   }
 
@@ -252,7 +288,7 @@ class SurveyGuidanceService {
             )
             .toSet()
             .length;
-    final uniqueCoverage = (cells / 14).clamp(0.0, 1.0);
+    final uniqueCoverage = (cells / 45).clamp(0.0, 1.0);
     final span = (math.max(width, height) / 10).clamp(0.0, 1.0);
 
     final sparseRegion = _sparseRegion(points);

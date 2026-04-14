@@ -1,4 +1,6 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+
 
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
@@ -56,11 +58,13 @@ class ReticleSlice {
     required this.rssi,
     required this.lastStepTimestamp,
     required this.surveyGate,
+    required this.hasPendingWall,
   });
 
   final int? rssi;
   final DateTime? lastStepTimestamp;
   final SurveyGate surveyGate;
+  final bool hasPendingWall;
 
   @override
   bool operator ==(Object other) =>
@@ -68,10 +72,11 @@ class ReticleSlice {
       other is ReticleSlice &&
           rssi == other.rssi &&
           lastStepTimestamp == other.lastStepTimestamp &&
-          surveyGate == other.surveyGate;
+          surveyGate == other.surveyGate &&
+          hasPendingWall == other.hasPendingWall;
 
   @override
-  int get hashCode => Object.hash(rssi, lastStepTimestamp, surveyGate);
+  int get hashCode => Object.hash(rssi, lastStepTimestamp, surveyGate, hasPendingWall);
 }
 
 class GateSlice {
@@ -163,7 +168,21 @@ String compactBssid(String bssid) {
 /// Only the fields below affect the output of [SurveyGuidanceService.analyze].
 /// Isolating them in a dedicated slice ensures the expensive guidance call is
 /// only re-run when relevant state changes, not on every heading or RSSI tick.
-class GuidanceCameraSlice {
+class GuidanceSlice extends Equatable {
+  const GuidanceSlice({required this.guidance});
+
+  final SurveyGuidance guidance;
+
+  @override
+  List<Object?> get props => [guidance];
+}
+
+/// Slice for [ArCameraView] guidance analysis (BUG-02 fix).
+///
+/// Only the fields below affect the output of [SurveyGuidanceService.analyze].
+/// Isolating them in a dedicated slice ensures the expensive guidance call is
+/// only re-run when relevant state changes, not on every heading or RSSI tick.
+class GuidanceCameraSlice extends Equatable {
   const GuidanceCameraSlice({
     required this.pointCount,
     required this.hasFloorPlan,
@@ -175,7 +194,6 @@ class GuidanceCameraSlice {
     required this.lastSignalAt,
     required this.lastSignalStdDev,
     required this.currentPosition,
-    // Full session + floorPlan forwarded so guidance can read walls/points.
     required this.phase,
     required this.pendingWalls,
     required this.lastStepTimestamp,
@@ -196,24 +214,7 @@ class GuidanceCameraSlice {
   final DateTime? lastStepTimestamp;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is GuidanceCameraSlice &&
-          pointCount == other.pointCount &&
-          hasFloorPlan == other.hasFloorPlan &&
-          isRecording == other.isRecording &&
-          hasArOrigin == other.hasArOrigin &&
-          pendingWallCount == other.pendingWallCount &&
-          currentRssi == other.currentRssi &&
-          surveyGate == other.surveyGate &&
-          lastSignalAt == other.lastSignalAt &&
-          lastSignalStdDev == other.lastSignalStdDev &&
-          currentPosition == other.currentPosition &&
-          phase == other.phase &&
-          lastStepTimestamp == other.lastStepTimestamp;
-
-  @override
-  int get hashCode => Object.hash(
+  List<Object?> get props => [
         pointCount,
         hasFloorPlan,
         isRecording,
@@ -225,6 +226,7 @@ class GuidanceCameraSlice {
         lastSignalStdDev,
         currentPosition,
         phase,
+        pendingWalls,
         lastStepTimestamp,
-      );
+      ];
 }

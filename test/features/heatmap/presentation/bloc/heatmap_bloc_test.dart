@@ -17,6 +17,7 @@ import 'package:torcav/features/heatmap/domain/entities/survey_gate.dart';
 import 'package:torcav/features/heatmap/domain/entities/position_update.dart';
 import 'package:torcav/features/heatmap/domain/services/heatmap_manager.dart';
 import 'package:torcav/features/heatmap/domain/services/signal_tracker.dart';
+import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
 
 class MockGetHeatmapSessionsUsecase extends Mock
     implements GetHeatmapSessionsUsecase {}
@@ -30,6 +31,8 @@ class MockHeatmapManager extends Mock implements HeatmapManager {}
 
 class MockSignalTracker extends Mock implements SignalTracker {}
 
+class MockSurveyGuidanceService extends Mock implements SurveyGuidanceService {}
+
 class FakeCameraImage extends Fake implements CameraImage {}
 
 void main() {
@@ -41,6 +44,7 @@ void main() {
   late MockWallDetectorDataSource wallDetector;
   late MockHeatmapManager heatmapManager;
   late MockSignalTracker signalTracker;
+  late MockSurveyGuidanceService guidanceService;
 
   late StreamController<HeatmapSession?> sessionController;
   late StreamController<SurveyGate> gateController;
@@ -58,6 +62,8 @@ void main() {
     );
     registerFallbackValue(fallbackSession);
     registerFallbackValue(FakeCameraImage());
+    registerFallbackValue(SurveyGate.none);
+    registerFallbackValue(const <HeatmapPoint>[]);
   });
 
 
@@ -67,11 +73,20 @@ void main() {
     wallDetector = MockWallDetectorDataSource();
     heatmapManager = MockHeatmapManager();
     signalTracker = MockSignalTracker();
+    guidanceService = MockSurveyGuidanceService();
 
     sessionController = StreamController<HeatmapSession?>.broadcast();
     gateController = StreamController<SurveyGate>.broadcast();
     positionController = StreamController<PositionUpdate>.broadcast();
     signalController = StreamController<SignalState>.broadcast();
+
+    // Reset mocks before each test
+    reset(getSessions);
+    reset(repository);
+    reset(wallDetector);
+    reset(heatmapManager);
+    reset(signalTracker);
+    reset(guidanceService);
 
     when(() => getSessions.call()).thenAnswer((_) async => const Right([]));
     when(() => heatmapManager.sessionStream).thenAnswer((_) => sessionController.stream);
@@ -79,12 +94,37 @@ void main() {
     when(() => heatmapManager.rawPositionStream).thenAnswer((_) => positionController.stream);
     when(() => signalTracker.stateStream).thenAnswer((_) => signalController.stream);
     when(() => signalTracker.runMetadataScan()).thenAnswer((_) async {});
+    when(() => guidanceService.analyze(
+          points: any(named: 'points'),
+          floorPlan: any(named: 'floorPlan'),
+          isRecording: any(named: 'isRecording'),
+          hasArOrigin: any(named: 'hasArOrigin'),
+          pendingWallCount: any(named: 'pendingWallCount'),
+          currentRssi: any(named: 'currentRssi'),
+          surveyGate: any(named: 'surveyGate'),
+          lastSignalAt: any(named: 'lastSignalAt'),
+          currentSignalStdDev: any(named: 'currentSignalStdDev'),
+          currentX: any(named: 'currentX'),
+          currentY: any(named: 'currentY'),
+        )).thenReturn(const SurveyGuidance(
+      stage: SurveyStage.idle,
+      tone: SurveyTone.info,
+      overallProgress: 0,
+      planScore: 0,
+      coverageScore: 0,
+      signalScore: 0,
+      sparseRegion: null,
+      feeds: SurveyFeedHealth(motionLive: true, wifiLive: true, cameraLive: true, planLive: true),
+      suggestAr: false,
+      readyToFinish: false,
+    ));
 
     when(() => wallDetector.detectWalls(any())).thenAnswer((_) async => []);
     when(() => heatmapManager.startSession(any(), any(), any())).thenAnswer((_) async {});
     when(() => heatmapManager.stopSession(liveWalls: any(named: 'liveWalls'))).thenAnswer((_) async {});
     when(() => heatmapManager.discardSession()).thenReturn(null);
     when(() => heatmapManager.dispose()).thenReturn(null);
+    when(() => heatmapManager.setAutoSamplingEnabled(any())).thenReturn(null);
 
     bloc = HeatmapBloc(
       getSessions,
@@ -92,11 +132,14 @@ void main() {
       wallDetector,
       heatmapManager,
       signalTracker,
+      guidanceService,
     );
   });
 
   tearDown(() async {
-    await bloc.close();
+    try {
+      await bloc.close();
+    } catch (_) {}
     await positionController.close();
   });
 
@@ -138,6 +181,21 @@ void main() {
       expect(bloc.state.selectedSession, isNotNull);
       expect(bloc.state.selectedSession!.name, 'Home survey');
       expect(bloc.state.selectedSession!.points, hasLength(1));
+    },
+  );
+
+  test(
+    'toggleAutoSampling flips state and propagates to HeatmapManager',
+    () async {
+      expect(bloc.state.isAutoSampling, isTrue);
+
+      bloc.toggleAutoSampling();
+      expect(bloc.state.isAutoSampling, isFalse);
+      verify(() => heatmapManager.setAutoSamplingEnabled(false)).called(1);
+
+      bloc.toggleAutoSampling();
+      expect(bloc.state.isAutoSampling, isTrue);
+      verify(() => heatmapManager.setAutoSamplingEnabled(true)).called(1);
     },
   );
 

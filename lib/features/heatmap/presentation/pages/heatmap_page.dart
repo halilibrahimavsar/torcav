@@ -1,9 +1,14 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:torcav/core/di/injection.dart';
 import 'package:torcav/core/theme/app_theme.dart';
@@ -82,6 +87,7 @@ class _HeatmapView extends StatefulWidget {
 
 class _HeatmapViewState extends State<_HeatmapView> {
   final _cameraViewKey = GlobalKey();
+  final _boundaryKey = GlobalKey();
 
   /// When not null, we show a premium 'Signal Probe' tooltip.
   Offset? _probePoint;
@@ -247,16 +253,21 @@ class _HeatmapViewState extends State<_HeatmapView> {
                   CanvasBackdrop(summary: summary),
                   if (session != null)
                     Positioned.fill(
-                      child: HeatmapCanvas(
-                        session: session,
-                        floorPlan: floorPlan,
-                        showPath: session.points.isNotEmpty,
-                        activeFloor: null,
-                        minRssi: minRssi,
-                        maxRssi: maxRssi,
-                        onTap: (metric) {
-                          setState(() => _probePoint = metric);
-                        },
+                      child: RepaintBoundary(
+                        key: _boundaryKey,
+                        child: HeatmapCanvas(
+                          session: session,
+                          floorPlan: floorPlan,
+                          showPath: session.points.isNotEmpty,
+                          activeFloor: null,
+                          minRssi: minRssi,
+                          maxRssi: maxRssi,
+                          coverageScore: state.coverageScore,
+                          sparseRegion: state.sparseRegion,
+                          onTap: (metric) {
+                            setState(() => _probePoint = metric);
+                          },
+                        ),
                       ),
                     ),
                   if (_shouldShowCanvasEmptyState(state, summary))
@@ -281,6 +292,8 @@ class _HeatmapViewState extends State<_HeatmapView> {
                         copy: copy,
                         onRestart: () => bloc.startSession(session.name),
                         onDone: bloc.finishSession,
+                        onRename: () => _handleRename(context, bloc, session, copy),
+                        onShare: () => _handleShare(session, copy),
                       ),
                     ),
                   if (_probePoint != null && session != null)
@@ -325,24 +338,35 @@ class _HeatmapViewState extends State<_HeatmapView> {
   ) {
     showDialog<void>(
       context: context,
-      builder: (ctx) => NewSessionDialog(bloc: bloc, copy: copy),
+      builder: (ctx) => BlocProvider.value(
+        value: bloc,
+        child: NewSessionDialog(bloc: bloc, copy: copy),
+      ),
     );
   }
 
-  void _showSessionsPicker(BuildContext context, List<HeatmapSession> sessions, HeatmapCopy copy) {
+  void _showSessionsPicker(
+    BuildContext context,
+    List<HeatmapSession> sessions,
+    HeatmapCopy copy,
+  ) {
+    final bloc = context.read<HeatmapBloc>();
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: AppColors.deepBlack,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
       ),
-      builder: (ctx) => SessionPickerSheet(
-        sessions: sessions,
-        copy: copy,
-        onSelect: (session) {
-          context.read<HeatmapBloc>().selectSession(session);
-          Navigator.of(context).pop();
-        },
+      builder: (ctx) => BlocProvider.value(
+        value: bloc,
+        child: SessionPickerSheet(
+          sessions: sessions,
+          copy: copy,
+          onSelect: (session) {
+            bloc.selectSession(session);
+            Navigator.of(context).pop();
+          },
+        ),
       ),
     );
   }
@@ -371,5 +395,85 @@ class _HeatmapViewState extends State<_HeatmapView> {
       }
     }
     return minSqDist < 25.0 ? closest : null;
+  }
+
+  void _handleRename(
+    BuildContext context,
+    HeatmapBloc bloc,
+    HeatmapSession session,
+    HeatmapCopy copy,
+  ) {
+    final controller = TextEditingController(text: session.name);
+    showDialog<String>(
+      context: context,
+      builder: (ctx) => BlocProvider.value(
+        value: bloc,
+        child: AlertDialog(
+          backgroundColor: AppColors.darkSurface,
+          title: Text(
+            copy.renameDialogTitle,
+            style: GoogleFonts.orbitron(
+              color: AppColors.textPrimary,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: TextField(
+            controller: controller,
+            style: GoogleFonts.outfit(color: AppColors.textPrimary),
+            decoration: InputDecoration(
+              hintText: copy.sessionNameField,
+              hintStyle: TextStyle(color: AppColors.textMuted),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppColors.neonCyan),
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(copy.cancel, style: TextStyle(color: AppColors.textMuted)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, controller.text),
+              child: Text(copy.save, style: TextStyle(color: AppColors.neonCyan)),
+            ),
+          ],
+        ),
+      ),
+    )
+.then((newName) {
+      if (newName != null && newName.isNotEmpty) {
+        bloc.renameSession(newName);
+      }
+    });
+  }
+
+  Future<void> _handleShare(HeatmapSession session, HeatmapCopy copy) async {
+    try {
+      final boundary = _boundaryKey.currentContext?.findRenderObject()
+          as RenderRepaintBoundary?;
+      if (boundary == null) return;
+
+      final image = await boundary.toImage(pixelRatio: 3.0);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) return;
+
+      final buffer = byteData.buffer.asUint8List();
+
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/torcav_heatmap_${session.id}.png');
+      await file.writeAsBytes(buffer);
+
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(file.path)],
+          subject: copy.shareSubject,
+          text: copy.shareText,
+        ),
+      );
+    } catch (e) {
+      debugPrint('Share failed: $e');
+    }
   }
 }

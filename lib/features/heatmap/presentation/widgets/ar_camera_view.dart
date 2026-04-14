@@ -71,8 +71,9 @@ class _ArCameraViewState extends State<ArCameraView> {
       }
 
       setState(() => _isInit = true);
-
+      if (!mounted) return;
       final bloc = context.read<HeatmapBloc>();
+
       if (!_controller!.value.isStreamingImages) {
         await _controller!.startImageStream((image) {
           // Guard against the widget being disposed or the BLoC being closed
@@ -110,11 +111,16 @@ class _ArCameraViewState extends State<ArCameraView> {
   @override
   void dispose() {
     _isDisposed = true;
-    if (_controller?.value.isInitialized ?? false) {
-      if (_controller?.value.isStreamingImages ?? false) {
-        _controller?.stopImageStream();
+    if (_controller != null && _controller!.value.isInitialized) {
+      try {
+        if (_controller!.value.isStreamingImages) {
+          _controller!.stopImageStream();
+        }
+      } catch (e) {
+        AppLogger.e('Error stopping camera stream during dispose', error: e);
       }
-      _controller?.dispose();
+      _controller!.dispose();
+      _controller = null;
     }
     super.dispose();
   }

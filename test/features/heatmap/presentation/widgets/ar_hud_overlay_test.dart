@@ -157,6 +157,40 @@ void main() {
     expect(find.text('MEASUREMENT LOCKED'), findsOneWidget);
   });
 
+  testWidgets('renders SurveyPilotCard during scanning', (tester) async {
+    final state = baseState();
+    when(() => bloc.state).thenReturn(state);
+    whenListen(
+      bloc,
+      Stream<HeatmapState>.fromIterable([state]),
+      initialState: state,
+    );
+
+    await tester.pumpWidget(wrap(const ArHudOverlay()));
+    await tester.pump();
+
+    // SurveyPilotCard emits the 'COMPLETE' suffix next to the progress %.
+    expect(find.text('COMPLETE'), findsOneWidget);
+  });
+
+  testWidgets('hides SurveyPilotCard when the lock banner is visible', (
+    tester,
+  ) async {
+    final state = baseState(gate: SurveyGate.noConnectedBssid);
+    when(() => bloc.state).thenReturn(state);
+    whenListen(
+      bloc,
+      Stream<HeatmapState>.fromIterable([state]),
+      initialState: state,
+    );
+
+    await tester.pumpWidget(wrap(const ArHudOverlay()));
+    await tester.pump();
+
+    expect(find.text('MEASUREMENT LOCKED'), findsOneWidget);
+    expect(find.text('COMPLETE'), findsNothing);
+  });
+
   testWidgets('shows estimated mode badge in camera fallback mode', (
     tester,
   ) async {

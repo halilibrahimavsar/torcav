@@ -13,12 +13,16 @@ class SurveyConclusionOverlay extends StatelessWidget {
     required this.copy,
     required this.onRestart,
     required this.onDone,
+    required this.onRename,
+    required this.onShare,
   });
 
   final HeatmapSummary summary;
   final HeatmapCopy copy;
   final VoidCallback onRestart;
   final VoidCallback onDone;
+  final VoidCallback onRename;
+  final VoidCallback onShare;
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +118,23 @@ class SurveyConclusionOverlay extends StatelessWidget {
                 icon: Icons.save_rounded,
               ),
               const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _SecondaryActionButton(
+                    onPressed: onRename,
+                    icon: Icons.edit_rounded,
+                    label: copy.renameSurvey,
+                  ),
+                  const SizedBox(width: 24),
+                  _SecondaryActionButton(
+                    onPressed: onShare,
+                    icon: Icons.share_rounded,
+                    label: copy.shareHeatmap,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
               TextButton.icon(
                 onPressed: onRestart,
                 icon: const Icon(Icons.refresh_rounded, color: AppColors.textMuted),
@@ -129,6 +150,44 @@ class SurveyConclusionOverlay extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _SecondaryActionButton extends StatelessWidget {
+  const _SecondaryActionButton({
+    required this.onPressed,
+    required this.icon,
+    required this.label,
+  });
+
+  final VoidCallback onPressed;
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Column(
+          children: [
+            Icon(icon, color: AppColors.textSecondary, size: 24),
+            const SizedBox(height: 4),
+            Text(
+              label.toUpperCase(),
+              style: GoogleFonts.orbitron(
+                color: AppColors.textSecondary,
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.0,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

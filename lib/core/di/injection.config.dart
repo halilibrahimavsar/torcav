@@ -35,6 +35,8 @@ import '../../features/heatmap/domain/services/connected_signal_smoother.dart'
 import '../../features/heatmap/domain/services/heatmap_manager.dart' as _i869;
 import '../../features/heatmap/domain/services/position_tracker.dart' as _i104;
 import '../../features/heatmap/domain/services/signal_tracker.dart' as _i1072;
+import '../../features/heatmap/domain/services/survey_guidance_service.dart'
+    as _i904;
 import '../../features/heatmap/domain/services/wall_processor.dart' as _i794;
 import '../../features/heatmap/domain/usecases/finalize_floor_plan.dart'
     as _i960;
@@ -210,6 +212,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
     gh.lazySingleton<_i960.FinalizeFloorPlan>(() => _i960.FinalizeFloorPlan());
+    gh.lazySingleton<_i904.SurveyGuidanceService>(
+      () => const _i904.SurveyGuidanceService(),
+    );
     gh.lazySingleton<_i106.ConnectedSignalSmoother>(
       () => const _i106.ConnectedSignalSmoother(),
     );
@@ -445,15 +450,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i534.PingNodeUseCase>(
       () => _i534.PingNodeUseCase(gh<_i244.TopologyRepository>()),
     );
-    gh.factory<_i931.HeatmapBloc>(
-      () => _i931.HeatmapBloc(
-        gh<_i716.GetHeatmapSessionsUsecase>(),
-        gh<_i747.HeatmapRepository>(),
-        gh<_i543.WallDetectorDataSource>(),
-        gh<_i869.HeatmapManager>(),
-        gh<_i1072.SignalTracker>(),
-      ),
-    );
     gh.factory<_i613.MonitoringBloc>(
       () => _i613.MonitoringBloc(
         gh<_i365.MonitoringRepository>(),
@@ -468,6 +464,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i422.GetTopologyUseCase>(),
         gh<_i534.PingNodeUseCase>(),
         gh<_i244.TopologyRepository>(),
+      ),
+    );
+    gh.factory<_i931.HeatmapBloc>(
+      () => _i931.HeatmapBloc(
+        gh<_i716.GetHeatmapSessionsUsecase>(),
+        gh<_i747.HeatmapRepository>(),
+        gh<_i543.WallDetectorDataSource>(),
+        gh<_i869.HeatmapManager>(),
+        gh<_i1072.SignalTracker>(),
+        gh<_i904.SurveyGuidanceService>(),
       ),
     );
     return this;

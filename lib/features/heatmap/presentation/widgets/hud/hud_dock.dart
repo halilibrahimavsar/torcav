@@ -96,7 +96,9 @@ class HudDock extends StatelessWidget {
           builder: (context, isAuto) {
             return _DockButton(
               icon: isAuto ? Icons.auto_mode_rounded : Icons.touch_app_rounded,
-              tooltip: isAuto ? 'Auto-Sampling ON' : 'Manual Mode',
+              tooltip: isAuto
+                  ? 'Auto-sample ON — step to record'
+                  : 'Manual — tap reticle to record',
               color: isAuto ? AppColors.neonGreen : Colors.white70,
               onTap: () {
                 HapticFeedback.lightImpact();
