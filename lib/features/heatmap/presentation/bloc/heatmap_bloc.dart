@@ -59,29 +59,32 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
   void _setupListeners() {
     _managerSessionSub = _heatmapManager.sessionStream.listen((session) {
-      final guidance = session == null
-          ? null
-          : _guidanceService.analyze(
-            points: session.points,
-            floorPlan: state.liveFloorPlan,
-            isRecording: state.isRecording,
-            hasArOrigin: true, // Assuming AR origin is set for guidance
-            pendingWallCount: state.pendingWalls.length,
-            currentRssi: state.currentRssi,
-            surveyGate: state.surveyGate,
-            lastSignalAt: state.lastSignalAt,
-            currentSignalStdDev: state.lastSignalStdDev,
-            currentX: state.currentPosition?.dx,
-            currentY: state.currentPosition?.dy,
-          );
+      final guidance =
+          session == null
+              ? null
+              : _guidanceService.analyze(
+                points: session.points,
+                floorPlan: state.liveFloorPlan,
+                isRecording: state.isRecording,
+                hasArOrigin: true, // Assuming AR origin is set for guidance
+                pendingWallCount: state.pendingWalls.length,
+                currentRssi: state.currentRssi,
+                surveyGate: state.surveyGate,
+                lastSignalAt: state.lastSignalAt,
+                currentSignalStdDev: state.lastSignalStdDev,
+                currentX: state.currentPosition?.dx,
+                currentY: state.currentPosition?.dy,
+              );
 
-      emit(state.copyWith(
-        currentSession: session,
-        clearCurrentSession: session == null,
-        coverageScore: guidance?.coverageScore ?? 0.0,
-        sparseRegion: guidance?.sparseRegion,
-        clearSparseRegion: guidance?.sparseRegion == null,
-      ));
+      emit(
+        state.copyWith(
+          currentSession: session,
+          clearCurrentSession: session == null,
+          coverageScore: guidance?.coverageScore ?? 0.0,
+          sparseRegion: guidance?.sparseRegion,
+          clearSparseRegion: guidance?.sparseRegion == null,
+        ),
+      );
     });
 
     _managerGateSub = _heatmapManager.gateStream.listen((gate) {
@@ -92,13 +95,16 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
     _managerPositionSub = _heatmapManager.rawPositionStream.listen((pos) {
       if (!state.isRecording || state.phase != ScanPhase.scanning) return;
-      
+
       final currentPos = Offset(pos.x, pos.y);
-      emit(state.copyWith(
-        currentPosition: currentPos,
-        currentHeading: pos.heading,
-        lastStepTimestamp: pos.isStep ? DateTime.now() : state.lastStepTimestamp,
-      ));
+      emit(
+        state.copyWith(
+          currentPosition: currentPos,
+          currentHeading: pos.heading,
+          lastStepTimestamp:
+              pos.isStep ? DateTime.now() : state.lastStepTimestamp,
+        ),
+      );
 
       if (state.isAutoSampling) {
         _maybeAutoSample(currentPos, pos.heading);
@@ -126,14 +132,16 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     });
 
     _signalStateSub = _signalTracker.stateStream.listen((signal) {
-      emit(state.copyWith(
-        currentRssi: signal.currentRssi,
-        lastSignalAt: signal.lastSignalAt,
-        lastSignalStdDev: signal.stdDev,
-        lastSignalSampleCount: signal.sampleCount,
-        targetBssid: signal.targetBssid,
-        targetSsid: signal.targetSsid,
-      ));
+      emit(
+        state.copyWith(
+          currentRssi: signal.currentRssi,
+          lastSignalAt: signal.lastSignalAt,
+          lastSignalStdDev: signal.stdDev,
+          lastSignalSampleCount: signal.sampleCount,
+          targetBssid: signal.targetBssid,
+          targetSsid: signal.targetSsid,
+        ),
+      );
     });
   }
 
@@ -265,7 +273,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     emit(state.copyWith(phase: ScanPhase.scanning));
   }
 
-
   Future<void> flagCurrentWeakZone() async {
     final session = state.currentSession;
     final pos = state.currentPosition;
@@ -313,7 +320,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
     final walls = state.liveFloorPlan?.walls ?? [];
     final savedSession = await _heatmapManager.stopSession(liveWalls: walls);
-    
+
     if (savedSession != null) {
       await loadSessions();
     }
@@ -345,31 +352,27 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     final updated = session.copyWith(name: newName);
     final result = await _repository.saveSession(updated);
 
-    result.fold(
-      (failure) => emit(state.copyWith(failure: failure)),
-      (_) {
-        emit(state.copyWith(selectedSession: updated));
-        loadSessions(); // Refresh the list
-      },
-    );
+    result.fold((failure) => emit(state.copyWith(failure: failure)), (_) {
+      emit(state.copyWith(selectedSession: updated));
+      loadSessions(); // Refresh the list
+    });
   }
 
   Future<void> deleteSession(String sessionId) async {
     final result = await _repository.deleteSession(sessionId);
 
-    result.fold(
-      (failure) => emit(state.copyWith(failure: failure)),
-      (_) {
-        if (state.selectedSession?.id == sessionId) {
-          emit(state.copyWith(
+    result.fold((failure) => emit(state.copyWith(failure: failure)), (_) {
+      if (state.selectedSession?.id == sessionId) {
+        emit(
+          state.copyWith(
             clearSelectedSession: true,
             clearLiveFloorPlan: true,
             phase: ScanPhase.idle,
-          ));
-        }
-        loadSessions();
-      },
-    );
+          ),
+        );
+      }
+      loadSessions();
+    });
   }
 
   void finishSession() {
@@ -418,7 +421,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   void discardSession() => unawaited(_discardScanning());
 
   void abortSession() => unawaited(_discardScanning());
-  
+
   void restartSurvey() {
     final oldName = state.currentSession?.name ?? 'Survey';
     unawaited(() async {
@@ -463,8 +466,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   void toggleAutoWall() {
     emit(state.copyWith(isAutoWallEnabled: !state.isAutoWallEnabled));
   }
-
-
 
   void toggleAutoSampling() {
     final next = !state.isAutoSampling;
@@ -525,10 +526,13 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
     final rssi = state.currentRssi!;
     final tierColor = signalGradientColor(rssi);
-    final radius = signalDiscRadius(rssi) * 0.6;
-    unawaited(_arPlaneScanner.placeMarkerAtCamera(
-      colorArgb: tierColor.toARGB32(),
-      radius: radius,
-    ));
+    final radius = signalDiscRadius(rssi) * 1.5;
+    unawaited(
+      _arPlaneScanner.placeMarkerAtCamera(
+        rssi: rssi,
+        colorArgb: tierColor.toARGB32(),
+        radius: radius,
+      ),
+    );
   }
 }

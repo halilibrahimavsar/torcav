@@ -40,9 +40,10 @@ class ArScenePlugin {
             }
             when (call.method) {
                 "placeMarkerAtCamera" -> {
+                    val rssi = (call.argument<Number>("rssi") ?: -70).toInt()
                     val color = (call.argument<Number>("color") ?: 0xFF00E676).toInt()
                     val radius = (call.argument<Number>("radius") ?: 0.08).toFloat()
-                    result.success(view.placeMarkerAtCamera(color, radius))
+                    result.success(view.placeMarkerAtCamera(rssi, color, radius))
                 }
                 "clearMarkers" -> {
                     view.clearMarkers()

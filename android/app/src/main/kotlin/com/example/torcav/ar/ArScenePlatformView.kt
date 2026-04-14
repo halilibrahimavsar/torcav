@@ -1,19 +1,24 @@
 package com.example.torcav.ar
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.ContextWrapper
 import android.util.Log
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.google.android.filament.Colors
+import com.google.android.filament.EntityManager
+import com.google.android.filament.LightManager
 import com.google.ar.core.Config
 import com.google.ar.core.Plane
 import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
 import dev.romainguy.kotlin.math.Float3
+import dev.romainguy.kotlin.math.Float4
 import io.flutter.plugin.platform.PlatformView
 import io.github.sceneview.ar.ARSceneView
+import io.github.sceneview.node.Node
 import io.github.sceneview.node.SphereNode
 
 /**
@@ -33,7 +38,11 @@ class ArScenePlatformView(
     private val hostLifecycle: Lifecycle? = context.findLifecycle()
     private var lastEmitMs: Long = 0L
     private var lastCameraPose: Pose? = null
-    private val markerNodes = ArrayList<SphereNode>()
+    private val markerNodes = ArrayList<Node>()
+
+    // Filament light entities added manually (since LightEstimation is disabled).
+    private var lightEntity: Int = 0
+    private var sceneHasLight = false
 
     private val sceneView: ARSceneView = ARSceneView(context).apply {
         hostLifecycle?.let { lifecycle = it }
@@ -43,7 +52,27 @@ class ArScenePlatformView(
             config.lightEstimationMode = Config.LightEstimationMode.DISABLED
             config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
         }
+
         onSessionUpdated = lambda@{ _, frame ->
+            // On the very first tracked frame, inject a directional sun light
+            // and a constant ambient term so PBR materials render with colour
+            // even though LightEstimationMode is disabled.
+            if (!sceneHasLight) {
+                try {
+                    lightEntity = EntityManager.get().create()
+                    LightManager.Builder(LightManager.Type.DIRECTIONAL)
+                        .color(1.0f, 0.98f, 0.95f)    // warm white
+                        .intensity(200_000f)            // ~outdoor daylight
+                        .direction(0.2f, -1f, -0.5f)   // slightly off-axis
+                        .castShadows(false)
+                        .build(this.engine, lightEntity)
+                    this.scene.addEntity(lightEntity)
+                    sceneHasLight = true
+                    Log.d(TAG, "Scene lighting initialised")
+                } catch (e: Throwable) {
+                    Log.e(TAG, "Failed to add scene light", e)
+                }
+            }
             try {
                 val now = System.currentTimeMillis()
                 if (now - lastEmitMs < EMIT_INTERVAL_MS) return@lambda
@@ -109,35 +138,76 @@ class ArScenePlatformView(
     override fun getView(): View = sceneView
 
     /**
-     * Drops a colored sphere at the camera's last known world position,
-     * lowered ~1.1 m to sit near the floor. Returns true when a pose was
-     * available and the node was scheduled for rendering.
+     * Drops a colored 3D sphere ("Signal Pin") at the camera's last known world
+     * position. Uses [SphereNode] with [materialLoader.createColorInstance] —
+     * the native SceneView 2.x API that bypasses Sceneform-legacy rendering.
+     *
+     * Color encodes the RSSI tier:
+     *   - Green  → strong signal
+     *   - Yellow → medium signal
+     *   - Red    → weak signal
+     *
+     * Markers are placed approx. 1.1 m below the camera (belt level) for
+     * maximum visibility during the survey.
      */
-    fun placeMarkerAtCamera(colorArgb: Int, radius: Float): Boolean {
-        val pose = lastCameraPose ?: return false
-        return try {
-            val t = pose.translation
-            val material = sceneView.materialLoader.createColorInstance(
-                color = argbToLinear(colorArgb),
-                metallic = 0.1f,
-                roughness = 0.35f,
-                reflectance = 0.4f,
-            )
-            val sphere = SphereNode(
-                engine = sceneView.engine,
-                radius = radius,
-                center = Float3(0f, 0f, 0f),
-                materialInstance = material,
-            ).apply {
-                position = Float3(t[0], t[1] - DROP_BELOW_CAMERA, t[2])
-            }
-            sceneView.addChildNode(sphere)
-            markerNodes.add(sphere)
-            true
-        } catch (t: Throwable) {
-            Log.e(TAG, "placeMarkerAtCamera failed", t)
-            false
+    fun placeMarkerAtCamera(rssi: Int, colorArgb: Int, radius: Float): Boolean {
+        val pose = lastCameraPose ?: run {
+            Log.w(TAG, "placeMarkerAtCamera: no camera pose yet — skipping")
+            return false
         }
+
+        sceneView.post {
+            try {
+                val t = pose.translation
+                Log.d(TAG, "Placing Signal Pin: world=(${t[0]}, ${t[1]}, ${t[2]}), rssi=$rssi")
+
+                // Decompose ARGB int to normalized Filament color components.
+                val r = android.graphics.Color.red(colorArgb) / 255f
+                val g = android.graphics.Color.green(colorArgb) / 255f
+                val b = android.graphics.Color.blue(colorArgb) / 255f
+
+                // createColorInstance uses SceneView's built-in PBR material.
+                // Low metallic + high roughness → matte solid sphere, still
+                // visible without any light estimation.
+                val materialInstance = sceneView.materialLoader.createColorInstance(
+                    color = Float4(r, g, b, 1f),
+                    metallic = 0f,
+                    roughness = 0.8f,
+                    reflectance = 0f,
+                )
+
+                val sphereRadius = radius.coerceIn(0.05f, 0.25f)
+
+                val sphereNode = SphereNode(
+                    engine = sceneView.engine,
+                    radius = sphereRadius,
+                    materialInstance = materialInstance,
+                ).apply {
+                    // Drop the pin ~1.1 m below the eye (around belt height).
+                    position = Float3(t[0], t[1] - DROP_BELOW_CAMERA, t[2])
+                }
+
+                // Gentle pulsing scale to make the pin feel "alive".
+                ValueAnimator.ofFloat(0.8f, 1.2f).apply {
+                    duration = 1400
+                    repeatCount = ValueAnimator.INFINITE
+                    repeatMode = ValueAnimator.REVERSE
+                    interpolator = AccelerateDecelerateInterpolator()
+                    addUpdateListener { animator ->
+                        val v = animator.animatedValue as Float
+                        sphereNode.scale = Float3(v, v, v)
+                    }
+                    start()
+                }
+
+                sceneView.addChildNode(sphereNode)
+                markerNodes.add(sphereNode)
+                Log.d(TAG, "Signal Pin added. Total markers: ${markerNodes.size}")
+            } catch (throwable: Throwable) {
+                Log.e(TAG, "placeMarkerAtCamera failed", throwable)
+            }
+        }
+        return true
     }
 
     fun clearMarkers() {
@@ -155,26 +225,21 @@ class ArScenePlatformView(
     override fun dispose() {
         try {
             clearMarkers()
+            if (lightEntity != 0) {
+                sceneView.scene.removeEntity(lightEntity)
+                EntityManager.get().destroy(lightEntity)
+                lightEntity = 0
+            }
             sceneView.destroy()
         } catch (t: Throwable) {
             Log.w(TAG, "sceneView.destroy() threw", t)
         }
     }
 
-    private fun argbToLinear(argb: Int): dev.romainguy.kotlin.math.Float4 {
-        val r = ((argb shr 16) and 0xFF) / 255f
-        val g = ((argb shr 8) and 0xFF) / 255f
-        val b = (argb and 0xFF) / 255f
-        val a = ((argb shr 24) and 0xFF) / 255f
-        // Filament expects linear RGB; approximate from sRGB.
-        val linear = Colors.toLinear(Colors.RgbaType.SRGB, floatArrayOf(r, g, b, a))
-        return dev.romainguy.kotlin.math.Float4(linear[0], linear[1], linear[2], linear[3])
-    }
-
     companion object {
         private const val TAG = "ArScenePlatformView"
-        private const val EMIT_INTERVAL_MS = 66L // ~15 Hz
-        private const val DROP_BELOW_CAMERA = 1.1f // meters from eye to marker
+        private const val EMIT_INTERVAL_MS = 66L  // ~15 Hz
+        private const val DROP_BELOW_CAMERA = 1.1f // metres from eye to pin
     }
 }
 
@@ -186,7 +251,6 @@ private fun Context.findLifecycle(): Lifecycle? {
     }
     return null
 }
-
 
 /**
  * Simple wrapper so the platform view does not depend on the MainThread check
