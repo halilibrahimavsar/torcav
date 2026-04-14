@@ -3,18 +3,21 @@ package com.example.torcav.ar
 import android.content.Context
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
+import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
 
 /**
- * Registers the `torcav/ar_scene_view` PlatformView and a broadcast
- * `torcav/ar_scene/events` EventChannel that streams detected vertical
- * planes to the Dart wall datasource.
+ * Registers the `torcav/ar_scene_view` PlatformView, the broadcast
+ * `torcav/ar_scene/events` EventChannel (plane polygons + camera pose),
+ * and the `torcav/ar_scene/commands` MethodChannel used by Dart to drop
+ * and clear 3D signal markers inside the AR scene.
  */
 class ArScenePlugin {
 
     private var activeSink: EventChannel.EventSink? = null
+    private var activeView: ArScenePlatformView? = null
 
     fun register(messenger: BinaryMessenger, registry: io.flutter.plugin.platform.PlatformViewRegistry) {
         EventChannel(messenger, EVENT_CHANNEL).setStreamHandler(
@@ -29,13 +32,35 @@ class ArScenePlugin {
             },
         )
 
+        MethodChannel(messenger, COMMAND_CHANNEL).setMethodCallHandler { call, result ->
+            val view = activeView
+            if (view == null) {
+                result.success(false)
+                return@setMethodCallHandler
+            }
+            when (call.method) {
+                "placeMarkerAtCamera" -> {
+                    val color = (call.argument<Number>("color") ?: 0xFF00E676).toInt()
+                    val radius = (call.argument<Number>("radius") ?: 0.08).toFloat()
+                    result.success(view.placeMarkerAtCamera(color, radius))
+                }
+                "clearMarkers" -> {
+                    view.clearMarkers()
+                    result.success(true)
+                }
+                else -> result.notImplemented()
+            }
+        }
+
         registry.registerViewFactory(
             VIEW_TYPE,
             object : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
                 override fun create(context: Context, viewId: Int, args: Any?): PlatformView {
-                    return ArScenePlatformView(context) { event ->
+                    val view = ArScenePlatformView(context) { event ->
                         activeSink?.success(event)
                     }
+                    activeView = view
+                    return view
                 }
             },
         )
@@ -44,5 +69,6 @@ class ArScenePlugin {
     companion object {
         const val VIEW_TYPE = "torcav/ar_scene_view"
         const val EVENT_CHANNEL = "torcav/ar_scene/events"
+        const val COMMAND_CHANNEL = "torcav/ar_scene/commands"
     }
 }

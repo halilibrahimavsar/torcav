@@ -12,9 +12,11 @@ import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
 @lazySingleton
 class ArPlaneScannerDataSource {
   ArPlaneScannerDataSource()
-      : _channel = const EventChannel('torcav/ar_scene/events');
+      : _channel = const EventChannel('torcav/ar_scene/events'),
+        _commands = const MethodChannel('torcav/ar_scene/commands');
 
   final EventChannel _channel;
+  final MethodChannel _commands;
   StreamSubscription<dynamic>? _subscription;
   final StreamController<List<WallSegment>> _controller =
       StreamController<List<WallSegment>>.broadcast();
@@ -35,6 +37,28 @@ class ArPlaneScannerDataSource {
         // Swallow — bloc keeps Sobel fallback alive.
       },
     );
+  }
+
+  /// Drops a 3D colored sphere at the camera's last tracked AR position.
+  /// [colorArgb] is a 0xAARRGGBB integer, [radius] is in meters.
+  Future<void> placeMarkerAtCamera({
+    required int colorArgb,
+    double radius = 0.08,
+  }) async {
+    try {
+      await _commands.invokeMethod<bool>('placeMarkerAtCamera', {
+        'color': colorArgb,
+        'radius': radius,
+      });
+    } catch (_) {
+      // Native side not ready or missing — ignore.
+    }
+  }
+
+  Future<void> clearMarkers() async {
+    try {
+      await _commands.invokeMethod<bool>('clearMarkers');
+    } catch (_) {}
   }
 
   Future<void> stop() async {

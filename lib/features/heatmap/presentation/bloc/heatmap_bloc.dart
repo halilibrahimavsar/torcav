@@ -14,6 +14,7 @@ import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
 import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
 import 'package:torcav/features/heatmap/domain/repositories/heatmap_repository.dart';
 import 'package:torcav/features/heatmap/domain/services/heatmap_manager.dart';
+import 'package:torcav/features/heatmap/domain/services/signal_tier.dart';
 import 'package:torcav/features/heatmap/domain/services/signal_tracker.dart';
 import 'package:torcav/features/heatmap/domain/usecases/get_heatmap_sessions_usecase.dart';
 import 'package:torcav/features/heatmap/data/datasources/ar_plane_scanner_datasource.dart';
@@ -149,6 +150,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   Future<void> startScanning(String name) async {
     _arOrigin = null;
     _arPlaneScanner.start();
+    unawaited(_arPlaneScanner.clearMarkers());
 
     emit(
       state.copyWith(
@@ -520,5 +522,13 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     );
 
     emit(state.copyWith(lastRecordedPosition: currentPos));
+
+    final rssi = state.currentRssi!;
+    final tierColor = signalGradientColor(rssi);
+    final radius = signalDiscRadius(rssi) * 0.6;
+    unawaited(_arPlaneScanner.placeMarkerAtCamera(
+      colorArgb: tierColor.toARGB32(),
+      radius: radius,
+    ));
   }
 }

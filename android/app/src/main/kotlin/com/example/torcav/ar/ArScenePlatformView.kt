@@ -6,11 +6,15 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import com.google.android.filament.Colors
 import com.google.ar.core.Config
 import com.google.ar.core.Plane
+import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
+import dev.romainguy.kotlin.math.Float3
 import io.flutter.plugin.platform.PlatformView
 import io.github.sceneview.ar.ARSceneView
+import io.github.sceneview.node.SphereNode
 
 /**
  * PlatformView that hosts ARCore via SceneView and streams vertical-plane
@@ -28,6 +32,8 @@ class ArScenePlatformView(
 
     private val hostLifecycle: Lifecycle? = context.findLifecycle()
     private var lastEmitMs: Long = 0L
+    private var lastCameraPose: Pose? = null
+    private val markerNodes = ArrayList<SphereNode>()
 
     private val sceneView: ARSceneView = ARSceneView(context).apply {
         hostLifecycle?.let { lifecycle = it }
@@ -85,6 +91,7 @@ class ArScenePlatformView(
                 val payload = HashMap<String, Any>()
                 payload["planes"] = planes
                 if (camera.trackingState == TrackingState.TRACKING) {
+                    lastCameraPose = camera.pose
                     val t = camera.pose.translation
                     payload["camera"] = mapOf(
                         "x" to t[0].toDouble(),
@@ -101,17 +108,73 @@ class ArScenePlatformView(
 
     override fun getView(): View = sceneView
 
+    /**
+     * Drops a colored sphere at the camera's last known world position,
+     * lowered ~1.1 m to sit near the floor. Returns true when a pose was
+     * available and the node was scheduled for rendering.
+     */
+    fun placeMarkerAtCamera(colorArgb: Int, radius: Float): Boolean {
+        val pose = lastCameraPose ?: return false
+        return try {
+            val t = pose.translation
+            val material = sceneView.materialLoader.createColorInstance(
+                color = argbToLinear(colorArgb),
+                metallic = 0.1f,
+                roughness = 0.35f,
+                reflectance = 0.4f,
+            )
+            val sphere = SphereNode(
+                engine = sceneView.engine,
+                radius = radius,
+                center = Float3(0f, 0f, 0f),
+                materialInstance = material,
+            ).apply {
+                position = Float3(t[0], t[1] - DROP_BELOW_CAMERA, t[2])
+            }
+            sceneView.addChildNode(sphere)
+            markerNodes.add(sphere)
+            true
+        } catch (t: Throwable) {
+            Log.e(TAG, "placeMarkerAtCamera failed", t)
+            false
+        }
+    }
+
+    fun clearMarkers() {
+        for (node in markerNodes) {
+            try {
+                sceneView.removeChildNode(node)
+                node.destroy()
+            } catch (t: Throwable) {
+                Log.w(TAG, "marker destroy threw", t)
+            }
+        }
+        markerNodes.clear()
+    }
+
     override fun dispose() {
         try {
+            clearMarkers()
             sceneView.destroy()
         } catch (t: Throwable) {
             Log.w(TAG, "sceneView.destroy() threw", t)
         }
     }
 
+    private fun argbToLinear(argb: Int): dev.romainguy.kotlin.math.Float4 {
+        val r = ((argb shr 16) and 0xFF) / 255f
+        val g = ((argb shr 8) and 0xFF) / 255f
+        val b = (argb and 0xFF) / 255f
+        val a = ((argb shr 24) and 0xFF) / 255f
+        // Filament expects linear RGB; approximate from sRGB.
+        val linear = Colors.toLinear(Colors.RgbaType.SRGB, floatArrayOf(r, g, b, a))
+        return dev.romainguy.kotlin.math.Float4(linear[0], linear[1], linear[2], linear[3])
+    }
+
     companion object {
         private const val TAG = "ArScenePlatformView"
         private const val EMIT_INTERVAL_MS = 66L // ~15 Hz
+        private const val DROP_BELOW_CAMERA = 1.1f // meters from eye to marker
     }
 }
 
