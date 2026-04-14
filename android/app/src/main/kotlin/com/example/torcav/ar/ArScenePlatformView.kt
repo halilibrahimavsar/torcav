@@ -27,19 +27,24 @@ class ArScenePlatformView(
 ) : PlatformView {
 
     private val hostLifecycle: Lifecycle? = context.findLifecycle()
+    private var lastEmitMs: Long = 0L
 
     private val sceneView: ARSceneView = ARSceneView(context).apply {
         hostLifecycle?.let { lifecycle = it }
         sessionConfiguration = { _, config ->
-            config.planeFindingMode = Config.PlaneFindingMode.HORIZONTAL_AND_VERTICAL
+            config.planeFindingMode = Config.PlaneFindingMode.VERTICAL
             config.depthMode = Config.DepthMode.DISABLED
             config.lightEstimationMode = Config.LightEstimationMode.DISABLED
             config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
         }
-        onSessionUpdated = { _, frame ->
+        onSessionUpdated = lambda@{ _, frame ->
             try {
+                val now = System.currentTimeMillis()
+                if (now - lastEmitMs < EMIT_INTERVAL_MS) return@lambda
+                lastEmitMs = now
+
+                val planes = ArrayList<Map<String, Any>>()
                 val updated = frame.getUpdatedTrackables(Plane::class.java)
-                val payload = ArrayList<Map<String, Any>>()
                 for (plane in updated) {
                     if (plane.trackingState != TrackingState.TRACKING) continue
                     if (plane.type != Plane.Type.VERTICAL) continue
@@ -63,10 +68,9 @@ class ArScenePlatformView(
                     }
 
                     val center = plane.centerPose.translation
-                    payload.add(
+                    planes.add(
                         mapOf(
                             "id" to System.identityHashCode(plane),
-                            "type" to "vertical",
                             "extentX" to plane.extentX.toDouble(),
                             "extentZ" to plane.extentZ.toDouble(),
                             "centerX" to center[0].toDouble(),
@@ -76,9 +80,19 @@ class ArScenePlatformView(
                         ),
                     )
                 }
-                if (payload.isNotEmpty()) {
-                    eventSink.send(mapOf("planes" to payload))
+
+                val camera = frame.camera
+                val payload = HashMap<String, Any>()
+                payload["planes"] = planes
+                if (camera.trackingState == TrackingState.TRACKING) {
+                    val t = camera.pose.translation
+                    payload["camera"] = mapOf(
+                        "x" to t[0].toDouble(),
+                        "y" to t[1].toDouble(),
+                        "z" to t[2].toDouble(),
+                    )
                 }
+                eventSink.send(payload)
             } catch (t: Throwable) {
                 Log.e(TAG, "onSessionUpdated failed", t)
             }
@@ -97,6 +111,7 @@ class ArScenePlatformView(
 
     companion object {
         private const val TAG = "ArScenePlatformView"
+        private const val EMIT_INTERVAL_MS = 66L // ~15 Hz
     }
 }
 

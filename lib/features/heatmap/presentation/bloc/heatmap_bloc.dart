@@ -51,6 +51,8 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   StreamSubscription? _managerPositionSub;
   StreamSubscription? _signalStateSub;
   StreamSubscription? _wallScannerSub;
+  StreamSubscription? _cameraPoseSub;
+  Offset? _arOrigin;
   Timer? _autoWallTimer;
   WallSegment? _stableWallCandidate;
 
@@ -108,6 +110,20 @@ class HeatmapBloc extends Cubit<HeatmapState> {
       _updateAutoWallTimer(walls);
     });
 
+    _cameraPoseSub = _arPlaneScanner.cameraPoseStream.listen((rawPose) {
+      if (state.phase != ScanPhase.scanning) return;
+      _arOrigin ??= rawPose;
+      final origin = _arOrigin!;
+      final pos = Offset(rawPose.dx - origin.dx, rawPose.dy - origin.dy);
+
+      _heatmapManager.syncPosition(pos.dx, pos.dy);
+      emit(state.copyWith(currentPosition: pos));
+
+      if (state.isAutoSampling) {
+        _maybeAutoSample(pos, state.currentHeading);
+      }
+    });
+
     _signalStateSub = _signalTracker.stateStream.listen((signal) {
       emit(state.copyWith(
         currentRssi: signal.currentRssi,
@@ -131,6 +147,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   }
 
   Future<void> startScanning(String name) async {
+    _arOrigin = null;
     _arPlaneScanner.start();
 
     emit(
@@ -389,6 +406,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     _managerPositionSub?.cancel();
     _signalStateSub?.cancel();
     _wallScannerSub?.cancel();
+    _cameraPoseSub?.cancel();
     _autoWallTimer?.cancel();
     return super.close();
   }

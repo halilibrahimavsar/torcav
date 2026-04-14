@@ -18,8 +18,14 @@ class ArPlaneScannerDataSource {
   StreamSubscription<dynamic>? _subscription;
   final StreamController<List<WallSegment>> _controller =
       StreamController<List<WallSegment>>.broadcast();
+  final StreamController<Offset> _cameraController =
+      StreamController<Offset>.broadcast();
 
   Stream<List<WallSegment>> get wallStream => _controller.stream;
+
+  /// Camera world position projected onto the floor (XZ). Emitted ~15 Hz
+  /// whenever ARCore reports a tracked camera pose.
+  Stream<Offset> get cameraPoseStream => _cameraController.stream;
 
   void start() {
     if (_subscription != null) return;
@@ -40,21 +46,32 @@ class ArPlaneScannerDataSource {
   Future<void> dispose() async {
     await stop();
     await _controller.close();
+    await _cameraController.close();
   }
 
   void _onEvent(dynamic raw) {
     if (raw is! Map) return;
-    final planes = raw['planes'];
-    if (planes is! List) return;
 
-    final segments = <WallSegment>[];
-    for (final dynamic plane in planes) {
-      if (plane is! Map) continue;
-      final segment = _projectPlaneToFloor(plane);
-      if (segment != null) segments.add(segment);
+    final camera = raw['camera'];
+    if (camera is Map) {
+      final x = (camera['x'] as num?)?.toDouble();
+      final z = (camera['z'] as num?)?.toDouble();
+      if (x != null && z != null) {
+        _cameraController.add(Offset(x, z));
+      }
     }
-    if (segments.isNotEmpty) {
-      _controller.add(segments);
+
+    final planes = raw['planes'];
+    if (planes is List) {
+      final segments = <WallSegment>[];
+      for (final dynamic plane in planes) {
+        if (plane is! Map) continue;
+        final segment = _projectPlaneToFloor(plane);
+        if (segment != null) segments.add(segment);
+      }
+      if (segments.isNotEmpty) {
+        _controller.add(segments);
+      }
     }
   }
 

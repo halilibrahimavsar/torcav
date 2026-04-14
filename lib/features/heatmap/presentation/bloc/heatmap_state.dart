@@ -24,7 +24,7 @@ class HeatmapState extends Equatable {
     this.currentFloor = 0,
     this.isAutoSampling = true,
     this.lastRecordedPosition,
-    this.autoSamplingDistance = 0.8,
+    this.autoSamplingDistance = 1.5,
     this.coverageScore = 0.0,
     this.sparseRegion,
     this.isAutoWallEnabled = true,
