@@ -526,12 +526,10 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
     final rssi = state.currentRssi!;
     final tierColor = signalGradientColor(rssi);
-    final radius = signalDiscRadius(rssi) * 1.5;
     unawaited(
       _arPlaneScanner.placeMarkerAtCamera(
         rssi: rssi,
         colorArgb: tierColor.toARGB32(),
-        radius: radius,
       ),
     );
   }

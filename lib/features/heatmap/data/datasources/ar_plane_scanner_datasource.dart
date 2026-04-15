@@ -39,18 +39,17 @@ class ArPlaneScannerDataSource {
     );
   }
 
-  /// Drops a 3D colored sphere at the camera's last tracked AR position.
-  /// [colorArgb] is a 0xAARRGGBB integer, [radius] is in meters.
+  /// Drops a billboarded RSSI text quad at the camera's last tracked AR
+  /// position. [colorArgb] is a 0xAARRGGBB integer used as the pill's
+  /// background. The native side caches textures per RSSI bucket.
   Future<void> placeMarkerAtCamera({
     required int rssi,
     required int colorArgb,
-    double radius = 0.08,
   }) async {
     try {
       await _commands.invokeMethod<bool>('placeMarkerAtCamera', {
         'rssi': rssi,
         'color': colorArgb,
-        'radius': radius,
       });
     } catch (_) {
       // Native side not ready or missing — ignore.

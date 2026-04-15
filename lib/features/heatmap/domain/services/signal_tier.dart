@@ -65,10 +65,3 @@ Color signalGradientColor(int rssi) {
     normalized,
   )!;
 }
-
-/// Maps RSSI to floor disc radius for AR floor markers.
-/// -90 dBm (poor) → 0.06m radius, -35 dBm (excellent) → 0.22m radius.
-double signalDiscRadius(int rssi) {
-  final normalized = ((rssi + 90) / 55).clamp(0.0, 1.0);
-  return 0.06 + normalized * 0.16;
-}
