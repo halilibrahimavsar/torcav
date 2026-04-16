@@ -160,13 +160,6 @@ class SurveyConclusionOverlay extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: _MiniStat(
-                      label: copy.wallsLabel,
-                      value: summary.wallCount.toString(),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _MiniStat(
                       label: copy.blindSpotsLabel,
                       value: summary.weakZoneCount.toString(),
                       color: summary.weakZoneCount > 0

@@ -57,15 +57,12 @@ class SessionPickerSheet extends StatelessWidget {
                 final session = sessions[index];
                 final summary = HeatmapSummary.from(
                   session: session,
-                  floorPlan: session.floorPlan,
                   currentRssi: null,
                 );
 
                 return ListTile(
-                  leading: Icon(
-                    summary.wallCount > 0
-                        ? Icons.home_work_outlined
-                        : Icons.thermostat_rounded,
+                  leading: const Icon(
+                    Icons.thermostat_rounded,
                     color: AppColors.neonCyan,
                   ),
                   title: Text(
@@ -75,7 +72,6 @@ class SessionPickerSheet extends StatelessWidget {
                   subtitle: Text(
                     copy.savedSurveySubtitle(
                       summary.sampleCount,
-                      summary.wallCount,
                       summary.weakZoneCount,
                       _formatTimestamp(session.createdAt),
                     ),

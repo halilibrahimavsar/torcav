@@ -80,8 +80,6 @@ class GuidancePill extends StatelessWidget {
         return 'Idle';
       case SurveyStage.calibration:
         return 'Calibrating Sensors';
-      case SurveyStage.planCapture:
-        return 'Scanning Workspace';
       case SurveyStage.coverageSweep:
         return 'Mapping Signal';
       case SurveyStage.weakZoneReview:

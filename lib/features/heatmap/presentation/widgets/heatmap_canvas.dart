@@ -5,17 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 
-import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
-import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
 import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
 import 'heatmap_compass.dart';
 
-/// Renders signal-strength data and floor plan walls.
+/// Renders signal-strength data as a 2D heatmap.
 class HeatmapCanvas extends StatefulWidget {
   final HeatmapSession session;
-  final FloorPlan? floorPlan;
   final void Function(Offset metricPos)? onTap;
   final bool showPath;
   final int? activeFloor;
@@ -32,7 +29,6 @@ class HeatmapCanvas extends StatefulWidget {
 
   const HeatmapCanvas({
     required this.session,
-    this.floorPlan,
     this.onTap,
     this.showPath = false,
     this.activeFloor,
@@ -111,7 +107,6 @@ class _HeatmapCanvasState extends State<HeatmapCanvas> {
               )
             : _WorldBounds.fromData(
                 points: points,
-                walls: widget.floorPlan?.walls ?? const [],
                 currentPosition: widget.currentPosition,
               );
         final viewport = _Viewport.fit(size, worldBounds, widget.padding);
@@ -150,7 +145,6 @@ class _HeatmapCanvasState extends State<HeatmapCanvas> {
                       child: CustomPaint(
                         painter: _StaticHeatmapPainter(
                           points: points,
-                          floorPlan: widget.floorPlan,
                           viewport: viewport,
                           showPath: widget.showPath,
                           minRssi: effectiveMinRssi,
@@ -248,7 +242,6 @@ class _FitButton extends StatelessWidget {
 
 class _StaticHeatmapPainter extends CustomPainter {
   final List<HeatmapPoint> points;
-  final FloorPlan? floorPlan;
   final _Viewport viewport;
   final bool showPath;
   final int minRssi;
@@ -259,7 +252,6 @@ class _StaticHeatmapPainter extends CustomPainter {
 
   _StaticHeatmapPainter({
     required this.points,
-    required this.floorPlan,
     required this.viewport,
     required this.showPath,
     required this.minRssi,
@@ -274,10 +266,6 @@ class _StaticHeatmapPainter extends CustomPainter {
     // Skip grid, scale bar, and RSSI legend in mini-map mode — they are
     // invisible at 160×160 and the blur/TextPainter allocations are costly.
     if (!isMiniMap) _drawGrid(canvas, size);
-
-    if (floorPlan != null && floorPlan!.walls.isNotEmpty) {
-      _drawWalls(canvas, floorPlan!.walls);
-    }
 
     if (showPath) {
       _drawPath(canvas, points);
@@ -469,33 +457,6 @@ class _StaticHeatmapPainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2.2,
     );
-  }
-
-  // -------------------------------------------------------------------------
-  // Walls — solid architectural style
-  // -------------------------------------------------------------------------
-
-  void _drawWalls(Canvas canvas, List<WallSegment> walls) {
-    final shadowPaint =
-        Paint()
-          ..color = Colors.black.withValues(alpha: 0.55)
-          ..strokeWidth = 7.0
-          ..strokeCap = StrokeCap.square
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.5);
-
-    final wallPaint =
-        Paint()
-          ..color = Colors.white.withValues(alpha: 0.88)
-          ..strokeWidth = 3.5
-          ..strokeCap = StrokeCap.square
-          ..style = PaintingStyle.stroke;
-
-    for (final wall in walls) {
-      final p1 = viewport.worldToCanvas(Offset(wall.x1, wall.y1));
-      final p2 = viewport.worldToCanvas(Offset(wall.x2, wall.y2));
-      canvas.drawLine(p1, p2, shadowPaint);
-      canvas.drawLine(p1, p2, wallPaint);
-    }
   }
 
   // -------------------------------------------------------------------------
@@ -780,7 +741,6 @@ class _StaticHeatmapPainter extends CustomPainter {
   @override
   bool shouldRepaint(_StaticHeatmapPainter old) =>
       old.points != points ||
-      old.floorPlan != floorPlan ||
       old.viewport != viewport ||
       old.showPath != showPath ||
       old.minRssi != minRssi ||
@@ -960,7 +920,6 @@ class _WorldBounds {
 
   factory _WorldBounds.fromData({
     required List<HeatmapPoint> points,
-    required List<WallSegment> walls,
     Offset? currentPosition,
   }) {
     final xs = <double>[0];
@@ -969,14 +928,6 @@ class _WorldBounds {
     for (final point in points) {
       xs.add(point.floorX);
       ys.add(point.floorY);
-    }
-    for (final wall in walls) {
-      xs
-        ..add(wall.x1)
-        ..add(wall.x2);
-      ys
-        ..add(wall.y1)
-        ..add(wall.y2);
     }
 
     if (currentPosition != null) {
@@ -1017,7 +968,7 @@ class _WorldBounds {
     Offset? currentPosition,
   }) {
     if (currentPosition == null) {
-      return _WorldBounds.fromData(points: points, walls: const []);
+      return _WorldBounds.fromData(points: points);
     }
 
     // Auto-zoom: padding grows with the survey area's extent, but stays within

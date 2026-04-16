@@ -2,15 +2,12 @@ import 'dart:math' as math;
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 
-
-import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/survey_gate.dart';
 
 enum SurveyStage {
   idle,
   calibration,
-  planCapture,
   coverageSweep,
   weakZoneReview,
   wrapUp,
@@ -26,16 +23,14 @@ class SurveyFeedHealth extends Equatable {
     required this.motionLive,
     required this.wifiLive,
     required this.cameraLive,
-    required this.planLive,
   });
 
   final bool motionLive;
   final bool wifiLive;
   final bool cameraLive;
-  final bool planLive;
 
   @override
-  List<Object?> get props => [motionLive, wifiLive, cameraLive, planLive];
+  List<Object?> get props => [motionLive, wifiLive, cameraLive];
 }
 
 class SurveyGuidance extends Equatable {
@@ -43,12 +38,10 @@ class SurveyGuidance extends Equatable {
     required this.stage,
     required this.tone,
     required this.overallProgress,
-    required this.planScore,
     required this.coverageScore,
     required this.signalScore,
     required this.sparseRegion,
     required this.feeds,
-    required this.suggestAr,
     required this.readyToFinish,
     this.customInstruction,
   });
@@ -64,18 +57,16 @@ class SurveyGuidance extends Equatable {
     if (overallProgress < 0.8) {
       return 'Strong data density. Coverage is consistent across most areas.';
     }
-    return 'Optimal survey quality. Your network floor plan and signal mapping are highly accurate.';
+    return 'Optimal survey quality. Your signal mapping is highly accurate.';
   }
 
   final SurveyStage stage;
   final SurveyTone tone;
   final double overallProgress;
-  final double planScore;
   final double coverageScore;
   final double signalScore;
   final SparseRegion? sparseRegion;
   final SurveyFeedHealth feeds;
-  final bool suggestAr;
   final bool readyToFinish;
   final String? customInstruction;
 
@@ -84,12 +75,10 @@ class SurveyGuidance extends Equatable {
         stage,
         tone,
         overallProgress,
-        planScore,
         coverageScore,
         signalScore,
         sparseRegion,
         feeds,
-        suggestAr,
         readyToFinish,
         customInstruction,
       ];
@@ -101,10 +90,7 @@ class SurveyGuidanceService {
 
   SurveyGuidance analyze({
     required List<HeatmapPoint> points,
-    required FloorPlan? floorPlan,
     required bool isRecording,
-    required bool hasArOrigin,
-    required int pendingWallCount,
     required int? currentRssi,
     required SurveyGate surveyGate,
     required DateTime? lastSignalAt,
@@ -112,10 +98,8 @@ class SurveyGuidanceService {
     double? currentX,
     double? currentY,
   }) {
-    final wallCount = floorPlan?.walls.length ?? 0;
     final hasMotion = currentX != null && currentY != null;
     final hasWifi = currentRssi != null || points.isNotEmpty;
-    final hasPlan = wallCount > 0 || pendingWallCount > 0;
 
     if (!isRecording) {
       return SurveyGuidance(
@@ -123,14 +107,10 @@ class SurveyGuidanceService {
         tone: points.isEmpty ? SurveyTone.info : SurveyTone.success,
         overallProgress: _overallProgress(
           points,
-          wallCount,
-          pendingWallCount,
-          hasArOrigin,
           surveyGate,
           lastSignalAt,
           currentSignalStdDev,
         ),
-        planScore: _planScore(wallCount, pendingWallCount, hasArOrigin),
         coverageScore: _coverageScore(points, currentX, currentY),
         signalScore: _signalScore(
           points,
@@ -143,14 +123,11 @@ class SurveyGuidanceService {
           motionLive: hasMotion || points.isNotEmpty,
           wifiLive: hasWifi,
           cameraLive: false,
-          planLive: wallCount > 0,
         ),
-        suggestAr: false,
         readyToFinish: points.isNotEmpty,
       );
     }
 
-    final planScore = _planScore(wallCount, pendingWallCount, hasArOrigin);
     final coverageScore = _coverageScore(points, currentX, currentY);
     final signalScore = _signalScore(
       points,
@@ -158,15 +135,9 @@ class SurveyGuidanceService {
       lastSignalAt,
       currentSignalStdDev,
     );
-    final overall = _combineScores(planScore, coverageScore, signalScore);
+    final overall = _combineScores(coverageScore, signalScore);
     final sparseRegion = _sparseRegion(points);
-    final suggestAr = points.length >= 3 && planScore < 0.55 && !hasArOrigin;
     final weakZoneCount = points.where((point) => point.rssi < -72).length;
-
-    String? customInstruction;
-    if (pendingWallCount > 0 && planScore < 0.65) {
-      customInstruction = 'Tap Reticle to Add Wall';
-    }
 
     SurveyStage stage;
     SurveyTone tone;
@@ -174,18 +145,12 @@ class SurveyGuidanceService {
     if (surveyGate == SurveyGate.noConnectedBssid) {
       stage = SurveyStage.calibration;
       tone = SurveyTone.caution;
-    } else if (surveyGate == SurveyGate.originNotPlaced) {
-      stage = SurveyStage.planCapture;
-      tone = SurveyTone.caution;
     } else if (surveyGate == SurveyGate.staleSignal) {
       stage = SurveyStage.calibration;
       tone = SurveyTone.caution;
     } else if (!hasMotion || points.length < 3) {
       stage = SurveyStage.calibration;
       tone = SurveyTone.info;
-    } else if (planScore < 0.45) {
-      stage = SurveyStage.planCapture;
-      tone = suggestAr ? SurveyTone.caution : SurveyTone.progress;
     } else if (coverageScore < 0.72) {
       stage = SurveyStage.coverageSweep;
       tone = SurveyTone.progress;
@@ -200,10 +165,8 @@ class SurveyGuidanceService {
       tone = SurveyTone.progress;
     }
 
-    final readyToFinish =
-        surveyGate == SurveyGate.none &&
+    final readyToFinish = surveyGate == SurveyGate.none &&
         overall >= 0.78 &&
-        planScore >= 0.58 &&
         coverageScore >= 0.72 &&
         signalScore >= 0.72;
 
@@ -211,7 +174,6 @@ class SurveyGuidanceService {
       stage: stage,
       tone: tone,
       overallProgress: overall,
-      planScore: planScore,
       coverageScore: coverageScore,
       signalScore: signalScore,
       sparseRegion: sparseRegion,
@@ -219,24 +181,17 @@ class SurveyGuidanceService {
         motionLive: hasMotion || points.isNotEmpty,
         wifiLive: hasWifi,
         cameraLive: isRecording,
-        planLive: hasPlan,
       ),
-      suggestAr: suggestAr,
       readyToFinish: readyToFinish,
-      customInstruction: customInstruction,
     );
   }
 
   double _overallProgress(
     List<HeatmapPoint> points,
-    int wallCount,
-    int pendingWallCount,
-    bool hasArOrigin,
     SurveyGate surveyGate,
     DateTime? lastSignalAt,
     double currentSignalStdDev,
   ) {
-    final plan = _planScore(wallCount, pendingWallCount, hasArOrigin);
     final coverage = _coverageScore(points, null, null);
     final signal = _signalScore(
       points,
@@ -244,24 +199,11 @@ class SurveyGuidanceService {
       lastSignalAt,
       currentSignalStdDev,
     );
-    return _combineScores(plan, coverage, signal);
+    return _combineScores(coverage, signal);
   }
 
-  double _combineScores(double plan, double coverage, double signal) {
-    return ((plan * 0.35) + (coverage * 0.40) + (signal * 0.25)).clamp(
-      0.0,
-      1.0,
-    );
-  }
-
-  double _planScore(int wallCount, int pendingWallCount, bool hasArOrigin) {
-    final origin = hasArOrigin ? 1.0 : 0.0;
-    final committed = (wallCount / 10).clamp(0.0, 1.0);
-    final live = (pendingWallCount / 8).clamp(0.0, 1.0);
-    return ((origin * 0.45) + (committed * 0.4) + (live * 0.15)).clamp(
-      0.0,
-      1.0,
-    );
+  double _combineScores(double coverage, double signal) {
+    return ((coverage * 0.6) + (signal * 0.4)).clamp(0.0, 1.0);
   }
 
   double _coverageScore(
@@ -280,14 +222,13 @@ class SurveyGuidanceService {
 
     final width = (xs.reduce(math.max) - xs.reduce(math.min)).abs();
     final height = (ys.reduce(math.max) - ys.reduce(math.min)).abs();
-    final cells =
-        points
-            .map(
-              (point) =>
-                  '${point.floorX.floor()}:${point.floorY.floor()}:${point.floor}',
-            )
-            .toSet()
-            .length;
+    final cells = points
+        .map(
+          (point) =>
+              '${point.floorX.floor()}:${point.floorY.floor()}:${point.floor}',
+        )
+        .toSet()
+        .length;
     final uniqueCoverage = (cells / 45).clamp(0.0, 1.0);
     final span = (math.max(width, height) / 10).clamp(0.0, 1.0);
 
@@ -309,13 +250,12 @@ class SurveyGuidanceService {
     if (points.isEmpty && lastSignalAt == null) return 0;
 
     final lockScore = surveyGate == SurveyGate.noConnectedBssid ? 0.0 : 1.0;
-    final freshness =
-        lastSignalAt == null
-            ? 0.0
-            : (1 -
-                    (DateTime.now().difference(lastSignalAt).inMilliseconds /
-                        3000.0))
-                .clamp(0.0, 1.0);
+    final freshness = lastSignalAt == null
+        ? 0.0
+        : (1 -
+                (DateTime.now().difference(lastSignalAt).inMilliseconds /
+                    3000.0))
+            .clamp(0.0, 1.0);
     final varianceScore = (1 - (currentSignalStdDev / 12)).clamp(0.0, 1.0);
 
     return ((lockScore * 0.45) + (freshness * 0.35) + (varianceScore * 0.20))
@@ -344,20 +284,20 @@ class SurveyGuidanceService {
               ? SparseRegion.leftWing
               : SparseRegion.rightWing] =
           counts[point.floorX <= centerX
-              ? SparseRegion.leftWing
-              : SparseRegion.rightWing]! +
-          1;
+                  ? SparseRegion.leftWing
+                  : SparseRegion.rightWing]! +
+              1;
       counts[point.floorY <= centerY
               ? SparseRegion.topWing
               : SparseRegion.bottomWing] =
           counts[point.floorY <= centerY
-              ? SparseRegion.topWing
-              : SparseRegion.bottomWing]! +
-          1;
+                  ? SparseRegion.topWing
+                  : SparseRegion.bottomWing]! +
+              1;
     }
 
-    final sortedEntries =
-        counts.entries.toList()..sort((a, b) => a.value.compareTo(b.value));
+    final sortedEntries = counts.entries.toList()
+      ..sort((a, b) => a.value.compareTo(b.value));
     final minEntry = sortedEntries.first;
     final maxEntry = sortedEntries.last;
 

@@ -4,14 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
-import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
-import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
 import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
 
 class HeatmapSummary {
   const HeatmapSummary({
     required this.sampleCount,
-    required this.wallCount,
     required this.weakZoneCount,
     required this.averageRssi,
     required this.currentRssi,
@@ -21,7 +18,6 @@ class HeatmapSummary {
 
   factory HeatmapSummary.from({
     required HeatmapSession session,
-    required FloorPlan? floorPlan,
     required int? currentRssi,
   }) {
     final points = session.points;
@@ -31,14 +27,10 @@ class HeatmapSummary {
             points.length;
     final weakZoneCount =
         points.where((point) => point.rssi < -72 || point.isFlagged).length;
-    final bounds = MetricBounds.from(
-      points: points,
-      walls: floorPlan?.walls ?? const [],
-    );
+    final bounds = MetricBounds.from(points: points);
 
     return HeatmapSummary(
       sampleCount: points.length,
-      wallCount: floorPlan?.walls.length ?? 0,
       weakZoneCount: weakZoneCount,
       averageRssi: averageRssi,
       currentRssi: currentRssi,
@@ -48,7 +40,6 @@ class HeatmapSummary {
   }
 
   final int sampleCount;
-  final int wallCount;
   final int weakZoneCount;
   final double? averageRssi;
   final int? currentRssi;
@@ -56,7 +47,6 @@ class HeatmapSummary {
   final double heightMeters;
 
   bool get hasSamples => sampleCount > 0;
-  bool get hasPlan => wallCount > 0;
 
   int? get signalForDisplay => currentRssi ?? averageRssi?.round();
 
@@ -107,7 +97,7 @@ class HeatmapSummary {
   }
 
   String planSizeDisplay(HeatmapCopy copy) {
-    if (!hasSamples && !hasPlan) return copy.notAvailable;
+    if (!hasSamples) return copy.notAvailable;
     return '${widthMeters.toStringAsFixed(1)} x ${heightMeters.toStringAsFixed(1)} m';
   }
 }
@@ -117,7 +107,6 @@ class MetricBounds {
 
   factory MetricBounds.from({
     required List<HeatmapPoint> points,
-    required List<WallSegment> walls,
   }) {
     final xs = <double>[0];
     final ys = <double>[0];
@@ -125,14 +114,6 @@ class MetricBounds {
     for (final point in points) {
       xs.add(point.floorX);
       ys.add(point.floorY);
-    }
-    for (final wall in walls) {
-      xs
-        ..add(wall.x1)
-        ..add(wall.x2);
-      ys
-        ..add(wall.y1)
-        ..add(wall.y2);
     }
 
     final width = (xs.reduce(math.max) - xs.reduce(math.min)).abs();
@@ -230,14 +211,9 @@ class HeatmapCopy {
           ? 'Kayitli tur var ama henuz anlamli sinyal ornegi yok.'
           : 'There is a saved survey, but it still lacks meaningful signal samples.';
     }
-    if (!summary.hasPlan) {
-      return isTurkish
-          ? 'Sinyal izi var ama duvar plani zayif. Sonucu okuyabilirsiniz, plan icin bir tur daha faydali olur.'
-          : 'The signal trail is there, but the wall plan is weak. You can read the result, though another pass would improve the outline.';
-    }
     return isTurkish
-        ? 'Plan ve kapsama birlikte okunabilir durumda. Zayif bolgeleri asagidaki ozetten takip edin.'
-        : 'The outline and coverage are readable together. Use the summary below to inspect weak zones.';
+        ? 'Kapsama okunabilir durumda. Zayif bolgeleri asagidaki ozetten takip edin.'
+        : 'Coverage is readable. Use the summary below to inspect weak zones.';
   }
 
   String get samplesLabel => isTurkish ? 'TOPLANAN ORNEK' : 'SAMPLES';
@@ -320,8 +296,8 @@ class HeatmapCopy {
           : 'Signal is arriving but the outline is missing. Switch to AR and face the walls during another pass to improve the plan.';
   String recordingInsight(HeatmapSummary summary) =>
       isTurkish
-          ? 'Canli sonuc okunmaya basladi. ${summary.sampleCount} ornek ve ${summary.wallCount} duvar cizgisi ile zayif alanlar kabaca gorunuyor.'
-          : 'The live result is starting to read well. With ${summary.sampleCount} samples and ${summary.wallCount} wall lines, weak areas are becoming visible.';
+          ? 'Canli sonuc okunmaya basladi. ${summary.sampleCount} ornek ile zayif alanlar kabaca gorunuyor.'
+          : 'The live result is starting to read well. With ${summary.sampleCount} samples, weak areas are becoming visible.';
   String get reviewInsightNoSamples =>
       isTurkish
           ? 'Bu turde sinyal ornegi yok. Konum ve hareket algilama izinleri kapaliysa uygulama isi haritasi uretemez.'
@@ -367,14 +343,13 @@ class HeatmapCopy {
       isTurkish ? 'Henuz kayitli bir tur yok.' : 'No saved surveys yet.';
   String savedSurveySubtitle(
     int samples,
-    int walls,
     int weak,
     String timestamp,
   ) {
     if (isTurkish) {
-      return '$samples ornek · $walls duvar · $weak zayif nokta · $timestamp';
+      return '$samples ornek · $weak zayif nokta · $timestamp';
     }
-    return '$samples samples · $walls walls · $weak weak zones · $timestamp';
+    return '$samples samples · $weak weak zones · $timestamp';
   }
 
   String get deleteSurveyTooltip => isTurkish ? 'Turu sil' : 'Delete survey';
@@ -456,10 +431,6 @@ class HeatmapCopy {
         return Icons.play_arrow_rounded;
       case SurveyStage.calibration:
         return Icons.directions_walk_rounded;
-      case SurveyStage.planCapture:
-        return guidance.suggestAr
-            ? Icons.view_in_ar_rounded
-            : Icons.home_work_outlined;
       case SurveyStage.coverageSweep:
         return Icons.alt_route_rounded;
       case SurveyStage.weakZoneReview:
@@ -477,8 +448,6 @@ class HeatmapCopy {
         return isTurkish ? 'Survey Hazirligi' : 'Survey Setup';
       case SurveyStage.calibration:
         return isTurkish ? 'Rota Baslatiliyor' : 'Starting Route';
-      case SurveyStage.planCapture:
-        return isTurkish ? 'Plan Cizgisi Toplaniyor' : 'Capturing Outline';
       case SurveyStage.coverageSweep:
         return isTurkish ? 'Kapsama Dolduruluyor' : 'Filling Coverage';
       case SurveyStage.weakZoneReview:
@@ -500,14 +469,6 @@ class HeatmapCopy {
         return isTurkish
             ? 'Ilk izi olusturmak icin 5-8 adim duz ilerleyin. Oda girisleri ve kose donusleri konum iskeletini daha hizli oturtur.'
             : 'Walk straight for 5-8 steps to establish the first trace. Doorways and corner turns help anchor the layout faster.';
-      case SurveyStage.planCapture:
-        return guidance.suggestAr
-            ? (isTurkish
-                ? 'Plan guveni henuz dusuk. AR moduna gecip telefonu duvarlara ve kapi hatlarina cevirin.'
-                : 'Outline confidence is still low. Switch to AR and face walls and door edges.')
-            : (isTurkish
-                ? 'Duvar cizgisi toplanıyor. Telefonu oda sinirlarina dogru sakin sekilde gezdirin.'
-                : 'Wall lines are being captured. Sweep the phone calmly across room boundaries.');
       case SurveyStage.coverageSweep:
         return isTurkish
             ? 'Haritanin ${routeLabelValue(guidance)} tarafi daha seyrek. O yone gidip 3-4 yeni ornek toplayin.'
@@ -522,8 +483,8 @@ class HeatmapCopy {
             : 'Outline, coverage, and signal density are now strong enough. Save the result and read the plan/heatmap in review.';
       case SurveyStage.review:
         return isTurkish
-            ? 'Bu tur ${(guidance.overallProgress * 100).round()}% dolulukta. ${summary.sampleCount} ornek ve ${summary.wallCount} duvar ile sonuc okunabilir.'
-            : 'This survey is ${(guidance.overallProgress * 100).round()}% complete. With ${summary.sampleCount} samples and ${summary.wallCount} walls, the result is readable.';
+            ? 'Bu tur ${(guidance.overallProgress * 100).round()}% dolulukta. ${summary.sampleCount} ornek ile sonuc okunabilir.'
+            : 'This survey is ${(guidance.overallProgress * 100).round()}% complete. With ${summary.sampleCount} samples, the result is readable.';
     }
   }
 
@@ -536,10 +497,6 @@ class HeatmapCopy {
         return isTurkish ? 'Turu baslat' : 'Start survey';
       case SurveyStage.calibration:
         return isTurkish ? 'Duz ilerle' : 'Walk forward';
-      case SurveyStage.planCapture:
-        return guidance.suggestAr
-            ? (isTurkish ? 'AR moduna gec' : 'Switch to AR')
-            : (isTurkish ? 'Duvarlari tara' : 'Scan the walls');
       case SurveyStage.coverageSweep:
         return directionLabel(guidance.sparseRegion);
       case SurveyStage.weakZoneReview:

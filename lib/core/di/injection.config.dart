@@ -16,16 +16,14 @@ import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import '../../features/ai/data/services/onnx_device_classifier_service.dart'
     as _i265;
-import '../../features/heatmap/data/datasources/ar_plane_scanner_datasource.dart'
-    as _i92;
+import '../../features/heatmap/data/datasources/ar_camera_pose_datasource.dart'
+    as _i188;
 import '../../features/heatmap/data/datasources/barometer_datasource.dart'
     as _i761;
 import '../../features/heatmap/data/datasources/heatmap_local_data_source.dart'
     as _i652;
 import '../../features/heatmap/data/datasources/position_datasource.dart'
     as _i989;
-import '../../features/heatmap/data/datasources/wall_detector_datasource.dart'
-    as _i543;
 import '../../features/heatmap/data/repositories/heatmap_repository_impl.dart'
     as _i531;
 import '../../features/heatmap/domain/repositories/heatmap_repository.dart'
@@ -39,9 +37,6 @@ import '../../features/heatmap/domain/services/position_tracker.dart' as _i104;
 import '../../features/heatmap/domain/services/signal_tracker.dart' as _i1072;
 import '../../features/heatmap/domain/services/survey_guidance_service.dart'
     as _i904;
-import '../../features/heatmap/domain/services/wall_processor.dart' as _i794;
-import '../../features/heatmap/domain/usecases/finalize_floor_plan.dart'
-    as _i960;
 import '../../features/heatmap/domain/usecases/get_heatmap_sessions_usecase.dart'
     as _i716;
 import '../../features/heatmap/domain/usecases/record_heatmap_point_usecase.dart'
@@ -213,20 +208,18 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i978.PortScanDataSource(),
     );
     gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
-    gh.lazySingleton<_i960.FinalizeFloorPlan>(() => _i960.FinalizeFloorPlan());
     gh.lazySingleton<_i904.SurveyGuidanceService>(
       () => const _i904.SurveyGuidanceService(),
     );
     gh.lazySingleton<_i106.ConnectedSignalSmoother>(
       () => const _i106.ConnectedSignalSmoother(),
     );
-    gh.lazySingleton<_i794.WallProcessor>(() => const _i794.WallProcessor());
     gh.lazySingleton<_i265.OnnxDeviceClassifierService>(
       () => _i265.OnnxDeviceClassifierService(),
       dispose: (i) => i.dispose(),
     );
-    gh.lazySingleton<_i92.ArPlaneScannerDataSource>(
-      () => _i92.ArPlaneScannerDataSource(),
+    gh.lazySingleton<_i188.ArCameraPoseDataSource>(
+      () => _i188.ArCameraPoseDataSource(),
       dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i1073.NetworkScanRepository>(
@@ -299,9 +292,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i104.PositionTracker>(
       () => _i104.PositionTracker(gh<_i989.PositionDataSource>()),
-    );
-    gh.lazySingleton<_i543.WallDetectorDataSource>(
-      () => _i543.WallDetectorDataSourceImpl(),
     );
     gh.lazySingleton<_i389.SpeedTestRepository>(
       () => const _i275.SpeedTestRepositoryImpl(),
@@ -401,16 +391,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1073.NetworkScanRepository>(),
       ),
     );
-    gh.lazySingleton<_i869.HeatmapManager>(
-      () => _i869.HeatmapManager(
-        gh<_i1072.SignalTracker>(),
-        gh<_i104.PositionTracker>(),
-        gh<_i794.WallProcessor>(),
-        gh<_i747.HeatmapRepository>(),
-        gh<_i761.BarometerDataSource>(),
-        gh<_i960.FinalizeFloorPlan>(),
-      ),
-    );
     gh.lazySingleton<_i87.AnalyzeNetworkSecurityUseCase>(
       () => _i87.AnalyzeNetworkSecurityUseCase(gh<_i578.SecurityRepository>()),
     );
@@ -420,6 +400,14 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i796.NotificationBloc>(
       () => _i796.NotificationBloc(gh<_i578.SecurityRepository>()),
+    );
+    gh.lazySingleton<_i869.HeatmapManager>(
+      () => _i869.HeatmapManager(
+        gh<_i1072.SignalTracker>(),
+        gh<_i104.PositionTracker>(),
+        gh<_i747.HeatmapRepository>(),
+        gh<_i761.BarometerDataSource>(),
+      ),
     );
     gh.factory<_i676.SecurityBloc>(
       () => _i676.SecurityBloc(
@@ -456,6 +444,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i534.PingNodeUseCase>(
       () => _i534.PingNodeUseCase(gh<_i244.TopologyRepository>()),
     );
+    gh.factory<_i931.HeatmapBloc>(
+      () => _i931.HeatmapBloc(
+        gh<_i716.GetHeatmapSessionsUsecase>(),
+        gh<_i747.HeatmapRepository>(),
+        gh<_i188.ArCameraPoseDataSource>(),
+        gh<_i869.HeatmapManager>(),
+        gh<_i1072.SignalTracker>(),
+        gh<_i904.SurveyGuidanceService>(),
+      ),
+    );
     gh.factory<_i613.MonitoringBloc>(
       () => _i613.MonitoringBloc(
         gh<_i365.MonitoringRepository>(),
@@ -470,16 +468,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i422.GetTopologyUseCase>(),
         gh<_i534.PingNodeUseCase>(),
         gh<_i244.TopologyRepository>(),
-      ),
-    );
-    gh.factory<_i931.HeatmapBloc>(
-      () => _i931.HeatmapBloc(
-        gh<_i716.GetHeatmapSessionsUsecase>(),
-        gh<_i747.HeatmapRepository>(),
-        gh<_i92.ArPlaneScannerDataSource>(),
-        gh<_i869.HeatmapManager>(),
-        gh<_i1072.SignalTracker>(),
-        gh<_i904.SurveyGuidanceService>(),
       ),
     );
     return this;

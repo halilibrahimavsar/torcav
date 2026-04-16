@@ -6,32 +6,25 @@ import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
 import 'package:torcav/features/heatmap/domain/entities/position_update.dart';
 import 'package:torcav/features/heatmap/domain/entities/survey_gate.dart';
-import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
 import 'package:torcav/features/heatmap/domain/repositories/heatmap_repository.dart';
-import 'package:torcav/features/heatmap/domain/usecases/finalize_floor_plan.dart';
 import 'package:torcav/features/heatmap/domain/services/position_tracker.dart';
 import 'package:torcav/features/heatmap/domain/services/signal_tracker.dart';
-import 'package:torcav/features/heatmap/domain/services/wall_processor.dart';
 
 /// Orchestrator service that manages a live heatmap scanning session.
-/// Coordinates SignalTracker, PositionTracker, and WallProcessor.
+/// Coordinates SignalTracker and PositionTracker.
 @LazySingleton()
 class HeatmapManager {
   HeatmapManager(
     this._signalTracker,
     this._positionTracker,
-    this._wallProcessor,
     this._repository,
     this._barometerSource,
-    this._finalizeFloorPlan,
   );
 
   final SignalTracker _signalTracker;
   final PositionTracker _positionTracker;
-  final WallProcessor _wallProcessor;
   final HeatmapRepository _repository;
   final BarometerDataSource _barometerSource;
-  final FinalizeFloorPlan _finalizeFloorPlan;
 
   static const _minimumPointDistanceMeters = 0.5;
   static const _signalFreshnessSeconds = 3;
@@ -83,27 +76,18 @@ class HeatmapManager {
   }
 
   /// Stop and save the session, returning the finalized session
-  Future<HeatmapSession?> stopSession({required List<WallSegment> liveWalls}) async {
+  Future<HeatmapSession?> stopSession() async {
     _signalTracker.stop();
     _positionTracker.stop();
     _barometerSource.stopTracking();
 
     if (_currentSession == null) return null;
 
-    var finalSession = _currentSession!;
-
-    if (liveWalls.isNotEmpty) {
-      final planResult = await _finalizeFloorPlan(liveWalls);
-      planResult.fold(
-        (_) {},
-        (plan) => finalSession = finalSession.copyWith(floorPlan: plan),
-      );
-    }
-
+    final finalSession = _currentSession!;
     await _repository.saveSession(finalSession);
     _currentSession = null;
     _sessionController.add(null);
-    
+
     return finalSession;
   }
 
@@ -218,11 +202,6 @@ class HeatmapManager {
     } else {
       _gateController.add(SurveyGate.none);
     }
-  }
-
-  /// Processes a new wall segment from AR
-  List<WallSegment> addWall(List<WallSegment> existingWalls, WallSegment newWall) {
-    return _wallProcessor.processNewWall(existingWalls, newWall);
   }
 
   /// Syncs global position from AR

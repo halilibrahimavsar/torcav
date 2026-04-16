@@ -80,11 +80,6 @@ class SurveyPilotCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _MiniRing(
-                    value: guidance.planScore,
-                    color: AppColors.neonPurple,
-                    label: 'PLAN',
-                  ),
-                  _MiniRing(
                     value: guidance.coverageScore,
                     color: AppColors.neonCyan,
                     label: 'COV',
@@ -105,7 +100,6 @@ class SurveyPilotCard extends StatelessWidget {
                   _FeedDot(label: 'MOT', live: guidance.feeds.motionLive),
                   _FeedDot(label: 'WIFI', live: guidance.feeds.wifiLive),
                   _FeedDot(label: 'CAM', live: guidance.feeds.cameraLive),
-                  _FeedDot(label: 'MAP', live: guidance.feeds.planLive),
                 ],
               ),
             ],
@@ -134,8 +128,6 @@ class SurveyPilotCard extends StatelessWidget {
         return 'STANDBY';
       case SurveyStage.calibration:
         return 'CALIBRATE';
-      case SurveyStage.planCapture:
-        return 'SCAN WALLS';
       case SurveyStage.coverageSweep:
         return 'SWEEP ROOMS';
       case SurveyStage.weakZoneReview:

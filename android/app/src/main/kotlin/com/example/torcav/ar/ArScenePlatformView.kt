@@ -17,7 +17,6 @@ import com.google.android.filament.LightManager
 import com.google.android.filament.MaterialInstance
 import com.google.android.filament.Texture
 import com.google.ar.core.Config
-import com.google.ar.core.Plane
 import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
 import dev.romainguy.kotlin.math.Float3
@@ -31,8 +30,10 @@ import kotlin.math.atan2
 import kotlin.math.roundToInt
 
 /**
- * PlatformView that hosts ARCore via SceneView and streams vertical-plane
- * polygons to Dart over [eventSink].
+ * PlatformView that hosts ARCore via SceneView solely for camera pose tracking
+ * and signal-tag rendering. Plane detection is disabled — ARCore's only job
+ * here is to provide a stable world-anchored pose so that billboarded RSSI
+ * labels stay locked to real-world positions as the user walks.
  *
  * Signal samples are rendered as small billboarded text quads ("signal tags")
  * showing the RSSI value on a colored pill. Textures are cached per
@@ -58,7 +59,7 @@ class ArScenePlatformView(
     private val sceneView: ARSceneView = ARSceneView(context).apply {
         hostLifecycle?.let { lifecycle = it }
         sessionConfiguration = { _, config ->
-            config.planeFindingMode = Config.PlaneFindingMode.VERTICAL
+            config.planeFindingMode = Config.PlaneFindingMode.DISABLED
             config.depthMode = Config.DepthMode.DISABLED
             config.lightEstimationMode = Config.LightEstimationMode.DISABLED
             config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
@@ -88,59 +89,22 @@ class ArScenePlatformView(
                     billboardMarkers(camera.pose.translation)
                 }
 
+                if (camera.trackingState != TrackingState.TRACKING) return@lambda
+
                 val now = System.currentTimeMillis()
                 if (now - lastEmitMs < EMIT_INTERVAL_MS) return@lambda
                 lastEmitMs = now
 
-                val planes = ArrayList<Map<String, Any>>()
-                val updated = frame.getUpdatedTrackables(Plane::class.java)
-                for (plane in updated) {
-                    if (plane.trackingState != TrackingState.TRACKING) continue
-                    if (plane.type != Plane.Type.VERTICAL) continue
-
-                    val poly = plane.polygon.asReadOnlyBuffer()
-                    poly.rewind()
-                    val vertexCount = poly.remaining() / 2
-                    if (vertexCount < 2) continue
-
-                    val worldPoints = ArrayList<Double>(vertexCount * 3)
-                    val local = FloatArray(3)
-                    val world = FloatArray(3)
-                    while (poly.remaining() >= 2) {
-                        local[0] = poly.get()
-                        local[1] = 0f
-                        local[2] = poly.get()
-                        plane.centerPose.transformPoint(local, 0, world, 0)
-                        worldPoints.add(world[0].toDouble())
-                        worldPoints.add(world[1].toDouble())
-                        worldPoints.add(world[2].toDouble())
-                    }
-
-                    val center = plane.centerPose.translation
-                    planes.add(
-                        mapOf(
-                            "id" to System.identityHashCode(plane),
-                            "extentX" to plane.extentX.toDouble(),
-                            "extentZ" to plane.extentZ.toDouble(),
-                            "centerX" to center[0].toDouble(),
-                            "centerY" to center[1].toDouble(),
-                            "centerZ" to center[2].toDouble(),
-                            "points" to worldPoints,
+                val t = camera.pose.translation
+                eventSink.send(
+                    mapOf(
+                        "camera" to mapOf(
+                            "x" to t[0].toDouble(),
+                            "y" to t[1].toDouble(),
+                            "z" to t[2].toDouble(),
                         ),
-                    )
-                }
-
-                val payload = HashMap<String, Any>()
-                payload["planes"] = planes
-                if (camera.trackingState == TrackingState.TRACKING) {
-                    val t = camera.pose.translation
-                    payload["camera"] = mapOf(
-                        "x" to t[0].toDouble(),
-                        "y" to t[1].toDouble(),
-                        "z" to t[2].toDouble(),
-                    )
-                }
-                eventSink.send(payload)
+                    ),
+                )
             } catch (t: Throwable) {
                 Log.e(TAG, "onSessionUpdated failed", t)
             }

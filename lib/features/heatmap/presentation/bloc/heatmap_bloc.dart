@@ -6,19 +6,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:torcav/core/errors/failures.dart';
+import 'package:torcav/features/heatmap/data/datasources/ar_camera_pose_datasource.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
 import 'package:torcav/features/heatmap/domain/entities/survey_gate.dart';
-
-import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
-import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
 import 'package:torcav/features/heatmap/domain/repositories/heatmap_repository.dart';
 import 'package:torcav/features/heatmap/domain/services/heatmap_manager.dart';
 import 'package:torcav/features/heatmap/domain/services/signal_tier.dart';
 import 'package:torcav/features/heatmap/domain/services/signal_tracker.dart';
-import 'package:torcav/features/heatmap/domain/usecases/get_heatmap_sessions_usecase.dart';
-import 'package:torcav/features/heatmap/data/datasources/ar_plane_scanner_datasource.dart';
 import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
+import 'package:torcav/features/heatmap/domain/usecases/get_heatmap_sessions_usecase.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/scan_phase.dart';
 
 part 'heatmap_state.dart';
@@ -28,7 +25,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   HeatmapBloc(
     this._getSessions,
     this._repository,
-    this._arPlaneScanner,
+    this._arCameraPose,
     this._heatmapManager,
     this._signalTracker,
     this._guidanceService,
@@ -38,43 +35,34 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
   final GetHeatmapSessionsUsecase _getSessions;
   final HeatmapRepository _repository;
-  final ArPlaneScannerDataSource _arPlaneScanner;
+  final ArCameraPoseDataSource _arCameraPose;
   final HeatmapManager _heatmapManager;
   final SignalTracker _signalTracker;
   final SurveyGuidanceService _guidanceService;
 
   static const _flagMergeDistanceMeters = 0.5;
-  static const _wallCommitRadiusMeters = 2.5;
-  static const _wallStabilityMeters = 0.12;
 
   StreamSubscription? _managerSessionSub;
   StreamSubscription? _managerGateSub;
   StreamSubscription? _managerPositionSub;
   StreamSubscription? _signalStateSub;
-  StreamSubscription? _wallScannerSub;
   StreamSubscription? _cameraPoseSub;
   Offset? _arOrigin;
-  Timer? _autoWallTimer;
-  WallSegment? _stableWallCandidate;
 
   void _setupListeners() {
     _managerSessionSub = _heatmapManager.sessionStream.listen((session) {
-      final guidance =
-          session == null
-              ? null
-              : _guidanceService.analyze(
-                points: session.points,
-                floorPlan: state.liveFloorPlan,
-                isRecording: state.isRecording,
-                hasArOrigin: true, // Assuming AR origin is set for guidance
-                pendingWallCount: state.pendingWalls.length,
-                currentRssi: state.currentRssi,
-                surveyGate: state.surveyGate,
-                lastSignalAt: state.lastSignalAt,
-                currentSignalStdDev: state.lastSignalStdDev,
-                currentX: state.currentPosition?.dx,
-                currentY: state.currentPosition?.dy,
-              );
+      final guidance = session == null
+          ? null
+          : _guidanceService.analyze(
+              points: session.points,
+              isRecording: state.isRecording,
+              currentRssi: state.currentRssi,
+              surveyGate: state.surveyGate,
+              lastSignalAt: state.lastSignalAt,
+              currentSignalStdDev: state.lastSignalStdDev,
+              currentX: state.currentPosition?.dx,
+              currentY: state.currentPosition?.dy,
+            );
 
       emit(
         state.copyWith(
@@ -111,13 +99,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
       }
     });
 
-    _wallScannerSub = _arPlaneScanner.wallStream.listen((walls) {
-      if (state.phase != ScanPhase.scanning) return;
-      emit(state.copyWith(pendingWalls: walls));
-      _updateAutoWallTimer(walls);
-    });
-
-    _cameraPoseSub = _arPlaneScanner.cameraPoseStream.listen((rawPose) {
+    _cameraPoseSub = _arCameraPose.cameraPoseStream.listen((rawPose) {
       if (state.phase != ScanPhase.scanning) return;
       _arOrigin ??= rawPose;
       final origin = _arOrigin!;
@@ -157,8 +139,8 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
   Future<void> startScanning(String name) async {
     _arOrigin = null;
-    _arPlaneScanner.start();
-    unawaited(_arPlaneScanner.clearMarkers());
+    _arCameraPose.start();
+    unawaited(_arCameraPose.clearMarkers());
 
     emit(
       state.copyWith(
@@ -173,11 +155,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         clearLastStepTimestamp: true,
         currentPosition: Offset.zero,
         currentFloor: 0,
-        liveFloorPlan: const FloorPlan(
-          walls: [],
-          widthMeters: 40,
-          heightMeters: 40,
-        ),
         surveyGate: SurveyGate.none,
         clearTargetBssid: true,
         clearTargetSsid: true,
@@ -186,80 +163,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     );
 
     await _heatmapManager.startSession(name, null, null);
-  }
-
-  /// Commits the pending wall whose midpoint is closest to the user's
-  /// current world position, provided it's within [_wallCommitRadiusMeters].
-  void addNearestPendingWall() {
-    final best = _nearestPendingWall();
-    if (best != null) addWallFromAr(best);
-  }
-
-  WallSegment? _nearestPendingWall() {
-    if (state.phase != ScanPhase.scanning || state.pendingWalls.isEmpty) {
-      return null;
-    }
-    final pos = state.currentPosition ?? Offset.zero;
-
-    WallSegment? best;
-    double bestDist = double.infinity;
-    for (final wall in state.pendingWalls) {
-      final cx = (wall.x1 + wall.x2) / 2;
-      final cy = (wall.y1 + wall.y2) / 2;
-      final dx = cx - pos.dx;
-      final dy = cy - pos.dy;
-      final d = math.sqrt(dx * dx + dy * dy);
-      if (d < bestDist) {
-        bestDist = d;
-        best = wall;
-      }
-    }
-    if (best == null || bestDist > _wallCommitRadiusMeters) return null;
-    return best;
-  }
-
-  void _updateAutoWallTimer(List<WallSegment> pending) {
-    if (!state.isAutoWallEnabled || pending.isEmpty) {
-      _autoWallTimer?.cancel();
-      _stableWallCandidate = null;
-      return;
-    }
-
-    final nearest = _nearestPendingWall();
-    if (nearest == null) {
-      _autoWallTimer?.cancel();
-      _stableWallCandidate = null;
-      return;
-    }
-
-    if (_stableWallCandidate != null) {
-      final prevCX = (_stableWallCandidate!.x1 + _stableWallCandidate!.x2) / 2;
-      final prevCY = (_stableWallCandidate!.y1 + _stableWallCandidate!.y2) / 2;
-      final newCX = (nearest.x1 + nearest.x2) / 2;
-      final newCY = (nearest.y1 + nearest.y2) / 2;
-      final delta = math.sqrt(
-        math.pow(newCX - prevCX, 2) + math.pow(newCY - prevCY, 2),
-      );
-      if (delta < _wallStabilityMeters) return;
-    }
-
-    _autoWallTimer?.cancel();
-    _stableWallCandidate = nearest;
-    _autoWallTimer = Timer(const Duration(milliseconds: 1200), () {
-      if (_stableWallCandidate != null) addNearestPendingWall();
-    });
-  }
-
-  void addWallFromAr(WallSegment wall) {
-    if (state.phase != ScanPhase.scanning) return;
-
-    final currentPlan =
-        state.liveFloorPlan ??
-        const FloorPlan(walls: [], widthMeters: 40, heightMeters: 40);
-
-    final walls = _heatmapManager.addWall(currentPlan.walls, wall);
-
-    emit(state.copyWith(liveFloorPlan: currentPlan.copyWith(walls: walls)));
   }
 
   void syncPositionFromAr(double x, double y) {
@@ -314,12 +217,9 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
   Future<void> stopScanning() async {
     if (!state.isRecording) return;
-    await _arPlaneScanner.stop();
-    _autoWallTimer?.cancel();
-    _stableWallCandidate = null;
+    await _arCameraPose.stop();
 
-    final walls = state.liveFloorPlan?.walls ?? [];
-    final savedSession = await _heatmapManager.stopSession(liveWalls: walls);
+    final savedSession = await _heatmapManager.stopSession();
 
     if (savedSession != null) {
       await loadSessions();
@@ -331,9 +231,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         phase: ScanPhase.reviewing,
         clearCurrentSession: true,
         selectedSession: savedSession,
-        liveFloorPlan: savedSession?.floorPlan,
-        clearLiveFloorPlan: savedSession?.floorPlan == null,
-        pendingWalls: const [],
         surveyGate: SurveyGate.none,
         clearTargetBssid: true,
         clearTargetSsid: true,
@@ -354,7 +251,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
     result.fold((failure) => emit(state.copyWith(failure: failure)), (_) {
       emit(state.copyWith(selectedSession: updated));
-      loadSessions(); // Refresh the list
+      loadSessions();
     });
   }
 
@@ -366,7 +263,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         emit(
           state.copyWith(
             clearSelectedSession: true,
-            clearLiveFloorPlan: true,
             phase: ScanPhase.idle,
           ),
         );
@@ -381,9 +277,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
   Future<void> _discardScanning() async {
     if (!state.isRecording) return;
-    await _arPlaneScanner.stop();
-    _autoWallTimer?.cancel();
-    _stableWallCandidate = null;
+    await _arCameraPose.stop();
     _heatmapManager.discardSession();
 
     emit(
@@ -391,8 +285,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         isRecording: false,
         phase: ScanPhase.idle,
         clearCurrentSession: true,
-        clearLiveFloorPlan: true,
-        pendingWalls: const [],
         surveyGate: SurveyGate.none,
         clearTargetBssid: true,
         clearTargetSsid: true,
@@ -410,9 +302,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     _managerGateSub?.cancel();
     _managerPositionSub?.cancel();
     _signalStateSub?.cancel();
-    _wallScannerSub?.cancel();
     _cameraPoseSub?.cancel();
-    _autoWallTimer?.cancel();
     return super.close();
   }
 
@@ -444,8 +334,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     emit(
       state.copyWith(
         selectedSession: session,
-        liveFloorPlan: session.floorPlan,
-        clearLiveFloorPlan: session.floorPlan == null,
         clearFailure: true,
         phase: ScanPhase.reviewing,
       ),
@@ -456,15 +344,10 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     emit(
       state.copyWith(
         clearSelectedSession: true,
-        clearLiveFloorPlan: true,
         clearFailure: true,
         phase: ScanPhase.idle,
       ),
     );
-  }
-
-  void toggleAutoWall() {
-    emit(state.copyWith(isAutoWallEnabled: !state.isAutoWallEnabled));
   }
 
   void toggleAutoSampling() {
@@ -491,8 +374,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   void _maybeAutoSample(Offset currentPos, double heading) {
     if (state.currentRssi == null) return;
 
-    // BUG-25: Guard against stale signal locks.
-    // If signal hasn't updated in > 2s, don't record a point.
     final lastSignal = state.lastSignalAt;
     if (lastSignal != null &&
         DateTime.now().difference(lastSignal).inSeconds > 2) {
@@ -508,7 +389,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
       if (distance < state.autoSamplingDistance) return;
     }
 
-    // Threshold met or first point: record it.
     _heatmapManager.recordPoint(
       floorX: currentPos.dx,
       floorY: currentPos.dy,
@@ -527,7 +407,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     final rssi = state.currentRssi!;
     final tierColor = signalGradientColor(rssi);
     unawaited(
-      _arPlaneScanner.placeMarkerAtCamera(
+      _arCameraPose.placeMarkerAtCamera(
         rssi: rssi,
         colorArgb: tierColor.toARGB32(),
       ),

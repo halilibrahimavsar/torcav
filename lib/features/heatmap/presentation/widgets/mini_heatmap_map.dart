@@ -89,7 +89,6 @@ class _MiniHeatmapMapState extends State<MiniHeatmapMap>
                 AbsorbPointer(
                   child: HeatmapCanvas(
                     session: widget.session,
-                    floorPlan: widget.session.floorPlan,
                     showPath: true,
                     showControls: false,
                     isMiniMap: true,

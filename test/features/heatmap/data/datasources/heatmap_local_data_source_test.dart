@@ -3,10 +3,8 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:torcav/features/heatmap/data/datasources/heatmap_local_data_source.dart';
-import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
-import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -37,11 +35,6 @@ void main() {
         ),
       ],
       createdAt: DateTime(2026, 4, 10, 12),
-      floorPlan: const FloorPlan(
-        walls: [WallSegment(x1: 0, y1: 0, x2: 2, y2: 0)],
-        widthMeters: 2,
-        heightMeters: 1,
-      ),
     );
 
     await source.saveSession(session);
@@ -72,7 +65,6 @@ void main() {
             'floor': 0,
           },
         ],
-        'floorPlan': null,
       }),
     });
 

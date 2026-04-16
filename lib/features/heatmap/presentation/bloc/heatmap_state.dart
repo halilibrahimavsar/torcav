@@ -9,11 +9,9 @@ class HeatmapState extends Equatable {
     this.isRecording = false,
     this.failure,
     this.phase = ScanPhase.idle,
-    this.liveFloorPlan,
     this.currentPosition,
     this.currentHeading = 0.0,
     this.currentRssi,
-    this.pendingWalls = const [],
     this.targetBssid,
     this.targetSsid,
     this.surveyGate = SurveyGate.none,
@@ -27,7 +25,6 @@ class HeatmapState extends Equatable {
     this.autoSamplingDistance = 1.5,
     this.coverageScore = 0.0,
     this.sparseRegion,
-    this.isAutoWallEnabled = true,
   });
 
   final List<HeatmapSession> sessions;
@@ -41,9 +38,6 @@ class HeatmapState extends Equatable {
   /// Current lifecycle stage of the scanning process.
   final ScanPhase phase;
 
-  /// In-progress floor plan being built from walls.
-  final FloorPlan? liveFloorPlan;
-
   /// Current metric position (x, y) in meters from origin.
   final Offset? currentPosition;
 
@@ -52,9 +46,6 @@ class HeatmapState extends Equatable {
 
   /// Most recent Wi-Fi signal strength sample.
   final int? currentRssi;
-
-  /// Recently detected wall segments from camera feed.
-  final List<WallSegment> pendingWalls;
 
   /// Locked target access point for the current survey.
   final String? targetBssid;
@@ -93,9 +84,6 @@ class HeatmapState extends Equatable {
   /// The quadrant identified as having the lowest data density.
   final SparseRegion? sparseRegion;
 
-  /// Whether detected walls should be automatically committed.
-  final bool isAutoWallEnabled;
-
   HeatmapState copyWith({
     List<HeatmapSession>? sessions,
     HeatmapSession? currentSession,
@@ -107,14 +95,11 @@ class HeatmapState extends Equatable {
     Failure? failure,
     bool clearFailure = false,
     ScanPhase? phase,
-    FloorPlan? liveFloorPlan,
-    bool clearLiveFloorPlan = false,
     Offset? currentPosition,
     bool clearCurrentPosition = false,
     double? currentHeading,
     int? currentRssi,
     bool clearCurrentRssi = false,
-    List<WallSegment>? pendingWalls,
     String? targetBssid,
     bool clearTargetBssid = false,
     String? targetSsid,
@@ -134,7 +119,6 @@ class HeatmapState extends Equatable {
     double? coverageScore,
     SparseRegion? sparseRegion,
     bool clearSparseRegion = false,
-    bool? isAutoWallEnabled,
   }) => HeatmapState(
     sessions: sessions ?? this.sessions,
     currentSession:
@@ -145,23 +129,19 @@ class HeatmapState extends Equatable {
     isRecording: isRecording ?? this.isRecording,
     failure: clearFailure ? null : failure ?? this.failure,
     phase: phase ?? this.phase,
-    liveFloorPlan:
-        clearLiveFloorPlan ? null : liveFloorPlan ?? this.liveFloorPlan,
     currentPosition:
         clearCurrentPosition ? null : currentPosition ?? this.currentPosition,
     currentHeading: currentHeading ?? this.currentHeading,
     currentRssi: clearCurrentRssi ? null : currentRssi ?? this.currentRssi,
-    pendingWalls: pendingWalls ?? this.pendingWalls,
     targetBssid: clearTargetBssid ? null : targetBssid ?? this.targetBssid,
     targetSsid: clearTargetSsid ? null : targetSsid ?? this.targetSsid,
     surveyGate: surveyGate ?? this.surveyGate,
     lastSignalAt: clearLastSignalAt ? null : lastSignalAt ?? this.lastSignalAt,
     lastSignalStdDev: lastSignalStdDev ?? this.lastSignalStdDev,
     lastSignalSampleCount: lastSignalSampleCount ?? this.lastSignalSampleCount,
-    lastStepTimestamp:
-        clearLastStepTimestamp
-            ? null
-            : lastStepTimestamp ?? this.lastStepTimestamp,
+    lastStepTimestamp: clearLastStepTimestamp
+        ? null
+        : lastStepTimestamp ?? this.lastStepTimestamp,
     currentFloor: currentFloor ?? this.currentFloor,
     isAutoSampling: isAutoSampling ?? this.isAutoSampling,
     lastRecordedPosition: clearLastRecordedPosition
@@ -170,7 +150,6 @@ class HeatmapState extends Equatable {
     autoSamplingDistance: autoSamplingDistance ?? this.autoSamplingDistance,
     coverageScore: coverageScore ?? this.coverageScore,
     sparseRegion: clearSparseRegion ? null : sparseRegion ?? this.sparseRegion,
-    isAutoWallEnabled: isAutoWallEnabled ?? this.isAutoWallEnabled,
   );
 
   @override
@@ -182,11 +161,9 @@ class HeatmapState extends Equatable {
     isRecording,
     failure,
     phase,
-    liveFloorPlan,
     currentPosition,
     currentHeading,
     currentRssi,
-    pendingWalls,
     targetBssid,
     targetSsid,
     surveyGate,
@@ -200,6 +177,5 @@ class HeatmapState extends Equatable {
     autoSamplingDistance,
     coverageScore,
     sparseRegion,
-    isAutoWallEnabled,
   ];
 }

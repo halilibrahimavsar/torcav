@@ -58,13 +58,11 @@ class ReticleSlice {
     required this.rssi,
     required this.lastStepTimestamp,
     required this.surveyGate,
-    required this.hasPendingWall,
   });
 
   final int? rssi;
   final DateTime? lastStepTimestamp;
   final SurveyGate surveyGate;
-  final bool hasPendingWall;
 
   @override
   bool operator ==(Object other) =>
@@ -72,11 +70,10 @@ class ReticleSlice {
       other is ReticleSlice &&
           rssi == other.rssi &&
           lastStepTimestamp == other.lastStepTimestamp &&
-          surveyGate == other.surveyGate &&
-          hasPendingWall == other.hasPendingWall;
+          surveyGate == other.surveyGate;
 
   @override
-  int get hashCode => Object.hash(rssi, lastStepTimestamp, surveyGate, hasPendingWall);
+  int get hashCode => Object.hash(rssi, lastStepTimestamp, surveyGate);
 }
 
 class GateSlice {
@@ -185,48 +182,36 @@ class GuidanceSlice extends Equatable {
 class GuidanceCameraSlice extends Equatable {
   const GuidanceCameraSlice({
     required this.pointCount,
-    required this.hasFloorPlan,
     required this.isRecording,
-    required this.hasArOrigin,
-    required this.pendingWallCount,
     required this.currentRssi,
     required this.surveyGate,
     required this.lastSignalAt,
     required this.lastSignalStdDev,
     required this.currentPosition,
     required this.phase,
-    required this.pendingWalls,
     required this.lastStepTimestamp,
   });
 
   final int pointCount;
-  final bool hasFloorPlan;
   final bool isRecording;
-  final bool hasArOrigin;
-  final int pendingWallCount;
   final int? currentRssi;
   final SurveyGate surveyGate;
   final DateTime? lastSignalAt;
   final double lastSignalStdDev;
   final Offset? currentPosition;
   final dynamic phase;
-  final List<dynamic> pendingWalls;
   final DateTime? lastStepTimestamp;
 
   @override
   List<Object?> get props => [
         pointCount,
-        hasFloorPlan,
         isRecording,
-        hasArOrigin,
-        pendingWallCount,
         currentRssi,
         surveyGate,
         lastSignalAt,
         lastSignalStdDev,
         currentPosition,
         phase,
-        pendingWalls,
         lastStepTimestamp,
       ];
 }

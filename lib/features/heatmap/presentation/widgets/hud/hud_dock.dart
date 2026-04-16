@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
 
+
 /// Right rail button dock for control actions (recalibrate, auto-sample, flag, finish).
 class HudDock extends StatelessWidget {
   const HudDock({
@@ -104,40 +105,6 @@ class HudDock extends StatelessWidget {
                 HapticFeedback.lightImpact();
                 context.read<HeatmapBloc>().toggleAutoSampling();
               },
-            );
-          },
-        ),
-        BlocSelector<HeatmapBloc, HeatmapState, bool>(
-          selector: (s) {
-            final pos = s.currentPosition;
-            if (pos == null) return false;
-            for (final wall in s.pendingWalls) {
-              final cx = (wall.x1 + wall.x2) / 2 - pos.dx;
-              final cy = (wall.y1 + wall.y2) / 2 - pos.dy;
-              if (cx * cx + cy * cy < 6.25) return true;
-            }
-            return false;
-          },
-          builder: (context, hasWall) {
-            if (!hasWall) return const SizedBox.shrink();
-            return Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: _DockButton(
-                icon: Icons.architecture_rounded,
-                tooltip: 'Commit Wall Segment',
-                color: AppColors.neonYellow,
-                onTap: () {
-                  HapticFeedback.heavyImpact();
-                  context.read<HeatmapBloc>().addNearestPendingWall();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Wall added manually'),
-                      duration: Duration(seconds: 2),
-                      backgroundColor: Colors.black87,
-                    ),
-                  );
-                },
-              ),
             );
           },
         ),

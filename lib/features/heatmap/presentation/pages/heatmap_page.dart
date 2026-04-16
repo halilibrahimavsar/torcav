@@ -104,7 +104,6 @@ class _HeatmapViewState extends State<_HeatmapView> {
         final isReviewing = state.phase == ScanPhase.reviewing;
 
         final session = isRecording ? state.currentSession : state.selectedSession;
-        final floorPlan = isRecording ? state.liveFloorPlan : session?.floorPlan;
         final bottomSafe = MediaQuery.viewPaddingOf(context).bottom;
         final reviewBottomPadding =
             SurveyConclusionOverlay.reservedHeight + bottomSafe + 16;
@@ -117,7 +116,6 @@ class _HeatmapViewState extends State<_HeatmapView> {
                 points: const [],
                 createdAt: DateTime.now(),
               ),
-          floorPlan: floorPlan,
           currentRssi: state.currentRssi,
         );
 
@@ -261,7 +259,6 @@ class _HeatmapViewState extends State<_HeatmapView> {
                         key: _boundaryKey,
                         child: HeatmapCanvas(
                           session: session,
-                          floorPlan: floorPlan,
                           showPath: session.points.isNotEmpty,
                           activeFloor: null,
                           minRssi: minRssi,
@@ -380,10 +377,7 @@ class _HeatmapViewState extends State<_HeatmapView> {
     HeatmapState state,
     HeatmapSummary summary,
   ) {
-    if (state.isRecording) {
-      return summary.sampleCount == 0;
-    }
-    return summary.sampleCount == 0 && summary.wallCount == 0;
+    return summary.sampleCount == 0;
   }
 
   HeatmapPoint? _findNearestPoint(List<HeatmapPoint> points, Offset metric) {

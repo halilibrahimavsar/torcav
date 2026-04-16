@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
-import 'package:torcav/features/heatmap/data/models/floor_plan_dto.dart';
 
 /// Persists [HeatmapSession]s as JSON in SharedPreferences.
 ///
@@ -79,10 +78,6 @@ class HeatmapLocalDataSource {
               },
             )
             .toList(),
-    'floorPlan':
-        s.floorPlan != null
-            ? FloorPlanDto.fromEntity(s.floorPlan!).toJson()
-            : null,
   };
 
   HeatmapSession _fromJson(Map<String, dynamic> map) => HeatmapSession(
@@ -109,11 +104,5 @@ class HeatmapLocalDataSource {
             isFlagged: e['isFlagged'] as bool? ?? false,
           );
         }).toList(),
-    floorPlan:
-        map['floorPlan'] != null
-            ? FloorPlanDto.fromJson(
-              map['floorPlan'] as Map<String, dynamic>,
-            ).toEntity()
-            : null,
   );
 }

@@ -153,10 +153,7 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                   selector: (s) => GuidanceSlice(
                     guidance: const SurveyGuidanceService().analyze(
                       points: s.currentSession?.points ?? const [],
-                      floorPlan: s.liveFloorPlan,
                       isRecording: s.isRecording,
-                      hasArOrigin: s.currentPosition != null,
-                      pendingWallCount: s.pendingWalls.length,
                       currentRssi: s.currentRssi,
                       surveyGate: s.surveyGate,
                       lastSignalAt: s.lastSignalAt,
@@ -293,20 +290,6 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                           ],
                         ),
                         const SizedBox(height: 16),
-                        SwitchListTile(
-                          value: state.isAutoWallEnabled,
-                          title: Text(
-                            'Auto-Wall Detection',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white),
-                          ),
-                          subtitle: Text(
-                            'Automatically commit walls after 1.2s of focus',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white54),
-                          ),
-                          activeColor: AppColors.neonYellow,
-                          activeTrackColor: AppColors.neonYellow.withValues(alpha: 0.3),
-                          onChanged: (_) => context.read<HeatmapBloc>().toggleAutoWall(),
-                        ),
                       ],
                     );
                   },
@@ -350,17 +333,13 @@ class _GuidanceLayerState extends State<_GuidanceLayer> {
     return BlocSelector<HeatmapBloc, HeatmapState, GuidanceCameraSlice>(
       selector: (s) => GuidanceCameraSlice(
         pointCount: s.currentSession?.points.length ?? 0,
-        hasFloorPlan: s.liveFloorPlan?.walls.isNotEmpty ?? false,
         isRecording: s.isRecording,
-        hasArOrigin: s.currentPosition != null,
-        pendingWallCount: s.pendingWalls.length,
         currentRssi: s.currentRssi,
         surveyGate: s.surveyGate,
         lastSignalAt: s.lastSignalAt,
         lastSignalStdDev: s.lastSignalStdDev,
         currentPosition: s.currentPosition,
         phase: s.phase,
-        pendingWalls: s.pendingWalls,
         lastStepTimestamp: s.lastStepTimestamp,
       ),
       builder: (context, slice) {
@@ -369,14 +348,10 @@ class _GuidanceLayerState extends State<_GuidanceLayer> {
         }
 
         final session = context.read<HeatmapBloc>().state.currentSession;
-        final floorPlan = context.read<HeatmapBloc>().state.liveFloorPlan;
 
         final guidance = _service.analyze(
           points: session?.points ?? const [],
-          floorPlan: floorPlan,
           isRecording: slice.isRecording,
-          hasArOrigin: slice.hasArOrigin,
-          pendingWallCount: slice.pendingWallCount,
           currentRssi: slice.currentRssi,
           surveyGate: slice.surveyGate,
           lastSignalAt: slice.lastSignalAt,

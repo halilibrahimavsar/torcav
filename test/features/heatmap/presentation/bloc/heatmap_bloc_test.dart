@@ -3,11 +3,9 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:torcav/features/heatmap/data/datasources/ar_plane_scanner_datasource.dart';
-import 'package:torcav/features/heatmap/domain/entities/floor_plan.dart';
+import 'package:torcav/features/heatmap/data/datasources/ar_camera_pose_datasource.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
-import 'package:torcav/features/heatmap/domain/entities/wall_segment.dart';
 import 'package:torcav/features/heatmap/domain/repositories/heatmap_repository.dart';
 import 'package:torcav/features/heatmap/domain/usecases/get_heatmap_sessions_usecase.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
@@ -23,8 +21,8 @@ class MockGetHeatmapSessionsUsecase extends Mock
 
 class MockHeatmapRepository extends Mock implements HeatmapRepository {}
 
-class MockArPlaneScannerDataSource extends Mock
-    implements ArPlaneScannerDataSource {}
+class MockArCameraPoseDataSource extends Mock
+    implements ArCameraPoseDataSource {}
 
 class MockHeatmapManager extends Mock implements HeatmapManager {}
 
@@ -38,7 +36,7 @@ void main() {
   late HeatmapBloc bloc;
   late MockGetHeatmapSessionsUsecase getSessions;
   late MockHeatmapRepository repository;
-  late MockArPlaneScannerDataSource arPlaneScanner;
+  late MockArCameraPoseDataSource arCameraPose;
   late MockHeatmapManager heatmapManager;
   late MockSignalTracker signalTracker;
   late MockSurveyGuidanceService guidanceService;
@@ -62,11 +60,10 @@ void main() {
     registerFallbackValue(const <HeatmapPoint>[]);
   });
 
-
   setUp(() {
     getSessions = MockGetHeatmapSessionsUsecase();
     repository = MockHeatmapRepository();
-    arPlaneScanner = MockArPlaneScannerDataSource();
+    arCameraPose = MockArCameraPoseDataSource();
     heatmapManager = MockHeatmapManager();
     signalTracker = MockSignalTracker();
     guidanceService = MockSurveyGuidanceService();
@@ -76,10 +73,9 @@ void main() {
     positionController = StreamController<PositionUpdate>.broadcast();
     signalController = StreamController<SignalState>.broadcast();
 
-    // Reset mocks before each test
     reset(getSessions);
     reset(repository);
-    reset(arPlaneScanner);
+    reset(arCameraPose);
     reset(heatmapManager);
     reset(signalTracker);
     reset(guidanceService);
@@ -92,10 +88,7 @@ void main() {
     when(() => signalTracker.runMetadataScan()).thenAnswer((_) async {});
     when(() => guidanceService.analyze(
           points: any(named: 'points'),
-          floorPlan: any(named: 'floorPlan'),
           isRecording: any(named: 'isRecording'),
-          hasArOrigin: any(named: 'hasArOrigin'),
-          pendingWallCount: any(named: 'pendingWallCount'),
           currentRssi: any(named: 'currentRssi'),
           surveyGate: any(named: 'surveyGate'),
           lastSignalAt: any(named: 'lastSignalAt'),
@@ -106,21 +99,24 @@ void main() {
       stage: SurveyStage.idle,
       tone: SurveyTone.info,
       overallProgress: 0,
-      planScore: 0,
       coverageScore: 0,
       signalScore: 0,
       sparseRegion: null,
-      feeds: SurveyFeedHealth(motionLive: true, wifiLive: true, cameraLive: true, planLive: true),
-      suggestAr: false,
+      feeds: SurveyFeedHealth(motionLive: true, wifiLive: true, cameraLive: true),
       readyToFinish: false,
     ));
 
-    when(() => arPlaneScanner.wallStream)
-        .thenAnswer((_) => const Stream<List<WallSegment>>.empty());
-    when(() => arPlaneScanner.start()).thenAnswer((_) {});
-    when(() => arPlaneScanner.stop()).thenAnswer((_) async {});
+    when(() => arCameraPose.cameraPoseStream)
+        .thenAnswer((_) => const Stream<Offset>.empty());
+    when(() => arCameraPose.start()).thenAnswer((_) {});
+    when(() => arCameraPose.stop()).thenAnswer((_) async {});
+    when(() => arCameraPose.clearMarkers()).thenAnswer((_) async {});
+    when(() => arCameraPose.placeMarkerAtCamera(
+      rssi: any(named: 'rssi'),
+      colorArgb: any(named: 'colorArgb'),
+    )).thenAnswer((_) async {});
     when(() => heatmapManager.startSession(any(), any(), any())).thenAnswer((_) async {});
-    when(() => heatmapManager.stopSession(liveWalls: any(named: 'liveWalls'))).thenAnswer((_) async => null);
+    when(() => heatmapManager.stopSession()).thenAnswer((_) async => null);
     when(() => heatmapManager.discardSession()).thenReturn(null);
     when(() => heatmapManager.dispose()).thenReturn(null);
     when(() => heatmapManager.setAutoSamplingEnabled(any())).thenReturn(null);
@@ -128,7 +124,7 @@ void main() {
     bloc = HeatmapBloc(
       getSessions,
       repository,
-      arPlaneScanner,
+      arCameraPose,
       heatmapManager,
       signalTracker,
       guidanceService,
@@ -159,18 +155,21 @@ void main() {
       gateController.add(SurveyGate.none);
       await _flush();
 
-      await bloc.addPoint(
-        HeatmapPoint(
-          x: 0,
-          y: 0,
-          floorX: 1,
-          floorY: 1,
-          rssi: -63,
-          timestamp: DateTime(2026, 4, 7, 10),
-          ssid: 'HomeNet',
-          bssid: 'AA:BB:CC:DD:EE:FF',
-        ),
+      final point = HeatmapPoint(
+        x: 0,
+        y: 0,
+        floorX: 1,
+        floorY: 1,
+        rssi: -63,
+        timestamp: DateTime(2026, 4, 7, 10),
+        ssid: 'HomeNet',
+        bssid: 'AA:BB:CC:DD:EE:FF',
       );
+      await bloc.addPoint(point);
+
+      final savedSession = session.copyWith(points: [point]);
+      when(() => heatmapManager.stopSession())
+          .thenAnswer((_) async => savedSession);
 
       await bloc.stopScanning();
 
@@ -199,31 +198,23 @@ void main() {
   );
 
   test(
-    'selectSession copies the saved floor plan into the visible review state',
+    'selectSession sets the review state correctly',
     () {
-      const plan = FloorPlan(
-        walls: [WallSegment(x1: 0, y1: 0, x2: 3, y2: 0)],
-        widthMeters: 3,
-        heightMeters: 2,
-      );
       final session = HeatmapSession(
         id: 'saved-1',
         name: 'Living room',
         points: const [],
         createdAt: DateTime(2026, 4, 7, 11),
-        floorPlan: plan,
       );
 
       bloc.selectSession(session);
 
       expect(bloc.state.selectedSession, session);
-      expect(bloc.state.liveFloorPlan, plan);
       expect(bloc.state.phase, ScanPhase.reviewing);
 
       bloc.clearSelection();
 
       expect(bloc.state.selectedSession, isNull);
-      expect(bloc.state.liveFloorPlan, isNull);
       expect(bloc.state.phase, ScanPhase.idle);
     },
   );
@@ -268,7 +259,6 @@ void main() {
       await _flush();
       expect(bloc.state.currentSession?.points, hasLength(1));
 
-      // Simulate connection drop via SignalTracker state
       signalController.add(const SignalState(targetBssid: 'AA:BB:CC:DD:EE:FF', currentRssi: null));
       gateController.add(SurveyGate.noConnectedBssid);
       await _flush();
@@ -281,7 +271,6 @@ void main() {
       expect(bloc.state.surveyGate, SurveyGate.noConnectedBssid);
       expect(bloc.state.currentSession?.points, hasLength(1));
 
-      // Signal returns
       signalController.add(const SignalState(targetBssid: 'AA:BB:CC:DD:EE:FF', currentRssi: -66));
       gateController.add(SurveyGate.none);
       await _flush();

@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -9,18 +8,6 @@ import 'package:torcav/features/heatmap/domain/entities/survey_gate.dart';
 import 'package:torcav/features/heatmap/domain/services/signal_tier.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
 import 'hud_models.dart';
-
-/// Returns true when any pending wall is within commit range of the user.
-bool _hasNearbyPendingWall(HeatmapState s) {
-  final pos = s.currentPosition;
-  if (pos == null || s.pendingWalls.isEmpty) return false;
-  for (final wall in s.pendingWalls) {
-    final cx = (wall.x1 + wall.x2) / 2 - pos.dx;
-    final cy = (wall.y1 + wall.y2) / 2 - pos.dy;
-    if (cx * cx + cy * cy < 6.25) return true; // within 2.5 m
-  }
-  return false;
-}
 
 /// Center reticle that pulses and handles manual weak zone flagging.
 class ReticleHitArea extends StatelessWidget {
@@ -36,37 +23,23 @@ class ReticleHitArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocSelector<HeatmapBloc, HeatmapState, ReticleSlice>(
-      selector:
-          (s) => ReticleSlice(
-            rssi: s.currentRssi,
-            lastStepTimestamp: s.lastStepTimestamp,
-            surveyGate: s.surveyGate,
-            hasPendingWall: _hasNearbyPendingWall(s),
-          ),
+      selector: (s) => ReticleSlice(
+        rssi: s.currentRssi,
+        lastStepTimestamp: s.lastStepTimestamp,
+        surveyGate: s.surveyGate,
+      ),
       builder: (context, slice) {
         final tier = signalTierFor(slice.rssi);
-        final color = slice.hasPendingWall ? AppColors.neonYellow : signalTierColor(tier);
-        final isWeak =
-            slice.surveyGate == SurveyGate.none &&
-            (tier == SignalTier.weak || tier == SignalTier.poor) &&
-            !slice.hasPendingWall;
-        
-        final hitSize = (isWeak || slice.hasPendingWall) ? 140.0 : 120.0;
+        final color = signalTierColor(tier);
+        final isWeak = slice.surveyGate == SurveyGate.none &&
+            (tier == SignalTier.weak || tier == SignalTier.poor);
+
+        final hitSize = isWeak ? 140.0 : 120.0;
 
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
-            if (slice.hasPendingWall) {
-              HapticFeedback.heavyImpact();
-              context.read<HeatmapBloc>().addNearestPendingWall();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Wall added manually'),
-                  duration: Duration(seconds: 2),
-                  backgroundColor: Colors.black87,
-                ),
-              );
-            } else if (isWeak) {
+            if (isWeak) {
               onFlagWeakZone?.call();
             }
           },
@@ -78,95 +51,49 @@ class ReticleHitArea extends StatelessWidget {
               children: [
                 AnimatedBuilder(
                   animation: controller,
-                  builder:
-                      (_, __) => CustomPaint(
-                        size: Size(hitSize, hitSize),
-                        painter: _ReticlePainter(
-                          progress: controller.value,
-                          color: color,
-                          stepTs: slice.lastStepTimestamp,
+                  builder: (_, __) => CustomPaint(
+                    size: Size(hitSize, hitSize),
+                    painter: _ReticlePainter(
+                      progress: controller.value,
+                      color: color,
+                      stepTs: slice.lastStepTimestamp,
+                    ),
+                  ),
+                ),
+                if (isWeak)
+                  AnimatedBuilder(
+                    animation: controller,
+                    builder: (context, child) {
+                      final scale =
+                          1.0 + (math.sin(controller.value * 2 * math.pi) * 0.05);
+                      return Transform.scale(
+                        scale: scale,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: color.withValues(alpha: 0.22),
+                            border: Border.all(
+                              color: color.withValues(alpha: 0.8),
+                              width: 1.2,
+                            ),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Text(
+                            'TAP TO FLAG',
+                            style: GoogleFonts.orbitron(
+                              color: color,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
                         ),
-                      ),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (slice.hasPendingWall) ...[
-                      AnimatedBuilder(
-                        animation: controller,
-                        builder: (context, child) {
-                          final scale = 1.0 + (math.sin(controller.value * 2 * math.pi) * 0.08);
-                          return Transform.scale(
-                            scale: scale,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.neonYellow.withValues(alpha: 0.25),
-                                border: Border.all(
-                                  color: AppColors.neonYellow.withValues(alpha: 0.9),
-                                  width: 1.2,
-                                ),
-                                borderRadius: BorderRadius.circular(14),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.neonYellow.withValues(alpha: 0.2),
-                                    blurRadius: 8,
-                                    spreadRadius: 1,
-                                  ),
-                                ],
-                              ),
-                              child: Text(
-                                'ADD WALL',
-                                style: GoogleFonts.orbitron(
-                                  color: AppColors.neonYellow,
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 1.5,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ] else if (isWeak) ...[
-                      AnimatedBuilder(
-                        animation: controller,
-                        builder: (context, child) {
-                          final scale = 1.0 + (math.sin(controller.value * 2 * math.pi) * 0.05);
-                          return Transform.scale(
-                            scale: scale,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: color.withValues(alpha: 0.22),
-                                border: Border.all(
-                                  color: color.withValues(alpha: 0.8),
-                                  width: 1.2,
-                                ),
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              child: Text(
-                                'TAP TO FLAG',
-                                style: GoogleFonts.orbitron(
-                                  color: color,
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 1.5,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ],
-                ),
+                      );
+                    },
+                  ),
               ],
             ),
           ),
@@ -192,21 +119,17 @@ class _ReticlePainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final base = math.min(size.width, size.height) / 2;
 
-    // Outer static ring.
-    final ringPaint =
-        Paint()
-          ..color = color.withValues(alpha: 0.35)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.4;
+    final ringPaint = Paint()
+      ..color = color.withValues(alpha: 0.35)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.4;
     canvas.drawCircle(center, base - 4, ringPaint);
 
-    // Corner brackets.
-    final bracketPaint =
-        Paint()
-          ..color = color.withValues(alpha: 0.85)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2
-          ..strokeCap = StrokeCap.round;
+    final bracketPaint = Paint()
+      ..color = color.withValues(alpha: 0.85)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round;
     const bracket = 14.0;
     for (final corner in const [
       Offset(-1, -1),
@@ -228,20 +151,16 @@ class _ReticlePainter extends CustomPainter {
       );
     }
 
-    // Pulsing inner ring.
     final pulseRadius = (base - 18) + math.sin(progress * 2 * math.pi) * 3;
-    final pulsePaint =
-        Paint()
-          ..color = color.withValues(alpha: 0.55)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.2;
+    final pulsePaint = Paint()
+      ..color = color.withValues(alpha: 0.55)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
     canvas.drawCircle(center, pulseRadius, pulsePaint);
 
-    // Crosshair.
-    final crossPaint =
-        Paint()
-          ..color = color.withValues(alpha: 0.7)
-          ..strokeWidth = 1.4;
+    final crossPaint = Paint()
+      ..color = color.withValues(alpha: 0.7)
+      ..strokeWidth = 1.4;
     canvas.drawLine(
       Offset(center.dx - 10, center.dy),
       Offset(center.dx + 10, center.dy),
@@ -253,16 +172,14 @@ class _ReticlePainter extends CustomPainter {
       crossPaint,
     );
 
-    // Step pulse — expanding ring on footstep detection.
     if (stepTs != null) {
       final diffMs = DateTime.now().difference(stepTs!).inMilliseconds;
       if (diffMs < 800) {
         final t = diffMs / 800.0;
-        final stepPaint =
-            Paint()
-              ..color = AppColors.neonCyan.withValues(alpha: (1 - t) * 0.45)
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 2;
+        final stepPaint = Paint()
+          ..color = AppColors.neonCyan.withValues(alpha: (1 - t) * 0.45)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2;
         canvas.drawCircle(center, 22 + (t * 80), stepPaint);
       }
     }
