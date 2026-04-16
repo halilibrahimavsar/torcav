@@ -127,7 +127,7 @@ class SurveyPilotCard extends StatelessWidget {
       case SurveyStage.idle:
         return 'STANDBY';
       case SurveyStage.calibration:
-        return 'CALIBRATE';
+        return 'INITIALIZING';
       case SurveyStage.coverageSweep:
         return 'SWEEP ROOMS';
       case SurveyStage.weakZoneReview:

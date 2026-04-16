@@ -57,23 +57,20 @@ class ReticleSlice {
   const ReticleSlice({
     required this.rssi,
     required this.lastStepTimestamp,
-    required this.surveyGate,
   });
 
   final int? rssi;
   final DateTime? lastStepTimestamp;
-  final SurveyGate surveyGate;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ReticleSlice &&
           rssi == other.rssi &&
-          lastStepTimestamp == other.lastStepTimestamp &&
-          surveyGate == other.surveyGate;
+          lastStepTimestamp == other.lastStepTimestamp;
 
   @override
-  int get hashCode => Object.hash(rssi, lastStepTimestamp, surveyGate);
+  int get hashCode => Object.hash(rssi, lastStepTimestamp);
 }
 
 class GateSlice {

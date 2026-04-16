@@ -79,7 +79,7 @@ class GuidancePill extends StatelessWidget {
       case SurveyStage.idle:
         return 'Idle';
       case SurveyStage.calibration:
-        return 'Calibrating Sensors';
+        return 'Initializing';
       case SurveyStage.coverageSweep:
         return 'Mapping Signal';
       case SurveyStage.weakZoneReview:

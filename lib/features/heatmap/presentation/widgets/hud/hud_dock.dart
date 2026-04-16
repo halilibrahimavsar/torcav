@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:torcav/core/theme/app_theme.dart';
-import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
 
-
-/// Right rail button dock for control actions (recalibrate, auto-sample, flag, finish).
+/// Right rail button dock for control actions (discard, finish).
 class HudDock extends StatelessWidget {
   const HudDock({
     super.key,
-    required this.onFlagWeakZone,
     this.onFinish,
     this.onDiscard,
   });
 
-  final VoidCallback? onFlagWeakZone;
   final VoidCallback? onFinish;
   final VoidCallback? onDiscard;
 
@@ -32,50 +26,47 @@ class HudDock extends StatelessWidget {
             tooltip: 'Discard Survey',
             color: AppColors.neonOrange,
             onTap: () async {
-              // BUG-05: guard against stale context if the widget is removed
-              // from the tree while this async gap is open.
               if (!context.mounted) return;
               final confirm = await showDialog<bool>(
                 context: context,
-                builder:
-                    (context) => AlertDialog(
-                      backgroundColor: Colors.black.withValues(alpha: 0.9),
-                      title: Text(
-                        'DISCARD SURVEY?',
+                builder: (context) => AlertDialog(
+                  backgroundColor: Colors.black.withValues(alpha: 0.9),
+                  title: Text(
+                    'DISCARD SURVEY?',
+                    style: GoogleFonts.orbitron(
+                      color: AppColors.neonOrange,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  content: Text(
+                    'All recorded data for this session will be permanently deleted.',
+                    style: GoogleFonts.outfit(color: Colors.white70),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Text(
+                        'CANCEL',
+                        style: GoogleFonts.orbitron(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: Text(
+                        'DISCARD',
                         style: GoogleFonts.orbitron(
                           color: AppColors.neonOrange,
-                          fontSize: 14,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      content: Text(
-                        'All recorded data for this session will be permanently deleted.',
-                        style: GoogleFonts.outfit(color: Colors.white70),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, false),
-                          child: Text(
-                            'CANCEL',
-                            style: GoogleFonts.orbitron(
-                              color: Colors.white,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, true),
-                          child: Text(
-                            'DISCARD',
-                            style: GoogleFonts.orbitron(
-                              color: AppColors.neonOrange,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
                     ),
+                  ],
+                ),
               );
               if (confirm == true && context.mounted) {
                 onDiscard?.call();
@@ -84,39 +75,13 @@ class HudDock extends StatelessWidget {
           ),
           const SizedBox(height: 10),
         ],
-        if (onFlagWeakZone != null)
-          _DockButton(
-            icon: Icons.flag_rounded,
-            tooltip: 'Flag weak zone',
-            color: AppColors.neonOrange,
-            onTap: onFlagWeakZone!,
-          ),
-        const SizedBox(height: 10),
-        BlocSelector<HeatmapBloc, HeatmapState, bool>(
-          selector: (s) => s.isAutoSampling,
-          builder: (context, isAuto) {
-            return _DockButton(
-              icon: isAuto ? Icons.auto_mode_rounded : Icons.touch_app_rounded,
-              tooltip: isAuto
-                  ? 'Auto-sample ON — step to record'
-                  : 'Manual — tap reticle to record',
-              color: isAuto ? AppColors.neonGreen : Colors.white70,
-              onTap: () {
-                HapticFeedback.lightImpact();
-                context.read<HeatmapBloc>().toggleAutoSampling();
-              },
-            );
-          },
-        ),
-        if (onFinish != null) ...[
-          const SizedBox(height: 10),
+        if (onFinish != null)
           _DockButton(
             icon: Icons.stop_rounded,
             tooltip: 'Finish & Review',
             color: AppColors.neonRed,
             onTap: onFinish!,
           ),
-        ],
       ],
     );
   }

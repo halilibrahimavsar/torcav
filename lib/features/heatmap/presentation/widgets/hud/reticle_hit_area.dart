@@ -1,24 +1,20 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:torcav/core/theme/app_theme.dart';
-import 'package:torcav/features/heatmap/domain/entities/survey_gate.dart';
 import 'package:torcav/features/heatmap/domain/services/signal_tier.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
 import 'hud_models.dart';
 
-/// Center reticle that pulses and handles manual weak zone flagging.
+/// Center reticle that pulses to indicate signal strength.
 class ReticleHitArea extends StatelessWidget {
   const ReticleHitArea({
     super.key,
     required this.controller,
-    required this.onFlagWeakZone,
   });
 
   final AnimationController controller;
-  final VoidCallback? onFlagWeakZone;
 
   @override
   Widget build(BuildContext context) {
@@ -26,75 +22,26 @@ class ReticleHitArea extends StatelessWidget {
       selector: (s) => ReticleSlice(
         rssi: s.currentRssi,
         lastStepTimestamp: s.lastStepTimestamp,
-        surveyGate: s.surveyGate,
       ),
       builder: (context, slice) {
         final tier = signalTierFor(slice.rssi);
         final color = signalTierColor(tier);
-        final isWeak = slice.surveyGate == SurveyGate.none &&
-            (tier == SignalTier.weak || tier == SignalTier.poor);
+        const size = 120.0;
 
-        final hitSize = isWeak ? 140.0 : 120.0;
-
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            if (isWeak) {
-              onFlagWeakZone?.call();
-            }
-          },
+        return IgnorePointer(
           child: SizedBox(
-            width: hitSize,
-            height: hitSize,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                AnimatedBuilder(
-                  animation: controller,
-                  builder: (_, __) => CustomPaint(
-                    size: Size(hitSize, hitSize),
-                    painter: _ReticlePainter(
-                      progress: controller.value,
-                      color: color,
-                      stepTs: slice.lastStepTimestamp,
-                    ),
-                  ),
+            width: size,
+            height: size,
+            child: AnimatedBuilder(
+              animation: controller,
+              builder: (_, __) => CustomPaint(
+                size: const Size(size, size),
+                painter: _ReticlePainter(
+                  progress: controller.value,
+                  color: color,
+                  stepTs: slice.lastStepTimestamp,
                 ),
-                if (isWeak)
-                  AnimatedBuilder(
-                    animation: controller,
-                    builder: (context, child) {
-                      final scale =
-                          1.0 + (math.sin(controller.value * 2 * math.pi) * 0.05);
-                      return Transform.scale(
-                        scale: scale,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: color.withValues(alpha: 0.22),
-                            border: Border.all(
-                              color: color.withValues(alpha: 0.8),
-                              width: 1.2,
-                            ),
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Text(
-                            'TAP TO FLAG',
-                            style: GoogleFonts.orbitron(
-                              color: color,
-                              fontSize: 9,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 1.5,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-              ],
+              ),
             ),
           ),
         );

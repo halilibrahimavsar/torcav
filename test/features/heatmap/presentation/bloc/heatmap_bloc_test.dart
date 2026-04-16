@@ -183,21 +183,6 @@ void main() {
   );
 
   test(
-    'toggleAutoSampling flips state and propagates to HeatmapManager',
-    () async {
-      expect(bloc.state.isAutoSampling, isTrue);
-
-      bloc.toggleAutoSampling();
-      expect(bloc.state.isAutoSampling, isFalse);
-      verify(() => heatmapManager.setAutoSamplingEnabled(false)).called(1);
-
-      bloc.toggleAutoSampling();
-      expect(bloc.state.isAutoSampling, isTrue);
-      verify(() => heatmapManager.setAutoSamplingEnabled(true)).called(1);
-    },
-  );
-
-  test(
     'selectSession sets the review state correctly',
     () {
       final session = HeatmapSession(

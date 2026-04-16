@@ -13,7 +13,6 @@ import 'package:torcav/features/heatmap/presentation/widgets/hud/hud_scrim.dart'
 import 'package:torcav/features/heatmap/presentation/widgets/hud/live_signal_tag.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/hud/measurement_lock_banner.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/hud/mini_map_layer.dart';
-import 'package:torcav/features/heatmap/presentation/widgets/hud/mode_badge.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/hud/ready_banner.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/hud/reticle_hit_area.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/hud/sparse_region_arrow.dart';
@@ -31,17 +30,9 @@ import 'package:torcav/features/heatmap/presentation/widgets/hud/survey_pilot_ca
 class ArHudOverlay extends StatefulWidget {
   const ArHudOverlay({
     super.key,
-    this.estimatedMode = false,
-    this.onFlagWeakZone,
     this.onFinish,
     this.onDiscard,
   });
-
-  /// Whether we are in PDR-estimated mode (no ARCore).
-  final bool estimatedMode;
-
-  /// Called when the user taps the flag dock button or the reticle.
-  final VoidCallback? onFlagWeakZone;
 
   /// Called when the user taps the Finish & Review dock button.
   final VoidCallback? onFinish;
@@ -86,7 +77,7 @@ class _ArHudOverlayState extends State<ArHudOverlay>
 
   @override
   Widget build(BuildContext context) {
-    final topGuidanceTop = widget.estimatedMode ? 128.0 : 88.0;
+    const topGuidanceTop = 88.0;
 
     return Stack(
       fit: StackFit.expand,
@@ -175,17 +166,6 @@ class _ArHudOverlayState extends State<ArHudOverlay>
           ),
         ),
 
-        // Mode badge (Estimated / PDR)
-        if (widget.estimatedMode)
-          const Positioned(
-            top: 84,
-            left: 14,
-            child: ModeBadge(
-              label: 'ESTIMATED MODE',
-              color: AppColors.neonOrange,
-            ),
-          ),
-
         // 4. Mini Map layer (top-right)
         const Positioned(top: 96, right: 14, child: MiniMapLayer()),
 
@@ -200,10 +180,7 @@ class _ArHudOverlayState extends State<ArHudOverlay>
         // 6. Center reticle
         Positioned.fill(
           child: Center(
-            child: ReticleHitArea(
-              controller: _reticleCtl,
-              onFlagWeakZone: widget.onFlagWeakZone,
-            ),
+            child: ReticleHitArea(controller: _reticleCtl),
           ),
         ),
 
@@ -212,7 +189,6 @@ class _ArHudOverlayState extends State<ArHudOverlay>
           bottom: 24,
           right: 16,
           child: HudDock(
-            onFlagWeakZone: widget.onFlagWeakZone,
             onFinish: widget.onFinish,
             onDiscard: widget.onDiscard,
           ),
@@ -225,7 +201,7 @@ class _ArHudOverlayState extends State<ArHudOverlay>
           right: 0,
           child: IgnorePointer(
             child: Center(
-              child: LiveSignalTag(estimatedMode: widget.estimatedMode),
+              child: LiveSignalTag(),
             ),
           ),
         ),

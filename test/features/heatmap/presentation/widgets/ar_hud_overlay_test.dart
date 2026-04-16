@@ -78,66 +78,10 @@ void main() {
       initialState: baseState(ssid: 'TestAP'),
     );
 
-    await tester.pumpWidget(
-      wrap(
-        ArHudOverlay(
-          onFlagWeakZone: () {},
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrap(const ArHudOverlay()));
     await tester.pump();
 
     expect(find.text('TESTAP'), findsOneWidget);
-  });
-
-  testWidgets('shows weak-tier "TAP TO FLAG" label and fires callback', (
-    tester,
-  ) async {
-    final state = baseState(rssi: -85);
-    when(() => bloc.state).thenReturn(state);
-    whenListen(
-      bloc,
-      Stream<HeatmapState>.fromIterable([state]),
-      initialState: state,
-    );
-
-    var flagged = 0;
-    await tester.pumpWidget(
-      wrap(
-        ArHudOverlay(
-          onFlagWeakZone: () => flagged++,
-        ),
-      ),
-    );
-    await tester.pump();
-
-    expect(find.text('TAP TO FLAG'), findsOneWidget);
-    await tester.tap(find.text('TAP TO FLAG'));
-    await tester.pump();
-    expect(flagged, 1);
-  });
-
-  testWidgets('does NOT show tap-to-flag in strong signal tier', (
-    tester,
-  ) async {
-    final state = baseState(rssi: -45);
-    when(() => bloc.state).thenReturn(state);
-    whenListen(
-      bloc,
-      Stream<HeatmapState>.fromIterable([state]),
-      initialState: state,
-    );
-
-    await tester.pumpWidget(
-      wrap(
-        ArHudOverlay(
-          onFlagWeakZone: () {},
-        ),
-      ),
-    );
-    await tester.pump();
-
-    expect(find.text('TAP TO FLAG'), findsNothing);
   });
 
   testWidgets('shows measurement-locked banner when target AP is missing', (
@@ -189,24 +133,5 @@ void main() {
 
     expect(find.text('MEASUREMENT LOCKED'), findsOneWidget);
     expect(find.text('COMPLETE'), findsNothing);
-  });
-
-  testWidgets('shows estimated mode badge in camera fallback mode', (
-    tester,
-  ) async {
-    final state = baseState();
-    when(() => bloc.state).thenReturn(state);
-    whenListen(
-      bloc,
-      Stream<HeatmapState>.fromIterable([state]),
-      initialState: state,
-    );
-
-    await tester.pumpWidget(
-      wrap(const ArHudOverlay(estimatedMode: true)),
-    );
-    await tester.pump();
-
-    expect(find.text('ESTIMATED MODE'), findsOneWidget);
   });
 }

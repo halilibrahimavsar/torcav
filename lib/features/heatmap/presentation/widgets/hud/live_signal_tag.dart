@@ -11,9 +11,7 @@ import 'hud_models.dart';
 
 /// Floating diagnostic data centered at the bottom of the AR view.
 class LiveSignalTag extends StatefulWidget {
-  const LiveSignalTag({super.key, required this.estimatedMode});
-
-  final bool estimatedMode;
+  const LiveSignalTag({super.key});
 
   @override
   State<LiveSignalTag> createState() => _LiveSignalTagState();
@@ -99,10 +97,7 @@ class _LiveSignalTagState extends State<LiveSignalTag> {
                 const SizedBox(width: 16),
                 Container(width: 1, height: 30, color: Colors.white24),
                 const SizedBox(width: 16),
-                _ArStatusIndicator(
-                  gate: slice.surveyGate,
-                  estimatedMode: widget.estimatedMode,
-                ),
+                _ArStatusIndicator(gate: slice.surveyGate),
               ],
             ),
           ),
@@ -131,31 +126,26 @@ class _SignalIcon extends StatelessWidget {
 }
 
 class _ArStatusIndicator extends StatelessWidget {
-  const _ArStatusIndicator({
-    required this.gate,
-    required this.estimatedMode,
-  });
+  const _ArStatusIndicator({required this.gate});
 
   final SurveyGate gate;
-  final bool estimatedMode;
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = gate == SurveyGate.none
-        ? (estimatedMode ? AppColors.neonYellow : AppColors.neonGreen)
-        : AppColors.neonRed;
+    final statusColor =
+        gate == SurveyGate.none ? AppColors.neonGreen : AppColors.neonRed;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
-          estimatedMode ? Icons.auto_awesome_rounded : Icons.precision_manufacturing_rounded,
+          Icons.precision_manufacturing_rounded,
           color: statusColor,
           size: 16,
         ),
         const SizedBox(height: 4),
         Text(
-          estimatedMode ? 'ESTIMATED' : 'PRECISE',
+          'AR',
           style: GoogleFonts.orbitron(
             color: statusColor,
             fontSize: 8,

@@ -40,8 +40,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   final SignalTracker _signalTracker;
   final SurveyGuidanceService _guidanceService;
 
-  static const _flagMergeDistanceMeters = 0.5;
-
   StreamSubscription? _managerSessionSub;
   StreamSubscription? _managerGateSub;
   StreamSubscription? _managerPositionSub;
@@ -94,9 +92,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         ),
       );
 
-      if (state.isAutoSampling) {
-        _maybeAutoSample(currentPos, pos.heading);
-      }
+      _maybeAutoSample(currentPos, pos.heading);
     });
 
     _cameraPoseSub = _arCameraPose.cameraPoseStream.listen((rawPose) {
@@ -108,9 +104,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
       _heatmapManager.syncPosition(pos.dx, pos.dy);
       emit(state.copyWith(currentPosition: pos));
 
-      if (state.isAutoSampling) {
-        _maybeAutoSample(pos, state.currentHeading);
-      }
+      _maybeAutoSample(pos, state.currentHeading);
     });
 
     _signalStateSub = _signalTracker.stateStream.listen((signal) {
@@ -174,45 +168,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
   void resumeScanning() {
     emit(state.copyWith(phase: ScanPhase.scanning));
-  }
-
-  Future<void> flagCurrentWeakZone() async {
-    final session = state.currentSession;
-    final pos = state.currentPosition;
-    final rssi = state.currentRssi;
-    if (session == null || pos == null || rssi == null) return;
-
-    final points = [...session.points];
-    final existingIndex = points.indexWhere((point) {
-      final dx = point.floorX - pos.dx;
-      final dy = point.floorY - pos.dy;
-      return math.sqrt(dx * dx + dy * dy) <= _flagMergeDistanceMeters;
-    });
-
-    if (existingIndex != -1) {
-      points[existingIndex] = points[existingIndex].copyWith(isFlagged: true);
-    } else {
-      points.add(
-        HeatmapPoint(
-          x: 0,
-          y: 0,
-          floorX: pos.dx,
-          floorY: pos.dy,
-          floorZ: 0,
-          heading: state.currentHeading,
-          rssi: rssi,
-          timestamp: state.lastSignalAt ?? DateTime.now(),
-          ssid: state.targetSsid ?? '',
-          bssid: state.targetBssid ?? '',
-          floor: state.currentFloor,
-          sampleCount: state.lastSignalSampleCount,
-          rssiStdDev: state.lastSignalStdDev,
-          isFlagged: true,
-        ),
-      );
-    }
-
-    emit(state.copyWith(currentSession: session.copyWith(points: points)));
   }
 
   Future<void> stopScanning() async {
@@ -348,12 +303,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
         phase: ScanPhase.idle,
       ),
     );
-  }
-
-  void toggleAutoSampling() {
-    final next = !state.isAutoSampling;
-    _heatmapManager.setAutoSamplingEnabled(next);
-    emit(state.copyWith(isAutoSampling: next));
   }
 
   /// Manually triggers a realign of the fusion heading to absolute North.
