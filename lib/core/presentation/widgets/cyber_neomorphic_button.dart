@@ -98,13 +98,12 @@ class _CyberNeomorphicButtonState extends State<CyberNeomorphicButton>
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
-    // Neomorphic shadow palette
-    final Color highlightColor = isDark 
-        ? Colors.white.withValues(alpha: 0.1) 
-        : Colors.white;
-    final Color shadowColor = isDark 
-        ? Colors.black.withValues(alpha: 0.6) 
-        : const Color(0xFFC0CCE0); // Sharper contrast for light mode
+    // Neomorphic shadow palette constants
+    final double baseHighlightAlpha = isDark ? 0.05 : 0.8; // Subtler highlights
+    final double baseShadowAlpha = isDark ? 0.7 : 0.45; // Balanced depth
+    
+    final Color highlightColor = isDark ? AppColors.neonCyan : Colors.white;
+    final Color shadowColor = isDark ? Colors.black : const Color(0xFFC0CCE0);
 
     return GestureDetector(
       onTapDown: _handleTapDown,
@@ -144,13 +143,13 @@ class _CyberNeomorphicButtonState extends State<CyberNeomorphicButton>
                 boxShadow: [
                   // Outer Shadows (fade out as button is pressed)
                   BoxShadow(
-                    color: shadowColor.withValues(alpha: (1.0 - p) * 0.8),
+                    color: shadowColor.withValues(alpha: baseShadowAlpha * (1.0 - p)),
                     offset: Offset(6 + breatheOffset, 6 + breatheOffset),
                     blurRadius: 12 + breatheOffset,
                     spreadRadius: 1,
                   ),
                   BoxShadow(
-                    color: highlightColor.withValues(alpha: (1.0 - p) * 1.0),
+                    color: highlightColor.withValues(alpha: baseHighlightAlpha * (1.0 - p)),
                     offset: Offset(-6 - breatheOffset, -6 - breatheOffset),
                     blurRadius: 12 + breatheOffset,
                     spreadRadius: 1,
@@ -166,8 +165,8 @@ class _CyberNeomorphicButtonState extends State<CyberNeomorphicButton>
                       Positioned.fill(
                         child: CustomPaint(
                           painter: _InnerShadowPainter(
-                            shadowColor: shadowColor.withValues(alpha: p * 0.9),
-                            highlightColor: highlightColor.withValues(alpha: p * 1.0),
+                            shadowColor: shadowColor.withValues(alpha: baseShadowAlpha * p),
+                            highlightColor: highlightColor.withValues(alpha: baseHighlightAlpha * p),
                             borderRadius: widget.borderRadius,
                             depth: p * 6.0,
                           ),
