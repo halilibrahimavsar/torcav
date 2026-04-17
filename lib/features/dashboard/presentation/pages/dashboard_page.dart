@@ -15,6 +15,7 @@ import '../../../wifi_scan/domain/services/channel_rating_engine.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
 import '../widgets/security_core.dart';
 import 'notification_sheet.dart';
+import '../../../../core/presentation/widgets/cyber_neomorphic_button.dart';
 
 /// Dashboard — neon-styled status overview with animated bento-grid layout.
 class DashboardPage extends StatefulWidget {
@@ -479,85 +480,67 @@ class _QuickAction extends StatelessWidget {
     return StaggeredEntry(
       delay: Duration(milliseconds: 400 + (index * 100)),
       slideOffset: 20,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(20),
-          splashColor: color.withValues(alpha: 0.15),
-          highlightColor: color.withValues(alpha: 0.05),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Theme.of(context).colorScheme.surfaceContainerLow,
-              border: Border.all(
-                color: color.withValues(alpha: 0.2),
-                width: 1.5,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: color.withValues(alpha: 0.05),
-                  blurRadius: 15,
-                  spreadRadius: -5,
+      child: CyberNeomorphicButton(
+        onPressed: onTap,
+        borderRadius: 20,
+        padding: EdgeInsets.zero,
+        child: SizedBox(
+          height: 140, // Match GridView childAspectRatio
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Stack(
+              children: [
+                Positioned(
+                  right: -10,
+                  top: -10,
+                  child: Icon(
+                    icon,
+                    size: 80,
+                    color: color.withValues(alpha: 0.03),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 20,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: color.withValues(alpha: 0.1),
+                          border: Border.all(
+                            color: color.withValues(alpha: 0.2),
+                          ),
+                        ),
+                        child: Icon(icon, color: color, size: 20),
+                      ),
+                      const Spacer(),
+                      Text(
+                        label,
+                        style: GoogleFonts.rajdhani(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        AppLocalizations.of(context)!.accessEngine,
+                        style: GoogleFonts.orbitron(
+                          color: color.withValues(alpha: 0.5),
+                          fontSize: 8,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Stack(
-                children: [
-                  Positioned(
-                    right: -10,
-                    top: -10,
-                    child: Icon(
-                      icon,
-                      size: 80,
-                      color: color.withValues(alpha: 0.03),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 20,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: color.withValues(alpha: 0.1),
-                            border: Border.all(
-                              color: color.withValues(alpha: 0.2),
-                            ),
-                          ),
-                          child: Icon(icon, color: color, size: 20),
-                        ),
-                        const Spacer(),
-                        Text(
-                          label,
-                          style: GoogleFonts.rajdhani(
-                            color: Theme.of(context).colorScheme.onSurface,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.accessEngine,
-                          style: GoogleFonts.orbitron(
-                            color: color.withValues(alpha: 0.5),
-                            fontSize: 8,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
             ),
           ),
         ),
@@ -583,10 +566,9 @@ class _LastScanStrip extends StatelessWidget {
 
     final tertiary = Theme.of(context).colorScheme.tertiary;
 
-    return NeonCard(
-      glowColor: tertiary,
-      glowIntensity: 0.08,
-      onTap: onViewDetails,
+    return CyberNeomorphicButton(
+      onPressed: onViewDetails,
+      borderRadius: 20,
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
@@ -670,66 +652,64 @@ class _SafetyBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = _scoreColor(context);
 
-    return GlassmorphicContainer(
-      borderColor: color.withValues(alpha: 0.3),
+    return CyberNeomorphicButton(
+      onPressed: onTap,
+      borderRadius: 20,
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-      child: InkWell(
-        onTap: onTap,
-        child: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: color.withValues(alpha: 0.1),
-                border: Border.all(color: color.withValues(alpha: 0.3)),
-              ),
-              child: Icon(
-                score >= 85
-                    ? Icons.verified_user_rounded
-                    : Icons.shield_outlined,
-                color: color,
-                size: 20,
-              ),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color.withValues(alpha: 0.1),
+              border: Border.all(color: color.withValues(alpha: 0.3)),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.networkScoreLabel,
-                    style: GoogleFonts.orbitron(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                    ),
+            child: Icon(
+              score >= 85
+                  ? Icons.verified_user_rounded
+                  : Icons.shield_outlined,
+              color: color,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.networkScoreLabel,
+                  style: GoogleFonts.orbitron(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1,
                   ),
-                  Text(
-                    _scoreLabel(context),
-                    style: GoogleFonts.rajdhani(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
+                ),
+                Text(
+                  _scoreLabel(context),
+                  style: GoogleFonts.rajdhani(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            NeonText(
-              '$score%',
-              style: GoogleFonts.orbitron(
-                color: color,
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-              ),
-              glowColor: color,
-              glowRadius: 6,
+          ),
+          NeonText(
+            '$score%',
+            style: GoogleFonts.orbitron(
+              color: color,
+              fontSize: 20,
+              fontWeight: FontWeight.w900,
             ),
-          ],
-        ),
+            glowColor: color,
+            glowRadius: 6,
+          ),
+        ],
       ),
     );
   }

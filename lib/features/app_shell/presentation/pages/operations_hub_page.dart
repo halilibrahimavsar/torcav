@@ -9,6 +9,8 @@ import '../../../monitoring/presentation/pages/topology_page.dart';
 import '../../../security/presentation/pages/vulnerability_lab_page.dart';
 import '../../../heatmap/presentation/pages/heatmap_page.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
+import '../../../../core/presentation/widgets/cyber_neomorphic_button.dart';
+import '../../../../core/theme/app_theme.dart';
 
 class OperationsHubPage extends StatelessWidget {
   const OperationsHubPage({super.key, required this.onNavigate});
@@ -165,34 +167,38 @@ class _OperationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return StaggeredEntry(
       delay: Duration(milliseconds: delay),
-      child: NeonCard(
-        glowColor: color,
-        glowIntensity: 0.06,
-        onTap: onTap,
-        padding: const EdgeInsets.all(12),
+      child: CyberNeomorphicButton(
+        onPressed: onTap,
+        borderRadius: 24,
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
                 border: Border.all(color: color.withValues(alpha: 0.2)),
               ),
-              child: Icon(icon, color: color, size: 24),
+              child: Icon(icon, color: color, size: 28),
             ),
             const SizedBox(height: 12),
             Text(
               title,
+              textAlign: TextAlign.center,
               style: GoogleFonts.orbitron(
-                color: color,
-                fontSize: 11,
+                color: Theme.of(context).brightness == Brightness.dark 
+                    ? color.withValues(alpha: 0.9)
+                    : AppColors.textPrimaryLight,
+                fontSize: 10,
                 fontWeight: FontWeight.bold,
               ),
             ),
+            const SizedBox(height: 2),
             Text(
               subtitle,
+              textAlign: TextAlign.center,
               style: GoogleFonts.rajdhani(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 9,

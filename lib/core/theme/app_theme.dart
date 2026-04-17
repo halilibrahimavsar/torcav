@@ -32,7 +32,7 @@ class AppColors {
   static Color get ink => inkCyan;
 
   // ── Surfaces & Depth ──
-  static const Color deepBlack = Color(0xFF020206);
+  static const Color deepBlack = Color(0xFF040506);
   static const Color darkSurface = Color(0xFF0A0F1E);
   static const Color darkSurfaceLight = Color(0xFF141F33);
   static const Color darkSurfaceLighter = Color(0xFF1C2A45);
@@ -45,12 +45,19 @@ class AppColors {
   static const Color textMuted = Color(0xFF667085);
 
   // ── Light Mode Tokens (Clean & High Contrast) ──
-  static const Color lightBg = Color(0xFFF1F5F9); // Slate-100 base
-  static const Color lightSurface = Color(0xFFF8FAFC); // Slate-50 soft surface
-  static const Color lightSurfaceSecondary = Color(0xFFE2E8F0); // Slate-200
-  static const Color lightSurfaceTertiary = Color(0xFFCBD5E1); // Slate-300
+  static const Color lightBg = Color(0xFFEEF2F7); // Perfectly synced with neomorphic shader
+  static const Color lightBgSecondary = Color(0xFFF1F5F9); // Slate-100
+  static const Color lightSurface = Color(0xFFFFFFFF); // Pure white surface
+  static const Color lightSurfaceSecondary = Color(0xFFF1F5F9); // Slate-100
+  static const Color lightSurfaceTertiary = Color(0xFFE2E8F0); // Slate-200
   static const Color softWhite = Color(0xFFFFFFFF); // Pure white fallback
   static const Color lightGlassBorder = Color(0x33006064); // Hint of Ink Cyan
+  
+  // ── Mesh Gradient Pastels (Premium Fluid Background) ──
+  static const Color meshIndigo = Color(0xFFE0E7FF); // Indigo-100
+  static const Color meshMint   = Color(0xFFD1FAE5); // Emerald-100
+  static const Color meshRose   = Color(0xFFFFE4E6); // Rose-100
+  static const Color meshCyan   = Color(0xFFCFFAFE); // Cyan-100
   
   static const Color textPrimaryLight = Color(0xFF0F172A);
   static const Color textSecondaryLight = Color(0xFF334155);
