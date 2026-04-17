@@ -61,6 +61,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get livePulse => 'LIVE-PULS';
 
   @override
+  String get liveLabel => 'LIVE';
+
+  @override
   String get operationsLabel => 'OPERATIONEN';
 
   @override

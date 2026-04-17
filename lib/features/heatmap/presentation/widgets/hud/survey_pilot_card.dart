@@ -54,7 +54,7 @@ class SurveyPilotCard extends StatelessWidget {
                   Text(
                     '${(guidance.overallProgress * 100).toInt()}%',
                     style: GoogleFonts.orbitron(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontSize: 24,
                       fontWeight: FontWeight.w900,
                       letterSpacing: -1,

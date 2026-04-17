@@ -61,6 +61,9 @@ class AppLocalizationsKu extends AppLocalizations {
   String get livePulse => 'NEBZA ZINDÎ';
 
   @override
+  String get liveLabel => 'ZINDÎ';
+
+  @override
   String get operationsLabel => 'OPERASYON';
 
   @override

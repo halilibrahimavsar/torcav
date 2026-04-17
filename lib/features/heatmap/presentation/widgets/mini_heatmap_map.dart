@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:torcav/core/extensions/context_extensions.dart';
+import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap_canvas.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap_compass.dart';
@@ -49,6 +50,10 @@ class _MiniHeatmapMapState extends State<MiniHeatmapMap>
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.theme;
+    final isLight = theme.brightness == Brightness.light;
+    final liveColor = isLight ? AppColors.inkGreen : AppColors.neonGreen;
+
     return AnimatedBuilder(
       animation: _pulseAnimation,
       builder: (context, child) {
@@ -59,24 +64,24 @@ class _MiniHeatmapMapState extends State<MiniHeatmapMap>
             width: 160,
             height: 160,
             decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.55),
+              color: theme.colorScheme.surface.withValues(alpha: isLight ? 0.8 : 0.55),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: const Color(0xFF00E676).withValues(
-                  alpha: 0.2 + (pulseVal * 0.4),
+                color: liveColor.withValues(
+                  alpha: isLight ? 0.15 + (pulseVal * 0.3) : 0.2 + (pulseVal * 0.4),
                 ),
                 width: 1.5 + (pulseVal * 0.5),
               ),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF00E676).withValues(
-                    alpha: 0.15 * pulseVal,
+                  color: liveColor.withValues(
+                    alpha: isLight ? 0.08 * pulseVal : 0.15 * pulseVal,
                   ),
                   blurRadius: 10 + (pulseVal * 8),
                   spreadRadius: pulseVal * 2,
                 ),
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.45),
+                  color: theme.colorScheme.scrim.withValues(alpha: isLight ? 0.08 : 0.45),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -104,7 +109,7 @@ class _MiniHeatmapMapState extends State<MiniHeatmapMap>
                       gradient: RadialGradient(
                         colors: [
                           Colors.transparent,
-                          Colors.black.withValues(alpha: 0.35),
+                          theme.colorScheme.scrim.withValues(alpha: isLight ? 0.15 : 0.35),
                         ],
                         stops: const [0.55, 1.0],
                       ),
@@ -127,10 +132,10 @@ class _MiniHeatmapMapState extends State<MiniHeatmapMap>
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                     decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.6),
+                      color: theme.colorScheme.surface.withValues(alpha: isLight ? 0.9 : 0.6),
                       borderRadius: BorderRadius.circular(6),
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.15),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.15),
                       ),
                     ),
                     child: Row(
@@ -142,11 +147,11 @@ class _MiniHeatmapMapState extends State<MiniHeatmapMap>
                             width: 6,
                             height: 6,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF00E676),
+                              color: liveColor,
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFF00E676)
+                                  color: liveColor
                                       .withValues(alpha: 0.6),
                                   blurRadius: 4,
                                   spreadRadius: 1,
@@ -157,9 +162,9 @@ class _MiniHeatmapMapState extends State<MiniHeatmapMap>
                         ),
                         const SizedBox(width: 5),
                         Text(
-                          'LIVE',
+                          context.l10n.liveLabel,
                           style: GoogleFonts.orbitron(
-                            color: Colors.white,
+                            color: theme.colorScheme.onSurface,
                             fontSize: 7.5,
                             fontWeight: FontWeight.w800,
                             letterSpacing: 1.0,

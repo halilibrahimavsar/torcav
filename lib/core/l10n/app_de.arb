@@ -69,6 +69,10 @@
     "@livePulse": {
         "description": "Dashboard-Live-Anzeige."
     },
+    "liveLabel": "LIVE",
+    "@liveLabel": {
+        "description": "Kurzbezeichnung für Live-Status im AR-HUD."
+    },
     "operationsLabel": "OPERATIONEN",
     "@operationsLabel": {
         "description": "Dashboard-Abschnitts-Label."

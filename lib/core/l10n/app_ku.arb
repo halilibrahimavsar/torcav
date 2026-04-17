@@ -69,6 +69,10 @@
     "@livePulse": {
         "description": "Nîşana zindî ya dashboardê."
     },
+    "liveLabel": "ZINDÎ",
+    "@liveLabel": {
+        "description": "Short label for live status in AR HUD."
+    },
     "operationsLabel": "OPERASYON",
     "@operationsLabel": {
         "description": "Nîşana beşa dashboardê."

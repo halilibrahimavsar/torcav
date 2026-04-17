@@ -61,6 +61,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get livePulse => 'CANLI VERİ';
 
   @override
+  String get liveLabel => 'CANLI';
+
+  @override
   String get operationsLabel => 'OPERASYONLAR';
 
   @override

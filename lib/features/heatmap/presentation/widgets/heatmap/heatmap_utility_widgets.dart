@@ -20,14 +20,30 @@ class StatBrick extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isLight = theme.brightness == Brightness.light;
+    final onSurface = theme.colorScheme.onSurface;
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
+        color: isLight 
+            ? theme.colorScheme.surface.withValues(alpha: 0.5) 
+            : Colors.white.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: (color ?? Colors.white).withValues(alpha: 0.1),
+          color: isLight 
+              ? theme.colorScheme.primary.withValues(alpha: 0.12)
+              : (color ?? onSurface).withValues(alpha: 0.1),
+          width: isLight ? 1 : 0.5,
         ),
+        boxShadow: isLight ? [
+          BoxShadow(
+            color: theme.colorScheme.primary.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ] : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +51,7 @@ class StatBrick extends StatelessWidget {
           Text(
             label.toUpperCase(),
             style: GoogleFonts.orbitron(
-              color: AppColors.textMuted,
+              color: isLight ? AppColors.ink.withValues(alpha: 0.6) : onSurface.withValues(alpha: 0.5),
               fontSize: 9,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.2,
@@ -45,7 +61,7 @@ class StatBrick extends StatelessWidget {
           Text(
             value,
             style: GoogleFonts.outfit(
-              color: color ?? Colors.white,
+              color: color ?? (isLight ? AppColors.ink : onSurface),
               fontSize: 18,
               fontWeight: FontWeight.w800,
             ),
@@ -110,7 +126,7 @@ class InfoBanner extends StatelessWidget {
                 Text(
                   body,
                   style: GoogleFonts.outfit(
-                    color: AppColors.textPrimary,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 13,
                     height: 1.45,
                   ),
@@ -131,19 +147,27 @@ class CanvasBackdrop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final glow = summary.coverageColor;
+    final theme = Theme.of(context);
+    final isLight = theme.brightness == Brightness.light;
+    final glow = summary.coverageColor(theme.brightness);
+    
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: RadialGradient(
           center: Alignment.topLeft,
-          radius: 1.25,
+          radius: 1.8,
           colors: [
-            glow.withValues(alpha: 0.12),
-            AppColors.darkSurfaceLight,
-            AppColors.deepBlack,
+            glow.withValues(alpha: isLight ? 0.06 : 0.12),
+            isLight 
+                ? theme.colorScheme.surface.withValues(alpha: 0.4)
+                : AppColors.darkSurfaceLight.withValues(alpha: 0.6),
+            Colors.transparent,
           ],
         ),
-        border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.16)),
+        border: Border.all(
+          color: theme.colorScheme.primary.withValues(alpha: isLight ? 0.08 : 0.16),
+          width: 0.5,
+        ),
       ),
     );
   }
@@ -168,19 +192,27 @@ class CanvasEmptyState extends StatelessWidget {
     final body =
         state.isRecording ? copy.walkToBeginBody : copy.noSurveyYetBody;
 
+    final theme = Theme.of(context);
+    final isLight = theme.brightness == Brightness.light;
+
     return Center(
       child: Container(
         width: 280,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.45),
+          color: isLight 
+              ? theme.colorScheme.surface.withValues(alpha: 0.95) 
+              : Colors.black.withValues(alpha: 0.45),
           borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.25)),
+          border: Border.all(
+            color: theme.colorScheme.primary.withValues(alpha: isLight ? 0.4 : 0.25),
+            width: isLight ? 1.5 : 1,
+          ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.neonCyan.withValues(alpha: 0.08),
-              blurRadius: 32,
-              spreadRadius: 4,
+              color: theme.colorScheme.primary.withValues(alpha: isLight ? 0.12 : 0.08),
+              blurRadius: isLight ? 24 : 32,
+              spreadRadius: isLight ? 0 : 4,
             ),
           ],
         ),
@@ -190,14 +222,14 @@ class CanvasEmptyState extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.neonCyan.withValues(alpha: 0.1),
+                color: theme.colorScheme.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 state.isRecording
                     ? Icons.directions_walk_rounded
                     : Icons.map_rounded,
-                color: AppColors.neonCyan,
+                color: theme.colorScheme.primary,
                 size: 40,
               ),
             ),
@@ -206,7 +238,7 @@ class CanvasEmptyState extends StatelessWidget {
               title.toUpperCase(),
               textAlign: TextAlign.center,
               style: GoogleFonts.orbitron(
-                color: AppColors.textPrimary,
+                color: theme.colorScheme.onSurface,
                 fontSize: 13,
                 letterSpacing: 1.4,
                 fontWeight: FontWeight.w800,
@@ -217,7 +249,7 @@ class CanvasEmptyState extends StatelessWidget {
               body,
               textAlign: TextAlign.center,
               style: GoogleFonts.outfit(
-                color: AppColors.textSecondary,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                 fontSize: 14,
                 height: 1.5,
               ),

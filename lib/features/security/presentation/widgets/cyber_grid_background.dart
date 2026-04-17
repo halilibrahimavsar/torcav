@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:torcav/core/theme/app_theme.dart';
 
 class CyberGridBackground extends StatefulWidget {
   final Color color;
@@ -78,11 +79,19 @@ class _CyberGridBackgroundState extends State<CyberGridBackground>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isLight = theme.brightness == Brightness.light;
+    
+    // Aesthetic mapping: Blueprint base for Light Mode, Deep Void for Dark Mode
+    final baseColor = isLight ? AppColors.lightBg : AppColors.deepBlack;
+    final overlayColor = isLight ? AppColors.lightSurface : theme.colorScheme.surface;
+    final primaryColor = isLight ? AppColors.inkCyan : widget.color;
+
     return Stack(
       children: [
-        // Base Layer: Deep space
+        // Base Layer: Deep space or Blueprint paper
         Positioned.fill(
-          child: Container(color: const Color(0xFF010204)),
+          child: Container(color: baseColor),
         ),
 
         // Animated Background Content (Grid + Particles + Stars)
@@ -94,9 +103,10 @@ class _CyberGridBackgroundState extends State<CyberGridBackground>
                 final painter = _PremiumGridPainter(
                   progress: _controller.value,
                   velocity: _smoothedVelocity,
-                  color: widget.color,
+                  color: primaryColor,
                   packets: _packets,
                   stars: _stars,
+                  isLight: isLight,
                 );
 
                 final paintWidget = CustomPaint(painter: painter);
@@ -108,11 +118,12 @@ class _CyberGridBackgroundState extends State<CyberGridBackground>
                         ..setFloat(0, rect.width)
                         ..setFloat(1, rect.height)
                         ..setFloat(2, _controller.value)
-                        ..setFloat(3, math.min(1.0, _smoothedVelocity / 300.0));
+                        ..setFloat(3, math.min(1.0, _smoothedVelocity / 300.0))
+                        ..setFloat(4, isLight ? 1.0 : 0.0);
                       return _shader!;
                     },
-                    // Use srcOver to layer the shader's atmospheric haze over the grid
-                    blendMode: BlendMode.srcOver,
+                    blendMode: isLight ? BlendMode.multiply : BlendMode.srcOver,
+
                     child: paintWidget,
                   );
                 }
@@ -132,12 +143,12 @@ class _CyberGridBackgroundState extends State<CyberGridBackground>
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black,
-                    Colors.transparent,
-                    Colors.transparent,
-                    Colors.black.withValues(alpha: 0.8),
+                    overlayColor,
+                    overlayColor.withValues(alpha: 0.0),
+                    overlayColor.withValues(alpha: 0.0),
+                    overlayColor.withValues(alpha: isLight ? 0.45 : 0.8),
                   ],
-                  stops: const [0.0, 0.35, 0.7, 1.0],
+                  stops: const [0.0, 0.45, 0.65, 1.0],
                 ),
               ),
             ),
@@ -178,6 +189,7 @@ class _PremiumGridPainter extends CustomPainter {
   final Color color;
   final List<_DataPacket> packets;
   final List<_Star> stars;
+  final bool isLight;
 
   _PremiumGridPainter({
     required this.progress,
@@ -185,11 +197,12 @@ class _PremiumGridPainter extends CustomPainter {
     required this.color,
     required this.packets,
     required this.stars,
+    this.isLight = false,
   });
 
   void _drawSplitLine(Canvas canvas, Offset p1, Offset p2, Paint basePaint, double aberration) {
-    // If scrolling fast, create a stable chromatic aberration effect via multi-pass drawing
-    if (aberration > 0.1) {
+    // Skip chromatic aberration in light mode for a cleaner blueprint look
+    if (aberration > 0.1 && !isLight) {
       final cyanPaint = Paint()
         ..color = const Color(0xFF00F5FF).withValues(alpha: basePaint.color.a * 0.6)
         ..strokeWidth = basePaint.strokeWidth;
@@ -207,26 +220,38 @@ class _PremiumGridPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final horizonY = size.height * 0.35;
     final vanishingPoint = Offset(size.width / 2, horizonY);
-    final aberration = (velocity / 25.0).clamp(0.0, 5.0);
+    final aberration = isLight ? 0.0 : (velocity / 25.0).clamp(0.0, 5.0);
     
-    // ── DRAW PARALLAX STARFIELD ──
+    // ── DRAW PARALLAX LAYER (STARS OR BLUEPRINT NODES) ──
     final starPaint = Paint();
     for (final star in stars) {
       final x = (star.x * size.width + (velocity * star.parallax * 0.1)) % size.width;
       final y = star.y * size.height * 0.45;
       
       final flicker = 0.8 + 0.2 * math.sin(progress * 25 + star.x * 100);
-      starPaint.color = Colors.white.withValues(alpha: star.brightness * flicker * 0.4);
       
-      canvas.drawCircle(Offset(x, y), star.size, starPaint);
+      if (isLight) {
+        // In light mode, draw subtle "+" blueprint markers instead of stars
+        starPaint.color = color.withValues(alpha: star.brightness * flicker * 0.15);
+        starPaint.strokeWidth = 0.5;
+        const s = 2.0;
+        canvas.drawLine(Offset(x - s, y), Offset(x + s, y), starPaint);
+        canvas.drawLine(Offset(x, y - s), Offset(x, y + s), starPaint);
+      } else {
+        starPaint.color = Colors.white.withValues(alpha: star.brightness * flicker * 0.4);
+        canvas.drawCircle(Offset(x, y), star.size, starPaint);
+      }
     }
 
     // ── DRAW THE GRID ──
-    final baseOpacity = (0.15 + (velocity / 600)).clamp(0.0, 0.4);
-    final gridColor = color.withValues(alpha: baseOpacity);
+    final baseOpacity = isLight 
+        ? (0.08 + (velocity / 2000)).clamp(0.0, 0.2)
+        : (0.15 + (velocity / 600)).clamp(0.0, 0.4);
+        
+    final gridColor = color.withValues(alpha: isLight ? baseOpacity * 1.8 : baseOpacity);
     final gridPaint = Paint()
       ..color = gridColor
-      ..strokeWidth = 1.0;
+      ..strokeWidth = isLight ? 0.4 : 1.0;
 
     // Horizontal Lines (Perspective)
     const int hLineCount = 20;
@@ -267,17 +292,18 @@ class _PremiumGridPainter extends CustomPainter {
       final x = (size.width / 2) + xSpread;
       
       final pSize = 1.5 + (packet.depth * 7.0);
-      final pOpacity = (packet.depth * 2.0).clamp(0.0, 1.0);
+      final pOpacity = (packet.depth * (isLight ? 1.2 : 2.0)).clamp(0.0, 1.0);
       
-      // Packet trails also get color split if aberration is high
       final trailLen = (12.0 + velocity * 0.15) * packet.depth;
       
-      trailPaint.color = color.withValues(alpha: pOpacity * 0.4);
+      trailPaint.color = color.withValues(alpha: pOpacity * (isLight ? 0.25 : 0.4));
       trailPaint.strokeWidth = pSize / 2;
       canvas.drawLine(Offset(x, y), Offset(x, y - trailLen), trailPaint);
 
       packetPaint.color = color.withValues(alpha: pOpacity);
-      packetPaint.maskFilter = MaskFilter.blur(BlurStyle.normal, pSize * 0.3);
+      if (!isLight) {
+        packetPaint.maskFilter = MaskFilter.blur(BlurStyle.normal, pSize * 0.3);
+      }
       canvas.drawCircle(Offset(x, y), pSize / 2, packetPaint);
     }
   }

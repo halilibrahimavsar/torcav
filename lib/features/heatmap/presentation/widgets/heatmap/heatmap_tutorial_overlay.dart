@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:torcav/core/l10n/app_localizations.dart';
-import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart';
 
@@ -19,9 +18,11 @@ class HeatmapTutorialOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final isLight = theme.brightness == Brightness.light;
 
     return Material(
-      color: Colors.black.withValues(alpha: 0.82),
+      color: theme.colorScheme.surface.withValues(alpha: isLight ? 0.94 : 0.85),
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
@@ -33,15 +34,15 @@ class HeatmapTutorialOverlay extends StatelessWidget {
                 height: 64,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.neonCyan.withValues(alpha: 0.12),
+                  color: theme.colorScheme.primary.withValues(alpha: 0.12),
                   border: Border.all(
-                    color: AppColors.neonCyan.withValues(alpha: 0.5),
+                    color: theme.colorScheme.primary.withValues(alpha: 0.5),
                     width: 1.5,
                   ),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.home_work_outlined,
-                  color: AppColors.neonCyan,
+                  color: theme.colorScheme.primary,
                   size: 32,
                 ),
               ),
@@ -49,12 +50,12 @@ class HeatmapTutorialOverlay extends StatelessWidget {
               NeonText(
                 copy.tutorialTitle,
                 style: GoogleFonts.orbitron(
-                  color: AppColors.neonCyan,
+                  color: theme.colorScheme.primary,
                   fontSize: 14,
                   fontWeight: FontWeight.w900,
                   letterSpacing: 2,
                 ),
-                glowColor: AppColors.neonCyan,
+                glowColor: theme.colorScheme.primary,
                 glowRadius: 8,
               ),
               const SizedBox(height: 28),
@@ -71,10 +72,10 @@ class HeatmapTutorialOverlay extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: onDismiss,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.neonCyan.withValues(alpha: 0.15),
-                    foregroundColor: AppColors.neonCyan,
+                    backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.15),
+                    foregroundColor: theme.colorScheme.primary,
                     side: BorderSide(
-                      color: AppColors.neonCyan.withValues(alpha: 0.5),
+                      color: theme.colorScheme.primary.withValues(alpha: 0.5),
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
@@ -107,6 +108,9 @@ class _TutorialStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isLight = theme.brightness == Brightness.light;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -115,16 +119,16 @@ class _TutorialStep extends StatelessWidget {
           height: 28,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: AppColors.neonCyan.withValues(alpha: 0.15),
+            color: theme.colorScheme.primary.withValues(alpha: 0.15),
             border: Border.all(
-              color: AppColors.neonCyan.withValues(alpha: 0.4),
+              color: theme.colorScheme.primary.withValues(alpha: 0.4),
             ),
           ),
           child: Center(
             child: Text(
               number,
               style: GoogleFonts.orbitron(
-                color: AppColors.neonCyan,
+                color: theme.colorScheme.primary,
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
               ),
@@ -136,7 +140,7 @@ class _TutorialStep extends StatelessWidget {
           child: Text(
             text,
             style: GoogleFonts.rajdhani(
-              color: Colors.white.withValues(alpha: 0.85),
+              color: theme.colorScheme.onSurface.withValues(alpha: isLight ? 0.8 : 0.85),
               fontSize: 14,
               height: 1.5,
             ),

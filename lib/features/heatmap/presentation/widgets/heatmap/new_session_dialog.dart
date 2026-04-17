@@ -59,7 +59,7 @@ class _NewSessionDialogState extends State<NewSessionDialog> {
           Text(
             widget.copy.newSurveyHint,
             style: GoogleFonts.outfit(
-              color: AppColors.textSecondary,
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
               fontSize: 13,
               height: 1.45,
             ),
@@ -69,6 +69,11 @@ class _NewSessionDialogState extends State<NewSessionDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
+          style: TextButton.styleFrom(
+            foregroundColor: Theme.of(context).brightness == Brightness.light 
+                ? AppColors.inkRed 
+                : AppColors.neonRed,
+          ),
           child: Text(widget.copy.cancel),
         ),
         ElevatedButton(
@@ -90,6 +95,19 @@ class _NewSessionDialogState extends State<NewSessionDialog> {
               Navigator.of(context).pop();
             }
           },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).brightness == Brightness.light 
+                ? AppColors.inkBlue.withValues(alpha: 0.1) 
+                : AppColors.neonBlue.withValues(alpha: 0.1),
+            foregroundColor: Theme.of(context).brightness == Brightness.light 
+                ? AppColors.inkBlue 
+                : AppColors.neonBlue,
+            side: BorderSide(
+              color: Theme.of(context).brightness == Brightness.light 
+                  ? AppColors.inkBlue.withValues(alpha: 0.4) 
+                  : AppColors.neonBlue.withValues(alpha: 0.4),
+            ),
+          ),
           child: Text(widget.copy.startNow),
         ),
       ],

@@ -207,10 +207,11 @@ class GlassmorphicContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final effectiveBorder = borderColor ?? Theme.of(context).colorScheme.primary;
+    final theme = Theme.of(context);
     final effectiveBg = backgroundColor ??
         (isDark
-            ? Theme.of(context).colorScheme.surfaceContainerLow.withValues(alpha: 0.1)
-            : Theme.of(context).colorScheme.surfaceContainerHigh.withValues(alpha: 0.2));
+            ? theme.colorScheme.surfaceContainerLow.withValues(alpha: 0.1)
+            : theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.45));
 
     return ClipRRect(
       borderRadius: borderRadius,
@@ -224,12 +225,12 @@ class GlassmorphicContainer extends StatelessWidget {
             color: effectiveBg,
             borderRadius: borderRadius,
             border: Border.all(
-              color: effectiveBorder.withValues(alpha: 0.2),
+              color: effectiveBorder.withValues(alpha: isDark ? 0.2 : 0.35),
               width: borderWidth,
             ),
             boxShadow: [
               BoxShadow(
-                color: effectiveBorder.withValues(alpha: 0.05),
+                color: effectiveBorder.withValues(alpha: isDark ? 0.05 : 0.08),
                 blurRadius: 20,
                 spreadRadius: 1,
               ),
@@ -265,6 +266,7 @@ class NeonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final effectiveGlowColor = glowColor ?? Theme.of(context).colorScheme.primary;
     final card = Container(
       padding: padding,
@@ -275,7 +277,15 @@ class NeonCard extends StatelessWidget {
           color: effectiveGlowColor.withValues(alpha: 0.2),
           width: 1,
         ),
-        boxShadow: AppColors.glowTiers[GlowTier.low]!(effectiveGlowColor),
+        boxShadow: isDark 
+            ? AppColors.glowTiers[GlowTier.low]!(effectiveGlowColor)
+            : [
+                BoxShadow(
+                  color: effectiveGlowColor.withValues(alpha: 0.12),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: child,
     );
@@ -414,18 +424,24 @@ class NeonText extends StatelessWidget {
           color: isDark ? scheme.primary : scheme.onSurface,
           fontSize: 18,
         );
-    final effectiveGlow = glowColor ?? (isDark ? scheme.primary : scheme.primary.withValues(alpha: 0.5));
+    final effectiveGlow = glowColor ?? (isDark ? scheme.primary : scheme.primary.withValues(alpha: 0.3));
 
     return Text(
       text,
       overflow: overflow,
       maxLines: maxLines,
       style: effectiveStyle.copyWith(
-        shadows: [
-          Shadow(color: effectiveGlow.withValues(alpha: 0.8), blurRadius: 2),
-          Shadow(color: effectiveGlow.withValues(alpha: 0.4), blurRadius: 10),
-          Shadow(color: effectiveGlow.withValues(alpha: 0.2), blurRadius: 24),
-        ],
+        shadows: isDark 
+          ? [
+              Shadow(color: effectiveGlow.withValues(alpha: 0.8), blurRadius: 2),
+              Shadow(color: effectiveGlow.withValues(alpha: 0.4), blurRadius: 10),
+              Shadow(color: effectiveGlow.withValues(alpha: 0.2), blurRadius: 24),
+            ]
+          : [
+              // Subtler "printing press" or blueprint bleed effect for light mode
+              Shadow(color: effectiveGlow.withValues(alpha: 0.35), blurRadius: 1),
+              Shadow(color: effectiveGlow.withValues(alpha: 0.1), blurRadius: 2),
+            ],
       ),
     );
   }
@@ -469,7 +485,9 @@ class _PulsingDotState extends State<PulsingDot>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveColor = widget.color ?? Theme.of(context).colorScheme.tertiary;
+    final theme = Theme.of(context);
+    final isLight = theme.brightness == Brightness.light;
+    final effectiveColor = widget.color ?? theme.colorScheme.tertiary;
 
     // Static dot when reduced motion is preferred
     if (MediaQuery.of(context).disableAnimations) {
@@ -486,8 +504,8 @@ class _PulsingDotState extends State<PulsingDot>
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, _) {
-        final opacity = 0.4 + (_controller.value * 0.6);
-        final glowRadius = 4.0 + (_controller.value * 8.0);
+        final opacity = isLight ? 0.6 + (_controller.value * 0.4) : 0.4 + (_controller.value * 0.6);
+        final glowRadius = (isLight ? 2.0 : 4.0) + (_controller.value * (isLight ? 4.0 : 8.0));
         return Container(
           width: widget.size,
           height: widget.size,
@@ -496,9 +514,9 @@ class _PulsingDotState extends State<PulsingDot>
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: effectiveColor.withValues(alpha: opacity * 0.5),
+                color: effectiveColor.withValues(alpha: opacity * (isLight ? 0.3 : 0.5)),
                 blurRadius: glowRadius,
-                spreadRadius: 1,
+                spreadRadius: isLight ? 0.5 : 1,
               ),
             ],
           ),
@@ -560,6 +578,7 @@ class NeonDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final effectiveColor = color ?? Theme.of(context).colorScheme.primary;
     return Container(
       height: height,
@@ -575,8 +594,8 @@ class NeonDivider extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: effectiveColor.withValues(alpha: 0.3),
-            blurRadius: 8,
+            color: effectiveColor.withValues(alpha: isDark ? 0.3 : 0.15),
+            blurRadius: isDark ? 8 : 4,
             spreadRadius: 0,
           ),
         ],
@@ -775,38 +794,41 @@ class BentoStatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveColor = color ?? Theme.of(context).colorScheme.primary;
+    final theme = Theme.of(context);
+    final isLight = theme.brightness == Brightness.light;
+    final effectiveColor = color ?? theme.colorScheme.primary;
     return NeonCard(
       glowColor: effectiveColor,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Icon(icon, color: effectiveColor.withValues(alpha: 0.7), size: 18),
-              if (subValue != null)
-                Flexible(
-                  child: Text(
-                    subValue!,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.rajdhani(
-                      color: effectiveColor.withValues(alpha: 0.5),
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerLeft,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(icon, color: effectiveColor.withValues(alpha: 0.7), size: 18),
+                if (subValue != null)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Text(
+                      subValue!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.rajdhani(
+                        color: effectiveColor.withValues(alpha: 0.5),
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
+              ],
+            ),
+            const SizedBox(height: 2),
+            Text(
               value,
               maxLines: 1,
               style: GoogleFonts.orbitron(
@@ -815,23 +837,19 @@ class BentoStatTile extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-          ),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
+            Text(
               label.toUpperCase(),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.rajdhani(
-                color: Colors.white70,
+                color: isLight ? theme.colorScheme.onSurfaceVariant : Colors.white70,
                 fontSize: 10,
                 letterSpacing: 1,
                 fontWeight: FontWeight.bold,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

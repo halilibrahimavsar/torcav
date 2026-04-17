@@ -22,6 +22,9 @@ class SignalProbeOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isLight = theme.brightness == Brightness.light;
+
     if (point == null) {
       return Positioned(
         left: 20,
@@ -61,7 +64,11 @@ class SignalProbeOverlay extends StatelessWidget {
           GestureDetector(
             onTap: onDismiss,
             behavior: HitTestBehavior.opaque,
-            child: Container(color: Colors.black.withValues(alpha: 0.2)),
+            child: Container(
+              color: isLight 
+                  ? theme.colorScheme.scrim.withValues(alpha: 0.12) 
+                  : theme.colorScheme.scrim.withValues(alpha: 0.4),
+            ),
           ),
           Center(
             child: Padding(
@@ -70,7 +77,7 @@ class SignalProbeOverlay extends StatelessWidget {
                 duration: const Duration(milliseconds: 400),
                 child: GlassmorphicContainer(
                   borderRadius: BorderRadius.circular(28),
-                  borderColor: color,
+                  borderColor: color.withValues(alpha: isLight ? 0.4 : 1.0),
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -106,9 +113,9 @@ class SignalProbeOverlay extends StatelessWidget {
                                 ),
                                 if (apName.isNotEmpty)
                                   Text(
-                                    apName,
+                                    apName.toUpperCase(),
                                     style: GoogleFonts.outfit(
-                                      color: AppColors.textMuted,
+                                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                                       fontSize: 11,
                                     ),
                                     overflow: TextOverflow.ellipsis,
@@ -117,9 +124,9 @@ class SignalProbeOverlay extends StatelessWidget {
                             ),
                           ),
                           IconButton(
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.close_rounded,
-                              color: AppColors.textMuted,
+                              color: theme.colorScheme.onSurface.withValues(alpha: isLight ? 0.6 : 0.45),
                             ),
                             onPressed: onDismiss,
                           ),
@@ -208,14 +215,19 @@ class ProbeDetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       children: [
-        Icon(icon, size: 13, color: AppColors.textMuted),
+        Icon(
+          icon, 
+          size: 13, 
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+        ),
         const SizedBox(width: 6),
         Text(
           label,
           style: GoogleFonts.orbitron(
-            color: AppColors.textMuted,
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
             fontSize: 9,
             letterSpacing: 1.1,
           ),
@@ -225,7 +237,7 @@ class ProbeDetailRow extends StatelessWidget {
           child: Text(
             value,
             style: GoogleFonts.outfit(
-              color: AppColors.textPrimary,
+              color: theme.colorScheme.onSurface,
               fontSize: 12,
             ),
             overflow: TextOverflow.ellipsis,

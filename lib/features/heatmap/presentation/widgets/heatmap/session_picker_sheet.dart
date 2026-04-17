@@ -23,6 +23,8 @@ class SessionPickerSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.read<HeatmapBloc>();
 
+    final theme = Theme.of(context);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,7 +34,7 @@ class SessionPickerSheet extends StatelessWidget {
           child: Text(
             copy.savedSurveysTitle,
             style: GoogleFonts.orbitron(
-              color: AppColors.neonCyan,
+              color: theme.colorScheme.primary,
               fontSize: 12,
               letterSpacing: 1.8,
             ),
@@ -44,7 +46,9 @@ class SessionPickerSheet extends StatelessWidget {
             child: Center(
               child: Text(
                 copy.noSavedSurveys,
-                style: GoogleFonts.outfit(color: AppColors.textMuted),
+                style: GoogleFonts.outfit(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                ),
               ),
             ),
           )
@@ -61,13 +65,15 @@ class SessionPickerSheet extends StatelessWidget {
                 );
 
                 return ListTile(
-                  leading: const Icon(
+                  leading: Icon(
                     Icons.thermostat_rounded,
-                    color: AppColors.neonCyan,
+                    color: theme.colorScheme.primary,
                   ),
                   title: Text(
                     session.name,
-                    style: GoogleFonts.outfit(color: AppColors.textPrimary),
+                    style: GoogleFonts.outfit(
+                      color: theme.colorScheme.onSurface,
+                    ),
                   ),
                   subtitle: Text(
                     copy.savedSurveySubtitle(
@@ -76,15 +82,17 @@ class SessionPickerSheet extends StatelessWidget {
                       _formatTimestamp(session.createdAt),
                     ),
                     style: GoogleFonts.outfit(
-                      color: AppColors.textMuted,
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                       fontSize: 12,
                     ),
                   ),
                   onTap: () => onSelect(session),
                   trailing: IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.delete_outline_rounded,
-                      color: AppColors.neonRed,
+                      color: Theme.of(context).brightness == Brightness.light 
+                          ? AppColors.inkRed 
+                          : AppColors.neonRed,
                     ),
                     tooltip: copy.deleteSurveyTooltip,
                     onPressed: () => bloc.deleteSession(session.id),

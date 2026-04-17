@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/l10n/locale_cubit.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/theme/theme_cubit.dart';
 import '../../../wifi_scan/domain/entities/scan_request.dart';
@@ -114,9 +113,8 @@ class _SettingsPageState extends State<SettingsPage> {
               glowColor: Theme.of(context).colorScheme.primary,
               glowIntensity: 0.04,
               padding: const EdgeInsets.all(14),
-              child: ValueListenableBuilder<ThemeMode>(
-                valueListenable: themeCubit,
-                builder: (context, mode, _) {
+              child: BlocBuilder<ThemeCubit, ThemeMode>(
+                builder: (context, mode) {
                   return Row(
                     children: [
                       _NeonIconCircle(
@@ -325,17 +323,17 @@ class _SettingsPageState extends State<SettingsPage> {
         children: [
           _themeButton(
             icon: Icons.dark_mode_rounded,
-            isSelected: themeCubit.value == ThemeMode.dark,
+            isSelected: themeCubit.state == ThemeMode.dark,
             onTap: () => themeCubit.setTheme(ThemeMode.dark),
           ),
           _themeButton(
             icon: Icons.light_mode_rounded,
-            isSelected: themeCubit.value == ThemeMode.light,
+            isSelected: themeCubit.state == ThemeMode.light,
             onTap: () => themeCubit.setTheme(ThemeMode.light),
           ),
           _themeButton(
             icon: Icons.brightness_auto_rounded,
-            isSelected: themeCubit.value == ThemeMode.system,
+            isSelected: themeCubit.state == ThemeMode.system,
             onTap: () => themeCubit.setTheme(ThemeMode.system),
           ),
         ],
@@ -582,8 +580,9 @@ class _LanguageOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentLocale = Localizations.localeOf(context);
+    final currentLocale = context.watch<LocaleCubit>().state;
     final isSelected = currentLocale.languageCode == locale.languageCode;
+    final secondary = Theme.of(context).colorScheme.secondary;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
@@ -601,12 +600,12 @@ class _LanguageOption extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               color:
                   isSelected
-                      ? AppColors.neonPurple.withValues(alpha: 0.1)
+                      ? secondary.withValues(alpha: 0.1)
                       : Colors.transparent,
               border:
                   isSelected
                       ? Border.all(
-                        color: AppColors.neonPurple.withValues(alpha: 0.3),
+                        color: secondary.withValues(alpha: 0.3),
                       )
                       : null,
             ),
@@ -616,7 +615,7 @@ class _LanguageOption extends StatelessWidget {
                   label,
                   style: GoogleFonts.rajdhani(
                         color: isSelected
-                            ? AppColors.neonPurple
+                            ? secondary
                             : Theme.of(context).colorScheme.onSurface,
                     fontSize: 16,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
@@ -626,7 +625,7 @@ class _LanguageOption extends StatelessWidget {
                 if (isSelected)
                   Icon(
                     Icons.check_circle_rounded,
-                    color: AppColors.neonPurple,
+                    color: secondary,
                     size: 20,
                   ),
               ],

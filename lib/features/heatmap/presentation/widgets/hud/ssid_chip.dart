@@ -25,7 +25,9 @@ class SsidChip extends StatelessWidget {
       },
       builder: (context, slice) {
         final tier = signalTierFor(slice.rssi);
-        final color = signalTierColor(tier);
+        final brightness = Theme.of(context).brightness;
+        final color = signalTierColor(tier, brightness);
+
         return GlassmorphicContainer(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           borderRadius: BorderRadius.circular(18),
@@ -47,7 +49,7 @@ class SsidChip extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.orbitron(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1.1,

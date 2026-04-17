@@ -77,6 +77,10 @@
     "@livePulse": {
         "description": "Dashboard live indicator."
     },
+    "liveLabel": "LIVE",
+    "@liveLabel": {
+        "description": "Short label for live status in AR HUD."
+    },
     "operationsLabel": "OPERATIONS",
     "@operationsLabel": {
         "description": "Dashboard section label."
@@ -1820,5 +1824,9 @@
     "netInfoGatewayTitle": "Default Gateway",
     "netInfoGatewayDesc": "The local IP address of your router. All your traffic passes through this point. If this changes unexpectedly, it could indicate a Man-in-the-Middle attack.",
     "dnsReadyStatus": "READY FOR ASSESSMENT",
-    "dnsIdleDescription": "Run a scan to verify DNS integrity and performance."
+    "dnsIdleDescription": "Run a scan to verify DNS integrity and performance.",
+    "liveLabel": "LIVE",
+    "@liveLabel": {
+        "description": "Live indicator label"
+    }
 }

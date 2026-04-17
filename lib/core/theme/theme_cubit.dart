@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 @lazySingleton
-class ThemeCubit extends ValueNotifier<ThemeMode> {
+class ThemeCubit extends Cubit<ThemeMode> {
   static const _key = 'theme_mode';
   final SharedPreferences _prefs;
 
@@ -13,22 +14,23 @@ class ThemeCubit extends ValueNotifier<ThemeMode> {
 
   void _load() {
     final saved = _prefs.getString(_key);
-    value = switch (saved) {
+    final mode = switch (saved) {
       'light' => ThemeMode.light,
       'dark' => ThemeMode.dark,
       _ => ThemeMode.system,
     };
+    emit(mode);
   }
 
   void setTheme(ThemeMode mode) {
-    value = mode;
     _prefs.setString(_key, mode.name);
+    emit(mode);
   }
 
   void toggle() {
-    setTheme(value == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark);
+    setTheme(state == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark);
   }
 
-  bool get isDark => value == ThemeMode.dark;
-  bool get isLight => value == ThemeMode.light;
+  bool get isDark => state == ThemeMode.dark;
+  bool get isLight => state == ThemeMode.light;
 }

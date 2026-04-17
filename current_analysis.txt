@@ -1,0 +1,20 @@
+Analyzing torcav...
+
+  error - lib/features/heatmap/presentation/widgets/ar_hud_overlay.dart:288:37 - The name 'ThemeCubit' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'ThemeCubit'. - non_type_as_type_argument
+  error - lib/features/heatmap/presentation/widgets/ar_hud_overlay.dart:310:46 - The name 'ThemeCubit' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'ThemeCubit'. - non_type_as_type_argument
+  error - lib/features/heatmap/presentation/widgets/heatmap_canvas.dart:638:61 - Undefined name 'isLight'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+  error - lib/features/heatmap/presentation/widgets/heatmap_canvas.dart:639:56 - Undefined name 'isLight'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+  error - lib/features/heatmap/presentation/widgets/hud/measurement_lock_banner.dart:86:24 - Undefined name 'theme'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+  error - lib/features/heatmap/presentation/widgets/hud/measurement_lock_banner.dart:114:42 - Undefined name 'theme'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+  error - lib/features/heatmap/presentation/widgets/hud/recording_status.dart:38:12 - The named parameter 'builder' is required, but there's no corresponding argument. Try adding the required argument. - missing_required_argument
+  error - lib/features/heatmap/presentation/widgets/hud/recording_status.dart:40:9 - Expected an identifier. - missing_identifier
+  error - lib/features/heatmap/presentation/widgets/hud/recording_status.dart:40:9 - Expected to find ')'. - expected_token
+  error - lib/features/heatmap/presentation/widgets/mini_heatmap_map.dart:165:40 - The getter 'liveLabel' isn't defined for the type 'AppLocalizations'. Try importing the library that defines 'liveLabel', correcting the name to the name of an existing getter, or defining a getter or field named 'liveLabel'. - undefined_getter
+warning - lib/features/heatmap/presentation/widgets/ar_hud_overlay.dart:4:8 - Unused import: 'package:torcav/core/theme/app_theme.dart'. Try removing the import directive. - unused_import
+warning - lib/features/heatmap/presentation/widgets/heatmap/heatmap_tutorial_overlay.dart:5:8 - Unused import: 'package:torcav/core/theme/app_theme.dart'. Try removing the import directive. - unused_import
+warning - lib/features/heatmap/presentation/widgets/heatmap/session_picker_sheet.dart:27:11 - The value of the local variable 'isLight' isn't used. Try removing the variable or using it. - unused_local_variable
+warning - lib/features/heatmap/presentation/widgets/hud/recording_status.dart:3:8 - Unused import: 'package:google_fonts/google_fonts.dart'. Try removing the import directive. - unused_import
+warning - lib/features/heatmap/presentation/widgets/hud/recording_status.dart:5:8 - Unused import: 'package:torcav/core/theme/app_theme.dart'. Try removing the import directive. - unused_import
+warning - lib/features/heatmap/presentation/widgets/hud/recording_status.dart:6:8 - Unused import: 'package:torcav/core/theme/neon_widgets.dart'. Try removing the import directive. - unused_import
+
+16 issues found.

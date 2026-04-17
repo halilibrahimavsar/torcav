@@ -69,6 +69,10 @@
     "@livePulse": {
         "description": "Dashboard live indicator."
     },
+    "liveLabel": "CANLI",
+    "@liveLabel": {
+        "description": "Short label for live status in AR HUD."
+    },
     "operationsLabel": "OPERASYONLAR",
     "@operationsLabel": {
         "description": "Dashboard section label."

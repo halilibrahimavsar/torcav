@@ -9,6 +9,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:torcav/core/theme/theme_cubit.dart';
+
 
 import 'package:torcav/core/di/injection.dart';
 import 'package:torcav/core/theme/app_theme.dart';
@@ -99,6 +101,10 @@ class _HeatmapViewState extends State<_HeatmapView> {
     return BlocBuilder<HeatmapBloc, HeatmapState>(
       builder: (context, state) {
         final bloc = context.read<HeatmapBloc>();
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
+        final isLight = theme.brightness == Brightness.light;
+        
         final isRecording = state.isRecording;
         final isScanning = isRecording && state.phase == ScanPhase.scanning;
         final isReviewing = state.phase == ScanPhase.reviewing;
@@ -135,11 +141,11 @@ class _HeatmapViewState extends State<_HeatmapView> {
                   context: context,
                   builder:
                       (context) => AlertDialog(
-                        backgroundColor: AppColors.deepBlack,
+                        backgroundColor: colorScheme.surface,
                         title: Text(
                           'End Survey?',
                           style: GoogleFonts.orbitron(
-                            color: AppColors.neonCyan,
+                            color: colorScheme.primary,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -148,7 +154,10 @@ class _HeatmapViewState extends State<_HeatmapView> {
                           isRecording
                               ? 'Your current survey data will be lost if you discard it. Save or Discard?'
                               : 'Exit session review?',
-                          style: GoogleFonts.outfit(color: Colors.white, fontSize: 14),
+                          style: GoogleFonts.outfit(
+                            color: colorScheme.onSurface,
+                            fontSize: 14,
+                          ),
                         ),
                         actions: [
                           TextButton(
@@ -156,7 +165,7 @@ class _HeatmapViewState extends State<_HeatmapView> {
                             child: Text(
                               'CANCEL',
                               style: GoogleFonts.orbitron(
-                                color: Colors.grey,
+                                color: isLight ? AppColors.textMutedLight : AppColors.textMuted,
                                 fontSize: 12,
                               ),
                             ),
@@ -170,7 +179,7 @@ class _HeatmapViewState extends State<_HeatmapView> {
                               child: Text(
                                 'SAVE',
                                 style: GoogleFonts.orbitron(
-                                  color: AppColors.neonGreen,
+                                  color: theme.colorScheme.primary,
                                   fontSize: 12,
                                 ),
                               ),
@@ -183,7 +192,7 @@ class _HeatmapViewState extends State<_HeatmapView> {
                             child: Text(
                               isRecording ? 'DISCARD' : 'EXIT',
                               style: GoogleFonts.orbitron(
-                                color: AppColors.neonRed,
+                                color: isLight ? AppColors.inkRed : AppColors.neonRed,
                                 fontSize: 12,
                               ),
                             ),
@@ -198,7 +207,7 @@ class _HeatmapViewState extends State<_HeatmapView> {
             }
           },
           child: Scaffold(
-            backgroundColor: AppColors.deepBlack,
+            backgroundColor: Colors.transparent,
             resizeToAvoidBottomInset: false,
             appBar:
                 isScanning
@@ -220,17 +229,17 @@ class _HeatmapViewState extends State<_HeatmapView> {
                         NeonText(
                           copy.pageTitle,
                           style: GoogleFonts.orbitron(
-                            color: AppColors.neonCyan,
+                            color: isLight ? AppColors.inkCyan : AppColors.neonCyan,
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1.6,
                           ),
-                          glowRadius: 8,
+                          glowRadius: isLight ? 4 : 8,
                         ),
                         Text(
                           copy.pageSubtitle,
                           style: GoogleFonts.outfit(
-                            color: AppColors.textSecondary,
+                            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                             fontSize: 11,
                           ),
                         ),
@@ -238,8 +247,16 @@ class _HeatmapViewState extends State<_HeatmapView> {
                     ),
                     actions: [
                       IconButton(
+                        icon: Icon(
+                          isLight ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+                        ),
+                        color: colorScheme.primary,
+                        tooltip: copy.themeToggleTooltip,
+                        onPressed: () => getIt<ThemeCubit>().toggle(),
+                      ),
+                      IconButton(
                         icon: const Icon(Icons.history_rounded),
-                        color: AppColors.neonCyan,
+                        color: colorScheme.primary,
                         tooltip: copy.historyTooltip,
                         onPressed: () => _showSessionsPicker(context, state.sessions, copy),
                       ),
@@ -345,17 +362,16 @@ class _HeatmapViewState extends State<_HeatmapView> {
         child: NewSessionDialog(bloc: bloc, copy: copy),
       ),
     );
-  }
-
-  void _showSessionsPicker(
+  }  void _showSessionsPicker(
     BuildContext context,
     List<HeatmapSession> sessions,
     HeatmapCopy copy,
   ) {
+    final theme = Theme.of(context);
     final bloc = context.read<HeatmapBloc>();
     showModalBottomSheet<void>(
       context: context,
-      backgroundColor: AppColors.deepBlack,
+      backgroundColor: theme.colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
       ),
@@ -402,46 +418,56 @@ class _HeatmapViewState extends State<_HeatmapView> {
     HeatmapSession session,
     HeatmapCopy copy,
   ) {
+    final theme = Theme.of(context);
+    final isLight = theme.brightness == Brightness.light;
     final controller = TextEditingController(text: session.name);
-    showDialog<String>(
+    final result = showDialog<String>(
       context: context,
       builder: (ctx) => BlocProvider.value(
         value: bloc,
         child: AlertDialog(
-          backgroundColor: AppColors.darkSurface,
+          backgroundColor: theme.colorScheme.surface,
           title: Text(
             copy.renameDialogTitle,
             style: GoogleFonts.orbitron(
-              color: AppColors.textPrimary,
+              color: theme.colorScheme.onSurface,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
           content: TextField(
             controller: controller,
-            style: GoogleFonts.outfit(color: AppColors.textPrimary),
+            style: GoogleFonts.outfit(color: theme.colorScheme.onSurface),
             decoration: InputDecoration(
               hintText: copy.sessionNameField,
-              hintStyle: TextStyle(color: AppColors.textMuted),
+              hintStyle: TextStyle(
+                color: isLight 
+                    ? AppColors.textMutedLight 
+                    : AppColors.textMuted,
+              ),
               enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: AppColors.neonCyan),
+                borderSide: BorderSide(color: theme.colorScheme.primary),
               ),
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: Text(copy.cancel, style: TextStyle(color: AppColors.textMuted)),
+              child: Text(
+                copy.cancel, 
+                style: TextStyle(color: isLight ? AppColors.textMutedLight : AppColors.textMuted),
+              ),
             ),
             TextButton(
               onPressed: () => Navigator.pop(ctx, controller.text),
-              child: Text(copy.save, style: TextStyle(color: AppColors.neonCyan)),
+              child: Text(copy.save, style: TextStyle(color: theme.colorScheme.primary)),
             ),
           ],
         ),
       ),
-    )
-.then((newName) {
+    );
+
+    result.then((newName) {
       if (newName != null && newName.isNotEmpty) {
         bloc.renameSession(newName);
       }

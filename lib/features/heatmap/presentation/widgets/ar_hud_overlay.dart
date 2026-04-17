@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:torcav/core/theme/app_theme.dart';
+import 'package:torcav/core/theme/theme_cubit.dart';
 import 'package:torcav/features/heatmap/domain/entities/survey_gate.dart';
 import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
@@ -103,24 +103,30 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                   const Spacer(),
                   IconButton(
                     onPressed: () => context.read<HeatmapBloc>().realignHeading(),
-                    icon: const Icon(Icons.explore_rounded, color: Colors.white),
+                    icon: const Icon(Icons.explore_rounded),
                     tooltip: 'Realign Compass',
                     constraints: const BoxConstraints(),
                     padding: const EdgeInsets.all(8),
                     style: IconButton.styleFrom(
-                      backgroundColor: Colors.black.withValues(alpha: 0.4),
+                      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh.withValues(
+                        alpha: Theme.of(context).brightness == Brightness.light ? 0.85 : 0.6,
+                      ),
+                      foregroundColor: Theme.of(context).colorScheme.onSurface,
                       shape: const CircleBorder(),
                     ),
                   ),
                   const SizedBox(width: 8),
                   IconButton(
                     onPressed: () => _showSettingsSheet(context),
-                    icon: const Icon(Icons.settings_rounded, color: Colors.white),
+                    icon: const Icon(Icons.settings_rounded),
                     tooltip: 'Settings',
                     constraints: const BoxConstraints(),
                     padding: const EdgeInsets.all(8),
                     style: IconButton.styleFrom(
-                      backgroundColor: Colors.black.withValues(alpha: 0.4),
+                      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh.withValues(
+                        alpha: Theme.of(context).brightness == Brightness.light ? 0.85 : 0.6,
+                      ),
+                      foregroundColor: Theme.of(context).colorScheme.onSurface,
                       shape: const CircleBorder(),
                     ),
                   ),
@@ -218,9 +224,9 @@ class _ArHudOverlayState extends State<ArHudOverlay>
 
   void _showSettingsSheet(BuildContext context) {
     final bloc = context.read<HeatmapBloc>();
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
-      backgroundColor: Colors.black.withValues(alpha: 0.9),
+      backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.95),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -235,12 +241,15 @@ class _ArHudOverlayState extends State<ArHudOverlay>
               children: [
                 Text(
                   'Heatmap Settings',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 Text(
                   'Auto-sampling Distance',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 ),
                 BlocBuilder<HeatmapBloc, HeatmapState>(
                   builder: (context, state) {
@@ -252,8 +261,8 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                           max: 2.5,
                           divisions: 8, // Steps of 0.25
                           label: '${state.autoSamplingDistance.toStringAsFixed(2)}m',
-                          activeColor: AppColors.neonCyan,
-                          inactiveColor: Colors.white24,
+                          activeColor: Theme.of(context).colorScheme.primary,
+                          inactiveColor: Theme.of(context).colorScheme.outlineVariant,
                           onChanged: (val) {
                             context.read<HeatmapBloc>().updateAutoSamplingDistance(val);
                           },
@@ -261,9 +270,50 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('0.5m', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white54)),
-                            Text('2.5m', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white54)),
+                            Text('0.5m', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
+                            Text('2.5m', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
                           ],
+                        ),
+                        const SizedBox(height: 24),
+                        Divider(color: Theme.of(context).colorScheme.outlineVariant),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Appearance',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        BlocBuilder<ThemeCubit, ThemeMode>(
+                          builder: (context, themeMode) {
+                            return SegmentedButton<ThemeMode>(
+                              segments: const [
+                                ButtonSegment<ThemeMode>(
+                                  value: ThemeMode.system,
+                                  icon: Icon(Icons.brightness_auto),
+                                  label: Text('Auto'),
+                                ),
+                                ButtonSegment<ThemeMode>(
+                                  value: ThemeMode.light,
+                                  icon: Icon(Icons.light_mode),
+                                  label: Text('Light'),
+                                ),
+                                ButtonSegment<ThemeMode>(
+                                  value: ThemeMode.dark,
+                                  icon: Icon(Icons.dark_mode),
+                                  label: Text('Dark'),
+                                ),
+                              ],
+                              selected: {themeMode},
+                              onSelectionChanged: (newSelection) {
+                                context.read<ThemeCubit>().setTheme(newSelection.first);
+                              },
+                              style: SegmentedButton.styleFrom(
+                                visualDensity: VisualDensity.compact,
+                              ),
+                            );
+                          },
                         ),
                         const SizedBox(height: 16),
                       ],

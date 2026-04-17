@@ -50,25 +50,17 @@ class HeatmapSummary {
 
   int? get signalForDisplay => currentRssi ?? averageRssi?.round();
 
-  Color get signalColor {
-    final signal = signalForDisplay;
-    if (signal == null) return AppColors.textSecondary;
-    if (signal >= -60) return AppColors.neonGreen;
-    if (signal >= -72) return AppColors.neonYellow;
-    return AppColors.neonRed;
-  }
+  /// Returns the color representing the current signal quality.
+  Color signalColor(Brightness brightness) => AppColors.getSignalColor(signalForDisplay, brightness);
 
-  Color get coverageColor {
-    if (!hasSamples) return AppColors.textMuted;
-    final avg = averageRssi ?? -80;
-    if (weakZoneCount >= math.max(2, sampleCount ~/ 3) || avg < -72) {
-      return AppColors.neonRed;
-    }
-    if (weakZoneCount > 0 || avg < -63) {
-      return AppColors.neonOrange;
-    }
-    return AppColors.neonGreen;
-  }
+  /// Returns the color representing the overall coverage quality.
+  Color coverageColor(Brightness brightness) => AppColors.getCoverageColor(
+        hasSamples,
+        averageRssi?.round(),
+        weakZoneCount,
+        sampleCount,
+        brightness,
+      );
 
   String signalDisplay(HeatmapCopy copy) {
     final signal = signalForDisplay;
@@ -147,6 +139,8 @@ class HeatmapCopy {
           : 'Outline, coverage, and weak zones';
   String get historyTooltip =>
       isTurkish ? 'Kayitli turlari ac' : 'Open saved surveys';
+  String get themeToggleTooltip =>
+      isTurkish ? 'Gorunumu degistir (Blueprint / Neon)' : 'Toggle view (Blueprint / Neon)';
   String get previewSessionName => isTurkish ? 'Onizleme' : 'Preview';
   String get recordingStatus => isTurkish ? 'KAYIT' : 'RECORDING';
   String get reviewingStatus => isTurkish ? 'INCELEME' : 'REVIEW';
@@ -412,16 +406,17 @@ class HeatmapCopy {
 
   String percent(double value) => '${(value.clamp(0.0, 1.0) * 100).round()}%';
 
-  Color guidanceColor(SurveyGuidance guidance) {
+  Color guidanceColor(SurveyGuidance guidance, Brightness brightness) {
+    final isLight = brightness == Brightness.light;
     switch (guidance.tone) {
       case SurveyTone.info:
-        return AppColors.neonCyan;
+        return isLight ? AppColors.inkCyan : AppColors.neonCyan;
       case SurveyTone.progress:
-        return AppColors.neonGreen;
+        return isLight ? AppColors.inkGreen : AppColors.neonGreen;
       case SurveyTone.caution:
-        return AppColors.neonOrange;
+        return isLight ? AppColors.inkOrange : AppColors.neonOrange;
       case SurveyTone.success:
-        return AppColors.neonBlue;
+        return isLight ? AppColors.inkBlue : AppColors.neonBlue;
     }
   }
 

@@ -38,61 +38,71 @@ class _RecordingStatusState extends State<RecordingStatus>
     return BlocSelector<HeatmapBloc, HeatmapState, int>(
       selector: (s) => s.currentSession?.points.length ?? 0,
       builder: (context, count) {
-        return GlassmorphicContainer(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          borderRadius: BorderRadius.circular(18),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              FadeTransition(
-                opacity: _pulseCtl,
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: AppColors.neonRed,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.neonRed,
-                        blurRadius: 6,
-                        spreadRadius: 1,
-                      ),
-                    ],
+        final brightness = Theme.of(context).brightness;
+        final isLight = brightness == Brightness.light;
+        final recColor = isLight ? AppColors.inkRed : AppColors.neonRed;
+        final primaryColor = Theme.of(context).colorScheme.primary;
+
+        return NeonGlowBox(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FadeTransition(
+                  opacity: _pulseCtl,
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: recColor,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: recColor.withValues(alpha: 0.6),
+                          blurRadius: 6,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'REC',
-                style: GoogleFonts.orbitron(
-                  color: Colors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 1.2,
+                const SizedBox(width: 8),
+                Text(
+                  'REC',
+                  style: GoogleFonts.orbitron(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.2,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Container(width: 1, height: 12, color: Colors.white24),
-              const SizedBox(width: 8),
-              Text(
-                '$count',
-                style: GoogleFonts.orbitron(
-                  color: AppColors.neonCyan,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
+                const SizedBox(width: 8),
+                Container(
+                  width: 1,
+                  height: 12,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
                 ),
-              ),
-              const SizedBox(width: 4),
-              Text(
-                'PTS',
-                style: GoogleFonts.orbitron(
-                  color: Colors.white54,
-                  fontSize: 8,
-                  fontWeight: FontWeight.w600,
+                const SizedBox(width: 8),
+                Text(
+                  '$count',
+                  style: GoogleFonts.orbitron(
+                    color: primaryColor,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(width: 4),
+                Text(
+                  'PTS',
+                  style: GoogleFonts.orbitron(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
+                    fontSize: 8,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

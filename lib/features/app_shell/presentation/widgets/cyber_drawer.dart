@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/theme/theme_cubit.dart';
 
@@ -196,9 +197,8 @@ class CyberDrawer extends StatelessWidget {
     final themeCubit = GetIt.I<ThemeCubit>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: ValueListenableBuilder<ThemeMode>(
-        valueListenable: themeCubit,
-        builder: (context, currentMode, _) {
+      child: BlocBuilder<ThemeCubit, ThemeMode>(
+        builder: (context, currentMode) {
           return Row(
             children: [
               _ThemeOption(

@@ -24,6 +24,12 @@ class AppColors {
   static const Color inkPurple = Color(0xFF4A148C);
   static const Color inkGreen = Color(0xFF1B5E20);
   static const Color inkRed = Color(0xFFB71C1C);
+  static const Color inkBlue = Color(0xFF0D47A1);
+  static const Color inkOrange = Color(0xFFC2410C);
+  static const Color inkYellow = Color(0xFFA16207);
+
+  /// Semantic alias for High Contrast Blue/Cyan
+  static Color get ink => inkCyan;
 
   // ── Surfaces & Depth ──
   static const Color deepBlack = Color(0xFF020206);
@@ -92,6 +98,33 @@ class AppColors {
   static const Color darkBg = deepBlack;
   static const Color darkBackground = deepBlack;
   static const Color primary = neonCyan;
+
+  /// Returns a theme-aware color for signal strength.
+  static Color getSignalColor(int? signal, Brightness brightness) {
+    final isDark = brightness == Brightness.dark;
+    if (signal == null) return isDark ? textSecondary : textSecondaryLight;
+    if (signal >= -60) return isDark ? neonGreen : inkGreen;
+    if (signal >= -72) return isDark ? neonYellow : inkYellow;
+    return isDark ? neonRed : inkRed;
+  }
+
+  /// Returns a theme-aware color for coverage health.
+  static Color getCoverageColor(bool hasSamples, int? averageRssi, int weakZoneCount, int sampleCount, Brightness brightness) {
+    final isDark = brightness == Brightness.dark;
+    if (!hasSamples) return isDark ? textMuted : textMutedLight;
+    
+    final avg = averageRssi ?? -80;
+    // Critical failure
+    if (weakZoneCount >= (sampleCount / 3).floor().clamp(2, 100) || avg < -72) {
+      return isDark ? neonRed : inkRed;
+    }
+    // Warning state
+    if (weakZoneCount > 0 || avg < -63) {
+      return isDark ? neonOrange : inkOrange;
+    }
+    // Healthy state
+    return isDark ? neonGreen : inkGreen;
+  }
 }
 
 // ── Spacing Tokens ───────────────────────────────────────────────────
@@ -247,7 +280,7 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: scheme,
       brightness: Brightness.light,
-      scaffoldBackgroundColor: AppColors.lightBg,
+      scaffoldBackgroundColor: Colors.transparent,
       textTheme: _textTheme(scheme),
       fontFamily: GoogleFonts.outfit().fontFamily,
       appBarTheme: _appBarTheme(scheme),
@@ -276,9 +309,10 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.inkCyan,
-          foregroundColor: AppColors.softWhite,
+          backgroundColor: scheme.primary,
+          foregroundColor: scheme.onPrimary,
           elevation: 2,
+          shadowColor: scheme.primary.withValues(alpha: 0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
@@ -291,7 +325,7 @@ class AppTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.neonCyan,
+          foregroundColor: scheme.primary,
           textStyle: GoogleFonts.outfit(
             fontWeight: FontWeight.w600,
             fontSize: 15,
@@ -301,22 +335,22 @@ class AppTheme {
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith((states) {
           return states.contains(WidgetState.selected)
-              ? AppColors.inkCyan
+              ? scheme.primary
               : AppColors.textMutedLight;
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {
           return states.contains(WidgetState.selected)
-              ? AppColors.inkCyan.withValues(alpha: 0.2)
+              ? scheme.primary.withValues(alpha: 0.2)
               : AppColors.lightSurfaceSecondary;
         }),
       ),
-      progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: AppColors.inkCyan,
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: scheme.primary,
         linearTrackColor: AppColors.lightSurfaceSecondary,
       ),
       tabBarTheme: TabBarThemeData(
-        indicatorColor: AppColors.inkCyan,
-        labelColor: AppColors.inkCyan,
+        indicatorColor: scheme.primary,
+        labelColor: scheme.primary,
         unselectedLabelColor: AppColors.textMutedLight,
         dividerColor: Colors.transparent,
         labelStyle: GoogleFonts.orbitron(

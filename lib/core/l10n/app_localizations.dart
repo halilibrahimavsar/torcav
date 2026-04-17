@@ -195,6 +195,12 @@ abstract class AppLocalizations {
   /// **'LIVE PULSE'**
   String get livePulse;
 
+  /// Live indicator label
+  ///
+  /// In en, this message translates to:
+  /// **'LIVE'**
+  String get liveLabel;
+
   /// Dashboard section label.
   ///
   /// In en, this message translates to:

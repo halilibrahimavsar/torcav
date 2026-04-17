@@ -144,6 +144,7 @@ class _HeatmapCanvasState extends State<HeatmapCanvas> {
                     RepaintBoundary(
                       child: CustomPaint(
                         painter: _StaticHeatmapPainter(
+                          theme: Theme.of(context),
                           points: points,
                           viewport: viewport,
                           showPath: widget.showPath,
@@ -164,6 +165,7 @@ class _HeatmapCanvasState extends State<HeatmapCanvas> {
                       RepaintBoundary(
                         child: CustomPaint(
                           painter: _PositionPainter(
+                            theme: Theme.of(context),
                             position: widget.currentPosition!,
                             heading: widget.currentHeading ?? 0.0,
                             viewport: viewport,
@@ -194,7 +196,7 @@ class _HeatmapCanvasState extends State<HeatmapCanvas> {
 
             // HUD Overlay (Vignette & Framing)
             if (!widget.isMiniMap)
-              const IgnorePointer(child: _HudOverlay()),
+              IgnorePointer(child: _HudOverlay(theme: Theme.of(context))),
           ],
           ),
         );
@@ -220,15 +222,21 @@ class _FitButton extends StatelessWidget {
         width: 34,
         height: 34,
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.45),
+          color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.85),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: Colors.white.withValues(alpha: 0.18),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
+              blurRadius: 4,
+            ),
+          ],
         ),
-        child: const Icon(
+        child: Icon(
           Icons.fit_screen_rounded,
-          color: Colors.white70,
+          color: Theme.of(context).colorScheme.primary,
           size: 18,
         ),
       ),
@@ -241,6 +249,7 @@ class _FitButton extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 class _StaticHeatmapPainter extends CustomPainter {
+  final ThemeData theme;
   final List<HeatmapPoint> points;
   final _Viewport viewport;
   final bool showPath;
@@ -251,6 +260,7 @@ class _StaticHeatmapPainter extends CustomPainter {
   final SparseRegion? sparseRegion;
 
   _StaticHeatmapPainter({
+    required this.theme,
     required this.points,
     required this.viewport,
     required this.showPath,
@@ -296,7 +306,7 @@ class _StaticHeatmapPainter extends CustomPainter {
     // This visually signals that the data is "under-baked"
     final paint =
         Paint()
-          ..color = Colors.black.withValues(alpha: 0.25)
+          ..color = theme.colorScheme.surface.withValues(alpha: 0.25)
           ..style = PaintingStyle.fill;
 
     final region = sparseRegion;
@@ -328,7 +338,7 @@ class _StaticHeatmapPainter extends CustomPainter {
           ..shader = ui.Gradient.linear(
             tintRect.center,
             tintRect.bottomCenter, // Dummy start/end
-            [Colors.black.withValues(alpha: 0.4), Colors.transparent],
+            [theme.colorScheme.surface.withValues(alpha: 0.45), Colors.transparent],
           ),
       );
     }
@@ -381,7 +391,7 @@ class _StaticHeatmapPainter extends CustomPainter {
         centre,
         2.4,
         Paint()
-          ..color = Colors.white.withValues(alpha: 0.8)
+          ..color = theme.colorScheme.onSurface.withValues(alpha: 0.8)
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.2),
       );
     }
@@ -397,7 +407,7 @@ class _StaticHeatmapPainter extends CustomPainter {
     // Base trail — faded polyline for all older segments.
     final basePaint =
         Paint()
-          ..color = Colors.white.withValues(alpha: 0.28)
+          ..color = theme.colorScheme.onSurface.withValues(alpha: 0.28)
           ..strokeWidth = 1.8
           ..style = PaintingStyle.stroke
           ..strokeCap = StrokeCap.round
@@ -421,7 +431,7 @@ class _StaticHeatmapPainter extends CustomPainter {
     if (points.length >= 2) {
       final recentPaint =
           Paint()
-            ..color = const Color(0xFF00E5FF).withValues(alpha: 0.85)
+            ..color = theme.colorScheme.primary.withValues(alpha: 0.85)
             ..strokeWidth = isMiniMap ? 3.2 : 2.6
             ..style = PaintingStyle.stroke
             ..strokeCap = StrokeCap.round
@@ -444,7 +454,7 @@ class _StaticHeatmapPainter extends CustomPainter {
     canvas.drawCircle(
       firstPt,
       5.0,
-      Paint()..color = const Color(0xFF39FF14).withValues(alpha: 0.9),
+      Paint()..color = theme.colorScheme.primary.withValues(alpha: 0.9),
     );
 
     final last =
@@ -453,7 +463,7 @@ class _StaticHeatmapPainter extends CustomPainter {
       last,
       6.5,
       Paint()
-        ..color = Colors.white.withValues(alpha: 0.92)
+        ..color = theme.colorScheme.onSurface.withValues(alpha: 0.92)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2.2,
     );
@@ -464,11 +474,14 @@ class _StaticHeatmapPainter extends CustomPainter {
   // -------------------------------------------------------------------------
 
   void _drawFlags(Canvas canvas, List<HeatmapPoint> points) {
+    final isLight = theme.brightness == Brightness.light;
+    final flagColor = isLight ? AppColors.inkRed : theme.colorScheme.error;
+
     final fill = Paint()
-      ..color = const Color(0xFFFF5F57)
+      ..color = flagColor
       ..style = PaintingStyle.fill;
     final stroke = Paint()
-      ..color = Colors.white.withValues(alpha: 0.92)
+      ..color = theme.colorScheme.onSurface.withValues(alpha: 0.95)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.8;
 
@@ -478,7 +491,7 @@ class _StaticHeatmapPainter extends CustomPainter {
         center,
         10,
         Paint()
-          ..color = const Color(0xFFFF5F57).withValues(alpha: 0.22)
+          ..color = flagColor.withValues(alpha: 0.22)
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10),
       );
       final path =
@@ -498,14 +511,15 @@ class _StaticHeatmapPainter extends CustomPainter {
   // -------------------------------------------------------------------------
 
   void _drawGrid(Canvas canvas, Size size) {
+    final isLight = theme.brightness == Brightness.light;
     final gridPaint =
         Paint()
-          ..color = Colors.white.withValues(alpha: 0.04)
+          ..color = theme.colorScheme.onSurface.withValues(alpha: 0.05)
           ..strokeWidth = 0.6;
 
     final techGridPaint =
         Paint()
-          ..color = const Color(0xFF00E5FF).withValues(alpha: 0.025)
+          ..color = theme.colorScheme.primary.withValues(alpha: isLight ? 0.12 : 0.08)
           ..strokeWidth = 1.2;
 
     final stepMeters = _gridStepMeters(viewport.scale);
@@ -537,7 +551,7 @@ class _StaticHeatmapPainter extends CustomPainter {
       origin,
       4,
       Paint()
-        ..color = Colors.white.withValues(alpha: 0.12)
+        ..color = theme.colorScheme.onSurface.withValues(alpha: 0.12)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 0.8,
     );
@@ -571,7 +585,7 @@ class _StaticHeatmapPainter extends CustomPainter {
 
     final linePaint =
         Paint()
-          ..color = Colors.white.withValues(alpha: 0.75)
+          ..color = theme.colorScheme.onSurface.withValues(alpha: 0.75)
           ..strokeWidth = 1.5
           ..strokeCap = StrokeCap.square;
 
@@ -592,7 +606,7 @@ class _StaticHeatmapPainter extends CustomPainter {
       '$barMeters m',
       Offset((left + right) / 2, bottom - 12),
       GoogleFonts.outfit(
-        color: Colors.white.withValues(alpha: 0.75),
+        color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
         fontSize: 10,
         fontWeight: FontWeight.w600,
       ),
@@ -620,15 +634,16 @@ class _StaticHeatmapPainter extends CustomPainter {
       barH + (padding * 2) + 20,
     );
     
+    final isLight = theme.brightness == Brightness.light;
     final platePaint = Paint()
-      ..color = Colors.black.withValues(alpha: 0.35)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
+      ..color = theme.colorScheme.surface.withValues(alpha: isLight ? 0.75 : 0.45)
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, isLight ? 1 : 3);
     canvas.drawRRect(RRect.fromRectAndRadius(plateRect, const Radius.circular(12)), platePaint);
     
     canvas.drawRRect(
       RRect.fromRectAndRadius(plateRect, const Radius.circular(12)),
       Paint()
-        ..color = Colors.white.withValues(alpha: 0.08)
+        ..color = theme.colorScheme.onSurface.withValues(alpha: 0.08)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 0.5,
     );
@@ -657,13 +672,13 @@ class _StaticHeatmapPainter extends CustomPainter {
     canvas.drawRRect(
       RRect.fromRectAndRadius(rect, const Radius.circular(4)),
       Paint()
-        ..color = Colors.white.withValues(alpha: 0.15)
+        ..color = theme.colorScheme.onSurface.withValues(alpha: 0.15)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 0.8,
     );
 
     final labelStyle = GoogleFonts.outfit(
-      color: Colors.white.withValues(alpha: 0.85),
+      color: theme.colorScheme.onSurface.withValues(alpha: 0.85),
       fontSize: 9,
       fontWeight: FontWeight.w500,
     );
@@ -674,7 +689,7 @@ class _StaticHeatmapPainter extends CustomPainter {
       canvas,
       '${(minRssi + maxRssi) ~/ 2}',
       Offset(tickX, top + barH / 2 - 5),
-      labelStyle.copyWith(color: Colors.white.withValues(alpha: 0.6)),
+      labelStyle.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
     );
     _drawText(canvas, '$minRssi', Offset(tickX, top + barH - 10), labelStyle);
 
@@ -683,7 +698,7 @@ class _StaticHeatmapPainter extends CustomPainter {
       'dBm',
       Offset(marginLeft + barW / 2, top - 22),
       GoogleFonts.orbitron(
-        color: AppColors.neonCyan.withValues(alpha: 0.8),
+        color: theme.colorScheme.primary.withValues(alpha: 0.8),
         fontSize: 12,
         fontWeight: FontWeight.w900,
         letterSpacing: 2.0,
@@ -697,17 +712,29 @@ class _StaticHeatmapPainter extends CustomPainter {
   // -------------------------------------------------------------------------
 
   Color _signalColor(int rssi) {
+    if (rssi == 0) return Colors.transparent;
+    
     final range = (maxRssi - minRssi).abs();
     final normalized =
         range == 0 ? 0.5 : ((rssi - minRssi) / range).clamp(0.0, 1.0);
 
-    const stops = [
-      Color(0xFFFF3B30),
-      Color(0xFFFF9F0A),
-      Color(0xFFFFD60A),
-      Color(0xFF7DFF60),
-      Color(0xFF00E676),
-    ];
+    final isLight = theme.brightness == Brightness.light;
+    final stops = isLight
+        ? const [
+            AppColors.inkRed,
+            AppColors.inkOrange,
+            AppColors.inkYellow,
+            Color(0xFF7CB342), // Deeper ink lime
+            AppColors.inkGreen,
+          ]
+        : const [
+            AppColors.neonRed,
+            AppColors.neonOrange,
+            AppColors.neonYellow,
+            Color(0xFF7DFF60), // Neon Lime
+            AppColors.neonGreen,
+          ];
+
     final scaled = normalized * (stops.length - 1);
     final index = scaled.floor().clamp(0, stops.length - 2);
     final fraction = scaled - index;
@@ -755,11 +782,13 @@ class _StaticHeatmapPainter extends CustomPainter {
 // ---------------------------------------------------------------------------
 
 class _PositionPainter extends CustomPainter {
+  final ThemeData theme;
   final Offset position;
   final double heading;
   final _Viewport viewport;
 
   const _PositionPainter({
+    required this.theme,
     required this.position,
     required this.heading,
     required this.viewport,
@@ -774,7 +803,7 @@ class _PositionPainter extends CustomPainter {
       center,
       14,
       Paint()
-        ..color = const Color(0xFF00E5FF).withValues(alpha: 0.25)
+        ..color = theme.colorScheme.primary.withValues(alpha: 0.25)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12),
     );
 
@@ -782,7 +811,7 @@ class _PositionPainter extends CustomPainter {
     canvas.drawCircle(
       center,
       6.0,
-      Paint()..color = const Color(0xFF39FF14).withValues(alpha: 0.9),
+      Paint()..color = theme.colorScheme.primary.withValues(alpha: 0.95),
     );
 
     // Directional cone (Premium HUD style)
@@ -806,8 +835,8 @@ class _PositionPainter extends CustomPainter {
           Offset.zero,
           const Offset(0, -70),
           [
-            const Color(0xFF00E5FF).withValues(alpha: 0.35),
-            const Color(0xFF00E5FF).withValues(alpha: 0.05),
+            theme.colorScheme.primary.withValues(alpha: 0.4),
+            theme.colorScheme.primary.withValues(alpha: 0.05),
           ],
         )
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8),
@@ -822,7 +851,7 @@ class _PositionPainter extends CustomPainter {
         ..lineTo(-6, 4)
         ..close(),
       Paint()
-        ..color = const Color(0xFF00E5FF)
+        ..color = theme.colorScheme.primary
         ..style = PaintingStyle.fill,
     );
     canvas.restore();
@@ -1015,19 +1044,21 @@ class _WorldBounds {
 // ---------------------------------------------------------------------------
 
 class _HudOverlay extends StatelessWidget {
-  const _HudOverlay();
+  const _HudOverlay({required this.theme});
+  final ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
-    return const CustomPaint(
-      painter: _HudPainter(),
-      child: SizedBox.expand(),
+    return CustomPaint(
+      painter: _HudPainter(theme: theme),
+      child: const SizedBox.expand(),
     );
   }
 }
 
 class _HudPainter extends CustomPainter {
-  const _HudPainter();
+  const _HudPainter({required this.theme});
+  final ThemeData theme;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1036,6 +1067,7 @@ class _HudPainter extends CustomPainter {
   }
 
   void _drawVignette(Canvas canvas, Size size) {
+    final isLight = theme.brightness == Brightness.light;
     final rect = Offset.zero & size;
     final paint = Paint()
       ..shader = ui.Gradient.radial(
@@ -1043,8 +1075,8 @@ class _HudPainter extends CustomPainter {
         size.longestSide * 0.8,
         [
           Colors.transparent,
-          Colors.black.withValues(alpha: 0.15),
-          Colors.black.withValues(alpha: 0.45),
+          theme.colorScheme.surface.withValues(alpha: isLight ? 0.1 : 0.2),
+          theme.colorScheme.surface.withValues(alpha: isLight ? 0.3 : 0.5),
         ],
         [0.4, 0.85, 1.0],
       );
@@ -1053,7 +1085,7 @@ class _HudPainter extends CustomPainter {
 
   void _drawCornerBrackets(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = AppColors.neonCyan.withValues(alpha: 0.22)
+      ..color = theme.colorScheme.primary.withValues(alpha: 0.22)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.2;
 

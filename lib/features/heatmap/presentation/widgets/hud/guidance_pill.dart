@@ -18,17 +18,20 @@ class GuidancePill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = surveyToneColor(tone);
+    final brightness = Theme.of(context).brightness;
+    final isLight = brightness == Brightness.light;
+    final color = surveyToneColor(tone, brightness);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.7),
+        color: (isLight ? Colors.white : Colors.black).withValues(alpha: 0.75),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: color.withValues(alpha: 0.5),
           width: 1.2,
         ),
+
         boxShadow: [
           BoxShadow(
             color: color.withValues(alpha: 0.15),

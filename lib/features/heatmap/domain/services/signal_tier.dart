@@ -39,29 +39,32 @@ String signalTierLabel(SignalTier tier) {
   }
 }
 
-/// Tier → accent color from the neon palette.
-Color signalTierColor(SignalTier tier) {
+/// Tier → accent color. Supports both dark (neon) and light (ink) themes.
+Color signalTierColor(SignalTier tier, [Brightness brightness = Brightness.dark]) {
+  final isLight = brightness == Brightness.light;
   switch (tier) {
     case SignalTier.excellent:
-      return AppColors.neonGreen;
+      return isLight ? AppColors.inkGreen : AppColors.neonGreen;
     case SignalTier.good:
-      return AppColors.neonCyan;
+      return isLight ? AppColors.inkCyan : AppColors.neonCyan;
     case SignalTier.fair:
-      return AppColors.neonYellow;
+      return isLight ? AppColors.inkYellow : AppColors.neonYellow;
     case SignalTier.weak:
-      return AppColors.neonOrange;
+      return isLight ? AppColors.inkOrange : AppColors.neonOrange;
     case SignalTier.poor:
-      return AppColors.neonRed;
+      return isLight ? AppColors.inkRed : AppColors.neonRed;
   }
 }
 
-/// Smooth gradient version used for gauges/spheres where a binned tier
-/// would look blocky. Red at -90 dBm → green at -35 dBm, clamped.
-Color signalGradientColor(int rssi) {
+/// Smooth gradient version used for gauges/spheres.
+/// Now theme-aware to ensure visibility against light/dark backgrounds.
+Color signalGradientColor(int rssi, [Brightness brightness = Brightness.dark]) {
   final normalized = ((rssi + 90) / 55).clamp(0.0, 1.0);
-  return Color.lerp(
-    const Color(0xFFFF3B30),
-    const Color(0xFF00E676),
-    normalized,
-  )!;
+  final isLight = brightness == Brightness.light;
+
+  final lowColor = isLight ? AppColors.inkRed : const Color(0xFFFF3B30);
+  final highColor = isLight ? AppColors.inkGreen : const Color(0xFF00E676);
+
+  return Color.lerp(lowColor, highColor, normalized)!;
 }
+

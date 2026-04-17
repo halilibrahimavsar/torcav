@@ -33,7 +33,12 @@ class HeatmapCompass extends StatelessWidget {
       return SizedBox(
         width: size,
         height: size,
-        child: CustomPaint(painter: _CompassPainter(heading: heading!)),
+        child: CustomPaint(
+          painter: _CompassPainter(
+            heading: heading!,
+            theme: Theme.of(context),
+          ),
+        ),
       );
     }
     return BlocSelector<HeatmapBloc, HeatmapState, double>(
@@ -42,7 +47,12 @@ class HeatmapCompass extends StatelessWidget {
         return SizedBox(
           width: size,
           height: size,
-          child: CustomPaint(painter: _CompassPainter(heading: resolvedHeading)),
+          child: CustomPaint(
+            painter: _CompassPainter(
+              heading: resolvedHeading,
+              theme: Theme.of(context),
+            ),
+          ),
         );
       },
     );
@@ -50,14 +60,19 @@ class HeatmapCompass extends StatelessWidget {
 }
 
 class _CompassPainter extends CustomPainter {
-  _CompassPainter({required this.heading});
+  _CompassPainter({
+    required this.heading,
+    required this.theme,
+  });
 
   final double heading;
+  final ThemeData theme;
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 - 4;
+    final isLight = theme.brightness == Brightness.light;
 
     // 1. Fixed Elements (Background + Lubber Line)
     
@@ -67,21 +82,21 @@ class _CompassPainter extends CustomPainter {
         center,
         radius,
         [
-          Colors.black.withValues(alpha: 0.8),
-          Colors.black.withValues(alpha: 0.4),
+          theme.colorScheme.surface.withValues(alpha: isLight ? 0.95 : 0.8),
+          theme.colorScheme.surface.withValues(alpha: isLight ? 0.6 : 0.4),
         ],
       );
     canvas.drawCircle(center, radius, bgPaint);
 
     final outerRingPaint = Paint()
-      ..color = AppColors.neonCyan.withValues(alpha: 0.15)
+      ..color = theme.colorScheme.primary.withValues(alpha: isLight ? 0.25 : 0.15)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3;
     canvas.drawCircle(center, radius, outerRingPaint);
 
     // Fixed Lubber Line (Top indicator)
     final lubberPaint = Paint()
-      ..color = const Color(0xFFFFD60A) // Warning Amber
+      ..color = isLight ? theme.colorScheme.secondary : const Color(0xFFFFD60A) // Warning Amber or secondary
       ..style = PaintingStyle.fill;
     final lubberPath = Path()
       ..moveTo(center.dx - 3, 2)
@@ -97,7 +112,7 @@ class _CompassPainter extends CustomPainter {
     canvas.translate(-center.dx, -center.dy);
 
     final dialPaint = Paint()
-      ..color = AppColors.neonCyan.withValues(alpha: 0.6)
+      ..color = theme.colorScheme.primary.withValues(alpha: isLight ? 0.8 : 0.6)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.2;
 
@@ -109,8 +124,8 @@ class _CompassPainter extends CustomPainter {
       
       final tickLen = isCardinal ? 8.0 : (isMajor ? 5.0 : 3.0);
       dialPaint.color = isCardinal 
-          ? AppColors.neonCyan 
-          : AppColors.neonCyan.withValues(alpha: 0.3);
+          ? theme.colorScheme.primary 
+          : theme.colorScheme.primary.withValues(alpha: 0.3);
       
       final inner = center + Offset(math.sin(angle) * (radius - tickLen), -math.cos(angle) * (radius - tickLen));
       final outer = center + Offset(math.sin(angle) * radius, -math.cos(angle) * radius);
@@ -152,7 +167,9 @@ class _CompassPainter extends CustomPainter {
       text: TextSpan(
         text: text,
         style: GoogleFonts.orbitron(
-          color: isBold ? Colors.white : Colors.white.withValues(alpha: 0.6),
+          color: isBold 
+              ? theme.colorScheme.onSurface 
+              : theme.colorScheme.onSurface.withValues(alpha: 0.6),
           fontSize: fontSize,
           fontWeight: isBold ? FontWeight.w900 : FontWeight.normal,
         ),

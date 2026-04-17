@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/neon_widgets.dart';
@@ -57,9 +58,8 @@ class _ProfileHubPageState extends State<ProfileHubPage> {
     final locale = Localizations.localeOf(context);
     final latestSnapshot = getIt<ScanSessionStore>().latest;
 
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: getIt<ThemeCubit>(),
-      builder: (context, themeMode, _) {
+    return BlocBuilder<ThemeCubit, ThemeMode>(
+      builder: (context, themeMode) {
         final statusLabel =
             _loading
                 ? l10n.loading

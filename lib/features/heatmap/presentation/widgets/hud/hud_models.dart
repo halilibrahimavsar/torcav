@@ -11,18 +11,21 @@ export 'package:torcav/features/heatmap/domain/services/survey_guidance_service.
     show SparseRegion, SurveyTone;
 
 /// Color mapping for survey tones used in the HUD.
-Color surveyToneColor(SurveyTone tone) {
+/// Color mapping for survey tones used in the HUD.
+Color surveyToneColor(SurveyTone tone, [Brightness brightness = Brightness.dark]) {
+  final isLight = brightness == Brightness.light;
   switch (tone) {
     case SurveyTone.info:
-      return AppColors.neonCyan;
+      return isLight ? AppColors.inkCyan : AppColors.neonCyan;
     case SurveyTone.progress:
-      return AppColors.neonYellow;
+      return isLight ? AppColors.inkYellow : AppColors.neonYellow;
     case SurveyTone.caution:
-      return AppColors.neonOrange;
+      return isLight ? AppColors.inkOrange : AppColors.neonOrange;
     case SurveyTone.success:
-      return AppColors.neonGreen;
+      return isLight ? AppColors.inkGreen : AppColors.neonGreen;
   }
 }
+
 
 /// Internal data classes (slices) for the AR HUD components to facilitate
 /// granular BlocSelectors and maintain clean state propagation.
