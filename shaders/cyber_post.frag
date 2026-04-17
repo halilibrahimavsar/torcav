@@ -24,16 +24,17 @@ float hash(vec2 p) {
 
 // ── Height Mapping (Matching CustomPainter logic) ──
 float getHeight(vec2 id, float t) {
-    // Exact frequencies from the "Premium" CustomPainter version
-    float w1 = sin((id.x * 0.4) + (t * 1.5));
-    float w2 = cos((id.y * 0.5) + (t * 1.1));
-    float w3 = sin(length(id * 0.35) - (t * 2.0));
+    // Reduced frequencies for "Slow & Large" waves
+    float w1 = sin((id.x * 0.35) + (t * 1.2));
+    float w2 = cos((id.y * 0.45) + (t * 0.9));
+    float w3 = sin(length(id * 0.3) - (t * 1.5));
     
     // Composite wave normalization
     float h = ((w1 + w2 + w3) / 3.0 + 1.0) / 2.0;
     
-    // Smoothstep for the "pop" effect
+    // Slightly more aggressive curve for the "pop" effect
     h = h * h * (3.0 - 2.0 * h);
+    h = pow(h, 1.15); // Accentuate the peaks
     
     // Velocity interaction (subtle ripple acceleration)
     return h * (1.0 + uVelocity * 0.5);
@@ -45,10 +46,10 @@ void main() {
     vec2 aspectUv = (FlutterFragCoord().xy - 0.5 * uSize) / min(uSize.x, uSize.y);
     bool lightMode = uIsLight > 0.5;
 
-    float t = uTime * 1.0; 
+    // Slowed down internal clock for "one bit slower" feel
+    float t = uTime * 0.75; 
 
     // ── Grid Scaling (Matching 75.0px box size vibe) ──
-    // On a typical 400px width, scale ~5.0 gives ~80px boxes.
     float gridScale = 5.5; 
     vec2 gUv = aspectUv * gridScale;
     vec2 id = floor(gUv);
@@ -57,31 +58,29 @@ void main() {
     // ── 3D Surface Elevation ──
     float h = getHeight(id, t);
     
-    // Neomorphic parameters tuned for "Tactile" feel
-    float boxHalfSize = 0.40; // Box relative size
+    // Neomorphic parameters tuned for "Deeper" feel
+    float boxHalfSize = 0.40; 
     float corner = 0.12;
     float dist = sdRoundedRect(fUv, vec2(boxHalfSize), corner);
     
-    // Dynamic offsets based on elevation (Matching CustomPainter offsets)
-    // Offset ramp: 3.0 -> 15.0px in UI space. Here normalized:
+    // Dynamic offsets increased for more "Prominent" pop
     float baseOffset = 0.012;
-    float highOffset = 0.045;
+    float highOffset = 0.065; // Increased from 0.045
     vec2 shadowOffset = vec2(mix(baseOffset, highOffset, h));
 
     // ── Color Schemes (Synced with AppColors) ──
     vec3 color;
-    vec3 bgColor = lightMode ? vec3(0.933, 0.949, 0.968) : vec3(0.015, 0.019, 0.023); // AppColors.lightBg vs deepBlack
+    vec3 bgColor = lightMode ? vec3(0.933, 0.949, 0.968) : vec3(0.015, 0.019, 0.023); 
     vec3 surfaceColor;
     
     if (lightMode) {
-        // LIGHT MODE: Soft Cyan Tech
         color = bgColor;
         
         // Dark Shadow (Bottom Right)
         float sDist = sdRoundedRect(fUv - shadowOffset, vec2(boxHalfSize), corner);
-        float darkBlur = 0.04 + h * 0.08;
+        float darkBlur = 0.05 + h * 0.1; // Increased blur for better depth
         float darkShadow = smoothstep(darkBlur, -0.02, sDist);
-        color = mix(color, vec3(0.05, 0.1, 0.16), darkShadow * 0.14); // Slate/Navy tinted shadow
+        color = mix(color, vec3(0.05, 0.1, 0.16), darkShadow * 0.18); // Darker shadow
         
         // Light Shadow (Top Left)
         float lDist = sdRoundedRect(fUv + shadowOffset, vec2(boxHalfSize), corner);
@@ -89,24 +88,23 @@ void main() {
         color = mix(color, vec3(1.0), lightShadow * 0.95);
         
         // Body color shift
-        surfaceColor = mix(bgColor, vec3(1.0), h * 0.4);
+        surfaceColor = mix(bgColor, vec3(1.0), h * 0.45);
     } else {
-        // DARK MODE: Advanced Void
         color = bgColor;
         
         // Deep Black Shadow (Bottom Right)
         float sDist = sdRoundedRect(fUv - shadowOffset, vec2(boxHalfSize), corner);
-        float darkBlur = 0.04 + h * 0.08;
+        float darkBlur = 0.05 + h * 0.1; 
         float darkShadow = smoothstep(darkBlur, -0.02, sDist);
-        color = mix(color, vec3(0.0), darkShadow * 0.85);
+        color = mix(color, vec3(0.0), darkShadow * 0.9); // More pronounced dark shadow
         
         // Subtle Rim Light (Top Left)
         float lDist = sdRoundedRect(fUv + shadowOffset, vec2(boxHalfSize), corner);
         float lightShadow = smoothstep(darkBlur * 0.8, -0.02, lDist);
-        color = mix(color, vec3(1.0), lightShadow * 0.04);
+        color = mix(color, vec3(1.0), lightShadow * 0.06); // Slightly more rim light
         
         // Body color shift
-        surfaceColor = mix(bgColor, vec3(0.07, 0.12, 0.2), h * 0.4); // DarkSurfaceLight shift
+        surfaceColor = mix(bgColor, vec3(0.07, 0.12, 0.2), h * 0.5);
     }
 
     // Apply the box surface

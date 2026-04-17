@@ -36,7 +36,7 @@ class _CyberGridBackgroundState extends State<CyberGridBackground>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 40), // Balanced relaxing cycle
+      duration: const Duration(seconds: 60), // More prominent but slower cycle
     )..repeat();
 
     _loadShader();
