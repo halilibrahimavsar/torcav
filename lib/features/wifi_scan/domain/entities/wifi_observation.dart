@@ -25,6 +25,15 @@ class WifiObservation extends Equatable {
   final String? rawCapabilities;
   final String? apMldMac;
 
+  /// Estimated max physical throughput in Mbps (PHY rate)
+  final double? estimatedMaxThroughputMbps;
+
+  /// Number of spatial streams supported/detected
+  final int? spatialStreams;
+
+  /// Flag indicating if the BSSID appears to be randomized (LAA bit set)
+  final bool isRandomizedBssid;
+
   const WifiObservation({
     required this.ssid,
     required this.bssid,
@@ -43,6 +52,9 @@ class WifiObservation extends Equatable {
     this.hasPmf,
     this.rawCapabilities,
     this.apMldMac,
+    this.estimatedMaxThroughputMbps,
+    this.spatialStreams,
+    this.isRandomizedBssid = false,
   });
 
   factory WifiObservation.fromSingleNetwork(
@@ -67,6 +79,9 @@ class WifiObservation extends Equatable {
       hasPmf: network.hasPmf,
       rawCapabilities: network.rawCapabilities,
       apMldMac: network.apMldMac,
+      estimatedMaxThroughputMbps: network.estimatedMaxThroughputMbps,
+      spatialStreams: network.spatialStreams,
+      isRandomizedBssid: network.isRandomizedBssid,
     );
   }
 
@@ -86,12 +101,14 @@ class WifiObservation extends Equatable {
     bool? hasPmf,
     String? rawCapabilities,
     String? apMldMac,
+    double? estimatedMaxThroughputMbps,
+    int? spatialStreams,
+    bool isRandomizedBssid = false,
   }) {
     final safeSamples = samples.isEmpty ? const <int>[-100] : samples;
     final average =
         safeSamples.reduce((a, b) => a + b) / safeSamples.length.toDouble();
-    final variance =
-        safeSamples
+    final variance = safeSamples
             .map((sample) => pow(sample - average, 2))
             .fold<double>(0, (a, b) => a + b) /
         safeSamples.length.toDouble();
@@ -114,6 +131,9 @@ class WifiObservation extends Equatable {
       hasPmf: hasPmf,
       rawCapabilities: rawCapabilities,
       apMldMac: apMldMac,
+      estimatedMaxThroughputMbps: estimatedMaxThroughputMbps,
+      spatialStreams: spatialStreams,
+      isRandomizedBssid: isRandomizedBssid,
     );
   }
 
@@ -133,27 +153,33 @@ class WifiObservation extends Equatable {
       hasPmf: hasPmf,
       rawCapabilities: rawCapabilities,
       apMldMac: apMldMac,
+      estimatedMaxThroughputMbps: estimatedMaxThroughputMbps,
+      spatialStreams: spatialStreams,
+      isRandomizedBssid: isRandomizedBssid,
     );
   }
 
   @override
   List<Object?> get props => [
-    ssid,
-    bssid,
-    signalDbmSamples,
-    avgSignalDbm,
-    signalStdDev,
-    channel,
-    frequency,
-    security,
-    vendor,
-    isHidden,
-    seenCount,
-    channelWidthMhz,
-    wifiStandard,
-    hasWps,
-    hasPmf,
-    rawCapabilities,
-    apMldMac,
-  ];
+        ssid,
+        bssid,
+        signalDbmSamples,
+        avgSignalDbm,
+        signalStdDev,
+        channel,
+        frequency,
+        security,
+        vendor,
+        isHidden,
+        seenCount,
+        channelWidthMhz,
+        wifiStandard,
+        hasWps,
+        hasPmf,
+        rawCapabilities,
+        apMldMac,
+        estimatedMaxThroughputMbps,
+        spatialStreams,
+        isRandomizedBssid,
+      ];
 }

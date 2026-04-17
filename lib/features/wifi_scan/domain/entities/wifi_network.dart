@@ -59,6 +59,15 @@ class WifiNetwork extends Equatable {
   final String? rawCapabilities; // e.g. "[WPA2-PSK-CCMP][WPS][ESS]"
   final String? apMldMac; // Wi-Fi 7 multi-link MAC (API 33+)
 
+  /// Estimated max physical throughput in Mbps (PHY rate)
+  final double? estimatedMaxThroughputMbps;
+
+  /// Number of spatial streams supported/detected
+  final int? spatialStreams;
+
+  /// Flag indicating if the BSSID appears to be randomized (LAA bit set)
+  final bool isRandomizedBssid;
+
   const WifiNetwork({
     required this.ssid,
     required this.bssid,
@@ -74,6 +83,9 @@ class WifiNetwork extends Equatable {
     this.hasPmf,
     this.rawCapabilities,
     this.apMldMac,
+    this.estimatedMaxThroughputMbps,
+    this.spatialStreams,
+    this.isRandomizedBssid = false,
   });
 
   WifiNetwork copyWith({
@@ -91,6 +103,9 @@ class WifiNetwork extends Equatable {
     bool? hasPmf,
     String? rawCapabilities,
     String? apMldMac,
+    double? estimatedMaxThroughputMbps,
+    int? spatialStreams,
+    bool? isRandomizedBssid,
   }) {
     return WifiNetwork(
       ssid: ssid ?? this.ssid,
@@ -107,24 +122,31 @@ class WifiNetwork extends Equatable {
       hasPmf: hasPmf ?? this.hasPmf,
       rawCapabilities: rawCapabilities ?? this.rawCapabilities,
       apMldMac: apMldMac ?? this.apMldMac,
+      estimatedMaxThroughputMbps:
+          estimatedMaxThroughputMbps ?? this.estimatedMaxThroughputMbps,
+      spatialStreams: spatialStreams ?? this.spatialStreams,
+      isRandomizedBssid: isRandomizedBssid ?? this.isRandomizedBssid,
     );
   }
 
   @override
   List<Object?> get props => [
-    ssid,
-    bssid,
-    signalStrength,
-    channel,
-    frequency,
-    security,
-    vendor,
-    isHidden,
-    channelWidthMhz,
-    wifiStandard,
-    hasWps,
-    hasPmf,
-    rawCapabilities,
-    apMldMac,
-  ];
+        ssid,
+        bssid,
+        signalStrength,
+        channel,
+        frequency,
+        security,
+        vendor,
+        isHidden,
+        channelWidthMhz,
+        wifiStandard,
+        hasWps,
+        hasPmf,
+        rawCapabilities,
+        apMldMac,
+        estimatedMaxThroughputMbps,
+        spatialStreams,
+        isRandomizedBssid,
+      ];
 }

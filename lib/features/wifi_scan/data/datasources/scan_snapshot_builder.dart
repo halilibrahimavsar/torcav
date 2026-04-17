@@ -44,31 +44,101 @@ class ScanSnapshotBuilder {
       }
     }
 
-    final observations =
-        accumulators.values
-            .map(
-              (entry) => WifiObservation.fromSamples(
-                ssid: entry.ssid,
-                bssid: entry.bssid,
-                samples: entry.samples,
-                channel: entry.channel,
-                frequency: entry.frequency,
-                security: entry.security,
-                vendor: _ouiLookup.lookup(entry.bssid),
-                isHidden: entry.isHidden || entry.ssid.isEmpty,
-                seenCount: entry.samples.length,
-                channelWidthMhz: entry.channelWidthMhz,
-                wifiStandard: entry.wifiStandard,
-                hasWps: entry.hasWps,
-                hasPmf: entry.hasPmf,
-                rawCapabilities: entry.rawCapabilities,
-                apMldMac: entry.apMldMac,
-              ),
-            )
-            .toList();
+    final observations = accumulators.values.map((entry) {
+      final isRandomized = ScanSnapshotBuilder.detectBssidRandomization(entry.bssid);
+      final spatialStreams = ScanSnapshotBuilder.estimateSpatialStreams(entry.wifiStandard);
+      final throughput = ScanSnapshotBuilder.estimateThroughput(
+        standard: entry.wifiStandard,
+        widthMhz: entry.channelWidthMhz,
+        streams: spatialStreams,
+      );
+
+      return WifiObservation.fromSamples(
+        ssid: entry.ssid,
+        bssid: entry.bssid,
+        samples: entry.samples,
+        channel: entry.channel,
+        frequency: entry.frequency,
+        security: entry.security,
+        vendor: _ouiLookup.lookup(entry.bssid),
+        isHidden: entry.isHidden || entry.ssid.isEmpty,
+        seenCount: entry.samples.length,
+        channelWidthMhz: entry.channelWidthMhz,
+        wifiStandard: entry.wifiStandard,
+        hasWps: entry.hasWps,
+        hasPmf: entry.hasPmf,
+        rawCapabilities: entry.rawCapabilities,
+        apMldMac: entry.apMldMac,
+        estimatedMaxThroughputMbps: throughput,
+        spatialStreams: spatialStreams,
+        isRandomizedBssid: isRandomized,
+      );
+    }).toList();
 
     observations.sort((a, b) => b.avgSignalDbm.compareTo(a.avgSignalDbm));
     return observations;
+  }
+
+  static bool detectBssidRandomization(String bssid) {
+    if (bssid.length < 2) return false;
+    // Check the LAA (Locally Administered Address) bit:
+    // The second hex digit of the first byte must be 2, 6, A, or E.
+    final secondChar = bssid[1].toUpperCase();
+    return secondChar == '2' ||
+        secondChar == '6' ||
+        secondChar == 'A' ||
+        secondChar == 'E';
+  }
+
+  static int estimateSpatialStreams(WifiStandard? standard) {
+    if (standard == null) return 1;
+    return switch (standard) {
+      WifiStandard.legacy => 1,
+      WifiStandard.n => 2,
+      WifiStandard.ac => 2,
+      WifiStandard.ax => 2,
+      WifiStandard.be => 2,
+      WifiStandard.unknown => 1,
+    };
+  }
+
+  static double? estimateThroughput({
+    required WifiStandard? standard,
+    required int? widthMhz,
+    required int streams,
+  }) {
+    if (standard == null || widthMhz == null) return null;
+
+    // Simplified max PHY rates (Mbps) per spatial stream
+    final baseRates = switch (standard) {
+      WifiStandard.legacy => widthMhz >= 20 ? 54.0 : 11.0,
+      WifiStandard.n => widthMhz == 40 ? 150.0 : 72.2,
+      WifiStandard.ac => switch (widthMhz) {
+          20 => 86.7,
+          40 => 200.0,
+          80 => 433.3,
+          160 => 866.7,
+          _ => 433.3,
+        },
+      WifiStandard.ax => switch (widthMhz) {
+          20 => 143.4,
+          40 => 286.8,
+          80 => 600.5,
+          160 => 1201.0,
+          _ => 600.5,
+        },
+      WifiStandard.be => switch (widthMhz) {
+          20 => 160.0,
+          40 => 320.0,
+          80 => 680.0,
+          160 => 1440.0,
+          320 => 2880.0,
+          _ => 680.0,
+        },
+      WifiStandard.unknown => 54.0,
+    };
+
+    return baseRates * streams;
   }
 
   List<ChannelOccupancyStat> _buildChannelStats(

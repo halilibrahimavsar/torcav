@@ -10,10 +10,14 @@ void main() {
   });
 
   group('ChannelRatingEngine', () {
-    test('Perfect score on empty networks', () {
+    test('Perfect score on empty networks (minus DFS penalties)', () {
       final ratings = engine.calculateRatings([]);
       for (final r in ratings) {
-        expect(r.rating, 10.0);
+        if (engine.isDfsChannel(r.channel, r.frequency)) {
+          expect(r.rating, 9.5);
+        } else {
+          expect(r.rating, 10.0);
+        }
       }
     });
 
@@ -91,6 +95,28 @@ void main() {
       final ch6 = ratings.firstWhere((r) => r.channel == 6);
 
       expect(ch1.rating, lessThan(ch6.rating));
+    });
+
+    test('6GHz channels are included in ratings', () {
+      final ratings = engine.calculateRatings([]);
+      final ghz6Channels = ratings.where((r) => r.channel > 165); // Simplified check for 6GHz
+
+      expect(ghz6Channels, isNotEmpty);
+      for (final r in ghz6Channels) {
+        expect(r.rating, 10.0); // Should be perfect if unoccupied
+      }
+    });
+
+    test('DFS channels receive baseline penalty', () {
+      final ratings = engine.calculateRatings([]);
+      
+      // Ch 52 is DFS
+      final ch52 = ratings.firstWhere((r) => r.channel == 52);
+      // Ch 36 is Non-DFS
+      final ch36 = ratings.firstWhere((r) => r.channel == 36);
+
+      expect(ch52.rating, lessThan(ch36.rating));
+      expect(ch52.rating, 9.5); // Fixed DFS penalty
     });
   });
 }

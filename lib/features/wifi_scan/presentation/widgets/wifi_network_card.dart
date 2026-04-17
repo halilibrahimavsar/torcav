@@ -104,19 +104,36 @@ class WifiNetworkCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        (network.ssid.isEmpty
-                                ? l10n.hiddenNetwork
-                                : network.ssid)
-                            .toUpperCase(),
-                        style: GoogleFonts.orbitron(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          letterSpacing: 1,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              (network.ssid.isEmpty
+                                      ? l10n.hiddenNetwork
+                                      : network.ssid)
+                                  .toUpperCase(),
+                              style: GoogleFonts.orbitron(
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                letterSpacing: 1,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          if (network.isRandomizedBssid) ...[
+                            const SizedBox(width: 4),
+                            Tooltip(
+                              message: 'Randomized MAC Detected',
+                              child: Icon(
+                                Icons.privacy_tip_outlined,
+                                color: AppColors.neonOrange,
+                                size: 14,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                       const SizedBox(height: 2),
                       Text(
@@ -171,27 +188,33 @@ class WifiNetworkCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            Container(
-              height: 1,
-              width: double.infinity,
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
-            ),
             const SizedBox(height: 12),
-            Row(
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
               children: [
                 _MiniTechTag(
                   label: l10n.channelLabel(network.channel),
                   icon: Icons.tag_rounded,
                   color: Theme.of(context).colorScheme.primary,
                 ),
-                const SizedBox(width: 8),
                 _MiniTechTag(
                   label: l10n.frequencyLabel(network.frequency),
                   icon: Icons.waves_rounded,
                   color: AppColors.neonPurple,
                 ),
-                const SizedBox(width: 8),
+                if (network.wifiStandard != null)
+                  _MiniTechTag(
+                    label: wifiStandardLabel(network.wifiStandard!),
+                    icon: Icons.speed_rounded,
+                    color: AppColors.neonCyan,
+                  ),
+                if (network.estimatedMaxThroughputMbps != null)
+                  _MiniTechTag(
+                    label: '${network.estimatedMaxThroughputMbps!.round()} Mbps',
+                    icon: Icons.bolt_rounded,
+                    color: AppColors.neonGreen,
+                  ),
                 _MiniTechTag(
                   label: network.security.name.toUpperCase(),
                   icon: switch (network.security) {
@@ -205,6 +228,28 @@ class WifiNetworkCard extends StatelessWidget {
                     _ => AppColors.neonRed,
                   },
                 ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                if (network.spatialStreams != null) ...[
+                  Icon(
+                    Icons.settings_input_antenna_rounded,
+                    size: 11,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${network.spatialStreams}x${network.spatialStreams}',
+                    style: GoogleFonts.rajdhani(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                ],
                 const Spacer(),
                 Text(
                   'σ ${network.signalStdDev.toStringAsFixed(1)}',

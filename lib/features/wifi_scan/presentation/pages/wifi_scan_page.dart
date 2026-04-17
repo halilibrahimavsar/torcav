@@ -6,6 +6,7 @@ import '../../../../core/l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../settings/domain/services/app_settings_store.dart';
 import '../../../settings/domain/entities/app_settings.dart';
@@ -293,6 +294,54 @@ class _SnapshotViewState extends State<_SnapshotView> {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
         children: [
+          // ── Passive Scan Guarantee Banner ──
+          Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: AppColors.neonCyan.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: AppColors.neonCyan.withValues(alpha: 0.2),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.verified_user_outlined,
+                  size: 16,
+                  color: AppColors.neonCyan,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'PASSIVE-ONLY GUARANTEE',
+                        style: GoogleFonts.orbitron(
+                          color: AppColors.neonCyan,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                      Text(
+                        'Torcav strictly analyzes traffic without active transmission.',
+                        style: GoogleFonts.rajdhani(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
           // ── Bento Header ──
           WifiBentoHeader(
             snapshot: widget.snapshot,

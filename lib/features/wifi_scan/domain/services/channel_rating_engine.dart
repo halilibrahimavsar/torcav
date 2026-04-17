@@ -7,25 +7,17 @@ import '../entities/wifi_network.dart';
 @lazySingleton
 class ChannelRatingEngine {
   /// Standard 2.4GHz and 5GHz channels to analyze.
-  static const _channels24 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+  static const _channels24 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+
   static const _channels5 = [
-    36,
-    40,
-    44,
-    48,
-    52,
-    56,
-    60,
-    64,
-    100,
-    104,
-    108,
-    112,
-    149,
-    153,
-    157,
-    161,
-    165,
+    36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 149, 153, 157, 161, 165,
+  ];
+
+  static const _channels6 = [
+    1, 5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45, 49, 53, 57, 61, 65, 69, 73, 77,
+    81, 85, 89, 93, 97, 101, 105, 109, 113, 117, 121, 125, 129, 133, 137, 141,
+    145, 149, 153, 157, 161, 165, 169, 173, 177, 181, 185, 189, 193, 197, 201,
+    205, 209, 213, 217, 221, 225, 229, 233,
   ];
 
   /// Calculates ratings for all standard channels based on the provided [networks].
@@ -35,12 +27,21 @@ class ChannelRatingEngine {
     // Combine standard channels with any non-standard ones detected in the scan
     final usedChannels =
         networks.map((n) => n.channel).where((c) => c > 0).toSet();
-    final allChannels =
-        <int>{..._channels24, ..._channels5, ...usedChannels}.toList()..sort();
+    final allChannels = <int>{
+      ..._channels24,
+      ..._channels5,
+      ..._channels6,
+      ...usedChannels,
+    }.toList()
+      ..sort();
 
     for (final channel in allChannels) {
       final frequency = _guessFrequency(channel, networks);
-      final is24 = frequency < 3000;
+      if (frequency <= 0) continue;
+
+      final is24 = frequency >= 2400 && frequency < 2500;
+      final is5 = frequency >= 5000 && frequency < 6000;
+      final is6 = frequency >= 5925 && frequency < 7200;
 
       double score = 10.0;
       int count = 0;
@@ -49,7 +50,12 @@ class ChannelRatingEngine {
         if (network.channel <= 0) continue;
 
         final dist = (network.channel - channel).abs();
-        final sameBand = (network.frequency < 3000) == is24;
+        final nFreq = network.frequency;
+
+        // Check if network is in the same band
+        final sameBand = (nFreq >= 2400 && nFreq < 2500 && is24) ||
+            (nFreq >= 5000 && nFreq < 6000 && is5) ||
+            (nFreq >= 5925 && nFreq < 7200 && is6);
 
         if (!sameBand) continue;
 
@@ -71,8 +77,12 @@ class ChannelRatingEngine {
             _ => 0.0,
           };
           score -= penalty * signalWeight;
-          // Count only same channel for density, but we could add overlap count too
         }
+      }
+
+      // Apply a subtle penalty for DFS channels (radar interference risk)
+      if (is5 && isDfsChannel(channel, frequency)) {
+        score -= 0.5;
       }
 
       score = score.clamp(0.0, 10.0);
@@ -89,6 +99,14 @@ class ChannelRatingEngine {
     }
 
     return ratings;
+  }
+
+  /// Checks if a 5GHz channel is subject to Dynamic Frequency Selection (DFS).
+  bool isDfsChannel(int channel, int frequency) {
+    if (frequency < 5000 || frequency >= 6000) return false;
+    // 5GHz DFS ranges: 52-64 (U-NII-2A) and 100-144 (U-NII-2C)
+    return (channel >= 52 && channel <= 64) ||
+        (channel >= 100 && channel <= 144);
   }
 
   int _guessFrequency(int channel, List<WifiNetwork> networks) {
@@ -114,12 +132,11 @@ class ChannelRatingEngine {
     }
 
     // 6 GHz Band (U-NII-5 through 8)
+    // Formula for 6GHz: frequency = 5950 + (channel * 5)
+    // Note: This block handles channels where channel * 5 > 900+ usually.
     if (channel >= 1 && channel <= 233) {
-      // Note: 6GHz channels overlap 1-13, but are handled by the 2.4GHz block first
-      // if 1 <= channel <= 13. This logic assumes 6GHz specific channels are > 14.
-      if (channel > 14) {
-        return 5940 + (channel * 5);
-      }
+      // If we are here, it's not 2.4GHz 1-13.
+      return 5950 + (channel * 5);
     }
 
     return 0;
