@@ -188,9 +188,10 @@ class _OperationCard extends StatelessWidget {
               title,
               textAlign: TextAlign.center,
               style: GoogleFonts.orbitron(
-                color: Theme.of(context).brightness == Brightness.dark 
-                    ? color.withValues(alpha: 0.9)
-                    : AppColors.textPrimaryLight,
+                color:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? color.withValues(alpha: 0.9)
+                        : AppColors.textPrimaryLight,
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
               ),

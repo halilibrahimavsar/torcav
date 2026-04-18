@@ -9,20 +9,18 @@ import 'hud_models.dart';
 
 /// Center reticle that pulses to indicate signal strength.
 class ReticleHitArea extends StatelessWidget {
-  const ReticleHitArea({
-    super.key,
-    required this.controller,
-  });
+  const ReticleHitArea({super.key, required this.controller});
 
   final AnimationController controller;
 
   @override
   Widget build(BuildContext context) {
     return BlocSelector<HeatmapBloc, HeatmapState, ReticleSlice>(
-      selector: (s) => ReticleSlice(
-        rssi: s.currentRssi,
-        lastStepTimestamp: s.lastStepTimestamp,
-      ),
+      selector:
+          (s) => ReticleSlice(
+            rssi: s.currentRssi,
+            lastStepTimestamp: s.lastStepTimestamp,
+          ),
       builder: (context, slice) {
         final tier = signalTierFor(slice.rssi);
         final color = signalTierColor(tier);
@@ -34,14 +32,15 @@ class ReticleHitArea extends StatelessWidget {
             height: size,
             child: AnimatedBuilder(
               animation: controller,
-              builder: (_, __) => CustomPaint(
-                size: const Size(size, size),
-                painter: _ReticlePainter(
-                  progress: controller.value,
-                  color: color,
-                  stepTs: slice.lastStepTimestamp,
-                ),
-              ),
+              builder:
+                  (_, __) => CustomPaint(
+                    size: const Size(size, size),
+                    painter: _ReticlePainter(
+                      progress: controller.value,
+                      color: color,
+                      stepTs: slice.lastStepTimestamp,
+                    ),
+                  ),
             ),
           ),
         );
@@ -66,17 +65,19 @@ class _ReticlePainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final base = math.min(size.width, size.height) / 2;
 
-    final ringPaint = Paint()
-      ..color = color.withValues(alpha: 0.35)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.4;
+    final ringPaint =
+        Paint()
+          ..color = color.withValues(alpha: 0.35)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.4;
     canvas.drawCircle(center, base - 4, ringPaint);
 
-    final bracketPaint = Paint()
-      ..color = color.withValues(alpha: 0.85)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2
-      ..strokeCap = StrokeCap.round;
+    final bracketPaint =
+        Paint()
+          ..color = color.withValues(alpha: 0.85)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..strokeCap = StrokeCap.round;
     const bracket = 14.0;
     for (final corner in const [
       Offset(-1, -1),
@@ -99,15 +100,17 @@ class _ReticlePainter extends CustomPainter {
     }
 
     final pulseRadius = (base - 18) + math.sin(progress * 2 * math.pi) * 3;
-    final pulsePaint = Paint()
-      ..color = color.withValues(alpha: 0.55)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.2;
+    final pulsePaint =
+        Paint()
+          ..color = color.withValues(alpha: 0.55)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.2;
     canvas.drawCircle(center, pulseRadius, pulsePaint);
 
-    final crossPaint = Paint()
-      ..color = color.withValues(alpha: 0.7)
-      ..strokeWidth = 1.4;
+    final crossPaint =
+        Paint()
+          ..color = color.withValues(alpha: 0.7)
+          ..strokeWidth = 1.4;
     canvas.drawLine(
       Offset(center.dx - 10, center.dy),
       Offset(center.dx + 10, center.dy),
@@ -123,10 +126,11 @@ class _ReticlePainter extends CustomPainter {
       final diffMs = DateTime.now().difference(stepTs!).inMilliseconds;
       if (diffMs < 800) {
         final t = diffMs / 800.0;
-        final stepPaint = Paint()
-          ..color = AppColors.neonCyan.withValues(alpha: (1 - t) * 0.45)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2;
+        final stepPaint =
+            Paint()
+              ..color = AppColors.neonCyan.withValues(alpha: (1 - t) * 0.45)
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 2;
         canvas.drawCircle(center, 22 + (t * 80), stepPaint);
       }
     }

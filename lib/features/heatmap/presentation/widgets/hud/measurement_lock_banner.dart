@@ -77,18 +77,26 @@ class MeasurementLockBanner extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
-            color: isLight 
-                ? Theme.of(context).colorScheme.surface.withValues(alpha: 0.92)
-                : Colors.black.withValues(alpha: 0.72),
+            color:
+                isLight
+                    ? Theme.of(
+                      context,
+                    ).colorScheme.surface.withValues(alpha: 0.92)
+                    : Colors.black.withValues(alpha: 0.72),
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: color.withValues(alpha: isLight ? 0.25 : 0.5)),
-            boxShadow: isLight ? [
-              BoxShadow(
-                color: theme.colorScheme.shadow.withValues(alpha: 0.1),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              )
-            ] : null,
+            border: Border.all(
+              color: color.withValues(alpha: isLight ? 0.25 : 0.5),
+            ),
+            boxShadow:
+                isLight
+                    ? [
+                      BoxShadow(
+                        color: theme.colorScheme.shadow.withValues(alpha: 0.1),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ]
+                    : null,
           ),
           child: Row(
             children: [
@@ -112,7 +120,10 @@ class MeasurementLockBanner extends StatelessWidget {
                     Text(
                       body,
                       style: GoogleFonts.outfit(
-                        color: isLight ? theme.colorScheme.onSurface : Colors.white,
+                        color:
+                            isLight
+                                ? theme.colorScheme.onSurface
+                                : Colors.white,
                         fontSize: 11,
                         fontWeight: FontWeight.w500,
                         height: 1.3,

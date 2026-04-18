@@ -14,11 +14,11 @@ import 'package:torcav/features/security/presentation/widgets/cyber_grid_backgro
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize Dependency Injection
   await configureDependencies();
   await getIt<ScanSessionStore>().restore();
-  
+
   runApp(const TorcavApp());
 }
 
@@ -28,9 +28,7 @@ class TorcavApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => getIt<LocaleCubit>()),
-      ],
+      providers: [BlocProvider(create: (_) => getIt<LocaleCubit>())],
       child: BlocBuilder<LocaleCubit, Locale>(
         builder: (context, locale) {
           return BlocProvider(
@@ -50,7 +48,10 @@ class TorcavApp extends StatelessWidget {
                   builder: (context, child) {
                     final theme = Theme.of(context);
                     return CyberGridBackground(
-                      color: theme.colorScheme.primary, // Dynamic color from current theme
+                      color:
+                          theme
+                              .colorScheme
+                              .primary, // Dynamic color from current theme
                       child: NotificationListener<ScrollNotification>(
                         onNotification: (notification) {
                           if (notification is ScrollUpdateNotification) {
@@ -75,7 +76,7 @@ class TorcavApp extends StatelessWidget {
                     FallbackMaterialLocalizationsDelegate(),
                     FallbackCupertinoLocalizationsDelegate(),
                   ],
-                  
+
                   // Main Entry Point
                   home: const AppShellPage(),
                 );

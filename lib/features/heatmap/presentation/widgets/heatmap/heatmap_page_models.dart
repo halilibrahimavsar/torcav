@@ -21,10 +21,11 @@ class HeatmapSummary {
     required int? currentRssi,
   }) {
     final points = session.points;
-    final averageRssi = points.isEmpty
-        ? null
-        : points.map((point) => point.rssi).reduce((a, b) => a + b) /
-            points.length;
+    final averageRssi =
+        points.isEmpty
+            ? null
+            : points.map((point) => point.rssi).reduce((a, b) => a + b) /
+                points.length;
     final weakZoneCount =
         points.where((point) => point.rssi < -72 || point.isFlagged).length;
     final bounds = MetricBounds.from(points: points);
@@ -51,16 +52,17 @@ class HeatmapSummary {
   int? get signalForDisplay => currentRssi ?? averageRssi?.round();
 
   /// Returns the color representing the current signal quality.
-  Color signalColor(Brightness brightness) => AppColors.getSignalColor(signalForDisplay, brightness);
+  Color signalColor(Brightness brightness) =>
+      AppColors.getSignalColor(signalForDisplay, brightness);
 
   /// Returns the color representing the overall coverage quality.
   Color coverageColor(Brightness brightness) => AppColors.getCoverageColor(
-        hasSamples,
-        averageRssi?.round(),
-        weakZoneCount,
-        sampleCount,
-        brightness,
-      );
+    hasSamples,
+    averageRssi?.round(),
+    weakZoneCount,
+    sampleCount,
+    brightness,
+  );
 
   String signalDisplay(HeatmapCopy copy) {
     final signal = signalForDisplay;
@@ -97,9 +99,7 @@ class HeatmapSummary {
 class MetricBounds {
   const MetricBounds({required this.widthMeters, required this.heightMeters});
 
-  factory MetricBounds.from({
-    required List<HeatmapPoint> points,
-  }) {
+  factory MetricBounds.from({required List<HeatmapPoint> points}) {
     final xs = <double>[0];
     final ys = <double>[0];
 
@@ -140,7 +140,9 @@ class HeatmapCopy {
   String get historyTooltip =>
       isTurkish ? 'Kayitli turlari ac' : 'Open saved surveys';
   String get themeToggleTooltip =>
-      isTurkish ? 'Gorunumu degistir (Blueprint / Neon)' : 'Toggle view (Blueprint / Neon)';
+      isTurkish
+          ? 'Gorunumu degistir (Blueprint / Neon)'
+          : 'Toggle view (Blueprint / Neon)';
   String get previewSessionName => isTurkish ? 'Onizleme' : 'Preview';
   String get recordingStatus => isTurkish ? 'KAYIT' : 'RECORDING';
   String get reviewingStatus => isTurkish ? 'INCELEME' : 'REVIEW';
@@ -148,7 +150,8 @@ class HeatmapCopy {
   String get samplesShort => isTurkish ? 'ornek' : 'samples';
   String get wallsShort => isTurkish ? 'duvar' : 'walls';
 
-  String get surveyCompleteTitle => isTurkish ? 'TUR TAMAMLANDI' : 'SURVEY COMPLETE';
+  String get surveyCompleteTitle =>
+      isTurkish ? 'TUR TAMAMLANDI' : 'SURVEY COMPLETE';
   String get surveyCompleteBody =>
       isTurkish
           ? 'Ev turu basariyla kaydedildi. Plan ve sinyal verileri sentezlendi.'
@@ -159,9 +162,11 @@ class HeatmapCopy {
   String get restartSurvey => isTurkish ? 'YENIDEN BASLAT' : 'RESTART SURVEY';
   String get renameSurvey => isTurkish ? 'ISIM DEGISTIR' : 'RENAME SURVEY';
   String get shareHeatmap => isTurkish ? 'HARITAYI PAYLAS' : 'SHARE HEATMAP';
-  String get renameDialogTitle => isTurkish ? 'TUR ISMINI GUNCELLE' : 'RENAME SURVEY';
+  String get renameDialogTitle =>
+      isTurkish ? 'TUR ISMINI GUNCELLE' : 'RENAME SURVEY';
   String get save => isTurkish ? 'Kaydet' : 'Save';
-  String get shareSubject => isTurkish ? 'Torcav WiFi Isi Haritasi' : 'Torcav WiFi Heatmap';
+  String get shareSubject =>
+      isTurkish ? 'Torcav WiFi Isi Haritasi' : 'Torcav WiFi Heatmap';
   String get shareText =>
       isTurkish
           ? 'Evimin WiFi isi haritasini paylasiyorum.'
@@ -335,11 +340,7 @@ class HeatmapCopy {
       isTurkish ? 'KAYITLI EV TURLARI' : 'SAVED SURVEYS';
   String get noSavedSurveys =>
       isTurkish ? 'Henuz kayitli bir tur yok.' : 'No saved surveys yet.';
-  String savedSurveySubtitle(
-    int samples,
-    int weak,
-    String timestamp,
-  ) {
+  String savedSurveySubtitle(int samples, int weak, String timestamp) {
     if (isTurkish) {
       return '$samples ornek · $weak zayif nokta · $timestamp';
     }

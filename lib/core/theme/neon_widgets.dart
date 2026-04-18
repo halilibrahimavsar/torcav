@@ -102,7 +102,9 @@ class _InfoSheet extends StatelessWidget {
             body,
             style: GoogleFonts.rajdhani(
               fontSize: 15,
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.85),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.85),
               height: 1.5,
             ),
           ),
@@ -143,7 +145,9 @@ class NeonErrorCard extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: GoogleFonts.rajdhani(
                   fontSize: 15,
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.85),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.85),
                   height: 1.4,
                 ),
               ),
@@ -151,7 +155,11 @@ class NeonErrorCard extends StatelessWidget {
                 const SizedBox(height: 16),
                 OutlinedButton.icon(
                   onPressed: onRetry,
-                  icon: Icon(Icons.refresh_rounded, color: errorColor, size: 18),
+                  icon: Icon(
+                    Icons.refresh_rounded,
+                    color: errorColor,
+                    size: 18,
+                  ),
                   label: Text(
                     'RETRY',
                     style: GoogleFonts.orbitron(
@@ -206,9 +214,11 @@ class GlassmorphicContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final effectiveBorder = borderColor ?? Theme.of(context).colorScheme.primary;
+    final effectiveBorder =
+        borderColor ?? Theme.of(context).colorScheme.primary;
     final theme = Theme.of(context);
-    final effectiveBg = backgroundColor ??
+    final effectiveBg =
+        backgroundColor ??
         (isDark
             ? theme.colorScheme.surfaceContainerLow.withValues(alpha: 0.15)
             : theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.45));
@@ -267,27 +277,30 @@ class NeonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final effectiveGlowColor = glowColor ?? Theme.of(context).colorScheme.primary;
+    final effectiveGlowColor =
+        glowColor ?? Theme.of(context).colorScheme.primary;
     final card = Container(
       padding: padding,
       decoration: BoxDecoration(
-        color: isDark 
-            ? AppColors.darkSurface.withValues(alpha: 0.8)
-            : Theme.of(context).colorScheme.surfaceContainer,
+        color:
+            isDark
+                ? AppColors.darkSurface.withValues(alpha: 0.8)
+                : Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(
           color: effectiveGlowColor.withValues(alpha: 0.2),
           width: 1,
         ),
-        boxShadow: isDark 
-            ? AppColors.glowTiers[GlowTier.low]!(effectiveGlowColor)
-            : [
-                BoxShadow(
-                  color: effectiveGlowColor.withValues(alpha: 0.12),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+        boxShadow:
+            isDark
+                ? AppColors.glowTiers[GlowTier.low]!(effectiveGlowColor)
+                : [
+                  BoxShadow(
+                    color: effectiveGlowColor.withValues(alpha: 0.12),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
       ),
       child: child,
     );
@@ -421,29 +434,48 @@ class NeonText extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final effectiveStyle = style ??
+    final effectiveStyle =
+        style ??
         GoogleFonts.orbitron(
           color: isDark ? scheme.primary : scheme.onSurface,
           fontSize: 18,
         );
-    final effectiveGlow = glowColor ?? (isDark ? scheme.primary : scheme.primary.withValues(alpha: 0.3));
+    final effectiveGlow =
+        glowColor ??
+        (isDark ? scheme.primary : scheme.primary.withValues(alpha: 0.3));
 
     return Text(
       text,
       overflow: overflow,
       maxLines: maxLines,
       style: effectiveStyle.copyWith(
-        shadows: isDark 
-          ? [
-              Shadow(color: effectiveGlow.withValues(alpha: 0.8), blurRadius: 2),
-              Shadow(color: effectiveGlow.withValues(alpha: 0.4), blurRadius: 10),
-              Shadow(color: effectiveGlow.withValues(alpha: 0.2), blurRadius: 24),
-            ]
-          : [
-              // Subtler "printing press" or blueprint bleed effect for light mode
-              Shadow(color: effectiveGlow.withValues(alpha: 0.35), blurRadius: 1),
-              Shadow(color: effectiveGlow.withValues(alpha: 0.1), blurRadius: 2),
-            ],
+        shadows:
+            isDark
+                ? [
+                  Shadow(
+                    color: effectiveGlow.withValues(alpha: 0.8),
+                    blurRadius: 2,
+                  ),
+                  Shadow(
+                    color: effectiveGlow.withValues(alpha: 0.4),
+                    blurRadius: 10,
+                  ),
+                  Shadow(
+                    color: effectiveGlow.withValues(alpha: 0.2),
+                    blurRadius: 24,
+                  ),
+                ]
+                : [
+                  // Subtler "printing press" or blueprint bleed effect for light mode
+                  Shadow(
+                    color: effectiveGlow.withValues(alpha: 0.35),
+                    blurRadius: 1,
+                  ),
+                  Shadow(
+                    color: effectiveGlow.withValues(alpha: 0.1),
+                    blurRadius: 2,
+                  ),
+                ],
       ),
     );
   }
@@ -456,11 +488,7 @@ class PulsingDot extends StatefulWidget {
   final Color? color;
   final double size;
 
-  const PulsingDot({
-    super.key,
-    this.color,
-    this.size = 10,
-  });
+  const PulsingDot({super.key, this.color, this.size = 10});
 
   @override
   State<PulsingDot> createState() => _PulsingDotState();
@@ -506,8 +534,12 @@ class _PulsingDotState extends State<PulsingDot>
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, _) {
-        final opacity = isLight ? 0.6 + (_controller.value * 0.4) : 0.4 + (_controller.value * 0.6);
-        final glowRadius = (isLight ? 2.0 : 4.0) + (_controller.value * (isLight ? 4.0 : 8.0));
+        final opacity =
+            isLight
+                ? 0.6 + (_controller.value * 0.4)
+                : 0.4 + (_controller.value * 0.6);
+        final glowRadius =
+            (isLight ? 2.0 : 4.0) + (_controller.value * (isLight ? 4.0 : 8.0));
         return Container(
           width: widget.size,
           height: widget.size,
@@ -516,7 +548,9 @@ class _PulsingDotState extends State<PulsingDot>
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: effectiveColor.withValues(alpha: opacity * (isLight ? 0.3 : 0.5)),
+                color: effectiveColor.withValues(
+                  alpha: opacity * (isLight ? 0.3 : 0.5),
+                ),
                 blurRadius: glowRadius,
                 spreadRadius: isLight ? 0.5 : 1,
               ),
@@ -572,11 +606,7 @@ class NeonDivider extends StatelessWidget {
   final Color? color;
   final double height;
 
-  const NeonDivider({
-    super.key,
-    this.color,
-    this.height = 1,
-  });
+  const NeonDivider({super.key, this.color, this.height = 1});
 
   @override
   Widget build(BuildContext context) {
@@ -649,7 +679,8 @@ class NeonChip extends StatelessWidget {
           Flexible(
             child: Text(
               label,
-              style: textStyle ??
+              style:
+                  textStyle ??
                   GoogleFonts.outfit(
                     color: effectiveColor.withValues(alpha: 0.9),
                     fontSize: 12,
@@ -812,7 +843,11 @@ class BentoStatTile extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(icon, color: effectiveColor.withValues(alpha: 0.7), size: 18),
+                Icon(
+                  icon,
+                  color: effectiveColor.withValues(alpha: 0.7),
+                  size: 18,
+                ),
                 if (subValue != null)
                   Padding(
                     padding: const EdgeInsets.only(left: 8),
@@ -844,7 +879,10 @@ class BentoStatTile extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.rajdhani(
-                color: isLight ? theme.colorScheme.onSurfaceVariant : Colors.white70,
+                color:
+                    isLight
+                        ? theme.colorScheme.onSurfaceVariant
+                        : Colors.white70,
                 fontSize: 10,
                 letterSpacing: 1,
                 fontWeight: FontWeight.bold,
@@ -889,12 +927,18 @@ class NeonButton extends StatelessWidget {
         child: Container(
           height: height,
           decoration: BoxDecoration(
-            color: isDark
-                ? AppColors.darkSurface.withValues(alpha: 0.85)
-                : Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.9),
+            color:
+                isDark
+                    ? AppColors.darkSurface.withValues(alpha: 0.85)
+                    : Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer.withValues(alpha: 0.9),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: isDark ? effectiveColor.withValues(alpha: 0.5) : Colors.transparent,
+              color:
+                  isDark
+                      ? effectiveColor.withValues(alpha: 0.5)
+                      : Colors.transparent,
               width: 1.5,
             ),
             boxShadow: [
@@ -911,7 +955,10 @@ class NeonButton extends StatelessWidget {
               if (icon != null) ...[
                 Icon(
                   icon,
-                  color: isDark ? effectiveColor : Theme.of(context).colorScheme.onPrimaryContainer,
+                  color:
+                      isDark
+                          ? effectiveColor
+                          : Theme.of(context).colorScheme.onPrimaryContainer,
                   size: 20,
                 ),
                 const SizedBox(width: 10),
@@ -919,7 +966,10 @@ class NeonButton extends StatelessWidget {
               Text(
                 label.toUpperCase(),
                 style: GoogleFonts.orbitron(
-                  color: isDark ? effectiveColor : Theme.of(context).colorScheme.onPrimaryContainer,
+                  color:
+                      isDark
+                          ? effectiveColor
+                          : Theme.of(context).colorScheme.onPrimaryContainer,
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.5,
@@ -945,9 +995,14 @@ class HolographicCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer.withValues(alpha: 0.9),
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainer.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: effectiveColor.withValues(alpha: 0.2), width: 1),
+        border: Border.all(
+          color: effectiveColor.withValues(alpha: 0.2),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
             color: effectiveColor.withValues(alpha: 0.1),
@@ -1027,7 +1082,9 @@ class NeonConfirmDialog extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 32),
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.95),
+            color: Theme.of(
+              context,
+            ).colorScheme.surface.withValues(alpha: 0.95),
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
               color: scheme.primary.withValues(alpha: 0.2),
@@ -1137,10 +1194,14 @@ class _PulseAnimationState extends State<PulseAnimation>
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this, duration: widget.duration);
-    _scaleAnimation = Tween<double>(begin: widget.minScale, end: widget.maxScale)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-    _glowAnimation = Tween<double>(begin: 0.0, end: 1.0)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    _scaleAnimation = Tween<double>(
+      begin: widget.minScale,
+      end: widget.maxScale,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    _glowAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     if (!widget.isPaused) {
       _controller.repeat(reverse: true);
@@ -1181,7 +1242,9 @@ class _PulseAnimationState extends State<PulseAnimation>
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: widget.color.withValues(alpha: 0.2 * _glowAnimation.value),
+                  color: widget.color.withValues(
+                    alpha: 0.2 * _glowAnimation.value,
+                  ),
                   blurRadius: 15 * _glowAnimation.value,
                   spreadRadius: 2 * _glowAnimation.value,
                 ),
@@ -1203,11 +1266,7 @@ class GlowPoint extends StatelessWidget {
   final Color color;
   final double size;
 
-  const GlowPoint({
-    super.key,
-    required this.color,
-    this.size = 2.0,
-  });
+  const GlowPoint({super.key, required this.color, this.size = 2.0});
 
   @override
   Widget build(BuildContext context) {

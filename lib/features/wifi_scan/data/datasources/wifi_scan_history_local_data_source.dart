@@ -30,22 +30,18 @@ class WifiScanHistoryLocalDataSourceImpl
     final sessionKey = _sessionKeyFor(snapshot.timestamp);
 
     await db.transaction((txn) async {
-      await txn.insert(
-        'scan_sessions',
-        {
-          'session_key': sessionKey,
-          'created_at': snapshot.timestamp.toIso8601String(),
-          'backend_used': snapshot.backendUsed,
-          'interface_name': snapshot.interfaceName,
-          'channel_stats_json': jsonEncode(
-            snapshot.channelStats.map(_channelStatToJson).toList(),
-          ),
-          'band_stats_json': jsonEncode(
-            snapshot.bandStats.map(_bandStatToJson).toList(),
-          ),
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+      await txn.insert('scan_sessions', {
+        'session_key': sessionKey,
+        'created_at': snapshot.timestamp.toIso8601String(),
+        'backend_used': snapshot.backendUsed,
+        'interface_name': snapshot.interfaceName,
+        'channel_stats_json': jsonEncode(
+          snapshot.channelStats.map(_channelStatToJson).toList(),
+        ),
+        'band_stats_json': jsonEncode(
+          snapshot.bandStats.map(_bandStatToJson).toList(),
+        ),
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
 
       await txn.delete(
         'wifi_observations',
@@ -70,12 +66,10 @@ class WifiScanHistoryLocalDataSourceImpl
           'seen_count': observation.seenCount,
           'channel_width_mhz': observation.channelWidthMhz,
           'wifi_standard': observation.wifiStandard?.name,
-          'has_wps': observation.hasWps == null
-              ? null
-              : (observation.hasWps! ? 1 : 0),
-          'has_pmf': observation.hasPmf == null
-              ? null
-              : (observation.hasPmf! ? 1 : 0),
+          'has_wps':
+              observation.hasWps == null ? null : (observation.hasWps! ? 1 : 0),
+          'has_pmf':
+              observation.hasPmf == null ? null : (observation.hasPmf! ? 1 : 0),
           'raw_capabilities': observation.rawCapabilities,
           'ap_mld_mac': observation.apMldMac,
         });
@@ -102,8 +96,9 @@ class WifiScanHistoryLocalDataSourceImpl
         whereArgs: [sessionKey],
       );
 
-      final observations =
-          observationRows.map(_observationFromRow).toList(growable: false);
+      final observations = observationRows
+          .map(_observationFromRow)
+          .toList(growable: false);
       final channelStats = _decodeChannelStats(
         session['channel_stats_json'] as String? ?? '[]',
       );
@@ -141,7 +136,8 @@ class WifiScanHistoryLocalDataSourceImpl
       'wifi_${timestamp.microsecondsSinceEpoch}';
 
   WifiObservation _observationFromRow(Map<String, Object?> row) {
-    final securityName = row['security'] as String? ?? SecurityType.unknown.name;
+    final securityName =
+        row['security'] as String? ?? SecurityType.unknown.name;
     final wifiStandardName = row['wifi_standard'] as String?;
 
     return WifiObservation.fromSamples(

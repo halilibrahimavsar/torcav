@@ -239,9 +239,7 @@ class AppDatabase {
       );
     }
     if (oldVersion < 7) {
-      await db.execute(
-        'ALTER TABLE known_networks ADD COLUMN gateway TEXT',
-      );
+      await db.execute('ALTER TABLE known_networks ADD COLUMN gateway TEXT');
     }
   }
 
@@ -265,22 +263,20 @@ class AppDatabase {
         'bandLabel': 'Unknown',
       });
 
-      await db.insert(
-        'trusted_network_profiles',
-        {
-          'bssid': bssid,
-          'ssid': ssid,
-          'fingerprint_json': fingerprint,
-          'notes': '',
-          'trusted_at': trustedAt.isEmpty
-              ? DateTime.fromMillisecondsSinceEpoch(0).toIso8601String()
-              : trustedAt,
-          'last_confirmed_at': lastConfirmedAt.isEmpty
-              ? DateTime.fromMillisecondsSinceEpoch(0).toIso8601String()
-              : lastConfirmedAt,
-        },
-        conflictAlgorithm: ConflictAlgorithm.ignore,
-      );
+      await db.insert('trusted_network_profiles', {
+        'bssid': bssid,
+        'ssid': ssid,
+        'fingerprint_json': fingerprint,
+        'notes': '',
+        'trusted_at':
+            trustedAt.isEmpty
+                ? DateTime.fromMillisecondsSinceEpoch(0).toIso8601String()
+                : trustedAt,
+        'last_confirmed_at':
+            lastConfirmedAt.isEmpty
+                ? DateTime.fromMillisecondsSinceEpoch(0).toIso8601String()
+                : lastConfirmedAt,
+      }, conflictAlgorithm: ConflictAlgorithm.ignore);
     }
   }
 }

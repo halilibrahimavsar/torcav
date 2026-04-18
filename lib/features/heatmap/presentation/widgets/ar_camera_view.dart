@@ -10,11 +10,7 @@ import 'package:torcav/features/heatmap/presentation/widgets/ar_scene_view.dart'
 
 /// Hosts the native ARCore SceneView and layers the shared survey HUD on top.
 class ArCameraView extends StatelessWidget {
-  const ArCameraView({
-    super.key,
-    this.onFinish,
-    this.onDiscard,
-  });
+  const ArCameraView({super.key, this.onFinish, this.onDiscard});
 
   final VoidCallback? onFinish;
   final VoidCallback? onDiscard;
@@ -30,10 +26,7 @@ class ArCameraView extends StatelessWidget {
             const ArSceneView(),
             const IgnorePointer(child: _CameraVignette()),
             if (phase == ScanPhase.scanning)
-              ArHudOverlay(
-                onFinish: onFinish,
-                onDiscard: onDiscard,
-              ),
+              ArHudOverlay(onFinish: onFinish, onDiscard: onDiscard),
           ],
         );
       },

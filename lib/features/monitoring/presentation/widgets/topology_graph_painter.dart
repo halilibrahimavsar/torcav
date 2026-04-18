@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../domain/entities/network_topology.dart';
 import 'topology_view_data.dart';
 
-
 class TopologyGraphPainter extends CustomPainter {
   final NetworkTopology topology;
   final Map<String, Offset> nodePositions;
@@ -53,8 +52,12 @@ class TopologyGraphPainter extends CustomPainter {
 
       if (sourcePos == null || targetPos == null) continue;
 
-      final sourceNode = topology.nodes.firstWhere((n) => n.id == edge.sourceId);
-      final targetNode = topology.nodes.firstWhere((n) => n.id == edge.targetId);
+      final sourceNode = topology.nodes.firstWhere(
+        (n) => n.id == edge.sourceId,
+      );
+      final targetNode = topology.nodes.firstWhere(
+        (n) => n.id == edge.targetId,
+      );
 
       // Filtering logic for edges
       double edgeOpacity = 0.4;
@@ -73,12 +76,25 @@ class TopologyGraphPainter extends CustomPainter {
       };
 
       final avgY = (sourcePos.dy + targetPos.dy) / 2;
-      final depthOpacity = (1.0 - (avgY / size.height)).clamp(0.2, 0.8) * edgeOpacity;
+      final depthOpacity =
+          (1.0 - (avgY / size.height)).clamp(0.2, 0.8) * edgeOpacity;
 
       if (edge.type == EdgeType.wireless) {
-        _drawAdvWirelessEdge(canvas, sourcePos, targetPos, baseColor, depthOpacity);
+        _drawAdvWirelessEdge(
+          canvas,
+          sourcePos,
+          targetPos,
+          baseColor,
+          depthOpacity,
+        );
       } else {
-        _drawAdvWiredEdge(canvas, sourcePos, targetPos, baseColor, depthOpacity);
+        _drawAdvWiredEdge(
+          canvas,
+          sourcePos,
+          targetPos,
+          baseColor,
+          depthOpacity,
+        );
       }
 
       if (showTraffic && edgeOpacity > 0.1) {
@@ -87,74 +103,121 @@ class TopologyGraphPainter extends CustomPainter {
     }
   }
 
-  void _drawAdvWirelessEdge(Canvas canvas, Offset start, Offset end, Color color, double opacity) {
+  void _drawAdvWirelessEdge(
+    Canvas canvas,
+    Offset start,
+    Offset end,
+    Color color,
+    double opacity,
+  ) {
     if (start == end) return;
 
     // Background Glow
-    final glowPaint = Paint()
-      ..color = color.withValues(alpha: 0.2 * opacity)
-      ..strokeWidth = 4.0
-      ..style = PaintingStyle.stroke
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
+    final glowPaint =
+        Paint()
+          ..color = color.withValues(alpha: 0.2 * opacity)
+          ..strokeWidth = 4.0
+          ..style = PaintingStyle.stroke
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
     canvas.drawLine(start, end, glowPaint);
 
     final rect = Rect.fromPoints(start, end);
-    final validRect = rect.width == 0 && rect.height == 0 
-        ? Rect.fromCenter(center: start, width: 1, height: 1)
-        : rect.width == 0 
-            ? Rect.fromLTRB(rect.left - 1, rect.top, rect.right + 1, rect.bottom)
+    final validRect =
+        rect.width == 0 && rect.height == 0
+            ? Rect.fromCenter(center: start, width: 1, height: 1)
+            : rect.width == 0
+            ? Rect.fromLTRB(
+              rect.left - 1,
+              rect.top,
+              rect.right + 1,
+              rect.bottom,
+            )
             : rect.height == 0
-                ? Rect.fromLTRB(rect.left, rect.top - 1, rect.right, rect.bottom + 1)
-                : rect;
+            ? Rect.fromLTRB(
+              rect.left,
+              rect.top - 1,
+              rect.right,
+              rect.bottom + 1,
+            )
+            : rect;
 
-    final paint = Paint()
-      ..shader = LinearGradient(
-        colors: [color.withValues(alpha: 0.1 * opacity), color.withValues(alpha: 0.8 * opacity)],
-      ).createShader(validRect)
-      ..strokeWidth = 1.5
-      ..style = PaintingStyle.stroke;
+    final paint =
+        Paint()
+          ..shader = LinearGradient(
+            colors: [
+              color.withValues(alpha: 0.1 * opacity),
+              color.withValues(alpha: 0.8 * opacity),
+            ],
+          ).createShader(validRect)
+          ..strokeWidth = 1.5
+          ..style = PaintingStyle.stroke;
 
-    final path = Path()..moveTo(start.dx, start.dy)..lineTo(end.dx, end.dy);
+    final path =
+        Path()
+          ..moveTo(start.dx, start.dy)
+          ..lineTo(end.dx, end.dy);
     canvas.drawPath(path, paint);
   }
 
-  void _drawAdvWiredEdge(Canvas canvas, Offset start, Offset end, Color color, double opacity) {
+  void _drawAdvWiredEdge(
+    Canvas canvas,
+    Offset start,
+    Offset end,
+    Color color,
+    double opacity,
+  ) {
     if (start == end) return;
 
     // Background Glow
-    final glowPaint = Paint()
-      ..color = color.withValues(alpha: 0.15 * opacity)
-      ..strokeWidth = 4.0
-      ..style = PaintingStyle.stroke
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
+    final glowPaint =
+        Paint()
+          ..color = color.withValues(alpha: 0.15 * opacity)
+          ..strokeWidth = 4.0
+          ..style = PaintingStyle.stroke
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
     canvas.drawLine(start, end, glowPaint);
 
-    final paint = Paint()
-      ..color = color.withValues(alpha: 0.4 * opacity)
-      ..strokeWidth = 2.0
-      ..style = PaintingStyle.stroke;
+    final paint =
+        Paint()
+          ..color = color.withValues(alpha: 0.4 * opacity)
+          ..strokeWidth = 2.0
+          ..style = PaintingStyle.stroke;
 
     canvas.drawLine(start, end, paint);
   }
 
-  void _drawDataFlow(Canvas canvas, Offset start, Offset end, Color color, double opacity) {
+  void _drawDataFlow(
+    Canvas canvas,
+    Offset start,
+    Offset end,
+    Color color,
+    double opacity,
+  ) {
     final t = (pulseValue * flowSpeed) % 1.0;
     final pos = Offset.lerp(start, end, t)!;
 
-    final flowPaint = Paint()
-      ..color = color.withValues(alpha: 0.8 * opacity)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+    final flowPaint =
+        Paint()
+          ..color = color.withValues(alpha: 0.8 * opacity)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
 
     canvas.drawCircle(pos, 3 * (1 + pulseValue * 0.5), flowPaint);
 
     // Minor particles
     final t2 = (pulseValue * flowSpeed + 0.3) % 1.0;
     final pos2 = Offset.lerp(start, end, t2)!;
-    canvas.drawCircle(pos2, 1.5, flowPaint..color = flowPaint.color.withAlpha((150 * opacity).toInt()));
+    canvas.drawCircle(
+      pos2,
+      1.5,
+      flowPaint..color = flowPaint.color.withAlpha((150 * opacity).toInt()),
+    );
   }
 
-
-  void _drawScanningWave(Canvas canvas, Map<String, Offset> positions, Size size) {
+  void _drawScanningWave(
+    Canvas canvas,
+    Map<String, Offset> positions,
+    Size size,
+  ) {
     if (!isScanning) return;
 
     final gateway = topology.gateway;
@@ -163,10 +226,13 @@ class TopologyGraphPainter extends CustomPainter {
     if (pos == null) return;
 
     final waveRadius = pulseValue * size.shortestSide * 1.2;
-    final paint = Paint()
-      ..color = colorScheme.primary.withValues(alpha: 0.15 * (1 - pulseValue))
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.0;
+    final paint =
+        Paint()
+          ..color = colorScheme.primary.withValues(
+            alpha: 0.15 * (1 - pulseValue),
+          )
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3.0;
 
     canvas.drawCircle(pos, waveRadius, paint);
     canvas.drawCircle(pos, waveRadius * 0.6, paint..strokeWidth = 1.5);
@@ -194,13 +260,15 @@ class TopologyGraphPainter extends CustomPainter {
 
       // Collect labels to draw with collision avoidance
       if (isSelected || isMatch || opacity > 0.8) {
-        labelCandidates.add(_LabelCandidate(
-          node: node,
-          pos: pos,
-          opacity: opacity,
-          isSelected: isSelected,
-          isMatch: isMatch,
-        ));
+        labelCandidates.add(
+          _LabelCandidate(
+            node: node,
+            pos: pos,
+            opacity: opacity,
+            isSelected: isSelected,
+            isMatch: isMatch,
+          ),
+        );
       }
     }
 
@@ -211,7 +279,9 @@ class TopologyGraphPainter extends CustomPainter {
     }
   }
 
-  List<_ResolvedLabel> _resolveLabelPositions(List<_LabelCandidate> candidates) {
+  List<_ResolvedLabel> _resolveLabelPositions(
+    List<_LabelCandidate> candidates,
+  ) {
     final resolved = <_ResolvedLabel>[];
 
     for (final c in candidates) {
@@ -228,10 +298,15 @@ class TopologyGraphPainter extends CustomPainter {
       final radius = TopologyViewData.nodeRadius(c.node);
       // Try 4 positions: below, above, right, left
       final offsets = [
-        c.pos + Offset(-painter.width / 2, radius + 12),     // below
-        c.pos + Offset(-painter.width / 2, -(radius + 12 + painter.height)), // above
-        c.pos + Offset(radius + 10, -painter.height / 2),    // right
-        c.pos + Offset(-(radius + 10 + painter.width), -painter.height / 2), // left
+        c.pos + Offset(-painter.width / 2, radius + 12), // below
+        c.pos +
+            Offset(
+              -painter.width / 2,
+              -(radius + 12 + painter.height),
+            ), // above
+        c.pos + Offset(radius + 10, -painter.height / 2), // right
+        c.pos +
+            Offset(-(radius + 10 + painter.width), -painter.height / 2), // left
       ];
 
       Offset bestPos = offsets[0];
@@ -239,7 +314,10 @@ class TopologyGraphPainter extends CustomPainter {
 
       for (final candidate in offsets) {
         final candidateRect = Rect.fromLTWH(
-          candidate.dx, candidate.dy, painter.width, painter.height,
+          candidate.dx,
+          candidate.dy,
+          painter.width,
+          painter.height,
         );
         double totalOverlap = 0;
         for (final existing in resolved) {
@@ -255,23 +333,31 @@ class TopologyGraphPainter extends CustomPainter {
         }
       }
 
-      final rect = Rect.fromLTWH(bestPos.dx, bestPos.dy, painter.width, painter.height);
-      resolved.add(_ResolvedLabel(
-        painter: painter,
-        pos: bestPos,
-        rect: rect,
-        opacity: c.opacity,
-        color: TopologyViewData.nodeColor(c.node, colorScheme),
-        isSelected: c.isSelected,
-      ));
+      final rect = Rect.fromLTWH(
+        bestPos.dx,
+        bestPos.dy,
+        painter.width,
+        painter.height,
+      );
+      resolved.add(
+        _ResolvedLabel(
+          painter: painter,
+          pos: bestPos,
+          rect: rect,
+          opacity: c.opacity,
+          color: TopologyViewData.nodeColor(c.node, colorScheme),
+          isSelected: c.isSelected,
+        ),
+      );
     }
     return resolved;
   }
 
   void _drawLabel(Canvas canvas, _ResolvedLabel label) {
     // Draw background for readability
-    final bgPaint = Paint()
-      ..color = colorScheme.surface.withValues(alpha: 0.6 * label.opacity);
+    final bgPaint =
+        Paint()
+          ..color = colorScheme.surface.withValues(alpha: 0.6 * label.opacity);
     final bgRect = label.rect.inflate(3);
     canvas.drawRRect(
       RRect.fromRectAndRadius(bgRect, const Radius.circular(4)),
@@ -279,10 +365,11 @@ class TopologyGraphPainter extends CustomPainter {
     );
 
     if (label.isSelected) {
-      final borderPaint = Paint()
-        ..color = label.color.withValues(alpha: 0.4 * label.opacity)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 0.5;
+      final borderPaint =
+          Paint()
+            ..color = label.color.withValues(alpha: 0.4 * label.opacity)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 0.5;
       canvas.drawRRect(
         RRect.fromRectAndRadius(bgRect, const Radius.circular(4)),
         borderPaint,
@@ -314,24 +401,30 @@ class TopologyGraphPainter extends CustomPainter {
 
     // Glow Effect
     if (isMatch || isSelected) {
-      final glowPaint = Paint()
-        ..color = color.withValues(alpha: 0.4 * opacity)
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, (isMatch ? 20 : 12) * (0.8 + pulseValue * 0.4));
+      final glowPaint =
+          Paint()
+            ..color = color.withValues(alpha: 0.4 * opacity)
+            ..maskFilter = MaskFilter.blur(
+              BlurStyle.normal,
+              (isMatch ? 20 : 12) * (0.8 + pulseValue * 0.4),
+            );
       canvas.drawCircle(pos, radius * 1.5, glowPaint);
     }
 
     // Outer Ring
-    final ringPaint = Paint()
-      ..color = color.withValues(alpha: 0.3 * opacity)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
+    final ringPaint =
+        Paint()
+          ..color = color.withValues(alpha: 0.3 * opacity)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5;
     canvas.drawCircle(pos, radius + 5 * pulseValue, ringPaint);
 
     // Main Body
-    final bodyPaint = Paint()
-      ..color = color.withValues(alpha: opacity)
-      ..style = PaintingStyle.fill;
-    
+    final bodyPaint =
+        Paint()
+          ..color = color.withValues(alpha: opacity)
+          ..style = PaintingStyle.fill;
+
     // Gradient for premium feel
     bodyPaint.shader = RadialGradient(
       colors: [color, color.withValues(alpha: 0.7)],
@@ -353,16 +446,20 @@ class TopologyGraphPainter extends CustomPainter {
       ),
       textDirection: TextDirection.ltr,
     )..layout();
-    textPainter.paint(canvas, pos - Offset(textPainter.width / 2, textPainter.height / 2));
+    textPainter.paint(
+      canvas,
+      pos - Offset(textPainter.width / 2, textPainter.height / 2),
+    );
 
     // Labels are drawn in a second pass with collision avoidance (see _drawNodes).
   }
 
   void _drawScanlines(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = colorScheme.primary.withValues(alpha: 0.03)
-      ..strokeWidth = 1;
-    
+    final paint =
+        Paint()
+          ..color = colorScheme.primary.withValues(alpha: 0.03)
+          ..strokeWidth = 1;
+
     for (double y = 0; y < size.height; y += 40) {
       canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
     }

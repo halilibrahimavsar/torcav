@@ -28,7 +28,10 @@ class OuiDatabaseService {
     // For now, simple copy if not exists
     if (!await File(dbPath).exists()) {
       final data = await rootBundle.load('assets/data/oui.db');
-      final bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      final bytes = data.buffer.asUint8List(
+        data.offsetInBytes,
+        data.lengthInBytes,
+      );
       await File(dbPath).writeAsBytes(bytes, flush: true);
     }
 
@@ -37,17 +40,18 @@ class OuiDatabaseService {
 
   Future<String> getVendor(String mac) async {
     if (mac.isEmpty) return 'Unknown';
-    
+
     // Normalize MAC to OUI (XX:XX:XX)
     final cleanMac = mac.replaceAll(RegExp(r'[^0-9A-Fa-f]'), '').toUpperCase();
-    
+
     // Special case for zeroed MACs (Android 11+ restriction)
     if (cleanMac == '000000000000') return 'Android Device (MAC Restricted)';
-    
+
     if (cleanMac.length < 6) return 'Unknown';
-    
-    final oui = '${cleanMac.substring(0, 2)}:${cleanMac.substring(2, 4)}:${cleanMac.substring(4, 6)}';
-    
+
+    final oui =
+        '${cleanMac.substring(0, 2)}:${cleanMac.substring(2, 4)}:${cleanMac.substring(4, 6)}';
+
     try {
       final db = await _db;
       final results = await db.query(
@@ -64,7 +68,7 @@ class OuiDatabaseService {
     } catch (e) {
       // Fallback if DB fails
     }
-    
+
     return 'Unknown';
   }
 }

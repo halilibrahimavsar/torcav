@@ -83,7 +83,8 @@ class WifiDetailsPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       ...state.assessment.riskFactors.map(
-                        (factor) => Text('- ${_localizeRiskFactor(context, factor)}'),
+                        (factor) =>
+                            Text('- ${_localizeRiskFactor(context, factor)}'),
                       ),
                     ],
                     const SizedBox(height: 24),
@@ -144,10 +145,14 @@ class WifiDetailsPage extends StatelessWidget {
                   children: [
                     Text(
                       switch (assessment.status) {
-                        SecurityStatus.secure => context.l10n.securityStatusSecure,
-                        SecurityStatus.moderate => context.l10n.securityStatusModerate,
-                        SecurityStatus.atRisk => context.l10n.securityStatusAtRisk,
-                        SecurityStatus.critical => context.l10n.securityStatusCritical,
+                        SecurityStatus.secure =>
+                          context.l10n.securityStatusSecure,
+                        SecurityStatus.moderate =>
+                          context.l10n.securityStatusModerate,
+                        SecurityStatus.atRisk =>
+                          context.l10n.securityStatusAtRisk,
+                        SecurityStatus.critical =>
+                          context.l10n.securityStatusCritical,
                       }.toUpperCase(),
                       style: GoogleFonts.orbitron(
                         fontSize: 12,
@@ -168,9 +173,11 @@ class WifiDetailsPage extends StatelessWidget {
                 Text(
                   switch (assessment.status) {
                     SecurityStatus.secure => context.l10n.securitySummarySecure,
-                    SecurityStatus.moderate => context.l10n.securitySummaryModerate,
+                    SecurityStatus.moderate =>
+                      context.l10n.securitySummaryModerate,
                     SecurityStatus.atRisk => context.l10n.securitySummaryAtRisk,
-                    SecurityStatus.critical => context.l10n.securitySummaryCritical,
+                    SecurityStatus.critical =>
+                      context.l10n.securitySummaryCritical,
                   },
                   style: GoogleFonts.rajdhani(
                     fontSize: 14,
@@ -231,9 +238,11 @@ class WifiDetailsPage extends StatelessWidget {
               Text(
                 (switch (assessment.status) {
                   SecurityStatus.secure => context.l10n.securityStatusSecure,
-                  SecurityStatus.moderate => context.l10n.securityStatusModerate,
+                  SecurityStatus.moderate =>
+                    context.l10n.securityStatusModerate,
                   SecurityStatus.atRisk => context.l10n.securityStatusAtRisk,
-                  SecurityStatus.critical => context.l10n.securityStatusCritical,
+                  SecurityStatus.critical =>
+                    context.l10n.securityStatusCritical,
                 }).toUpperCase(),
                 style: GoogleFonts.rajdhani(
                   fontSize: 24,
@@ -245,12 +254,19 @@ class WifiDetailsPage extends StatelessWidget {
               if (isTrusted) ...[
                 const SizedBox(height: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.1),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.tertiary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.5),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.tertiary.withValues(alpha: 0.5),
                     ),
                   ),
                   child: Row(
@@ -288,23 +304,26 @@ class WifiDetailsPage extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: state.isTrusted
-          ? NeonButton(
-              onPressed: () => context.read<WifiDetailsBloc>().add(
-                    WifiDetailsUntrustRequested(network),
-                  ),
-              label: l10n.untrustNetwork.toUpperCase(),
-              icon: Icons.gpp_bad_rounded,
-              color: error,
-            )
-          : NeonButton(
-              onPressed: () => context.read<WifiDetailsBloc>().add(
-                    WifiDetailsTrustRequested(network),
-                  ),
-              label: l10n.trustNetwork.toUpperCase(),
-              icon: Icons.verified_user_rounded,
-              color: tertiary,
-            ),
+      child:
+          state.isTrusted
+              ? NeonButton(
+                onPressed:
+                    () => context.read<WifiDetailsBloc>().add(
+                      WifiDetailsUntrustRequested(network),
+                    ),
+                label: l10n.untrustNetwork.toUpperCase(),
+                icon: Icons.gpp_bad_rounded,
+                color: error,
+              )
+              : NeonButton(
+                onPressed:
+                    () => context.read<WifiDetailsBloc>().add(
+                      WifiDetailsTrustRequested(network),
+                    ),
+                label: l10n.trustNetwork.toUpperCase(),
+                icon: Icons.verified_user_rounded,
+                color: tertiary,
+              ),
     );
   }
 
@@ -404,7 +423,7 @@ class WifiDetailsPage extends StatelessWidget {
                 ),
               ),
             ],
-           ),
+          ),
           const SizedBox(height: 8),
           Text(
             desc,

@@ -27,7 +27,9 @@ class CyberDrawer extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border(
             right: BorderSide(
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.2),
               width: 1.5,
             ),
           ),
@@ -93,12 +95,16 @@ class CyberDrawer extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.5),
               width: 2,
             ),
             boxShadow: [
               BoxShadow(
-                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.2),
                 blurRadius: 15,
                 spreadRadius: 2,
               ),
@@ -107,7 +113,8 @@ class CyberDrawer extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(4),
             child: CircleAvatar(
-              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+              backgroundColor:
+                  Theme.of(context).colorScheme.surfaceContainerHighest,
               child: Icon(
                 Icons.person_outline_rounded,
                 size: 40,
@@ -145,10 +152,9 @@ class CyberDrawer extends StatelessWidget {
       child: GlassmorphicContainer(
         padding: const EdgeInsets.all(16),
         borderColor: color.withValues(alpha: 0.2),
-        backgroundColor: Theme.of(context)
-            .colorScheme
-            .surfaceContainerHighest
-            .withValues(alpha: 0.5),
+        backgroundColor: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         child: Row(
           children: [
             Container(
@@ -157,11 +163,7 @@ class CyberDrawer extends StatelessWidget {
                 color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(
-                Icons.verified_user_rounded,
-                color: color,
-                size: 20,
-              ),
+              child: Icon(Icons.verified_user_rounded, color: color, size: 20),
             ),
             const SizedBox(width: 12),
             Expanded(

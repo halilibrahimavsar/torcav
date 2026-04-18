@@ -11,7 +11,8 @@ class DnsSecurityUseCase {
   /// 2. Verify common domain (google.com) resolution.
   Future<SecurityEvent?> check() async {
     const canaryDomain = 'google.com';
-    final nonExistentDomain = 'this-should-nxdomain-torcav-${DateTime.now().millisecondsSinceEpoch}.com';
+    final nonExistentDomain =
+        'this-should-nxdomain-torcav-${DateTime.now().millisecondsSinceEpoch}.com';
 
     try {
       // 1. Check if non-existent domains resolve to an IP (NXDOMAIN hijacking)
@@ -24,7 +25,8 @@ class DnsSecurityUseCase {
             ssid: '',
             bssid: '',
             timestamp: DateTime.now(),
-            evidence: 'NXDOMAIN hijacking detected. Non-existent domain resolved to ${nxResult.map((a) => a.address).join(", ")}. This is common for ISP ad-injection or captive portals.',
+            evidence:
+                'NXDOMAIN hijacking detected. Non-existent domain resolved to ${nxResult.map((a) => a.address).join(", ")}. This is common for ISP ad-injection or captive portals.',
           );
         }
       } on SocketException {
@@ -40,7 +42,8 @@ class DnsSecurityUseCase {
           ssid: '',
           bssid: '',
           timestamp: DateTime.now(),
-          evidence: 'DNS Resolution failed for $canaryDomain. Possible network obstruction or DNS failure.',
+          evidence:
+              'DNS Resolution failed for $canaryDomain. Possible network obstruction or DNS failure.',
         );
       }
 

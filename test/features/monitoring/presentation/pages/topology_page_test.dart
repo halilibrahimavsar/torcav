@@ -92,7 +92,6 @@ void main() {
     debugPrint('WIDGET TREE AFTER TAP:');
     debugDumpApp();
 
-
     expect(find.text('ALICE PHONE'), findsOneWidget);
     expect(find.text('Apple'), findsOneWidget);
   });
@@ -131,10 +130,7 @@ Offset _projectedOffset({
   required Size size,
   required String nodeId,
 }) {
-  final positions = TopologyViewData.calculatePositions(
-    topology,
-    size,
-  );
+  final positions = TopologyViewData.calculatePositions(topology, size);
   return positions[nodeId]!;
 }
 

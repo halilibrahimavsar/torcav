@@ -102,7 +102,9 @@ class ReportExportRepositoryImpl implements ReportExportRepository {
         '<strong>${labels.backendLabel}:</strong> ${snapshot.backendUsed}<br>'
         '<strong>${labels.interfaceLabel}:</strong> ${snapshot.interfaceName}</div>',
       );
-      buffer.writeln('<div class="card"><h2>${labels.networksTitle}</h2><table>');
+      buffer.writeln(
+        '<div class="card"><h2>${labels.networksTitle}</h2><table>',
+      );
       buffer.writeln(
         '<tr><th>${labels.ssidHeader}</th><th>${labels.bssidHeader}</th>'
         '<th>${labels.dbmHeader}</th><th>${labels.securityHeader}</th>'
@@ -143,7 +145,9 @@ class ReportExportRepositoryImpl implements ReportExportRepository {
                   ),
                 ),
                 pw.SizedBox(height: 8),
-                pw.Text('${labels.timeLabel}: ${snapshot.timestamp.toIso8601String()}'),
+                pw.Text(
+                  '${labels.timeLabel}: ${snapshot.timestamp.toIso8601String()}',
+                ),
                 pw.Text('${labels.backendLabel}: ${snapshot.backendUsed}'),
                 pw.Text('${labels.interfaceLabel}: ${snapshot.interfaceName}'),
                 pw.SizedBox(height: 12),
@@ -159,7 +163,9 @@ class ReportExportRepositoryImpl implements ReportExportRepository {
                       snapshot.networks
                           .map(
                             (network) => [
-                              network.ssid.isEmpty ? labels.hiddenLabel : network.ssid,
+                              network.ssid.isEmpty
+                                  ? labels.hiddenLabel
+                                  : network.ssid,
                               network.bssid,
                               '${network.avgSignalDbm}',
                               network.security.name.toUpperCase(),
@@ -189,17 +195,21 @@ class ReportExportRepositoryImpl implements ReportExportRepository {
         'StdDev,${labels.channelHeader},Frequency,${labels.securityHeader},Vendor,Hidden',
       );
       for (final network in snapshot.networks) {
-        buffer.writeln([
-          _csvEscape(network.ssid.isEmpty ? labels.hiddenLabel : network.ssid),
-          network.bssid,
-          network.avgSignalDbm,
-          network.signalStdDev.toStringAsFixed(1),
-          network.channel,
-          network.frequency,
-          network.security.name.toUpperCase(),
-          _csvEscape(network.vendor),
-          network.isHidden,
-        ].join(','));
+        buffer.writeln(
+          [
+            _csvEscape(
+              network.ssid.isEmpty ? labels.hiddenLabel : network.ssid,
+            ),
+            network.bssid,
+            network.avgSignalDbm,
+            network.signalStdDev.toStringAsFixed(1),
+            network.channel,
+            network.frequency,
+            network.security.name.toUpperCase(),
+            _csvEscape(network.vendor),
+            network.isHidden,
+          ].join(','),
+        );
       }
       return Right(buffer.toString());
     } catch (e) {

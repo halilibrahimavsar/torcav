@@ -48,7 +48,9 @@ class AssessmentSession extends Equatable {
               .toList(),
       dnsResult:
           json['dnsResult'] is Map<String, dynamic>
-              ? DnsTestResult.fromJson(json['dnsResult'] as Map<String, dynamic>)
+              ? DnsTestResult.fromJson(
+                json['dnsResult'] as Map<String, dynamic>,
+              )
               : null,
       trustedProfileCount: json['trustedProfileCount'] as int? ?? 0,
     );

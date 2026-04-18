@@ -39,10 +39,9 @@ class WifiBentoHeader extends StatelessWidget {
                         isRefreshing
                             ? Icons.sync_rounded
                             : Icons.settings_input_antenna_rounded,
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withValues(alpha: isRefreshing ? 0.8 : 0.5),
+                        color: Theme.of(context).colorScheme.primary.withValues(
+                          alpha: isRefreshing ? 0.8 : 0.5,
+                        ),
                         size: 24,
                       ),
                     ],
@@ -59,7 +58,10 @@ class WifiBentoHeader extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: BentoStatTile(
-                                  label: AppLocalizations.of(context)!.networksLabel,
+                                  label:
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.networksLabel,
                                   value: '${snapshot.networks.length}',
                                   icon: Icons.wifi_find_rounded,
                                   color: Theme.of(context).colorScheme.primary,
@@ -68,15 +70,24 @@ class WifiBentoHeader extends StatelessWidget {
                               const SizedBox(width: 8),
                               Expanded(
                                 child: BentoStatTile(
-                                  label: AppLocalizations.of(context)!.securityLabel,
+                                  label:
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.securityLabel,
                                   value:
                                       '${snapshot.networks.where((n) => n.security != SecurityType.open).length}',
                                   icon: Icons.security_rounded,
                                   color: AppColors.neonGreen,
-                                  subValue: AppLocalizations.of(context)!
-                                      .openCount(snapshot.networks
-                                          .where((n) => n.security == SecurityType.open)
-                                          .length),
+                                  subValue: AppLocalizations.of(
+                                    context,
+                                  )!.openCount(
+                                    snapshot.networks
+                                        .where(
+                                          (n) =>
+                                              n.security == SecurityType.open,
+                                        )
+                                        .length,
+                                  ),
                                 ),
                               ),
                             ],
@@ -88,19 +99,29 @@ class WifiBentoHeader extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: BentoStatTile(
-                                  label: AppLocalizations.of(context)!.avgSignalLabel,
-                                  value: snapshot.networks.isEmpty
-                                      ? AppLocalizations.of(context)!.notAvailable
-                                      : '${(snapshot.networks.map((n) => n.avgSignalDbm).reduce((a, b) => a + b) / snapshot.networks.length).round()}',
+                                  label:
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.avgSignalLabel,
+                                  value:
+                                      snapshot.networks.isEmpty
+                                          ? AppLocalizations.of(
+                                            context,
+                                          )!.notAvailable
+                                          : '${(snapshot.networks.map((n) => n.avgSignalDbm).reduce((a, b) => a + b) / snapshot.networks.length).round()}',
                                   icon: Icons.signal_wifi_4_bar_rounded,
                                   color: AppColors.neonPurple,
-                                  subValue: AppLocalizations.of(context)!.dbmCaps,
+                                  subValue:
+                                      AppLocalizations.of(context)!.dbmCaps,
                                 ),
                               ),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: BentoStatTile(
-                                  label: AppLocalizations.of(context)!.interfaceLabel,
+                                  label:
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.interfaceLabel,
                                   value: snapshot.interfaceName.toUpperCase(),
                                   icon: Icons.lan_rounded,
                                   color: AppColors.neonOrange,
@@ -122,45 +143,48 @@ class WifiBentoHeader extends StatelessWidget {
           SizedBox(
             height: 80,
             child: Row(
-              children: snapshot.bandStats.map((band) {
-                final isLast = snapshot.bandStats.last == band;
-                return Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(right: isLast ? 0 : 8),
-                    child: NeonCard(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      glowColor: _getBandColor(context, band.band),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            band.label,
-                            style: GoogleFonts.orbitron(
-                              color: _getBandColor(context, band.band),
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
+              children:
+                  snapshot.bandStats.map((band) {
+                    final isLast = snapshot.bandStats.last == band;
+                    return Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(right: isLast ? 0 : 8),
+                        child: NeonCard(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
                           ),
-                          const Spacer(),
-                          Text(
-                            AppLocalizations.of(context)!
-                                .networksCount(band.networkCount),
-                            style: GoogleFonts.rajdhani(
-                              color: Theme.of(context).colorScheme.onSurface,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          glowColor: _getBandColor(context, band.band),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                band.label,
+                                style: GoogleFonts.orbitron(
+                                  color: _getBandColor(context, band.band),
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Spacer(),
+                              Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!.networksCount(band.networkCount),
+                                style: GoogleFonts.rajdhani(
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              }).toList(),
+                    );
+                  }).toList(),
             ),
           ),
       ],

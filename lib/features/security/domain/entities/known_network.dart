@@ -41,12 +41,12 @@ class KnownNetwork extends Equatable {
 
   @override
   List<Object?> get props => [
-        ssid,
-        bssid,
-        security,
-        gateway,
-        firstSeen,
-        lastSeen,
-        seenCount,
-      ];
+    ssid,
+    bssid,
+    security,
+    gateway,
+    firstSeen,
+    lastSeen,
+    seenCount,
+  ];
 }

@@ -19,33 +19,32 @@ class RecommendationBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     if (snapshot.bandStats.isEmpty) return const SizedBox.shrink();
 
-    final sortedBands = List.of(snapshot.bandStats)
-      ..sort(
-        (a, b) => snapshot.channelStats
-            .where((c) {
-              final f = c.frequency;
-              return switch (a.band) {
-                WifiBand.ghz24 => f < 5000,
-                WifiBand.ghz5 => f >= 5000 && f < 5925,
-                WifiBand.ghz6 => f >= 5925,
-              };
-            })
-            .map((c) => c.congestionScore)
-            .fold(0.0, (acc, s) => acc > s ? acc : s)
-            .compareTo(
-              snapshot.channelStats
-                  .where((c) {
-                    final f = c.frequency;
-                    return switch (b.band) {
-                      WifiBand.ghz24 => f < 5000,
-                      WifiBand.ghz5 => f >= 5000 && f < 5925,
-                      WifiBand.ghz6 => f >= 5925,
-                    };
-                  })
-                  .map((c) => c.congestionScore)
-                  .fold(0.0, (acc, s) => acc > s ? acc : s),
-            ),
-      );
+    final sortedBands = List.of(snapshot.bandStats)..sort(
+      (a, b) => snapshot.channelStats
+          .where((c) {
+            final f = c.frequency;
+            return switch (a.band) {
+              WifiBand.ghz24 => f < 5000,
+              WifiBand.ghz5 => f >= 5000 && f < 5925,
+              WifiBand.ghz6 => f >= 5925,
+            };
+          })
+          .map((c) => c.congestionScore)
+          .fold(0.0, (acc, s) => acc > s ? acc : s)
+          .compareTo(
+            snapshot.channelStats
+                .where((c) {
+                  final f = c.frequency;
+                  return switch (b.band) {
+                    WifiBand.ghz24 => f < 5000,
+                    WifiBand.ghz5 => f >= 5000 && f < 5925,
+                    WifiBand.ghz6 => f >= 5925,
+                  };
+                })
+                .map((c) => c.congestionScore)
+                .fold(0.0, (acc, s) => acc > s ? acc : s),
+          ),
+    );
 
     final best = sortedBands.firstOrNull;
     if (best == null || best.recommendedChannels.isEmpty) {
@@ -74,22 +73,24 @@ class RecommendationBanner extends StatelessWidget {
               children: [
                 Flexible(
                   child: Text(
-                    AppLocalizations.of(context)!
-                        .recommendationTip(channels, bandName),
+                    AppLocalizations.of(
+                      context,
+                    )!.recommendationTip(channels, bandName),
                     style: GoogleFonts.rajdhani(
                       fontSize: 13,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withValues(alpha: 0.85),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.85),
                     ),
                   ),
                 ),
                 const SizedBox(width: 4),
                 InfoIconButton(
                   title: AppLocalizations.of(context)!.channelInterferenceTitle,
-                  body: AppLocalizations.of(context)!
-                      .channelInterferenceDescription,
+                  body:
+                      AppLocalizations.of(
+                        context,
+                      )!.channelInterferenceDescription,
                   color: color,
                 ),
               ],
@@ -100,10 +101,9 @@ class RecommendationBanner extends StatelessWidget {
             child: Icon(
               Icons.close_rounded,
               size: 16,
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurfaceVariant
-                  .withValues(alpha: 0.5),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
             ),
           ),
         ],

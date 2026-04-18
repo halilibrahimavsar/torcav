@@ -144,40 +144,66 @@ class TopologyBuilder {
     final vendor = device.vendor.toLowerCase();
 
     // IoT / embedded / smart home
-    if (host.contains('printer') || host.contains('print') ||
-        host.contains('cam') || host.contains('camera') ||
-        host.contains('chromecast') || host.contains('firetv') ||
-        host.contains('echo') || host.contains('alexa') ||
-        host.contains('nest') || host.contains('hub') ||
-        host.contains('nas') || host.contains('synology') ||
-        host.contains('qnap') || host.contains('watch') ||
-        host.contains('sensor') || host.contains('bulb') ||
-        vendor.contains('raspberry') || vendor.contains('arduino') ||
-        vendor.contains('espressif') || vendor.contains('tuya') ||
-        vendor.contains('belkin') || vendor.contains('wemo') ||
-        vendor.contains('sonos') || vendor.contains('philips hue')) {
+    if (host.contains('printer') ||
+        host.contains('print') ||
+        host.contains('cam') ||
+        host.contains('camera') ||
+        host.contains('chromecast') ||
+        host.contains('firetv') ||
+        host.contains('echo') ||
+        host.contains('alexa') ||
+        host.contains('nest') ||
+        host.contains('hub') ||
+        host.contains('nas') ||
+        host.contains('synology') ||
+        host.contains('qnap') ||
+        host.contains('watch') ||
+        host.contains('sensor') ||
+        host.contains('bulb') ||
+        vendor.contains('raspberry') ||
+        vendor.contains('arduino') ||
+        vendor.contains('espressif') ||
+        vendor.contains('tuya') ||
+        vendor.contains('belkin') ||
+        vendor.contains('wemo') ||
+        vendor.contains('sonos') ||
+        vendor.contains('philips hue')) {
       return TopologyNodeType.iot;
     }
 
     // Mobile / handheld
-    if (host.contains('phone') || host.contains('mobile') ||
-        host.contains('iphone') || host.contains('android') ||
-        host.contains('pixel') || host.contains('galaxy') ||
-        host.contains('ipad') || host.contains('tablet') ||
-        vendor.contains('apple') || vendor.contains('samsung') ||
-        vendor.contains('xiaomi') || vendor.contains('huawei') ||
-        vendor.contains('oneplus') || vendor.contains('oppo') ||
-        vendor.contains('vivo') || vendor.contains('realme')) {
+    if (host.contains('phone') ||
+        host.contains('mobile') ||
+        host.contains('iphone') ||
+        host.contains('android') ||
+        host.contains('pixel') ||
+        host.contains('galaxy') ||
+        host.contains('ipad') ||
+        host.contains('tablet') ||
+        vendor.contains('apple') ||
+        vendor.contains('samsung') ||
+        vendor.contains('xiaomi') ||
+        vendor.contains('huawei') ||
+        vendor.contains('oneplus') ||
+        vendor.contains('oppo') ||
+        vendor.contains('vivo') ||
+        vendor.contains('realme')) {
       return TopologyNodeType.mobile;
     }
 
     // Network infrastructure
-    if (host.contains('router') || host.contains('gateway') ||
-        host.contains('access-point') || host.contains('switch') ||
-        vendor.contains('tp-link') || vendor.contains('asus') ||
-        vendor.contains('netgear') || vendor.contains('ubiquiti') ||
-        vendor.contains('mikrotik') || vendor.contains('cisco') ||
-        vendor.contains('d-link') || vendor.contains('linksys')) {
+    if (host.contains('router') ||
+        host.contains('gateway') ||
+        host.contains('access-point') ||
+        host.contains('switch') ||
+        vendor.contains('tp-link') ||
+        vendor.contains('asus') ||
+        vendor.contains('netgear') ||
+        vendor.contains('ubiquiti') ||
+        vendor.contains('mikrotik') ||
+        vendor.contains('cisco') ||
+        vendor.contains('d-link') ||
+        vendor.contains('linksys')) {
       return TopologyNodeType.router;
     }
 

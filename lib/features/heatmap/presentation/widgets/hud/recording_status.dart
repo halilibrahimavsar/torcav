@@ -81,7 +81,9 @@ class _RecordingStatusState extends State<RecordingStatus>
                 Container(
                   width: 1,
                   height: 12,
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.2),
                 ),
                 const SizedBox(width: 8),
                 Text(
@@ -96,7 +98,9 @@ class _RecordingStatusState extends State<RecordingStatus>
                 Text(
                   'PTS',
                   style: GoogleFonts.orbitron(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.54),
                     fontSize: 8,
                     fontWeight: FontWeight.w600,
                   ),

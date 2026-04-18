@@ -86,7 +86,10 @@ class _SettingsPageState extends State<SettingsPage> {
                             Text(
                               _getLanguageName(locale.languageCode),
                               style: GoogleFonts.rajdhani(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
                                 fontSize: 13,
                               ),
                             ),
@@ -95,7 +98,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       Icon(
                         Icons.chevron_right_rounded,
-                        color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.4),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.secondary.withValues(alpha: 0.4),
                         size: 20,
                       ),
                     ],
@@ -140,7 +145,10 @@ class _SettingsPageState extends State<SettingsPage> {
                             Text(
                               _getThemeName(mode, l10n),
                               style: GoogleFonts.rajdhani(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
                                 fontSize: 13,
                               ),
                             ),
@@ -190,7 +198,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     },
                   ),
                   Divider(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.1),
                     height: 24,
                   ),
                   // Interval Slider
@@ -209,13 +219,16 @@ class _SettingsPageState extends State<SettingsPage> {
                     },
                   ),
                   Divider(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.1),
                     height: 24,
                   ),
                   // Backend
                   DropdownButtonFormField<WifiBackendPreference>(
                     value: settings.defaultBackendPreference,
-                    dropdownColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+                    dropdownColor:
+                        Theme.of(context).colorScheme.surfaceContainerHigh,
                     decoration: InputDecoration(
                       labelText: l10n.settingsBackendPreference,
                     ),
@@ -226,9 +239,10 @@ class _SettingsPageState extends State<SettingsPage> {
                                 value: backend,
                                 child: Text(
                                   backend.name.toUpperCase(),
-                                    style: GoogleFonts.rajdhani(
-                                      color: Theme.of(context).colorScheme.onSurface,
-                                    ),
+                                  style: GoogleFonts.rajdhani(
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                  ),
                                 ),
                               ),
                             )
@@ -351,13 +365,18 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: isSelected ? Theme.of(context).colorScheme.primary : Colors.transparent,
+          color:
+              isSelected
+                  ? Theme.of(context).colorScheme.primary
+                  : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
           boxShadow:
               isSelected
                   ? [
                     BoxShadow(
-                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.3),
                       blurRadius: 8,
                     ),
                   ]
@@ -366,7 +385,10 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Icon(
           icon,
           size: 18,
-          color: isSelected ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurfaceVariant,
+          color:
+              isSelected
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
         ),
       ),
     );
@@ -403,7 +425,9 @@ class _SettingsPageState extends State<SettingsPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
             side: BorderSide(
-              color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.15),
+              color: Theme.of(
+                context,
+              ).colorScheme.secondary.withValues(alpha: 0.15),
             ),
           ),
           title: NeonText(
@@ -604,9 +628,7 @@ class _LanguageOption extends StatelessWidget {
                       : Colors.transparent,
               border:
                   isSelected
-                      ? Border.all(
-                        color: secondary.withValues(alpha: 0.3),
-                      )
+                      ? Border.all(color: secondary.withValues(alpha: 0.3))
                       : null,
             ),
             child: Row(
@@ -614,7 +636,8 @@ class _LanguageOption extends StatelessWidget {
                 Text(
                   label,
                   style: GoogleFonts.rajdhani(
-                        color: isSelected
+                    color:
+                        isSelected
                             ? secondary
                             : Theme.of(context).colorScheme.onSurface,
                     fontSize: 16,
@@ -623,11 +646,7 @@ class _LanguageOption extends StatelessWidget {
                 ),
                 const Spacer(),
                 if (isSelected)
-                  Icon(
-                    Icons.check_circle_rounded,
-                    color: secondary,
-                    size: 20,
-                  ),
+                  Icon(Icons.check_circle_rounded, color: secondary, size: 20),
               ],
             ),
           ),

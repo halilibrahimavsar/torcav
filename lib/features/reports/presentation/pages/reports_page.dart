@@ -46,7 +46,9 @@ class ReportsView extends StatelessWidget {
         } else if (state is ReportsFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              backgroundColor: Theme.of(context).colorScheme.error.withValues(alpha: 0.8),
+              backgroundColor: Theme.of(
+                context,
+              ).colorScheme.error.withValues(alpha: 0.8),
               content: Text(
                 '${l10n.errorLabel}: ${state.message}',
                 style: GoogleFonts.rajdhani(
@@ -115,7 +117,8 @@ class ReportsView extends StatelessWidget {
                         child: Text(
                           l10n.noSnapshotAvailable,
                           style: GoogleFonts.rajdhani(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
@@ -164,7 +167,11 @@ class ReportsView extends StatelessWidget {
                         isLoading: isLoading,
                         onTap:
                             () => context.read<ReportsBloc>().add(
-                              GenerateReport(latest, ReportFormat.json, _getReportLabels(context)),
+                              GenerateReport(
+                                latest,
+                                ReportFormat.json,
+                                _getReportLabels(context),
+                              ),
                             ),
                         delay: const Duration(milliseconds: 400),
                       ),
@@ -175,7 +182,11 @@ class ReportsView extends StatelessWidget {
                         isLoading: isLoading,
                         onTap:
                             () => context.read<ReportsBloc>().add(
-                              GenerateReport(latest, ReportFormat.html, _getReportLabels(context)),
+                              GenerateReport(
+                                latest,
+                                ReportFormat.html,
+                                _getReportLabels(context),
+                              ),
                             ),
                         delay: const Duration(milliseconds: 450),
                       ),
@@ -186,7 +197,11 @@ class ReportsView extends StatelessWidget {
                         isLoading: isLoading,
                         onTap:
                             () => context.read<ReportsBloc>().add(
-                              GenerateReport(latest, ReportFormat.pdf, _getReportLabels(context)),
+                              GenerateReport(
+                                latest,
+                                ReportFormat.pdf,
+                                _getReportLabels(context),
+                              ),
                             ),
                         delay: const Duration(milliseconds: 500),
                       ),
@@ -197,7 +212,11 @@ class ReportsView extends StatelessWidget {
                         isLoading: isLoading,
                         onTap:
                             () => context.read<ReportsBloc>().add(
-                              GenerateReport(latest, ReportFormat.csv, _getReportLabels(context)),
+                              GenerateReport(
+                                latest,
+                                ReportFormat.csv,
+                                _getReportLabels(context),
+                              ),
                             ),
                         delay: const Duration(milliseconds: 550),
                       ),
@@ -261,9 +280,14 @@ class ReportsView extends StatelessWidget {
     await Printing.layoutPdf(
       onLayout: (_) async {
         final useCase = getIt<GenerateReportUseCase>();
-        final result = await useCase(snapshot, ReportFormat.pdf, _getReportLabels(context));
+        final result = await useCase(
+          snapshot,
+          ReportFormat.pdf,
+          _getReportLabels(context),
+        );
         return result.fold(
-          (failure) => Uint8List(0), // Better error handling would be to show a toast
+          (failure) =>
+              Uint8List(0), // Better error handling would be to show a toast
           (content) => content as Uint8List,
         );
       },
@@ -340,7 +364,9 @@ class ReportsView extends StatelessWidget {
   void _toast(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.8),
+        backgroundColor: Theme.of(
+          context,
+        ).colorScheme.tertiary.withValues(alpha: 0.8),
         content: Text(
           message,
           style: GoogleFonts.rajdhani(
@@ -424,7 +450,9 @@ class _SessionSummaryCard extends StatelessWidget {
               Container(
                 width: 1,
                 height: 40,
-                color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.2),
+                color: Theme.of(
+                  context,
+                ).colorScheme.outlineVariant.withValues(alpha: 0.2),
                 margin: const EdgeInsets.symmetric(horizontal: 16),
               ),
               Expanded(

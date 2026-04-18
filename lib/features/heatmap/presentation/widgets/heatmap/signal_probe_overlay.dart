@@ -44,12 +44,17 @@ class SignalProbeOverlay extends StatelessWidget {
     final color = _signalColor(rssi);
 
     final statusLabel =
-        rssi > -60 ? 'OPTIMAL' : rssi > -75 ? 'FAIR' : 'CRITICAL';
-    final statusColor = rssi > -60
-        ? AppColors.neonGreen
-        : rssi > -75
-        ? AppColors.neonOrange
-        : AppColors.neonRed;
+        rssi > -60
+            ? 'OPTIMAL'
+            : rssi > -75
+            ? 'FAIR'
+            : 'CRITICAL';
+    final statusColor =
+        rssi > -60
+            ? AppColors.neonGreen
+            : rssi > -75
+            ? AppColors.neonOrange
+            : AppColors.neonRed;
 
     final apName = (p.ssid.isNotEmpty) ? p.ssid : p.bssid;
     final timeLabel = DateFormat('HH:mm:ss').format(p.timestamp);
@@ -65,9 +70,10 @@ class SignalProbeOverlay extends StatelessWidget {
             onTap: onDismiss,
             behavior: HitTestBehavior.opaque,
             child: Container(
-              color: isLight 
-                  ? theme.colorScheme.scrim.withValues(alpha: 0.12) 
-                  : theme.colorScheme.scrim.withValues(alpha: 0.4),
+              color:
+                  isLight
+                      ? theme.colorScheme.scrim.withValues(alpha: 0.12)
+                      : theme.colorScheme.scrim.withValues(alpha: 0.4),
             ),
           ),
           Center(
@@ -115,7 +121,8 @@ class SignalProbeOverlay extends StatelessWidget {
                                   Text(
                                     apName.toUpperCase(),
                                     style: GoogleFonts.outfit(
-                                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                                      color: theme.colorScheme.onSurface
+                                          .withValues(alpha: 0.5),
                                       fontSize: 11,
                                     ),
                                     overflow: TextOverflow.ellipsis,
@@ -126,7 +133,9 @@ class SignalProbeOverlay extends StatelessWidget {
                           IconButton(
                             icon: Icon(
                               Icons.close_rounded,
-                              color: theme.colorScheme.onSurface.withValues(alpha: isLight ? 0.6 : 0.45),
+                              color: theme.colorScheme.onSurface.withValues(
+                                alpha: isLight ? 0.6 : 0.45,
+                              ),
                             ),
                             onPressed: onDismiss,
                           ),
@@ -219,8 +228,8 @@ class ProbeDetailRow extends StatelessWidget {
     return Row(
       children: [
         Icon(
-          icon, 
-          size: 13, 
+          icon,
+          size: 13,
           color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
         ),
         const SizedBox(width: 6),

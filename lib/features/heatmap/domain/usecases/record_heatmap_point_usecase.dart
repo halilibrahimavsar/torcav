@@ -22,39 +22,34 @@ class RecordHeatmapPointUsecase {
   }) async {
     final sessionsResult = await _repository.getSessions();
 
-    return sessionsResult.fold(
-      (failure) => Left(failure),
-      (sessions) async {
-        final existing = sessions.isEmpty
-            ? null
-            : sessions.firstWhere(
+    return sessionsResult.fold((failure) => Left(failure), (sessions) async {
+      final existing =
+          sessions.isEmpty
+              ? null
+              : sessions.firstWhere(
                 (s) => s.id == sessionId,
-                orElse: () => HeatmapSession(
-                  id: sessionId,
-                  name: sessionName,
-                  points: const [],
-                  createdAt: DateTime.now(),
-                ),
+                orElse:
+                    () => HeatmapSession(
+                      id: sessionId,
+                      name: sessionName,
+                      points: const [],
+                      createdAt: DateTime.now(),
+                    ),
               );
 
-        final session = existing ??
-            HeatmapSession(
-              id: sessionId,
-              name: sessionName,
-              points: const [],
-              createdAt: DateTime.now(),
-            );
+      final session =
+          existing ??
+          HeatmapSession(
+            id: sessionId,
+            name: sessionName,
+            points: const [],
+            createdAt: DateTime.now(),
+          );
 
-        final updated = session.copyWith(
-          points: [...session.points, point],
-        );
+      final updated = session.copyWith(points: [...session.points, point]);
 
-        final saveResult = await _repository.saveSession(updated);
-        return saveResult.fold(
-          (f) => Left(f),
-          (_) => Right(updated),
-        );
-      },
-    );
+      final saveResult = await _repository.saveSession(updated);
+      return saveResult.fold((f) => Left(f), (_) => Right(updated));
+    });
   }
 }

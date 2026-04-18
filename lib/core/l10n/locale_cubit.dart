@@ -30,8 +30,7 @@ class LocaleCubit extends Cubit<Locale> {
   /// Reads the device's preferred locale list and returns the first one
   /// whose language code is among the app's supported languages.
   Locale? _detectSystemLocale() {
-    final deviceLocales =
-        WidgetsBinding.instance.platformDispatcher.locales;
+    final deviceLocales = WidgetsBinding.instance.platformDispatcher.locales;
     for (final locale in deviceLocales) {
       if (_supportedCodes.contains(locale.languageCode)) {
         return Locale(locale.languageCode);

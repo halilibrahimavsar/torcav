@@ -33,7 +33,11 @@ class ScanPortsEvent extends TopologyEvent {
   final String ip;
   final String? customPorts;
 
-  const ScanPortsEvent({required this.nodeId, required this.ip, this.customPorts});
+  const ScanPortsEvent({
+    required this.nodeId,
+    required this.ip,
+    this.customPorts,
+  });
 
   @override
   List<Object?> get props => [nodeId, ip, customPorts];
@@ -123,35 +127,44 @@ class TopologyLoaded extends TopologyState {
   }) {
     return TopologyLoaded(
       topology: topology ?? this.topology,
-      pingingNodeId: clearPinging ? null : (pingingNodeId ?? this.pingingNodeId),
-      scanningNodeId: clearScanning ? null : (scanningNodeId ?? this.scanningNodeId),
+      pingingNodeId:
+          clearPinging ? null : (pingingNodeId ?? this.pingingNodeId),
+      scanningNodeId:
+          clearScanning ? null : (scanningNodeId ?? this.scanningNodeId),
       openPorts: clearOpenPorts ? null : (openPorts ?? this.openPorts),
-      lookingUpNodeId: clearLookingUp ? null : (lookingUpNodeId ?? this.lookingUpNodeId),
+      lookingUpNodeId:
+          clearLookingUp ? null : (lookingUpNodeId ?? this.lookingUpNodeId),
       hostname: clearHostname ? null : (hostname ?? this.hostname),
       isScanningPorts: isScanningPorts ?? this.isScanningPorts,
       isLookingUpHostname: isLookingUpHostname ?? this.isLookingUpHostname,
       osHint: clearOsHint ? null : (osHint ?? this.osHint),
-      detectingOsNodeId: clearDetectingOs ? null : (detectingOsNodeId ?? this.detectingOsNodeId),
+      detectingOsNodeId:
+          clearDetectingOs
+              ? null
+              : (detectingOsNodeId ?? this.detectingOsNodeId),
       isDetectingOs: isDetectingOs ?? this.isDetectingOs,
-      lastErrorMessage: clearErrorMessage ? null : (lastErrorMessage ?? this.lastErrorMessage),
+      lastErrorMessage:
+          clearErrorMessage
+              ? null
+              : (lastErrorMessage ?? this.lastErrorMessage),
     );
   }
 
   @override
   List<Object?> get props => [
-        topology,
-        pingingNodeId,
-        scanningNodeId,
-        openPorts,
-        lookingUpNodeId,
-        hostname,
-        isScanningPorts,
-        isLookingUpHostname,
-        osHint,
-        detectingOsNodeId,
-        isDetectingOs,
-        lastErrorMessage,
-      ];
+    topology,
+    pingingNodeId,
+    scanningNodeId,
+    openPorts,
+    lookingUpNodeId,
+    hostname,
+    isScanningPorts,
+    isLookingUpHostname,
+    osHint,
+    detectingOsNodeId,
+    isDetectingOs,
+    lastErrorMessage,
+  ];
 }
 
 class TopologyError extends TopologyState {
@@ -167,11 +180,8 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
   final PingNodeUseCase _pingNode;
   final TopologyRepository _repository;
 
-  TopologyBloc(
-    this._getTopology,
-    this._pingNode,
-    this._repository,
-  ) : super(TopologyInitial()) {
+  TopologyBloc(this._getTopology, this._pingNode, this._repository)
+    : super(TopologyInitial()) {
     on<LoadTopologyEvent>(_onLoadTopology);
     on<PingNodeEvent>(_onPingNode);
     on<ScanPortsEvent>(_onScanPorts);
@@ -220,31 +230,35 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
     emit(currentState.copyWith(pingingNodeId: event.nodeId));
 
     final result = await _pingNode(event.ip);
-    final afterState = state is TopologyLoaded ? state as TopologyLoaded : currentState;
+    final afterState =
+        state is TopologyLoaded ? state as TopologyLoaded : currentState;
 
     result.fold(
       (f) {
-        emit(afterState.copyWith(clearPinging: true, lastErrorMessage: f.message));
+        emit(
+          afterState.copyWith(clearPinging: true, lastErrorMessage: f.message),
+        );
       },
       (ms) {
-        final updatedNodes = afterState.topology.nodes.map((node) {
-          if (node.id == event.nodeId) {
-            return TopologyNode(
-              id: node.id,
-              label: node.label,
-              type: node.type,
-              ip: node.ip,
-              mac: node.mac,
-              signalStrength: node.signalStrength,
-              frequency: node.frequency,
-              latencyMs: ms,
-              vendor: node.vendor,
-              isGateway: node.isGateway,
-              isCurrentDevice: node.isCurrentDevice,
-            );
-          }
-          return node;
-        }).toList();
+        final updatedNodes =
+            afterState.topology.nodes.map((node) {
+              if (node.id == event.nodeId) {
+                return TopologyNode(
+                  id: node.id,
+                  label: node.label,
+                  type: node.type,
+                  ip: node.ip,
+                  mac: node.mac,
+                  signalStrength: node.signalStrength,
+                  frequency: node.frequency,
+                  latencyMs: ms,
+                  vendor: node.vendor,
+                  isGateway: node.isGateway,
+                  isCurrentDevice: node.isCurrentDevice,
+                );
+              }
+              return node;
+            }).toList();
 
         final updatedTopology = NetworkTopology(
           nodes: updatedNodes,
@@ -253,11 +267,13 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
           currentDeviceIp: afterState.topology.currentDeviceIp,
         );
 
-        emit(currentState.copyWith(
-          topology: updatedTopology,
-          clearPinging: true,
-          clearErrorMessage: true,
-        ));
+        emit(
+          currentState.copyWith(
+            topology: updatedTopology,
+            clearPinging: true,
+            clearErrorMessage: true,
+          ),
+        );
       },
     );
   }
@@ -269,12 +285,14 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
     if (state is! TopologyLoaded) return;
     final currentState = state as TopologyLoaded;
 
-    emit(currentState.copyWith(
-      scanningNodeId: event.nodeId,
-      isScanningPorts: true,
-      clearOpenPorts: true,
-      clearErrorMessage: true,
-    ));
+    emit(
+      currentState.copyWith(
+        scanningNodeId: event.nodeId,
+        isScanningPorts: true,
+        clearOpenPorts: true,
+        clearErrorMessage: true,
+      ),
+    );
 
     List<int>? targetPorts;
     if (event.customPorts != null && event.customPorts!.isNotEmpty) {
@@ -309,15 +327,23 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
     }
 
     final result = await _repository.scanPorts(event.ip, ports: targetPorts);
-    final afterState = state is TopologyLoaded ? state as TopologyLoaded : currentState;
+    final afterState =
+        state is TopologyLoaded ? state as TopologyLoaded : currentState;
 
     result.fold(
-      (f) => emit(afterState.copyWith(isScanningPorts: false, lastErrorMessage: f.message)),
-      (ports) => emit(afterState.copyWith(
-        isScanningPorts: false,
-        openPorts: ports,
-        clearErrorMessage: true,
-      )),
+      (f) => emit(
+        afterState.copyWith(
+          isScanningPorts: false,
+          lastErrorMessage: f.message,
+        ),
+      ),
+      (ports) => emit(
+        afterState.copyWith(
+          isScanningPorts: false,
+          openPorts: ports,
+          clearErrorMessage: true,
+        ),
+      ),
     );
   }
 
@@ -328,23 +354,33 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
     final currentState = state;
     if (currentState is! TopologyLoaded) return;
 
-    emit(currentState.copyWith(
-      lookingUpNodeId: event.nodeId,
-      isLookingUpHostname: true,
-      clearHostname: true,
-      clearErrorMessage: true,
-    ));
+    emit(
+      currentState.copyWith(
+        lookingUpNodeId: event.nodeId,
+        isLookingUpHostname: true,
+        clearHostname: true,
+        clearErrorMessage: true,
+      ),
+    );
 
     final result = await _repository.reverseLookup(event.ip);
-    final afterState = state is TopologyLoaded ? state as TopologyLoaded : currentState;
+    final afterState =
+        state is TopologyLoaded ? state as TopologyLoaded : currentState;
 
     result.fold(
-      (f) => emit(afterState.copyWith(isLookingUpHostname: false, lastErrorMessage: f.message)),
-      (host) => emit(afterState.copyWith(
-        isLookingUpHostname: false,
-        hostname: host,
-        clearErrorMessage: true,
-      )),
+      (f) => emit(
+        afterState.copyWith(
+          isLookingUpHostname: false,
+          lastErrorMessage: f.message,
+        ),
+      ),
+      (host) => emit(
+        afterState.copyWith(
+          isLookingUpHostname: false,
+          hostname: host,
+          clearErrorMessage: true,
+        ),
+      ),
     );
   }
 
@@ -355,23 +391,30 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
     final currentState = state;
     if (currentState is! TopologyLoaded) return;
 
-    emit(currentState.copyWith(
-      detectingOsNodeId: event.nodeId,
-      isDetectingOs: true,
-      clearOsHint: true,
-      clearErrorMessage: true,
-    ));
+    emit(
+      currentState.copyWith(
+        detectingOsNodeId: event.nodeId,
+        isDetectingOs: true,
+        clearOsHint: true,
+        clearErrorMessage: true,
+      ),
+    );
 
     final result = await _repository.detectOsFromTtl(event.ip);
-    final afterState = state is TopologyLoaded ? state as TopologyLoaded : currentState;
+    final afterState =
+        state is TopologyLoaded ? state as TopologyLoaded : currentState;
 
     result.fold(
-      (f) => emit(afterState.copyWith(isDetectingOs: false, lastErrorMessage: f.message)),
-      (hint) => emit(afterState.copyWith(
-        isDetectingOs: false,
-        osHint: hint,
-        clearErrorMessage: true,
-      )),
+      (f) => emit(
+        afterState.copyWith(isDetectingOs: false, lastErrorMessage: f.message),
+      ),
+      (hint) => emit(
+        afterState.copyWith(
+          isDetectingOs: false,
+          osHint: hint,
+          clearErrorMessage: true,
+        ),
+      ),
     );
   }
 }

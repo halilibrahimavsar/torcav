@@ -23,27 +23,32 @@ class StatBrick extends StatelessWidget {
     final theme = Theme.of(context);
     final isLight = theme.brightness == Brightness.light;
     final onSurface = theme.colorScheme.onSurface;
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: isLight 
-            ? theme.colorScheme.surface.withValues(alpha: 0.5) 
-            : Colors.white.withValues(alpha: 0.04),
+        color:
+            isLight
+                ? theme.colorScheme.surface.withValues(alpha: 0.5)
+                : Colors.white.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isLight 
-              ? theme.colorScheme.primary.withValues(alpha: 0.12)
-              : (color ?? onSurface).withValues(alpha: 0.1),
+          color:
+              isLight
+                  ? theme.colorScheme.primary.withValues(alpha: 0.12)
+                  : (color ?? onSurface).withValues(alpha: 0.1),
           width: isLight ? 1 : 0.5,
         ),
-        boxShadow: isLight ? [
-          BoxShadow(
-            color: theme.colorScheme.primary.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ] : null,
+        boxShadow:
+            isLight
+                ? [
+                  BoxShadow(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.04),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+                : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,7 +56,10 @@ class StatBrick extends StatelessWidget {
           Text(
             label.toUpperCase(),
             style: GoogleFonts.orbitron(
-              color: isLight ? AppColors.ink.withValues(alpha: 0.6) : onSurface.withValues(alpha: 0.5),
+              color:
+                  isLight
+                      ? AppColors.ink.withValues(alpha: 0.6)
+                      : onSurface.withValues(alpha: 0.5),
               fontSize: 9,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.2,
@@ -150,7 +158,7 @@ class CanvasBackdrop extends StatelessWidget {
     final theme = Theme.of(context);
     final isLight = theme.brightness == Brightness.light;
     final glow = summary.coverageColor(theme.brightness);
-    
+
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: RadialGradient(
@@ -158,14 +166,16 @@ class CanvasBackdrop extends StatelessWidget {
           radius: 1.8,
           colors: [
             glow.withValues(alpha: isLight ? 0.06 : 0.12),
-            isLight 
+            isLight
                 ? theme.colorScheme.surface.withValues(alpha: 0.4)
                 : AppColors.darkSurfaceLight.withValues(alpha: 0.6),
             Colors.transparent,
           ],
         ),
         border: Border.all(
-          color: theme.colorScheme.primary.withValues(alpha: isLight ? 0.08 : 0.16),
+          color: theme.colorScheme.primary.withValues(
+            alpha: isLight ? 0.08 : 0.16,
+          ),
           width: 0.5,
         ),
       ),
@@ -200,17 +210,22 @@ class CanvasEmptyState extends StatelessWidget {
         width: 280,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: isLight 
-              ? theme.colorScheme.surface.withValues(alpha: 0.95) 
-              : Colors.black.withValues(alpha: 0.45),
+          color:
+              isLight
+                  ? theme.colorScheme.surface.withValues(alpha: 0.95)
+                  : Colors.black.withValues(alpha: 0.45),
           borderRadius: BorderRadius.circular(30),
           border: Border.all(
-            color: theme.colorScheme.primary.withValues(alpha: isLight ? 0.4 : 0.25),
+            color: theme.colorScheme.primary.withValues(
+              alpha: isLight ? 0.4 : 0.25,
+            ),
             width: isLight ? 1.5 : 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: theme.colorScheme.primary.withValues(alpha: isLight ? 0.12 : 0.08),
+              color: theme.colorScheme.primary.withValues(
+                alpha: isLight ? 0.12 : 0.08,
+              ),
               blurRadius: isLight ? 24 : 32,
               spreadRadius: isLight ? 0 : 4,
             ),

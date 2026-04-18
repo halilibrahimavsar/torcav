@@ -42,7 +42,8 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
     final cutoff = DateTime.now().subtract(_timeRanges[_timeRangeIdx]);
     return widget.samples.where((s) {
       if (s.timestamp.isBefore(cutoff)) return false;
-      if (_selectedBand != null && bandFromChannel(s.channel) != _selectedBand) {
+      if (_selectedBand != null &&
+          bandFromChannel(s.channel) != _selectedBand) {
         return false;
       }
       return true;
@@ -51,10 +52,13 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
 
   // ── Session grouping ────────────────────────────────────────────────
 
-  List<DateTime> _buildSessions(List<ChannelRatingSample> all,
-      {int windowSec = 10}) {
-    final sorted = all.map((s) => s.timestamp).toSet().toList()
-      ..sort((a, b) => a.compareTo(b));
+  List<DateTime> _buildSessions(
+    List<ChannelRatingSample> all, {
+    int windowSec = 10,
+  }) {
+    final sorted =
+        all.map((s) => s.timestamp).toSet().toList()
+          ..sort((a, b) => a.compareTo(b));
     final sessions = <DateTime>[];
     for (final ts in sorted) {
       if (sessions.isEmpty ||
@@ -66,7 +70,8 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
   }
 
   Map<int, List<ChannelRatingSample>> _groupByChannel(
-      List<ChannelRatingSample> data) {
+    List<ChannelRatingSample> data,
+  ) {
     final map = <int, List<ChannelRatingSample>>{};
     for (final s in data) {
       map.putIfAbsent(s.channel, () => []).add(s);
@@ -111,23 +116,25 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
 
     // Stats
     final bestEntry = _bestChannel(byChannel);
-    final avgRating = filtered.map((s) => s.rating).reduce((a, b) => a + b) /
-        filtered.length;
+    final avgRating =
+        filtered.map((s) => s.rating).reduce((a, b) => a + b) / filtered.length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _ControlBar(
           selectedBand: _selectedBand,
-          onBandChanged: (b) => setState(() {
-            _selectedBand = b;
-            _highlightedChannels = {};
-          }),
+          onBandChanged:
+              (b) => setState(() {
+                _selectedBand = b;
+                _highlightedChannels = {};
+              }),
           timeRangeIdx: _timeRangeIdx,
-          onTimeRangeChanged: (i) => setState(() {
-            _timeRangeIdx = i;
-            _highlightedChannels = {};
-          }),
+          onTimeRangeChanged:
+              (i) => setState(() {
+                _timeRangeIdx = i;
+                _highlightedChannels = {};
+              }),
           showModeToggle: sessions.length > 1,
           heatmapMode: _heatmapMode,
           onModeToggled: () => setState(() => _heatmapMode = !_heatmapMode),
@@ -166,7 +173,9 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
           context.l10n.historySummaryInfo(sessions.length, filtered.length),
           style: GoogleFonts.rajdhani(
             fontSize: 12,
-            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.5),
           ),
         ),
       ],
@@ -209,12 +218,13 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
   }
 
   MapEntry<int, double>? _bestChannel(
-      Map<int, List<ChannelRatingSample>> byChannel) {
+    Map<int, List<ChannelRatingSample>> byChannel,
+  ) {
     if (byChannel.isEmpty) return null;
     MapEntry<int, double>? best;
     for (final e in byChannel.entries) {
-      final avg = e.value.map((s) => s.rating).reduce((a, b) => a + b) /
-          e.value.length;
+      final avg =
+          e.value.map((s) => s.rating).reduce((a, b) => a + b) / e.value.length;
       if (best == null || avg > best.value) {
         best = MapEntry(e.key, avg);
       }
@@ -255,15 +265,17 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
       children: [
         _ControlBar(
           selectedBand: _selectedBand,
-          onBandChanged: (b) => setState(() {
-            _selectedBand = b;
-            _highlightedChannels = {};
-          }),
+          onBandChanged:
+              (b) => setState(() {
+                _selectedBand = b;
+                _highlightedChannels = {};
+              }),
           timeRangeIdx: _timeRangeIdx,
-          onTimeRangeChanged: (i) => setState(() {
-            _timeRangeIdx = i;
-            _highlightedChannels = {};
-          }),
+          onTimeRangeChanged:
+              (i) => setState(() {
+                _timeRangeIdx = i;
+                _highlightedChannels = {};
+              }),
           showModeToggle: false,
           heatmapMode: _heatmapMode,
           onModeToggled: () {},
@@ -322,7 +334,12 @@ class _ControlBar extends StatelessWidget {
             children: [
               _bandChip(context, null, context.l10n.historyAllBands, primary),
               const SizedBox(width: 6),
-              _bandChip(context, WifiBand.ghz24, '2.4', const Color(0xFF00E5FF)),
+              _bandChip(
+                context,
+                WifiBand.ghz24,
+                '2.4',
+                const Color(0xFF00E5FF),
+              ),
               const SizedBox(width: 6),
               _bandChip(context, WifiBand.ghz5, '5', const Color(0xFF76FF03)),
               const SizedBox(width: 6),
@@ -340,10 +357,7 @@ class _ControlBar extends StatelessWidget {
             ],
             const Spacer(),
             if (showModeToggle)
-              _ModeToggle(
-                heatmapMode: heatmapMode,
-                onToggled: onModeToggled,
-              ),
+              _ModeToggle(heatmapMode: heatmapMode, onToggled: onModeToggled),
           ],
         ),
       ],
@@ -351,7 +365,11 @@ class _ControlBar extends StatelessWidget {
   }
 
   Widget _bandChip(
-      BuildContext context, WifiBand? band, String label, Color color) {
+    BuildContext context,
+    WifiBand? band,
+    String label,
+    Color color,
+  ) {
     final isSelected = selectedBand == band;
     return GestureDetector(
       onTap: () => onBandChanged(band),
@@ -380,7 +398,11 @@ class _ControlBar extends StatelessWidget {
   }
 
   Widget _timeChip(
-      BuildContext context, int idx, Color onSurface, Color primary) {
+    BuildContext context,
+    int idx,
+    Color onSurface,
+    Color primary,
+  ) {
     final isSelected = timeRangeIdx == idx;
     return GestureDetector(
       onTap: () => onTimeRangeChanged(idx),
@@ -389,18 +411,15 @@ class _ControlBar extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: isSelected
-              ? primary.withValues(alpha: 0.15)
-              : Colors.transparent,
+          color:
+              isSelected ? primary.withValues(alpha: 0.15) : Colors.transparent,
         ),
         child: Text(
           _timeRangeLabels[idx],
           style: GoogleFonts.rajdhani(
             fontSize: 12,
             fontWeight: FontWeight.bold,
-            color: isSelected
-                ? primary
-                : onSurface.withValues(alpha: 0.4),
+            color: isSelected ? primary : onSurface.withValues(alpha: 0.4),
           ),
         ),
       ),
@@ -417,9 +436,10 @@ class _ModeToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
-      message: heatmapMode
-          ? context.l10n.historyLineChart
-          : context.l10n.historyHeatmap,
+      message:
+          heatmapMode
+              ? context.l10n.historyLineChart
+              : context.l10n.historyHeatmap,
       child: GestureDetector(
         onTap: onToggled,
         child: AnimatedSwitcher(
@@ -528,7 +548,10 @@ class _InteractiveLegend extends StatelessWidget {
               opacity: isActive ? 1.0 : 0.25,
               duration: const Duration(milliseconds: 200),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: color.withValues(alpha: isActive ? 0.15 : 0.05),
@@ -576,31 +599,33 @@ class _BarView extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final onSurface = Theme.of(context).colorScheme.onSurface;
 
-    final groups = channels.asMap().entries.map((entry) {
-      final i = entry.key;
-      final ch = entry.value;
-      final rating = byChannel[ch]!.last.rating.clamp(0.0, 10.0);
-      final color = colorForIndex(i, channels.length);
-      final isActive = highlighted.isEmpty || highlighted.contains(ch);
+    final groups =
+        channels.asMap().entries.map((entry) {
+          final i = entry.key;
+          final ch = entry.value;
+          final rating = byChannel[ch]!.last.rating.clamp(0.0, 10.0);
+          final color = colorForIndex(i, channels.length);
+          final isActive = highlighted.isEmpty || highlighted.contains(ch);
 
-      return BarChartGroupData(
-        x: i,
-        barRods: [
-          BarChartRodData(
-            toY: rating,
-            color: color.withValues(alpha: isActive ? 1.0 : 0.2),
-            width: channels.length > 12 ? 10 : 18,
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(4)),
-            backDrawRodData: BackgroundBarChartRodData(
-              show: true,
-              toY: 10,
-              color: color.withValues(alpha: 0.05),
-            ),
-          ),
-        ],
-      );
-    }).toList();
+          return BarChartGroupData(
+            x: i,
+            barRods: [
+              BarChartRodData(
+                toY: rating,
+                color: color.withValues(alpha: isActive ? 1.0 : 0.2),
+                width: channels.length > 12 ? 10 : 18,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(4),
+                ),
+                backDrawRodData: BackgroundBarChartRodData(
+                  show: true,
+                  toY: 10,
+                  color: color.withValues(alpha: 0.05),
+                ),
+              ),
+            ],
+          );
+        }).toList();
 
     return NeonCard(
       padding: const EdgeInsets.fromLTRB(8, 16, 16, 8),
@@ -618,10 +643,11 @@ class _BarView extends StatelessWidget {
                 gridData: FlGridData(
                   drawHorizontalLine: true,
                   drawVerticalLine: false,
-                  getDrawingHorizontalLine: (_) => FlLine(
-                    color: onSurface.withValues(alpha: 0.08),
-                    strokeWidth: 1,
-                  ),
+                  getDrawingHorizontalLine:
+                      (_) => FlLine(
+                        color: onSurface.withValues(alpha: 0.08),
+                        strokeWidth: 1,
+                      ),
                 ),
                 borderData: FlBorderData(show: false),
                 titlesData: FlTitlesData(
@@ -656,34 +682,38 @@ class _BarView extends StatelessWidget {
                       showTitles: true,
                       reservedSize: 32,
                       interval: 2,
-                      getTitlesWidget: (v, _) => Text(
-                        v.toInt().toString(),
-                        style: GoogleFonts.rajdhani(
-                          fontSize: 10,
-                          color: onSurface.withValues(alpha: 0.5),
-                        ),
-                      ),
+                      getTitlesWidget:
+                          (v, _) => Text(
+                            v.toInt().toString(),
+                            style: GoogleFonts.rajdhani(
+                              fontSize: 10,
+                              color: onSurface.withValues(alpha: 0.5),
+                            ),
+                          ),
                     ),
                   ),
                   topTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false)),
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                   rightTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false)),
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                 ),
                 barTouchData: BarTouchData(
                   touchTooltipData: BarTouchTooltipData(
                     fitInsideHorizontally: true,
                     fitInsideVertically: true,
-                    getTooltipColor: (_) => isDark
-                        ? const Color(0xFF1E293B)
-                        : Theme.of(context).colorScheme.surface,
+                    getTooltipColor:
+                        (_) =>
+                            isDark
+                                ? const Color(0xFF1E293B)
+                                : Theme.of(context).colorScheme.surface,
                     getTooltipItem: (group, groupIndex, rod, rodIndex) {
                       final ch = channels[group.x];
                       return BarTooltipItem(
                         'CH $ch\n${rod.toY.toStringAsFixed(0)}',
                         GoogleFonts.rajdhani(
-                          color:
-                              colorForIndex(groupIndex, channels.length),
+                          color: colorForIndex(groupIndex, channels.length),
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
                         ),
@@ -727,42 +757,43 @@ class _LineView extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final onSurface = Theme.of(context).colorScheme.onSurface;
 
-    final lines = channels.asMap().entries.map((entry) {
-      final i = entry.key;
-      final ch = entry.value;
-      final color = colorForIndex(i, channels.length);
-      final chSamples = byChannel[ch]!;
-      final isActive = highlighted.isEmpty || highlighted.contains(ch);
+    final lines =
+        channels.asMap().entries.map((entry) {
+          final i = entry.key;
+          final ch = entry.value;
+          final color = colorForIndex(i, channels.length);
+          final chSamples = byChannel[ch]!;
+          final isActive = highlighted.isEmpty || highlighted.contains(ch);
 
-      final spots = <FlSpot>[];
-      for (var si = 0; si < sessions.length; si++) {
-        final sessionTs = sessions[si];
-        ChannelRatingSample? best;
-        int bestDiff = 999999;
-        for (final s in chSamples) {
-          final diff = s.timestamp.difference(sessionTs).inSeconds.abs();
-          if (diff < bestDiff) {
-            bestDiff = diff;
-            best = s;
+          final spots = <FlSpot>[];
+          for (var si = 0; si < sessions.length; si++) {
+            final sessionTs = sessions[si];
+            ChannelRatingSample? best;
+            int bestDiff = 999999;
+            for (final s in chSamples) {
+              final diff = s.timestamp.difference(sessionTs).inSeconds.abs();
+              if (diff < bestDiff) {
+                bestDiff = diff;
+                best = s;
+              }
+            }
+            if (best != null && bestDiff <= 30) {
+              spots.add(FlSpot(si.toDouble(), best.rating.clamp(0.0, 10.0)));
+            }
           }
-        }
-        if (best != null && bestDiff <= 30) {
-          spots.add(FlSpot(si.toDouble(), best.rating.clamp(0.0, 10.0)));
-        }
-      }
 
-      return LineChartBarData(
-        spots: spots,
-        isCurved: spots.length > 2,
-        color: color.withValues(alpha: isActive ? 1.0 : 0.12),
-        barWidth: isActive ? 2.5 : 1,
-        dotData: FlDotData(show: isActive && spots.length <= 5),
-        belowBarData: BarAreaData(
-          show: isActive,
-          color: color.withValues(alpha: 0.08),
-        ),
-      );
-    }).toList();
+          return LineChartBarData(
+            spots: spots,
+            isCurved: spots.length > 2,
+            color: color.withValues(alpha: isActive ? 1.0 : 0.12),
+            barWidth: isActive ? 2.5 : 1,
+            dotData: FlDotData(show: isActive && spots.length <= 5),
+            belowBarData: BarAreaData(
+              show: isActive,
+              color: color.withValues(alpha: 0.08),
+            ),
+          );
+        }).toList();
 
     // X-axis labels
     String sessionLabel(int idx) {
@@ -801,10 +832,11 @@ class _LineView extends StatelessWidget {
                 gridData: FlGridData(
                   drawHorizontalLine: true,
                   drawVerticalLine: false,
-                  getDrawingHorizontalLine: (_) => FlLine(
-                    color: onSurface.withValues(alpha: 0.08),
-                    strokeWidth: 1,
-                  ),
+                  getDrawingHorizontalLine:
+                      (_) => FlLine(
+                        color: onSurface.withValues(alpha: 0.08),
+                        strokeWidth: 1,
+                      ),
                 ),
                 borderData: FlBorderData(show: false),
                 titlesData: FlTitlesData(
@@ -813,13 +845,14 @@ class _LineView extends StatelessWidget {
                       showTitles: true,
                       reservedSize: 32,
                       interval: 2,
-                      getTitlesWidget: (v, _) => Text(
-                        v.toInt().toString(),
-                        style: GoogleFonts.rajdhani(
-                          fontSize: 10,
-                          color: onSurface.withValues(alpha: 0.5),
-                        ),
-                      ),
+                      getTitlesWidget:
+                          (v, _) => Text(
+                            v.toInt().toString(),
+                            style: GoogleFonts.rajdhani(
+                              fontSize: 10,
+                              color: onSurface.withValues(alpha: 0.5),
+                            ),
+                          ),
                     ),
                   ),
                   bottomTitles: AxisTitles(
@@ -847,17 +880,21 @@ class _LineView extends StatelessWidget {
                     ),
                   ),
                   topTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false)),
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                   rightTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false)),
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                 ),
                 lineTouchData: LineTouchData(
                   touchTooltipData: LineTouchTooltipData(
                     fitInsideHorizontally: true,
                     fitInsideVertically: true,
-                    getTooltipColor: (_) => isDark
-                        ? const Color(0xFF1E293B)
-                        : Theme.of(context).colorScheme.surface,
+                    getTooltipColor:
+                        (_) =>
+                            isDark
+                                ? const Color(0xFF1E293B)
+                                : Theme.of(context).colorScheme.surface,
                     getTooltipItems: (touchedSpots) {
                       return touchedSpots.map((spot) {
                         final ch = channels[spot.barIndex];
@@ -866,7 +903,9 @@ class _LineView extends StatelessWidget {
                           'CH $ch: ${spot.y.toStringAsFixed(0)}'
                           '${time.isNotEmpty ? '\n$time' : ''}',
                           GoogleFonts.rajdhani(
-                            color: spot.bar.color ?? Theme.of(context).colorScheme.primary,
+                            color:
+                                spot.bar.color ??
+                                Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
                           ),
@@ -952,17 +991,18 @@ class _HeatmapView extends StatelessWidget {
                     for (var si = 0; si < sessions.length; si++)
                       SizedBox(
                         width: cellW,
-                        child: si % math.max(1, (sessions.length / 6).ceil()) == 0
-                            ? Text(
-                                '${sessions[si].hour.toString().padLeft(2, '0')}:'
-                                '${sessions[si].minute.toString().padLeft(2, '0')}',
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.rajdhani(
-                                  fontSize: 8,
-                                  color: onSurface.withValues(alpha: 0.5),
-                                ),
-                              )
-                            : const SizedBox.shrink(),
+                        child:
+                            si % math.max(1, (sessions.length / 6).ceil()) == 0
+                                ? Text(
+                                  '${sessions[si].hour.toString().padLeft(2, '0')}:'
+                                  '${sessions[si].minute.toString().padLeft(2, '0')}',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.rajdhani(
+                                    fontSize: 8,
+                                    color: onSurface.withValues(alpha: 0.5),
+                                  ),
+                                )
+                                : const SizedBox.shrink(),
                       ),
                   ],
                 ),
@@ -1045,7 +1085,9 @@ class _HeatmapPainter extends CustomPainter {
       );
       labelPainter.layout(maxWidth: labelW - 4);
       labelPainter.paint(
-          canvas, Offset(0, y + (cellH - labelPainter.height) / 2));
+        canvas,
+        Offset(0, y + (cellH - labelPainter.height) / 2),
+      );
 
       // Cells
       for (var si = 0; si < sessions.length; si++) {
@@ -1054,8 +1096,9 @@ class _HeatmapPainter extends CustomPainter {
         final rect = Rect.fromLTWH(x + 1, y + 1, cellW - 2, cellH - 2);
 
         if (rating != null) {
-          final color = _ratingColor(rating).withValues(
-              alpha: isActive ? 0.85 : 0.15);
+          final color = _ratingColor(
+            rating,
+          ).withValues(alpha: isActive ? 0.85 : 0.15);
           canvas.drawRRect(
             RRect.fromRectAndRadius(rect, const Radius.circular(3)),
             Paint()..color = color,
@@ -1075,10 +1118,16 @@ class _HeatmapPainter extends CustomPainter {
     final t = (rating / 10).clamp(0.0, 1.0);
     if (t < 0.5) {
       return Color.lerp(
-          const Color(0xFFFF1744), const Color(0xFFEEFF41), t * 2)!;
+        const Color(0xFFFF1744),
+        const Color(0xFFEEFF41),
+        t * 2,
+      )!;
     }
     return Color.lerp(
-        const Color(0xFFEEFF41), const Color(0xFF39FF14), (t - 0.5) * 2)!;
+      const Color(0xFFEEFF41),
+      const Color(0xFF39FF14),
+      (t - 0.5) * 2,
+    )!;
   }
 
   @override
@@ -1112,11 +1161,7 @@ class _HeatmapColorScale extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
             gradient: const LinearGradient(
-              colors: [
-                Color(0xFFFF1744),
-                Color(0xFFEEFF41),
-                Color(0xFF39FF14),
-              ],
+              colors: [Color(0xFFFF1744), Color(0xFFEEFF41), Color(0xFF39FF14)],
             ),
           ),
         ),

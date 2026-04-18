@@ -64,7 +64,10 @@ class BarometerDataSourceImpl implements BarometerDataSource {
             FloorReading(floorIndex: floorIndex, pressureHpa: event.pressure),
           );
         },
-        onError: (_) {}, // Barometer not available on this device — degrade silently.
+        onError:
+            (
+              _,
+            ) {}, // Barometer not available on this device — degrade silently.
         cancelOnError: false,
       );
     } catch (_) {

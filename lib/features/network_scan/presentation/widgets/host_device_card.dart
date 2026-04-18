@@ -18,8 +18,12 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
   bool _isExpanded = false;
 
   Color getRiskColor(BuildContext context) {
-    if (widget.host.exposureScore > 7) return Theme.of(context).colorScheme.error;
-    if (widget.host.exposureScore > 3) return Theme.of(context).colorScheme.outline;
+    if (widget.host.exposureScore > 7) {
+      return Theme.of(context).colorScheme.error;
+    }
+    if (widget.host.exposureScore > 3) {
+      return Theme.of(context).colorScheme.outline;
+    }
     return Theme.of(context).colorScheme.tertiary;
   }
 
@@ -110,7 +114,7 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
                           Flexible(
                             child: Text(
                               widget.host.hostName.isEmpty
-                                  ? context.l10n.anonymousNode
+                                  ? '${widget.host.ip} (${widget.host.deviceType.toUpperCase()})'
                                   : widget.host.hostName.toUpperCase(),
                               style: GoogleFonts.orbitron(
                                 color: Theme.of(context).colorScheme.onSurface,
@@ -143,7 +147,8 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
                             Text(
                               ' • ',
                               style: TextStyle(
-                                  color: scheme.onSurface.withValues(alpha: 0.3)),
+                                color: scheme.onSurface.withValues(alpha: 0.3),
+                              ),
                             ),
                             Text(
                               widget.host.deviceType.toUpperCase(),
@@ -166,16 +171,18 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
             Container(
               height: 1,
               width: double.infinity,
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withValues(alpha: 0.1),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.1),
             ),
             const SizedBox(height: 12),
             Row(
               children: [
                 _TechDetail(
-                  label: widget.host.mac.toUpperCase(),
+                  label:
+                      widget.host.mac == '00:00:00:00:00:00'
+                          ? 'UNKNOWN MAC (RESTRICTED)'
+                          : widget.host.mac.toUpperCase(),
                   icon: Icons.fingerprint_rounded,
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
@@ -222,9 +229,10 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: widget.host.services
-                    .map((service) => _ServiceChip(service: service))
-                    .toList(),
+                children:
+                    widget.host.services
+                        .map((service) => _ServiceChip(service: service))
+                        .toList(),
               ),
             ],
           ],
@@ -292,7 +300,9 @@ class _ServiceChip extends StatelessWidget {
 
   Color _getServiceColor(BuildContext context, int port) {
     final scheme = Theme.of(context).colorScheme;
-    if (port == 80 || port == 443 || port == 8080) return scheme.tertiary; // Web
+    if (port == 80 || port == 443 || port == 8080) {
+      return scheme.tertiary; // Web
+    }
     if (port == 22 || port == 23) return scheme.primary; // Shell
     if (port == 21 || port == 445) return scheme.secondary; // File
     if (port == 53) return Colors.cyanAccent; // DNS
@@ -332,9 +342,10 @@ class _RiskIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final color = score > 7
-        ? scheme.error
-        : (score > 3 ? scheme.outline : scheme.tertiary);
+    final color =
+        score > 7
+            ? scheme.error
+            : (score > 3 ? scheme.outline : scheme.tertiary);
     return Column(
       children: [
         NeonText(

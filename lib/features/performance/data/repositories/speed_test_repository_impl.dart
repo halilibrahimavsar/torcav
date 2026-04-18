@@ -62,24 +62,27 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
       var isTestingUnderLoad = true;
 
       // Measure loaded latency in background during download
-      unawaited(Future(() async {
-        final innerClient = HttpClient()..connectionTimeout = const Duration(seconds: 2);
-        try {
-          while (isTestingUnderLoad) {
-            final sw = Stopwatch()..start();
-            try {
-              final req = await innerClient.getUrl(Uri.parse(_kPingUrl));
-              final resp = await req.close();
-              await resp.drain<void>();
-              sw.stop();
-              loadedSamples.add(sw.elapsedMilliseconds.toDouble());
-            } catch (_) {}
-            await Future<void>.delayed(const Duration(milliseconds: 500));
+      unawaited(
+        Future(() async {
+          final innerClient =
+              HttpClient()..connectionTimeout = const Duration(seconds: 2);
+          try {
+            while (isTestingUnderLoad) {
+              final sw = Stopwatch()..start();
+              try {
+                final req = await innerClient.getUrl(Uri.parse(_kPingUrl));
+                final resp = await req.close();
+                await resp.drain<void>();
+                sw.stop();
+                loadedSamples.add(sw.elapsedMilliseconds.toDouble());
+              } catch (_) {}
+              await Future<void>.delayed(const Duration(milliseconds: 500));
+            }
+          } finally {
+            innerClient.close(force: true);
           }
-        } finally {
-          innerClient.close(force: true);
-        }
-      }));
+        }),
+      );
 
       await for (final mbps in _measureDownload(client)) {
         downloadMbps = mbps;
@@ -96,8 +99,9 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
           loadedLatencyMs: loadedLatencyMs,
         );
       }
-      
-      isTestingUnderLoad = false; // Stop the background pings after download phase
+
+      isTestingUnderLoad =
+          false; // Stop the background pings after download phase
 
       // ── Phase 3 ───────────────────────────────────────────────────────────
       yield SpeedTestProgress(
@@ -154,7 +158,7 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
 
     final samples = <double>[];
     var failedCount = 0;
-    
+
     for (var i = 0; i < _kPingPings; i++) {
       final sw = Stopwatch()..start();
       try {
@@ -173,14 +177,14 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
     if (samples.isEmpty) return (0.0, 0.0, packetLoss);
     samples.sort();
     final median = samples[samples.length ~/ 2];
-    
+
     // Jitter = mean absolute deviation between consecutive sorted samples.
     double jitterSum = 0;
     for (var i = 1; i < samples.length; i++) {
       jitterSum += (samples[i] - samples[i - 1]).abs();
     }
     final jitter = samples.length > 1 ? jitterSum / (samples.length - 1) : 0.0;
-    
+
     return (median, jitter, packetLoss);
   }
 

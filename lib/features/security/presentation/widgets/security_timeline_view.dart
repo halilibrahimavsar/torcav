@@ -130,10 +130,7 @@ class _TimelineDot extends StatelessWidget {
         child: Container(
           width: 4,
           height: 4,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color,
-          ),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: color),
         ),
       ),
     );
@@ -144,7 +141,11 @@ class SecurityEventCard extends StatelessWidget {
   final domain_event.SecurityEvent event;
   final int index;
 
-  const SecurityEventCard({super.key, required this.event, required this.index});
+  const SecurityEventCard({
+    super.key,
+    required this.event,
+    required this.index,
+  });
 
   IconData get _icon {
     switch (event.type) {
@@ -270,7 +271,10 @@ class SecurityEventCard extends StatelessWidget {
   }
 }
 
-Color _getSeverityColor(BuildContext context, domain_event.SecurityEventSeverity severity) {
+Color _getSeverityColor(
+  BuildContext context,
+  domain_event.SecurityEventSeverity severity,
+) {
   final scheme = Theme.of(context).colorScheme;
   switch (severity) {
     case domain_event.SecurityEventSeverity.critical:

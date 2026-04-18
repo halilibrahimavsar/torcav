@@ -33,26 +33,28 @@ class ScanFilterState {
     ScanFilterState filter, {
     Set<String> pinned = const {},
   }) {
-    var result = networks.where((n) {
-      final q = filter.query.trim().toLowerCase();
-      if (q.isNotEmpty) {
-        if (!n.ssid.toLowerCase().contains(q) &&
-            !n.bssid.toLowerCase().contains(q) &&
-            !n.vendor.toLowerCase().contains(q)) {
-          return false;
-        }
-      }
-      if (filter.band != null) {
-        final freq = n.frequency;
-        final networkBand = freq >= 5925
-            ? WifiBand.ghz6
-            : freq >= 5000
-                ? WifiBand.ghz5
-                : WifiBand.ghz24;
-        if (networkBand != filter.band) return false;
-      }
-      return true;
-    }).toList();
+    var result =
+        networks.where((n) {
+          final q = filter.query.trim().toLowerCase();
+          if (q.isNotEmpty) {
+            if (!n.ssid.toLowerCase().contains(q) &&
+                !n.bssid.toLowerCase().contains(q) &&
+                !n.vendor.toLowerCase().contains(q)) {
+              return false;
+            }
+          }
+          if (filter.band != null) {
+            final freq = n.frequency;
+            final networkBand =
+                freq >= 5925
+                    ? WifiBand.ghz6
+                    : freq >= 5000
+                    ? WifiBand.ghz5
+                    : WifiBand.ghz24;
+            if (networkBand != filter.band) return false;
+          }
+          return true;
+        }).toList();
 
     switch (filter.sortBy) {
       case ScanSortBy.signal:
@@ -78,4 +80,3 @@ class ScanFilterState {
     return result;
   }
 }
-

@@ -23,7 +23,9 @@ class WifiNetworkCard extends StatelessWidget {
 
   Color _getSignalColor(BuildContext context) {
     if (network.avgSignalDbm > -55) return AppColors.neonGreen;
-    if (network.avgSignalDbm > -70) return Theme.of(context).colorScheme.primary;
+    if (network.avgSignalDbm > -70) {
+      return Theme.of(context).colorScheme.primary;
+    }
     if (network.avgSignalDbm > -85) return AppColors.neonOrange;
     return AppColors.neonRed;
   }
@@ -79,19 +81,21 @@ class WifiNetworkCard extends StatelessWidget {
                             margin: const EdgeInsets.symmetric(horizontal: 1),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(1),
-                              color: isActive
-                                  ? signalColor
-                                  : signalColor.withValues(alpha: 0.1),
-                              boxShadow: isActive
-                                  ? [
-                                      BoxShadow(
-                                        color: signalColor.withValues(
-                                          alpha: 0.5,
+                              color:
+                                  isActive
+                                      ? signalColor
+                                      : signalColor.withValues(alpha: 0.1),
+                              boxShadow:
+                                  isActive
+                                      ? [
+                                        BoxShadow(
+                                          color: signalColor.withValues(
+                                            alpha: 0.5,
+                                          ),
+                                          blurRadius: 4,
                                         ),
-                                        blurRadius: 4,
-                                      ),
-                                    ]
-                                  : null,
+                                      ]
+                                      : null,
                             ),
                           );
                         }),
@@ -155,13 +159,15 @@ class WifiNetworkCard extends StatelessWidget {
                     GestureDetector(
                       onTap: onTogglePin,
                       child: Icon(
-                        isPinned ? Icons.star_rounded : Icons.star_border_rounded,
-                        color: isPinned
-                            ? Theme.of(context).colorScheme.tertiary
-                            : Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withValues(alpha: 0.3),
+                        isPinned
+                            ? Icons.star_rounded
+                            : Icons.star_border_rounded,
+                        color:
+                            isPinned
+                                ? Theme.of(context).colorScheme.tertiary
+                                : Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withValues(alpha: 0.3),
                         size: 20,
                       ),
                     ),
@@ -211,7 +217,8 @@ class WifiNetworkCard extends StatelessWidget {
                   ),
                 if (network.estimatedMaxThroughputMbps != null)
                   _MiniTechTag(
-                    label: '${network.estimatedMaxThroughputMbps!.round()} Mbps',
+                    label:
+                        '${network.estimatedMaxThroughputMbps!.round()} Mbps',
                     icon: Icons.bolt_rounded,
                     color: AppColors.neonGreen,
                   ),
@@ -223,7 +230,8 @@ class WifiNetworkCard extends StatelessWidget {
                     _ => Icons.lock_rounded,
                   },
                   color: switch (network.security) {
-                    SecurityType.wpa2 || SecurityType.wpa3 => AppColors.neonGreen,
+                    SecurityType.wpa2 ||
+                    SecurityType.wpa3 => AppColors.neonGreen,
                     SecurityType.wpa => Colors.amber,
                     _ => AppColors.neonRed,
                   },

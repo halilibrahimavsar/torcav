@@ -84,7 +84,9 @@ class TopologyInfoSheet extends StatelessWidget {
                               l10n.topologyGuideDesc,
                               style: GoogleFonts.rajdhani(
                                 fontSize: 14,
-                                color: colorScheme.onSurface.withValues(alpha: 0.6),
+                                color: colorScheme.onSurface.withValues(
+                                  alpha: 0.6,
+                                ),
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -168,18 +170,54 @@ class TopologyInfoSheet extends StatelessWidget {
           spacing: 12,
           runSpacing: 12,
           children: [
-            _legendTile(context, Icons.router, colorScheme.primary, 'GATEWAY', 'Central network entry point'),
-            _legendTile(context, Icons.settings_input_antenna, colorScheme.tertiary, 'ACCESS POINT', 'WiFi signal distributor'),
-            _legendTile(context, Icons.smartphone, const Color(0xFFFF0060), 'MOBILE', 'Personal handheld devices'),
-            _legendTile(context, Icons.sensors_outlined, const Color(0xFFB5179E), 'IOT', 'Smart home & sensors'),
-            _legendTile(context, Icons.device_hub, colorScheme.secondary, 'DEVICE', 'Computers, TVs, etc.'),
+            _legendTile(
+              context,
+              Icons.router,
+              colorScheme.primary,
+              'GATEWAY',
+              'Central network entry point',
+            ),
+            _legendTile(
+              context,
+              Icons.settings_input_antenna,
+              colorScheme.tertiary,
+              'ACCESS POINT',
+              'WiFi signal distributor',
+            ),
+            _legendTile(
+              context,
+              Icons.smartphone,
+              const Color(0xFFFF0060),
+              'MOBILE',
+              'Personal handheld devices',
+            ),
+            _legendTile(
+              context,
+              Icons.sensors_outlined,
+              const Color(0xFFB5179E),
+              'IOT',
+              'Smart home & sensors',
+            ),
+            _legendTile(
+              context,
+              Icons.device_hub,
+              colorScheme.secondary,
+              'DEVICE',
+              'Computers, TVs, etc.',
+            ),
           ],
         ),
       ],
     );
   }
 
-  Widget _legendTile(BuildContext context, IconData icon, Color color, String label, String desc) {
+  Widget _legendTile(
+    BuildContext context,
+    IconData icon,
+    Color color,
+    String label,
+    String desc,
+  ) {
     return Container(
       width: (MediaQuery.of(context).size.width - 64) / 2,
       padding: const EdgeInsets.all(12),
@@ -209,7 +247,9 @@ class TopologyInfoSheet extends StatelessWidget {
           Text(
             desc,
             style: GoogleFonts.rajdhani(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.5),
               fontSize: 10,
             ),
           ),
@@ -224,9 +264,21 @@ class TopologyInfoSheet extends StatelessWidget {
       children: [
         _sectionHeader(context, 'CONNECTION TYPES', Icons.linear_scale_rounded),
         const SizedBox(height: 12),
-        _connectionType(context, 'Solid Line (Blue)', 'High-speed wired Ethernet connection'),
-        _connectionType(context, 'Glowing Gradient (Cyan)', 'Wireless WiFi connection'),
-        _connectionType(context, 'Pulsing Data Point', 'Active traffic detected on the link'),
+        _connectionType(
+          context,
+          'Solid Line (Blue)',
+          'High-speed wired Ethernet connection',
+        ),
+        _connectionType(
+          context,
+          'Glowing Gradient (Cyan)',
+          'Wireless WiFi connection',
+        ),
+        _connectionType(
+          context,
+          'Pulsing Data Point',
+          'Active traffic detected on the link',
+        ),
       ],
     );
   }
@@ -257,7 +309,9 @@ class TopologyInfoSheet extends StatelessWidget {
                 Text(
                   desc,
                   style: GoogleFonts.rajdhani(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
                     fontSize: 12,
                   ),
                 ),
@@ -272,7 +326,11 @@ class TopologyInfoSheet extends StatelessWidget {
   Widget _sectionHeader(BuildContext context, String title, IconData icon) {
     return Row(
       children: [
-        Icon(icon, color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.7), size: 16),
+        Icon(
+          icon,
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
+          size: 16,
+        ),
         const SizedBox(width: 8),
         Text(
           title,
@@ -325,10 +383,9 @@ class _InfoSection extends StatelessWidget {
                 description,
                 style: GoogleFonts.rajdhani(
                   fontSize: 14,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withValues(alpha: 0.8),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.8),
                   height: 1.4,
                 ),
               ),

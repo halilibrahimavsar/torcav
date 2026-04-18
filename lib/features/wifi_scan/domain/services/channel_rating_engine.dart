@@ -10,14 +10,85 @@ class ChannelRatingEngine {
   static const _channels24 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 
   static const _channels5 = [
-    36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 149, 153, 157, 161, 165,
+    36,
+    40,
+    44,
+    48,
+    52,
+    56,
+    60,
+    64,
+    100,
+    104,
+    108,
+    112,
+    149,
+    153,
+    157,
+    161,
+    165,
   ];
 
   static const _channels6 = [
-    1, 5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45, 49, 53, 57, 61, 65, 69, 73, 77,
-    81, 85, 89, 93, 97, 101, 105, 109, 113, 117, 121, 125, 129, 133, 137, 141,
-    145, 149, 153, 157, 161, 165, 169, 173, 177, 181, 185, 189, 193, 197, 201,
-    205, 209, 213, 217, 221, 225, 229, 233,
+    1,
+    5,
+    9,
+    13,
+    17,
+    21,
+    25,
+    29,
+    33,
+    37,
+    41,
+    45,
+    49,
+    53,
+    57,
+    61,
+    65,
+    69,
+    73,
+    77,
+    81,
+    85,
+    89,
+    93,
+    97,
+    101,
+    105,
+    109,
+    113,
+    117,
+    121,
+    125,
+    129,
+    133,
+    137,
+    141,
+    145,
+    149,
+    153,
+    157,
+    161,
+    165,
+    169,
+    173,
+    177,
+    181,
+    185,
+    189,
+    193,
+    197,
+    201,
+    205,
+    209,
+    213,
+    217,
+    221,
+    225,
+    229,
+    233,
   ];
 
   /// Calculates ratings for all standard channels based on the provided [networks].
@@ -27,13 +98,14 @@ class ChannelRatingEngine {
     // Combine standard channels with any non-standard ones detected in the scan
     final usedChannels =
         networks.map((n) => n.channel).where((c) => c > 0).toSet();
-    final allChannels = <int>{
-      ..._channels24,
-      ..._channels5,
-      ..._channels6,
-      ...usedChannels,
-    }.toList()
-      ..sort();
+    final allChannels =
+        <int>{
+            ..._channels24,
+            ..._channels5,
+            ..._channels6,
+            ...usedChannels,
+          }.toList()
+          ..sort();
 
     for (final channel in allChannels) {
       final frequency = _guessFrequency(channel, networks);
@@ -53,7 +125,8 @@ class ChannelRatingEngine {
         final nFreq = network.frequency;
 
         // Check if network is in the same band
-        final sameBand = (nFreq >= 2400 && nFreq < 2500 && is24) ||
+        final sameBand =
+            (nFreq >= 2400 && nFreq < 2500 && is24) ||
             (nFreq >= 5000 && nFreq < 6000 && is5) ||
             (nFreq >= 5925 && nFreq < 7200 && is6);
 

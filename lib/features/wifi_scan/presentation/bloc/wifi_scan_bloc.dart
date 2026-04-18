@@ -17,11 +17,8 @@ class WifiScanBloc extends Bloc<WifiScanEvent, WifiScanState> {
   final FavoritesStore _favorites;
   final ScanSessionStore _sessionStore;
 
-  WifiScanBloc(
-    this._scanWifi,
-    this._favorites,
-    this._sessionStore,
-  ) : super(WifiScanInitial()) {
+  WifiScanBloc(this._scanWifi, this._favorites, this._sessionStore)
+    : super(WifiScanInitial()) {
     on<WifiScanStarted>(_onStarted);
     on<WifiScanRefreshed>(_onRefreshed);
     on<WifiScanToggleFavorite>(_onToggleFavorite);
@@ -34,15 +31,12 @@ class WifiScanBloc extends Bloc<WifiScanEvent, WifiScanState> {
     emit(WifiScanLoading());
     final result = await _scanWifi(request: event.request);
     if (isClosed) return;
-    
-    result.fold(
-      (failure) => emit(WifiScanError(failure.message)), 
-      (snapshot) {
-        final sortedSnapshot = _sortSnapshot(snapshot);
-        _sessionStore.add(sortedSnapshot);
-        emit(WifiScanLoaded(sortedSnapshot, pinnedBssids: _favorites.pinned));
-      },
-    );
+
+    result.fold((failure) => emit(WifiScanError(failure.message)), (snapshot) {
+      final sortedSnapshot = _sortSnapshot(snapshot);
+      _sessionStore.add(sortedSnapshot);
+      emit(WifiScanLoaded(sortedSnapshot, pinnedBssids: _favorites.pinned));
+    });
   }
 
   Future<void> _onRefreshed(
@@ -59,18 +53,17 @@ class WifiScanBloc extends Bloc<WifiScanEvent, WifiScanState> {
     final result = await _scanWifi(request: event.request);
     if (isClosed) return;
 
-    result.fold(
-      (failure) => emit(WifiScanError(failure.message)), 
-      (snapshot) {
-        final sortedSnapshot = _sortSnapshot(snapshot);
-        _sessionStore.add(sortedSnapshot);
-        emit(WifiScanLoaded(
-          sortedSnapshot, 
-          pinnedBssids: _favorites.pinned, 
+    result.fold((failure) => emit(WifiScanError(failure.message)), (snapshot) {
+      final sortedSnapshot = _sortSnapshot(snapshot);
+      _sessionStore.add(sortedSnapshot);
+      emit(
+        WifiScanLoaded(
+          sortedSnapshot,
+          pinnedBssids: _favorites.pinned,
           isRefreshing: false,
-        ));
-      },
-    );
+        ),
+      );
+    });
   }
 
   void _onToggleFavorite(
@@ -80,17 +73,20 @@ class WifiScanBloc extends Bloc<WifiScanEvent, WifiScanState> {
     _favorites.toggle(event.bssid);
     final current = state;
     if (current is WifiScanLoaded) {
-      emit(WifiScanLoaded(
-        current.snapshot, 
-        pinnedBssids: _favorites.pinned,
-        isRefreshing: current.isRefreshing,
-      ));
+      emit(
+        WifiScanLoaded(
+          current.snapshot,
+          pinnedBssids: _favorites.pinned,
+          isRefreshing: current.isRefreshing,
+        ),
+      );
     }
   }
 
   ScanSnapshot _sortSnapshot(ScanSnapshot snapshot) {
-    final sortedNetworks = snapshot.networks.toList()
-      ..sort((a, b) => b.avgSignalDbm.compareTo(a.avgSignalDbm));
+    final sortedNetworks =
+        snapshot.networks.toList()
+          ..sort((a, b) => b.avgSignalDbm.compareTo(a.avgSignalDbm));
 
     return ScanSnapshot(
       timestamp: snapshot.timestamp,

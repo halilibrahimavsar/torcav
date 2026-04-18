@@ -44,7 +44,9 @@ class NetworkSecurityCard extends StatelessWidget {
             )
           else ...[
             ...knownNetworks.asMap().entries.map((entry) {
-              final isTrusted = trustedProfiles.any((p) => p.bssid == entry.value.bssid);
+              final isTrusted = trustedProfiles.any(
+                (p) => p.bssid == entry.value.bssid,
+              );
               return NetworkCard(
                 network: entry.value,
                 isTrusted: isTrusted,
@@ -131,7 +133,9 @@ class NetworkCard extends StatelessWidget {
                           child: Text(
                             'BSSID: ${network.bssid.toUpperCase()}',
                             style: GoogleFonts.firaCode(
-                              color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
+                              color: scheme.onSurfaceVariant.withValues(
+                                alpha: 0.7,
+                              ),
                               fontSize: 10,
                             ),
                             overflow: TextOverflow.ellipsis,
@@ -151,7 +155,9 @@ class NetworkCard extends StatelessWidget {
                           child: Text(
                             'GATEWAY: ${network.gateway?.toUpperCase() ?? 'N/A'}',
                             style: GoogleFonts.firaCode(
-                              color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
+                              color: scheme.onSurfaceVariant.withValues(
+                                alpha: 0.7,
+                              ),
                               fontSize: 10,
                             ),
                             overflow: TextOverflow.ellipsis,
@@ -233,7 +239,8 @@ class TrustedProfileCard extends StatelessWidget {
                 ),
               ),
               IconButton(
-                onPressed: () => context.read<SecurityBloc>().add(
+                onPressed:
+                    () => context.read<SecurityBloc>().add(
                       SecurityUntrustRequested(profile.bssid),
                     ),
                 icon: Icon(
@@ -265,7 +272,10 @@ class _NetworkIcon extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: activeColor.withValues(alpha: 0.1),
-        border: Border.all(color: activeColor.withValues(alpha: 0.3), width: 1.5),
+        border: Border.all(
+          color: activeColor.withValues(alpha: 0.3),
+          width: 1.5,
+        ),
         boxShadow: [
           if (isTrusted)
             BoxShadow(

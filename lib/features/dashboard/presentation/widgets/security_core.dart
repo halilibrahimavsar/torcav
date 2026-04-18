@@ -100,10 +100,9 @@ class _SecurityCoreState extends State<SecurityCore>
             padding: EdgeInsets.zero,
             blurSigma: 15,
             borderColor: widget.statusColor.withValues(alpha: 0.3),
-            backgroundColor: Theme.of(context)
-                .colorScheme
-                .surfaceContainerHigh
-                .withValues(alpha: 0.4),
+            backgroundColor: Theme.of(
+              context,
+            ).colorScheme.surfaceContainerHigh.withValues(alpha: 0.4),
             child: Container(
               width: 160,
               height: 160,

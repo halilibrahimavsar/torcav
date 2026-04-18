@@ -41,14 +41,14 @@ class PortScanDataSource {
   };
 
   /// Scans the given IP for the target ports, yielding results as they arrive.
-  /// 
+  ///
   /// [timeout] allows adaptive scaling based on network latency.
   Stream<ServiceFingerprint> scanPortsReactive(
     String ip, {
     Duration timeout = const Duration(milliseconds: _timeoutMs),
   }) async* {
     final controller = StreamController<ServiceFingerprint>();
-    
+
     // We use a small batching approach to avoid overwhelming the socket limit
     // while maintaining high performance.
     final ports = _targetPorts.entries.toList();
@@ -56,15 +56,13 @@ class PortScanDataSource {
 
     Future<void> runBatch() async {
       for (var i = 0; i < ports.length; i += batchSize) {
-        final end = (i + batchSize < ports.length) ? i + batchSize : ports.length;
+        final end =
+            (i + batchSize < ports.length) ? i + batchSize : ports.length;
         final batch = ports.sublist(i, end);
-        
-        final futures = batch.map((entry) => _probeAndGrabBanner(
-          ip, 
-          entry.key, 
-          entry.value, 
-          timeout,
-        ));
+
+        final futures = batch.map(
+          (entry) => _probeAndGrabBanner(ip, entry.key, entry.value, timeout),
+        );
 
         final results = await Future.wait(futures);
         for (final res in results) {
@@ -93,28 +91,28 @@ class PortScanDataSource {
   ) async {
     Socket? socket;
     try {
-      socket = await Socket.connect(
-        ip,
-        port,
-        timeout: timeout,
-      );
-      
+      socket = await Socket.connect(ip, port, timeout: timeout);
+
       // The rest of the logic remains mostly identical...
       String productInfo = '';
       String versionInfo = '';
 
-      if (port == 21 || port == 22 || port == 23 || port == 80 || port == 8080) {
+      if (port == 21 ||
+          port == 22 ||
+          port == 23 ||
+          port == 80 ||
+          port == 8080) {
         if (port == 80 || port == 8080) {
           socket.write("HEAD / HTTP/1.0\r\n\r\n");
         }
-        
+
         try {
           final event = await socket.first.timeout(
             const Duration(milliseconds: _bannerTimeoutMs),
           );
-          
+
           final bannerString = utf8.decode(event, allowMalformed: true).trim();
-          
+
           if (bannerString.isNotEmpty) {
             final lines = bannerString.split('\n');
             if (port == 80 || port == 8080) {

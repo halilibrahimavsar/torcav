@@ -49,18 +49,19 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
   void _setupListeners() {
     _managerSessionSub = _heatmapManager.sessionStream.listen((session) {
-      final guidance = session == null
-          ? null
-          : _guidanceService.analyze(
-              points: session.points,
-              isRecording: state.isRecording,
-              currentRssi: state.currentRssi,
-              surveyGate: state.surveyGate,
-              lastSignalAt: state.lastSignalAt,
-              currentSignalStdDev: state.lastSignalStdDev,
-              currentX: state.currentPosition?.dx,
-              currentY: state.currentPosition?.dy,
-            );
+      final guidance =
+          session == null
+              ? null
+              : _guidanceService.analyze(
+                points: session.points,
+                isRecording: state.isRecording,
+                currentRssi: state.currentRssi,
+                surveyGate: state.surveyGate,
+                lastSignalAt: state.lastSignalAt,
+                currentSignalStdDev: state.lastSignalStdDev,
+                currentX: state.currentPosition?.dx,
+                currentY: state.currentPosition?.dy,
+              );
 
       emit(
         state.copyWith(
@@ -215,12 +216,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
     result.fold((failure) => emit(state.copyWith(failure: failure)), (_) {
       if (state.selectedSession?.id == sessionId) {
-        emit(
-          state.copyWith(
-            clearSelectedSession: true,
-            phase: ScanPhase.idle,
-          ),
-        );
+        emit(state.copyWith(clearSelectedSession: true, phase: ScanPhase.idle));
       }
       loadSessions();
     });

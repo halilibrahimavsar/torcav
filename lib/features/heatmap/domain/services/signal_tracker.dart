@@ -34,15 +34,14 @@ class SignalState {
     double? stdDev,
     int? sampleCount,
     bool clearRssi = false,
-  }) =>
-      SignalState(
-        targetBssid: targetBssid ?? this.targetBssid,
-        targetSsid: targetSsid ?? this.targetSsid,
-        currentRssi: clearRssi ? null : (currentRssi ?? this.currentRssi),
-        lastSignalAt: clearRssi ? null : (lastSignalAt ?? this.lastSignalAt),
-        stdDev: clearRssi ? 0.0 : (stdDev ?? this.stdDev),
-        sampleCount: clearRssi ? 0 : (sampleCount ?? this.sampleCount),
-      );
+  }) => SignalState(
+    targetBssid: targetBssid ?? this.targetBssid,
+    targetSsid: targetSsid ?? this.targetSsid,
+    currentRssi: clearRssi ? null : (currentRssi ?? this.currentRssi),
+    lastSignalAt: clearRssi ? null : (lastSignalAt ?? this.lastSignalAt),
+    stdDev: clearRssi ? 0.0 : (stdDev ?? this.stdDev),
+    sampleCount: clearRssi ? 0 : (sampleCount ?? this.sampleCount),
+  );
 }
 
 /// Service responsible for tracking and smoothing the connected Wi-Fi signal.
@@ -92,7 +91,7 @@ class SignalTracker {
 
     _pollTimer?.cancel();
     _pollTimer = Timer.periodic(_pollInterval, (_) => _poll());
-    
+
     // Initial poll
     await _poll();
   }
@@ -113,10 +112,9 @@ class SignalTracker {
       bssid ??= (await _networkInfo.getWifiBSSID())?.toUpperCase();
       ssid ??= (await _networkInfo.getWifiName())?.replaceAll('"', '');
 
-      _updateState(_currentState.copyWith(
-        targetBssid: bssid,
-        targetSsid: ssid,
-      ));
+      _updateState(
+        _currentState.copyWith(targetBssid: bssid, targetSsid: ssid),
+      );
     } catch (e) {
       AppLogger.e('Failed to resolve target AP', error: e);
     }
@@ -124,7 +122,7 @@ class SignalTracker {
 
   Future<void> _poll() async {
     final sample = await _connectedSignalService.getConnectedSignal();
-    
+
     if (sample == null) {
       _signalWindow.clear();
       _updateState(_currentState.copyWith(clearRssi: true));
@@ -133,10 +131,12 @@ class SignalTracker {
 
     final normalizedBssid = sample.bssid.toUpperCase();
     if (_currentState.targetBssid == null) {
-      _updateState(_currentState.copyWith(
-        targetBssid: normalizedBssid,
-        targetSsid: sample.ssid,
-      ));
+      _updateState(
+        _currentState.copyWith(
+          targetBssid: normalizedBssid,
+          targetSsid: sample.ssid,
+        ),
+      );
     } else if (normalizedBssid != _currentState.targetBssid) {
       _signalWindow.clear();
       _updateState(_currentState.copyWith(clearRssi: true));
@@ -162,16 +162,20 @@ class SignalTracker {
       return;
     }
 
-    _updateState(_currentState.copyWith(
-      currentRssi: smoothed.rssi,
-      lastSignalAt: sample.timestamp,
-      stdDev: smoothed.stdDev,
-      sampleCount: smoothed.sampleCount,
-      targetSsid: sample.ssid.isEmpty ? _currentState.targetSsid : sample.ssid,
-    ));
+    _updateState(
+      _currentState.copyWith(
+        currentRssi: smoothed.rssi,
+        lastSignalAt: sample.timestamp,
+        stdDev: smoothed.stdDev,
+        sampleCount: smoothed.sampleCount,
+        targetSsid:
+            sample.ssid.isEmpty ? _currentState.targetSsid : sample.ssid,
+      ),
+    );
 
     final now = DateTime.now();
-    if (_lastScanTime == null || now.difference(_lastScanTime!) > _scanCooldown) {
+    if (_lastScanTime == null ||
+        now.difference(_lastScanTime!) > _scanCooldown) {
       unawaited(runMetadataScan());
     }
   }
@@ -183,15 +187,22 @@ class SignalTracker {
     );
 
     result.fold((_) {}, (snapshot) {
-      final match = snapshot.networks.where(
-        (n) => n.bssid.toUpperCase() == _currentState.targetBssid,
-      ).firstOrNull;
+      final match =
+          snapshot.networks
+              .where((n) => n.bssid.toUpperCase() == _currentState.targetBssid)
+              .firstOrNull;
 
       if (match != null) {
-        _updateState(_currentState.copyWith(
-          targetSsid: match.ssid.isEmpty ? _currentState.targetSsid : match.ssid,
-          stdDev: match.signalStdDev > _currentState.stdDev ? match.signalStdDev : _currentState.stdDev,
-        ));
+        _updateState(
+          _currentState.copyWith(
+            targetSsid:
+                match.ssid.isEmpty ? _currentState.targetSsid : match.ssid,
+            stdDev:
+                match.signalStdDev > _currentState.stdDev
+                    ? match.signalStdDev
+                    : _currentState.stdDev,
+          ),
+        );
       }
     });
   }

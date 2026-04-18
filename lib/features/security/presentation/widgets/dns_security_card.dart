@@ -78,8 +78,14 @@ class DnsSecurityCard extends StatelessWidget {
                             dnsResult == null
                                 ? l10n.dnsIdleDescription
                                 : l10n.dnsLastCheck(
-                                  DateTime.now().hour.toString().padLeft(2, '0'),
-                                  DateTime.now().minute.toString().padLeft(2, '0'),
+                                  DateTime.now().hour.toString().padLeft(
+                                    2,
+                                    '0',
+                                  ),
+                                  DateTime.now().minute.toString().padLeft(
+                                    2,
+                                    '0',
+                                  ),
                                 ),
                             style: GoogleFonts.rajdhani(
                               color: scheme.onSurfaceVariant,
@@ -96,7 +102,7 @@ class DnsSecurityCard extends StatelessWidget {
                 const SizedBox(height: 20),
                 const NeonDivider(height: 0.5),
                 const SizedBox(height: 20),
-                
+
                 // --- Core DNS Metrics (Always Visible) ---
                 _DnsDetailRow(
                   label: l10n.dnsCurrentDns,
@@ -116,7 +122,7 @@ class DnsSecurityCard extends StatelessWidget {
                   infoBody: l10n.dnsInfoLeakDesc,
                 ),
                 const SizedBox(height: 12),
-                
+
                 // Protocol & DNSSEC section (Always visible)
                 _DnsProtocolSection(
                   protocol: dnsResult?.encryptedProtocol ?? "---",
@@ -141,7 +147,7 @@ class DnsSecurityCard extends StatelessWidget {
                     evidence: dnsResult!.evidence,
                     color: statusColor,
                   ),
-                
+
                 if (dnsResult?.benchmarks.isNotEmpty ?? false) ...[
                   const SizedBox(height: 24),
                   _DnsBenchmarkSection(
@@ -268,11 +274,7 @@ class _DnsDetailRow extends StatelessWidget {
           ),
         ),
         if (infoTitle != null && infoBody != null)
-          InfoIconButton(
-            title: infoTitle!,
-            body: infoBody!,
-            color: color,
-          ),
+          InfoIconButton(title: infoTitle!, body: infoBody!, color: color),
         const Expanded(child: SizedBox()),
         Flexible(
           child: Text(
@@ -430,7 +432,10 @@ class _BenchmarkItem extends StatelessWidget {
         color: scheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isFastest ? color.withValues(alpha: 0.5) : scheme.outlineVariant.withValues(alpha: 0.2),
+          color:
+              isFastest
+                  ? color.withValues(alpha: 0.5)
+                  : scheme.outlineVariant.withValues(alpha: 0.2),
           width: isFastest ? 1.5 : 1,
         ),
       ),
@@ -455,11 +460,16 @@ class _BenchmarkItem extends StatelessWidget {
                         if (isFastest) ...[
                           const SizedBox(width: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
                               color: color.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: color.withValues(alpha: 0.4)),
+                              border: Border.all(
+                                color: color.withValues(alpha: 0.4),
+                              ),
                             ),
                             child: Text(
                               l10n.dnsRecommended.toUpperCase(),
@@ -524,10 +534,7 @@ class _BenchmarkItem extends StatelessWidget {
                   height: 4,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [
-                        color.withValues(alpha: 0.5),
-                        color,
-                      ],
+                      colors: [color.withValues(alpha: 0.5), color],
                     ),
                     borderRadius: BorderRadius.circular(2),
                     boxShadow: [
@@ -600,18 +607,15 @@ class _DnsProtocolSection extends StatelessWidget {
                 NeonChip(
                   label: protocol,
                   color: protocol == 'UDP' ? scheme.onSurfaceVariant : color,
-                  icon: protocol == 'UDP' 
-                      ? Icons.lock_open_rounded 
-                      : Icons.lock_outline_rounded,
+                  icon:
+                      protocol == 'UDP'
+                          ? Icons.lock_open_rounded
+                          : Icons.lock_outline_rounded,
                 ),
               ],
             ),
           ),
-          Container(
-            height: 30,
-            width: 1,
-            color: color.withValues(alpha: 0.2),
-          ),
+          Container(height: 30, width: 1, color: color.withValues(alpha: 0.2)),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -639,7 +643,9 @@ class _DnsProtocolSection extends StatelessWidget {
                 Row(
                   children: [
                     Icon(
-                      dnssec ? Icons.verified_user_rounded : Icons.gpp_maybe_rounded,
+                      dnssec
+                          ? Icons.verified_user_rounded
+                          : Icons.gpp_maybe_rounded,
                       size: 14,
                       color: dnssec ? color : scheme.onSurfaceVariant,
                     ),

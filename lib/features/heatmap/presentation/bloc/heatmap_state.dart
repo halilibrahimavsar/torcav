@@ -134,13 +134,15 @@ class HeatmapState extends Equatable {
     lastSignalAt: clearLastSignalAt ? null : lastSignalAt ?? this.lastSignalAt,
     lastSignalStdDev: lastSignalStdDev ?? this.lastSignalStdDev,
     lastSignalSampleCount: lastSignalSampleCount ?? this.lastSignalSampleCount,
-    lastStepTimestamp: clearLastStepTimestamp
-        ? null
-        : lastStepTimestamp ?? this.lastStepTimestamp,
+    lastStepTimestamp:
+        clearLastStepTimestamp
+            ? null
+            : lastStepTimestamp ?? this.lastStepTimestamp,
     currentFloor: currentFloor ?? this.currentFloor,
-    lastRecordedPosition: clearLastRecordedPosition
-        ? null
-        : lastRecordedPosition ?? this.lastRecordedPosition,
+    lastRecordedPosition:
+        clearLastRecordedPosition
+            ? null
+            : lastRecordedPosition ?? this.lastRecordedPosition,
     autoSamplingDistance: autoSamplingDistance ?? this.autoSamplingDistance,
     coverageScore: coverageScore ?? this.coverageScore,
     sparseRegion: clearSparseRegion ? null : sparseRegion ?? this.sparseRegion,

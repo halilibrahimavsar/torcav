@@ -80,7 +80,9 @@ class SignalGraphPage extends StatelessWidget {
               color: Theme.of(context).colorScheme.surfaceContainerLow,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.2),
               ),
             ),
             child: Row(
@@ -91,8 +93,16 @@ class SignalGraphPage extends StatelessWidget {
                   context.l10n.signalCaps,
                   '${state.currentData.signalStrength} dBm',
                 ),
-                _buildStatItem(context, context.l10n.channelCaps, '${state.currentData.channel}'),
-                _buildStatItem(context, context.l10n.frequencyCaps, '${state.currentData.frequency} MHz'),
+                _buildStatItem(
+                  context,
+                  context.l10n.channelCaps,
+                  '${state.currentData.channel}',
+                ),
+                _buildStatItem(
+                  context,
+                  context.l10n.frequencyCaps,
+                  '${state.currentData.frequency} MHz',
+                ),
               ],
             ),
           );
@@ -144,9 +154,9 @@ class SignalGraphPage extends StatelessWidget {
     );
 
     if (!context.mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(context.l10n.heatmapPointAdded(zone))));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(context.l10n.heatmapPointAdded(zone))),
+    );
   }
 }
 
@@ -255,7 +265,9 @@ class _SignalChart extends StatelessWidget {
               borderData: FlBorderData(
                 show: true,
                 border: Border.all(
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.12),
                 ),
               ),
               minX: 0,
@@ -275,7 +287,9 @@ class _SignalChart extends StatelessWidget {
                   dotData: const FlDotData(show: true),
                   belowBarData: BarAreaData(
                     show: true,
-                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.2),
                   ),
                 ),
               ],

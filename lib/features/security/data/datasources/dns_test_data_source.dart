@@ -48,7 +48,7 @@ class DnsDataSource {
 
     try {
       final startTime = DateTime.now();
-      
+
       // 1. Resolver Identification
       final [akamaiIp, openDnsInfo] = await Future.wait([
         _resolveFirst('whoami.akamai.net'),
@@ -57,7 +57,7 @@ class DnsDataSource {
 
       final systemLatency = DateTime.now().difference(startTime).inMilliseconds;
       evidence.add('System DNS latency: ${systemLatency}ms');
-      
+
       if (akamaiIp != null) {
         detectedServers.add(akamaiIp);
         evidence.add('Detected Resolver IP: $akamaiIp');
@@ -72,7 +72,10 @@ class DnsDataSource {
       for (final lookup in results) {
         if (lookup.isEmpty) continue;
         final ip = lookup.first.address;
-        if (ip == '127.0.0.1' || ip == '0.0.0.0' || ip.startsWith('10.') || ip.startsWith('192.168.')) {
+        if (ip == '127.0.0.1' ||
+            ip == '0.0.0.0' ||
+            ip.startsWith('10.') ||
+            ip.startsWith('192.168.')) {
           isHijacked = true;
           status = DnsSecurityStatus.dangerous;
           evidence.add('Hijack Alert: $ip returned for common domain');
@@ -83,7 +86,7 @@ class DnsDataSource {
       final encryptionInfo = await _detectEncryptedDns(akamaiIp);
       encryptedProtocol = encryptionInfo['status'] as String;
       encryptedDnsActive = encryptionInfo['active'] as bool;
-      
+
       // 4. DNSSEC Verification on System Resolver
       final systemDnssec = await _checkSystemDnssec();
       dnssecSupported = systemDnssec;
@@ -103,9 +106,10 @@ class DnsDataSource {
       final benchmarks = benchmarkResult.benchmarks;
       // Combine DNSSEC support (if any benchmarked or system supports it)
       dnssecSupported = dnssecSupported || benchmarkResult.dnssecSupported;
-      
-      final currentDns = detectedServers.isNotEmpty ? detectedServers.first : 'System Default';
-      
+
+      final currentDns =
+          detectedServers.isNotEmpty ? detectedServers.first : 'System Default';
+
       return DnsTestResult(
         currentDns: currentDns,
         ispName: ispName,
@@ -139,18 +143,19 @@ class DnsDataSource {
   Future<DnsBenchmarkResultGroup> runBenchmarkWithDnssec() async {
     final results = <DnsBenchmarkResult>[];
     bool dnssecGlobal = false;
-    
+
     // Test providers in parallel
-    final futures = _providers.map((p) async {
-      final probe = await _measureLatencyAndDnssec(p['ip'] as String);
-      if (probe.dnssec) dnssecGlobal = true;
-      return DnsBenchmarkResult(
-        name: p['name'] as String,
-        primaryIp: p['ip'] as String,
-        latencyMs: probe.latency,
-        features: p['features'] as List<String>,
-      );
-    }).toList();
+    final futures =
+        _providers.map((p) async {
+          final probe = await _measureLatencyAndDnssec(p['ip'] as String);
+          if (probe.dnssec) dnssecGlobal = true;
+          return DnsBenchmarkResult(
+            name: p['name'] as String,
+            primaryIp: p['ip'] as String,
+            latencyMs: probe.latency,
+            features: p['features'] as List<String>,
+          );
+        }).toList();
 
     results.addAll(await Future.wait(futures));
 
@@ -176,7 +181,10 @@ class DnsDataSource {
     try {
       // 1. Check known providers
       if (resolverIp != null) {
-        if (resolverIp == '1.1.1.1' || resolverIp == '1.0.0.1' || resolverIp.startsWith('172.64.') || resolverIp.startsWith('162.159.')) {
+        if (resolverIp == '1.1.1.1' ||
+            resolverIp == '1.0.0.1' ||
+            resolverIp.startsWith('172.64.') ||
+            resolverIp.startsWith('162.159.')) {
           return {'active': true, 'status': 'Cloudflare DoH/DoT'};
         }
         if (resolverIp == '8.8.8.8' || resolverIp == '8.8.4.4') {
@@ -191,13 +199,21 @@ class DnsDataSource {
       }
 
       // 2. HTTP Probe to Cloudflare (Common way to check if system is using DoH)
-      final client = HttpClient()..connectionTimeout = const Duration(seconds: 2);
+      final client =
+          HttpClient()..connectionTimeout = const Duration(seconds: 2);
       try {
-        final request = await client.getUrl(Uri.parse('https://1.1.1.1/cdn-cgi/trace'));
+        final request = await client.getUrl(
+          Uri.parse('https://1.1.1.1/cdn-cgi/trace'),
+        );
         final response = await request.close();
-        final body = await response.transform(const SystemEncoding().decoder).join();
-        if (body.contains('doh=on')) return {'active': true, 'status': 'DoH Enabled'};
-        if (body.contains('dot=on')) return {'active': true, 'status': 'DoT Enabled'};
+        final body =
+            await response.transform(const SystemEncoding().decoder).join();
+        if (body.contains('doh=on')) {
+          return {'active': true, 'status': 'DoH Enabled'};
+        }
+        if (body.contains('dot=on')) {
+          return {'active': true, 'status': 'DoT Enabled'};
+        }
       } catch (_) {}
 
       return {'active': false, 'status': 'UDP/Unencrypted'};
@@ -233,11 +249,11 @@ class DnsDataSource {
 
       final stopwatch = Stopwatch()..start();
       final socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
-      
+
       socket.send(packet, InternetAddress(dnsIp), 53);
-      
+
       final completer = Completer<DnsProbeResult>();
-      
+
       socket.listen((event) {
         if (event == RawSocketEvent.read) {
           final dg = socket.receive();
@@ -250,10 +266,12 @@ class DnsDataSource {
               dnssecStatus = (dg.data[3] & 0x20) != 0;
             }
             if (!completer.isCompleted) {
-              completer.complete(DnsProbeResult(
-                latency: stopwatch.elapsedMilliseconds,
-                dnssec: dnssecStatus,
-              ));
+              completer.complete(
+                DnsProbeResult(
+                  latency: stopwatch.elapsedMilliseconds,
+                  dnssec: dnssecStatus,
+                ),
+              );
             }
           }
         }
@@ -290,15 +308,17 @@ class DnsDataSource {
   Future<bool> _checkSystemDnssec() async {
     try {
       // Step 1: Resolve a domain that MUST succeed with DNSSEC
-      final okResult = await InternetAddress.lookup('sigok.vertebrate.adns.network')
-          .timeout(const Duration(seconds: 2));
-      
+      final okResult = await InternetAddress.lookup(
+        'sigok.vertebrate.adns.network',
+      ).timeout(const Duration(seconds: 2));
+
       if (okResult.isEmpty) return false;
 
       // Step 2: Resolve a domain that MUST fail if DNSSEC is validating
       try {
-        await InternetAddress.lookup('sigfail.vertebrate.adns.network')
-            .timeout(const Duration(seconds: 2));
+        await InternetAddress.lookup(
+          'sigfail.vertebrate.adns.network',
+        ).timeout(const Duration(seconds: 2));
         // If it resolved, DNSSEC is NOT validating or is stripped
         return false;
       } catch (e) {
@@ -319,10 +339,13 @@ class DnsDataSource {
     // Very basic heuristic: if it's a known public DNS, but ISP matches common patterns
     // Hard to do strictly local without GeoIP DB.
     // For now, we identify if it's NOT a public DNS we know.
-    bool constitutesPublicDns = _providers.any((p) => (p['ip'] as String) == resolverIp);
-    
+    bool constitutesPublicDns = _providers.any(
+      (p) => (p['ip'] as String) == resolverIp,
+    );
+
     if (constitutesPublicDns) {
-      isp = 'Public DNS (${_providers.firstWhere((p) => p['ip'] == resolverIp)['name']})';
+      isp =
+          'Public DNS (${_providers.firstWhere((p) => p['ip'] == resolverIp)['name']})';
     } else {
       isp = 'Private/ISP Resolver';
     }
@@ -340,6 +363,8 @@ class DnsProbeResult {
 class DnsBenchmarkResultGroup {
   final List<DnsBenchmarkResult> benchmarks;
   final bool dnssecSupported;
-  DnsBenchmarkResultGroup({required this.benchmarks, required this.dnssecSupported});
+  DnsBenchmarkResultGroup({
+    required this.benchmarks,
+    required this.dnssecSupported,
+  });
 }
-

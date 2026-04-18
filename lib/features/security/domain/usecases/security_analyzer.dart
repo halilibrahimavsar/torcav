@@ -30,9 +30,11 @@ class SecurityAnalyzer {
           ruleId: 'scan.deep_scan_active',
           category: SecurityFindingCategory.lanExposure,
           title: 'Active Probing Active',
-          description: 'Deep scan is enabled, performing more intrusive network tests.',
+          description:
+              'Deep scan is enabled, performing more intrusive network tests.',
           severity: VulnerabilitySeverity.info,
-          recommendation: 'Use only on networks you own or have permission to scan.',
+          recommendation:
+              'Use only on networks you own or have permission to scan.',
           confidence: SecurityFindingConfidence.observed,
           evidence: 'User-initiated deep scan (active probing) is enabled.',
           timestamp: now,
@@ -163,8 +165,8 @@ class SecurityAnalyzer {
               '(Pixie Dust attack), effectively bypassing any password.',
           severity: VulnerabilitySeverity.high,
           recommendation:
-            'Disable WPS in your router admin panel. Use WPA2/WPA3 passphrase '
-            'only.',
+              'Disable WPS in your router admin panel. Use WPA2/WPA3 passphrase '
+              'only.',
           confidence: SecurityFindingConfidence.observed,
           evidence:
               'The capabilities string for ${network.bssid} advertises WPS support.',
@@ -176,7 +178,8 @@ class SecurityAnalyzer {
       score -= 30;
     }
 
-    final isWpa2OrBetter = network.security == SecurityType.wpa2 ||
+    final isWpa2OrBetter =
+        network.security == SecurityType.wpa2 ||
         network.security == SecurityType.wpa3;
     if (isWpa2OrBetter && network.hasPmf == false) {
       findings.add(
@@ -250,9 +253,12 @@ class SecurityAnalyzer {
       score -= 15;
     }
 
-    final sameChannelCount = localBaseline
-        .where((n) => n.channel == network.channel && n.bssid != network.bssid)
-        .length;
+    final sameChannelCount =
+        localBaseline
+            .where(
+              (n) => n.channel == network.channel && n.bssid != network.bssid,
+            )
+            .length;
     if (sameChannelCount >= 5) {
       findings.add(
         SecurityFinding(
@@ -316,16 +322,11 @@ class SecurityAnalyzer {
       final currentFingerprint = NetworkFingerprint.fromWifiNetwork(network);
       final drift = currentFingerprint.driftAgainst(trustedProfile.fingerprint);
       if (drift.isNotEmpty) {
-        final severeAttributes = {
-          'BSSID',
-          'Security',
-          'WPS',
-          'PMF',
-          'Vendor',
-        };
-        final severity = drift.any(severeAttributes.contains)
-            ? VulnerabilitySeverity.high
-            : VulnerabilitySeverity.medium;
+        final severeAttributes = {'BSSID', 'Security', 'WPS', 'PMF', 'Vendor'};
+        final severity =
+            drift.any(severeAttributes.contains)
+                ? VulnerabilitySeverity.high
+                : VulnerabilitySeverity.medium;
         findings.add(
           SecurityDriftFinding(
             ruleId: 'trusted.baseline_drift',
@@ -394,9 +395,8 @@ class SecurityAnalyzer {
     );
     return SecurityReport(
       score: assessment.score,
-      vulnerabilities: assessment.evidenceFindings
-          .map((f) => f.toVulnerability())
-          .toList(),
+      vulnerabilities:
+          assessment.evidenceFindings.map((f) => f.toVulnerability()).toList(),
       overallStatus: assessment.statusLabel,
     );
   }
@@ -449,7 +449,9 @@ class SecurityAnalyzer {
   bool _isSuspiciousSsid(String ssid) {
     if (ssid.isEmpty) return false;
     final lower = ssid.toLowerCase().trim();
-    return _honeypotPatterns.any((pattern) => lower == pattern || lower.contains(pattern));
+    return _honeypotPatterns.any(
+      (pattern) => lower == pattern || lower.contains(pattern),
+    );
   }
 
   bool _isPotentialEvilTwin(WifiNetwork target, List<WifiNetwork> baseline) {
@@ -518,9 +520,9 @@ class SecurityAnalyzer {
 
   /// Maps a frequency (MHz) to its band identifier.
   int _bandOf(int freq) {
-    if (freq < 3000) return 2;  // 2.4 GHz
-    if (freq < 5900) return 5;  // 5 GHz
-    return 6;                    // 6 GHz
+    if (freq < 3000) return 2; // 2.4 GHz
+    if (freq < 5900) return 5; // 5 GHz
+    return 6; // 6 GHz
   }
 
   /// Checks if two BSSIDs differ by at most 3 in the last octet,

@@ -50,18 +50,27 @@ class _SecurityCenterView extends StatelessWidget {
         actions: [
           BlocBuilder<SecurityBloc, SecurityState>(
             builder: (context, state) {
-              final isLoading = state is SecurityLoading || (state is SecurityLoaded && state.isDnsLoading);
+              final isLoading =
+                  state is SecurityLoading ||
+                  (state is SecurityLoaded && state.isDnsLoading);
               return IconButton(
-                icon: isLoading 
-                  ? const SizedBox(
-                      width: 20, 
-                      height: 20, 
-                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white70)
-                    )
-                  : const Icon(Icons.refresh_rounded),
-                onPressed: isLoading ? null : () {
-                  context.read<SecurityBloc>().add(SecurityStarted());
-                },
+                icon:
+                    isLoading
+                        ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white70,
+                          ),
+                        )
+                        : const Icon(Icons.refresh_rounded),
+                onPressed:
+                    isLoading
+                        ? null
+                        : () {
+                          context.read<SecurityBloc>().add(SecurityStarted());
+                        },
               );
             },
           ),
@@ -74,7 +83,6 @@ class _SecurityCenterView extends StatelessWidget {
           }
 
           if (state is SecurityLoaded) {
-
             return SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
               physics: const BouncingScrollPhysics(),
@@ -85,58 +93,62 @@ class _SecurityCenterView extends StatelessWidget {
                   SecurityCenterBentoHeader(state: state),
                   const SizedBox(height: 24),
 
-                // ── Critical Alerts ──
-                EvilTwinAlertBanner(state: state),
-                WpsWarningCard(state: state),
+                  // ── Critical Alerts ──
+                  EvilTwinAlertBanner(state: state),
+                  WpsWarningCard(state: state),
 
-                // ── Quick Telemetry ──
-                if (state.scanSummary != null) ...[
-                  ScanOverviewCard(summary: state.scanSummary!),
-                  const SizedBox(height: 24),
+                  // ── Quick Telemetry ──
+                  if (state.scanSummary != null) ...[
+                    ScanOverviewCard(summary: state.scanSummary!),
+                    const SizedBox(height: 24),
+                  ],
+
+                  // ── Network Topology ──
+                  NeonSectionHeader(
+                    label: l10n.networkSecurity,
+                    icon: Icons.hub_rounded,
+                    color: scheme.primary,
+                  ),
+                  const SizedBox(height: 16),
+                  NetworkSecurityCard(
+                    knownNetworks: state.knownNetworks,
+                    trustedProfiles: state.trustedNetworkProfiles,
+                  ),
+                  const SizedBox(height: 32),
+
+                  // ── Protocol Integrity ──
+                  NeonSectionHeader(
+                    label: l10n.dnsSecurityTest,
+                    icon: Icons.dns_rounded,
+                    color: scheme.secondary,
+                  ),
+                  const SizedBox(height: 16),
+                  DnsSecurityCard(state: state),
+                  const SizedBox(height: 32),
+
+                  // ── Mission Log ──
+                  NeonSectionHeader(
+                    label: l10n.securityTimeline,
+                    icon: Icons.terminal_rounded,
+                    color: scheme.tertiary,
+                  ),
+                  const SizedBox(height: 16),
+                  SecurityTimelineView(events: state.recentEvents),
                 ],
-
-                // ── Network Topology ──
-                NeonSectionHeader(
-                  label: l10n.networkSecurity,
-                  icon: Icons.hub_rounded,
-                  color: scheme.primary,
-                ),
-                const SizedBox(height: 16),
-                NetworkSecurityCard(
-                  knownNetworks: state.knownNetworks,
-                  trustedProfiles: state.trustedNetworkProfiles,
-                ),
-                const SizedBox(height: 32),
-
-                // ── Protocol Integrity ──
-                NeonSectionHeader(
-                  label: l10n.dnsSecurityTest,
-                  icon: Icons.dns_rounded,
-                  color: scheme.secondary,
-                ),
-                const SizedBox(height: 16),
-                DnsSecurityCard(state: state),
-                const SizedBox(height: 32),
-
-                // ── Mission Log ──
-                NeonSectionHeader(
-                  label: l10n.securityTimeline,
-                  icon: Icons.terminal_rounded,
-                  color: scheme.tertiary,
-                ),
-                const SizedBox(height: 16),
-                SecurityTimelineView(events: state.recentEvents),
-              ],
-            ),
-          );
-        }
+              ),
+            );
+          }
 
           if (state is SecurityError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                   const Icon(Icons.gpp_bad_rounded, size: 64, color: Colors.redAccent),
+                  const Icon(
+                    Icons.gpp_bad_rounded,
+                    size: 64,
+                    color: Colors.redAccent,
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     'SECURITY ASSESSMENT FAILED',
@@ -156,7 +168,9 @@ class _SecurityCenterView extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton.icon(
-                    onPressed: () => context.read<SecurityBloc>().add(SecurityStarted()),
+                    onPressed:
+                        () =>
+                            context.read<SecurityBloc>().add(SecurityStarted()),
                     icon: const Icon(Icons.refresh_rounded),
                     label: const Text('RETRY ANALYTICS'),
                   ),

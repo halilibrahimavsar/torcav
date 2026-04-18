@@ -37,7 +37,8 @@ class HeatmapManager {
 
   Stream<PointCandidate> get positionStream => _positionTracker.candidateStream;
 
-  Stream<PositionUpdate> get rawPositionStream => _positionTracker.rawPositionStream;
+  Stream<PositionUpdate> get rawPositionStream =>
+      _positionTracker.rawPositionStream;
 
   final _gateController = StreamController<SurveyGate>.broadcast();
   Stream<SurveyGate> get gateStream => _gateController.stream;
@@ -69,7 +70,9 @@ class HeatmapManager {
     await _signalTracker.start(bssid, ssid);
 
     _positionSub?.cancel();
-    _positionSub = _positionTracker.candidateStream.listen(_onPositionCandidate);
+    _positionSub = _positionTracker.candidateStream.listen(
+      _onPositionCandidate,
+    );
     _positionTracker.start(0.0, 0.0);
 
     _barometerSource.stopTracking(); // Ensure fresh start
@@ -116,16 +119,17 @@ class HeatmapManager {
     }
 
     if (!_positionTracker.shouldRecordPoint(
-      _currentSession!, 
-      candidate.x, 
-      candidate.y, 
+      _currentSession!,
+      candidate.x,
+      candidate.y,
       _minimumPointDistanceMeters,
     )) {
       return;
     }
 
     final newPoint = HeatmapPoint(
-      x: 0, y: 0,
+      x: 0,
+      y: 0,
       floorX: candidate.x,
       floorY: candidate.y,
       floorZ: 0,
@@ -184,8 +188,12 @@ class HeatmapManager {
   }
 
   bool _validateSignalFreshness() {
-    if (_lastSignalState.currentRssi == null || _lastSignalState.lastSignalAt == null) return false;
-    final age = DateTime.now().difference(_lastSignalState.lastSignalAt!).inSeconds;
+    if (_lastSignalState.currentRssi == null ||
+        _lastSignalState.lastSignalAt == null) {
+      return false;
+    }
+    final age =
+        DateTime.now().difference(_lastSignalState.lastSignalAt!).inSeconds;
     return age <= _signalFreshnessSeconds;
   }
 

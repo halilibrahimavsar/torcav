@@ -79,9 +79,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         width: _page == i ? 20 : 6,
                         height: 6,
                         decoration: BoxDecoration(
-                          color: _page == i
-                              ? primary
-                              : primary.withValues(alpha: 0.25),
+                          color:
+                              _page == i
+                                  ? primary
+                                  : primary.withValues(alpha: 0.25),
                           borderRadius: BorderRadius.circular(3),
                         ),
                       );

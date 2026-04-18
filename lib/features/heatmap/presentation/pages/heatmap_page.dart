@@ -11,7 +11,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:torcav/core/theme/theme_cubit.dart';
 
-
 import 'package:torcav/core/di/injection.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
@@ -79,7 +78,6 @@ class _HeatmapPageState extends State<HeatmapPage> {
   }
 }
 
-
 class _HeatmapView extends StatefulWidget {
   const _HeatmapView();
 
@@ -104,18 +102,20 @@ class _HeatmapViewState extends State<_HeatmapView> {
         final theme = Theme.of(context);
         final colorScheme = theme.colorScheme;
         final isLight = theme.brightness == Brightness.light;
-        
+
         final isRecording = state.isRecording;
         final isScanning = isRecording && state.phase == ScanPhase.scanning;
         final isReviewing = state.phase == ScanPhase.reviewing;
 
-        final session = isRecording ? state.currentSession : state.selectedSession;
+        final session =
+            isRecording ? state.currentSession : state.selectedSession;
         final bottomSafe = MediaQuery.viewPaddingOf(context).bottom;
         final reviewBottomPadding =
             SurveyConclusionOverlay.reservedHeight + bottomSafe + 16;
 
         final summary = HeatmapSummary.from(
-          session: session ??
+          session:
+              session ??
               HeatmapSession(
                 id: 'idle',
                 name: '',
@@ -137,7 +137,8 @@ class _HeatmapViewState extends State<_HeatmapView> {
           onPopInvokedWithResult: (didPop, result) async {
             if (didPop) return;
 
-            final shouldPop = await showDialog<bool>(
+            final shouldPop =
+                await showDialog<bool>(
                   context: context,
                   builder:
                       (context) => AlertDialog(
@@ -165,7 +166,10 @@ class _HeatmapViewState extends State<_HeatmapView> {
                             child: Text(
                               'CANCEL',
                               style: GoogleFonts.orbitron(
-                                color: isLight ? AppColors.textMutedLight : AppColors.textMuted,
+                                color:
+                                    isLight
+                                        ? AppColors.textMutedLight
+                                        : AppColors.textMuted,
                                 fontSize: 12,
                               ),
                             ),
@@ -192,7 +196,10 @@ class _HeatmapViewState extends State<_HeatmapView> {
                             child: Text(
                               isRecording ? 'DISCARD' : 'EXIT',
                               style: GoogleFonts.orbitron(
-                                color: isLight ? AppColors.inkRed : AppColors.neonRed,
+                                color:
+                                    isLight
+                                        ? AppColors.inkRed
+                                        : AppColors.neonRed,
                                 fontSize: 12,
                               ),
                             ),
@@ -222,128 +229,139 @@ class _HeatmapViewState extends State<_HeatmapView> {
                             Navigator.of(context).maybePop();
                           }
                         },
-                    ),
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        NeonText(
-                          copy.pageTitle,
-                          style: GoogleFonts.orbitron(
-                            color: isLight ? AppColors.inkCyan : AppColors.neonCyan,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.6,
+                      ),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          NeonText(
+                            copy.pageTitle,
+                            style: GoogleFonts.orbitron(
+                              color:
+                                  isLight
+                                      ? AppColors.inkCyan
+                                      : AppColors.neonCyan,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.6,
+                            ),
+                            glowRadius: isLight ? 4 : 8,
                           ),
-                          glowRadius: isLight ? 4 : 8,
+                          Text(
+                            copy.pageSubtitle,
+                            style: GoogleFonts.outfit(
+                              color: theme.colorScheme.onSurface.withValues(
+                                alpha: 0.6,
+                              ),
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
+                      actions: [
+                        IconButton(
+                          icon: Icon(
+                            isLight
+                                ? Icons.dark_mode_rounded
+                                : Icons.light_mode_rounded,
+                          ),
+                          color: colorScheme.primary,
+                          tooltip: copy.themeToggleTooltip,
+                          onPressed: () => getIt<ThemeCubit>().toggle(),
                         ),
-                        Text(
-                          copy.pageSubtitle,
-                          style: GoogleFonts.outfit(
-                            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                            fontSize: 11,
-                          ),
+                        IconButton(
+                          icon: const Icon(Icons.history_rounded),
+                          color: colorScheme.primary,
+                          tooltip: copy.historyTooltip,
+                          onPressed:
+                              () => _showSessionsPicker(
+                                context,
+                                state.sessions,
+                                copy,
+                              ),
                         ),
                       ],
                     ),
-                    actions: [
-                      IconButton(
-                        icon: Icon(
-                          isLight ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
-                        ),
-                        color: colorScheme.primary,
-                        tooltip: copy.themeToggleTooltip,
-                        onPressed: () => getIt<ThemeCubit>().toggle(),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.history_rounded),
-                        color: colorScheme.primary,
-                        tooltip: copy.historyTooltip,
-                        onPressed: () => _showSessionsPicker(context, state.sessions, copy),
-                      ),
-                    ],
-                  ),
-          body: Stack(
-            fit: StackFit.expand,
-            children: [
-              // 2D Result / Idle Layer
-              Stack(
-                fit: StackFit.expand,
-                children: [
-                  CanvasBackdrop(summary: summary),
-                  if (session != null)
-                    Positioned.fill(
-                      child: RepaintBoundary(
-                        key: _boundaryKey,
-                        child: HeatmapCanvas(
-                          session: session,
-                          showPath: session.points.isNotEmpty,
-                          activeFloor: null,
-                          minRssi: minRssi,
-                          maxRssi: maxRssi,
-                          coverageScore: state.coverageScore,
-                          sparseRegion: state.sparseRegion,
-                          padding: EdgeInsets.only(
-                            bottom: isReviewing ? reviewBottomPadding : 20,
-                            top: isScanning ? 100 : 20,
-                            left: 20,
-                            right: 20,
+            body: Stack(
+              fit: StackFit.expand,
+              children: [
+                // 2D Result / Idle Layer
+                Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CanvasBackdrop(summary: summary),
+                    if (session != null)
+                      Positioned.fill(
+                        child: RepaintBoundary(
+                          key: _boundaryKey,
+                          child: HeatmapCanvas(
+                            session: session,
+                            showPath: session.points.isNotEmpty,
+                            activeFloor: null,
+                            minRssi: minRssi,
+                            maxRssi: maxRssi,
+                            coverageScore: state.coverageScore,
+                            sparseRegion: state.sparseRegion,
+                            padding: EdgeInsets.only(
+                              bottom: isReviewing ? reviewBottomPadding : 20,
+                              top: isScanning ? 100 : 20,
+                              left: 20,
+                              right: 20,
+                            ),
+                            onTap: (metric) {
+                              setState(() => _probePoint = metric);
+                            },
                           ),
-                          onTap: (metric) {
-                            setState(() => _probePoint = metric);
-                          },
                         ),
                       ),
-                    ),
-                  if (_shouldShowCanvasEmptyState(state, summary))
-                    CanvasEmptyState(
-                      state: state,
-                      copy: copy,
-                      onStart:
-                          () => _showNewSessionDialog(context, bloc, copy),
-                    ),
-                  if (isReviewing && _probePoint == null && session != null)
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: SurveyConclusionOverlay(
-                        summary: summary,
+                    if (_shouldShowCanvasEmptyState(state, summary))
+                      CanvasEmptyState(
+                        state: state,
                         copy: copy,
-                        onRestart: () => bloc.startSession(session.name),
-                        onDone: bloc.finishSession,
-                        onRename: () => _handleRename(context, bloc, session, copy),
-                        onShare: () => _handleShare(session, copy),
+                        onStart:
+                            () => _showNewSessionDialog(context, bloc, copy),
                       ),
-                    ),
-                  if (_probePoint != null && session != null)
-                    SignalProbeOverlay(
-                      point: _findNearestPoint(
-                        session.points,
-                        _probePoint!,
+                    if (isReviewing && _probePoint == null && session != null)
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: SurveyConclusionOverlay(
+                          summary: summary,
+                          copy: copy,
+                          onRestart: () => bloc.startSession(session.name),
+                          onDone: bloc.finishSession,
+                          onRename:
+                              () => _handleRename(context, bloc, session, copy),
+                          onShare: () => _handleShare(session, copy),
+                        ),
                       ),
-                      onDismiss: () => setState(() => _probePoint = null),
-                      copy: copy,
-                    ),
-                ],
-              ),
-
-              // Camera scanning layer — shown during recording.
-              if (isRecording)
-                ArCameraView(
-                  key: _cameraViewKey,
-                  onFinish: bloc.stopSession,
-                  onDiscard: bloc.discardSession,
+                    if (_probePoint != null && session != null)
+                      SignalProbeOverlay(
+                        point: _findNearestPoint(session.points, _probePoint!),
+                        onDismiss: () => setState(() => _probePoint = null),
+                        copy: copy,
+                      ),
+                  ],
                 ),
-            ],
-          ),
-          floatingActionButton:
-              !isRecording
-                  ? NeonButton(
-                    onPressed: () => _showNewSessionDialog(context, bloc, copy),
-                    icon: Icons.add_rounded,
-                    label: copy.startSurvey,
-                  )
-                  : null,
+
+                // Camera scanning layer — shown during recording.
+                if (isRecording)
+                  ArCameraView(
+                    key: _cameraViewKey,
+                    onFinish: bloc.stopSession,
+                    onDiscard: bloc.discardSession,
+                  ),
+              ],
+            ),
+            floatingActionButton:
+                !isRecording
+                    ? NeonButton(
+                      onPressed:
+                          () => _showNewSessionDialog(context, bloc, copy),
+                      icon: Icons.add_rounded,
+                      label: copy.startSurvey,
+                    )
+                    : null,
           ),
         );
       },
@@ -357,12 +375,15 @@ class _HeatmapViewState extends State<_HeatmapView> {
   ) {
     showDialog<void>(
       context: context,
-      builder: (ctx) => BlocProvider.value(
-        value: bloc,
-        child: NewSessionDialog(bloc: bloc, copy: copy),
-      ),
+      builder:
+          (ctx) => BlocProvider.value(
+            value: bloc,
+            child: NewSessionDialog(bloc: bloc, copy: copy),
+          ),
     );
-  }  void _showSessionsPicker(
+  }
+
+  void _showSessionsPicker(
     BuildContext context,
     List<HeatmapSession> sessions,
     HeatmapCopy copy,
@@ -375,24 +396,22 @@ class _HeatmapViewState extends State<_HeatmapView> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
       ),
-      builder: (ctx) => BlocProvider.value(
-        value: bloc,
-        child: SessionPickerSheet(
-          sessions: sessions,
-          copy: copy,
-          onSelect: (session) {
-            bloc.selectSession(session);
-            Navigator.of(context).pop();
-          },
-        ),
-      ),
+      builder:
+          (ctx) => BlocProvider.value(
+            value: bloc,
+            child: SessionPickerSheet(
+              sessions: sessions,
+              copy: copy,
+              onSelect: (session) {
+                bloc.selectSession(session);
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
     );
   }
 
-  bool _shouldShowCanvasEmptyState(
-    HeatmapState state,
-    HeatmapSummary summary,
-  ) {
+  bool _shouldShowCanvasEmptyState(HeatmapState state, HeatmapSummary summary) {
     return summary.sampleCount == 0;
   }
 
@@ -423,48 +442,58 @@ class _HeatmapViewState extends State<_HeatmapView> {
     final controller = TextEditingController(text: session.name);
     final result = showDialog<String>(
       context: context,
-      builder: (ctx) => BlocProvider.value(
-        value: bloc,
-        child: AlertDialog(
-          backgroundColor: theme.colorScheme.surface,
-          title: Text(
-            copy.renameDialogTitle,
-            style: GoogleFonts.orbitron(
-              color: theme.colorScheme.onSurface,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+      builder:
+          (ctx) => BlocProvider.value(
+            value: bloc,
+            child: AlertDialog(
+              backgroundColor: theme.colorScheme.surface,
+              title: Text(
+                copy.renameDialogTitle,
+                style: GoogleFonts.orbitron(
+                  color: theme.colorScheme.onSurface,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: TextField(
+                controller: controller,
+                style: GoogleFonts.outfit(color: theme.colorScheme.onSurface),
+                decoration: InputDecoration(
+                  hintText: copy.sessionNameField,
+                  hintStyle: TextStyle(
+                    color:
+                        isLight
+                            ? AppColors.textMutedLight
+                            : AppColors.textMuted,
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: theme.colorScheme.primary),
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: Text(
+                    copy.cancel,
+                    style: TextStyle(
+                      color:
+                          isLight
+                              ? AppColors.textMutedLight
+                              : AppColors.textMuted,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx, controller.text),
+                  child: Text(
+                    copy.save,
+                    style: TextStyle(color: theme.colorScheme.primary),
+                  ),
+                ),
+              ],
             ),
           ),
-          content: TextField(
-            controller: controller,
-            style: GoogleFonts.outfit(color: theme.colorScheme.onSurface),
-            decoration: InputDecoration(
-              hintText: copy.sessionNameField,
-              hintStyle: TextStyle(
-                color: isLight 
-                    ? AppColors.textMutedLight 
-                    : AppColors.textMuted,
-              ),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: theme.colorScheme.primary),
-              ),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(
-                copy.cancel, 
-                style: TextStyle(color: isLight ? AppColors.textMutedLight : AppColors.textMuted),
-              ),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, controller.text),
-              child: Text(copy.save, style: TextStyle(color: theme.colorScheme.primary)),
-            ),
-          ],
-        ),
-      ),
     );
 
     result.then((newName) {
@@ -476,8 +505,9 @@ class _HeatmapViewState extends State<_HeatmapView> {
 
   Future<void> _handleShare(HeatmapSession session, HeatmapCopy copy) async {
     try {
-      final boundary = _boundaryKey.currentContext?.findRenderObject()
-          as RenderRepaintBoundary?;
+      final boundary =
+          _boundaryKey.currentContext?.findRenderObject()
+              as RenderRepaintBoundary?;
       if (boundary == null) return;
 
       final image = await boundary.toImage(pixelRatio: 3.0);

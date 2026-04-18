@@ -69,7 +69,11 @@ class LinuxWifiDataSource implements WifiDataSource {
 
   Future<List<WifiNetwork>> _scanWithNmcli(ScanRequest request) async {
     // Request a rescan first (may be ignored if too frequent)
-    await Process.run('nmcli', ['device', 'wifi', 'rescan']).catchError((_) => ProcessResult(0, 0, '', ''));
+    await Process.run('nmcli', [
+      'device',
+      'wifi',
+      'rescan',
+    ]).catchError((_) => ProcessResult(0, 0, '', ''));
 
     final result = await Process.run('nmcli', [
       '-t',
@@ -81,13 +85,16 @@ class LinuxWifiDataSource implements WifiDataSource {
     ]);
 
     if (result.exitCode != 0) {
-      throw ScanFailure('nmcli exited with code ${result.exitCode}: ${result.stderr}');
+      throw ScanFailure(
+        'nmcli exited with code ${result.exitCode}: ${result.stderr}',
+      );
     }
 
-    final lines = (result.stdout as String)
-        .split('\n')
-        .where((l) => l.trim().isNotEmpty)
-        .toList();
+    final lines =
+        (result.stdout as String)
+            .split('\n')
+            .where((l) => l.trim().isNotEmpty)
+            .toList();
 
     final networks = <WifiNetwork>[];
     for (final line in lines) {
@@ -236,7 +243,9 @@ class LinuxWifiDataSource implements WifiDataSource {
     // Try to get the first active wireless interface via iw/ip
     try {
       final result = await Process.run('iw', ['dev']);
-      final m = RegExp(r'Interface\s+(\w+)').firstMatch(result.stdout as String);
+      final m = RegExp(
+        r'Interface\s+(\w+)',
+      ).firstMatch(result.stdout as String);
       if (m != null) return m.group(1)!;
     } catch (_) {}
     return 'wlan0';

@@ -15,12 +15,13 @@ void main() {
   });
 
   test('looks up vendors from the database service', () async {
-    when(() => mockDb.getVendor('14:36:0E:AA:BB:CC'))
-        .thenAnswer((_) async => 'Turk Telekom');
-    when(() => mockDb.getVendor('6C:E8:73:00:11:22'))
-        .thenAnswer((_) async => 'Xiaomi');
-    when(() => mockDb.getVendor('invalid'))
-        .thenAnswer((_) async => 'Unknown');
+    when(
+      () => mockDb.getVendor('14:36:0E:AA:BB:CC'),
+    ).thenAnswer((_) async => 'Turk Telekom');
+    when(
+      () => mockDb.getVendor('6C:E8:73:00:11:22'),
+    ).thenAnswer((_) async => 'Xiaomi');
+    when(() => mockDb.getVendor('invalid')).thenAnswer((_) async => 'Unknown');
 
     expect(await lookup.lookup('14:36:0E:AA:BB:CC'), 'Turk Telekom');
     expect(await lookup.lookup('6C:E8:73:00:11:22'), 'Xiaomi');

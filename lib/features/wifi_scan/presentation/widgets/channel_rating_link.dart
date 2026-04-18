@@ -26,10 +26,12 @@ class ChannelRatingLink extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => ChannelRatingPage(
-              networks: snapshot.networks.map((n) => n.toWifiNetwork()).toList(),
-              request: request,
-            ),
+            builder:
+                (context) => ChannelRatingPage(
+                  networks:
+                      snapshot.networks.map((n) => n.toWifiNetwork()).toList(),
+                  request: request,
+                ),
           ),
         );
       },

@@ -1,9 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
-import 'package:torcav/features/security/domain/entities/security_event.dart' as domain_event;
+import 'package:torcav/features/security/domain/entities/security_event.dart'
+    as domain_event;
 import '../bloc/security_bloc.dart';
 import 'security_status_radar.dart';
 
@@ -56,150 +56,169 @@ class SecurityCenterBentoHeader extends StatelessWidget {
               children: [
                 // Foreground Content ──
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-                  child: Column(
-                    children: [
-            // ── Top Header Row (Premium Subtle) ──
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Opacity(
-                    opacity: 0.7,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          state is SecurityLoading ? 'SCANNING' : 'SYSTEM STATUS',
-                          style: GoogleFonts.firaCode(
-                            fontSize: 9,
-                            fontWeight: FontWeight.w900,
-                            color: activeColor,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          statusLabel.toUpperCase(),
-                          style: GoogleFonts.orbitron(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w900,
-                            color: activeColor,
-                            letterSpacing: 2.5,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        ),
-                      ],
-                    ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 20,
                   ),
-                ),
-                Opacity(
-                  opacity: 0.8,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(
-                        'SECURITY SCORE',
-                        style: GoogleFonts.rajdhani(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w800,
-                          color: activeColor.withValues(alpha: 0.6),
-                          letterSpacing: 2,
-                        ),
-                      ),
+                      // ── Top Header Row (Premium Subtle) ──
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          AnimatedSecurityScore(
-                            score: score,
-                            color: activeColor,
+                          Expanded(
+                            child: Opacity(
+                              opacity: 0.7,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    state is SecurityLoading
+                                        ? 'SCANNING'
+                                        : 'SYSTEM STATUS',
+                                    style: GoogleFonts.firaCode(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w900,
+                                      color: activeColor,
+                                      letterSpacing: 1.2,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    statusLabel.toUpperCase(),
+                                    style: GoogleFonts.orbitron(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w900,
+                                      color: activeColor,
+                                      letterSpacing: 2.5,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '/100',
-                            style: GoogleFonts.orbitron(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: activeColor.withValues(alpha: 0.4),
+                          Opacity(
+                            opacity: 0.8,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  'SECURITY SCORE',
+                                  style: GoogleFonts.rajdhani(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w800,
+                                    color: activeColor.withValues(alpha: 0.6),
+                                    letterSpacing: 2,
+                                  ),
+                                ),
+                                Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.baseline,
+                                  textBaseline: TextBaseline.alphabetic,
+                                  children: [
+                                    AnimatedSecurityScore(
+                                      score: score,
+                                      color: activeColor,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      '/100',
+                                      style: GoogleFonts.orbitron(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: activeColor.withValues(
+                                          alpha: 0.4,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                         ],
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Stack(
+                            alignment: Alignment.center,
+                            clipBehavior: Clip.none,
+                            children: [
+                              // Moving background here ensures perfect alignment with the radar
+                              IgnorePointer(
+                                child: OverflowBox(
+                                  maxWidth: 600,
+                                  maxHeight: 600,
+                                  alignment: Alignment.center,
+                                  child: SizedBox.square(
+                                    dimension: 600,
+                                    child: _NeonHeaderBackground(
+                                      color: activeColor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SecurityStatusRadar(
+                                score: score.toDouble(),
+                                isScanning: state is SecurityLoading,
+                                color: activeColor,
+                                size: 240,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // ── Integrated Footer Metrics Row ──
+                      Container(
+                        padding: const EdgeInsets.only(top: 16),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            top: BorderSide(
+                              color: activeColor.withValues(alpha: 0.05),
+                              width: 1,
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            _BottomStat(
+                              label: 'SHIELD INTEGRITY',
+                              value:
+                                  hasCritical
+                                      ? 'CRITICAL'
+                                      : (hasHigh ? 'WARNING' : 'OPTIMAL'),
+                              color:
+                                  hasCritical
+                                      ? scheme.error
+                                      : (hasHigh
+                                          ? const Color(0xFFFFB300)
+                                          : scheme.tertiary),
+                              opacity: 0.7,
+                            ),
+                            _BottomStat(
+                              label: 'ACTIVE THREATS',
+                              value: '${loaded?.recentEvents.length ?? 0}',
+                              color:
+                                  hasCritical ? scheme.error : scheme.primary,
+                              opacity: 0.7,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
               ],
             ),
-             Expanded(
-              child: Center(
-                child: Stack(
-                  alignment: Alignment.center,
-                  clipBehavior: Clip.none,
-                  children: [
-                    // Moving background here ensures perfect alignment with the radar
-                    IgnorePointer(
-                      child: OverflowBox(
-                        maxWidth: 600,
-                        maxHeight: 600,
-                        alignment: Alignment.center,
-                        child: SizedBox.square(
-                          dimension: 600,
-                          child: _NeonHeaderBackground(color: activeColor),
-                        ),
-                      ),
-                    ),
-                    SecurityStatusRadar(
-                      score: score.toDouble(),
-                      isScanning: state is SecurityLoading,
-                      color: activeColor,
-                      size: 240,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            // ── Integrated Footer Metrics Row ──
-            Container(
-              padding: const EdgeInsets.only(top: 16),
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(
-                    color: activeColor.withValues(alpha: 0.05),
-                    width: 1,
-                  ),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _BottomStat(
-                    label: 'SHIELD INTEGRITY',
-                    value: hasCritical ? 'CRITICAL' : (hasHigh ? 'WARNING' : 'OPTIMAL'),
-                    color: hasCritical ? scheme.error : (hasHigh ? const Color(0xFFFFB300) : scheme.tertiary),
-                    opacity: 0.7,
-                  ),
-                  _BottomStat(
-                    label: 'ACTIVE THREATS',
-                    value: '${loaded?.recentEvents.length ?? 0}',
-                    color: hasCritical ? scheme.error : scheme.primary,
-                    opacity: 0.7,
-                  ),
-                ],
-              ),
-            ),
-                ],
-              ),
-            ),
-          ],
+          ),
         ),
       ),
-    ),
-  ),
-);
+    );
   }
 }
 
@@ -221,8 +240,9 @@ class _NeonHeaderBackgroundState extends State<_NeonHeaderBackground>
   void initState() {
     super.initState();
     _controller = AnimationController(
-        vsync: this, duration: const Duration(seconds: 4))
-      ..repeat();
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat();
   }
 
   @override
@@ -261,49 +281,52 @@ class _HeaderGlowPainter extends CustomPainter {
     final maxRadius = size.width * 0.55;
 
     canvas.save();
-    
+
     // Rotate the entire canvas based on animation progress
     canvas.translate(center.dx, center.dy);
     canvas.rotate(progress * 2 * 3.14159);
     canvas.translate(-center.dx, -center.dy);
 
     // ── Orbital Glow Sweep ──
-    final sweepPaint = Paint()
-      ..shader = SweepGradient(
-        center: Alignment.center,
-        colors: [
-          color.withValues(alpha: 0.0),
-          color.withValues(alpha: 0.2),
-          color.withValues(alpha: 0.0),
-        ],
-        stops: const [0.0, 0.5, 1.0],
-      ).createShader(Rect.fromCircle(center: center, radius: maxRadius));
+    final sweepPaint =
+        Paint()
+          ..shader = SweepGradient(
+            center: Alignment.center,
+            colors: [
+              color.withValues(alpha: 0.0),
+              color.withValues(alpha: 0.2),
+              color.withValues(alpha: 0.0),
+            ],
+            stops: const [0.0, 0.5, 1.0],
+          ).createShader(Rect.fromCircle(center: center, radius: maxRadius));
 
     canvas.drawCircle(center, maxRadius, sweepPaint);
 
     // ── Concentric Fading Rings (Subtle) ──
     for (int i = 1; i <= 3; i++) {
       final ringRadius = maxRadius * (i / 3);
-      final ringPaint = Paint()
-        ..color = color.withValues(alpha: 0.05 / i)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.0;
+      final ringPaint =
+          Paint()
+            ..color = color.withValues(alpha: 0.05 / i)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.0;
       canvas.drawCircle(center, ringRadius, ringPaint);
     }
 
     canvas.restore();
 
     // ── Subtle Horizon Glow ──
-    final horizonPaint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          color.withValues(alpha: 0.0),
-          color.withValues(alpha: 0.03),
-          color.withValues(alpha: 0.0),
-        ],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+    final horizonPaint =
+        Paint()
+          ..shader = LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              color.withValues(alpha: 0.0),
+              color.withValues(alpha: 0.03),
+              color.withValues(alpha: 0.0),
+            ],
+          ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
     canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), horizonPaint);
   }
 
@@ -356,24 +379,24 @@ class _BottomStat extends StatelessWidget {
   }
 }
 
-
 class ShimmerOverlayPainter extends CustomPainter {
   final Color color;
   ShimmerOverlayPainter({required this.color});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          color.withValues(alpha: 0),
-          color.withValues(alpha: 0.2),
-          color.withValues(alpha: 0),
-        ],
-        stops: const [0.3, 0.5, 0.7],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+    final paint =
+        Paint()
+          ..shader = LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              color.withValues(alpha: 0),
+              color.withValues(alpha: 0.2),
+              color.withValues(alpha: 0),
+            ],
+            stops: const [0.3, 0.5, 0.7],
+          ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
     canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
   }
@@ -408,9 +431,10 @@ class _AnimatedSecurityScoreState extends State<AnimatedSecurityScore>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    _animation = IntTween(begin: 0, end: widget.score).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart),
-    );
+    _animation = IntTween(
+      begin: 0,
+      end: widget.score,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart));
     _controller.forward();
   }
 
@@ -450,4 +474,3 @@ class _AnimatedSecurityScoreState extends State<AnimatedSecurityScore>
     );
   }
 }
-

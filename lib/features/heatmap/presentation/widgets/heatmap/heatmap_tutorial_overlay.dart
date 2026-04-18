@@ -72,7 +72,9 @@ class HeatmapTutorialOverlay extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: onDismiss,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.15),
+                    backgroundColor: theme.colorScheme.primary.withValues(
+                      alpha: 0.15,
+                    ),
                     foregroundColor: theme.colorScheme.primary,
                     side: BorderSide(
                       color: theme.colorScheme.primary.withValues(alpha: 0.5),
@@ -140,7 +142,9 @@ class _TutorialStep extends StatelessWidget {
           child: Text(
             text,
             style: GoogleFonts.rajdhani(
-              color: theme.colorScheme.onSurface.withValues(alpha: isLight ? 0.8 : 0.85),
+              color: theme.colorScheme.onSurface.withValues(
+                alpha: isLight ? 0.8 : 0.85,
+              ),
               fontSize: 14,
               height: 1.5,
             ),

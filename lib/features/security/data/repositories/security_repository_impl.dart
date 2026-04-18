@@ -27,9 +27,6 @@ import '../../../network_scan/domain/entities/lan_exposure_finding.dart';
 import '../../../network_scan/domain/entities/vulnerability_finding.dart';
 import '../../../network_scan/domain/entities/network_scan_profile.dart';
 
-
-
-
 @LazySingleton(as: SecurityRepository)
 class SecurityRepositoryImpl implements SecurityRepository {
   final SecurityLocalDataSource _localDataSource;
@@ -43,7 +40,6 @@ class SecurityRepositoryImpl implements SecurityRepository {
   final NetworkScanRepository _networkScanRepository;
   final NetworkInfo _networkInfo = NetworkInfo();
 
-
   SecurityRepositoryImpl(
     this._localDataSource,
     this._notificationService,
@@ -55,7 +51,6 @@ class SecurityRepositoryImpl implements SecurityRepository {
     this._dnsSecurityUseCase,
     this._networkScanRepository,
   );
-
 
   @override
   Future<Either<Failure, List<KnownNetwork>>> getKnownNetworks() async {
@@ -107,7 +102,8 @@ class SecurityRepositoryImpl implements SecurityRepository {
   }
 
   @override
-  Future<Either<Failure, List<TrustedNetworkProfile>>> getTrustedNetworkProfiles() async {
+  Future<Either<Failure, List<TrustedNetworkProfile>>>
+  getTrustedNetworkProfiles() async {
     try {
       return Right(await _localDataSource.getTrustedNetworkProfiles());
     } catch (e) {
@@ -116,7 +112,9 @@ class SecurityRepositoryImpl implements SecurityRepository {
   }
 
   @override
-  Future<Either<Failure, void>> saveTrustedNetworkProfile(TrustedNetworkProfile profile) async {
+  Future<Either<Failure, void>> saveTrustedNetworkProfile(
+    TrustedNetworkProfile profile,
+  ) async {
     try {
       await _localDataSource.saveTrustedNetworkProfile(profile);
       return const Right(null);
@@ -126,7 +124,9 @@ class SecurityRepositoryImpl implements SecurityRepository {
   }
 
   @override
-  Future<Either<Failure, void>> deleteTrustedNetworkProfile(String bssid) async {
+  Future<Either<Failure, void>> deleteTrustedNetworkProfile(
+    String bssid,
+  ) async {
     try {
       await _localDataSource.deleteTrustedNetworkProfile(bssid);
       return const Right(null);
@@ -155,7 +155,9 @@ class SecurityRepositoryImpl implements SecurityRepository {
   }
 
   @override
-  Future<Either<Failure, void>> saveSecurityEvents(List<SecurityEvent> events) async {
+  Future<Either<Failure, void>> saveSecurityEvents(
+    List<SecurityEvent> events,
+  ) async {
     try {
       await _localDataSource.saveSecurityEvents(events);
       return const Right(null);
@@ -195,7 +197,8 @@ class SecurityRepositoryImpl implements SecurityRepository {
   }
 
   @override
-  Future<Either<Failure, AssessmentSession?>> getLatestAssessmentSession() async {
+  Future<Either<Failure, AssessmentSession?>>
+  getLatestAssessmentSession() async {
     try {
       return Right(await _localDataSource.getLatestAssessmentSession());
     } catch (e) {
@@ -204,7 +207,9 @@ class SecurityRepositoryImpl implements SecurityRepository {
   }
 
   @override
-  Future<Either<Failure, void>> saveAssessmentSession(AssessmentSession session) async {
+  Future<Either<Failure, void>> saveAssessmentSession(
+    AssessmentSession session,
+  ) async {
     try {
       await _localDataSource.saveAssessmentSession(session);
       return const Right(null);
@@ -227,7 +232,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
       // Run new detectors
       final arpEvent = await _arpSpoofingDetector.check();
       final dnsEvent = await _dnsSecurityUseCase.check();
-      
+
       final assessment = _securityAnalyzer.assess(
         network,
         localBaseline: localBaseline,
@@ -240,62 +245,63 @@ class SecurityRepositoryImpl implements SecurityRepository {
       if (isDeepScan) {
         final ip = await _networkInfo.getWifiIP();
         final cloudGateway = await _networkInfo.getWifiGatewayIP();
-        
+
         if (ip != null && ip.contains('.')) {
           final subnet = '${ip.substring(0, ip.lastIndexOf('.'))}.0';
-          
+
           // 1. Full Subnet Discovery
           final scanStream = _networkScanRepository.scanNetwork(subnet);
           final scanResult = await scanStream.last;
-          scanResult.fold(
-            (failure) => null,
-            (devices) {
-              if (devices.isNotEmpty) {
-                 assessment.evidenceFindings.add(
-                   SecurityFinding(
-                     ruleId: 'lan_discovery',
-                     category: SecurityFindingCategory.lanExposure,
-                     severity: VulnerabilitySeverity.info,
-                     confidence: SecurityFindingConfidence.observed,
-                     title: 'LAN Devices Discovered',
-                     description: 'Active scanning identified ${devices.length} devices on this network.',
-                     evidence: 'Discovered: ${devices.map((e) => e.ip).join(", ")}',
-                     recommendation: 'Ensure you recognize all devices on your local network.',
-                     timestamp: DateTime.now(),
-                   ),
-                 );
-              }
-            },
-          );
+          scanResult.fold((failure) => null, (devices) {
+            if (devices.isNotEmpty) {
+              assessment.evidenceFindings.add(
+                SecurityFinding(
+                  ruleId: 'lan_discovery',
+                  category: SecurityFindingCategory.lanExposure,
+                  severity: VulnerabilitySeverity.info,
+                  confidence: SecurityFindingConfidence.observed,
+                  title: 'LAN Devices Discovered',
+                  description:
+                      'Active scanning identified ${devices.length} devices on this network.',
+                  evidence:
+                      'Discovered: ${devices.map((e) => e.ip).join(", ")}',
+                  recommendation:
+                      'Ensure you recognize all devices on your local network.',
+                  timestamp: DateTime.now(),
+                ),
+              );
+            }
+          });
 
           // 2. Gateway Port Scan (Deep Probe)
-          final gatewayIp = cloudGateway ?? '${ip.substring(0, ip.lastIndexOf('.'))}.1';
+          final gatewayIp =
+              cloudGateway ?? '${ip.substring(0, ip.lastIndexOf('.'))}.1';
           final portScanStream = _networkScanRepository.scanWithProfile(
             gatewayIp,
             profile: NetworkScanProfile.fast,
           );
           final portScanResult = await portScanStream.last;
 
-          portScanResult.fold(
-            (failure) => null,
-            (host) {
-              if (host.services.isNotEmpty) {
-                assessment.evidenceFindings.add(
-                  SecurityFinding(
-                    ruleId: 'lan.gateway_ports_open',
-                    category: SecurityFindingCategory.lanExposure,
-                    severity: VulnerabilitySeverity.medium,
-                    confidence: SecurityFindingConfidence.observed,
-                    title: 'Gateway Ports Exposed',
-                    description: 'Host ${host.ip} has open ports that may be vulnerable.',
-                      evidence: 'Open Ports: ${host.services.map((s) => "${s.port}/${s.serviceName}").join(", ")}',
-                      recommendation: 'Disable unnecessary services on the gateway router and ensure strong passwords.',
-                      timestamp: DateTime.now(),
-                    ),
-                  );
-                }
-              },
-            );
+          portScanResult.fold((failure) => null, (host) {
+            if (host.services.isNotEmpty) {
+              assessment.evidenceFindings.add(
+                SecurityFinding(
+                  ruleId: 'lan.gateway_ports_open',
+                  category: SecurityFindingCategory.lanExposure,
+                  severity: VulnerabilitySeverity.medium,
+                  confidence: SecurityFindingConfidence.observed,
+                  title: 'Gateway Ports Exposed',
+                  description:
+                      'Host ${host.ip} has open ports that may be vulnerable.',
+                  evidence:
+                      'Open Ports: ${host.services.map((s) => "${s.port}/${s.serviceName}").join(", ")}',
+                  recommendation:
+                      'Disable unnecessary services on the gateway router and ensure strong passwords.',
+                  timestamp: DateTime.now(),
+                ),
+              );
+            }
+          });
         }
       }
 
@@ -308,9 +314,11 @@ class SecurityRepositoryImpl implements SecurityRepository {
             severity: _mapToVulnerabilitySeverity(arpEvent.severity),
             confidence: SecurityFindingConfidence.strong,
             title: 'ARP Spoofing Detected',
-            description: 'A potential ARP spoofing attack was detected on this network.',
+            description:
+                'A potential ARP spoofing attack was detected on this network.',
             evidence: arpEvent.evidence,
-            recommendation: 'Disconnect from this network immediately and use a secure alternative.',
+            recommendation:
+                'Disconnect from this network immediately and use a secure alternative.',
             timestamp: arpEvent.timestamp,
           ),
         );
@@ -324,9 +332,11 @@ class SecurityRepositoryImpl implements SecurityRepository {
             severity: _mapToVulnerabilitySeverity(dnsEvent.severity),
             confidence: SecurityFindingConfidence.strong,
             title: 'DNS Hijacking Suspected',
-            description: 'Potential DNS hijacking or unusual DNS configuration detected.',
+            description:
+                'Potential DNS hijacking or unusual DNS configuration detected.',
             evidence: dnsEvent.evidence,
-            recommendation: 'Check your DNS settings and consider using a trusted DNS provider like Google (8.8.8.8) or Cloudflare (1.1.1.1).',
+            recommendation:
+                'Check your DNS settings and consider using a trusted DNS provider like Google (8.8.8.8) or Cloudflare (1.1.1.1).',
             timestamp: dnsEvent.timestamp,
           ),
         );
@@ -348,13 +358,13 @@ class SecurityRepositoryImpl implements SecurityRepository {
       final trustedProfiles = trustedProfilesResult.getOrElse(() => []);
       final knownNetworksResult = await getKnownNetworks();
       final knownNetworks = knownNetworksResult.getOrElse(() => []);
-      
+
       final alerts = <SecurityEvent>[];
-      
+
       // Run new detectors
       final arpEvent = await _arpSpoofingDetector.check();
       if (arpEvent != null) alerts.add(arpEvent);
-      
+
       final dnsEvent = await _dnsSecurityUseCase.check();
       if (dnsEvent != null) alerts.add(dnsEvent);
 
@@ -365,17 +375,17 @@ class SecurityRepositoryImpl implements SecurityRepository {
       final now = DateTime.now();
 
       final allLanFindings = <LanExposureFinding>[];
-      
+
       // Deep Scan: LAN Probing & Gateway Port Scanning
       if (isDeepScan) {
         final ip = await _networkInfo.getWifiIP();
         final cloudGateway = await _networkInfo.getWifiGatewayIP();
-        
+
         if (ip != null && ip.contains('.')) {
           final subnet = '${ip.substring(0, ip.lastIndexOf('.'))}.0';
-          
+
           final lanFindings = <LanExposureFinding>[];
-          
+
           // Subnet Device Discovery
           final scanStream = _networkScanRepository.scanNetwork(subnet);
           final scanResult = await scanStream.last;
@@ -391,183 +401,199 @@ class SecurityRepositoryImpl implements SecurityRepository {
           allLanFindings.addAll(lanFindings);
 
           // Deep Gateway Port Probing
-          final gatewayIp = cloudGateway ?? '${subnet.substring(0, subnet.lastIndexOf('.'))}.1';
+          final gatewayIp =
+              cloudGateway ??
+              '${subnet.substring(0, subnet.lastIndexOf('.'))}.1';
           final portScanStream = _networkScanRepository.scanWithProfile(
             gatewayIp,
             profile: NetworkScanProfile.fast,
           );
           final portScanResult = await portScanStream.last;
-          
-          portScanResult.fold(
-            (failure) => null,
-            (host) {
-                // If not already in lanDevices, add it (discovery might have missed it)
-                final existingIdx = lanDevices.indexWhere((d) => d.ip == host.ip);
-                if (existingIdx == -1) {
-                  final dev = NetworkDevice(
-                    ip: host.ip,
-                    mac: host.mac,
-                    vendor: host.vendor,
-                    hostName: host.hostName,
-                    latency: host.latency,
-                  );
-                  lanDevices.add(dev);
-                  lanFindings.add(_mapDeviceToFinding(dev));
-                }
-                
-                // Add specific port exposure findings
-                if (host.services.isNotEmpty) {
-                  for (final service in host.services) {
-                    allLanFindings.add(
-                      LanExposureFinding(
-                        ruleId: 'lan.port_open',
-                        hostIp: host.ip,
-                        hostMac: host.mac,
-                        hostVendor: host.vendor,
-                        summary: 'Open Port: ${service.port} (${service.serviceName})',
-                        risk: VulnerabilityRisk.medium,
-                        evidence: 'Service ${service.serviceName} is listening on port ${service.port}',
-                        remediation: 'Ensure this service is intended to be exposed on the network.',
-                        serviceName: service.serviceName,
-                        port: service.port,
-                      ),
-                    );
-                    
-                    // Also keep as generic finding for the score/history
-                    allFindings.add(
-                      SecurityFinding(
-                        ruleId: 'lan.port_open',
-                        category: SecurityFindingCategory.lanExposure,
-                        severity: VulnerabilitySeverity.medium,
-                        confidence: SecurityFindingConfidence.observed,
-                        title: 'Open Service Detected',
-                        description: 'Host ${host.ip} is running ${service.serviceName} on port ${service.port}.',
-                        evidence: 'Target: ${host.ip}, Port: ${service.port}, Service: ${service.serviceName}',
-                        recommendation: 'Ensure this service is intended to be accessible.',
-                        timestamp: now,
-                        subject: host.ip,
-                      ),
-                    );
-                  }
-                }
-              },
-            );
+
+          portScanResult.fold((failure) => null, (host) {
+            // If not already in lanDevices, add it (discovery might have missed it)
+            final existingIdx = lanDevices.indexWhere((d) => d.ip == host.ip);
+            if (existingIdx == -1) {
+              final dev = NetworkDevice(
+                ip: host.ip,
+                mac: host.mac,
+                vendor: host.vendor,
+                hostName: host.hostName,
+                latency: host.latency,
+              );
+              lanDevices.add(dev);
+              lanFindings.add(_mapDeviceToFinding(dev));
+            }
+
+            // Add specific port exposure findings
+            if (host.services.isNotEmpty) {
+              for (final service in host.services) {
+                allLanFindings.add(
+                  LanExposureFinding(
+                    ruleId: 'lan.port_open',
+                    hostIp: host.ip,
+                    hostMac: host.mac,
+                    hostVendor: host.vendor,
+                    summary:
+                        'Open Port: ${service.port} (${service.serviceName})',
+                    risk: VulnerabilityRisk.medium,
+                    evidence:
+                        'Service ${service.serviceName} is listening on port ${service.port}',
+                    remediation:
+                        'Ensure this service is intended to be exposed on the network.',
+                    serviceName: service.serviceName,
+                    port: service.port,
+                  ),
+                );
+
+                // Also keep as generic finding for the score/history
+                allFindings.add(
+                  SecurityFinding(
+                    ruleId: 'lan.port_open',
+                    category: SecurityFindingCategory.lanExposure,
+                    severity: VulnerabilitySeverity.medium,
+                    confidence: SecurityFindingConfidence.observed,
+                    title: 'Open Service Detected',
+                    description:
+                        'Host ${host.ip} is running ${service.serviceName} on port ${service.port}.',
+                    evidence:
+                        'Target: ${host.ip}, Port: ${service.port}, Service: ${service.serviceName}',
+                    recommendation:
+                        'Ensure this service is intended to be accessible.',
+                    timestamp: now,
+                    subject: host.ip,
+                  ),
+                );
+              }
+            }
+          });
         }
       }
 
-    for (final network in networks) {
-      if (network.ssid.isEmpty) continue;
+      for (final network in networks) {
+        if (network.ssid.isEmpty) continue;
 
-      final exactTrusted = trustedProfiles
-          .where((profile) => profile.bssid == network.bssid)
-          .firstOrNull;
-      final trustedBySsid = trustedProfiles
-          .where((profile) => profile.ssid == network.ssid)
-          .toList();
+        final exactTrusted =
+            trustedProfiles
+                .where((profile) => profile.bssid == network.bssid)
+                .firstOrNull;
+        final trustedBySsid =
+            trustedProfiles
+                .where((profile) => profile.ssid == network.ssid)
+                .toList();
 
-      final vRes = await findVulnerabilities(network.bssid);
-      final vulnerabilities = vRes.getOrElse(() => []);
+        final vRes = await findVulnerabilities(network.bssid);
+        final vulnerabilities = vRes.getOrElse(() => []);
 
-      final assessment = _securityAnalyzer.assess(
-        network,
-        localBaseline: networks,
-        trustedProfile: exactTrusted ?? trustedBySsid.firstOrNull,
-        hardwareVulnerabilities: vulnerabilities,
-        isDeepScan: isDeepScan,
-      );
+        final assessment = _securityAnalyzer.assess(
+          network,
+          localBaseline: networks,
+          trustedProfile: exactTrusted ?? trustedBySsid.firstOrNull,
+          hardwareVulnerabilities: vulnerabilities,
+          isDeepScan: isDeepScan,
+        );
 
-      allFindings.addAll(assessment.evidenceFindings);
-      if (assessment.score < worstScore) {
-        worstScore = assessment.score;
-      }
+        allFindings.addAll(assessment.evidenceFindings);
+        if (assessment.score < worstScore) {
+          worstScore = assessment.score;
+        }
 
-      // Map critical findings to SecurityEvents (Notifications)
-      for (final finding in assessment.evidenceFindings) {
-        final eventType = _mapRuleIdToEventType(finding.ruleId);
-        if (eventType != null && (finding.severity == VulnerabilitySeverity.high || finding.severity == VulnerabilitySeverity.critical)) {
-          final event = SecurityEvent(
-            type: eventType,
-            severity: _mapSeverity(finding.severity),
-            ssid: network.ssid,
-            bssid: network.bssid,
-            timestamp: now,
-            evidence: finding.evidence,
-          );
-          
-          // Avoid duplicate alerts in same session
-          if (!alerts.any((a) => a.type == eventType && a.bssid == network.bssid)) {
-            alerts.add(event);
-            await _notificationService.showSecurityAlert(event);
+        // Map critical findings to SecurityEvents (Notifications)
+        for (final finding in assessment.evidenceFindings) {
+          final eventType = _mapRuleIdToEventType(finding.ruleId);
+          if (eventType != null &&
+              (finding.severity == VulnerabilitySeverity.high ||
+                  finding.severity == VulnerabilitySeverity.critical)) {
+            final event = SecurityEvent(
+              type: eventType,
+              severity: _mapSeverity(finding.severity),
+              ssid: network.ssid,
+              bssid: network.bssid,
+              timestamp: now,
+              evidence: finding.evidence,
+            );
+
+            // Avoid duplicate alerts in same session
+            if (!alerts.any(
+              (a) => a.type == eventType && a.bssid == network.bssid,
+            )) {
+              alerts.add(event);
+              await _notificationService.showSecurityAlert(event);
+            }
           }
         }
-      }
 
-      // Update trust confirmation if no drift detected
-      if (exactTrusted != null) {
-        final drift = NetworkFingerprint.fromWifiNetwork(network).driftAgainst(
-          exactTrusted.fingerprint,
-        );
-        if (drift.isEmpty) {
-          await saveTrustedNetworkProfile(
-            exactTrusted.copyWith(lastConfirmedAt: now),
-          );
+        // Update trust confirmation if no drift detected
+        if (exactTrusted != null) {
+          final drift = NetworkFingerprint.fromWifiNetwork(
+            network,
+          ).driftAgainst(exactTrusted.fingerprint);
+          if (drift.isEmpty) {
+            await saveTrustedNetworkProfile(
+              exactTrusted.copyWith(lastConfirmedAt: now),
+            );
+          }
+        } else {
+          // Auto-trust Logic: Track network stability
+          await _handleAutoTrust(network, knownNetworks);
         }
-      } else {
-        // Auto-trust Logic: Track network stability
-        await _handleAutoTrust(network, knownNetworks);
       }
-    }
 
-    if (alerts.isNotEmpty) {
-      await saveSecurityEvents(alerts);
-    }
+      if (alerts.isNotEmpty) {
+        await saveSecurityEvents(alerts);
+      }
 
-    // Deauth burst detection (heuristic)
-    final deauthEvent = _deauthDetector.evaluate(networks);
-    if (deauthEvent != null) {
-      alerts.add(deauthEvent);
-      await saveSecurityEvent(deauthEvent);
-      await _notificationService.showSecurityAlert(deauthEvent);
-    }
+      // Deauth burst detection (heuristic)
+      final deauthEvent = _deauthDetector.evaluate(networks);
+      if (deauthEvent != null) {
+        alerts.add(deauthEvent);
+        await saveSecurityEvent(deauthEvent);
+        await _notificationService.showSecurityAlert(deauthEvent);
+      }
 
-    final dedupedFindings = <String, SecurityFinding>{};
-    for (final finding in allFindings) {
-      final key = '${finding.ruleId}:${finding.subject}:${finding.evidence}';
-      dedupedFindings[key] = finding;
-    }
+      final dedupedFindings = <String, SecurityFinding>{};
+      for (final finding in allFindings) {
+        final key = '${finding.ruleId}:${finding.subject}:${finding.evidence}';
+        dedupedFindings[key] = finding;
+      }
 
-    await saveAssessmentSession(
-      AssessmentSession(
-        sessionKey: 'assessment_${now.microsecondsSinceEpoch}',
-        createdAt: now,
-        overallScore: worstScore,
-        overallStatus: _statusFromScore(worstScore),
-        wifiFindings: dedupedFindings.values.toList(),
-        lanFindings: allLanFindings,
-        dnsResult: dnsResult,
-        trustedProfileCount: trustedProfiles.length,
-      ),
-    );
+      await saveAssessmentSession(
+        AssessmentSession(
+          sessionKey: 'assessment_${now.microsecondsSinceEpoch}',
+          createdAt: now,
+          overallScore: worstScore,
+          overallStatus: _statusFromScore(worstScore),
+          wifiFindings: dedupedFindings.values.toList(),
+          lanFindings: allLanFindings,
+          dnsResult: dnsResult,
+          trustedProfileCount: trustedProfiles.length,
+        ),
+      );
 
-    return Right(alerts);
+      return Right(alerts);
     } catch (e) {
       return Left(DatabaseFailure(e.toString()));
     }
   }
 
-  Future<void> _handleAutoTrust(WifiNetwork network, List<KnownNetwork> knowns) async {
+  Future<void> _handleAutoTrust(
+    WifiNetwork network,
+    List<KnownNetwork> knowns,
+  ) async {
     final known = knowns.where((k) => k.bssid == network.bssid).firstOrNull;
     if (known == null) {
       final gateway = await _networkInfo.getWifiGatewayIP();
-      await saveKnownNetwork(KnownNetwork(
-        ssid: network.ssid,
-        bssid: network.bssid,
-        security: network.security.name,
-        gateway: gateway,
-        firstSeen: DateTime.now(),
-        lastSeen: DateTime.now(),
-        seenCount: 1,
-      ));
+      await saveKnownNetwork(
+        KnownNetwork(
+          ssid: network.ssid,
+          bssid: network.bssid,
+          security: network.security.name,
+          gateway: gateway,
+          firstSeen: DateTime.now(),
+          lastSeen: DateTime.now(),
+          seenCount: 1,
+        ),
+      );
     } else {
       await incrementSeenCount(network.bssid);
       // Promote to trusted if seen 3 times and security is not OPEN
@@ -607,7 +633,9 @@ class SecurityRepositoryImpl implements SecurityRepository {
     };
   }
 
-  VulnerabilitySeverity _mapToVulnerabilitySeverity(SecurityEventSeverity severity) {
+  VulnerabilitySeverity _mapToVulnerabilitySeverity(
+    SecurityEventSeverity severity,
+  ) {
     return switch (severity) {
       SecurityEventSeverity.critical => VulnerabilitySeverity.critical,
       SecurityEventSeverity.high => VulnerabilitySeverity.high,
@@ -632,7 +660,9 @@ class SecurityRepositoryImpl implements SecurityRepository {
   }
 
   @override
-  Future<Either<Failure, List<VulnerableRouter>>> findVulnerabilities(String bssid) async {
+  Future<Either<Failure, List<VulnerableRouter>>> findVulnerabilities(
+    String bssid,
+  ) async {
     try {
       final dtos = await _vulnerabilityDataSource.findVulnerabilities(bssid);
       return Right(dtos.map((dto) => dto.toEntity()).toList());
@@ -647,10 +677,13 @@ class SecurityRepositoryImpl implements SecurityRepository {
       hostIp: device.ip,
       hostMac: device.mac,
       hostVendor: device.vendor,
-      summary: 'LAN Device: ${device.hostName.isEmpty ? "Unknown" : device.hostName}',
+      summary:
+          'LAN Device: ${device.hostName.isEmpty ? "Unknown" : device.hostName}',
       risk: VulnerabilityRisk.info,
-      evidence: 'IP: ${device.ip}, MAC: ${device.mac}, Vendor: ${device.vendor}',
-      remediation: 'Verify this device is yours. Malicious devices often hide in the LAN.',
+      evidence:
+          'IP: ${device.ip}, MAC: ${device.mac}, Vendor: ${device.vendor}',
+      remediation:
+          'Verify this device is yours. Malicious devices often hide in the LAN.',
     );
   }
 }

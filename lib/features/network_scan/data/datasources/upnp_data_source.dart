@@ -14,8 +14,8 @@ class UpnpDataSource {
     final Map<String, String> discoveries = {};
     const multicastAddress = '239.255.255.250';
     const multicastPort = 1900;
-    
-    final searchRequest = 
+
+    final searchRequest =
         'M-SEARCH * HTTP/1.1\r\n'
         'HOST: $multicastAddress:$multicastPort\r\n'
         'MAN: "ssdp:discover"\r\n'
@@ -32,21 +32,28 @@ class UpnpDataSource {
         reusePort: false,
       );
       socket.broadcastEnabled = true;
-      socket.send(utf8.encode(searchRequest), InternetAddress(multicastAddress), multicastPort);
-      
+      socket.send(
+        utf8.encode(searchRequest),
+        InternetAddress(multicastAddress),
+        multicastPort,
+      );
+
       // Wait for responses for 3 seconds
-      await for (final event in socket.timeout(const Duration(seconds: 3), onTimeout: (sink) => sink.close())) {
+      await for (final event in socket.timeout(
+        const Duration(seconds: 3),
+        onTimeout: (sink) => sink.close(),
+      )) {
         if (event == RawSocketEvent.read) {
           final datagram = socket.receive();
           if (datagram == null) continue;
-          
+
           final ip = datagram.address.address;
           final response = utf8.decode(datagram.data);
-          
+
           // Basic SSDP header parsing
           final server = _getHeader(response, 'SERVER');
           final location = _getHeader(response, 'LOCATION');
-          
+
           if (server.isNotEmpty) {
             discoveries[ip] = server;
           } else if (location.isNotEmpty) {

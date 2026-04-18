@@ -33,16 +33,16 @@ class SecurityAssessment extends Equatable {
   String get plainSummary => switch (status) {
     SecurityStatus.secure =>
       'Your connection looks good! This network uses strong encryption '
-      'and is well protected against common attacks.',
+          'and is well protected against common attacks.',
     SecurityStatus.moderate =>
       'This network has decent security but some potential weaknesses. '
-      'It is safe for everyday use, but avoid sensitive transactions.',
+          'It is safe for everyday use, but avoid sensitive transactions.',
     SecurityStatus.atRisk =>
       'This network has security issues that put your data at risk. '
-      'Avoid entering passwords or personal information while connected.',
+          'Avoid entering passwords or personal information while connected.',
     SecurityStatus.critical =>
       'Warning: This network is not secure. Anyone nearby may be able '
-      'to see your internet traffic. Use a VPN or switch networks.',
+          'to see your internet traffic. Use a VPN or switch networks.',
   };
 
   @override

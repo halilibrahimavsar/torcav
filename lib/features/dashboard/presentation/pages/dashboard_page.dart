@@ -55,9 +55,8 @@ class _DashboardPageState extends State<DashboardPage> {
 
       final store = getIt<ScanSessionStore>();
       final latestSnapshot = store.latest;
-      final networks = latestSnapshot?.networks
-              .map((n) => n.toWifiNetwork())
-              .toList() ??
+      final networks =
+          latestSnapshot?.networks.map((n) => n.toWifiNetwork()).toList() ??
           <WifiNetwork>[];
 
       // Security score: lowest score across all scanned networks.
@@ -76,19 +75,17 @@ class _DashboardPageState extends State<DashboardPage> {
         final engine = getIt<ChannelRatingEngine>();
         final ratings = engine.calculateRatings(networks);
         final ssid = _cleanSsid(results[0]) ?? '';
-        final connected = networks
-            .where((n) => n.ssid == ssid)
-            .toList();
+        final connected = networks.where((n) => n.ssid == ssid).toList();
         if (connected.isNotEmpty) {
           currentCh = connected.first.channel;
-          final band24 = ratings
-              .where((r) => r.frequency < 4000)
-              .toList()
-            ..sort((a, b) => b.rating.compareTo(a.rating));
-          final band5 = ratings
-              .where((r) => r.frequency >= 4000 && r.frequency < 6000)
-              .toList()
-            ..sort((a, b) => b.rating.compareTo(a.rating));
+          final band24 =
+              ratings.where((r) => r.frequency < 4000).toList()
+                ..sort((a, b) => b.rating.compareTo(a.rating));
+          final band5 =
+              ratings
+                  .where((r) => r.frequency >= 4000 && r.frequency < 6000)
+                  .toList()
+                ..sort((a, b) => b.rating.compareTo(a.rating));
           final sameBand = connected.first.frequency < 4000 ? band24 : band5;
           if (sameBand.isNotEmpty &&
               sameBand.first.channel != currentCh &&
@@ -139,12 +136,16 @@ class _DashboardPageState extends State<DashboardPage> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.3),
                       ),
                     ),
                     child: const Icon(Icons.menu_rounded, size: 18),
                   ),
-                  onPressed: widget.onOpenDrawer ?? () => Scaffold.of(context).openDrawer(),
+                  onPressed:
+                      widget.onOpenDrawer ??
+                      () => Scaffold.of(context).openDrawer(),
                 ),
           ),
           title: NeonText(
@@ -578,15 +579,9 @@ class _LastScanStrip extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: tertiary.withValues(alpha: 0.1),
-              border: Border.all(
-                color: tertiary.withValues(alpha: 0.2),
-              ),
+              border: Border.all(color: tertiary.withValues(alpha: 0.2)),
             ),
-            child: Icon(
-              Icons.radar_rounded,
-              color: tertiary,
-              size: 20,
-            ),
+            child: Icon(Icons.radar_rounded, color: tertiary, size: 20),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -667,9 +662,7 @@ class _SafetyBadge extends StatelessWidget {
               border: Border.all(color: color.withValues(alpha: 0.3)),
             ),
             child: Icon(
-              score >= 85
-                  ? Icons.verified_user_rounded
-                  : Icons.shield_outlined,
+              score >= 85 ? Icons.verified_user_rounded : Icons.shield_outlined,
               color: color,
               size: 20,
             ),
@@ -776,8 +769,7 @@ class _ChannelRecommendationCard extends StatelessWidget {
                     Text(
                       l10n.channelCongestionHint,
                       style: GoogleFonts.rajdhani(
-                        color:
-                            Theme.of(context).colorScheme.onSurfaceVariant,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 11,
                       ),
                       maxLines: 2,

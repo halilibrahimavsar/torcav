@@ -44,7 +44,9 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
   void initState() {
     super.initState();
     _searchController.addListener(() {
-      setState(() => _searchQuery = _searchController.text.trim().toLowerCase());
+      setState(
+        () => _searchQuery = _searchController.text.trim().toLowerCase(),
+      );
     });
   }
 
@@ -59,9 +61,10 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocConsumer<NetworkScanBloc, NetworkScanState>(
-        listenWhen: (prev, next) =>
-            next is NetworkScanLoaded && next.newDevices.isNotEmpty ||
-            next is NetworkScanConsentRequired,
+        listenWhen:
+            (prev, next) =>
+                next is NetworkScanLoaded && next.newDevices.isNotEmpty ||
+                next is NetworkScanConsentRequired,
         listener: (context, state) async {
           if (state is NetworkScanConsentRequired) {
             final accepted = await showDialog<bool>(
@@ -79,9 +82,10 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
           if (state is NetworkScanLoaded && state.newDevices.isNotEmpty) {
             if (!context.mounted) return;
             final count = state.newDevices.length;
-            final label = count == 1
-                ? context.l10n.newDeviceFound(state.newDevices.first.ip)
-                : context.l10n.newDevicesFound(count);
+            final label =
+                count == 1
+                    ? context.l10n.newDeviceFound(state.newDevices.first.ip)
+                    : context.l10n.newDevicesFound(count);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(label),
@@ -182,17 +186,22 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 const SizedBox(height: 12),
 
                 ...() {
-                  final hosts = state.hosts.where((h) {
-                    if (_vulnOnly && h.vulnerabilities.isEmpty) return false;
-                    if (_searchQuery.isNotEmpty) {
-                      if (!h.ip.contains(_searchQuery) &&
-                          !h.hostName.toLowerCase().contains(_searchQuery) &&
-                          !h.vendor.toLowerCase().contains(_searchQuery)) {
-                        return false;
-                      }
-                    }
-                    return true;
-                  }).toList();
+                  final hosts =
+                      state.hosts.where((h) {
+                        if (_vulnOnly && h.vulnerabilities.isEmpty) {
+                          return false;
+                        }
+                        if (_searchQuery.isNotEmpty) {
+                          if (!h.ip.contains(_searchQuery) &&
+                              !h.hostName.toLowerCase().contains(
+                                _searchQuery,
+                              ) &&
+                              !h.vendor.toLowerCase().contains(_searchQuery)) {
+                            return false;
+                          }
+                        }
+                        return true;
+                      }).toList();
 
                   return hosts.asMap().entries.map((entry) {
                     return StaggeredEntry(
@@ -208,9 +217,10 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                   delay: const Duration(milliseconds: 200),
                   child: NeonErrorCard(
                     message: state.message,
-                    onRetry: () => context.read<NetworkScanBloc>().add(
-                      StartNetworkScan(target: _targetController.text),
-                    ),
+                    onRetry:
+                        () => context.read<NetworkScanBloc>().add(
+                          StartNetworkScan(target: _targetController.text),
+                        ),
                   ),
                 ),
               ],
@@ -316,19 +326,21 @@ class _ScanControlPanel extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
                 dropdownColor: scheme.surfaceContainer,
-                items: NetworkScanProfile.values
-                    .map(
-                      (p) => DropdownMenuItem(
-                        value: p,
-                        child: Text(p.name.toUpperCase()),
-                      ),
-                    )
-                    .toList(),
-                onChanged: isScanning
-                    ? null
-                    : (p) {
-                        if (p != null) onProfileChanged(p);
-                      },
+                items:
+                    NetworkScanProfile.values
+                        .map(
+                          (p) => DropdownMenuItem(
+                            value: p,
+                            child: Text(p.name.toUpperCase()),
+                          ),
+                        )
+                        .toList(),
+                onChanged:
+                    isScanning
+                        ? null
+                        : (p) {
+                          if (p != null) onProfileChanged(p);
+                        },
               ),
             ],
           ),
@@ -354,7 +366,8 @@ class _ScanControlPanel extends StatelessWidget {
               const SizedBox(width: 4),
               InfoIconButton(
                 title: l10n.deepScan,
-                body: 'Comprehensive port scanning and service fingerprinting. '
+                body:
+                    'Comprehensive port scanning and service fingerprinting. '
                     'Enabling this will significantly increase scan time but '
                     'provides much deeper reconnaissance data.',
                 color: scheme.primary,
@@ -535,10 +548,7 @@ class _NetworkBentoHeader extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  NetworkScannerRadar(
-                    isScanning: false,
-                    color: scheme.primary,
-                  ),
+                  NetworkScannerRadar(isScanning: false, color: scheme.primary),
                   Icon(
                     Icons.hub_rounded,
                     color: scheme.primary.withValues(alpha: 0.5),
@@ -572,9 +582,7 @@ class _NetworkBentoHeader extends StatelessWidget {
                               value: avgRisk.toStringAsFixed(1),
                               icon: Icons.gpp_maybe_rounded,
                               color:
-                                  avgRisk > 5
-                                      ? scheme.error
-                                      : scheme.tertiary,
+                                  avgRisk > 5 ? scheme.error : scheme.tertiary,
                             ),
                           ),
                         ],
@@ -704,7 +712,7 @@ class _DeviceCard extends StatelessWidget {
 
   IconData get _deviceIcon {
     final type = host.deviceType.toLowerCase();
-    
+
     if (type.contains('router') || type.contains('gateway')) {
       return Icons.router_rounded;
     }
@@ -726,7 +734,7 @@ class _DeviceCard extends StatelessWidget {
     if (type.contains('nas') || type.contains('storage')) {
       return Icons.dns_rounded;
     }
-    
+
     // Fallback to name/vendor guessing if type is generic
     final name = host.hostName.toLowerCase();
     final vendor = host.vendor.toLowerCase();
@@ -738,7 +746,9 @@ class _DeviceCard extends StatelessWidget {
     if (name.contains('tablet') || name.contains('ipad')) {
       return Icons.tablet_mac_rounded;
     }
-    if (name.contains('laptop') || name.contains('macbook') || vendor.contains('apple')) {
+    if (name.contains('laptop') ||
+        name.contains('macbook') ||
+        vendor.contains('apple')) {
       return Icons.laptop_chromebook_rounded;
     }
     return Icons.settings_input_component_rounded;
@@ -783,7 +793,7 @@ class _DeviceCard extends StatelessWidget {
                           Flexible(
                             child: Text(
                               host.hostName.isEmpty
-                                  ? context.l10n.anonymousNode
+                                  ? '${host.ip} (${host.deviceType.toUpperCase()})'
                                   : host.hostName.toUpperCase(),
                               style: GoogleFonts.orbitron(
                                 color: Theme.of(context).colorScheme.onSurface,
@@ -822,11 +832,16 @@ class _DeviceCard extends StatelessWidget {
                           if (host.deviceType != 'Unknown') ...[
                             const SizedBox(width: 8),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
                               decoration: BoxDecoration(
                                 color: scheme.primary.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(4),
-                                border: Border.all(color: scheme.primary.withValues(alpha: 0.3)),
+                                border: Border.all(
+                                  color: scheme.primary.withValues(alpha: 0.3),
+                                ),
                               ),
                               child: Text(
                                 'IDENTIFIED',
@@ -854,7 +869,9 @@ class _DeviceCard extends StatelessWidget {
                           if (host.deviceType != 'Unknown') ...[
                             Text(
                               ' • ',
-                              style: TextStyle(color: scheme.onSurface.withValues(alpha: 0.3)),
+                              style: TextStyle(
+                                color: scheme.onSurface.withValues(alpha: 0.3),
+                              ),
                             ),
                             Text(
                               host.deviceType.toUpperCase(),
@@ -877,16 +894,18 @@ class _DeviceCard extends StatelessWidget {
             Container(
               height: 1,
               width: double.infinity,
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withValues(alpha: 0.1),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.1),
             ),
             const SizedBox(height: 12),
             Row(
               children: [
                 _TechDetail(
-                  label: host.mac.toUpperCase(),
+                  label:
+                      host.mac == '00:00:00:00:00:00'
+                          ? 'UNKNOWN MAC (RESTRICTED)'
+                          : host.mac.toUpperCase(),
                   icon: Icons.fingerprint_rounded,
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
@@ -944,9 +963,7 @@ class _RiskIndicator extends StatelessWidget {
     final color =
         score > 7
             ? scheme.error
-            : (score > 3
-                ? scheme.outline
-                : scheme.tertiary);
+            : (score > 3 ? scheme.outline : scheme.tertiary);
     return Column(
       children: [
         NeonText(
@@ -1035,22 +1052,35 @@ class _LanSearchBar extends StatelessWidget {
             hintStyle: GoogleFonts.rajdhani(
               color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
             ),
-            prefixIcon: Icon(Icons.search_rounded, color: scheme.primary, size: 20),
-            suffixIcon: controller.text.isNotEmpty
-                ? GestureDetector(
-                    onTap: () => controller.clear(),
-                    child: Icon(Icons.clear_rounded, color: scheme.onSurfaceVariant, size: 18),
-                  )
-                : null,
+            prefixIcon: Icon(
+              Icons.search_rounded,
+              color: scheme.primary,
+              size: 20,
+            ),
+            suffixIcon:
+                controller.text.isNotEmpty
+                    ? GestureDetector(
+                      onTap: () => controller.clear(),
+                      child: Icon(
+                        Icons.clear_rounded,
+                        color: scheme.onSurfaceVariant,
+                        size: 18,
+                      ),
+                    )
+                    : null,
             isDense: true,
             contentPadding: const EdgeInsets.symmetric(vertical: 10),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: scheme.primary.withValues(alpha: 0.3)),
+              borderSide: BorderSide(
+                color: scheme.primary.withValues(alpha: 0.3),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: scheme.primary.withValues(alpha: 0.7)),
+              borderSide: BorderSide(
+                color: scheme.primary.withValues(alpha: 0.7),
+              ),
             ),
           ),
         ),
@@ -1068,9 +1098,10 @@ class _LanSearchBar extends StatelessWidget {
           selectedColor: scheme.error.withValues(alpha: 0.2),
           checkmarkColor: scheme.error,
           side: BorderSide(
-            color: vulnOnly
-                ? scheme.error.withValues(alpha: 0.6)
-                : scheme.outline.withValues(alpha: 0.3),
+            color:
+                vulnOnly
+                    ? scheme.error.withValues(alpha: 0.6)
+                    : scheme.outline.withValues(alpha: 0.3),
           ),
         ),
       ],

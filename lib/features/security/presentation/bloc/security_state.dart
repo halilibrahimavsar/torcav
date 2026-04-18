@@ -82,17 +82,17 @@ class SecurityLoaded extends SecurityState {
 
   @override
   List<Object?> get props => [
-        knownNetworks,
-        trustedNetworkProfiles,
-        recentEvents,
-        overallScore,
-        scanSummary,
-        dnsResult,
-        isDnsLoading,
-        isDeepScanEnabled,
-        isDeepScanning,
-        latestSession,
-      ];
+    knownNetworks,
+    trustedNetworkProfiles,
+    recentEvents,
+    overallScore,
+    scanSummary,
+    dnsResult,
+    isDnsLoading,
+    isDeepScanEnabled,
+    isDeepScanning,
+    latestSession,
+  ];
 }
 
 class SecurityError extends SecurityState {

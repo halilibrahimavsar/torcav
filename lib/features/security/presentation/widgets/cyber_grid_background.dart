@@ -6,11 +6,7 @@ class CyberGridBackground extends StatefulWidget {
   final Color color;
   final Widget? child;
 
-  const CyberGridBackground({
-    super.key,
-    required this.color,
-    this.child,
-  });
+  const CyberGridBackground({super.key, required this.color, this.child});
 
   /// Static method to update scroll velocity globally
   static void updateScrollVelocity(double velocity) {
@@ -24,11 +20,13 @@ class CyberGridBackground extends StatefulWidget {
 class _CyberGridBackgroundState extends State<CyberGridBackground>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  static final ValueNotifier<double> scrollVelocity = ValueNotifier<double>(0.0);
-  
+  static final ValueNotifier<double> scrollVelocity = ValueNotifier<double>(
+    0.0,
+  );
+
   ui.FragmentShader? _shader;
   bool _shaderLoaded = false;
-  
+
   double _smoothedVelocity = 0.0;
 
   @override
@@ -44,7 +42,9 @@ class _CyberGridBackgroundState extends State<CyberGridBackground>
 
   Future<void> _loadShader() async {
     try {
-      final program = await ui.FragmentProgram.fromAsset('shaders/cyber_post.frag');
+      final program = await ui.FragmentProgram.fromAsset(
+        'shaders/cyber_post.frag',
+      );
       if (mounted) {
         setState(() {
           _shader = program.fragmentShader();
@@ -72,9 +72,7 @@ class _CyberGridBackgroundState extends State<CyberGridBackground>
     return Stack(
       children: [
         // Base Layer
-        Positioned.fill(
-          child: Container(color: baseColor),
-        ),
+        Positioned.fill(child: Container(color: baseColor)),
 
         // GPU-Accelerated Neomorphic Layer
         Positioned.fill(
@@ -83,14 +81,18 @@ class _CyberGridBackgroundState extends State<CyberGridBackground>
               animation: Listenable.merge([_controller, scrollVelocity]),
               builder: (context, child) {
                 // Smooth out the velocity for the shader
-                _smoothedVelocity = _smoothedVelocity * 0.9 + (scrollVelocity.value / 20.0).clamp(0.0, 1.0) * 0.1;
+                _smoothedVelocity =
+                    _smoothedVelocity * 0.9 +
+                    (scrollVelocity.value / 20.0).clamp(0.0, 1.0) * 0.1;
                 scrollVelocity.value *= 0.95; // Natural decay
 
                 if (_shaderLoaded && _shader != null) {
                   return CustomPaint(
                     painter: _ShaderPainter(
                       shader: _shader!,
-                      time: _controller.value * 100.0, // Large t value for noise/waves
+                      time:
+                          _controller.value *
+                          100.0, // Large t value for noise/waves
                       velocity: _smoothedVelocity,
                       isLight: isLight,
                     ),
@@ -138,8 +140,8 @@ class _ShaderPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _ShaderPainter oldDelegate) {
-    return oldDelegate.time != time || 
-           oldDelegate.velocity != velocity || 
-           oldDelegate.isLight != isLight;
+    return oldDelegate.time != time ||
+        oldDelegate.velocity != velocity ||
+        oldDelegate.isLight != isLight;
   }
 }

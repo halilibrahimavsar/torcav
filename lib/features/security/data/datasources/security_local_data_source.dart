@@ -39,14 +39,14 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
   }
 
   KnownNetwork _mapToKnownNetwork(Map<String, dynamic> map) => KnownNetwork(
-        ssid: map['ssid'] as String? ?? '',
-        bssid: map['bssid'] as String? ?? '',
-        security: map['security'] as String? ?? 'unknown',
-        firstSeen: DateTime.parse(map['first_seen'] as String),
-        lastSeen: DateTime.parse(map['last_seen'] as String),
-        seenCount: map['seen_count'] as int? ?? 1,
-        gateway: map['gateway'] as String?,
-      );
+    ssid: map['ssid'] as String? ?? '',
+    bssid: map['bssid'] as String? ?? '',
+    security: map['security'] as String? ?? 'unknown',
+    firstSeen: DateTime.parse(map['first_seen'] as String),
+    lastSeen: DateTime.parse(map['last_seen'] as String),
+    seenCount: map['seen_count'] as int? ?? 1,
+    gateway: map['gateway'] as String?,
+  );
 
   @override
   Future<void> saveKnownNetwork(KnownNetwork network) async {
@@ -83,19 +83,15 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
         _trustedProfileToMap(profile),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      await txn.insert(
-        'known_networks',
-        {
-          'ssid': profile.ssid,
-          'bssid': profile.bssid,
-          'security': profile.fingerprint.security,
-          'gateway': profile.gateway,
-          'first_seen': profile.trustedAt.toIso8601String(),
-          'last_seen': profile.lastConfirmedAt.toIso8601String(),
-          'seen_count': 100, // Trusted profiles are considered highly seen/stable
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+      await txn.insert('known_networks', {
+        'ssid': profile.ssid,
+        'bssid': profile.bssid,
+        'security': profile.fingerprint.security,
+        'gateway': profile.gateway,
+        'first_seen': profile.trustedAt.toIso8601String(),
+        'last_seen': profile.lastConfirmedAt.toIso8601String(),
+        'seen_count': 100, // Trusted profiles are considered highly seen/stable
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
     });
   }
 
@@ -108,7 +104,11 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
         where: 'bssid = ?',
         whereArgs: [bssid],
       );
-      await txn.delete('known_networks', where: 'bssid = ?', whereArgs: [bssid]);
+      await txn.delete(
+        'known_networks',
+        where: 'bssid = ?',
+        whereArgs: [bssid],
+      );
     });
   }
 
@@ -197,24 +197,23 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
   @override
   Future<void> saveAssessmentSession(AssessmentSession session) async {
     final db = await _database.database;
-    await db.insert(
-      'assessment_sessions',
-      {
-        'session_key': session.sessionKey,
-        'created_at': session.createdAt.toIso8601String(),
-        'overall_score': session.overallScore,
-        'overall_status': session.overallStatus.name,
-        'wifi_findings_json':
-            jsonEncode(session.wifiFindings.map((finding) => finding.toJson()).toList()),
-        'lan_findings_json':
-            jsonEncode(session.lanFindings.map((finding) => finding.toJson()).toList()),
-        'dns_result_json': session.dnsResult == null
-            ? null
-            : jsonEncode(session.dnsResult!.toJson()),
-        'trusted_profile_count': session.trustedProfileCount,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await db.insert('assessment_sessions', {
+      'session_key': session.sessionKey,
+      'created_at': session.createdAt.toIso8601String(),
+      'overall_score': session.overallScore,
+      'overall_status': session.overallStatus.name,
+      'wifi_findings_json': jsonEncode(
+        session.wifiFindings.map((finding) => finding.toJson()).toList(),
+      ),
+      'lan_findings_json': jsonEncode(
+        session.lanFindings.map((finding) => finding.toJson()).toList(),
+      ),
+      'dns_result_json':
+          session.dnsResult == null
+              ? null
+              : jsonEncode(session.dnsResult!.toJson()),
+      'trusted_profile_count': session.trustedProfileCount,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   @override

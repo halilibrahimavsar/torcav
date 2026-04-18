@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
-import 'package:torcav/features/security/domain/entities/security_event.dart' as domain_event;
+import 'package:torcav/features/security/domain/entities/security_event.dart'
+    as domain_event;
 import '../bloc/security_bloc.dart';
 
 class EvilTwinAlertBanner extends StatelessWidget {
@@ -71,10 +72,7 @@ class EvilTwinAlertBanner extends StatelessWidget {
                           glowRadius: 8,
                         ),
                         const Spacer(),
-                        _AlertBadge(
-                          label: 'CRITICAL',
-                          color: errorColor,
-                        ),
+                        _AlertBadge(label: 'CRITICAL', color: errorColor),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -161,10 +159,7 @@ class WpsWarningCard extends StatelessWidget {
                             glowRadius: 5,
                           ),
                         ),
-                        _AlertBadge(
-                          label: 'WPS ACTIVE',
-                          color: warnColor,
-                        ),
+                        _AlertBadge(label: 'WPS ACTIVE', color: warnColor),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -192,10 +187,7 @@ class _AlertBadge extends StatelessWidget {
   final String label;
   final Color color;
 
-  const _AlertBadge({
-    required this.label,
-    required this.color,
-  });
+  const _AlertBadge({required this.label, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -204,9 +196,7 @@ class _AlertBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(
-          color: color.withValues(alpha: 0.4),
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.4)),
       ),
       child: Text(
         label,

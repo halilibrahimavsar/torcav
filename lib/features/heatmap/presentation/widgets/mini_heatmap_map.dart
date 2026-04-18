@@ -64,11 +64,16 @@ class _MiniHeatmapMapState extends State<MiniHeatmapMap>
             width: 160,
             height: 160,
             decoration: BoxDecoration(
-              color: theme.colorScheme.surface.withValues(alpha: isLight ? 0.8 : 0.55),
+              color: theme.colorScheme.surface.withValues(
+                alpha: isLight ? 0.8 : 0.55,
+              ),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: liveColor.withValues(
-                  alpha: isLight ? 0.15 + (pulseVal * 0.3) : 0.2 + (pulseVal * 0.4),
+                  alpha:
+                      isLight
+                          ? 0.15 + (pulseVal * 0.3)
+                          : 0.2 + (pulseVal * 0.4),
                 ),
                 width: 1.5 + (pulseVal * 0.5),
               ),
@@ -81,7 +86,9 @@ class _MiniHeatmapMapState extends State<MiniHeatmapMap>
                   spreadRadius: pulseVal * 2,
                 ),
                 BoxShadow(
-                  color: theme.colorScheme.scrim.withValues(alpha: isLight ? 0.08 : 0.45),
+                  color: theme.colorScheme.scrim.withValues(
+                    alpha: isLight ? 0.08 : 0.45,
+                  ),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -109,7 +116,9 @@ class _MiniHeatmapMapState extends State<MiniHeatmapMap>
                       gradient: RadialGradient(
                         colors: [
                           Colors.transparent,
-                          theme.colorScheme.scrim.withValues(alpha: isLight ? 0.15 : 0.35),
+                          theme.colorScheme.scrim.withValues(
+                            alpha: isLight ? 0.15 : 0.35,
+                          ),
                         ],
                         stops: const [0.55, 1.0],
                       ),
@@ -122,7 +131,10 @@ class _MiniHeatmapMapState extends State<MiniHeatmapMap>
                 Positioned(
                   top: 8,
                   right: 8,
-                  child: HeatmapCompass(size: 42, heading: widget.currentHeading),
+                  child: HeatmapCompass(
+                    size: 42,
+                    heading: widget.currentHeading,
+                  ),
                 ),
 
                 // Animated LIVE badge (top-left)
@@ -130,12 +142,19 @@ class _MiniHeatmapMapState extends State<MiniHeatmapMap>
                   top: 10,
                   left: 10,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.surface.withValues(alpha: isLight ? 0.9 : 0.6),
+                      color: theme.colorScheme.surface.withValues(
+                        alpha: isLight ? 0.9 : 0.6,
+                      ),
                       borderRadius: BorderRadius.circular(6),
                       border: Border.all(
-                        color: theme.colorScheme.onSurface.withValues(alpha: 0.15),
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.15,
+                        ),
                       ),
                     ),
                     child: Row(
@@ -151,8 +170,7 @@ class _MiniHeatmapMapState extends State<MiniHeatmapMap>
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: liveColor
-                                      .withValues(alpha: 0.6),
+                                  color: liveColor.withValues(alpha: 0.6),
                                   blurRadius: 4,
                                   spreadRadius: 1,
                                 ),

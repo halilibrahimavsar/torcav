@@ -7,11 +7,7 @@ import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart';
 
 class NewSessionDialog extends StatefulWidget {
-  const NewSessionDialog({
-    super.key,
-    required this.bloc,
-    required this.copy,
-  });
+  const NewSessionDialog({super.key, required this.bloc, required this.copy});
 
   final HeatmapBloc bloc;
   final HeatmapCopy copy;
@@ -59,7 +55,9 @@ class _NewSessionDialogState extends State<NewSessionDialog> {
           Text(
             widget.copy.newSurveyHint,
             style: GoogleFonts.outfit(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
               fontSize: 13,
               height: 1.45,
             ),
@@ -70,9 +68,10 @@ class _NewSessionDialogState extends State<NewSessionDialog> {
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           style: TextButton.styleFrom(
-            foregroundColor: Theme.of(context).brightness == Brightness.light 
-                ? AppColors.inkRed 
-                : AppColors.neonRed,
+            foregroundColor:
+                Theme.of(context).brightness == Brightness.light
+                    ? AppColors.inkRed
+                    : AppColors.neonRed,
           ),
           child: Text(widget.copy.cancel),
         ),
@@ -96,16 +95,19 @@ class _NewSessionDialogState extends State<NewSessionDialog> {
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).brightness == Brightness.light 
-                ? AppColors.inkBlue.withValues(alpha: 0.1) 
-                : AppColors.neonBlue.withValues(alpha: 0.1),
-            foregroundColor: Theme.of(context).brightness == Brightness.light 
-                ? AppColors.inkBlue 
-                : AppColors.neonBlue,
+            backgroundColor:
+                Theme.of(context).brightness == Brightness.light
+                    ? AppColors.inkBlue.withValues(alpha: 0.1)
+                    : AppColors.neonBlue.withValues(alpha: 0.1),
+            foregroundColor:
+                Theme.of(context).brightness == Brightness.light
+                    ? AppColors.inkBlue
+                    : AppColors.neonBlue,
             side: BorderSide(
-              color: Theme.of(context).brightness == Brightness.light 
-                  ? AppColors.inkBlue.withValues(alpha: 0.4) 
-                  : AppColors.neonBlue.withValues(alpha: 0.4),
+              color:
+                  Theme.of(context).brightness == Brightness.light
+                      ? AppColors.inkBlue.withValues(alpha: 0.4)
+                      : AppColors.neonBlue.withValues(alpha: 0.4),
             ),
           ),
           child: Text(widget.copy.startNow),

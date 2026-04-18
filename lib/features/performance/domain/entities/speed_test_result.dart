@@ -23,13 +23,13 @@ class SpeedTestResult extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        recordedAt,
-        latencyMs,
-        jitterMs,
-        downloadMbps,
-        uploadMbps,
-        packetLoss,
-        loadedLatencyMs,
-      ];
+    id,
+    recordedAt,
+    latencyMs,
+    jitterMs,
+    downloadMbps,
+    uploadMbps,
+    packetLoss,
+    loadedLatencyMs,
+  ];
 }

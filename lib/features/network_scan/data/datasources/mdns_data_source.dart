@@ -20,16 +20,31 @@ class MdnsDataSource {
 
     final discoveries = <String, List<String>>{};
 
-    // Search for common services: _http._tcp.local, _airplay._tcp.local, _googlecast._tcp.local, etc.
+    // Broad set of common LAN service announcements. On Android 11+ this is
+    // the primary identification channel because MAC addresses are hidden.
     final serviceTypes = [
       '_http._tcp.local',
       '_services._dns-sd._udp.local',
-      '_googlecast._tcp.local',
-      '_airplay._tcp.local',
-      '_raop._tcp.local', // AirPlay Audio
-      '_ipp._tcp.local',  // Printer
-      '_smb._tcp.local',  // Windows File Sharing
+      '_googlecast._tcp.local', // Chromecast / Google TV / Nest
+      '_airplay._tcp.local', // Apple TV
+      '_raop._tcp.local', // AirPlay Audio (HomePod, AirPort)
+      '_ipp._tcp.local', // Printer (IPP)
+      '_printer._tcp.local', // Printer (LPD)
+      '_pdl-datastream._tcp.local', // HP JetDirect
+      '_smb._tcp.local', // Windows/Samba file sharing
+      '_afpovertcp._tcp.local', // Apple File Protocol
+      '_nfs._tcp.local', // NFS share
       '_device-info._tcp.local',
+      '_workstation._tcp.local', // Linux/macOS workstation
+      '_companion-link._tcp.local', // iPhone/iPad Handoff
+      '_apple-mobdev2._tcp.local', // iPhone/iPad tethering
+      '_homekit._tcp.local', // HomeKit accessory
+      '_hap._tcp.local', // HomeKit Accessory Protocol
+      '_spotify-connect._tcp.local', // Spotify Connect speaker
+      '_sonos._tcp.local', // Sonos speaker
+      '_miio._udp.local', // Xiaomi Mi Home
+      '_hue._tcp.local', // Philips Hue bridge
+      '_tplink._tcp.local', // TP-Link Kasa
     ];
 
     try {
@@ -47,7 +62,7 @@ class MdnsDataSource {
             )) {
               final ip = ipRecord.address.address;
               final name = ptr.domainName.split('.').first;
-              
+
               discoveries.putIfAbsent(ip, () => []).add(name);
             }
           }

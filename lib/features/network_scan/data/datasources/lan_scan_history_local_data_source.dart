@@ -19,7 +19,8 @@ abstract class LanScanHistoryLocalDataSource {
 }
 
 @LazySingleton(as: LanScanHistoryLocalDataSource)
-class LanScanHistoryLocalDataSourceImpl implements LanScanHistoryLocalDataSource {
+class LanScanHistoryLocalDataSourceImpl
+    implements LanScanHistoryLocalDataSource {
   LanScanHistoryLocalDataSourceImpl(this._database);
 
   final AppDatabase _database;
@@ -36,17 +37,13 @@ class LanScanHistoryLocalDataSourceImpl implements LanScanHistoryLocalDataSource
     final payload = hosts.map(_hostToJson).toList(growable: false);
 
     await db.transaction((txn) async {
-      await txn.insert(
-        'lan_scan_sessions',
-        {
-          'session_key': sessionKey,
-          'created_at': createdAt.toIso8601String(),
-          'target': target,
-          'profile': profile,
-          'payload_json': jsonEncode(payload),
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+      await txn.insert('lan_scan_sessions', {
+        'session_key': sessionKey,
+        'created_at': createdAt.toIso8601String(),
+        'target': target,
+        'profile': profile,
+        'payload_json': jsonEncode(payload),
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
 
       final batch = txn.batch();
       for (final host in hosts) {

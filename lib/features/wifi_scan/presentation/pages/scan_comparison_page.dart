@@ -64,62 +64,65 @@ class ScanComparisonPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: diff.isEmpty
-          ? Center(
-              child: Text(
-                l10n.noChangesDetected,
-                style: GoogleFonts.rajdhani(
-                  fontSize: 15,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+      body:
+          diff.isEmpty
+              ? Center(
+                child: Text(
+                  l10n.noChangesDetected,
+                  style: GoogleFonts.rajdhani(
+                    fontSize: 15,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
+              )
+              : ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  if (diff.added.isNotEmpty) ...[
+                    _SectionHeader(
+                      label: l10n.newNetworksCountLabel(diff.added.length),
+                      color: Theme.of(context).colorScheme.tertiary,
+                      icon: Icons.add_circle_outline_rounded,
+                    ),
+                    ...diff.added.map(
+                      (n) => _NetworkRow(
+                        network: n,
+                        accentColor: Theme.of(context).colorScheme.tertiary,
+                        trailing: '+ NEW',
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  if (diff.removed.isNotEmpty) ...[
+                    _SectionHeader(
+                      label: l10n.goneNetworksCountLabel(diff.removed.length),
+                      color: Theme.of(context).colorScheme.error,
+                      icon: Icons.remove_circle_outline_rounded,
+                    ),
+                    ...diff.removed.map(
+                      (n) => _NetworkRow(
+                        network: n,
+                        accentColor: Theme.of(context).colorScheme.error,
+                        trailing: 'GONE',
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  if (diff.changed.isNotEmpty) ...[
+                    _SectionHeader(
+                      label: l10n.changedNetworksCountLabel(
+                        diff.changed.length,
+                      ),
+                      color: Theme.of(context).colorScheme.primary,
+                      icon: Icons.swap_horiz_rounded,
+                    ),
+                    ...diff.changed.map(
+                      (c) => _ChangedRow(before: c.before, after: c.after),
+                    ),
+                  ],
+                ],
               ),
-            )
-          : ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                if (diff.added.isNotEmpty) ...[
-                  _SectionHeader(
-                    label: l10n.newNetworksCountLabel(diff.added.length),
-                    color: Theme.of(context).colorScheme.tertiary,
-                    icon: Icons.add_circle_outline_rounded,
-                  ),
-                  ...diff.added.map(
-                    (n) => _NetworkRow(
-                      network: n,
-                      accentColor: Theme.of(context).colorScheme.tertiary,
-                      trailing: '+ NEW',
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
-                if (diff.removed.isNotEmpty) ...[
-                  _SectionHeader(
-                    label: l10n.goneNetworksCountLabel(diff.removed.length),
-                    color: Theme.of(context).colorScheme.error,
-                    icon: Icons.remove_circle_outline_rounded,
-                  ),
-                  ...diff.removed.map(
-                    (n) => _NetworkRow(
-                      network: n,
-                      accentColor: Theme.of(context).colorScheme.error,
-                      trailing: 'GONE',
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
-                if (diff.changed.isNotEmpty) ...[
-                  _SectionHeader(
-                    label: l10n.changedNetworksCountLabel(diff.changed.length),
-                    color: Theme.of(context).colorScheme.primary,
-                    icon: Icons.swap_horiz_rounded,
-                  ),
-                  ...diff.changed.map(
-                    (c) => _ChangedRow(before: c.before, after: c.after),
-                  ),
-                ],
-              ],
-            ),
     );
   }
 }
@@ -216,9 +219,10 @@ class _ChangedRow extends StatelessWidget {
     final onSurface = Theme.of(context).colorScheme.onSurface;
     final delta = after.avgSignalDbm - before.avgSignalDbm;
     final deltaStr = delta > 0 ? '+$delta dBm' : '$delta dBm';
-    final deltaColor = delta > 0
-        ? Theme.of(context).colorScheme.tertiary
-        : Theme.of(context).colorScheme.error;
+    final deltaColor =
+        delta > 0
+            ? Theme.of(context).colorScheme.tertiary
+            : Theme.of(context).colorScheme.error;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),

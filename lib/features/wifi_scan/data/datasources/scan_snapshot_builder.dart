@@ -52,11 +52,13 @@ class ScanSnapshotBuilder {
 
     final observations = await Future.wait(
       accumulators.values.map((entry) async {
-        final isRandomized =
-            ScanSnapshotBuilder.detectBssidRandomization(entry.bssid);
+        final isRandomized = ScanSnapshotBuilder.detectBssidRandomization(
+          entry.bssid,
+        );
         final vendor = await _ouiLookup.lookup(entry.bssid);
-        final spatialStreams =
-            ScanSnapshotBuilder.estimateSpatialStreams(entry.wifiStandard);
+        final spatialStreams = ScanSnapshotBuilder.estimateSpatialStreams(
+          entry.wifiStandard,
+        );
         final throughput = ScanSnapshotBuilder.estimateThroughput(
           standard: entry.wifiStandard,
           widthMhz: entry.channelWidthMhz,
@@ -125,27 +127,27 @@ class ScanSnapshotBuilder {
       WifiStandard.legacy => widthMhz >= 20 ? 54.0 : 11.0,
       WifiStandard.n => widthMhz == 40 ? 150.0 : 72.2,
       WifiStandard.ac => switch (widthMhz) {
-          20 => 86.7,
-          40 => 200.0,
-          80 => 433.3,
-          160 => 866.7,
-          _ => 433.3,
-        },
+        20 => 86.7,
+        40 => 200.0,
+        80 => 433.3,
+        160 => 866.7,
+        _ => 433.3,
+      },
       WifiStandard.ax => switch (widthMhz) {
-          20 => 143.4,
-          40 => 286.8,
-          80 => 600.5,
-          160 => 1201.0,
-          _ => 600.5,
-        },
+        20 => 143.4,
+        40 => 286.8,
+        80 => 600.5,
+        160 => 1201.0,
+        _ => 600.5,
+      },
       WifiStandard.be => switch (widthMhz) {
-          20 => 160.0,
-          40 => 320.0,
-          80 => 680.0,
-          160 => 1440.0,
-          320 => 2880.0,
-          _ => 680.0,
-        },
+        20 => 160.0,
+        40 => 320.0,
+        80 => 680.0,
+        160 => 1440.0,
+        320 => 2880.0,
+        _ => 680.0,
+      },
       WifiStandard.unknown => 54.0,
     };
 

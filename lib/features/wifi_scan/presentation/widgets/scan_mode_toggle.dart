@@ -70,9 +70,10 @@ class _ModeButton extends StatelessWidget {
           color: selected ? color.withValues(alpha: 0.15) : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: selected
-                ? color.withValues(alpha: 0.7)
-                : color.withValues(alpha: 0.2),
+            color:
+                selected
+                    ? color.withValues(alpha: 0.7)
+                    : color.withValues(alpha: 0.2),
             width: selected ? 1.5 : 1,
           ),
         ),

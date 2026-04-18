@@ -41,7 +41,9 @@ class TopologyPage extends StatelessWidget {
               content: Text(state.lastErrorMessage!),
               backgroundColor: Theme.of(context).colorScheme.error,
               behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
           );
         }
@@ -70,7 +72,6 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
   late AnimationController _positionController;
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _portController = TextEditingController();
-
 
   Map<String, Offset>? _oldPositions;
   Map<String, Offset>? _targetPositions;
@@ -112,7 +113,6 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
     _portController.dispose();
     super.dispose();
   }
-
 
   void _loadTopology() {
     context.read<TopologyBloc>().add(const LoadTopologyEvent());
@@ -537,7 +537,8 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                   child: AnimatedBuilder(
                     animation: _pulseController,
                     builder: (context, child) {
-                      final needsRecalc = _currentPositions.isEmpty ||
+                      final needsRecalc =
+                          _currentPositions.isEmpty ||
                           _targetPositions == null ||
                           _currentPositions.length != topology.nodes.length;
                       if (needsRecalc) {
@@ -877,10 +878,12 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
     bool isPinging,
   ) {
     final l10n = context.l10n;
-    final isScanning = blocState is TopologyLoaded &&
+    final isScanning =
+        blocState is TopologyLoaded &&
         blocState.scanningNodeId == node.id &&
         blocState.isScanningPorts;
-    final isLookingUp = blocState is TopologyLoaded &&
+    final isLookingUp =
+        blocState is TopologyLoaded &&
         blocState.lookingUpNodeId == node.id &&
         blocState.isLookingUpHostname;
 
@@ -925,7 +928,8 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                 label: 'OS DETECT',
                 icon: Icons.computer_rounded,
                 color: Colors.tealAccent,
-                isLoading: blocState is TopologyLoaded &&
+                isLoading:
+                    blocState is TopologyLoaded &&
                     blocState.detectingOsNodeId == node.id &&
                     blocState.isDetectingOs,
                 onTap: () {
@@ -945,7 +949,9 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
             color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.1),
             ),
           ),
           child: Column(
@@ -960,7 +966,9 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                   isDense: true,
                   hintText: l10n.portRangeHint,
                   hintStyle: GoogleFonts.shareTechMono(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.3),
                     fontSize: 10,
                   ),
                   border: InputBorder.none,
@@ -1014,7 +1022,9 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                   Text(
                     'LATENCY',
                     style: GoogleFonts.orbitron(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.4),
                       fontSize: 8,
                       fontWeight: FontWeight.bold,
                     ),
@@ -1023,9 +1033,14 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                   Text(
                     node.latencyMs != null ? '${node.latencyMs}ms' : '--',
                     style: GoogleFonts.orbitron(
-                      color: node.latencyMs != null
-                          ? (node.latencyMs! < 50 ? Colors.greenAccent : Colors.orangeAccent)
-                          : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                      color:
+                          node.latencyMs != null
+                              ? (node.latencyMs! < 50
+                                  ? Colors.greenAccent
+                                  : Colors.orangeAccent)
+                              : Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withValues(alpha: 0.3),
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -1039,7 +1054,9 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                     Text(
                       l10n.hostnameLabel,
                       style: GoogleFonts.orbitron(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.4),
                         fontSize: 8,
                         fontWeight: FontWeight.bold,
                       ),
@@ -1065,7 +1082,9 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
               child: Text(
                 'OS DETECTED',
                 style: GoogleFonts.orbitron(
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.4),
                   fontSize: 8,
                   fontWeight: FontWeight.bold,
                 ),
@@ -1094,7 +1113,6 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
     );
   }
 
-
   Widget _buildPortScanResults(TopologyState state, TopologyNode node) {
     if (state is! TopologyLoaded) return const SizedBox.shrink();
     if (state.scanningNodeId != node.id || state.openPorts == null) {
@@ -1117,7 +1135,9 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
             child: Text(
               l10n.portsFoundLabel,
               style: GoogleFonts.orbitron(
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.4),
                 fontSize: 8,
                 fontWeight: FontWeight.bold,
               ),
@@ -1128,7 +1148,9 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
             Text(
               l10n.noPortsFound,
               style: GoogleFonts.shareTechMono(
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.4),
                 fontSize: 11,
               ),
             )
@@ -1136,26 +1158,34 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: ports.map((port) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
-                    ),
-                  ),
-                  child: Text(
-                    'PORT $port',
-                    style: GoogleFonts.shareTechMono(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                );
-              }).toList(),
+              children:
+                  ports.map((port) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Text(
+                        'PORT $port',
+                        style: GoogleFonts.shareTechMono(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+                  }).toList(),
             ),
         ],
       ),

@@ -5,11 +5,7 @@ class NetworkScannerRadar extends StatefulWidget {
   final bool isScanning;
   final Color? color;
 
-  const NetworkScannerRadar({
-    super.key,
-    required this.isScanning,
-    this.color,
-  });
+  const NetworkScannerRadar({super.key, required this.isScanning, this.color});
 
   @override
   State<NetworkScannerRadar> createState() => _NetworkScannerRadarState();
@@ -47,7 +43,8 @@ class _NetworkScannerRadarState extends State<NetworkScannerRadar>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveColor = widget.color ?? Theme.of(context).colorScheme.primary;
+    final effectiveColor =
+        widget.color ?? Theme.of(context).colorScheme.primary;
 
     return AnimatedBuilder(
       animation: _controller,

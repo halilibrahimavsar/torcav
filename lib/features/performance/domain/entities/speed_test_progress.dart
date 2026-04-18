@@ -52,6 +52,13 @@ class SpeedTestProgress extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [phase, latencyMs, jitterMs, downloadMbps, uploadMbps, packetLoss, loadedLatencyMs];
+  List<Object?> get props => [
+    phase,
+    latencyMs,
+    jitterMs,
+    downloadMbps,
+    uploadMbps,
+    packetLoss,
+    loadedLatencyMs,
+  ];
 }

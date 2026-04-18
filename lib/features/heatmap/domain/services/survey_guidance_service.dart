@@ -72,16 +72,16 @@ class SurveyGuidance extends Equatable {
 
   @override
   List<Object?> get props => [
-        stage,
-        tone,
-        overallProgress,
-        coverageScore,
-        signalScore,
-        sparseRegion,
-        feeds,
-        readyToFinish,
-        customInstruction,
-      ];
+    stage,
+    tone,
+    overallProgress,
+    coverageScore,
+    signalScore,
+    sparseRegion,
+    feeds,
+    readyToFinish,
+    customInstruction,
+  ];
 }
 
 @LazySingleton()
@@ -165,7 +165,8 @@ class SurveyGuidanceService {
       tone = SurveyTone.progress;
     }
 
-    final readyToFinish = surveyGate == SurveyGate.none &&
+    final readyToFinish =
+        surveyGate == SurveyGate.none &&
         overall >= 0.78 &&
         coverageScore >= 0.72 &&
         signalScore >= 0.72;
@@ -222,13 +223,14 @@ class SurveyGuidanceService {
 
     final width = (xs.reduce(math.max) - xs.reduce(math.min)).abs();
     final height = (ys.reduce(math.max) - ys.reduce(math.min)).abs();
-    final cells = points
-        .map(
-          (point) =>
-              '${point.floorX.floor()}:${point.floorY.floor()}:${point.floor}',
-        )
-        .toSet()
-        .length;
+    final cells =
+        points
+            .map(
+              (point) =>
+                  '${point.floorX.floor()}:${point.floorY.floor()}:${point.floor}',
+            )
+            .toSet()
+            .length;
     final uniqueCoverage = (cells / 45).clamp(0.0, 1.0);
     final span = (math.max(width, height) / 10).clamp(0.0, 1.0);
 
@@ -250,12 +252,13 @@ class SurveyGuidanceService {
     if (points.isEmpty && lastSignalAt == null) return 0;
 
     final lockScore = surveyGate == SurveyGate.noConnectedBssid ? 0.0 : 1.0;
-    final freshness = lastSignalAt == null
-        ? 0.0
-        : (1 -
-                (DateTime.now().difference(lastSignalAt).inMilliseconds /
-                    3000.0))
-            .clamp(0.0, 1.0);
+    final freshness =
+        lastSignalAt == null
+            ? 0.0
+            : (1 -
+                    (DateTime.now().difference(lastSignalAt).inMilliseconds /
+                        3000.0))
+                .clamp(0.0, 1.0);
     final varianceScore = (1 - (currentSignalStdDev / 12)).clamp(0.0, 1.0);
 
     return ((lockScore * 0.45) + (freshness * 0.35) + (varianceScore * 0.20))
@@ -284,20 +287,20 @@ class SurveyGuidanceService {
               ? SparseRegion.leftWing
               : SparseRegion.rightWing] =
           counts[point.floorX <= centerX
-                  ? SparseRegion.leftWing
-                  : SparseRegion.rightWing]! +
-              1;
+              ? SparseRegion.leftWing
+              : SparseRegion.rightWing]! +
+          1;
       counts[point.floorY <= centerY
               ? SparseRegion.topWing
               : SparseRegion.bottomWing] =
           counts[point.floorY <= centerY
-                  ? SparseRegion.topWing
-                  : SparseRegion.bottomWing]! +
-              1;
+              ? SparseRegion.topWing
+              : SparseRegion.bottomWing]! +
+          1;
     }
 
-    final sortedEntries = counts.entries.toList()
-      ..sort((a, b) => a.value.compareTo(b.value));
+    final sortedEntries =
+        counts.entries.toList()..sort((a, b) => a.value.compareTo(b.value));
     final minEntry = sortedEntries.first;
     final maxEntry = sortedEntries.last;
 

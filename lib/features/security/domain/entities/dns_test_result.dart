@@ -38,9 +38,10 @@ class DnsBenchmarkResult extends Equatable {
       name: json['name'] as String? ?? 'Unknown',
       primaryIp: json['primaryIp'] as String? ?? '',
       latencyMs: json['latencyMs'] as int? ?? 0,
-      features: (json['features'] as List<dynamic>? ?? const [])
-          .whereType<String>()
-          .toList(),
+      features:
+          (json['features'] as List<dynamic>? ?? const [])
+              .whereType<String>()
+              .toList(),
       isRecommended: json['isRecommended'] as bool? ?? false,
     );
   }
@@ -56,7 +57,13 @@ class DnsBenchmarkResult extends Equatable {
   }
 
   @override
-  List<Object?> get props => [name, primaryIp, latencyMs, features, isRecommended];
+  List<Object?> get props => [
+    name,
+    primaryIp,
+    latencyMs,
+    features,
+    isRecommended,
+  ];
 }
 
 class DnsTestResult extends Equatable {
@@ -131,16 +138,19 @@ class DnsTestResult extends Equatable {
       ),
       detectedServers:
           (json['detectedServers'] as List<dynamic>? ?? const [])
-               .whereType<String>()
-               .toList(),
+              .whereType<String>()
+              .toList(),
       encryptedDnsActive: json['encryptedDnsActive'] as bool? ?? false,
       encryptedProtocol: json['encryptedProtocol'] as String? ?? 'unknown',
       resolverDriftDetected: json['resolverDriftDetected'] as bool? ?? false,
       dnssecSupported: json['dnssecSupported'] as bool? ?? false,
       evidence: json['evidence'] as String? ?? '',
-      benchmarks: (json['benchmarks'] as List<dynamic>? ?? const [])
-          .map((e) => DnsBenchmarkResult.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      benchmarks:
+          (json['benchmarks'] as List<dynamic>? ?? const [])
+              .map(
+                (e) => DnsBenchmarkResult.fromJson(e as Map<String, dynamic>),
+              )
+              .toList(),
     );
   }
 
@@ -163,18 +173,17 @@ class DnsTestResult extends Equatable {
 
   @override
   List<Object?> get props => [
-        currentDns,
-        ispName,
-        isHijacked,
-        isLeaking,
-        status,
-        detectedServers,
-        encryptedDnsActive,
-        encryptedProtocol,
-        resolverDriftDetected,
-        dnssecSupported,
-        evidence,
-        benchmarks,
-      ];
+    currentDns,
+    ispName,
+    isHijacked,
+    isLeaking,
+    status,
+    detectedServers,
+    encryptedDnsActive,
+    encryptedProtocol,
+    resolverDriftDetected,
+    dnssecSupported,
+    evidence,
+    benchmarks,
+  ];
 }
-

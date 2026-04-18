@@ -5,11 +5,7 @@ import 'package:torcav/core/theme/app_theme.dart';
 
 /// Right rail button dock for control actions (discard, finish).
 class HudDock extends StatelessWidget {
-  const HudDock({
-    super.key,
-    this.onFinish,
-    this.onDiscard,
-  });
+  const HudDock({super.key, this.onFinish, this.onDiscard});
 
   final VoidCallback? onFinish;
   final VoidCallback? onDiscard;
@@ -29,44 +25,45 @@ class HudDock extends StatelessWidget {
               if (!context.mounted) return;
               final confirm = await showDialog<bool>(
                 context: context,
-                builder: (context) => AlertDialog(
-                  backgroundColor: Colors.black.withValues(alpha: 0.9),
-                  title: Text(
-                    'DISCARD SURVEY?',
-                    style: GoogleFonts.orbitron(
-                      color: AppColors.neonOrange,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  content: Text(
-                    'All recorded data for this session will be permanently deleted.',
-                    style: GoogleFonts.outfit(color: Colors.white70),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      child: Text(
-                        'CANCEL',
-                        style: GoogleFonts.orbitron(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, true),
-                      child: Text(
-                        'DISCARD',
+                builder:
+                    (context) => AlertDialog(
+                      backgroundColor: Colors.black.withValues(alpha: 0.9),
+                      title: Text(
+                        'DISCARD SURVEY?',
                         style: GoogleFonts.orbitron(
                           color: AppColors.neonOrange,
-                          fontSize: 12,
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      content: Text(
+                        'All recorded data for this session will be permanently deleted.',
+                        style: GoogleFonts.outfit(color: Colors.white70),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: Text(
+                            'CANCEL',
+                            style: GoogleFonts.orbitron(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          child: Text(
+                            'DISCARD',
+                            style: GoogleFonts.orbitron(
+                              color: AppColors.neonOrange,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
               );
               if (confirm == true && context.mounted) {
                 onDiscard?.call();

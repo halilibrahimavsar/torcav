@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
@@ -79,7 +80,9 @@ class OnnxDeviceClassifierService {
       OrtEnv.instance.init();
 
       // Copy asset to a temp file since OrtSession needs a file path.
-      final modelBytes = await rootBundle.load('assets/models/device_classifier.onnx');
+      final modelBytes = await rootBundle.load(
+        'assets/models/device_classifier.onnx',
+      );
       final tempDir = await getTemporaryDirectory();
       final modelFile = File(p.join(tempDir.path, 'device_classifier.onnx'));
       await modelFile.writeAsBytes(

@@ -39,21 +39,25 @@ class ReadyBanner extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
               decoration: BoxDecoration(
-                color: isLight 
-                    ? theme.colorScheme.surface.withValues(alpha: 0.95)
-                    : Colors.black.withValues(alpha: 0.82),
+                color:
+                    isLight
+                        ? theme.colorScheme.surface.withValues(alpha: 0.95)
+                        : Colors.black.withValues(alpha: 0.82),
                 borderRadius: BorderRadius.circular(22),
                 border: Border.all(
                   color: liveGreen.withValues(alpha: isLight ? 0.35 : 0.6),
                   width: 1.4,
                 ),
-                boxShadow: isLight ? [
-                  BoxShadow(
-                    color: liveGreen.withValues(alpha: 0.15),
-                    blurRadius: 16,
-                    spreadRadius: 2,
-                  )
-                ] : null,
+                boxShadow:
+                    isLight
+                        ? [
+                          BoxShadow(
+                            color: liveGreen.withValues(alpha: 0.15),
+                            blurRadius: 16,
+                            spreadRadius: 2,
+                          ),
+                        ]
+                        : null,
               ),
               child: Row(
                 children: [
@@ -81,7 +85,10 @@ class ReadyBanner extends StatelessWidget {
                         Text(
                           'Tap to finish scan',
                           style: GoogleFonts.outfit(
-                            color: isLight ? theme.colorScheme.onSurface : Colors.white,
+                            color:
+                                isLight
+                                    ? theme.colorScheme.onSurface
+                                    : Colors.white,
                             fontSize: 11,
                             fontWeight: FontWeight.w500,
                           ),
@@ -89,11 +96,7 @@ class ReadyBanner extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Icon(
-                    Icons.arrow_forward_rounded,
-                    color: liveGreen,
-                    size: 18,
-                  ),
+                  Icon(Icons.arrow_forward_rounded, color: liveGreen, size: 18),
                 ],
               ),
             ),

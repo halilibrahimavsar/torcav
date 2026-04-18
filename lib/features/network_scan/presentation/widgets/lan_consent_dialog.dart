@@ -79,14 +79,16 @@ class LanConsentDialog extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () => Navigator.pop(context, true),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.neonCyan.withValues(alpha: 0.1),
+                      backgroundColor: AppColors.neonCyan.withValues(
+                        alpha: 0.1,
+                      ),
                       foregroundColor: AppColors.neonCyan,
-                      side: const BorderSide(color: AppColors.neonCyan, width: 1),
+                      side: const BorderSide(
+                        color: AppColors.neonCyan,
+                        width: 1,
+                      ),
                     ),
-                    child: Text(
-                      'I UNDERSTAND',
-                      style: textTheme.labelLarge,
-                    ),
+                    child: Text('I UNDERSTAND', style: textTheme.labelLarge),
                   ),
                 ),
               ],

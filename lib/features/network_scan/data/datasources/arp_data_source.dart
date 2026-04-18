@@ -23,13 +23,14 @@ class ArpDataSource {
   ArpDataSource(this._ouiLookup);
 
   /// Reads the ARP table. Wrapper for static method to allow injection and mocking.
-  Future<Either<Failure, List<ArpEntry>>> readArpTable() => readArpTableStatic();
+  Future<Either<Failure, List<ArpEntry>>> readArpTable() =>
+      readArpTableStatic();
   Stream<HostScanResult> discoverHostsStream({
     String? targetSubnet,
     NetworkScanProfile profile = NetworkScanProfile.fast,
   }) async* {
     final receivePort = ReceivePort();
-    
+
     // Spawn isolate for heavy scanning work
     final isolate = await Isolate.spawn(
       _discoveryIsolateWorker,
@@ -57,7 +58,7 @@ class ArpDataSource {
         } else if (message == 'DONE') {
           break;
         } else if (message is Failure) {
-          // For streams, we could yield an error or just stop. 
+          // For streams, we could yield an error or just stop.
           // Here we'll just log and continue if one host fails.
           continue;
         }
@@ -74,10 +75,11 @@ class ArpDataSource {
     NetworkScanProfile profile = NetworkScanProfile.fast,
   }) async {
     try {
-      final hosts = await discoverHostsStream(
-        targetSubnet: targetSubnet,
-        profile: profile,
-      ).toList();
+      final hosts =
+          await discoverHostsStream(
+            targetSubnet: targetSubnet,
+            profile: profile,
+          ).toList();
       return Right(hosts);
     } catch (e) {
       return Left(ScanFailure(e.toString()));
@@ -92,48 +94,84 @@ class ArpDataSource {
     final profile = config.profile;
 
     try {
-      final List<ArpEntry> finalArpEntries = [];
-      
-      final arpResult = await readArpTableStatic();
-      arpResult.fold((_) => null, (entries) => finalArpEntries.addAll(entries));
+      final canReadArp = Platform.isLinux;
+      final baseIp = _extractBaseIp(targetSubnet);
 
-      if (finalArpEntries.isNotEmpty) {
-        // We have ARP table entries, this is fast. Process them concurrently in batches
-        const parallelBatches = 10;
-        for (var i = 0; i < finalArpEntries.length; i += parallelBatches) {
-          final futures = <Future<void>>[];
+      // Step 1: On Linux, ping-sweep the subnet first to populate the kernel
+      // ARP cache. Without this, /proc/net/arp only contains hosts the OS has
+      // already talked to (typically just the gateway), so scans miss every
+      // other device.
+      final liveIps = <String, double>{};
+      if (baseIp != null) {
+        const parallelBatches = 30;
+        for (var i = 1; i < 255; i += parallelBatches) {
+          final futures = <Future<_PingResult?>>[];
           for (var j = 0; j < parallelBatches; j++) {
-            if (i + j >= finalArpEntries.length) break;
-            futures.add(_processAndSendEntry(finalArpEntries[i+j], profile, sendPort));
+            final hostPart = i + j;
+            if (hostPart > 254) break;
+            futures.add(_pingResultStatic('$baseIp.$hostPart'));
           }
-          await Future.wait(futures);
+          final results = await Future.wait(futures);
+          for (final r in results) {
+            if (r != null) liveIps[r.ip] = r.latencyMs;
+          }
         }
-      } else if (targetSubnet != null) {
-        // Fallback for Android (where ARP table is restricted)
-        final parts = targetSubnet.split('/');
-        if (parts.isNotEmpty) {
-          final ip = parts[0];
-          if (ip.split('.').length == 4) {
-            final baseIp = ip.substring(0, ip.lastIndexOf('.'));
-            const parallelBatches = 30; // Increased batch size for faster discovery
+      }
 
-            for (var i = 1; i < 255; i += parallelBatches) {
-              final futures = <Future<void>>[];
-              for (var j = 0; j < parallelBatches; j++) {
-                final hostPart = i + j;
-                if (hostPart > 254) break;
-                
-                futures.add(() async {
-                   final entry = await _pingHostStatic('$baseIp.$hostPart');
-                   if (entry != null) {
-                     await _processAndSendEntry(entry, profile, sendPort);
-                   }
-                }());
-              }
-              await Future.wait(futures);
-            }
+      // Step 2: Merge with kernel ARP cache. On Linux we now have real MACs
+      // for every live host; on Android /proc/net/arp is empty (API 30+) so
+      // we fall back to zero MACs and rely on mDNS/UPnP/NetBIOS for identity.
+      final entriesByIp = <String, ArpEntry>{};
+      if (canReadArp) {
+        final arpResult = await readArpTableStatic();
+        arpResult.fold((_) => null, (arpEntries) {
+          for (final e in arpEntries) {
+            if (e.mac != '00:00:00:00:00:00') entriesByIp[e.ip] = e;
           }
+        });
+      }
+
+      for (final entry in liveIps.entries) {
+        final existing = entriesByIp[entry.key];
+        if (existing == null) {
+          entriesByIp[entry.key] = ArpEntry(
+            ip: entry.key,
+            mac: '00:00:00:00:00:00',
+            vendor: canReadArp ? 'Unknown' : 'Unknown (Android Limited)',
+            latency: entry.value,
+          );
+        } else if (existing.latency == 0) {
+          entriesByIp[entry.key] = ArpEntry(
+            ip: existing.ip,
+            mac: existing.mac,
+            vendor: existing.vendor,
+            latency: entry.value,
+          );
         }
+      }
+
+      // Fallback: ARP-only discovery if ping sweep couldn't run (no subnet).
+      if (entriesByIp.isEmpty && canReadArp) {
+        final arpResult = await readArpTableStatic();
+        arpResult.fold((_) => null, (arpEntries) {
+          for (final e in arpEntries) {
+            entriesByIp[e.ip] = e;
+          }
+        });
+      }
+
+      // Step 3: Probe each discovered host concurrently.
+      final allEntries = entriesByIp.values.toList();
+      const probeBatches = 10;
+      for (var i = 0; i < allEntries.length; i += probeBatches) {
+        final futures = <Future<void>>[];
+        for (var j = 0; j < probeBatches; j++) {
+          if (i + j >= allEntries.length) break;
+          futures.add(
+            _processAndSendEntry(allEntries[i + j], profile, sendPort),
+          );
+        }
+        await Future.wait(futures);
       }
     } catch (e) {
       sendPort.send(ScanFailure(e.toString()));
@@ -142,7 +180,19 @@ class ArpDataSource {
     }
   }
 
-  static Future<void> _processAndSendEntry(ArpEntry entry, NetworkScanProfile profile, SendPort sendPort) async {
+  static String? _extractBaseIp(String? targetSubnet) {
+    if (targetSubnet == null) return null;
+    final ip = targetSubnet.split('/').first;
+    final parts = ip.split('.');
+    if (parts.length != 4) return null;
+    return ip.substring(0, ip.lastIndexOf('.'));
+  }
+
+  static Future<void> _processAndSendEntry(
+    ArpEntry entry,
+    NetworkScanProfile profile,
+    SendPort sendPort,
+  ) async {
     final services = <ServiceFingerprint>[];
 
     // Only probe ports for non-fast profiles.
@@ -151,19 +201,21 @@ class ArpDataSource {
     }
 
     // Send partial result back to main thread immediately
-    sendPort.send(HostScanResult(
-      ip: entry.ip,
-      mac: entry.mac,
-      vendor: entry.vendor, // 'Unknown' for now
-      hostName: '',
-      osGuess: '',
-      latency: entry.latency,
-      services: services,
-      exposureFindings: const [],
-      exposureScore: (services.length * 7).toDouble().clamp(0, 100),
-      deviceType: 'Unknown',
-      isGateway: false,
-    ));
+    sendPort.send(
+      HostScanResult(
+        ip: entry.ip,
+        mac: entry.mac,
+        vendor: entry.vendor, // 'Unknown' for now
+        hostName: '',
+        osGuess: '',
+        latency: entry.latency,
+        services: services,
+        exposureFindings: const [],
+        exposureScore: (services.length * 7).toDouble().clamp(0, 100),
+        deviceType: 'Unknown',
+        isGateway: false,
+      ),
+    );
   }
 
   static Future<Either<Failure, List<ArpEntry>>> readArpTableStatic() async {
@@ -182,11 +234,16 @@ class ArpDataSource {
         final ip = parts[0];
         final mac = parts[3].toUpperCase();
 
-        entries.add(ArpEntry(
-          ip: ip, 
-          mac: mac, 
-          vendor: mac == '00:00:00:00:00:00' ? 'Android Device (Restricted)' : 'Unknown',
-        ));
+        entries.add(
+          ArpEntry(
+            ip: ip,
+            mac: mac,
+            vendor:
+                mac == '00:00:00:00:00:00'
+                    ? 'Android Device (Restricted)'
+                    : 'Unknown',
+          ),
+        );
       }
       return Right(entries);
     } catch (e) {
@@ -246,22 +303,38 @@ class ArpDataSource {
     }
   }
 
-
-
-  static Future<ArpEntry?> _pingHostStatic(String ip) async {
+  static Future<_PingResult?> _pingResultStatic(String ip) async {
     try {
       final watch = Stopwatch()..start();
       final result = await Process.run('ping', ['-c', '1', '-W', '1', ip]);
       watch.stop();
       if (result.exitCode == 0) {
-        return ArpEntry(
+        return _PingResult(
           ip: ip,
-          mac: '00:00:00:00:00:00',
-          vendor: 'Unknown (Android Limited)',
-          latency: watch.elapsedMilliseconds.toDouble(),
+          latencyMs: watch.elapsedMilliseconds.toDouble(),
         );
       }
     } catch (_) {}
+    // TCP fallback: many hosts (Windows firewall, iOS) drop ICMP but accept
+    // connections on well-known ports. This still populates the kernel ARP
+    // cache on Linux and detects the host as alive on Android.
+    const fallbackPorts = [80, 443, 22, 445];
+    for (final port in fallbackPorts) {
+      try {
+        final watch = Stopwatch()..start();
+        final socket = await Socket.connect(
+          ip,
+          port,
+          timeout: const Duration(milliseconds: 400),
+        );
+        watch.stop();
+        socket.destroy();
+        return _PingResult(
+          ip: ip,
+          latencyMs: watch.elapsedMilliseconds.toDouble(),
+        );
+      } catch (_) {}
+    }
     return null;
   }
 
@@ -294,3 +367,9 @@ class _IsolateConfig {
   });
 }
 
+class _PingResult {
+  final String ip;
+  final double latencyMs;
+
+  _PingResult({required this.ip, required this.latencyMs});
+}

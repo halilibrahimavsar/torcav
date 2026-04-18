@@ -55,7 +55,11 @@ class NotificationSheet extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.security, color: Theme.of(context).colorScheme.primary, size: 20),
+              Icon(
+                Icons.security,
+                color: Theme.of(context).colorScheme.primary,
+                size: 20,
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -69,7 +73,12 @@ class NotificationSheet extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.close, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
+                icon: Icon(
+                  Icons.close,
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.6),
+                ),
                 onPressed: () => Navigator.pop(context),
               ),
             ],
@@ -82,8 +91,15 @@ class NotificationSheet extends StatelessWidget {
               return Row(
                 children: [
                   TextButton.icon(
-                    onPressed: () => context.read<NotificationBloc>().add(MarkAllNotificationsAsRead()),
-                    icon: Icon(Icons.done_all_rounded, size: 14, color: Theme.of(context).colorScheme.primary),
+                    onPressed:
+                        () => context.read<NotificationBloc>().add(
+                          MarkAllNotificationsAsRead(),
+                        ),
+                    icon: Icon(
+                      Icons.done_all_rounded,
+                      size: 14,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                     label: Text(
                       'MARK ALL READ',
                       style: GoogleFonts.orbitron(
@@ -93,15 +109,25 @@ class NotificationSheet extends StatelessWidget {
                       ),
                     ),
                     style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       minimumSize: Size.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
                   const SizedBox(width: 4),
                   TextButton.icon(
-                    onPressed: () => context.read<NotificationBloc>().add(ClearAllNotifications()),
-                    icon: Icon(Icons.delete_sweep_rounded, size: 14, color: Theme.of(context).colorScheme.error),
+                    onPressed:
+                        () => context.read<NotificationBloc>().add(
+                          ClearAllNotifications(),
+                        ),
+                    icon: Icon(
+                      Icons.delete_sweep_rounded,
+                      size: 14,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
                     label: Text(
                       'CLEAR ALL',
                       style: GoogleFonts.orbitron(
@@ -111,7 +137,10 @@ class NotificationSheet extends StatelessWidget {
                       ),
                     ),
                     style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       minimumSize: Size.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
@@ -130,7 +159,9 @@ class NotificationSheet extends StatelessWidget {
       builder: (context, state) {
         if (state is NotificationLoading) {
           return Center(
-            child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
+            child: CircularProgressIndicator(
+              color: Theme.of(context).colorScheme.primary,
+            ),
           );
         }
 
@@ -143,13 +174,17 @@ class NotificationSheet extends StatelessWidget {
                   Icon(
                     Icons.security_update_good_rounded,
                     size: 48,
-                    color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.5),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.tertiary.withValues(alpha: 0.5),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     'All systems clear',
                     style: GoogleFonts.rajdhani(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.6),
                       fontSize: 16,
                     ),
                   ),
@@ -224,7 +259,9 @@ class NotificationTile extends StatelessWidget {
               Text(
                 DateFormat('HH:mm').format(event.timestamp),
                 style: GoogleFonts.rajdhani(
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.6),
                   fontSize: 12,
                 ),
               ),
@@ -243,7 +280,9 @@ class NotificationTile extends StatelessWidget {
           Text(
             event.evidence,
             style: GoogleFonts.outfit(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.7),
               fontSize: 13,
               height: 1.4,
             ),
@@ -269,7 +308,10 @@ class NotificationTile extends StatelessWidget {
     );
   }
 
-   Color _getSeverityColor(BuildContext context, SecurityEventSeverity severity) {
+  Color _getSeverityColor(
+    BuildContext context,
+    SecurityEventSeverity severity,
+  ) {
     switch (severity) {
       case SecurityEventSeverity.critical:
         return AppColors.neonRed;

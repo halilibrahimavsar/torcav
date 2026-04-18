@@ -28,11 +28,7 @@ import 'package:torcav/features/heatmap/presentation/widgets/hud/survey_pilot_ca
 /// reticle, dock controls, live diagnostic tag, and survey-guidance widgets
 /// (pilot card, sparse-region arrow, ready-to-save banner, guidance pill).
 class ArHudOverlay extends StatefulWidget {
-  const ArHudOverlay({
-    super.key,
-    this.onFinish,
-    this.onDiscard,
-  });
+  const ArHudOverlay({super.key, this.onFinish, this.onDiscard});
 
   /// Called when the user taps the Finish & Review dock button.
   final VoidCallback? onFinish;
@@ -102,14 +98,20 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                   const RecordingStatus(),
                   const Spacer(),
                   IconButton(
-                    onPressed: () => context.read<HeatmapBloc>().realignHeading(),
+                    onPressed:
+                        () => context.read<HeatmapBloc>().realignHeading(),
                     icon: const Icon(Icons.explore_rounded),
                     tooltip: 'Realign Compass',
                     constraints: const BoxConstraints(),
                     padding: const EdgeInsets.all(8),
                     style: IconButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh.withValues(
-                        alpha: Theme.of(context).brightness == Brightness.light ? 0.85 : 0.6,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerHigh.withValues(
+                        alpha:
+                            Theme.of(context).brightness == Brightness.light
+                                ? 0.85
+                                : 0.6,
                       ),
                       foregroundColor: Theme.of(context).colorScheme.onSurface,
                       shape: const CircleBorder(),
@@ -123,8 +125,13 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                     constraints: const BoxConstraints(),
                     padding: const EdgeInsets.all(8),
                     style: IconButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh.withValues(
-                        alpha: Theme.of(context).brightness == Brightness.light ? 0.85 : 0.6,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerHigh.withValues(
+                        alpha:
+                            Theme.of(context).brightness == Brightness.light
+                                ? 0.85
+                                : 0.6,
                       ),
                       foregroundColor: Theme.of(context).colorScheme.onSurface,
                       shape: const CircleBorder(),
@@ -147,18 +154,19 @@ class _ArHudOverlayState extends State<ArHudOverlay>
               padding: const EdgeInsets.only(top: 10),
               child: Center(
                 child: BlocSelector<HeatmapBloc, HeatmapState, GuidanceSlice>(
-                  selector: (s) => GuidanceSlice(
-                    guidance: const SurveyGuidanceService().analyze(
-                      points: s.currentSession?.points ?? const [],
-                      isRecording: s.isRecording,
-                      currentRssi: s.currentRssi,
-                      surveyGate: s.surveyGate,
-                      lastSignalAt: s.lastSignalAt,
-                      currentSignalStdDev: s.lastSignalStdDev,
-                      currentX: s.currentPosition?.dx,
-                      currentY: s.currentPosition?.dy,
-                    ),
-                  ),
+                  selector:
+                      (s) => GuidanceSlice(
+                        guidance: const SurveyGuidanceService().analyze(
+                          points: s.currentSession?.points ?? const [],
+                          isRecording: s.isRecording,
+                          currentRssi: s.currentRssi,
+                          surveyGate: s.surveyGate,
+                          lastSignalAt: s.lastSignalAt,
+                          currentSignalStdDev: s.lastSignalStdDev,
+                          currentX: s.currentPosition?.dx,
+                          currentY: s.currentPosition?.dy,
+                        ),
+                      ),
                   builder: (context, slice) {
                     return GuidancePill(
                       stage: slice.guidance.stage,
@@ -185,9 +193,7 @@ class _ArHudOverlayState extends State<ArHudOverlay>
 
         // 6. Center reticle
         Positioned.fill(
-          child: Center(
-            child: ReticleHitArea(controller: _reticleCtl),
-          ),
+          child: Center(child: ReticleHitArea(controller: _reticleCtl)),
         ),
 
         // 7. Bottom-right control dock
@@ -205,11 +211,7 @@ class _ArHudOverlayState extends State<ArHudOverlay>
           bottom: 110,
           left: 0,
           right: 0,
-          child: IgnorePointer(
-            child: Center(
-              child: LiveSignalTag(),
-            ),
-          ),
+          child: IgnorePointer(child: Center(child: LiveSignalTag())),
         ),
 
         // 9. Survey guidance layer — pilot card, sparse arrow, ready banner.
@@ -226,7 +228,9 @@ class _ArHudOverlayState extends State<ArHudOverlay>
     final bloc = context.read<HeatmapBloc>();
     showModalBottomSheet<void>(
       context: context,
-      backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.95),
+      backgroundColor: Theme.of(
+        context,
+      ).colorScheme.surface.withValues(alpha: 0.95),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -249,7 +253,9 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                 const SizedBox(height: 24),
                 Text(
                   'Auto-sampling Distance',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 BlocBuilder<HeatmapBloc, HeatmapState>(
                   builder: (context, state) {
@@ -260,26 +266,54 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                           min: 0.5,
                           max: 2.5,
                           divisions: 8, // Steps of 0.25
-                          label: '${state.autoSamplingDistance.toStringAsFixed(2)}m',
+                          label:
+                              '${state.autoSamplingDistance.toStringAsFixed(2)}m',
                           activeColor: Theme.of(context).colorScheme.primary,
-                          inactiveColor: Theme.of(context).colorScheme.outlineVariant,
+                          inactiveColor:
+                              Theme.of(context).colorScheme.outlineVariant,
                           onChanged: (val) {
-                            context.read<HeatmapBloc>().updateAutoSamplingDistance(val);
+                            context
+                                .read<HeatmapBloc>()
+                                .updateAutoSamplingDistance(val);
                           },
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('0.5m', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
-                            Text('2.5m', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
+                            Text(
+                              '0.5m',
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodySmall?.copyWith(
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                            Text(
+                              '2.5m',
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodySmall?.copyWith(
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 24),
-                        Divider(color: Theme.of(context).colorScheme.outlineVariant),
+                        Divider(
+                          color: Theme.of(context).colorScheme.outlineVariant,
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           'Appearance',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context).colorScheme.onSurface,
                             fontWeight: FontWeight.bold,
                           ),
@@ -307,7 +341,9 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                               ],
                               selected: {themeMode},
                               onSelectionChanged: (newSelection) {
-                                context.read<ThemeCubit>().setTheme(newSelection.first);
+                                context.read<ThemeCubit>().setTheme(
+                                  newSelection.first,
+                                );
                               },
                               style: SegmentedButton.styleFrom(
                                 visualDensity: VisualDensity.compact,
@@ -329,7 +365,6 @@ class _ArHudOverlayState extends State<ArHudOverlay>
     );
   }
 }
-
 
 /// Reads a memoized guidance slice from the bloc and renders the three
 /// guidance-driven widgets: [SurveyPilotCard] (top-left), [SparseRegionArrow]
@@ -357,17 +392,18 @@ class _GuidanceLayerState extends State<_GuidanceLayer> {
   @override
   Widget build(BuildContext context) {
     return BlocSelector<HeatmapBloc, HeatmapState, GuidanceCameraSlice>(
-      selector: (s) => GuidanceCameraSlice(
-        pointCount: s.currentSession?.points.length ?? 0,
-        isRecording: s.isRecording,
-        currentRssi: s.currentRssi,
-        surveyGate: s.surveyGate,
-        lastSignalAt: s.lastSignalAt,
-        lastSignalStdDev: s.lastSignalStdDev,
-        currentPosition: s.currentPosition,
-        phase: s.phase,
-        lastStepTimestamp: s.lastStepTimestamp,
-      ),
+      selector:
+          (s) => GuidanceCameraSlice(
+            pointCount: s.currentSession?.points.length ?? 0,
+            isRecording: s.isRecording,
+            currentRssi: s.currentRssi,
+            surveyGate: s.surveyGate,
+            lastSignalAt: s.lastSignalAt,
+            lastSignalStdDev: s.lastSignalStdDev,
+            currentPosition: s.currentPosition,
+            phase: s.phase,
+            lastStepTimestamp: s.lastStepTimestamp,
+          ),
       builder: (context, slice) {
         if (slice.phase != ScanPhase.scanning || !slice.isRecording) {
           return const SizedBox.shrink();
@@ -389,8 +425,7 @@ class _GuidanceLayerState extends State<_GuidanceLayer> {
         _syncReadyAnimation(guidance.readyToFinish);
 
         final hasLockBanner = slice.surveyGate != SurveyGate.none;
-        final showSparseArrow =
-            guidance.sparseRegion != null && !hasLockBanner;
+        final showSparseArrow = guidance.sparseRegion != null && !hasLockBanner;
 
         return Stack(
           fit: StackFit.expand,

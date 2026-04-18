@@ -12,8 +12,8 @@ import 'package:injectable/injectable.dart';
 @lazySingleton
 class ArCameraPoseDataSource {
   ArCameraPoseDataSource()
-      : _channel = const EventChannel('torcav/ar_scene/events'),
-        _commands = const MethodChannel('torcav/ar_scene/commands');
+    : _channel = const EventChannel('torcav/ar_scene/events'),
+      _commands = const MethodChannel('torcav/ar_scene/commands');
 
   final EventChannel _channel;
   final MethodChannel _commands;

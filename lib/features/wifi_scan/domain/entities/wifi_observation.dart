@@ -108,7 +108,8 @@ class WifiObservation extends Equatable {
     final safeSamples = samples.isEmpty ? const <int>[-100] : samples;
     final average =
         safeSamples.reduce((a, b) => a + b) / safeSamples.length.toDouble();
-    final variance = safeSamples
+    final variance =
+        safeSamples
             .map((sample) => pow(sample - average, 2))
             .fold<double>(0, (a, b) => a + b) /
         safeSamples.length.toDouble();
@@ -161,25 +162,25 @@ class WifiObservation extends Equatable {
 
   @override
   List<Object?> get props => [
-        ssid,
-        bssid,
-        signalDbmSamples,
-        avgSignalDbm,
-        signalStdDev,
-        channel,
-        frequency,
-        security,
-        vendor,
-        isHidden,
-        seenCount,
-        channelWidthMhz,
-        wifiStandard,
-        hasWps,
-        hasPmf,
-        rawCapabilities,
-        apMldMac,
-        estimatedMaxThroughputMbps,
-        spatialStreams,
-        isRandomizedBssid,
-      ];
+    ssid,
+    bssid,
+    signalDbmSamples,
+    avgSignalDbm,
+    signalStdDev,
+    channel,
+    frequency,
+    security,
+    vendor,
+    isHidden,
+    seenCount,
+    channelWidthMhz,
+    wifiStandard,
+    hasWps,
+    hasPmf,
+    rawCapabilities,
+    apMldMac,
+    estimatedMaxThroughputMbps,
+    spatialStreams,
+    isRandomizedBssid,
+  ];
 }

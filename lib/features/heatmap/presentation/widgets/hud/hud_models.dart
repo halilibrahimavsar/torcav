@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
 import 'package:torcav/features/heatmap/domain/entities/survey_gate.dart';
@@ -12,7 +11,10 @@ export 'package:torcav/features/heatmap/domain/services/survey_guidance_service.
 
 /// Color mapping for survey tones used in the HUD.
 /// Color mapping for survey tones used in the HUD.
-Color surveyToneColor(SurveyTone tone, [Brightness brightness = Brightness.dark]) {
+Color surveyToneColor(
+  SurveyTone tone, [
+  Brightness brightness = Brightness.dark,
+]) {
   final isLight = brightness == Brightness.light;
   switch (tone) {
     case SurveyTone.info:
@@ -25,7 +27,6 @@ Color surveyToneColor(SurveyTone tone, [Brightness brightness = Brightness.dark]
       return isLight ? AppColors.inkGreen : AppColors.neonGreen;
   }
 }
-
 
 /// Internal data classes (slices) for the AR HUD components to facilitate
 /// granular BlocSelectors and maintain clean state propagation.
@@ -57,10 +58,7 @@ class SsidSlice {
 }
 
 class ReticleSlice {
-  const ReticleSlice({
-    required this.rssi,
-    required this.lastStepTimestamp,
-  });
+  const ReticleSlice({required this.rssi, required this.lastStepTimestamp});
 
   final int? rssi;
   final DateTime? lastStepTimestamp;
@@ -130,11 +128,7 @@ class SignalSlice {
 }
 
 class MiniMapSlice {
-  const MiniMapSlice({
-    this.session,
-    this.currentPosition,
-    this.currentHeading,
-  });
+  const MiniMapSlice({this.session, this.currentPosition, this.currentHeading});
 
   final HeatmapSession? session;
   final Offset? currentPosition;
@@ -204,14 +198,14 @@ class GuidanceCameraSlice extends Equatable {
 
   @override
   List<Object?> get props => [
-        pointCount,
-        isRecording,
-        currentRssi,
-        surveyGate,
-        lastSignalAt,
-        lastSignalStdDev,
-        currentPosition,
-        phase,
-        lastStepTimestamp,
-      ];
+    pointCount,
+    isRecording,
+    currentRssi,
+    surveyGate,
+    lastSignalAt,
+    lastSignalStdDev,
+    currentPosition,
+    phase,
+    lastStepTimestamp,
+  ];
 }

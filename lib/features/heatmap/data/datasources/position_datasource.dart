@@ -12,7 +12,7 @@ abstract class PositionDataSource {
   void stopTracking();
   void setStepLength(double meters);
   void setPosition(double x, double y);
-  
+
   /// Snaps the current relative heading to the absolute compass reference.
   void realignHeading();
 }
@@ -28,7 +28,7 @@ class PositionDataSourceImpl implements PositionDataSource {
   double _smoothedHeading = 0;
   double _lastEmittedHeading = 0;
   int _lastHeadingEmitTime = 0;
-  
+
   // Gyroscope integration state
   double? _lastGyroTime;
 
@@ -62,14 +62,17 @@ class PositionDataSourceImpl implements PositionDataSource {
 
   @override
   void realignHeading() {
-    AppLogger.i('Manual heading realign requested. Snapping fused heading to absolute compass.');
+    AppLogger.i(
+      'Manual heading realign requested. Snapping fused heading to absolute compass.',
+    );
     // Re-warmup from next few readings or just snap to current?
     // Let's reset the fusion state to the next compass sample.
     _headingWarmedUp = false;
     _warmUpHeadings.clear();
   }
 
-  static const _stepDynamicThreshold = 0.45; // Significantly increased sensitivity for slow AR walking
+  static const _stepDynamicThreshold =
+      0.45; // Significantly increased sensitivity for slow AR walking
   static const _stepMinInterval = 450;
 
   /// Sensor fusion step using a Complementary Filter.
@@ -80,10 +83,13 @@ class PositionDataSourceImpl implements PositionDataSource {
     // alpha: 0.02 means 98% weight to gyro integration, 2% to absolute compass.
     // This provides high immunity to magnetic noise while staying anchored to North.
     const alpha = 0.02;
-    
+
     // Step 1: Compass normalization (shortest path)
     final angleDiff = (compassRaw - _smoothedHeading);
-    var delta = angleDiff > 180 ? angleDiff - 360 : (angleDiff < -180 ? angleDiff + 360 : angleDiff);
+    var delta =
+        angleDiff > 180
+            ? angleDiff - 360
+            : (angleDiff < -180 ? angleDiff + 360 : angleDiff);
 
     // If compass jumps > 60 degrees, we snap to it (likely a manual re-orientation or massive local interference)
     if (delta.abs() > 60.0) {
@@ -119,12 +125,14 @@ class PositionDataSourceImpl implements PositionDataSource {
           );
 
           // Dynamic gravity rejection via low-pass baseline tracking
-          _baselineMag = (_baselineMag * (1 - _baselineAlpha)) + (rawMag * _baselineAlpha);
+          _baselineMag =
+              (_baselineMag * (1 - _baselineAlpha)) + (rawMag * _baselineAlpha);
           final dynamicMag = (rawMag - _baselineMag).abs();
 
           final now = DateTime.now().millisecondsSinceEpoch;
-          
-          if (dynamicMag > _stepDynamicThreshold && (now - _lastStepTime > _stepMinInterval)) {
+
+          if (dynamicMag > _stepDynamicThreshold &&
+              (now - _lastStepTime > _stepMinInterval)) {
             _lastStepTime = now;
             _onStep();
           }
@@ -144,11 +152,11 @@ class PositionDataSourceImpl implements PositionDataSource {
         // gyro.z is yaw velocity in rad/s. Negative because Android Z is up.
         // We convert to degrees.
         final rotationDegrees = (-event.z * 180.0 / math.pi) * dt;
-        
+
         _smoothedHeading = (_smoothedHeading + rotationDegrees) % 360.0;
         if (_smoothedHeading < 0) _smoothedHeading += 360.0;
         _heading = _smoothedHeading;
-        
+
         _emitIfChanged();
       }
       _lastGyroTime = now;
@@ -189,7 +197,7 @@ class PositionDataSourceImpl implements PositionDataSource {
     final wrappedDelta = delta > 180 ? 360 - delta : delta;
     final elapsed = now - _lastHeadingEmitTime;
 
-    // Threshold lowered to 0.4° for fluidity, throttled to 30Hz (33ms) for 
+    // Threshold lowered to 0.4° for fluidity, throttled to 30Hz (33ms) for
     // superior AR projection smoothness.
     if (wrappedDelta >= 0.4 && elapsed >= 33) {
       _lastEmittedHeading = _heading;
@@ -203,7 +211,9 @@ class PositionDataSourceImpl implements PositionDataSource {
     _x += _stepLength * math.sin(radians);
     _y += _stepLength * math.cos(radians);
 
-    AppLogger.i('👟 Step Detected: Heading ${_heading.toStringAsFixed(1)}°, New Pos (${_x.toStringAsFixed(2)}, ${_y.toStringAsFixed(2)})');
+    AppLogger.i(
+      '👟 Step Detected: Heading ${_heading.toStringAsFixed(1)}°, New Pos (${_x.toStringAsFixed(2)}, ${_y.toStringAsFixed(2)})',
+    );
 
     _controller.add(
       PositionUpdate(x: _x, y: _y, heading: _heading, isStep: true),

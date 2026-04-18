@@ -23,8 +23,8 @@ class CaptivePortalDetector {
       final ssid = await _networkInfo.getWifiName() ?? '';
       final bssid = await _networkInfo.getWifiBSSID() ?? '';
 
-      final client = HttpClient()
-        ..connectionTimeout = const Duration(seconds: 5);
+      final client =
+          HttpClient()..connectionTimeout = const Duration(seconds: 5);
       try {
         final request = await client.getUrl(
           Uri.parse('http://connectivitycheck.gstatic.com/generate_204'),

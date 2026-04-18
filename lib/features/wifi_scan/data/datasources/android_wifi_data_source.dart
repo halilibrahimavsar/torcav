@@ -107,12 +107,14 @@ class AndroidWifiDataSource implements WifiDataSource {
                   wifiStandard: wifiStandardFromInt(
                     ext?['wifiStandard'] as int?,
                   ),
-                  hasWps: ext != null
-                      ? WifiExtendedChannel.hasWps(capabilities)
-                      : null,
-                  hasPmf: ext != null
-                      ? WifiExtendedChannel.hasPmf(capabilities)
-                      : null,
+                  hasWps:
+                      ext != null
+                          ? WifiExtendedChannel.hasWps(capabilities)
+                          : null,
+                  hasPmf:
+                      ext != null
+                          ? WifiExtendedChannel.hasPmf(capabilities)
+                          : null,
                   rawCapabilities: capabilities,
                   apMldMac: ext?['apMldMac'] as String?,
                 );

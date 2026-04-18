@@ -29,10 +29,7 @@ class SearchFilterBar extends StatelessWidget {
           decoration: BoxDecoration(
             color: surface.withValues(alpha: 0.8),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: primary.withValues(alpha: 0.2),
-              width: 1,
-            ),
+            border: Border.all(color: primary.withValues(alpha: 0.2), width: 1),
           ),
           child: TextField(
             controller: controller,
@@ -47,15 +44,20 @@ class SearchFilterBar extends StatelessWidget {
                 fontSize: 14,
               ),
               prefixIcon: Icon(Icons.search_rounded, color: primary, size: 18),
-              suffixIcon: controller.text.isNotEmpty
-                  ? IconButton(
-                      icon: Icon(Icons.clear_rounded, size: 16, color: primary),
-                      onPressed: () {
-                        controller.clear();
-                        onFilterChanged(filter.copyWith(query: ''));
-                      },
-                    )
-                  : null,
+              suffixIcon:
+                  controller.text.isNotEmpty
+                      ? IconButton(
+                        icon: Icon(
+                          Icons.clear_rounded,
+                          size: 16,
+                          color: primary,
+                        ),
+                        onPressed: () {
+                          controller.clear();
+                          onFilterChanged(filter.copyWith(query: ''));
+                        },
+                      )
+                      : null,
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(vertical: 10),
             ),
@@ -68,8 +70,9 @@ class SearchFilterBar extends StatelessWidget {
           child: Row(
             children: [
               _ScanChip(
-                label: AppLocalizations.of(context)!
-                    .sortPrefix(_sortLabel(context, filter.sortBy)),
+                label: AppLocalizations.of(
+                  context,
+                )!.sortPrefix(_sortLabel(context, filter.sortBy)),
                 icon: Icons.sort_rounded,
                 color: primary,
                 onTap: () => _showSortMenu(context),
@@ -79,20 +82,23 @@ class SearchFilterBar extends StatelessWidget {
                 null,
                 WifiBand.ghz24,
                 WifiBand.ghz5,
-                WifiBand.ghz6
+                WifiBand.ghz6,
               ])
                 Padding(
                   padding: const EdgeInsets.only(right: 6),
                   child: _ScanChip(
-                    label: band == null
-                        ? AppLocalizations.of(context)!.bandAll
-                        : _bandLabel(band),
-                    icon: band == null
-                        ? Icons.cell_tower_rounded
-                        : Icons.wifi_rounded,
-                    color: filter.band == band
-                        ? primary
-                        : Theme.of(context).colorScheme.outline,
+                    label:
+                        band == null
+                            ? AppLocalizations.of(context)!.bandAll
+                            : _bandLabel(band),
+                    icon:
+                        band == null
+                            ? Icons.cell_tower_rounded
+                            : Icons.wifi_rounded,
+                    color:
+                        filter.band == band
+                            ? primary
+                            : Theme.of(context).colorScheme.outline,
                     selected: filter.band == band,
                     onTap: () => onFilterChanged(filter.copyWith(band: band)),
                   ),
@@ -133,62 +139,72 @@ class SearchFilterBar extends StatelessWidget {
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (_) => Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          border: Border.all(
-            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
-          ),
-        ),
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color:
-                    Theme.of(context).colorScheme.outline.withValues(alpha: 0.4),
-                borderRadius: BorderRadius.circular(2),
+      builder:
+          (_) => Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
+              border: Border.all(
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.2),
               ),
             ),
-            const SizedBox(height: 16),
-            Text(
-              AppLocalizations.of(context)!.sortByTitle,
-              style: GoogleFonts.orbitron(
-                color: Theme.of(context).colorScheme.primary,
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2,
-              ),
-            ),
-            const SizedBox(height: 12),
-            for (final sort in ScanSortBy.values)
-              ListTile(
-                title: Text(
-                  _sortLabel(context, sort).toUpperCase(),
-                  style: GoogleFonts.rajdhani(
-                    color: filter.sortBy == sort
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.onSurface,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.outline.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                trailing: filter.sortBy == sort
-                    ? Icon(Icons.check_rounded,
-                        color: Theme.of(context).colorScheme.primary)
-                    : null,
-                onTap: () {
-                  Navigator.pop(context);
-                  onFilterChanged(filter.copyWith(sortBy: sort));
-                },
-              ),
-          ],
-        ),
-      ),
+                const SizedBox(height: 16),
+                Text(
+                  AppLocalizations.of(context)!.sortByTitle,
+                  style: GoogleFonts.orbitron(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                for (final sort in ScanSortBy.values)
+                  ListTile(
+                    title: Text(
+                      _sortLabel(context, sort).toUpperCase(),
+                      style: GoogleFonts.rajdhani(
+                        color:
+                            filter.sortBy == sort
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.onSurface,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    trailing:
+                        filter.sortBy == sort
+                            ? Icon(
+                              Icons.check_rounded,
+                              color: Theme.of(context).colorScheme.primary,
+                            )
+                            : null,
+                    onTap: () {
+                      Navigator.pop(context);
+                      onFilterChanged(filter.copyWith(sortBy: sort));
+                    },
+                  ),
+              ],
+            ),
+          ),
     );
   }
 }
@@ -215,12 +231,12 @@ class _ScanChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: selected
-              ? color.withValues(alpha: 0.15)
-              : Theme.of(context)
-                  .colorScheme
-                  .surfaceContainer
-                  .withValues(alpha: 0.8),
+          color:
+              selected
+                  ? color.withValues(alpha: 0.15)
+                  : Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainer.withValues(alpha: 0.8),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: color.withValues(alpha: selected ? 0.6 : 0.2),

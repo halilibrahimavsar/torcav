@@ -86,8 +86,7 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
       // subscription. We recover by checking the session store's cached latest.
       final latest = _sessionStore.latest;
       if (latest != null && _lastNetworks.isEmpty) {
-        _lastNetworks =
-            latest.networks.map((n) => n.toWifiNetwork()).toList();
+        _lastNetworks = latest.networks.map((n) => n.toWifiNetwork()).toList();
         await _analyzeUseCase(_lastNetworks);
       }
 
@@ -98,20 +97,23 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
       final eventsResult = await _repository.getSecurityEvents();
       final events = eventsResult.getOrElse(() => []);
       final score = _computeScore(_lastNetworks);
-      final summary = _lastNetworks.isEmpty ? null : _buildSummary(_lastNetworks);
+      final summary =
+          _lastNetworks.isEmpty ? null : _buildSummary(_lastNetworks);
       final sessionResult = await _repository.getLatestAssessmentSession();
       final latestSession = sessionResult.getOrElse(() => null);
 
       if (isClosed) return;
 
-      emit(SecurityLoaded(
-        knownNetworks: known,
-        trustedNetworkProfiles: trusted,
-        recentEvents: events,
-        overallScore: score,
-        scanSummary: summary,
-        latestSession: latestSession,
-      ));
+      emit(
+        SecurityLoaded(
+          knownNetworks: known,
+          trustedNetworkProfiles: trusted,
+          recentEvents: events,
+          overallScore: score,
+          scanSummary: summary,
+          latestSession: latestSession,
+        ),
+      );
     } catch (e) {
       if (isClosed) return;
       emit(SecurityError(e.toString()));
@@ -124,14 +126,14 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
   ) async {
     try {
       _lastNetworks = event.networks;
-      final isDeepScan = event.isDeepScan ?? _settingsStore.value.isDeepScanEnabled;
+      final isDeepScan =
+          event.isDeepScan ?? _settingsStore.value.isDeepScanEnabled;
 
       final currentState = state;
       if (currentState is SecurityLoaded && isDeepScan) {
-        emit(currentState.copyWith(
-          isDeepScanning: true,
-          isDeepScanEnabled: true,
-        ));
+        emit(
+          currentState.copyWith(isDeepScanning: true, isDeepScanEnabled: true),
+        );
       }
 
       await _analyzeUseCase(event.networks, isDeepScan: isDeepScan);
@@ -150,16 +152,18 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
 
       if (isClosed) return;
 
-      emit(SecurityLoaded(
-        knownNetworks: known,
-        trustedNetworkProfiles: trusted,
-        recentEvents: events,
-        overallScore: score,
-        scanSummary: summary,
-        isDeepScanEnabled: isDeepScan,
-        isDeepScanning: false,
-        latestSession: latestSession,
-      ));
+      emit(
+        SecurityLoaded(
+          knownNetworks: known,
+          trustedNetworkProfiles: trusted,
+          recentEvents: events,
+          overallScore: score,
+          scanSummary: summary,
+          isDeepScanEnabled: isDeepScan,
+          isDeepScanning: false,
+          latestSession: latestSession,
+        ),
+      );
     } catch (e) {
       if (isClosed) return;
       emit(SecurityError(e.toString()));
@@ -182,28 +186,32 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
       final score = _computeScore(_lastNetworks);
       final summary =
           _lastNetworks.isEmpty ? null : _buildSummary(_lastNetworks);
-      final isDeepScan = state is SecurityLoaded
-          ? (state as SecurityLoaded).isDeepScanEnabled
-          : false;
+      final isDeepScan =
+          state is SecurityLoaded
+              ? (state as SecurityLoaded).isDeepScanEnabled
+              : false;
       final dnsResult =
           state is SecurityLoaded ? (state as SecurityLoaded).dnsResult : null;
 
-      final latestSession = state is SecurityLoaded
-          ? (state as SecurityLoaded).latestSession
-          : null;
+      final latestSession =
+          state is SecurityLoaded
+              ? (state as SecurityLoaded).latestSession
+              : null;
 
       if (isClosed) return;
 
-      emit(SecurityLoaded(
-        knownNetworks: known,
-        trustedNetworkProfiles: trusted,
-        recentEvents: events,
-        overallScore: score,
-        scanSummary: summary,
-        isDeepScanEnabled: isDeepScan,
-        dnsResult: dnsResult,
-        latestSession: latestSession,
-      ));
+      emit(
+        SecurityLoaded(
+          knownNetworks: known,
+          trustedNetworkProfiles: trusted,
+          recentEvents: events,
+          overallScore: score,
+          scanSummary: summary,
+          isDeepScanEnabled: isDeepScan,
+          dnsResult: dnsResult,
+          latestSession: latestSession,
+        ),
+      );
     } catch (e) {
       if (isClosed) return;
       emit(SecurityError(e.toString()));
@@ -221,8 +229,7 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
   SecurityScanSummary _buildSummary(List<WifiNetwork> networks) {
     return SecurityScanSummary(
       totalNetworks: networks.length,
-      openCount:
-          networks.where((n) => n.security == SecurityType.open).length,
+      openCount: networks.where((n) => n.security == SecurityType.open).length,
       wepCount: networks.where((n) => n.security == SecurityType.wep).length,
       wpsCount: networks.where((n) => n.hasWps == true).length,
     );
@@ -242,17 +249,17 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
     if (isClosed) return;
 
     result.fold(
-      (failure) => emit(currentState.copyWith(
-        isDnsLoading: false,
-      )),
-      (dnsResult) => emit(currentState.copyWith(
-        isDnsLoading: false,
-        dnsResult: dnsResult,
-        // Also update latestSession if it contains DNS results
-        latestSession: currentState.latestSession?.copyWith(
+      (failure) => emit(currentState.copyWith(isDnsLoading: false)),
+      (dnsResult) => emit(
+        currentState.copyWith(
+          isDnsLoading: false,
           dnsResult: dnsResult,
+          // Also update latestSession if it contains DNS results
+          latestSession: currentState.latestSession?.copyWith(
+            dnsResult: dnsResult,
+          ),
         ),
-      )),
+      ),
     );
   }
 

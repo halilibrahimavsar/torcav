@@ -33,7 +33,9 @@ class ScanOverviewCard extends StatelessWidget {
             label: 'WPS',
             value: '${summary.wpsCount}',
             color:
-                summary.wpsCount > 0 ? const Color(0xFFFFB300) : scheme.tertiary,
+                summary.wpsCount > 0
+                    ? const Color(0xFFFFB300)
+                    : scheme.tertiary,
             index: 2,
           ),
           const SizedBox(width: 8),

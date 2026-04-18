@@ -118,36 +118,44 @@ class _ChannelRatingView extends StatelessWidget {
                   if (state is MonitoringLoading) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is ChannelAnalysisReady) {
-                    final ratings = switch (band) {
-                      0 => state.ratings.where((r) => r.frequency < 4000),
-                      1 => state.ratings.where(
-                        (r) => r.frequency >= 4000 && r.frequency < 6000,
-                      ),
-                      _ => state.ratings.where((r) => r.frequency >= 6000),
-                    }.toList()..sort((a, b) => b.rating.compareTo(a.rating));
+                    final ratings =
+                        switch (band) {
+                            0 => state.ratings.where((r) => r.frequency < 4000),
+                            1 => state.ratings.where(
+                              (r) => r.frequency >= 4000 && r.frequency < 6000,
+                            ),
+                            _ => state.ratings.where(
+                              (r) => r.frequency >= 6000,
+                            ),
+                          }.toList()
+                          ..sort((a, b) => b.rating.compareTo(a.rating));
 
                     return _BandView(
                       ratings: ratings,
                       historicalAverages: state.historicalAverages,
-                      bandLabel: [l10n.band24Ghz, l10n.band5Ghz, l10n.band6Ghz][band],
-                      accentColor: [
-                        const Color(0xFF00E5FF),
-                        const Color(0xFF76FF03),
-                        const Color(0xFFEEFF41),
-                      ][band],
-                      emptyHint: [
-                        l10n.no24GhzChannels,
-                        l10n.no5GhzChannels,
-                        l10n.no6GhzChannels,
-                      ][band],
+                      bandLabel:
+                          [l10n.band24Ghz, l10n.band5Ghz, l10n.band6Ghz][band],
+                      accentColor:
+                          [
+                            const Color(0xFF00E5FF),
+                            const Color(0xFF76FF03),
+                            const Color(0xFFEEFF41),
+                          ][band],
+                      emptyHint:
+                          [
+                            l10n.no24GhzChannels,
+                            l10n.no5GhzChannels,
+                            l10n.no6GhzChannels,
+                          ][band],
                       networks: networks,
                     );
                   } else if (state is MonitoringFailure) {
                     return NeonErrorCard(
                       message: '${l10n.errorLabel}: ${state.message}',
-                      onRetry: () => context
-                          .read<MonitoringBloc>()
-                          .add(AnalyzeChannels(networks)),
+                      onRetry:
+                          () => context.read<MonitoringBloc>().add(
+                            AnalyzeChannels(networks),
+                          ),
                     );
                   }
                   return Center(child: Text(l10n.analyzing));
@@ -191,34 +199,43 @@ class _HistoryViewState extends State<_HistoryView> {
   Future<void> _clearHistory() async {
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: Theme.of(ctx).colorScheme.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(
-          'CLEAR CHANNEL HISTORY',
-          style: GoogleFonts.orbitron(fontSize: 13, fontWeight: FontWeight.bold),
-        ),
-        content: Text(
-          'Delete all channel rating records? This cannot be undone.',
-          style: GoogleFonts.rajdhani(fontSize: 14),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text('CANCEL', style: GoogleFonts.orbitron(fontSize: 10)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(
-              'DELETE ALL',
+      builder:
+          (ctx) => AlertDialog(
+            backgroundColor: Theme.of(ctx).colorScheme.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: Text(
+              'CLEAR CHANNEL HISTORY',
               style: GoogleFonts.orbitron(
-                fontSize: 10,
-                color: Theme.of(ctx).colorScheme.error,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
               ),
             ),
+            content: Text(
+              'Delete all channel rating records? This cannot be undone.',
+              style: GoogleFonts.rajdhani(fontSize: 14),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(
+                  'CANCEL',
+                  style: GoogleFonts.orbitron(fontSize: 10),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(
+                  'DELETE ALL',
+                  style: GoogleFonts.orbitron(
+                    fontSize: 10,
+                    color: Theme.of(ctx).colorScheme.error,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
     );
     if (confirm == true) {
       await GetIt.I<ChannelRatingRepository>().clearHistory();
@@ -245,8 +262,11 @@ class _HistoryViewState extends State<_HistoryView> {
                 alignment: Alignment.centerRight,
                 child: TextButton.icon(
                   onPressed: _clearHistory,
-                  icon: Icon(Icons.delete_sweep_rounded,
-                      size: 16, color: Theme.of(context).colorScheme.error),
+                  icon: Icon(
+                    Icons.delete_sweep_rounded,
+                    size: 16,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
                   label: Text(
                     'CLEAR HISTORY',
                     style: GoogleFonts.orbitron(
@@ -256,16 +276,17 @@ class _HistoryViewState extends State<_HistoryView> {
                     ),
                   ),
                   style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                 ),
               ),
             const SizedBox(height: 8),
-            StaggeredEntry(
-              child: ChannelHistoryChart(samples: _samples ?? []),
-            ),
+            StaggeredEntry(child: ChannelHistoryChart(samples: _samples ?? [])),
           ],
         ),
       ),
@@ -645,12 +666,15 @@ class _ChannelBondingSectionState extends State<_ChannelBondingSection> {
   @override
   Widget build(BuildContext context) {
     final bandChannels = widget.ratings.map((r) => r.channel).toSet();
-    final bonded = widget.networks.where(
-      (n) =>
-          bandChannels.contains(n.channel) &&
-          n.channelWidthMhz != null &&
-          n.channelWidthMhz! > 20,
-    ).toList();
+    final bonded =
+        widget.networks
+            .where(
+              (n) =>
+                  bandChannels.contains(n.channel) &&
+                  n.channelWidthMhz != null &&
+                  n.channelWidthMhz! > 20,
+            )
+            .toList();
 
     if (bonded.isEmpty) return const SizedBox.shrink();
 

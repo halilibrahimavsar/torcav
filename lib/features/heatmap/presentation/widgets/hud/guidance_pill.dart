@@ -27,10 +27,7 @@ class GuidancePill extends StatelessWidget {
       decoration: BoxDecoration(
         color: (isLight ? Colors.white : Colors.black).withValues(alpha: 0.75),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: color.withValues(alpha: 0.5),
-          width: 1.2,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.5), width: 1.2),
 
         boxShadow: [
           BoxShadow(

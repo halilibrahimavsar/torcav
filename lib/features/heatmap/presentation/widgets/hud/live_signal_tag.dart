@@ -34,8 +34,9 @@ class _LiveSignalTagState extends State<LiveSignalTag> {
       builder: (context, slice) {
         if (slice.rssi == null) return const SizedBox.shrink();
 
-        final lastSignalAt =
-            context.select<HeatmapBloc, DateTime?>((b) => b.state.lastSignalAt);
+        final lastSignalAt = context.select<HeatmapBloc, DateTime?>(
+          (b) => b.state.lastSignalAt,
+        );
         final ageSeconds =
             lastSignalAt == null
                 ? null

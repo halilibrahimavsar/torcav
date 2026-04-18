@@ -137,8 +137,9 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
               (network) => add(_UpdateNetwork(network)),
             );
           },
-          onError: (Object error, StackTrace st) =>
-              add(_MonitoringError(error.toString())),
+          onError:
+              (Object error, StackTrace st) =>
+                  add(_MonitoringError(error.toString())),
         );
   }
 

@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
-
 class SecurityStatusRadar extends StatefulWidget {
   final double score;
   final bool isScanning;
@@ -55,12 +54,15 @@ class _SecurityStatusRadarState extends State<SecurityStatusRadar>
 
   @override
   Widget build(BuildContext context) {
-    final effectiveColor = widget.color ?? Theme.of(context).colorScheme.primary;
+    final effectiveColor =
+        widget.color ?? Theme.of(context).colorScheme.primary;
 
     return AnimatedBuilder(
-      animation: Listenable.merge(
-        [_rotationController, _pulseController, _hudController],
-      ),
+      animation: Listenable.merge([
+        _rotationController,
+        _pulseController,
+        _hudController,
+      ]),
       builder: (context, child) {
         return CustomPaint(
           size: Size(widget.size, widget.size),
@@ -131,15 +133,16 @@ class _AdvancedRadarPainter extends CustomPainter {
     );
 
     // ── 3. Degree Markers (VIP HUD Detail) ──
-    final markerPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
+    final markerPaint =
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.0;
 
     for (int i = 0; i < 72; i++) {
       final angle = (i * 5) * (math.pi / 180);
       final isMajor = i % 18 == 0; // N, E, S, W
       final isMinor = i % 2 == 0;
-      
+
       if (!isMinor && !isMajor) continue;
 
       final markerLength = isMajor ? 12.0 : (isMinor ? 6.0 : 3.0);
@@ -179,10 +182,11 @@ class _AdvancedRadarPainter extends CustomPainter {
 
       // Sweep Line
       final lineAngle = rotation * 2 * math.pi;
-      final linePaint = Paint()
-        ..color = color
-        ..strokeWidth = 1.5
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1);
+      final linePaint =
+          Paint()
+            ..color = color
+            ..strokeWidth = 1.5
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1);
       canvas.drawLine(
         center,
         Offset(
@@ -217,7 +221,8 @@ class _AdvancedRadarPainter extends CustomPainter {
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6)
           ..color = color.withValues(alpha: 0.3 * pulse);
 
-    final sweepAngle = (score / 100) * 2 * math.pi; // Corrected score normalization
+    final sweepAngle =
+        (score / 100) * 2 * math.pi; // Corrected score normalization
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: scoreRadius),
       -math.pi / 2,

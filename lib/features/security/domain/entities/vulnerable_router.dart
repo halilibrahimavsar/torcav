@@ -44,10 +44,10 @@ class VulnerableRouter extends Equatable {
 
   @override
   List<Object?> get props => [
-        prefix,
-        model,
-        vulnerability,
-        severity,
-        recommendation,
-      ];
+    prefix,
+    model,
+    vulnerability,
+    severity,
+    recommendation,
+  ];
 }

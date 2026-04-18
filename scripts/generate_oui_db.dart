@@ -16,7 +16,7 @@ void main() async {
 
   final projectRoot = Directory.current.path;
   final dbPath = p.join(projectRoot, 'assets', 'data', 'oui.db');
-  
+
   // Ensure directory exists
   final dataDir = Directory(p.dirname(dbPath));
   if (!await dataDir.exists()) {
@@ -44,11 +44,15 @@ void main() async {
   print('Downloading OUI data from IEEE...');
   final client = HttpClient();
   try {
-    final request = await client.getUrl(Uri.parse('http://standards-oui.ieee.org/oui/oui.csv'));
+    final request = await client.getUrl(
+      Uri.parse('http://standards-oui.ieee.org/oui/oui.csv'),
+    );
     final response = await request.close();
-    
+
     if (response.statusCode != 200) {
-      print('Error: Failed to download OUI data. Status code: ${response.statusCode}');
+      print(
+        'Error: Failed to download OUI data. Status code: ${response.statusCode}',
+      );
       return;
     }
 
@@ -68,12 +72,14 @@ void main() async {
         if (parts.length < 3) continue;
 
         final assignment = parts[1]; // e.g. "002272"
-        final vendor = parts[2];     // e.g. "American Micro-Systems Inc."
+        final vendor = parts[2]; // e.g. "American Micro-Systems Inc."
 
         if (assignment.length != 6) continue;
 
         // Format to XX:XX:XX
-        final prefix = '${assignment.substring(0, 2)}:${assignment.substring(2, 4)}:${assignment.substring(4, 6)}'.toUpperCase();
+        final prefix =
+            '${assignment.substring(0, 2)}:${assignment.substring(2, 4)}:${assignment.substring(4, 6)}'
+                .toUpperCase();
 
         await txn.insert('oui', {
           'prefix': prefix,

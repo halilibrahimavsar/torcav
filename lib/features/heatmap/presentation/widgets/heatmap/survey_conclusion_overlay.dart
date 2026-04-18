@@ -43,25 +43,30 @@ class SurveyConclusionOverlay extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: isLight
-                  ? [
-                      theme.colorScheme.surface.withValues(alpha: 0.92),
-                      theme.colorScheme.surface,
-                    ]
-                  : [
-                      theme.colorScheme.surface.withValues(alpha: 0.72),
-                      theme.colorScheme.surface.withValues(alpha: 0.95),
-                    ],
+              colors:
+                  isLight
+                      ? [
+                        theme.colorScheme.surface.withValues(alpha: 0.92),
+                        theme.colorScheme.surface,
+                      ]
+                      : [
+                        theme.colorScheme.surface.withValues(alpha: 0.72),
+                        theme.colorScheme.surface.withValues(alpha: 0.95),
+                      ],
             ),
             border: Border(
               top: BorderSide(
-                color: theme.colorScheme.primary.withValues(alpha: isLight ? 0.2 : 0.35),
+                color: theme.colorScheme.primary.withValues(
+                  alpha: isLight ? 0.2 : 0.35,
+                ),
                 width: 1,
               ),
             ),
             boxShadow: [
               BoxShadow(
-                color: theme.colorScheme.primary.withValues(alpha: isLight ? 0.08 : 0.12),
+                color: theme.colorScheme.primary.withValues(
+                  alpha: isLight ? 0.08 : 0.12,
+                ),
                 blurRadius: 32,
                 offset: const Offset(0, -8),
               ),
@@ -77,7 +82,9 @@ class SurveyConclusionOverlay extends StatelessWidget {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.12),
+                      color: theme.colorScheme.onSurface.withValues(
+                        alpha: 0.12,
+                      ),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -88,10 +95,14 @@ class SurveyConclusionOverlay extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.primary.withValues(alpha: 0.14),
+                        color: theme.colorScheme.primary.withValues(
+                          alpha: 0.14,
+                        ),
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: theme.colorScheme.primary.withValues(alpha: 0.4),
+                          color: theme.colorScheme.primary.withValues(
+                            alpha: 0.4,
+                          ),
                         ),
                       ),
                       child: Icon(
@@ -123,7 +134,9 @@ class SurveyConclusionOverlay extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.outfit(
-                              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                              color: theme.colorScheme.onSurface.withValues(
+                                alpha: 0.6,
+                              ),
                               fontSize: 12,
                             ),
                           ),
@@ -171,9 +184,12 @@ class SurveyConclusionOverlay extends StatelessWidget {
                       child: _MiniStat(
                         label: copy.blindSpotsLabel,
                         value: summary.weakZoneCount.toString(),
-                        color: summary.weakZoneCount > 0
-                            ? (isLight ? AppColors.inkRed : AppColors.neonRed)
-                            : null,
+                        color:
+                            summary.weakZoneCount > 0
+                                ? (isLight
+                                    ? AppColors.inkRed
+                                    : AppColors.neonRed)
+                                : null,
                       ),
                     ),
                   ],
@@ -209,11 +225,16 @@ class _MiniStat extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       decoration: BoxDecoration(
-        color: isLight 
-            ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.45) 
-            : theme.colorScheme.onSurface.withValues(alpha: 0.04),
+        color:
+            isLight
+                ? theme.colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.45,
+                )
+                : theme.colorScheme.onSurface.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: accent.withValues(alpha: isLight ? 0.18 : 0.22)),
+        border: Border.all(
+          color: accent.withValues(alpha: isLight ? 0.18 : 0.22),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -274,21 +295,19 @@ class _IconAction extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(9),
             decoration: BoxDecoration(
-              color: isLight 
-                  ? theme.colorScheme.primary.withValues(alpha: 0.08) 
-                  : theme.colorScheme.onSurface.withValues(alpha: 0.06),
+              color:
+                  isLight
+                      ? theme.colorScheme.primary.withValues(alpha: 0.08)
+                      : theme.colorScheme.onSurface.withValues(alpha: 0.06),
               shape: BoxShape.circle,
               border: Border.all(
-                color: isLight 
-                    ? theme.colorScheme.primary.withValues(alpha: 0.12) 
-                    : theme.colorScheme.onSurface.withValues(alpha: 0.14),
+                color:
+                    isLight
+                        ? theme.colorScheme.primary.withValues(alpha: 0.12)
+                        : theme.colorScheme.onSurface.withValues(alpha: 0.14),
               ),
             ),
-            child: Icon(
-              icon, 
-              size: 16, 
-              color: theme.colorScheme.onSurface,
-            ),
+            child: Icon(icon, size: 16, color: theme.colorScheme.onSurface),
           ),
         ),
       ),

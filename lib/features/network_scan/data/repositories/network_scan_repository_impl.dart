@@ -9,6 +9,7 @@ import '../../domain/entities/network_scan_profile.dart';
 import '../../domain/repositories/network_scan_repository.dart';
 import '../datasources/arp_data_source.dart';
 import '../datasources/mdns_data_source.dart';
+import '../datasources/netbios_data_source.dart';
 import '../datasources/upnp_data_source.dart';
 
 @LazySingleton(as: NetworkScanRepository)
@@ -16,27 +17,35 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
   final ArpDataSource _arpDataSource;
   final MdnsDataSource _mdnsDataSource;
   final UpnpDataSource _upnpDataSource;
+  final NetbiosDataSource _netbiosDataSource;
   final OnnxDeviceClassifierService _deviceClassifier;
 
   NetworkScanRepositoryImpl(
     this._arpDataSource,
     this._mdnsDataSource,
     this._upnpDataSource,
+    this._netbiosDataSource,
     this._deviceClassifier,
   );
 
   @override
-  Stream<Either<Failure, List<NetworkDevice>>> scanNetwork(String subnet) async* {
+  Stream<Either<Failure, List<NetworkDevice>>> scanNetwork(
+    String subnet,
+  ) async* {
     final List<NetworkDevice> devices = [];
-    
-    await for (final host in _arpDataSource.discoverHostsStream(targetSubnet: subnet)) {
-      devices.add(NetworkDevice(
-        ip: host.ip,
-        mac: host.mac,
-        vendor: host.vendor,
-        hostName: host.hostName,
-        latency: host.latency,
-      ));
+
+    await for (final host in _arpDataSource.discoverHostsStream(
+      targetSubnet: subnet,
+    )) {
+      devices.add(
+        NetworkDevice(
+          ip: host.ip,
+          mac: host.mac,
+          vendor: host.vendor,
+          hostName: host.hostName,
+          latency: host.latency,
+        ),
+      );
       yield Right(List.from(devices));
     }
   }
@@ -70,10 +79,20 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
 
         String hostName = host.hostName;
         String deviceType = host.deviceType;
+        String? netbiosName;
 
         // Use mDNS name if hostName is empty
         if (hostName.isEmpty && mdnsMap.containsKey(host.ip)) {
           hostName = mdnsMap[host.ip]!.first;
+        }
+
+        // Fallback to NetBIOS if still empty
+        if (hostName.isEmpty) {
+          final nbName = await _netbiosDataSource.queryName(host.ip);
+          if (nbName != null && nbName.isNotEmpty) {
+            hostName = nbName;
+            netbiosName = nbName;
+          }
         }
 
         // Fallback to Reverse DNS if still empty
@@ -82,16 +101,22 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
         }
 
         // AI-based device classification
-        final enrichedHost = host.copyWith(hostName: hostName);
+        final enrichedHost = host.copyWith(
+          hostName: hostName,
+          netbiosName: netbiosName,
+        );
         final aiResult = await _deviceClassifier.classify(enrichedHost);
-        
+
         if (aiResult != null && aiResult.confidence > 0.6) {
           deviceType = aiResult.deviceType;
         } else if (upnpMap.containsKey(host.ip)) {
           final upnpInfo = upnpMap[host.ip]!.toLowerCase();
-          if (upnpInfo.contains('smart tv') || upnpInfo.contains('tizen') || upnpInfo.contains('webos')) {
+          if (upnpInfo.contains('smart tv') ||
+              upnpInfo.contains('tizen') ||
+              upnpInfo.contains('webos')) {
             deviceType = 'Smart TV';
-          } else if (upnpInfo.contains('speaker') || upnpInfo.contains('sonos')) {
+          } else if (upnpInfo.contains('speaker') ||
+              upnpInfo.contains('sonos')) {
             deviceType = 'Audio Device';
           } else if (upnpInfo.contains('printer')) {
             deviceType = 'Printer';
@@ -101,11 +126,13 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
         }
 
         // Yield again with enriched data
-        yield Right(host.copyWith(
-          hostName: hostName,
-          deviceType: deviceType,
-          isGateway: host.isGateway || deviceType == 'Router/Gateway',
-        ));
+        yield Right(
+          host.copyWith(
+            hostName: hostName,
+            deviceType: deviceType,
+            isGateway: host.isGateway || deviceType == 'Router/Gateway',
+          ),
+        );
       }
     } catch (e) {
       yield Left(ScanFailure(e.toString()));
@@ -122,4 +149,3 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
     }
   }
 }
-

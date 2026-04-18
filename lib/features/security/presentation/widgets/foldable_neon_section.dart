@@ -66,7 +66,6 @@ class _FoldableNeonSectionState extends State<FoldableNeonSection>
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         // ── Section Header (Interactive) ──
@@ -101,7 +100,7 @@ class _FoldableNeonSectionState extends State<FoldableNeonSection>
             ),
           ),
         ),
-        
+
         // ── Animated Content ──
         AnimatedBuilder(
           animation: _controller,

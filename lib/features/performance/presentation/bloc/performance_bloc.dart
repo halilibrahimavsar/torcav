@@ -73,13 +73,16 @@ class PerformanceBloc extends Bloc<PerformanceEvent, PerformanceState> {
   StreamSubscription<SpeedTestProgress>? _subscription;
 
   PerformanceBloc(this._runSpeedTest, this._history)
-      : super(PerformanceInitial()) {
+    : super(PerformanceInitial()) {
     on<StartSpeedTest>(_onStart);
     on<_ProgressUpdated>(_onProgress);
     on<_TestError>(_onError);
   }
 
-  Future<void> _onStart(StartSpeedTest event, Emitter<PerformanceState> emit) async {
+  Future<void> _onStart(
+    StartSpeedTest event,
+    Emitter<PerformanceState> emit,
+  ) async {
     await _subscription?.cancel();
     emit(const PerformanceRunning(SpeedTestProgress.idle()));
 
@@ -92,13 +95,15 @@ class PerformanceBloc extends Bloc<PerformanceEvent, PerformanceState> {
   void _onProgress(_ProgressUpdated event, Emitter<PerformanceState> emit) {
     if (event.progress.phase == SpeedTestPhase.done) {
       emit(PerformanceSuccess(event.progress));
-      _history.save(SpeedTestResult(
-        recordedAt: DateTime.now(),
-        latencyMs: event.progress.latencyMs,
-        jitterMs: event.progress.jitterMs,
-        downloadMbps: event.progress.downloadMbps,
-        uploadMbps: event.progress.uploadMbps,
-      ));
+      _history.save(
+        SpeedTestResult(
+          recordedAt: DateTime.now(),
+          latencyMs: event.progress.latencyMs,
+          jitterMs: event.progress.jitterMs,
+          downloadMbps: event.progress.downloadMbps,
+          uploadMbps: event.progress.uploadMbps,
+        ),
+      );
     } else {
       emit(PerformanceRunning(event.progress));
     }

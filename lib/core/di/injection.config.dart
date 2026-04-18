@@ -74,6 +74,8 @@ import '../../features/network_scan/data/datasources/lan_scan_history_local_data
     as _i190;
 import '../../features/network_scan/data/datasources/mdns_data_source.dart'
     as _i165;
+import '../../features/network_scan/data/datasources/netbios_data_source.dart'
+    as _i200;
 import '../../features/network_scan/data/datasources/port_scan_data_source.dart'
     as _i978;
 import '../../features/network_scan/data/datasources/upnp_data_source.dart'
@@ -230,6 +232,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1050.OuiDatabaseService>(
       () => _i1050.OuiDatabaseService(),
     );
+    gh.lazySingleton<_i200.NetbiosDataSource>(() => _i200.NetbiosDataSource());
     gh.lazySingleton<_i494.HeatmapRepository>(
       () => _i335.HeatmapRepositoryImpl(gh<_i690.AppDatabase>()),
     );
@@ -323,6 +326,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i367.GenerateReportUseCase>(
       () => _i367.GenerateReportUseCase(gh<_i119.ReportExportRepository>()),
     );
+    gh.lazySingleton<_i1073.NetworkScanRepository>(
+      () => _i551.NetworkScanRepositoryImpl(
+        gh<_i1066.ArpDataSource>(),
+        gh<_i165.MdnsDataSource>(),
+        gh<_i119.UpnpDataSource>(),
+        gh<_i200.NetbiosDataSource>(),
+        gh<_i265.OnnxDeviceClassifierService>(),
+      ),
+    );
     gh.factory<_i554.ReportsBloc>(
       () => _i554.ReportsBloc(gh<_i367.GenerateReportUseCase>()),
     );
@@ -340,14 +352,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i160.PortScanUseCase>(
       () => _i160.PortScanUseCase(gh<_i269.PortScanRepository>()),
-    );
-    gh.lazySingleton<_i1073.NetworkScanRepository>(
-      () => _i551.NetworkScanRepositoryImpl(
-        gh<_i1066.ArpDataSource>(),
-        gh<_i165.MdnsDataSource>(),
-        gh<_i119.UpnpDataSource>(),
-        gh<_i265.OnnxDeviceClassifierService>(),
-      ),
     );
     gh.lazySingleton<_i244.TopologyRepository>(
       () => _i21.TopologyRepositoryImpl(

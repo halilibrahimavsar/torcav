@@ -83,8 +83,11 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
 
   bool _consentGiven = false;
 
-  NetworkScanBloc(this._repository, this._newDeviceDetector, this._portScanUseCase)
-      : super(NetworkScanInitial()) {
+  NetworkScanBloc(
+    this._repository,
+    this._newDeviceDetector,
+    this._portScanUseCase,
+  ) : super(NetworkScanInitial()) {
     on<StartNetworkScan>(_onStartScan);
     on<AcknowledgeLegalRisk>(_onAcknowledgeRisk);
   }
@@ -97,7 +100,11 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
     if (_consentGiven) {
       emit(NetworkScanInitial());
     } else {
-      emit(const NetworkScanError('Legal acknowledgement required for LAN discovery.'));
+      emit(
+        const NetworkScanError(
+          'Legal acknowledgement required for LAN discovery.',
+        ),
+      );
     }
   }
 
@@ -112,9 +119,11 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
 
     // Apply safety guardrails
     if (!NetworkScanPolicy.standard.isTargetSafe(event.target)) {
-      emit(const NetworkScanError(
-        'Scan target exceeds safety limits. Please restrict to /24 or smaller subnets.',
-      ));
+      emit(
+        const NetworkScanError(
+          'Scan target exceeds safety limits. Please restrict to /24 or smaller subnets.',
+        ),
+      );
       return;
     }
 
@@ -149,7 +158,9 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
               latency: host.latency,
             );
 
-            final deviceIndex = currentDevices.indexWhere((d) => d.ip == host.ip);
+            final deviceIndex = currentDevices.indexWhere(
+              (d) => d.ip == host.ip,
+            );
             if (deviceIndex != -1) {
               currentDevices[deviceIndex] = device;
             } else {
@@ -159,11 +170,13 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
             currentNewDevices = _newDeviceDetector.detectNew(currentHosts);
 
             // Emit current state for real-time progress
-            emit(NetworkScanLoaded(
-              devices: List.from(currentDevices),
-              hosts: List.from(currentHosts),
-              newDevices: List.from(currentNewDevices),
-            ));
+            emit(
+              NetworkScanLoaded(
+                devices: List.from(currentDevices),
+                hosts: List.from(currentHosts),
+                newDevices: List.from(currentNewDevices),
+              ),
+            );
           },
         );
       }
@@ -171,7 +184,7 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
       // Background Reactive Port Scan Phase
       if (event.deepScan || event.profile != NetworkScanProfile.fast) {
         final updatedHosts = List<HostScanResult>.from(currentHosts);
-        
+
         for (int i = 0; i < updatedHosts.length; i++) {
           final host = updatedHosts[i];
           final adaptiveTimeout = Duration(
@@ -179,7 +192,7 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
           );
 
           await for (final service in _portScanUseCase.callReactive(
-            host.ip, 
+            host.ip,
             timeout: adaptiveTimeout,
           )) {
             final index = updatedHosts.indexWhere((h) => h.ip == host.ip);
@@ -187,18 +200,20 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
               final currentServices = List<ServiceFingerprint>.from(
                 updatedHosts[index].services,
               );
-              
+
               if (!currentServices.contains(service)) {
                 currentServices.add(service);
                 updatedHosts[index] = updatedHosts[index].copyWith(
                   services: currentServices,
                 );
-                
-                emit(NetworkScanLoaded(
-                  devices: List.from(currentDevices),
-                  hosts: List.from(updatedHosts),
-                  newDevices: List.from(currentNewDevices),
-                ));
+
+                emit(
+                  NetworkScanLoaded(
+                    devices: List.from(currentDevices),
+                    hosts: List.from(updatedHosts),
+                    newDevices: List.from(currentNewDevices),
+                  ),
+                );
               }
             }
           }

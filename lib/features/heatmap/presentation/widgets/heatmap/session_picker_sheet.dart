@@ -90,9 +90,10 @@ class SessionPickerSheet extends StatelessWidget {
                   trailing: IconButton(
                     icon: Icon(
                       Icons.delete_outline_rounded,
-                      color: Theme.of(context).brightness == Brightness.light 
-                          ? AppColors.inkRed 
-                          : AppColors.neonRed,
+                      color:
+                          Theme.of(context).brightness == Brightness.light
+                              ? AppColors.inkRed
+                              : AppColors.neonRed,
                     ),
                     tooltip: copy.deleteSurveyTooltip,
                     onPressed: () => bloc.deleteSession(session.id),

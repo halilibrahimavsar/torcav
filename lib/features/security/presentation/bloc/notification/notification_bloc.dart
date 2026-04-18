@@ -79,7 +79,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       final unreadCount = events.where((e) => !e.isRead).length;
       emit(
         NotificationLoaded(
-          notifications: events, // Already newest-first from DB (ORDER BY created_at DESC)
+          notifications:
+              events, // Already newest-first from DB (ORDER BY created_at DESC)
           unreadCount: unreadCount,
         ),
       );

@@ -13,7 +13,7 @@ class PositionTracker {
 
   final PositionDataSource _positionDataSource;
   StreamSubscription? _subscription;
-  
+
   final _candidateController = StreamController<PointCandidate>.broadcast();
   Stream<PointCandidate> get candidateStream => _candidateController.stream;
 
@@ -21,8 +21,7 @@ class PositionTracker {
       StreamController<PositionUpdate>.broadcast();
 
   /// Stream of real-time position updates.
-  Stream<PositionUpdate> get rawPositionStream =>
-      _rawPositionController.stream;
+  Stream<PositionUpdate> get rawPositionStream => _rawPositionController.stream;
 
   double? _lastRecordedX;
   double? _lastRecordedY;
@@ -34,7 +33,9 @@ class PositionTracker {
     _lastRecordedX = initialX;
     _lastRecordedY = initialY;
     _subscription?.cancel();
-    _subscription = _positionDataSource.positionStream.listen(_onPositionUpdate);
+    _subscription = _positionDataSource.positionStream.listen(
+      _onPositionUpdate,
+    );
     _positionDataSource.startTracking();
   }
 
@@ -46,7 +47,7 @@ class PositionTracker {
 
   void _onPositionUpdate(PositionUpdate pos) {
     _rawPositionController.add(pos);
-    
+
     bool shouldTrigger = false;
 
     if (_isAutoSamplingEnabled) {
@@ -66,17 +67,24 @@ class PositionTracker {
     }
 
     if (shouldTrigger) {
-      _candidateController.add(PointCandidate(
-        x: pos.x,
-        y: pos.y,
-        heading: pos.heading,
-        isStep: pos.isStep,
-      ));
+      _candidateController.add(
+        PointCandidate(
+          x: pos.x,
+          y: pos.y,
+          heading: pos.heading,
+          isStep: pos.isStep,
+        ),
+      );
     }
   }
 
   /// Verification logic to ensure we don't record points too close to each other.
-  bool shouldRecordPoint(HeatmapSession session, double x, double y, double minDistance) {
+  bool shouldRecordPoint(
+    HeatmapSession session,
+    double x,
+    double y,
+    double minDistance,
+  ) {
     if (session.points.isEmpty) return true;
     final lastPoint = session.points.last;
     final dx = x - lastPoint.floorX;

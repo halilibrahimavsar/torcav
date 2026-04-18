@@ -136,9 +136,12 @@ class _WifiScanViewState extends State<_WifiScanView> {
                             child: Column(
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!.initiatingSpectrumScan,
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.initiatingSpectrumScan,
                                   style: GoogleFonts.orbitron(
-                                    color: Theme.of(context).colorScheme.primary,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                     letterSpacing: 2,
@@ -146,9 +149,14 @@ class _WifiScanViewState extends State<_WifiScanView> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  AppLocalizations.of(context)!.broadcastingProbeRequests,
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.broadcastingProbeRequests,
                                   style: GoogleFonts.rajdhani(
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    color:
+                                        Theme.of(
+                                          context,
+                                        ).colorScheme.onSurfaceVariant,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
                                     letterSpacing: 1,
@@ -184,7 +192,8 @@ class _WifiScanViewState extends State<_WifiScanView> {
                         child: NeonText(
                           l10n.readyToScan,
                           style: GoogleFonts.rajdhani(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 18,
                           ),
                         ),
@@ -362,14 +371,17 @@ class _SnapshotViewState extends State<_SnapshotView> {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.primary,
                   side: BorderSide(
-                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.4),
                   ),
                 ),
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const ScanComparisonPage(),
-                  ),
-                ),
+                onPressed:
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const ScanComparisonPage(),
+                      ),
+                    ),
               ),
             ),
 
@@ -416,9 +428,15 @@ class _SnapshotViewState extends State<_SnapshotView> {
 
           // ── Network Count Header ──
           NeonSectionHeader(
-            label: filtered.length == widget.snapshot.networks.length
-                ? AppLocalizations.of(context)!.networksCount(filtered.length)
-                : AppLocalizations.of(context)!.filteredNetworksCount(filtered.length, widget.snapshot.networks.length),
+            label:
+                filtered.length == widget.snapshot.networks.length
+                    ? AppLocalizations.of(
+                      context,
+                    )!.networksCount(filtered.length)
+                    : AppLocalizations.of(context)!.filteredNetworksCount(
+                      filtered.length,
+                      widget.snapshot.networks.length,
+                    ),
             icon: Icons.wifi_rounded,
             color: Theme.of(context).colorScheme.primary,
           ),
@@ -446,9 +464,10 @@ class _SnapshotViewState extends State<_SnapshotView> {
                   network: entry.value,
                   interfaceName: widget.snapshot.interfaceName,
                   isPinned: widget.pinnedBssids.contains(entry.value.bssid),
-                  onTogglePin: () => context.read<WifiScanBloc>().add(
-                    WifiScanToggleFavorite(entry.value.bssid),
-                  ),
+                  onTogglePin:
+                      () => context.read<WifiScanBloc>().add(
+                        WifiScanToggleFavorite(entry.value.bssid),
+                      ),
                 ),
               ),
             ),

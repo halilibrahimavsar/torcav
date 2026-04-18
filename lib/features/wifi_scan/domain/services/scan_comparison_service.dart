@@ -20,12 +20,10 @@ class ScanComparisonService {
     final beforeMap = {for (final n in before.networks) n.bssid: n};
     final afterMap = {for (final n in after.networks) n.bssid: n};
 
-    final added = after.networks
-        .where((n) => !beforeMap.containsKey(n.bssid))
-        .toList();
-    final removed = before.networks
-        .where((n) => !afterMap.containsKey(n.bssid))
-        .toList();
+    final added =
+        after.networks.where((n) => !beforeMap.containsKey(n.bssid)).toList();
+    final removed =
+        before.networks.where((n) => !afterMap.containsKey(n.bssid)).toList();
     final changed = <({WifiObservation before, WifiObservation after})>[];
 
     for (final entry in afterMap.entries) {

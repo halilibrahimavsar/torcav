@@ -27,28 +27,34 @@ class TopologyViewData {
     final positions = <String, Offset>{};
     final center = Offset(size.width / 2, size.height / 2);
     final nodes = topology.nodes;
-    
+
     if (nodes.isEmpty) return positions;
 
     // Find center node (Gateway or Current Device if no Gateway)
-    TopologyNode? centerNode = nodes.where((n) => n.isGateway).firstOrNull ?? 
-                               nodes.where((n) => n.isCurrentDevice).firstOrNull;
-    
+    TopologyNode? centerNode =
+        nodes.where((n) => n.isGateway).firstOrNull ??
+        nodes.where((n) => n.isCurrentDevice).firstOrNull;
+
     // If we have a center node, map it to the center
     if (centerNode != null) {
       positions[centerNode.id] = center;
     }
 
     // Identify inner ring nodes (Access Points, Routers) and outer ring nodes (Devices, IoT, Mobile)
-    final innerRing = nodes.where((n) => 
-      n.id != centerNode?.id && 
-      (n.type == TopologyNodeType.router || n.type == TopologyNodeType.accessPoint)
-    ).toList();
-    
-    final outerRing = nodes.where((n) => 
-      n.id != centerNode?.id && 
-      !innerRing.contains(n)
-    ).toList();
+    final innerRing =
+        nodes
+            .where(
+              (n) =>
+                  n.id != centerNode?.id &&
+                  (n.type == TopologyNodeType.router ||
+                      n.type == TopologyNodeType.accessPoint),
+            )
+            .toList();
+
+    final outerRing =
+        nodes
+            .where((n) => n.id != centerNode?.id && !innerRing.contains(n))
+            .toList();
 
     // If there is no center node, just put everyone in one big circle
     if (centerNode == null) {
@@ -106,14 +112,17 @@ class TopologyViewData {
 
   static Color nodeColor(TopologyNode node, ColorScheme colorScheme) {
     return switch (visualKindFor(node)) {
-      TopologyNodeVisualKind.currentDevice => colorScheme.tertiary, // Neon Green
+      TopologyNodeVisualKind.currentDevice =>
+        colorScheme.tertiary, // Neon Green
       TopologyNodeVisualKind.gateway => colorScheme.primary, // Neon Cyan
       TopologyNodeVisualKind.router => colorScheme.primary,
       TopologyNodeVisualKind.accessPoint => colorScheme.tertiary,
       TopologyNodeVisualKind.mobile => const Color(0xFFFF0060), // Cyber Red
       TopologyNodeVisualKind.iot => const Color(0xFFB5179E), // Cyber Pink
       TopologyNodeVisualKind.device => colorScheme.secondary, // Neon Purple
-      TopologyNodeVisualKind.unknown => colorScheme.onSurface.withValues(alpha: 0.5),
+      TopologyNodeVisualKind.unknown => colorScheme.onSurface.withValues(
+        alpha: 0.5,
+      ),
     };
   }
 

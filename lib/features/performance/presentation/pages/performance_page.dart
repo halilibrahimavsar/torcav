@@ -156,7 +156,9 @@ class _PerformanceView extends StatelessWidget {
               child: CircularProgressIndicator(
                 strokeWidth: 1.5,
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  progress.phase.index > 0 ? AppColors.neonCyan : Colors.white24,
+                  progress.phase.index > 0
+                      ? AppColors.neonCyan
+                      : Colors.white24,
                 ),
               ),
             ),
@@ -212,17 +214,22 @@ class _PerformanceView extends StatelessWidget {
                 child: BentoStatTile(
                   label: 'PACKET LOSS',
                   value: '${progress.packetLoss.toStringAsFixed(1)} %',
-                  icon: Icons.signal_cellular_connected_no_internet_4_bar_rounded,
-                  color: progress.packetLoss > 1 ? AppColors.neonRed : AppColors.neonGreen,
+                  icon:
+                      Icons.signal_cellular_connected_no_internet_4_bar_rounded,
+                  color:
+                      progress.packetLoss > 1
+                          ? AppColors.neonRed
+                          : AppColors.neonGreen,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: BentoStatTile(
                   label: 'LOADED LATENCY',
-                  value: progress.loadedLatencyMs > 0
-                      ? '${progress.loadedLatencyMs.toStringAsFixed(0)} MS'
-                      : '--',
+                  value:
+                      progress.loadedLatencyMs > 0
+                          ? '${progress.loadedLatencyMs.toStringAsFixed(0)} MS'
+                          : '--',
                   icon: Icons.speed_rounded,
                   color: AppColors.neonOrange,
                 ),
@@ -290,10 +297,7 @@ class _InterpretationSection extends StatelessWidget {
           ),
         ),
         ...cards.map(
-          (c) => Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: c,
-          ),
+          (c) => Padding(padding: const EdgeInsets.only(bottom: 10), child: c),
         ),
       ],
     );
@@ -358,9 +362,15 @@ class _InterpretationSection extends StatelessWidget {
   }
 
   String _latencyBody(double ms) {
-    if (ms <= 20) return 'Near-instant response. Ideal for gaming, video calls, and real-time apps.';
-    if (ms <= 50) return 'Good for video calls and streaming. Most apps will feel responsive.';
-    if (ms <= 100) return 'Fine for browsing and streaming, but video calls may have slight delays.';
+    if (ms <= 20) {
+      return 'Near-instant response. Ideal for gaming, video calls, and real-time apps.';
+    }
+    if (ms <= 50) {
+      return 'Good for video calls and streaming. Most apps will feel responsive.';
+    }
+    if (ms <= 100) {
+      return 'Fine for browsing and streaming, but video calls may have slight delays.';
+    }
     return 'Noticeable lag. Video calls and gaming may feel sluggish. Try moving closer to your router.';
   }
 
@@ -380,9 +390,15 @@ class _InterpretationSection extends StatelessWidget {
   }
 
   String _jitterBody(double ms) {
-    if (ms <= 5) return 'Very consistent connection. Your packets arrive with minimal timing variation.';
-    if (ms <= 15) return 'Stable enough for calls and streaming. Minor variation is normal on Wi-Fi.';
-    if (ms <= 30) return 'Some inconsistency detected. Voice calls may sound choppy during spikes.';
+    if (ms <= 5) {
+      return 'Very consistent connection. Your packets arrive with minimal timing variation.';
+    }
+    if (ms <= 15) {
+      return 'Stable enough for calls and streaming. Minor variation is normal on Wi-Fi.';
+    }
+    if (ms <= 30) {
+      return 'Some inconsistency detected. Voice calls may sound choppy during spikes.';
+    }
     return 'High variation — audio and video calls will likely break up. This can be caused by interference or a congested channel.';
   }
 
@@ -397,15 +413,23 @@ class _InterpretationSection extends StatelessWidget {
   String _downloadTitle(double mbps) {
     if (mbps >= 100) return 'Download: ${mbps.toStringAsFixed(1)} Mbps — Fast';
     if (mbps >= 25) return 'Download: ${mbps.toStringAsFixed(1)} Mbps — Good';
-    if (mbps >= 5) return 'Download: ${mbps.toStringAsFixed(1)} Mbps — Moderate';
+    if (mbps >= 5) {
+      return 'Download: ${mbps.toStringAsFixed(1)} Mbps — Moderate';
+    }
     return 'Download: ${mbps.toStringAsFixed(1)} Mbps — Slow';
   }
 
   String _downloadBody(double mbps) {
     final streams = (mbps / 5).floor().clamp(0, 50);
-    if (mbps >= 100) return 'Handles $streams+ simultaneous HD streams with ease. Great for large households.';
-    if (mbps >= 25) return 'Supports $streams simultaneous HD streams. Good for most households.';
-    if (mbps >= 5) return 'Enough for browsing and one or two SD streams. Large downloads will be slow.';
+    if (mbps >= 100) {
+      return 'Handles $streams+ simultaneous HD streams with ease. Great for large households.';
+    }
+    if (mbps >= 25) {
+      return 'Supports $streams simultaneous HD streams. Good for most households.';
+    }
+    if (mbps >= 5) {
+      return 'Enough for browsing and one or two SD streams. Large downloads will be slow.';
+    }
     return 'Very limited. Consider moving closer to your router or checking for interference.';
   }
 
@@ -425,11 +449,18 @@ class _InterpretationSection extends StatelessWidget {
   }
 
   String _uploadBody(double mbps) {
-    if (mbps >= 20) return 'Excellent for video conferencing, cloud backups, and live streaming.';
-    if (mbps >= 5) return 'Good for video calls and sharing files. Cloud uploads will be reasonable.';
-    if (mbps >= 1) return 'Enough for basic video calls. Large file uploads will take a while.';
+    if (mbps >= 20) {
+      return 'Excellent for video conferencing, cloud backups, and live streaming.';
+    }
+    if (mbps >= 5) {
+      return 'Good for video calls and sharing files. Cloud uploads will be reasonable.';
+    }
+    if (mbps >= 1) {
+      return 'Enough for basic video calls. Large file uploads will take a while.';
+    }
     return 'Very slow upload. Live video and cloud sync will struggle.';
   }
+
   // ── Packet Loss ──
   Color _packetLossColor(double percent) {
     if (percent == 0) return AppColors.neonGreen;
@@ -440,13 +471,19 @@ class _InterpretationSection extends StatelessWidget {
 
   String _packetLossTitle(double percent) {
     if (percent == 0) return 'Packet Loss: 0% — Perfect';
-    if (percent <= 1) return 'Packet Loss: ${percent.toStringAsFixed(1)}% — Minimal';
+    if (percent <= 1) {
+      return 'Packet Loss: ${percent.toStringAsFixed(1)}% — Minimal';
+    }
     return 'Packet Loss: ${percent.toStringAsFixed(1)}% — High';
   }
 
   String _packetLossBody(double percent) {
-    if (percent == 0) return 'Solid connection. No data packets were lost during the assessment.';
-    if (percent <= 1) return 'Very minor loss. Likely unnoticeable for most activities.';
+    if (percent == 0) {
+      return 'Solid connection. No data packets were lost during the assessment.';
+    }
+    if (percent <= 1) {
+      return 'Very minor loss. Likely unnoticeable for most activities.';
+    }
     return 'Data is being dropped. This causes stuttering in calls and gaming. Check for Wi-Fi interference.';
   }
 
@@ -470,9 +507,15 @@ class _InterpretationSection extends StatelessWidget {
 
   String _loadedLatencyBody(double loaded, double idle) {
     final diff = loaded - idle;
-    if (diff <= 10) return 'Your network stays responsive even when downloading. Excellent router quality.';
-    if (diff <= 50) return 'Response time increases slightly under load, but stays very usable.';
-    if (diff <= 150) return 'Noticeable delay when others are using the network. Gaming while downloading may suffer.';
+    if (diff <= 10) {
+      return 'Your network stays responsive even when downloading. Excellent router quality.';
+    }
+    if (diff <= 50) {
+      return 'Response time increases slightly under load, but stays very usable.';
+    }
+    if (diff <= 150) {
+      return 'Noticeable delay when others are using the network. Gaming while downloading may suffer.';
+    }
     return 'High Bufferbloat. Connection becomes unresponsive during large downloads. Consider enabling QoS on your router.';
   }
 }
@@ -574,7 +617,12 @@ class _SpeedTestHistorySectionState extends State<_SpeedTestHistorySection> {
   Future<void> _load() async {
     final repo = getIt<SpeedTestHistoryRepository>();
     final results = await repo.getRecent(limit: 10);
-    if (mounted) setState(() { _results = results; _loading = false; });
+    if (mounted) {
+      setState(() {
+        _results = results;
+        _loading = false;
+      });
+    }
   }
 
   Future<void> _deleteOne(int id) async {
@@ -585,30 +633,43 @@ class _SpeedTestHistorySectionState extends State<_SpeedTestHistorySection> {
   Future<void> _deleteAll(BuildContext context) async {
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: Theme.of(ctx).colorScheme.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(
-          'CLEAR ALL HISTORY',
-          style: GoogleFonts.orbitron(fontSize: 13, fontWeight: FontWeight.bold),
-        ),
-        content: Text(
-          'Delete all speed test records? This cannot be undone.',
-          style: GoogleFonts.rajdhani(fontSize: 14),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text('CANCEL', style: GoogleFonts.orbitron(fontSize: 10)),
+      builder:
+          (ctx) => AlertDialog(
+            backgroundColor: Theme.of(ctx).colorScheme.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: Text(
+              'CLEAR ALL HISTORY',
+              style: GoogleFonts.orbitron(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: Text(
+              'Delete all speed test records? This cannot be undone.',
+              style: GoogleFonts.rajdhani(fontSize: 14),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(
+                  'CANCEL',
+                  style: GoogleFonts.orbitron(fontSize: 10),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(
+                  'DELETE ALL',
+                  style: GoogleFonts.orbitron(
+                    fontSize: 10,
+                    color: AppColors.neonRed,
+                  ),
+                ),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text('DELETE ALL',
-                style: GoogleFonts.orbitron(
-                    fontSize: 10, color: AppColors.neonRed)),
-          ),
-        ],
-      ),
     );
     if (confirm == true) {
       await getIt<SpeedTestHistoryRepository>().deleteAll();
@@ -633,8 +694,11 @@ class _SpeedTestHistorySectionState extends State<_SpeedTestHistorySection> {
             ),
             if (_results.isNotEmpty)
               IconButton(
-                icon: const Icon(Icons.delete_sweep_rounded,
-                    size: 18, color: AppColors.neonRed),
+                icon: const Icon(
+                  Icons.delete_sweep_rounded,
+                  size: 18,
+                  color: AppColors.neonRed,
+                ),
                 tooltip: 'Clear all history',
                 onPressed: () => _deleteAll(context),
               ),
@@ -665,10 +729,12 @@ class _SpeedTestHistorySectionState extends State<_SpeedTestHistorySection> {
             ),
           )
         else
-          ..._results.map((r) => _HistoryRow(
-                result: r,
-                onDelete: r.id != null ? () => _deleteOne(r.id!) : null,
-              )),
+          ..._results.map(
+            (r) => _HistoryRow(
+              result: r,
+              onDelete: r.id != null ? () => _deleteOne(r.id!) : null,
+            ),
+          ),
       ],
     );
   }

@@ -49,13 +49,13 @@ class SpeedTestHistoryRepositoryImpl implements SpeedTestHistoryRepository {
   }
 
   SpeedTestResult _fromRow(Map<String, dynamic> row) => SpeedTestResult(
-        id: row['id'] as int?,
-        recordedAt: DateTime.parse(row['recorded_at'] as String),
-        latencyMs: (row['latency_ms'] as num).toDouble(),
-        jitterMs: (row['jitter_ms'] as num).toDouble(),
-        downloadMbps: (row['download_mbps'] as num).toDouble(),
-        uploadMbps: (row['upload_mbps'] as num).toDouble(),
-        packetLoss: (row['packet_loss'] as num?)?.toDouble() ?? 0.0,
-        loadedLatencyMs: (row['loaded_latency_ms'] as num?)?.toDouble() ?? 0.0,
-      );
+    id: row['id'] as int?,
+    recordedAt: DateTime.parse(row['recorded_at'] as String),
+    latencyMs: (row['latency_ms'] as num).toDouble(),
+    jitterMs: (row['jitter_ms'] as num).toDouble(),
+    downloadMbps: (row['download_mbps'] as num).toDouble(),
+    uploadMbps: (row['upload_mbps'] as num).toDouble(),
+    packetLoss: (row['packet_loss'] as num?)?.toDouble() ?? 0.0,
+    loadedLatencyMs: (row['loaded_latency_ms'] as num?)?.toDouble() ?? 0.0,
+  );
 }

@@ -37,7 +37,7 @@ class ArpSpoofingDetector {
           if (ips.length > 1) {
             // Check if one of these IPs is the gateway
             final isGatewayInvolved = ips.contains(gatewayIp);
-            
+
             if (isGatewayInvolved) {
               return SecurityEvent(
                 type: SecurityEventType.arpSpoofingDetected,
@@ -45,7 +45,8 @@ class ArpSpoofingDetector {
                 ssid: '', // SSID not directly available here
                 bssid: mac,
                 timestamp: DateTime.now(),
-                evidence: 'Multiple IPs (${ips.join(", ")}) share the same MAC address as the Gateway ($gatewayIp). High probability of ARP poisoning.',
+                evidence:
+                    'Multiple IPs (${ips.join(", ")}) share the same MAC address as the Gateway ($gatewayIp). High probability of ARP poisoning.',
               );
             }
           }

@@ -99,7 +99,9 @@ void main() {
 
     test('6GHz channels are included in ratings', () {
       final ratings = engine.calculateRatings([]);
-      final ghz6Channels = ratings.where((r) => r.channel > 165); // Simplified check for 6GHz
+      final ghz6Channels = ratings.where(
+        (r) => r.channel > 165,
+      ); // Simplified check for 6GHz
 
       expect(ghz6Channels, isNotEmpty);
       for (final r in ghz6Channels) {
@@ -109,7 +111,7 @@ void main() {
 
     test('DFS channels receive baseline penalty', () {
       final ratings = engine.calculateRatings([]);
-      
+
       // Ch 52 is DFS
       final ch52 = ratings.firstWhere((r) => r.channel == 52);
       // Ch 36 is Non-DFS

@@ -40,7 +40,10 @@ String signalTierLabel(SignalTier tier) {
 }
 
 /// Tier → accent color. Supports both dark (neon) and light (ink) themes.
-Color signalTierColor(SignalTier tier, [Brightness brightness = Brightness.dark]) {
+Color signalTierColor(
+  SignalTier tier, [
+  Brightness brightness = Brightness.dark,
+]) {
   final isLight = brightness == Brightness.light;
   switch (tier) {
     case SignalTier.excellent:
@@ -67,4 +70,3 @@ Color signalGradientColor(int rssi, [Brightness brightness = Brightness.dark]) {
 
   return Color.lerp(lowColor, highColor, normalized)!;
 }
-

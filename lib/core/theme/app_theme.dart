@@ -45,20 +45,22 @@ class AppColors {
   static const Color textMuted = Color(0xFF667085);
 
   // ── Light Mode Tokens (Clean & High Contrast) ──
-  static const Color lightBg = Color(0xFFEEF2F7); // Perfectly synced with neomorphic shader
+  static const Color lightBg = Color(
+    0xFFEEF2F7,
+  ); // Perfectly synced with neomorphic shader
   static const Color lightBgSecondary = Color(0xFFF1F5F9); // Slate-100
   static const Color lightSurface = Color(0xFFFFFFFF); // Pure white surface
   static const Color lightSurfaceSecondary = Color(0xFFF1F5F9); // Slate-100
   static const Color lightSurfaceTertiary = Color(0xFFE2E8F0); // Slate-200
   static const Color softWhite = Color(0xFFFFFFFF); // Pure white fallback
   static const Color lightGlassBorder = Color(0x33006064); // Hint of Ink Cyan
-  
+
   // ── Mesh Gradient Pastels (Premium Fluid Background) ──
   static const Color meshIndigo = Color(0xFFE0E7FF); // Indigo-100
-  static const Color meshMint   = Color(0xFFD1FAE5); // Emerald-100
-  static const Color meshRose   = Color(0xFFFFE4E6); // Rose-100
-  static const Color meshCyan   = Color(0xFFCFFAFE); // Cyan-100
-  
+  static const Color meshMint = Color(0xFFD1FAE5); // Emerald-100
+  static const Color meshRose = Color(0xFFFFE4E6); // Rose-100
+  static const Color meshCyan = Color(0xFFCFFAFE); // Cyan-100
+
   static const Color textPrimaryLight = Color(0xFF0F172A);
   static const Color textSecondaryLight = Color(0xFF334155);
   static const Color textMutedLight = Color(0xFF64748B);
@@ -116,10 +118,16 @@ class AppColors {
   }
 
   /// Returns a theme-aware color for coverage health.
-  static Color getCoverageColor(bool hasSamples, int? averageRssi, int weakZoneCount, int sampleCount, Brightness brightness) {
+  static Color getCoverageColor(
+    bool hasSamples,
+    int? averageRssi,
+    int weakZoneCount,
+    int sampleCount,
+    Brightness brightness,
+  ) {
     final isDark = brightness == Brightness.dark;
     if (!hasSamples) return isDark ? textMuted : textMutedLight;
-    
+
     final avg = averageRssi ?? -80;
     // Critical failure
     if (weakZoneCount >= (sampleCount / 3).floor().clamp(2, 100) || avg < -72) {
@@ -390,9 +398,7 @@ class AppTheme {
         fontWeight: FontWeight.w800,
         letterSpacing: 4,
       ),
-      iconTheme: IconThemeData(
-        color: scheme.primary.withValues(alpha: 0.9),
-      ),
+      iconTheme: IconThemeData(color: scheme.primary.withValues(alpha: 0.9)),
     );
   }
 
@@ -412,8 +418,12 @@ class AppTheme {
   static SnackBarThemeData _snackBarTheme(ColorScheme scheme) {
     final isDark = scheme.brightness == Brightness.dark;
     return SnackBarThemeData(
-      backgroundColor: isDark ? AppColors.darkSurfaceLight : AppColors.lightSurfaceSecondary,
-      contentTextStyle: GoogleFonts.outfit(color: scheme.onSurface, fontSize: 16),
+      backgroundColor:
+          isDark ? AppColors.darkSurfaceLight : AppColors.lightSurfaceSecondary,
+      contentTextStyle: GoogleFonts.outfit(
+        color: scheme.onSurface,
+        fontSize: 16,
+      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(color: scheme.primary.withValues(alpha: 0.2)),
@@ -482,8 +492,10 @@ class AppTheme {
   // ─────────────────────────────────────────────────────────────────
   static TextTheme _textTheme(ColorScheme scheme) {
     final isDark = scheme.brightness == Brightness.dark;
-    final primaryText = isDark ? AppColors.textPrimary : AppColors.textPrimaryLight;
-    final secondaryText = isDark ? AppColors.textSecondary : AppColors.textSecondaryLight;
+    final primaryText =
+        isDark ? AppColors.textPrimary : AppColors.textPrimaryLight;
+    final secondaryText =
+        isDark ? AppColors.textSecondary : AppColors.textSecondaryLight;
     final mutedText = isDark ? AppColors.textMuted : AppColors.textMutedLight;
 
     return TextTheme(

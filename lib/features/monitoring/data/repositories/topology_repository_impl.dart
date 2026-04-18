@@ -46,21 +46,20 @@ class TopologyRepositoryImpl implements TopologyRepository {
       if (currentIp != null) {
         final subnet = currentIp.substring(0, currentIp.lastIndexOf('.'));
         final scanStream = _networkScanRepo.scanNetwork('$subnet.0/24');
-        
+
         await for (final result in scanStream) {
-          yield result.fold(
-            (failure) => Left(failure),
-            (devices) {
-              return Right(_topologyBuilder.build(
+          yield result.fold((failure) => Left(failure), (devices) {
+            return Right(
+              _topologyBuilder.build(
                 wifiNetworks: wifiNetworks,
                 lanDevices: devices,
                 currentIp: currentIp,
                 gatewayIp: gatewayIp,
                 connectedSsid: ssid,
                 connectedBssid: bssid,
-              ));
-            },
-          );
+              ),
+            );
+          });
         }
       } else {
         // Fallback for no IP
@@ -84,7 +83,7 @@ class TopologyRepositoryImpl implements TopologyRepository {
     try {
       // 1. Try Standard ICMP ping first
       final result = await Process.run('ping', ['-c', '1', '-W', '1', ip]);
-      
+
       if (result.exitCode == 0) {
         final output = result.stdout as String;
         final match = RegExp(r'time=([\d.]+)').firstMatch(output);
@@ -98,12 +97,12 @@ class TopologyRepositoryImpl implements TopologyRepository {
       // We try a few common ports to see if the host is alive
       final commonPorts = [80, 443, 22, 135, 445];
       final stopwatch = Stopwatch()..start();
-      
+
       for (final port in commonPorts) {
         try {
           final socket = await Socket.connect(
-            ip, 
-            port, 
+            ip,
+            port,
             timeout: const Duration(seconds: 1),
           );
           socket.destroy();
@@ -121,7 +120,10 @@ class TopologyRepositoryImpl implements TopologyRepository {
   }
 
   @override
-  Future<Either<Failure, List<int>>> scanPorts(String ip, {List<int>? ports}) async {
+  Future<Either<Failure, List<int>>> scanPorts(
+    String ip, {
+    List<int>? ports,
+  }) async {
     final targetPorts = ports ?? [21, 22, 53, 80, 443, 3000, 8080];
     final openPorts = <int>[];
 
@@ -130,8 +132,8 @@ class TopologyRepositoryImpl implements TopologyRepository {
       final futures = targetPorts.map((port) async {
         try {
           final socket = await Socket.connect(
-            ip, 
-            port, 
+            ip,
+            port,
             timeout: const Duration(milliseconds: 300),
           );
           socket.destroy();
@@ -163,15 +165,16 @@ class TopologyRepositoryImpl implements TopologyRepository {
     }
   }
 
-
-
   @override
   Future<Either<Failure, String>> detectOsFromTtl(String ip) async {
     try {
       final result = await Process.run('ping', ['-c', '1', '-W', '1', ip]);
       if (result.exitCode == 0) {
         final output = result.stdout as String;
-        final ttlMatch = RegExp(r'ttl=(\d+)', caseSensitive: false).firstMatch(output);
+        final ttlMatch = RegExp(
+          r'ttl=(\d+)',
+          caseSensitive: false,
+        ).firstMatch(output);
         if (ttlMatch != null) {
           final ttl = int.parse(ttlMatch.group(1)!);
           if (ttl >= 240) return const Right('Network Device (TTL≈255)');
@@ -185,7 +188,4 @@ class TopologyRepositoryImpl implements TopologyRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
-
-
-
 }
