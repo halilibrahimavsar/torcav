@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
@@ -25,66 +26,48 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
   );
 
   @override
-  Future<Either<Failure, List<NetworkDevice>>> scanNetwork(
-    String subnet,
-  ) async {
-    try {
-      final discoverResult = await _arpDataSource.discoverHosts(targetSubnet: subnet);
-      
-      return discoverResult.fold(
-        (failure) => Left(failure),
-        (hosts) {
-          final results = hosts
-              .map(
-                (h) => NetworkDevice(
-                  ip: h.ip,
-                  mac: h.mac,
-                  vendor: h.vendor,
-                  hostName: h.hostName,
-                  latency: h.latency,
-                ),
-              )
-              .toList();
-          return Right(results);
-        },
-      );
-    } catch (e) {
-      return Left(ScanFailure(e.toString()));
+  Stream<Either<Failure, List<NetworkDevice>>> scanNetwork(String subnet) async* {
+    final List<NetworkDevice> devices = [];
+    
+    await for (final host in _arpDataSource.discoverHostsStream(targetSubnet: subnet)) {
+      devices.add(NetworkDevice(
+        ip: host.ip,
+        mac: host.mac,
+        vendor: host.vendor,
+        hostName: host.hostName,
+        latency: host.latency,
+      ));
+      yield Right(List.from(devices));
     }
   }
 
   @override
-  Future<Either<Failure, List<HostScanResult>>> scanWithProfile(
+  Stream<Either<Failure, HostScanResult>> scanWithProfile(
     String target, {
     NetworkScanProfile profile = NetworkScanProfile.fast,
     PortScanMethod method = PortScanMethod.auto,
-  }) async {
+  }) async* {
     try {
-      // Start discovery in parallel with ARP scan
+      // Start discovery in parallel with ARP scan to build caches
       final mdnsFuture = _mdnsDataSource.discoverServices();
       final upnpFuture = _upnpDataSource.discoverSsdp();
-      final arpFuture = _arpDataSource.discoverHosts(
+
+      // We'll wait a very short moment for mDNS/UPnP to start gathering data
+      // but we won't block the ARP stream. Caches will populate as we go.
+      Map<String, List<String>> mdnsMap = {};
+      Map<String, String> upnpMap = {};
+
+      // Trigger parallel resolution to populate maps
+      mdnsFuture.then((res) => res.fold((_) => null, (m) => mdnsMap = m));
+      upnpFuture.then((res) => res.fold((_) => null, (u) => upnpMap = u));
+
+      await for (final host in _arpDataSource.discoverHostsStream(
         targetSubnet: target,
         profile: profile,
-      );
+      )) {
+        // Yield immediately to show the device in UI ASAP
+        yield Right(host);
 
-      final results = await Future.wait([arpFuture, mdnsFuture, upnpFuture]);
-      
-      final arpResult = results[0] as Either<Failure, List<HostScanResult>>;
-      final mdnsResult = results[1] as Either<Failure, Map<String, List<String>>>;
-      final upnpResult = results[2] as Either<Failure, Map<String, String>>;
-
-      if (arpResult.isLeft()) {
-        return Left(arpResult.match((l) => l, (r) => throw Exception()));
-      }
-      
-      final List<HostScanResult> baseHosts = arpResult.getOrElse((l) => []);
-      final Map<String, List<String>> mdnsMap = mdnsResult.getOrElse((l) => {});
-      final Map<String, String> upnpMap = upnpResult.getOrElse((l) => {});
-
-      // Enrich hosts with discovered info (mDNS names + UPnP + AI classification)
-      final enrichedHosts = <HostScanResult>[];
-      for (final host in baseHosts) {
         String hostName = host.hostName;
         String deviceType = host.deviceType;
 
@@ -93,26 +76,18 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
           hostName = mdnsMap[host.ip]!.first;
         }
 
-        // Build a temporary host with enriched name for AI classification
-        final enrichedHost = HostScanResult(
-          ip: host.ip,
-          mac: host.mac,
-          vendor: host.vendor,
-          hostName: hostName,
-          osGuess: host.osGuess,
-          latency: host.latency,
-          services: host.services,
-          exposureFindings: host.exposureFindings,
-          exposureScore: host.exposureScore,
-          deviceType: deviceType,
-        );
+        // Fallback to Reverse DNS if still empty
+        if (hostName.isEmpty) {
+          hostName = await _reverseDnsLookup(host.ip);
+        }
 
         // AI-based device classification
+        final enrichedHost = host.copyWith(hostName: hostName);
         final aiResult = await _deviceClassifier.classify(enrichedHost);
+        
         if (aiResult != null && aiResult.confidence > 0.6) {
           deviceType = aiResult.deviceType;
         } else if (upnpMap.containsKey(host.ip)) {
-          // Fallback to UPnP heuristics when AI is unavailable or low confidence
           final upnpInfo = upnpMap[host.ip]!.toLowerCase();
           if (upnpInfo.contains('smart tv') || upnpInfo.contains('tizen') || upnpInfo.contains('webos')) {
             deviceType = 'Smart TV';
@@ -125,25 +100,26 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
           }
         }
 
-        enrichedHosts.add(HostScanResult(
-          ip: host.ip,
-          mac: host.mac,
-          vendor: host.vendor,
+        // Yield again with enriched data
+        yield Right(host.copyWith(
           hostName: hostName,
-          osGuess: host.osGuess,
-          latency: host.latency,
-          services: host.services,
-          exposureFindings: host.exposureFindings,
-          exposureScore: host.exposureScore,
           deviceType: deviceType,
+          isGateway: host.isGateway || deviceType == 'Router/Gateway',
         ));
       }
-
-      return Right<Failure, List<HostScanResult>>(enrichedHosts);
-    } on Failure catch (e) {
-      return Left(e);
     } catch (e) {
-      return Left(ScanFailure(e.toString()));
+      yield Left(ScanFailure(e.toString()));
+    }
+  }
+
+  Future<String> _reverseDnsLookup(String ip) async {
+    try {
+      final address = InternetAddress(ip);
+      final result = await address.reverse();
+      return result.host != ip ? result.host : '';
+    } catch (_) {
+      return '';
     }
   }
 }
+

@@ -10,7 +10,7 @@ class GetTopologyUseCase {
 
   const GetTopologyUseCase(this._repository);
 
-  Future<Either<Failure, NetworkTopology>> call() async {
-    return _repository.getTopology();
+  Stream<Either<Failure, NetworkTopology>> call() {
+    return _repository.getTopologyStream();
   }
 }

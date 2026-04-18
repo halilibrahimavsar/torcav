@@ -1,4 +1,7 @@
+import 'package:injectable/injectable.dart';
+
 import '../../../../core/utils/oui_lookup.dart';
+
 import '../../domain/entities/band_analysis_stat.dart';
 import '../../domain/entities/channel_occupancy_stat.dart';
 import '../../domain/entities/scan_snapshot.dart';
@@ -6,18 +9,19 @@ import '../../domain/entities/wifi_network.dart';
 import '../../domain/entities/wifi_observation.dart';
 import '../../domain/entities/wifi_band.dart';
 
+@injectable
 class ScanSnapshotBuilder {
   final OuiLookup _ouiLookup;
 
-  const ScanSnapshotBuilder([this._ouiLookup = const OuiLookup()]);
+  const ScanSnapshotBuilder(this._ouiLookup);
 
-  ScanSnapshot build({
+  Future<ScanSnapshot> build({
     required DateTime timestamp,
     required String backendUsed,
     required String interfaceName,
     required List<List<WifiNetwork>> passes,
-  }) {
-    final observations = _buildObservations(passes);
+  }) async {
+    final observations = await _buildObservations(passes);
     final channelStats = _buildChannelStats(observations);
     final bandStats = _buildBandStats(observations, channelStats);
 
@@ -31,7 +35,9 @@ class ScanSnapshotBuilder {
     );
   }
 
-  List<WifiObservation> _buildObservations(List<List<WifiNetwork>> passes) {
+  Future<List<WifiObservation>> _buildObservations(
+    List<List<WifiNetwork>> passes,
+  ) async {
     final accumulators = <String, _ObservationAccumulator>{};
 
     for (final pass in passes) {
@@ -44,36 +50,41 @@ class ScanSnapshotBuilder {
       }
     }
 
-    final observations = accumulators.values.map((entry) {
-      final isRandomized = ScanSnapshotBuilder.detectBssidRandomization(entry.bssid);
-      final spatialStreams = ScanSnapshotBuilder.estimateSpatialStreams(entry.wifiStandard);
-      final throughput = ScanSnapshotBuilder.estimateThroughput(
-        standard: entry.wifiStandard,
-        widthMhz: entry.channelWidthMhz,
-        streams: spatialStreams,
-      );
+    final observations = await Future.wait(
+      accumulators.values.map((entry) async {
+        final isRandomized =
+            ScanSnapshotBuilder.detectBssidRandomization(entry.bssid);
+        final vendor = await _ouiLookup.lookup(entry.bssid);
+        final spatialStreams =
+            ScanSnapshotBuilder.estimateSpatialStreams(entry.wifiStandard);
+        final throughput = ScanSnapshotBuilder.estimateThroughput(
+          standard: entry.wifiStandard,
+          widthMhz: entry.channelWidthMhz,
+          streams: spatialStreams,
+        );
 
-      return WifiObservation.fromSamples(
-        ssid: entry.ssid,
-        bssid: entry.bssid,
-        samples: entry.samples,
-        channel: entry.channel,
-        frequency: entry.frequency,
-        security: entry.security,
-        vendor: _ouiLookup.lookup(entry.bssid),
-        isHidden: entry.isHidden || entry.ssid.isEmpty,
-        seenCount: entry.samples.length,
-        channelWidthMhz: entry.channelWidthMhz,
-        wifiStandard: entry.wifiStandard,
-        hasWps: entry.hasWps,
-        hasPmf: entry.hasPmf,
-        rawCapabilities: entry.rawCapabilities,
-        apMldMac: entry.apMldMac,
-        estimatedMaxThroughputMbps: throughput,
-        spatialStreams: spatialStreams,
-        isRandomizedBssid: isRandomized,
-      );
-    }).toList();
+        return WifiObservation.fromSamples(
+          ssid: entry.ssid,
+          bssid: entry.bssid,
+          samples: entry.samples,
+          channel: entry.channel,
+          frequency: entry.frequency,
+          security: entry.security,
+          vendor: vendor,
+          isHidden: entry.isHidden || entry.ssid.isEmpty,
+          seenCount: entry.samples.length,
+          channelWidthMhz: entry.channelWidthMhz,
+          wifiStandard: entry.wifiStandard,
+          hasWps: entry.hasWps,
+          hasPmf: entry.hasPmf,
+          rawCapabilities: entry.rawCapabilities,
+          apMldMac: entry.apMldMac,
+          estimatedMaxThroughputMbps: throughput,
+          spatialStreams: spatialStreams,
+          isRandomizedBssid: isRandomized,
+        );
+      }),
+    );
 
     observations.sort((a, b) => b.avgSignalDbm.compareTo(a.avgSignalDbm));
     return observations;

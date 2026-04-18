@@ -13,11 +13,11 @@ import '../../domain/entities/wifi_network.dart';
 import 'scan_snapshot_builder.dart';
 import 'wifi_data_source.dart';
 
-@LazySingleton(as: WifiDataSource)
+@lazySingleton
 class AndroidWifiDataSource implements WifiDataSource {
   final ScanSnapshotBuilder _snapshotBuilder;
 
-  AndroidWifiDataSource() : _snapshotBuilder = const ScanSnapshotBuilder();
+  AndroidWifiDataSource(this._snapshotBuilder);
 
   @override
   Future<List<WifiNetwork>> scanNetworks({ScanRequest? request}) async {
@@ -125,7 +125,7 @@ class AndroidWifiDataSource implements WifiDataSource {
       passResults.add(networks);
     }
 
-    return _snapshotBuilder.build(
+    return await _snapshotBuilder.build(
       timestamp: DateTime.now(),
       backendUsed: 'android_wifi_scan',
       interfaceName: request.interfaceName ?? 'wlan0',

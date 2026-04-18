@@ -5,7 +5,6 @@ import 'package:injectable/injectable.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
 import '../../../../core/errors/failures.dart';
-import '../../../network_scan/domain/entities/network_device.dart';
 import '../../../network_scan/domain/repositories/network_scan_repository.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
 import '../../domain/entities/network_topology.dart';
@@ -27,7 +26,7 @@ class TopologyRepositoryImpl implements TopologyRepository {
   );
 
   @override
-  Future<Either<Failure, NetworkTopology>> getTopology() async {
+  Stream<Either<Failure, NetworkTopology>> getTopologyStream() async* {
     try {
       final results = await Future.wait([
         _networkInfo.getWifiIP(),
@@ -41,28 +40,42 @@ class TopologyRepositoryImpl implements TopologyRepository {
       final ssid = (results[2] ?? '').replaceAll('"', '');
       final bssid = results[3];
 
-      List<NetworkDevice> lanDevices = [];
-      if (currentIp != null) {
-        final subnet = currentIp.substring(0, currentIp.lastIndexOf('.'));
-        final result = await _networkScanRepo.scanNetwork('$subnet.0/24');
-        result.fold((_) {}, (devices) => lanDevices = devices);
-      }
-
       final latestSnapshot = _scanStore.latest;
       final wifiNetworks = latestSnapshot?.toLegacyNetworks() ?? [];
 
-      final topology = _topologyBuilder.build(
-        wifiNetworks: wifiNetworks,
-        lanDevices: lanDevices,
-        currentIp: currentIp,
-        gatewayIp: gatewayIp,
-        connectedSsid: ssid,
-        connectedBssid: bssid,
-      );
-
-      return Right(topology);
+      if (currentIp != null) {
+        final subnet = currentIp.substring(0, currentIp.lastIndexOf('.'));
+        final scanStream = _networkScanRepo.scanNetwork('$subnet.0/24');
+        
+        await for (final result in scanStream) {
+          yield result.fold(
+            (failure) => Left(failure),
+            (devices) {
+              return Right(_topologyBuilder.build(
+                wifiNetworks: wifiNetworks,
+                lanDevices: devices,
+                currentIp: currentIp,
+                gatewayIp: gatewayIp,
+                connectedSsid: ssid,
+                connectedBssid: bssid,
+              ));
+            },
+          );
+        }
+      } else {
+        // Fallback for no IP
+        final topology = _topologyBuilder.build(
+          wifiNetworks: wifiNetworks,
+          lanDevices: [],
+          currentIp: currentIp,
+          gatewayIp: gatewayIp,
+          connectedSsid: ssid,
+          connectedBssid: bssid,
+        );
+        yield Right(topology);
+      }
     } catch (e) {
-      return Left(ScanFailure(e.toString()));
+      yield Left(ScanFailure(e.toString()));
     }
   }
 

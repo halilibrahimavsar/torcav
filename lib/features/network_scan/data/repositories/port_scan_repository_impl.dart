@@ -21,4 +21,12 @@ class PortScanRepositoryImpl implements PortScanRepository {
       return Left(ScanFailure('Port scan failed: $e'));
     }
   }
+
+  @override
+  Stream<ServiceFingerprint> scanPortsReactive(
+    String ip, {
+    Duration timeout = const Duration(milliseconds: 500),
+  }) {
+    return _dataSource.scanPortsReactive(ip, timeout: timeout);
+  }
 }

@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:injectable/injectable.dart';
+
 import '../../../../core/errors/failures.dart';
+
 import '../../domain/entities/scan_request.dart';
 import '../../domain/entities/scan_snapshot.dart';
 import '../../domain/entities/wifi_network.dart';
@@ -12,10 +15,11 @@ import 'wifi_data_source.dart';
 /// Falls back to `iwlist` if NetworkManager is not available.
 /// Extended fields (channel width, Wi-Fi standard) are not available
 /// without root — they are left null.
+@lazySingleton
 class LinuxWifiDataSource implements WifiDataSource {
   final ScanSnapshotBuilder _snapshotBuilder;
 
-  LinuxWifiDataSource() : _snapshotBuilder = const ScanSnapshotBuilder();
+  LinuxWifiDataSource(this._snapshotBuilder);
 
   @override
   Future<List<WifiNetwork>> scanNetworks({ScanRequest? request}) async {
@@ -38,7 +42,7 @@ class LinuxWifiDataSource implements WifiDataSource {
       }
     }
 
-    return _snapshotBuilder.build(
+    return await _snapshotBuilder.build(
       timestamp: DateTime.now(),
       backendUsed: 'linux_nmcli',
       interfaceName: request.interfaceName ?? await _detectInterface(),

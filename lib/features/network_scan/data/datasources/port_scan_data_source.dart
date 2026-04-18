@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:isolate';
 
 import 'package:injectable/injectable.dart';
 
@@ -41,46 +40,75 @@ class PortScanDataSource {
     27017: 'mongodb',
   };
 
-  /// Scans the given IP for the target ports, grabbing banners when possible.
-  Future<List<ServiceFingerprint>> scanPorts(String ip) async {
-    // Run in isolate to avoid freezing UI thread with heavy socket calls.
-    return Isolate.run(() async {
-      final futures = <Future<ServiceFingerprint?>>[];
-      
-      for (final entry in _targetPorts.entries) {
-        futures.add(_probeAndGrabBanner(ip, entry.key, entry.value));
-      }
+  /// Scans the given IP for the target ports, yielding results as they arrive.
+  /// 
+  /// [timeout] allows adaptive scaling based on network latency.
+  Stream<ServiceFingerprint> scanPortsReactive(
+    String ip, {
+    Duration timeout = const Duration(milliseconds: _timeoutMs),
+  }) async* {
+    final controller = StreamController<ServiceFingerprint>();
+    
+    // We use a small batching approach to avoid overwhelming the socket limit
+    // while maintaining high performance.
+    final ports = _targetPorts.entries.toList();
+    const batchSize = 8;
 
-      final results = await Future.wait(futures);
-      return results.whereType<ServiceFingerprint>().toList();
-    });
+    Future<void> runBatch() async {
+      for (var i = 0; i < ports.length; i += batchSize) {
+        final end = (i + batchSize < ports.length) ? i + batchSize : ports.length;
+        final batch = ports.sublist(i, end);
+        
+        final futures = batch.map((entry) => _probeAndGrabBanner(
+          ip, 
+          entry.key, 
+          entry.value, 
+          timeout,
+        ));
+
+        final results = await Future.wait(futures);
+        for (final res in results) {
+          if (res != null) {
+            controller.add(res);
+          }
+        }
+      }
+      controller.close();
+    }
+
+    runBatch();
+    yield* controller.stream;
+  }
+
+  /// Legacy one-shot method, now calls the reactive version.
+  Future<List<ServiceFingerprint>> scanPorts(String ip) async {
+    return scanPortsReactive(ip).toList();
   }
 
   static Future<ServiceFingerprint?> _probeAndGrabBanner(
     String ip,
     int port,
     String serviceName,
+    Duration timeout,
   ) async {
     Socket? socket;
     try {
       socket = await Socket.connect(
         ip,
         port,
-        timeout: const Duration(milliseconds: _timeoutMs),
+        timeout: timeout,
       );
-
+      
+      // The rest of the logic remains mostly identical...
       String productInfo = '';
       String versionInfo = '';
 
-      // Try grabbing a banner for text-based protocols
       if (port == 21 || port == 22 || port == 23 || port == 80 || port == 8080) {
         if (port == 80 || port == 8080) {
-          // Send a basic HTTP GET to provoke a Server header
           socket.write("HEAD / HTTP/1.0\r\n\r\n");
         }
         
         try {
-          // Wait briefly for a response
           final event = await socket.first.timeout(
             const Duration(milliseconds: _bannerTimeoutMs),
           );
@@ -97,17 +125,13 @@ class PortScanDataSource {
                 }
               }
             } else {
-              // SSH/FTP/Telnet often just print standard banners on the first line
               productInfo = lines.first.trim();
               if (productInfo.length > 50) {
-                productInfo = productInfo.substring(0, 50); // clamp length
+                productInfo = productInfo.substring(0, 50);
               }
             }
           }
-        } catch (e) {
-          // Timeout grabbing banner is fine, we still know the port is open.
-          // Ignoring the banner grab failure to return the open port info.
-        }
+        } catch (_) {}
       }
 
       return ServiceFingerprint(
@@ -117,8 +141,7 @@ class PortScanDataSource {
         product: productInfo,
         version: versionInfo,
       );
-    } catch (e) {
-      // Connection refused or timeout -> port closed
+    } catch (_) {
       return null;
     } finally {
       socket?.destroy();

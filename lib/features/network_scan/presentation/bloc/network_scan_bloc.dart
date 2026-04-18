@@ -4,9 +4,11 @@ import 'package:injectable/injectable.dart';
 
 import '../../domain/entities/host_scan_result.dart';
 import '../../domain/entities/network_device.dart';
+import '../../domain/entities/network_scan_policy.dart';
 import '../../domain/entities/network_scan_profile.dart';
 import '../../domain/repositories/network_scan_repository.dart';
 import '../../domain/services/new_device_detector.dart';
+import '../../domain/entities/service_fingerprint.dart';
 import '../../domain/usecases/port_scan_usecase.dart';
 
 // Events
@@ -31,6 +33,13 @@ class StartNetworkScan extends NetworkScanEvent {
   List<Object?> get props => [target, profile, method, deepScan];
 }
 
+class AcknowledgeLegalRisk extends NetworkScanEvent {
+  final bool accepted;
+  const AcknowledgeLegalRisk(this.accepted);
+  @override
+  List<Object?> get props => [accepted];
+}
+
 // State
 abstract class NetworkScanState extends Equatable {
   const NetworkScanState();
@@ -39,6 +48,8 @@ abstract class NetworkScanState extends Equatable {
 }
 
 class NetworkScanInitial extends NetworkScanState {}
+
+class NetworkScanConsentRequired extends NetworkScanState {}
 
 class NetworkScanLoading extends NetworkScanState {}
 
@@ -70,71 +81,131 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
   final NewDeviceDetector _newDeviceDetector;
   final PortScanUseCase _portScanUseCase;
 
+  bool _consentGiven = false;
+
   NetworkScanBloc(this._repository, this._newDeviceDetector, this._portScanUseCase)
       : super(NetworkScanInitial()) {
     on<StartNetworkScan>(_onStartScan);
+    on<AcknowledgeLegalRisk>(_onAcknowledgeRisk);
+  }
+
+  void _onAcknowledgeRisk(
+    AcknowledgeLegalRisk event,
+    Emitter<NetworkScanState> emit,
+  ) {
+    _consentGiven = event.accepted;
+    if (_consentGiven) {
+      emit(NetworkScanInitial());
+    } else {
+      emit(const NetworkScanError('Legal acknowledgement required for LAN discovery.'));
+    }
   }
 
   Future<void> _onStartScan(
     StartNetworkScan event,
     Emitter<NetworkScanState> emit,
   ) async {
+    if (!_consentGiven) {
+      emit(NetworkScanConsentRequired());
+      return;
+    }
+
+    // Apply safety guardrails
+    if (!NetworkScanPolicy.standard.isTargetSafe(event.target)) {
+      emit(const NetworkScanError(
+        'Scan target exceeds safety limits. Please restrict to /24 or smaller subnets.',
+      ));
+      return;
+    }
+
     emit(NetworkScanLoading());
-    final detailed = await _repository.scanWithProfile(
-      event.target,
-      profile: event.profile,
-      method: event.method,
-    );
 
-    await detailed.fold(
-      (failure) async => emit(NetworkScanError(failure.message)),
-      (hosts) async {
-        final devices =
-            hosts
-                .map(
-                  (host) => NetworkDevice(
-                    ip: host.ip,
-                    mac: host.mac,
-                    vendor: host.vendor,
-                    hostName: host.hostName,
-                    latency: host.latency,
-                  ),
-                )
-                .toList();
-        final newDevices = _newDeviceDetector.detectNew(hosts);
-        emit(NetworkScanLoaded(
-          devices: devices,
-          hosts: hosts,
-          newDevices: newDevices,
-        ));
+    final List<HostScanResult> currentHosts = [];
+    final List<NetworkDevice> currentDevices = [];
+    List<HostScanResult> currentNewDevices = [];
 
-        // Background Port Scan Phase Phase
-        if (event.deepScan || event.profile != NetworkScanProfile.fast) {
-          final updatedHosts = List<HostScanResult>.from(hosts);
-          final futures = <Future<void>>[];
-          
-          for (int i = 0; i < updatedHosts.length; i++) {
-            futures.add(() async {
-              final result = await _portScanUseCase(updatedHosts[i].ip);
-              result.fold(
-                (failure) => null, // Ignore failures internally per host
-                (services) {
-                  if (services.isNotEmpty) {
-                    updatedHosts[i] = updatedHosts[i].copyWith(services: services);
-                    // Re-emit immediately per host updated
-                    emit(NetworkScanLoaded(
-                      devices: devices,
-                      hosts: List.from(updatedHosts),
-                      newDevices: newDevices,
-                    ));
-                  }
-                },
+    try {
+      await for (final result in _repository.scanWithProfile(
+        event.target,
+        profile: event.profile,
+        method: event.method,
+      )) {
+        await result.fold(
+          (failure) async => emit(NetworkScanError(failure.message)),
+          (host) async {
+            // Update local tracking with duplicate-aware logic
+            final hostIndex = currentHosts.indexWhere((h) => h.ip == host.ip);
+            if (hostIndex != -1) {
+              currentHosts[hostIndex] = host;
+            } else {
+              currentHosts.add(host);
+            }
+
+            final device = NetworkDevice(
+              ip: host.ip,
+              mac: host.mac,
+              vendor: host.vendor,
+              hostName: host.hostName,
+              latency: host.latency,
+            );
+
+            final deviceIndex = currentDevices.indexWhere((d) => d.ip == host.ip);
+            if (deviceIndex != -1) {
+              currentDevices[deviceIndex] = device;
+            } else {
+              currentDevices.add(device);
+            }
+
+            currentNewDevices = _newDeviceDetector.detectNew(currentHosts);
+
+            // Emit current state for real-time progress
+            emit(NetworkScanLoaded(
+              devices: List.from(currentDevices),
+              hosts: List.from(currentHosts),
+              newDevices: List.from(currentNewDevices),
+            ));
+          },
+        );
+      }
+
+      // Background Reactive Port Scan Phase
+      if (event.deepScan || event.profile != NetworkScanProfile.fast) {
+        final updatedHosts = List<HostScanResult>.from(currentHosts);
+        
+        for (int i = 0; i < updatedHosts.length; i++) {
+          final host = updatedHosts[i];
+          final adaptiveTimeout = Duration(
+            milliseconds: (host.latency * 2).toInt().clamp(100, 1000),
+          );
+
+          await for (final service in _portScanUseCase.callReactive(
+            host.ip, 
+            timeout: adaptiveTimeout,
+          )) {
+            final index = updatedHosts.indexWhere((h) => h.ip == host.ip);
+            if (index != -1) {
+              final currentServices = List<ServiceFingerprint>.from(
+                updatedHosts[index].services,
               );
-            }());
+              
+              if (!currentServices.contains(service)) {
+                currentServices.add(service);
+                updatedHosts[index] = updatedHosts[index].copyWith(
+                  services: currentServices,
+                );
+                
+                emit(NetworkScanLoaded(
+                  devices: List.from(currentDevices),
+                  hosts: List.from(updatedHosts),
+                  newDevices: List.from(currentNewDevices),
+                ));
+              }
+            }
           }
-          await Future.wait(futures);
         }
-      },
-    );
+      }
+    } catch (e) {
+      emit(NetworkScanError(e.toString()));
+    }
   }
 }

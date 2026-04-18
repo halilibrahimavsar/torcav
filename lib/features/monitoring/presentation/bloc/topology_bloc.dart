@@ -184,11 +184,30 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
     Emitter<TopologyState> emit,
   ) async {
     emit(TopologyLoading());
-    final result = await _getTopology();
-    result.fold(
-      (failure) => emit(TopologyError(failure.message)),
-      (topology) => emit(TopologyLoaded(topology: topology)),
-    );
+    try {
+      await for (final result in _getTopology()) {
+        result.fold(
+          (failure) {
+            // Re-emit error only if we haven't loaded any topology yet
+            if (state is! TopologyLoaded) {
+              emit(TopologyError(failure.message));
+            }
+          },
+          (topology) {
+            final currentState = state;
+            if (currentState is TopologyLoaded) {
+              emit(currentState.copyWith(topology: topology));
+            } else {
+              emit(TopologyLoaded(topology: topology));
+            }
+          },
+        );
+      }
+    } catch (e) {
+      if (state is! TopologyLoaded) {
+        emit(TopologyError(e.toString()));
+      }
+    }
   }
 
   Future<void> _onPingNode(

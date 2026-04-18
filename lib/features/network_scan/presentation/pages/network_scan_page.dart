@@ -11,6 +11,7 @@ import '../../domain/entities/network_scan_profile.dart';
 
 import '../../../../features/network_scan/presentation/widgets/network_scanner_radar.dart';
 import '../bloc/network_scan_bloc.dart';
+import '../widgets/lan_consent_dialog.dart';
 
 class NetworkScanPage extends StatelessWidget {
   const NetworkScanPage({super.key});
@@ -58,10 +59,25 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocConsumer<NetworkScanBloc, NetworkScanState>(
-        listenWhen: (_, next) =>
-            next is NetworkScanLoaded && next.newDevices.isNotEmpty,
-        listener: (context, state) {
+        listenWhen: (prev, next) =>
+            next is NetworkScanLoaded && next.newDevices.isNotEmpty ||
+            next is NetworkScanConsentRequired,
+        listener: (context, state) async {
+          if (state is NetworkScanConsentRequired) {
+            final accepted = await showDialog<bool>(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => const LanConsentDialog(),
+            );
+            if (context.mounted) {
+              context.read<NetworkScanBloc>().add(
+                AcknowledgeLegalRisk(accepted ?? false),
+              );
+            }
+          }
+
           if (state is NetworkScanLoaded && state.newDevices.isNotEmpty) {
+            if (!context.mounted) return;
             final count = state.newDevices.length;
             final label = count == 1
                 ? context.l10n.newDeviceFound(state.newDevices.first.ip)
@@ -779,6 +795,30 @@ class _DeviceCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
+                          if (host.isGateway) ...[
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: scheme.tertiary.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(
+                                  color: scheme.tertiary.withValues(alpha: 0.3),
+                                ),
+                              ),
+                              child: Text(
+                                'GATEWAY',
+                                style: GoogleFonts.orbitron(
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w900,
+                                  color: scheme.tertiary,
+                                ),
+                              ),
+                            ),
+                          ],
                           if (host.deviceType != 'Unknown') ...[
                             const SizedBox(width: 8),
                             Container(

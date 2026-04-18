@@ -15,6 +15,9 @@ class HostScanResult extends Equatable {
   final List<LanExposureFinding> exposureFindings;
   final double exposureScore;
   final String deviceType;
+  final bool isGateway;
+  final String? netbiosName;
+  final bool isSuspicious;
 
   const HostScanResult({
     required this.ip,
@@ -27,6 +30,9 @@ class HostScanResult extends Equatable {
     required this.exposureFindings,
     required this.exposureScore,
     required this.deviceType,
+    this.isGateway = false,
+    this.netbiosName,
+    this.isSuspicious = false,
   });
 
   HostScanResult copyWith({
@@ -40,6 +46,9 @@ class HostScanResult extends Equatable {
     List<LanExposureFinding>? exposureFindings,
     double? exposureScore,
     String? deviceType,
+    bool? isGateway,
+    String? netbiosName,
+    bool? isSuspicious,
   }) {
     return HostScanResult(
       ip: ip ?? this.ip,
@@ -52,6 +61,9 @@ class HostScanResult extends Equatable {
       exposureFindings: exposureFindings ?? this.exposureFindings,
       exposureScore: exposureScore ?? this.exposureScore,
       deviceType: deviceType ?? this.deviceType,
+      isGateway: isGateway ?? this.isGateway,
+      netbiosName: netbiosName ?? this.netbiosName,
+      isSuspicious: isSuspicious ?? this.isSuspicious,
     );
   }
 
@@ -70,5 +82,8 @@ class HostScanResult extends Equatable {
     exposureFindings,
     exposureScore,
     deviceType,
+    isGateway,
+    netbiosName,
+    isSuspicious,
   ];
 }

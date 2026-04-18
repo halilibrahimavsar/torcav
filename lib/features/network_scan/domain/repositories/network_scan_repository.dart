@@ -5,10 +5,10 @@ import '../entities/network_device.dart';
 import '../entities/network_scan_profile.dart';
 
 abstract class NetworkScanRepository {
-  Future<Either<Failure, List<NetworkDevice>>> scanNetwork(String subnet);
-  Future<Either<Failure, List<HostScanResult>>> scanWithProfile(
+  Stream<Either<Failure, List<NetworkDevice>>> scanNetwork(String subnet);
+  Stream<Either<Failure, HostScanResult>> scanWithProfile(
     String target, {
-    NetworkScanProfile profile,
-    PortScanMethod method,
+    NetworkScanProfile profile = NetworkScanProfile.fast,
+    PortScanMethod method = PortScanMethod.auto,
   });
 }

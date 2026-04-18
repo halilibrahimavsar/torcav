@@ -245,7 +245,8 @@ class SecurityRepositoryImpl implements SecurityRepository {
           final subnet = '${ip.substring(0, ip.lastIndexOf('.'))}.0';
           
           // 1. Full Subnet Discovery
-          final scanResult = await _networkScanRepository.scanNetwork(subnet);
+          final scanStream = _networkScanRepository.scanNetwork(subnet);
+          final scanResult = await scanStream.last;
           scanResult.fold(
             (failure) => null,
             (devices) {
@@ -269,33 +270,32 @@ class SecurityRepositoryImpl implements SecurityRepository {
 
           // 2. Gateway Port Scan (Deep Probe)
           final gatewayIp = cloudGateway ?? '${ip.substring(0, ip.lastIndexOf('.'))}.1';
-          final portScanResult = await _networkScanRepository.scanWithProfile(
+          final portScanStream = _networkScanRepository.scanWithProfile(
             gatewayIp,
             profile: NetworkScanProfile.fast,
           );
+          final portScanResult = await portScanStream.last;
 
           portScanResult.fold(
             (failure) => null,
-            (hostResults) {
-              for (final host in hostResults) {
-                if (host.services.isNotEmpty) {
-                  assessment.evidenceFindings.add(
-                    SecurityFinding(
-                      ruleId: 'lan.gateway_ports_open',
-                      category: SecurityFindingCategory.lanExposure,
-                      severity: VulnerabilitySeverity.medium,
-                      confidence: SecurityFindingConfidence.observed,
-                      title: 'Gateway Ports Exposed',
-                      description: 'Host ${host.ip} has open ports that may be vulnerable.',
+            (host) {
+              if (host.services.isNotEmpty) {
+                assessment.evidenceFindings.add(
+                  SecurityFinding(
+                    ruleId: 'lan.gateway_ports_open',
+                    category: SecurityFindingCategory.lanExposure,
+                    severity: VulnerabilitySeverity.medium,
+                    confidence: SecurityFindingConfidence.observed,
+                    title: 'Gateway Ports Exposed',
+                    description: 'Host ${host.ip} has open ports that may be vulnerable.',
                       evidence: 'Open Ports: ${host.services.map((s) => "${s.port}/${s.serviceName}").join(", ")}',
                       recommendation: 'Disable unnecessary services on the gateway router and ensure strong passwords.',
                       timestamp: DateTime.now(),
                     ),
                   );
                 }
-              }
-            },
-          );
+              },
+            );
         }
       }
 
@@ -377,7 +377,8 @@ class SecurityRepositoryImpl implements SecurityRepository {
           final lanFindings = <LanExposureFinding>[];
           
           // Subnet Device Discovery
-          final scanResult = await _networkScanRepository.scanNetwork(subnet);
+          final scanStream = _networkScanRepository.scanNetwork(subnet);
+          final scanResult = await scanStream.last;
           scanResult.fold(
             (failure) => null, // Ignore scan failure for security report
             (devices) {
@@ -391,15 +392,15 @@ class SecurityRepositoryImpl implements SecurityRepository {
 
           // Deep Gateway Port Probing
           final gatewayIp = cloudGateway ?? '${subnet.substring(0, subnet.lastIndexOf('.'))}.1';
-          final portScanResult = await _networkScanRepository.scanWithProfile(
+          final portScanStream = _networkScanRepository.scanWithProfile(
             gatewayIp,
             profile: NetworkScanProfile.fast,
           );
+          final portScanResult = await portScanStream.last;
           
           portScanResult.fold(
             (failure) => null,
-            (hostResults) {
-              for (final host in hostResults) {
+            (host) {
                 // If not already in lanDevices, add it (discovery might have missed it)
                 final existingIdx = lanDevices.indexWhere((d) => d.ip == host.ip);
                 if (existingIdx == -1) {
@@ -449,9 +450,8 @@ class SecurityRepositoryImpl implements SecurityRepository {
                     );
                   }
                 }
-              }
-            },
-          );
+              },
+            );
         }
       }
 

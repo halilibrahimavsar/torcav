@@ -18,86 +18,160 @@ import '../../domain/entities/service_fingerprint.dart';
 /// service and device-type guessing.
 @LazySingleton()
 class ArpDataSource {
-  /// Discovers hosts via the ARP table and optional port probing.
+  final OuiLookup _ouiLookup;
+
+  ArpDataSource(this._ouiLookup);
+
+  /// Reads the ARP table. Wrapper for static method to allow injection and mocking.
+  Future<Either<Failure, List<ArpEntry>>> readArpTable() => readArpTableStatic();
+  Stream<HostScanResult> discoverHostsStream({
+    String? targetSubnet,
+    NetworkScanProfile profile = NetworkScanProfile.fast,
+  }) async* {
+    final receivePort = ReceivePort();
+    
+    // Spawn isolate for heavy scanning work
+    final isolate = await Isolate.spawn(
+      _discoveryIsolateWorker,
+      _IsolateConfig(
+        sendPort: receivePort.sendPort,
+        targetSubnet: targetSubnet,
+        profile: profile,
+      ),
+    );
+
+    try {
+      await for (final message in receivePort) {
+        if (message is HostScanResult) {
+          // Resolve vendor and device type in the main thread to avoid Isolate DI issues
+          final vendor = await _ouiLookup.lookup(message.mac);
+          final deviceType = _guessDeviceType(
+            services: message.services,
+            vendor: vendor,
+          );
+          yield message.copyWith(
+            vendor: vendor,
+            deviceType: deviceType,
+            isGateway: deviceType == 'Router/Gateway',
+          );
+        } else if (message == 'DONE') {
+          break;
+        } else if (message is Failure) {
+          // For streams, we could yield an error or just stop. 
+          // Here we'll just log and continue if one host fails.
+          continue;
+        }
+      }
+    } finally {
+      receivePort.close();
+      isolate.kill(priority: Isolate.immediate);
+    }
+  }
+
+  /// Deprecated: Discovers hosts in a single batch. Use [discoverHostsStream] instead.
   Future<Either<Failure, List<HostScanResult>>> discoverHosts({
     String? targetSubnet,
     NetworkScanProfile profile = NetworkScanProfile.fast,
   }) async {
-    // Offload the heavy process spawning and port probing to a background isolate
-    // so the main UI thread never freezes.
-    return Isolate.run(() async {
-      final source = ArpDataSource();
-      return source._discoverHostsInternal(
+    try {
+      final hosts = await discoverHostsStream(
         targetSubnet: targetSubnet,
         profile: profile,
-      );
-    });
+      ).toList();
+      return Right(hosts);
+    } catch (e) {
+      return Left(ScanFailure(e.toString()));
+    }
   }
 
-  Future<Either<Failure, List<HostScanResult>>> _discoverHostsInternal({
-    String? targetSubnet,
-    NetworkScanProfile profile = NetworkScanProfile.fast,
-  }) async {
-    List<ArpEntry> finalArpEntries = [];
-    
-    var arpResult = await readArpTable();
-    arpResult.fold(
-      (failure) => null, // Proceed to fallback
-      (entries) => finalArpEntries = entries,
-    );
+  /// --- Isolate Worker Logic ---
 
-    // Fallback for Android (where ARP table is restricted)
-    if (finalArpEntries.isEmpty && targetSubnet != null) {
-      var pingResult = await _pingScanSubnet(targetSubnet);
-      pingResult.fold(
-        (failure) => null,
-        (entries) => finalArpEntries = entries,
-      );
-    }
+  static Future<void> _discoveryIsolateWorker(_IsolateConfig config) async {
+    final sendPort = config.sendPort;
+    final targetSubnet = config.targetSubnet;
+    final profile = config.profile;
 
-    if (finalArpEntries.isEmpty) return const Right([]);
+    try {
+      final List<ArpEntry> finalArpEntries = [];
+      
+      final arpResult = await readArpTableStatic();
+      arpResult.fold((_) => null, (entries) => finalArpEntries.addAll(entries));
 
-    final hosts = <HostScanResult>[];
+      if (finalArpEntries.isNotEmpty) {
+        // We have ARP table entries, this is fast. Process them concurrently in batches
+        const parallelBatches = 10;
+        for (var i = 0; i < finalArpEntries.length; i += parallelBatches) {
+          final futures = <Future<void>>[];
+          for (var j = 0; j < parallelBatches; j++) {
+            if (i + j >= finalArpEntries.length) break;
+            futures.add(_processAndSendEntry(finalArpEntries[i+j], profile, sendPort));
+          }
+          await Future.wait(futures);
+        }
+      } else if (targetSubnet != null) {
+        // Fallback for Android (where ARP table is restricted)
+        final parts = targetSubnet.split('/');
+        if (parts.isNotEmpty) {
+          final ip = parts[0];
+          if (ip.split('.').length == 4) {
+            final baseIp = ip.substring(0, ip.lastIndexOf('.'));
+            const parallelBatches = 30; // Increased batch size for faster discovery
 
-    for (final entry in finalArpEntries) {
-      final services = <ServiceFingerprint>[];
-
-      // Only probe ports for non-fast profiles.
-      if (profile != NetworkScanProfile.fast) {
-        services.addAll(await _probePorts(entry.ip));
+            for (var i = 1; i < 255; i += parallelBatches) {
+              final futures = <Future<void>>[];
+              for (var j = 0; j < parallelBatches; j++) {
+                final hostPart = i + j;
+                if (hostPart > 254) break;
+                
+                futures.add(() async {
+                   final entry = await _pingHostStatic('$baseIp.$hostPart');
+                   if (entry != null) {
+                     await _processAndSendEntry(entry, profile, sendPort);
+                   }
+                }());
+              }
+              await Future.wait(futures);
+            }
+          }
+        }
       }
-
-      final deviceType = _guessDeviceType(
-        services: services,
-        vendor: entry.vendor,
-      );
-
-      hosts.add(
-        HostScanResult(
-          ip: entry.ip,
-          mac: entry.mac,
-          vendor: entry.vendor,
-          hostName: '',
-          osGuess: '',
-          latency: 0,
-          services: services,
-          exposureFindings: const [],
-          exposureScore: (services.length * 7).toDouble().clamp(0, 100),
-          deviceType: deviceType,
-        ),
-      );
+    } catch (e) {
+      sendPort.send(ScanFailure(e.toString()));
+    } finally {
+      sendPort.send('DONE');
     }
-
-    return Right(hosts);
   }
 
-  Future<Either<Failure, List<ArpEntry>>> readArpTable() async {
+  static Future<void> _processAndSendEntry(ArpEntry entry, NetworkScanProfile profile, SendPort sendPort) async {
+    final services = <ServiceFingerprint>[];
+
+    // Only probe ports for non-fast profiles.
+    if (profile != NetworkScanProfile.fast) {
+      services.addAll(await _probePortsStatic(entry.ip));
+    }
+
+    // Send partial result back to main thread immediately
+    sendPort.send(HostScanResult(
+      ip: entry.ip,
+      mac: entry.mac,
+      vendor: entry.vendor, // 'Unknown' for now
+      hostName: '',
+      osGuess: '',
+      latency: entry.latency,
+      services: services,
+      exposureFindings: const [],
+      exposureScore: (services.length * 7).toDouble().clamp(0, 100),
+      deviceType: 'Unknown',
+      isGateway: false,
+    ));
+  }
+
+  static Future<Either<Failure, List<ArpEntry>>> readArpTableStatic() async {
     try {
       final file = File('/proc/net/arp');
       if (!await file.exists()) return const Right([]);
 
       final lines = await file.readAsLines();
-      // First line is the header: IP address, HW type, Flags, HW address, Mask, Device
       if (lines.length <= 1) return const Right([]);
 
       final entries = <ArpEntry>[];
@@ -108,10 +182,11 @@ class ArpDataSource {
         final ip = parts[0];
         final mac = parts[3].toUpperCase();
 
-        // Skip incomplete entries (00:00:00:00:00:00)
-        if (mac == '00:00:00:00:00:00') continue;
-
-        entries.add(ArpEntry(ip: ip, mac: mac, vendor: _guessVendor(mac)));
+        entries.add(ArpEntry(
+          ip: ip, 
+          mac: mac, 
+          vendor: mac == '00:00:00:00:00:00' ? 'Android Device (Restricted)' : 'Unknown',
+        ));
       }
       return Right(entries);
     } catch (e) {
@@ -119,8 +194,7 @@ class ArpDataSource {
     }
   }
 
-  /// Quick TCP connect probes on common ports.
-  Future<List<ServiceFingerprint>> _probePorts(String ip) async {
+  static Future<List<ServiceFingerprint>> _probePortsStatic(String ip) async {
     const commonPorts = <int, String>{
       22: 'ssh',
       53: 'dns',
@@ -138,18 +212,17 @@ class ArpDataSource {
     final futures = <Future<ServiceFingerprint?>>[];
 
     for (final entry in commonPorts.entries) {
-      futures.add(_probePort(ip, entry.key, entry.value));
+      futures.add(_probePortStatic(ip, entry.key, entry.value));
     }
 
     final probed = await Future.wait(futures);
     for (final service in probed) {
       if (service != null) results.add(service);
     }
-
     return results;
   }
 
-  Future<ServiceFingerprint?> _probePort(
+  static Future<ServiceFingerprint?> _probePortStatic(
     String ip,
     int port,
     String serviceName,
@@ -169,15 +242,27 @@ class ArpDataSource {
         version: '',
       );
     } catch (e) {
-      // In port probing, failure usually means the port is closed or filtered. 
-      // We don't bubble this up as a hard Failure to avoid dropping the host.
       return null;
     }
   }
 
-  String _guessVendor(String mac) {
-    // Delegate to the centralised OUI table in core/utils.
-    return OuiLookup.getVendor(mac);
+
+
+  static Future<ArpEntry?> _pingHostStatic(String ip) async {
+    try {
+      final watch = Stopwatch()..start();
+      final result = await Process.run('ping', ['-c', '1', '-W', '1', ip]);
+      watch.stop();
+      if (result.exitCode == 0) {
+        return ArpEntry(
+          ip: ip,
+          mac: '00:00:00:00:00:00',
+          vendor: 'Unknown (Android Limited)',
+          latency: watch.elapsedMilliseconds.toDouble(),
+        );
+      }
+    } catch (_) {}
+    return null;
   }
 
   String _guessDeviceType({
@@ -195,50 +280,17 @@ class ArpDataSource {
     }
     return 'Unknown';
   }
-
-  // Vendor guessing is now fully delegated to OuiLookup in core/utils.
-
-  Future<Either<Failure, List<ArpEntry>>> _pingScanSubnet(String ipWithMask) async {
-    final parts = ipWithMask.split('/');
-    if (parts.isEmpty) return const Right([]);
-
-    final ip = parts[0];
-    // Simple logic: assume /24 by taking first 3 octets
-    if (ip.split('.').length != 4) return const Right([]);
-    final baseIp = ip.substring(0, ip.lastIndexOf('.'));
-
-    final entries = <ArpEntry>[];
-    const parallelBatches = 20;
-
-    // Scan .1 to .254
-    for (var i = 1; i < 255; i += parallelBatches) {
-      final futures = <Future<ArpEntry?>>[];
-      for (var j = 0; j < parallelBatches; j++) {
-        final hostPart = i + j;
-        if (hostPart > 254) break;
-        futures.add(_pingHost('$baseIp.$hostPart'));
-      }
-
-      final results = await Future.wait(futures);
-      entries.addAll(results.whereType<ArpEntry>());
-    }
-    return Right(entries);
-  }
-
-  Future<ArpEntry?> _pingHost(String ip) async {
-    try {
-      // Android ping command supports these flags
-      final result = await Process.run('ping', ['-c', '1', '-W', '1', ip]);
-      if (result.exitCode == 0) {
-        return ArpEntry(
-          ip: ip,
-          mac: '00:00:00:00:00:00', // Cannot get MAC on Android 11+
-          vendor: 'Unknown (Android Limited)',
-        );
-      }
-    } catch (e) {
-      // Ignore ping failure to proceed to next IP
-    }
-    return null;
-  }
 }
+
+class _IsolateConfig {
+  final SendPort sendPort;
+  final String? targetSubnet;
+  final NetworkScanProfile profile;
+
+  _IsolateConfig({
+    required this.sendPort,
+    this.targetSubnet,
+    required this.profile,
+  });
+}
+
