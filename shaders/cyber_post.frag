@@ -50,7 +50,7 @@ void main() {
     float t = uTime * 0.75; 
 
     // ── Grid Scaling (Matching 75.0px box size vibe) ──
-    float gridScale = 5.5; 
+    float gridScale = 7.5; 
     vec2 gUv = aspectUv * gridScale;
     vec2 id = floor(gUv);
     vec2 fUv = fract(gUv) - 0.5;
@@ -64,9 +64,12 @@ void main() {
     float dist = sdRoundedRect(fUv, vec2(boxHalfSize), corner);
     
     // Dynamic offsets increased for more "Prominent" pop
-    float baseOffset = 0.012;
-    float highOffset = 0.065; // Increased from 0.045
+    float baseOffset = 0.0;
+    float highOffset = 0.065; // Increased from 0.065 for deeper waves
     vec2 shadowOffset = vec2(mix(baseOffset, highOffset, h));
+    
+    // Fade out shadow when flush with ground to make it perfectly flat
+    float shadowIntensity = smoothstep(0.0, 0.2, h);
 
     // ── Color Schemes (Synced with AppColors) ──
     vec3 color;
@@ -78,33 +81,33 @@ void main() {
         
         // Dark Shadow (Bottom Right)
         float sDist = sdRoundedRect(fUv - shadowOffset, vec2(boxHalfSize), corner);
-        float darkBlur = 0.05 + h * 0.1; // Increased blur for better depth
+        float darkBlur = 0.05 + h * 0.12; // Increased blur for better depth when high
         float darkShadow = smoothstep(darkBlur, -0.02, sDist);
-        color = mix(color, vec3(0.05, 0.1, 0.16), darkShadow * 0.18); // Darker shadow
+        color = mix(color, vec3(0.05, 0.1, 0.16), darkShadow * 0.18 * shadowIntensity); // Darker shadow, fades at bottom
         
         // Light Shadow (Top Left)
         float lDist = sdRoundedRect(fUv + shadowOffset, vec2(boxHalfSize), corner);
         float lightShadow = smoothstep(darkBlur * 0.8, -0.02, lDist);
-        color = mix(color, vec3(1.0), lightShadow * 0.95);
+        color = mix(color, vec3(1.0), lightShadow * 0.95 * shadowIntensity);
         
         // Body color shift
-        surfaceColor = mix(bgColor, vec3(1.0), h * 0.45);
+        surfaceColor = mix(bgColor, vec3(1.0), h * 0.50); // Slightly more prominent
     } else {
         color = bgColor;
         
         // Deep Black Shadow (Bottom Right)
         float sDist = sdRoundedRect(fUv - shadowOffset, vec2(boxHalfSize), corner);
-        float darkBlur = 0.05 + h * 0.1; 
+        float darkBlur = 0.05 + h * 0.12; 
         float darkShadow = smoothstep(darkBlur, -0.02, sDist);
-        color = mix(color, vec3(0.0), darkShadow * 0.9); // More pronounced dark shadow
+        color = mix(color, vec3(0.0), darkShadow * 0.9 * shadowIntensity); // Fades at bottom
         
         // Subtle Rim Light (Top Left)
         float lDist = sdRoundedRect(fUv + shadowOffset, vec2(boxHalfSize), corner);
         float lightShadow = smoothstep(darkBlur * 0.8, -0.02, lDist);
-        color = mix(color, vec3(1.0), lightShadow * 0.06); // Slightly more rim light
+        color = mix(color, vec3(1.0), lightShadow * 0.07 * shadowIntensity); // Rim light
         
         // Body color shift
-        surfaceColor = mix(bgColor, vec3(0.07, 0.12, 0.2), h * 0.5);
+        surfaceColor = mix(bgColor, vec3(0.07, 0.12, 0.2), h * 0.55); // Slightly more prominent
     }
 
     // Apply the box surface
