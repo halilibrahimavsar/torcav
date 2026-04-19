@@ -9,6 +9,7 @@ class CyberNeomorphicButton extends StatefulWidget {
   const CyberNeomorphicButton({
     required this.onPressed,
     required this.child,
+    this.onLongPress,
     this.width,
     this.height,
     this.padding = const EdgeInsets.all(AppSpacing.md),
@@ -18,6 +19,7 @@ class CyberNeomorphicButton extends StatefulWidget {
   });
 
   final VoidCallback? onPressed;
+  final VoidCallback? onLongPress;
   final Widget child;
   final double? width;
   final double? height;
@@ -107,6 +109,7 @@ class _CyberNeomorphicButtonState extends State<CyberNeomorphicButton>
       onTapUp: _handleTapUp,
       onTapCancel: _handleTapCancel,
       onTap: widget.onPressed,
+      onLongPress: widget.onLongPress,
       child: AnimatedBuilder(
         animation: Listenable.merge([_breathingAnimation, _pressAnimation]),
         builder: (context, child) {

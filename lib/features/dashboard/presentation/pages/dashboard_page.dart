@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,9 +9,11 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/l10n/app_localizations.dart';
+import '../../../security/domain/entities/security_assessment.dart';
 import '../../../security/domain/usecases/security_analyzer.dart';
 import '../../../security/presentation/bloc/notification/notification_bloc.dart';
 import '../../../wifi_scan/domain/entities/channel_rating.dart';
+import '../../../wifi_scan/domain/entities/scan_snapshot.dart';
 import '../../../wifi_scan/domain/entities/wifi_network.dart';
 import '../../../wifi_scan/domain/services/channel_rating_engine.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
@@ -37,11 +41,23 @@ class _DashboardPageState extends State<DashboardPage> {
   int _securityScore = 100;
   ChannelRating? _bestChannel;
   int? _currentChannel;
+  int? _newDeviceCount;
+  SecurityAssessment? _worstAssessment;
+  StreamSubscription<ScanSnapshot>? _scanSub;
 
   @override
   void initState() {
     super.initState();
     _loadNetworkInfo();
+    // Subscribe to live scan updates so the dashboard refreshes automatically.
+    final store = getIt<ScanSessionStore>();
+    _scanSub = store.snapshots.listen((_) => _loadNetworkInfo());
+  }
+
+  @override
+  void dispose() {
+    _scanSub?.cancel();
+    super.dispose();
   }
 
   Future<void> _loadNetworkInfo() async {
@@ -54,6 +70,7 @@ class _DashboardPageState extends State<DashboardPage> {
       ]);
 
       final store = getIt<ScanSessionStore>();
+      final allSnapshots = store.all;
       final latestSnapshot = store.latest;
       final networks =
           latestSnapshot?.networks.map((n) => n.toWifiNetwork()).toList() ??
@@ -61,11 +78,26 @@ class _DashboardPageState extends State<DashboardPage> {
 
       // Security score: lowest score across all scanned networks.
       int secScore = 100;
+      SecurityAssessment? worstAssessment;
       if (networks.isNotEmpty) {
         final analyzer = getIt<SecurityAnalyzer>();
-        secScore = networks
-            .map((n) => analyzer.assess(n, localBaseline: networks).score)
-            .reduce((a, b) => a < b ? a : b);
+        final assessments = networks
+            .map((n) => analyzer.assess(n, localBaseline: networks))
+            .toList();
+        worstAssessment = assessments.reduce(
+          (a, b) => a.score < b.score ? a : b,
+        );
+        secScore = worstAssessment.score;
+      }
+
+      // Snapshot diffing: count new BSSIDs vs the previous snapshot.
+      int? newDeviceCount;
+      if (allSnapshots.length >= 2) {
+        final prev = allSnapshots[allSnapshots.length - 2];
+        final prevBssids = prev.networks.map((n) => n.bssid).toSet();
+        final latestBssids =
+            latestSnapshot!.networks.map((n) => n.bssid).toSet();
+        newDeviceCount = latestBssids.difference(prevBssids).length;
       }
 
       // Best channel recommendation.
@@ -104,6 +136,8 @@ class _DashboardPageState extends State<DashboardPage> {
         _securityScore = secScore;
         _bestChannel = bestCh;
         _currentChannel = currentCh;
+        _newDeviceCount = newDeviceCount;
+        _worstAssessment = worstAssessment;
         _loading = false;
       });
     } catch (_) {
@@ -294,6 +328,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 delay: const Duration(milliseconds: 800),
                 child: _LastScanStrip(
                   networkCount: _networkCount,
+                  newDeviceCount: _newDeviceCount,
                   onViewDetails: () => widget.onNavigate('wifi'),
                 ),
               ),
@@ -305,6 +340,9 @@ class _DashboardPageState extends State<DashboardPage> {
                 child: _SafetyBadge(
                   score: _securityScore,
                   onTap: () => widget.onNavigate('security'),
+                  onLongPress: _worstAssessment != null
+                      ? () => _showScoreExplanation(context, _worstAssessment!)
+                      : null,
                 ),
               ),
 
@@ -323,6 +361,18 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showScoreExplanation(
+    BuildContext context,
+    SecurityAssessment assessment,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => _ScoreExplanationSheet(assessment: assessment),
     );
   }
 
@@ -554,11 +604,13 @@ class _QuickAction extends StatelessWidget {
 
 class _LastScanStrip extends StatelessWidget {
   final int networkCount;
+  final int? newDeviceCount;
   final VoidCallback onViewDetails;
 
   const _LastScanStrip({
     required this.networkCount,
     required this.onViewDetails,
+    this.newDeviceCount,
   });
 
   @override
@@ -607,6 +659,16 @@ class _LastScanStrip extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
+                if (newDeviceCount != null && newDeviceCount! > 0)
+                  Text(
+                    '+$newDeviceCount new',
+                    style: GoogleFonts.orbitron(
+                      color: Theme.of(context).colorScheme.error,
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
               ],
             ),
           ),
@@ -625,9 +687,14 @@ class _LastScanStrip extends StatelessWidget {
 
 class _SafetyBadge extends StatelessWidget {
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
   final int score;
 
-  const _SafetyBadge({required this.onTap, required this.score});
+  const _SafetyBadge({
+    required this.onTap,
+    required this.score,
+    this.onLongPress,
+  });
 
   Color _scoreColor(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
@@ -649,6 +716,7 @@ class _SafetyBadge extends StatelessWidget {
 
     return CyberNeomorphicButton(
       onPressed: onTap,
+      onLongPress: onLongPress,
       borderRadius: 20,
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
       child: Row(
@@ -705,6 +773,181 @@ class _SafetyBadge extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+// ── Score Explanation Sheet ─────────────────────────────────────────
+
+class _ScoreExplanationSheet extends StatelessWidget {
+  final SecurityAssessment assessment;
+
+  const _ScoreExplanationSheet({required this.assessment});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final findings = assessment.evidenceFindings;
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.55,
+      minChildSize: 0.3,
+      maxChildSize: 0.85,
+      builder: (_, scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+            color: scheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            border: Border(
+              top: BorderSide(
+                color: scheme.primary.withValues(alpha: 0.2),
+                width: 1,
+              ),
+            ),
+          ),
+          child: Column(
+            children: [
+              const SizedBox(height: 12),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: scheme.onSurfaceVariant.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    NeonText(
+                      'SECURITY SCORE',
+                      style: GoogleFonts.orbitron(
+                        color: scheme.primary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2,
+                      ),
+                      glowRadius: 6,
+                    ),
+                    const Spacer(),
+                    NeonText(
+                      '${assessment.score}%',
+                      style: GoogleFonts.orbitron(
+                        color: _scoreColor(scheme),
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                      ),
+                      glowColor: _scoreColor(scheme),
+                      glowRadius: 8,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  'Hold & release to go to Security Center for full details.',
+                  style: GoogleFonts.rajdhani(
+                    color: scheme.onSurfaceVariant,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Divider(height: 1),
+              Expanded(
+                child: findings.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No security findings detected.',
+                          style: GoogleFonts.rajdhani(
+                            color: scheme.onSurfaceVariant,
+                            fontSize: 14,
+                          ),
+                        ),
+                      )
+                    : ListView.separated(
+                        controller: scrollController,
+                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+                        itemCount: findings.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 8),
+                        itemBuilder: (context, i) {
+                          final f = findings[i];
+                          final color = _severityColor(f.severity.name, scheme);
+                          return GlassmorphicContainer(
+                            borderColor: color.withValues(alpha: 0.25),
+                            padding: const EdgeInsets.all(12),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 8,
+                                  height: 8,
+                                  margin: const EdgeInsets.only(top: 4),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: color,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        f.title,
+                                        style: GoogleFonts.orbitron(
+                                          color: scheme.onSurface,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        f.recommendation,
+                                        style: GoogleFonts.rajdhani(
+                                          color: scheme.onSurfaceVariant,
+                                          fontSize: 12,
+                                          height: 1.4,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Color _scoreColor(ColorScheme scheme) {
+    if (assessment.score >= 85) return scheme.primary;
+    if (assessment.score >= 60) return const Color(0xFFFFB300);
+    return scheme.error;
+  }
+
+  Color _severityColor(String severity, ColorScheme scheme) {
+    switch (severity) {
+      case 'critical':
+        return scheme.error;
+      case 'high':
+        return Colors.orange;
+      case 'medium':
+        return const Color(0xFFFFB300);
+      default:
+        return scheme.primary;
+    }
   }
 }
 

@@ -10,15 +10,19 @@ class AppSettings extends Equatable {
   final bool strictSafetyMode;
   final bool autoScanEnabled;
   final bool isDeepScanEnabled;
+  /// Timeout in milliseconds for each port probe during LAN scanning.
+  /// Lower values are faster but may miss open ports on slow networks.
+  final int portScanTimeoutMs;
 
   const AppSettings({
     this.scanIntervalSeconds = 30,
     this.defaultScanPasses = 3,
     this.defaultBackendPreference = WifiBackendPreference.auto,
-    this.includeHiddenSsids = true,
+    this.includeHiddenSsids = false,
     this.strictSafetyMode = true,
     this.autoScanEnabled = false,
     this.isDeepScanEnabled = false,
+    this.portScanTimeoutMs = 500,
   });
 
   AppSettings copyWith({
@@ -29,6 +33,7 @@ class AppSettings extends Equatable {
     bool? strictSafetyMode,
     bool? autoScanEnabled,
     bool? isDeepScanEnabled,
+    int? portScanTimeoutMs,
   }) {
     return AppSettings(
       scanIntervalSeconds: scanIntervalSeconds ?? this.scanIntervalSeconds,
@@ -39,6 +44,7 @@ class AppSettings extends Equatable {
       strictSafetyMode: strictSafetyMode ?? this.strictSafetyMode,
       autoScanEnabled: autoScanEnabled ?? this.autoScanEnabled,
       isDeepScanEnabled: isDeepScanEnabled ?? this.isDeepScanEnabled,
+      portScanTimeoutMs: portScanTimeoutMs ?? this.portScanTimeoutMs,
     );
   }
 
@@ -51,6 +57,7 @@ class AppSettings extends Equatable {
     strictSafetyMode,
     autoScanEnabled,
     isDeepScanEnabled,
+    portScanTimeoutMs,
   ];
 
   Map<String, dynamic> toJson() {
@@ -62,6 +69,7 @@ class AppSettings extends Equatable {
       'strictSafetyMode': strictSafetyMode,
       'autoScanEnabled': autoScanEnabled,
       'isDeepScanEnabled': isDeepScanEnabled,
+      'portScanTimeoutMs': portScanTimeoutMs,
     };
   }
 
@@ -72,10 +80,11 @@ class AppSettings extends Equatable {
       scanIntervalSeconds: _readInt(json['scanIntervalSeconds'], fallback: 30),
       defaultScanPasses: _readInt(json['defaultScanPasses'], fallback: 3),
       defaultBackendPreference: _parseBackendPreference(backendName),
-      includeHiddenSsids: _readBool(json['includeHiddenSsids'], fallback: true),
+      includeHiddenSsids: _readBool(json['includeHiddenSsids'], fallback: false),
       strictSafetyMode: _readBool(json['strictSafetyMode'], fallback: true),
       autoScanEnabled: _readBool(json['autoScanEnabled'], fallback: false),
       isDeepScanEnabled: _readBool(json['isDeepScanEnabled'], fallback: false),
+      portScanTimeoutMs: _readInt(json['portScanTimeoutMs'], fallback: 500),
     );
   }
 

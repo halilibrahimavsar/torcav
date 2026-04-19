@@ -7,7 +7,12 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/l10n/locale_cubit.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/theme/theme_cubit.dart';
+import '../../../performance/domain/repositories/speed_test_history_repository.dart';
+import '../../../security/data/datasources/security_local_data_source.dart';
+import '../../../wifi_scan/data/datasources/channel_rating_local_data_source.dart';
+import '../../../wifi_scan/data/datasources/wifi_scan_history_local_data_source.dart';
 import '../../../wifi_scan/domain/entities/scan_request.dart';
+import '../../../wifi_scan/domain/services/scan_session_store.dart';
 import '../../domain/entities/app_settings.dart';
 import '../../domain/services/app_settings_store.dart';
 
@@ -267,6 +272,14 @@ class _SettingsPageState extends State<SettingsPage> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
+                    subtitle: Text(
+                      'Actively probes for hidden SSIDs. '
+                      'Off by default — only enable on networks you own.',
+                      style: GoogleFonts.rajdhani(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
+                    ),
                     onChanged: (value) {
                       _update(settings.copyWith(includeHiddenSsids: value));
                     },
@@ -317,11 +330,162 @@ class _SettingsPageState extends State<SettingsPage> {
                       _update(settings.copyWith(strictSafetyMode: value));
                     },
                   ),
+                  Divider(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.1),
+                    height: 24,
+                  ),
+                  // Port scan timeout
+                  _NeonSliderTile(
+                    label: 'Port Scan Timeout',
+                    value: settings.portScanTimeoutMs.toDouble(),
+                    min: 200,
+                    max: 2000,
+                    divisions: 18,
+                    displayValue: '${settings.portScanTimeoutMs} ms',
+                    color: Theme.of(context).colorScheme.tertiary,
+                    onChanged: (value) {
+                      _update(
+                        settings.copyWith(portScanTimeoutMs: value.round()),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // ── Privacy & Data ──
+          StaggeredEntry(
+            delay: const Duration(milliseconds: 500),
+            child: NeonSectionHeader(
+              label: 'PRIVACY & DATA',
+              icon: Icons.privacy_tip_rounded,
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ),
+          const SizedBox(height: 12),
+          StaggeredEntry(
+            delay: const Duration(milliseconds: 550),
+            child: NeonCard(
+              glowColor: Theme.of(context).colorScheme.error,
+              glowIntensity: 0.04,
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: _NeonIconCircle(
+                      icon: Icons.delete_forever_rounded,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                    title: Text(
+                      'Wipe All Local Data',
+                      style: GoogleFonts.rajdhani(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Deletes all scan history, speed tests, security events '
+                      'and channel ratings from this device.',
+                      style: GoogleFonts.rajdhani(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(
+                        Icons.chevron_right_rounded,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.error.withValues(alpha: 0.6),
+                      ),
+                      onPressed: () => _confirmWipeAll(context),
+                    ),
+                    onTap: () => _confirmWipeAll(context),
+                    contentPadding: EdgeInsets.zero,
+                  ),
                 ],
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Future<void> _confirmWipeAll(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final errorColor = Theme.of(context).colorScheme.error;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (ctx) => AlertDialog(
+            backgroundColor: Theme.of(ctx).colorScheme.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: Text(
+              'WIPE ALL DATA',
+              style: GoogleFonts.orbitron(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(ctx).colorScheme.error,
+              ),
+            ),
+            content: Text(
+              'This will permanently delete all local scan history, speed test '
+              'records, security events, channel ratings and in-memory snapshots. '
+              'This action cannot be undone.',
+              style: GoogleFonts.rajdhani(fontSize: 14, height: 1.4),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(
+                  'CANCEL',
+                  style: GoogleFonts.orbitron(fontSize: 10),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(
+                  'WIPE ALL',
+                  style: GoogleFonts.orbitron(
+                    fontSize: 10,
+                    color: Theme.of(ctx).colorScheme.error,
+                  ),
+                ),
+              ),
+            ],
+          ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    // Clear in-memory session store and all persisted data.
+    getIt<ScanSessionStore>().clear();
+    await Future.wait([
+      getIt<SpeedTestHistoryRepository>().deleteAll(),
+      getIt<SecurityLocalDataSource>().clearAllSecurityEvents(),
+      getIt<ChannelRatingLocalDataSource>().clearHistory(),
+      getIt<WifiScanHistoryLocalDataSource>().clear(),
+    ]);
+
+    if (!mounted) return;
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          'All local data wiped.',
+          style: GoogleFonts.rajdhani(fontWeight: FontWeight.w600),
+        ),
+        backgroundColor: errorColor,
+        behavior: SnackBarBehavior.floating,
       ),
     );
   }

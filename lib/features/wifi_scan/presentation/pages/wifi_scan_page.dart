@@ -238,16 +238,6 @@ class _SnapshotViewState extends State<_SnapshotView> {
     super.dispose();
   }
 
-  void _triggerRescan(BuildContext context) {
-    final settings = getIt<AppSettingsStore>().value;
-    final request = ScanRequest(
-      passes: settings.isDeepScanEnabled ? settings.defaultScanPasses : 1,
-      includeHidden: settings.includeHiddenSsids,
-      backendPreference: settings.defaultBackendPreference,
-    );
-    context.read<WifiScanBloc>().add(WifiScanStarted(request: request));
-  }
-
   @override
   Widget build(BuildContext context) {
     if (widget.snapshot.networks.isEmpty) {
@@ -410,10 +400,69 @@ class _SnapshotViewState extends State<_SnapshotView> {
           // ── Quick / Deep Scan Toggle ──
           ScanModeToggle(
             quickScan: !getIt<AppSettingsStore>().value.isDeepScanEnabled,
-            onChanged: (isQuick) {
+            onChanged: (isQuick) async {
+              // Capture bloc before any async operation.
+              final bloc = context.read<WifiScanBloc>();
+              if (!isQuick) {
+                // Enabling deep scan — require explicit confirmation.
+                final confirmed = await showDialog<bool>(
+                  context: context,
+                  builder:
+                      (ctx) => AlertDialog(
+                        backgroundColor:
+                            Theme.of(ctx).colorScheme.surfaceContainerHigh,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        title: Text(
+                          'ENABLE DEEP SCAN',
+                          style: GoogleFonts.orbitron(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(ctx).colorScheme.error,
+                          ),
+                        ),
+                        content: Text(
+                          'Deep Scan performs banner grabbing and exposure analysis. '
+                          'Use only on networks you are authorized to scan. '
+                          'Unauthorized use may violate TCK 243/244 and similar laws.',
+                          style: GoogleFonts.rajdhani(fontSize: 14, height: 1.4),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(ctx, false),
+                            child: Text(
+                              'CANCEL',
+                              style: GoogleFonts.orbitron(fontSize: 10),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(ctx, true),
+                            child: Text(
+                              'I AM AUTHORIZED',
+                              style: GoogleFonts.orbitron(
+                                fontSize: 10,
+                                color: Theme.of(ctx).colorScheme.error,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                );
+                if (confirmed != true) return;
+              }
+              if (!mounted) return;
               final store = getIt<AppSettingsStore>();
               store.update(store.value.copyWith(isDeepScanEnabled: !isQuick));
-              _triggerRescan(context);
+              final settings = store.value;
+              final request = ScanRequest(
+                passes: settings.isDeepScanEnabled
+                    ? settings.defaultScanPasses
+                    : 1,
+                includeHidden: settings.includeHiddenSsids,
+                backendPreference: settings.defaultBackendPreference,
+              );
+              bloc.add(WifiScanStarted(request: request));
             },
           ),
           const SizedBox(height: 8),

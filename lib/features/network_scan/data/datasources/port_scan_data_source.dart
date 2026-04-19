@@ -4,11 +4,15 @@ import 'dart:io';
 
 import 'package:injectable/injectable.dart';
 
+import '../../../../features/settings/domain/services/app_settings_store.dart';
 import '../../domain/entities/service_fingerprint.dart';
 
 @LazySingleton()
 class PortScanDataSource {
-  static const int _timeoutMs = 500;
+  PortScanDataSource(this._settingsStore);
+
+  final AppSettingsStore _settingsStore;
+
   static const int _bannerTimeoutMs = 500;
 
   /// Expanded list of commonly exploited / vulnerable ports.
@@ -42,11 +46,13 @@ class PortScanDataSource {
 
   /// Scans the given IP for the target ports, yielding results as they arrive.
   ///
-  /// [timeout] allows adaptive scaling based on network latency.
+  /// Timeout is read from [AppSettingsStore] so users can tune it in Settings.
   Stream<ServiceFingerprint> scanPortsReactive(
     String ip, {
-    Duration timeout = const Duration(milliseconds: _timeoutMs),
+    Duration? timeout,
   }) async* {
+    final effectiveTimeout = timeout ??
+        Duration(milliseconds: _settingsStore.value.portScanTimeoutMs);
     final controller = StreamController<ServiceFingerprint>();
 
     // We use a small batching approach to avoid overwhelming the socket limit
@@ -61,7 +67,7 @@ class PortScanDataSource {
         final batch = ports.sublist(i, end);
 
         final futures = batch.map(
-          (entry) => _probeAndGrabBanner(ip, entry.key, entry.value, timeout),
+          (entry) => _probeAndGrabBanner(ip, entry.key, entry.value, effectiveTimeout),
         );
 
         final results = await Future.wait(futures);

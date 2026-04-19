@@ -212,7 +212,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i165.MdnsDataSource>(() => _i165.MdnsDataSource());
     gh.lazySingleton<_i119.UpnpDataSource>(() => _i119.UpnpDataSource());
     gh.lazySingleton<_i978.PortScanDataSource>(
-      () => _i978.PortScanDataSource(),
+      () => _i978.PortScanDataSource(gh<_i552.AppSettingsStore>()),
     );
     gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
     gh.lazySingleton<_i904.SurveyGuidanceService>(

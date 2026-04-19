@@ -26,8 +26,63 @@ class PerformancePage extends StatelessWidget {
   }
 }
 
-class _PerformanceView extends StatelessWidget {
+class _PerformanceView extends StatefulWidget {
   const _PerformanceView();
+
+  @override
+  State<_PerformanceView> createState() => _PerformanceViewState();
+}
+
+class _PerformanceViewState extends State<_PerformanceView> {
+  Future<void> _startTestWithWarning() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (ctx) => AlertDialog(
+            backgroundColor: Theme.of(ctx).colorScheme.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: Text(
+              'DATA USAGE WARNING',
+              style: GoogleFonts.orbitron(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: AppColors.neonOrange,
+                letterSpacing: 1,
+              ),
+            ),
+            content: Text(
+              'This speed test downloads ~300–500 MB of data. '
+              'If you are on a mobile/metered connection this may '
+              'incur charges or consume your data allowance.',
+              style: GoogleFonts.rajdhani(fontSize: 14, height: 1.4),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(
+                  'CANCEL',
+                  style: GoogleFonts.orbitron(fontSize: 10),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(
+                  'CONTINUE',
+                  style: GoogleFonts.orbitron(
+                    fontSize: 10,
+                    color: AppColors.neonCyan,
+                  ),
+                ),
+              ),
+            ],
+          ),
+    );
+    if (confirmed == true && mounted) {
+      context.read<PerformanceBloc>().add(StartSpeedTest());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,10 +137,7 @@ class _PerformanceView extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 40),
                             child: NeonButton(
-                              onPressed:
-                                  () => context.read<PerformanceBloc>().add(
-                                    StartSpeedTest(),
-                                  ),
+                              onPressed: _startTestWithWarning,
                               label:
                                   isInitial
                                       ? context.l10n.performanceStart
@@ -336,13 +388,18 @@ class _InterpretationSection extends StatelessWidget {
         title: _packetLossTitle(result.packetLoss),
         body: _packetLossBody(result.packetLoss),
       ),
-      if (result.loadedLatencyMs > 0)
+      if (result.loadedLatencyMs > 0) ...[
         _InterpretationCard(
           icon: Icons.speed_rounded,
           color: _loadedLatencyColor(result.loadedLatencyMs, result.latencyMs),
           title: _loadedLatencyTitle(result.loadedLatencyMs, result.latencyMs),
           body: _loadedLatencyBody(result.loadedLatencyMs, result.latencyMs),
         ),
+        _BufferbloatGradeCard(
+          loadedLatencyMs: result.loadedLatencyMs,
+          idleLatencyMs: result.latencyMs,
+        ),
+      ],
     ];
   }
 
@@ -517,6 +574,124 @@ class _InterpretationSection extends StatelessWidget {
       return 'Noticeable delay when others are using the network. Gaming while downloading may suffer.';
     }
     return 'High Bufferbloat. Connection becomes unresponsive during large downloads. Consider enabling QoS on your router.';
+  }
+}
+
+// ── Bufferbloat A-F Grade Card ────────────────────────────────────────────────
+
+/// Displays the Waveform-style A-F bufferbloat grade based on added latency
+/// under load (loadedLatencyMs - idleLatencyMs).
+class _BufferbloatGradeCard extends StatelessWidget {
+  final double loadedLatencyMs;
+  final double idleLatencyMs;
+
+  const _BufferbloatGradeCard({
+    required this.loadedLatencyMs,
+    required this.idleLatencyMs,
+  });
+
+  static const _grades = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+  /// Added latency thresholds (ms) for grades A–F (Waveform standard).
+  static const _thresholds = [5.0, 30.0, 60.0, 200.0, 400.0];
+
+  String get _grade {
+    final added = loadedLatencyMs - idleLatencyMs;
+    for (var i = 0; i < _thresholds.length; i++) {
+      if (added <= _thresholds[i]) return _grades[i];
+    }
+    return 'F';
+  }
+
+  Color get _color {
+    switch (_grade) {
+      case 'A':
+        return AppColors.neonGreen;
+      case 'B':
+        return AppColors.neonCyan;
+      case 'C':
+        return Colors.orange;
+      case 'D':
+        return Colors.deepOrange;
+      default:
+        return AppColors.neonRed;
+    }
+  }
+
+  String get _description {
+    switch (_grade) {
+      case 'A':
+        return 'Excellent bufferbloat control. Your router keeps latency low even under heavy load.';
+      case 'B':
+        return 'Good bufferbloat. Minor latency increase under load — most users won\'t notice.';
+      case 'C':
+        return 'Moderate bufferbloat. Gaming and video calls may lag when others are downloading.';
+      case 'D':
+        return 'Poor bufferbloat. Connection becomes sluggish under load. Enable QoS on your router.';
+      case 'E':
+        return 'Severe bufferbloat. Real-time apps will fail during concurrent downloads.';
+      default:
+        return 'Critical bufferbloat. Your router does not control queue depth. Upgrade firmware or hardware.';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = _color;
+    return NeonCard(
+      glowColor: color,
+      glowIntensity: 0.08,
+      padding: const EdgeInsets.all(14),
+      child: Row(
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color.withValues(alpha: 0.12),
+              border: Border.all(color: color.withValues(alpha: 0.4), width: 2),
+            ),
+            child: Center(
+              child: Text(
+                _grade,
+                style: GoogleFonts.orbitron(
+                  color: color,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'BUFFERBLOAT GRADE',
+                  style: GoogleFonts.orbitron(
+                    color: color,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  _description,
+                  style: GoogleFonts.rajdhani(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    fontSize: 13,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
