@@ -1,0 +1,137 @@
+import 'dart:ui' as ui;
+import 'package:flutter/material.dart';
+import '../../../../core/theme/app_theme.dart';
+
+class NeomorphicBackground extends StatefulWidget {
+  final Widget? child;
+  final ValueNotifier<double> scrollVelocity;
+
+  const NeomorphicBackground({
+    super.key,
+    this.child,
+    required this.scrollVelocity,
+  });
+
+  @override
+  State<NeomorphicBackground> createState() => _NeomorphicBackgroundState();
+}
+
+class _NeomorphicBackgroundState extends State<NeomorphicBackground>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  ui.FragmentShader? _shader;
+  bool _shaderLoaded = false;
+  double _smoothedVelocity = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 60),
+    )..repeat();
+
+    _loadShader();
+  }
+
+  Future<void> _loadShader() async {
+    try {
+      final program = await ui.FragmentProgram.fromAsset(
+        'shaders/neomorphic.frag',
+      );
+      if (mounted) {
+        setState(() {
+          _shader = program.fragmentShader();
+          _shaderLoaded = true;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading shader: $e');
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isLight = theme.brightness == Brightness.light;
+    final baseColor = isLight ? AppColors.lightBg : AppColors.deepBlack;
+
+    return Stack(
+      children: [
+        Positioned.fill(child: Container(color: baseColor)),
+        Positioned.fill(
+          child: RepaintBoundary(
+            child: AnimatedBuilder(
+              animation: Listenable.merge([_controller, widget.scrollVelocity]),
+              builder: (context, child) {
+                _smoothedVelocity =
+                    _smoothedVelocity * 0.9 +
+                    (widget.scrollVelocity.value / 20.0).clamp(0.0, 1.0) * 0.1;
+                
+                // Note: We don't decay the velocity here because the parent (switcher) 
+                // or the global updater should handle it to avoid duplicate decay.
+                // However, the original code had scrollVelocity.value *= 0.95;
+                // Since this is now instance-specific via theSwitcher, we can keep it or move it.
+                // Let's keep the logic consistent with how it was.
+                widget.scrollVelocity.value *= 0.95;
+
+                if (_shaderLoaded && _shader != null) {
+                  return CustomPaint(
+                    painter: _ShaderPainter(
+                      shader: _shader!,
+                      time: _controller.value * 100.0,
+                      velocity: _smoothedVelocity,
+                      isLight: isLight,
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        ),
+        if (widget.child != null) widget.child!,
+      ],
+    );
+  }
+}
+
+class _ShaderPainter extends CustomPainter {
+  final ui.FragmentShader shader;
+  final double time;
+  final double velocity;
+  final bool isLight;
+
+  _ShaderPainter({
+    required this.shader,
+    required this.time,
+    required this.velocity,
+    required this.isLight,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    shader
+      ..setFloat(0, size.width)
+      ..setFloat(1, size.height)
+      ..setFloat(2, time)
+      ..setFloat(3, velocity)
+      ..setFloat(4, isLight ? 1.0 : 0.0);
+
+    final paint = Paint()..shader = shader;
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _ShaderPainter oldDelegate) {
+    return oldDelegate.time != time ||
+        oldDelegate.velocity != velocity ||
+        oldDelegate.isLight != isLight;
+  }
+}

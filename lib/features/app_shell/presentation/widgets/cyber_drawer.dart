@@ -16,24 +16,21 @@ class CyberDrawer extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Drawer(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(30),
           bottomRight: Radius.circular(30),
         ),
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            right: BorderSide(
-              color: Theme.of(
-                context,
-              ).colorScheme.primary.withValues(alpha: 0.2),
-              width: 1.5,
-            ),
-          ),
+      child: GlassmorphicContainer(
+        borderRadius: const BorderRadius.only(
+          topRight: Radius.circular(30),
+          bottomRight: Radius.circular(30),
         ),
+        padding: EdgeInsets.zero,
+        blurSigma: 15,
         child: Column(
           children: [
             // ── Drawer Header: Agent Profile ──
@@ -77,9 +74,18 @@ class CyberDrawer extends StatelessWidget {
 
             // ── Actions Section ──
             Divider(
-              color: Theme.of(context).dividerColor.withValues(alpha: 0.2),
+              color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 12),
+            _DrawerActionTile(
+              icon: Icons.settings_outlined,
+              label: l10n.settingsTitle,
+              onTap: () {
+                Navigator.pop(context);
+                onNavigate('settings');
+              },
+            ),
+            const SizedBox(height: 32),
           ],
         ),
       ),
@@ -260,6 +266,58 @@ class _ThemeOption extends StatelessWidget {
             color: isSelected ? color.withValues(alpha: 0.1) : null,
           ),
           child: Icon(icon, color: color),
+        ),
+      ),
+    );
+  }
+}
+
+class _DrawerActionTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _DrawerActionTile({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              Icon(
+                icon,
+                size: 20,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 16),
+              Text(
+                label,
+                style: GoogleFonts.rajdhani(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+              const Spacer(),
+              Icon(
+                Icons.chevron_right_rounded,
+                size: 16,
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -420,6 +420,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get theme => 'Theme';
 
   @override
+  String get settingsBackgroundStyle => 'Background Style';
+
+  @override
+  String get backgroundNeomorphic => 'Neomorphic (High Performance)';
+
+  @override
+  String get backgroundClassic => 'Classic Grid';
+
+  @override
+  String get backgroundSelectionRestricted => 'Cyber grid styles are optimized for dark mode and only available when using the dark theme.';
+
+  @override
   String get settingsScanBehavior => 'Scan Behavior';
 
   @override

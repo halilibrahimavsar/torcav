@@ -53,15 +53,15 @@ class _SecurityCenterView extends StatelessWidget {
               final isLoading =
                   state is SecurityLoading ||
                   (state is SecurityLoaded && state.isDnsLoading);
-              return IconButton(
+                      return IconButton(
                 icon:
                     isLoading
-                        ? const SizedBox(
+                        ? SizedBox(
                           width: 20,
                           height: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: Colors.white70,
+                            color: scheme.primary,
                           ),
                         )
                         : const Icon(Icons.refresh_rounded),
@@ -168,7 +168,7 @@ class _SecurityCenterView extends StatelessWidget {
                     child: Text(
                       state.message,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.rajdhani(color: Colors.white70),
+                      style: GoogleFonts.rajdhani(color: scheme.onSurface.withValues(alpha: 0.7)),
                     ),
                   ),
                   const SizedBox(height: 24),

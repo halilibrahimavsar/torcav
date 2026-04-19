@@ -861,6 +861,30 @@ abstract class AppLocalizations {
   /// **'Theme'**
   String get theme;
 
+  /// Label for the background selection setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Background Style'**
+  String get settingsBackgroundStyle;
+
+  /// Label for the new shader-based background.
+  ///
+  /// In en, this message translates to:
+  /// **'Neomorphic (High Performance)'**
+  String get backgroundNeomorphic;
+
+  /// Label for the original particle grid background.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic Grid'**
+  String get backgroundClassic;
+
+  /// Info message explaining why background selection is disabled in light mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Cyber grid styles are optimized for dark mode and only available when using the dark theme.'**
+  String get backgroundSelectionRestricted;
+
   /// Settings Scan Behavior
   ///
   /// In en, this message translates to:

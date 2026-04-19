@@ -104,6 +104,8 @@ flutter:
 
   shaders:
     - shaders/cyber_post.frag
+    - shaders/neomorphic.frag
+    - shaders/premium_grid.frag
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

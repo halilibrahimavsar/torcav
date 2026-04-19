@@ -420,6 +420,18 @@ class AppLocalizationsTr extends AppLocalizations {
   String get theme => 'Tema';
 
   @override
+  String get settingsBackgroundStyle => 'Arka Plan Stili';
+
+  @override
+  String get backgroundNeomorphic => 'Neomorfik (Yüksek Performans)';
+
+  @override
+  String get backgroundClassic => 'Klasik Izgara';
+
+  @override
+  String get backgroundSelectionRestricted => 'Siber ızgara stilleri karanlık mod için optimize edilmiştir ve yalnızca karanlık tema kullanılırken seçilebilir.';
+
+  @override
   String get settingsScanBehavior => 'Tarama Davranışı';
 
   @override

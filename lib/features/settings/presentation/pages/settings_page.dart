@@ -167,6 +167,57 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
           ),
+          const SizedBox(height: 8),
+
+          // Background Style
+          StaggeredEntry(
+            delay: const Duration(milliseconds: 250),
+            child: NeonCard(
+              glowColor: Theme.of(context).colorScheme.tertiary,
+              glowIntensity: 0.04,
+              onTap: () => _showBackgroundStyleDialog(context),
+              padding: const EdgeInsets.all(14),
+              child: Row(
+                children: [
+                  _NeonIconCircle(
+                    icon: Icons.wallpaper_rounded,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.settingsBackgroundStyle,
+                          style: GoogleFonts.rajdhani(
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          _getBackgroundTypeName(settings.backgroundType, l10n),
+                          style: GoogleFonts.rajdhani(
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.tertiary.withValues(alpha: 0.4),
+                    size: 20,
+                  ),
+                ],
+              ),
+            ),
+          ),
           const SizedBox(height: 24),
 
           // ── Scan Behavior ──
@@ -646,6 +697,63 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  void _showBackgroundStyleDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(
+              color: Theme.of(
+                context,
+              ).colorScheme.tertiary.withValues(alpha: 0.15),
+            ),
+          ),
+          title: NeonText(
+            l10n.settingsBackgroundStyle,
+            style: GoogleFonts.orbitron(
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.tertiary,
+            ),
+            glowRadius: 4,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _BackgroundOption(
+                label: l10n.backgroundNeomorphic,
+                type: AppBackgroundType.neomorphic,
+                onSelected: (type) {
+                  _update(_store.value.copyWith(backgroundType: type));
+                  Navigator.pop(context);
+                },
+              ),
+              _BackgroundOption(
+                label: l10n.backgroundClassic,
+                type: AppBackgroundType.classic,
+                onSelected: (type) {
+                  _update(_store.value.copyWith(backgroundType: type));
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  String _getBackgroundTypeName(AppBackgroundType type, AppLocalizations l10n) {
+    return switch (type) {
+      AppBackgroundType.neomorphic => l10n.backgroundNeomorphic,
+      AppBackgroundType.classic => l10n.backgroundClassic,
+    };
+  }
+
   void _update(AppSettings settings) {
     setState(() => _store.update(settings));
   }
@@ -834,6 +942,71 @@ class _LanguageOption extends StatelessWidget {
                 const Spacer(),
                 if (isSelected)
                   Icon(Icons.check_circle_rounded, color: secondary, size: 20),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Background Option ────────────────────────────────────────────────
+
+class _BackgroundOption extends StatelessWidget {
+  final String label;
+  final AppBackgroundType type;
+  final ValueChanged<AppBackgroundType> onSelected;
+
+  const _BackgroundOption({
+    required this.label,
+    required this.type,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final settingsStore = getIt<AppSettingsStore>();
+    final isSelected = settingsStore.value.backgroundType == type;
+    final tertiary = Theme.of(context).colorScheme.tertiary;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () => onSelected(type),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color:
+                  isSelected
+                      ? tertiary.withValues(alpha: 0.1)
+                      : Colors.transparent,
+              border:
+                  isSelected
+                      ? Border.all(color: tertiary.withValues(alpha: 0.3))
+                      : null,
+            ),
+            child: Row(
+              children: [
+                Text(
+                  label,
+                  style: GoogleFonts.rajdhani(
+                    color:
+                        isSelected
+                            ? tertiary
+                            : Theme.of(context).colorScheme.onSurface,
+                    fontSize: 16,
+                    fontWeight:
+                        isSelected ? FontWeight.bold : FontWeight.w600,
+                  ),
+                ),
+                const Spacer(),
+                if (isSelected)
+                  Icon(Icons.check_circle_rounded, color: tertiary, size: 20),
               ],
             ),
           ),

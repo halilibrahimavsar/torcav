@@ -221,7 +221,7 @@ class GlassmorphicContainer extends StatelessWidget {
         backgroundColor ??
         (isDark
             ? theme.colorScheme.surfaceContainerLow.withValues(alpha: 0.15)
-            : theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.45));
+            : theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.35));
 
     return ClipRRect(
       borderRadius: borderRadius,
@@ -941,13 +941,13 @@ class NeonButton extends StatelessWidget {
                     ? AppColors.darkSurface.withValues(alpha: 0.85)
                     : Theme.of(
                       context,
-                    ).colorScheme.primaryContainer.withValues(alpha: 0.9),
+                    ).colorScheme.primaryContainer.withValues(alpha: 0.8),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color:
                   isDark
                       ? effectiveColor.withValues(alpha: 0.5)
-                      : Colors.transparent,
+                      : effectiveColor.withValues(alpha: 0.2),
               width: 1.5,
             ),
             boxShadow: [

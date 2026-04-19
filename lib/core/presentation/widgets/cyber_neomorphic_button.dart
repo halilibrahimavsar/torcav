@@ -101,7 +101,7 @@ class _CyberNeomorphicButtonState extends State<CyberNeomorphicButton>
     final double baseHighlightAlpha = isDark ? 0.05 : 0.8; // Subtler highlights
     final double baseShadowAlpha = isDark ? 0.7 : 0.45; // Balanced depth
 
-    final Color highlightColor = isDark ? AppColors.neonCyan : Colors.white;
+    final Color highlightColor = isDark ? AppColors.neonCyan : AppColors.softWhite;
     final Color shadowColor = isDark ? Colors.black : const Color(0xFFC0CCE0);
 
     return GestureDetector(
@@ -134,7 +134,7 @@ class _CyberNeomorphicButtonState extends State<CyberNeomorphicButton>
                   colors:
                       isDark
                           ? [AppColors.darkSurfaceLight, AppColors.darkSurface]
-                          : [Colors.white, const Color(0xFFF1F5F9)],
+                          : [AppColors.softWhite, AppColors.lightSurface],
                 ),
                 boxShadow: [
                   // Outer Shadows (fade out as button is pressed)

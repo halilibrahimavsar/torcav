@@ -2,6 +2,11 @@ import 'package:equatable/equatable.dart';
 
 import '../../../wifi_scan/domain/entities/scan_request.dart';
 
+enum AppBackgroundType {
+  neomorphic,
+  classic,
+}
+
 class AppSettings extends Equatable {
   final int scanIntervalSeconds;
   final int defaultScanPasses;
@@ -14,6 +19,7 @@ class AppSettings extends Equatable {
   /// Lower values are faster but may miss open ports on slow networks.
   final int portScanTimeoutMs;
   final bool isAiEnabled;
+  final AppBackgroundType backgroundType;
 
 
   const AppSettings({
@@ -26,6 +32,7 @@ class AppSettings extends Equatable {
     this.isDeepScanEnabled = false,
     this.portScanTimeoutMs = 500,
     this.isAiEnabled = true,
+    this.backgroundType = AppBackgroundType.neomorphic,
   });
 
 
@@ -39,6 +46,7 @@ class AppSettings extends Equatable {
     bool? isDeepScanEnabled,
     int? portScanTimeoutMs,
     bool? isAiEnabled,
+    AppBackgroundType? backgroundType,
   }) {
     return AppSettings(
       scanIntervalSeconds: scanIntervalSeconds ?? this.scanIntervalSeconds,
@@ -51,6 +59,7 @@ class AppSettings extends Equatable {
       isDeepScanEnabled: isDeepScanEnabled ?? this.isDeepScanEnabled,
       portScanTimeoutMs: portScanTimeoutMs ?? this.portScanTimeoutMs,
       isAiEnabled: isAiEnabled ?? this.isAiEnabled,
+      backgroundType: backgroundType ?? this.backgroundType,
     );
   }
 
@@ -66,6 +75,7 @@ class AppSettings extends Equatable {
     isDeepScanEnabled,
     portScanTimeoutMs,
     isAiEnabled,
+    backgroundType,
   ];
 
 
@@ -80,12 +90,14 @@ class AppSettings extends Equatable {
       'isDeepScanEnabled': isDeepScanEnabled,
       'portScanTimeoutMs': portScanTimeoutMs,
       'isAiEnabled': isAiEnabled,
+      'backgroundType': backgroundType.name,
     };
 
   }
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
     final backendName = json['defaultBackendPreference'] as String?;
+    final bgTypeName = json['backgroundType'] as String?;
 
     return AppSettings(
       scanIntervalSeconds: _readInt(json['scanIntervalSeconds'], fallback: 30),
@@ -97,6 +109,7 @@ class AppSettings extends Equatable {
       isDeepScanEnabled: _readBool(json['isDeepScanEnabled'], fallback: false),
       portScanTimeoutMs: _readInt(json['portScanTimeoutMs'], fallback: 500),
       isAiEnabled: _readBool(json['isAiEnabled'], fallback: true),
+      backgroundType: _parseBackgroundType(bgTypeName),
     );
 
   }
@@ -120,5 +133,14 @@ class AppSettings extends Equatable {
       }
     }
     return WifiBackendPreference.auto;
+  }
+
+  static AppBackgroundType _parseBackgroundType(String? name) {
+    for (final value in AppBackgroundType.values) {
+      if (value.name == name) {
+        return value;
+      }
+    }
+    return AppBackgroundType.neomorphic;
   }
 }

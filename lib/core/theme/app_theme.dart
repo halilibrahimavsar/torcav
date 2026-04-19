@@ -45,14 +45,12 @@ class AppColors {
   static const Color textMuted = Color(0xFF667085);
 
   // ── Light Mode Tokens (Clean & High Contrast) ──
-  static const Color lightBg = Color(
-    0xFFEEF2F7,
-  ); // Perfectly synced with neomorphic shader
-  static const Color lightBgSecondary = Color(0xFFF1F5F9); // Slate-100
-  static const Color lightSurface = Color(0xFFFFFFFF); // Pure white surface
-  static const Color lightSurfaceSecondary = Color(0xFFF1F5F9); // Slate-100
-  static const Color lightSurfaceTertiary = Color(0xFFE2E8F0); // Slate-200
-  static const Color softWhite = Color(0xFFFFFFFF); // Pure white fallback
+  static const Color lightBg = Color(0xFFCBD5E1); // Slate-300
+  static const Color lightBgSecondary = Color(0xFFE2E8F0); // Slate-200
+  static const Color lightSurface = Color(0xFFE2E8F0); // Slate-200
+  static const Color lightSurfaceSecondary = Color(0xFFCBD5E1); // Slate-300
+  static const Color lightSurfaceTertiary = Color(0xFF94A3B8); // Slate-400
+  static const Color softWhite = Color(0xFFF1F5F9); // Slate-100
   static const Color lightGlassBorder = Color(0x33006064); // Hint of Ink Cyan
 
   // ── Mesh Gradient Pastels (Premium Fluid Background) ──
@@ -288,7 +286,12 @@ class AppTheme {
       onSecondary: AppColors.softWhite,
       onSurface: AppColors.textPrimaryLight,
       onError: AppColors.softWhite,
-      surfaceContainerHighest: AppColors.lightSurfaceSecondary,
+      // Mapped to Slate-100/200 for better bento-grid depth
+      surfaceContainer: AppColors.lightSurfaceSecondary,
+      surfaceContainerLow: AppColors.lightSurface,
+      surfaceContainerHigh: AppColors.lightSurfaceTertiary,
+      primaryContainer: AppColors.lightSurfaceSecondary, // Muted Slate-200 for buttons
+      onPrimaryContainer: AppColors.inkCyan,
     );
 
     return ThemeData(

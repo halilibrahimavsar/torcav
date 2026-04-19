@@ -589,6 +589,22 @@
     "@theme": {
         "description": "Theme"
     },
+    "settingsBackgroundStyle": "Background Style",
+    "@settingsBackgroundStyle": {
+        "description": "Label for the background selection setting."
+    },
+    "backgroundNeomorphic": "Neomorphic (High Performance)",
+    "@backgroundNeomorphic": {
+        "description": "Label for the new shader-based background."
+    },
+    "backgroundClassic": "Classic Grid",
+    "@backgroundClassic": {
+        "description": "Label for the original particle grid background."
+    },
+    "backgroundSelectionRestricted": "Cyber grid styles are optimized for dark mode and only available when using the dark theme.",
+    "@backgroundSelectionRestricted": {
+        "description": "Info message explaining why background selection is disabled in light mode."
+    },
     "settingsScanBehavior": "Scan Behavior",
     "@settingsScanBehavior": {
         "description": "Settings Scan Behavior"
