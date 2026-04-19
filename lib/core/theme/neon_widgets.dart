@@ -788,32 +788,29 @@ class NeonSectionHeader extends StatelessWidget {
     final effectiveColor = color ?? Theme.of(context).colorScheme.primary;
     return Row(
       children: [
-        if (leading != null) ...[
-          leading!,
-          const SizedBox(width: 8),
-        ],
         if (icon != null) ...[
           Icon(icon, color: effectiveColor, size: 16),
           const SizedBox(width: 8),
         ],
-        Flexible(
-          child: Text(
-            label.toUpperCase(),
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.orbitron(
-              color: effectiveColor.withValues(alpha: 0.7),
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 2,
-            ),
+        Text(
+          label.toUpperCase(),
+          style: GoogleFonts.orbitron(
+            color: effectiveColor.withValues(alpha: 0.7),
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 2,
           ),
         ),
-        if (trailing != null) ...[
+        if (leading != null) ...[
           const SizedBox(width: 8),
-          trailing!,
+          leading!,
         ],
         const SizedBox(width: 12),
         Expanded(child: NeonDivider(color: effectiveColor)),
+        if (trailing != null) ...[
+          const SizedBox(width: 12),
+          trailing!,
+        ],
       ],
     );
   }
@@ -1349,11 +1346,12 @@ class _FoldableNeonSectionState extends State<FoldableNeonSection> {
             label: widget.label,
             icon: widget.icon,
             color: widget.color,
-            leading: Icon(
-              _isExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_right_rounded,
+            leading: widget.infoBadge,
+            trailing: Icon(
+              _isExpanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
               color: widget.color,
+              size: 20,
             ),
-            trailing: widget.infoBadge,
           ),
         ),
         const SizedBox(height: 16),
