@@ -64,6 +64,26 @@ class NetworkSecurityCard extends StatelessWidget {
                 index: entry.key + knownNetworks.length,
               );
             }),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  context.read<SecurityBloc>().add(SecurityStarted());
+                },
+                icon: const Icon(Icons.fingerprint_rounded),
+                label: Text(
+                  l10n.scanAllCaps,
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: scheme.primary.withValues(alpha: 0.1),
+                  foregroundColor: scheme.primary,
+                  side: BorderSide(color: scheme.primary.withValues(alpha: 0.3)),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+            ),
           ],
         ],
       ),

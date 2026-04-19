@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:torcav/core/di/injection.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
@@ -15,11 +17,65 @@ import 'package:torcav/features/security/presentation/widgets/cyber_grid_backgro
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    debugPrint('[TorcavError] ${details.exceptionAsString()}');
+  };
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    debugPrint('[TorcavError] Uncaught: $error\n$stack');
+    return true;
+  };
+
+  ErrorWidget.builder = (details) => _NeonErrorWidget(details: details);
+
   // Initialize Dependency Injection
   await configureDependencies();
   await getIt<ScanSessionStore>().restore();
 
   runApp(const TorcavApp());
+}
+
+class _NeonErrorWidget extends StatelessWidget {
+  final FlutterErrorDetails details;
+  const _NeonErrorWidget({required this.details});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: const Color(0xFF0A0A0F),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.warning_amber_rounded, color: Color(0xFFFF4444), size: 48),
+            const SizedBox(height: 16),
+            Text(
+              'RENDERING ERROR',
+              style: GoogleFonts.orbitron(
+                color: const Color(0xFFFF4444),
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              details.exceptionAsString(),
+              style: GoogleFonts.rajdhani(
+                color: const Color(0xFF888888),
+                fontSize: 12,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class TorcavApp extends StatelessWidget {

@@ -13,6 +13,9 @@
     "pingAction",
     "pingSuccess",
     "pingFailure",
+    "settingsAiClassification",
+    "settingsAiClassificationDesc",
+    "aiBadgeLabel",
     "shieldLabReady",
     "deepScanRunning",
     "noIdentifiedNetworks",
@@ -89,7 +92,9 @@
     "netInfoGatewayTitle",
     "netInfoGatewayDesc",
     "dnsReadyStatus",
-    "dnsIdleDescription"
+    "dnsIdleDescription",
+    "netSecInfoTitle",
+    "netSecInfoDesc"
   ],
 
   "ku": [
@@ -106,6 +111,9 @@
     "pingAction",
     "pingSuccess",
     "pingFailure",
+    "settingsAiClassification",
+    "settingsAiClassificationDesc",
+    "aiBadgeLabel",
     "shieldLabReady",
     "deepScanRunning",
     "noIdentifiedNetworks",
@@ -182,7 +190,9 @@
     "netInfoGatewayTitle",
     "netInfoGatewayDesc",
     "dnsReadyStatus",
-    "dnsIdleDescription"
+    "dnsIdleDescription",
+    "netSecInfoTitle",
+    "netSecInfoDesc"
   ],
 
   "tr": [
@@ -213,7 +223,6 @@
     "dnsProvider",
     "runTest",
     "integrityCheck",
-    "networkSecurity",
     "portScanAction",
     "hostnameLookupAction",
     "arpInfoAction",

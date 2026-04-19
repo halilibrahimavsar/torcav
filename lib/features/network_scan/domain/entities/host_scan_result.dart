@@ -18,6 +18,8 @@ class HostScanResult extends Equatable {
   final bool isGateway;
   final String? netbiosName;
   final bool isSuspicious;
+  final bool isAiClassified;
+
 
   const HostScanResult({
     required this.ip,
@@ -33,7 +35,9 @@ class HostScanResult extends Equatable {
     this.isGateway = false,
     this.netbiosName,
     this.isSuspicious = false,
+    this.isAiClassified = false,
   });
+
 
   HostScanResult copyWith({
     String? ip,
@@ -49,6 +53,7 @@ class HostScanResult extends Equatable {
     bool? isGateway,
     String? netbiosName,
     bool? isSuspicious,
+    bool? isAiClassified,
   }) {
     return HostScanResult(
       ip: ip ?? this.ip,
@@ -64,8 +69,10 @@ class HostScanResult extends Equatable {
       isGateway: isGateway ?? this.isGateway,
       netbiosName: netbiosName ?? this.netbiosName,
       isSuspicious: isSuspicious ?? this.isSuspicious,
+      isAiClassified: isAiClassified ?? this.isAiClassified,
     );
   }
+
 
   List<VulnerabilityFinding> get vulnerabilities =>
       exposureFindings.map((finding) => finding.toLegacyFinding()).toList();
@@ -85,5 +92,7 @@ class HostScanResult extends Equatable {
     isGateway,
     netbiosName,
     isSuspicious,
+    isAiClassified,
   ];
+
 }

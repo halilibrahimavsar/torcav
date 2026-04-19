@@ -284,6 +284,29 @@ class _SettingsPageState extends State<SettingsPage> {
                       _update(settings.copyWith(includeHiddenSsids: value));
                     },
                   ),
+                  // AI Classification
+                  SwitchListTile(
+                    value: settings.isAiEnabled,
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    title: Text(
+                      l10n.settingsAiClassification,
+                      style: GoogleFonts.rajdhani(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      l10n.settingsAiClassificationDesc,
+                      style: GoogleFonts.rajdhani(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
+                    ),
+                    onChanged: (value) {
+                      _update(settings.copyWith(isAiEnabled: value));
+                    },
+                  ),
                   // Auto-Scan
                   SwitchListTile(
                     value: settings.autoScanEnabled,

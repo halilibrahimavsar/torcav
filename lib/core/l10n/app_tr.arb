@@ -313,6 +313,9 @@
     "settingsIncludeHidden": "Gizli Ağları Dahil Et",
     "settingsStrictSafety": "Sıkı Güvenlik Modu",
     "settingsStrictSafetyDesc": "Tehlikeli işlemleri kısıtla",
+    "settingsAiClassification": "AI Cihaz Sınıflandırma",
+    "settingsAiClassificationDesc": "Yerel AI destekli cihaz tespiti ve tanımlamayı etkinleştirir.",
+    "aiBadgeLabel": "AI",
     "darkTheme": "Koyu",
     "lightTheme": "Açık",
     "systemTheme": "Sistem",
@@ -630,5 +633,8 @@
     "netInfoBssidTitle": "BSSID (Donanım Adresi)",
     "netInfoBssidDesc": "Kablosuz yönlendiricinin benzersiz donanım adresidir (MAC). Meşru donanıma bağlı olduğunuzu ve bir yazılım kopyasına bağlı olmadığınızı doğrulamak için kullanışlıdır.",
     "netInfoGatewayTitle": "Varsayılan Ağ Geçidi",
-    "netInfoGatewayDesc": "Yönlendiricinizin yerel IP adresidir. Tüm trafiğiniz bu noktadan geçer. Bu adres beklenmedik şekilde değişirse, bir Ortadaki Adam (MitM) saldırısına işaret edebilir."
+    "netInfoGatewayDesc": "Yönlendiricinizin yerel IP adresidir. Tüm trafiğiniz bu noktadan geçer. Bu adres beklenmedik şekilde değişirse, bir Ortadaki Adam (MitM) saldırısına işaret edebilir.",
+    "netSecInfoTitle": "Ağ Güvenliği Modülü",
+    "netSecInfoDesc": "Kötü İkiz (Evil Twin) saldırılarına ve sahte ağlara karşı koruma sağlamak için bağlı ağların bütünlüğünü izler ve güvenilir profillerinizi yönetir.",
+    "networkSecurity": "Ağ Güvenliği"
 }

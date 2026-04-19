@@ -903,6 +903,24 @@ abstract class AppLocalizations {
   /// **'Restrict dangerous operations'**
   String get settingsStrictSafetyDesc;
 
+  /// Label for the AI device classification toggle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Device Classification'**
+  String get settingsAiClassification;
+
+  /// Description for the AI device classification toggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enables local AI-powered device detection and identification.'**
+  String get settingsAiClassificationDesc;
+
+  /// Label for the AI badge in device list.
+  ///
+  /// In en, this message translates to:
+  /// **'AI'**
+  String get aiBadgeLabel;
+
   /// Dark Theme
   ///
   /// In en, this message translates to:
@@ -2642,6 +2660,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Run a scan to verify DNS integrity and performance.'**
   String get dnsIdleDescription;
+
+  /// Title for network security info
+  ///
+  /// In en, this message translates to:
+  /// **'Network Security Module'**
+  String get netSecInfoTitle;
+
+  /// Description for network security info
+  ///
+  /// In en, this message translates to:
+  /// **'Monitors the integrity of connected networks, detects rogue access points, and manages your trusted Wi-Fi profiles to protect against Evil Twin attacks.'**
+  String get netSecInfoDesc;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

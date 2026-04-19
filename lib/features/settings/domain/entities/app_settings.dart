@@ -13,6 +13,8 @@ class AppSettings extends Equatable {
   /// Timeout in milliseconds for each port probe during LAN scanning.
   /// Lower values are faster but may miss open ports on slow networks.
   final int portScanTimeoutMs;
+  final bool isAiEnabled;
+
 
   const AppSettings({
     this.scanIntervalSeconds = 30,
@@ -23,7 +25,9 @@ class AppSettings extends Equatable {
     this.autoScanEnabled = false,
     this.isDeepScanEnabled = false,
     this.portScanTimeoutMs = 500,
+    this.isAiEnabled = true,
   });
+
 
   AppSettings copyWith({
     int? scanIntervalSeconds,
@@ -34,6 +38,7 @@ class AppSettings extends Equatable {
     bool? autoScanEnabled,
     bool? isDeepScanEnabled,
     int? portScanTimeoutMs,
+    bool? isAiEnabled,
   }) {
     return AppSettings(
       scanIntervalSeconds: scanIntervalSeconds ?? this.scanIntervalSeconds,
@@ -45,8 +50,10 @@ class AppSettings extends Equatable {
       autoScanEnabled: autoScanEnabled ?? this.autoScanEnabled,
       isDeepScanEnabled: isDeepScanEnabled ?? this.isDeepScanEnabled,
       portScanTimeoutMs: portScanTimeoutMs ?? this.portScanTimeoutMs,
+      isAiEnabled: isAiEnabled ?? this.isAiEnabled,
     );
   }
+
 
   @override
   List<Object?> get props => [
@@ -58,7 +65,9 @@ class AppSettings extends Equatable {
     autoScanEnabled,
     isDeepScanEnabled,
     portScanTimeoutMs,
+    isAiEnabled,
   ];
+
 
   Map<String, dynamic> toJson() {
     return {
@@ -70,7 +79,9 @@ class AppSettings extends Equatable {
       'autoScanEnabled': autoScanEnabled,
       'isDeepScanEnabled': isDeepScanEnabled,
       'portScanTimeoutMs': portScanTimeoutMs,
+      'isAiEnabled': isAiEnabled,
     };
+
   }
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
@@ -85,7 +96,9 @@ class AppSettings extends Equatable {
       autoScanEnabled: _readBool(json['autoScanEnabled'], fallback: false),
       isDeepScanEnabled: _readBool(json['isDeepScanEnabled'], fallback: false),
       portScanTimeoutMs: _readInt(json['portScanTimeoutMs'], fallback: 500),
+      isAiEnabled: _readBool(json['isAiEnabled'], fallback: true),
     );
+
   }
 
   static int _readInt(Object? raw, {required int fallback}) {

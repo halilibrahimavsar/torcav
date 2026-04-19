@@ -211,9 +211,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i991.DnsDataSource>(() => _i991.DnsDataSource());
     gh.lazySingleton<_i165.MdnsDataSource>(() => _i165.MdnsDataSource());
     gh.lazySingleton<_i119.UpnpDataSource>(() => _i119.UpnpDataSource());
-    gh.lazySingleton<_i978.PortScanDataSource>(
-      () => _i978.PortScanDataSource(gh<_i552.AppSettingsStore>()),
-    );
     gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
     gh.lazySingleton<_i904.SurveyGuidanceService>(
       () => const _i904.SurveyGuidanceService(),
@@ -265,6 +262,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i652.HeatmapLocalDataSource>(
       () => _i652.HeatmapLocalDataSource(gh<_i460.SharedPreferences>()),
+    );
+    gh.lazySingleton<_i978.PortScanDataSource>(
+      () => _i978.PortScanDataSource(gh<_i552.AppSettingsStore>()),
     );
     gh.lazySingleton<_i119.ReportExportRepository>(
       () => _i953.ReportExportRepositoryImpl(),
@@ -320,12 +320,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i239.WifiScanHistoryLocalDataSource>(
       () => _i239.WifiScanHistoryLocalDataSourceImpl(gh<_i690.AppDatabase>()),
     );
-    gh.lazySingleton<_i363.CaptivePortalDetector>(
-      () => _i363.CaptivePortalDetector(gh<_i846.NetworkInfo>()),
-    );
-    gh.lazySingleton<_i367.GenerateReportUseCase>(
-      () => _i367.GenerateReportUseCase(gh<_i119.ReportExportRepository>()),
-    );
     gh.lazySingleton<_i1073.NetworkScanRepository>(
       () => _i551.NetworkScanRepositoryImpl(
         gh<_i1066.ArpDataSource>(),
@@ -333,7 +327,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i119.UpnpDataSource>(),
         gh<_i200.NetbiosDataSource>(),
         gh<_i265.OnnxDeviceClassifierService>(),
+        gh<_i552.AppSettingsStore>(),
       ),
+    );
+    gh.lazySingleton<_i363.CaptivePortalDetector>(
+      () => _i363.CaptivePortalDetector(gh<_i846.NetworkInfo>()),
+    );
+    gh.lazySingleton<_i367.GenerateReportUseCase>(
+      () => _i367.GenerateReportUseCase(gh<_i119.ReportExportRepository>()),
     );
     gh.factory<_i554.ReportsBloc>(
       () => _i554.ReportsBloc(gh<_i367.GenerateReportUseCase>()),

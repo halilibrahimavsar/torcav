@@ -13,14 +13,28 @@ class MonitoringRepositoryImpl implements MonitoringRepository {
 
   MonitoringRepositoryImpl(this._wifiRepository);
 
+  static const _maxBackoff = Duration(seconds: 60);
+
   @override
   Stream<Either<Failure, List<WifiNetwork>>> monitorNetworks({
     Duration interval = const Duration(seconds: 5),
   }) async* {
+    var consecutiveErrors = 0;
     while (true) {
       final result = await _wifiRepository.scanNetworks();
-      yield result;
-      await Future<void>.delayed(interval);
+      if (result.isLeft()) {
+        consecutiveErrors++;
+        final backoff = Duration(
+          milliseconds: (interval.inMilliseconds * (1 << consecutiveErrors.clamp(0, 6)))
+              .clamp(interval.inMilliseconds, _maxBackoff.inMilliseconds),
+        );
+        yield result;
+        await Future<void>.delayed(backoff);
+      } else {
+        consecutiveErrors = 0;
+        yield result;
+        await Future<void>.delayed(interval);
+      }
     }
   }
 

@@ -20,6 +20,7 @@ import '../../../wifi_scan/domain/services/scan_session_store.dart';
 import '../widgets/security_core.dart';
 import 'notification_sheet.dart';
 import '../../../../core/presentation/widgets/cyber_neomorphic_button.dart';
+import '../../../settings/presentation/pages/settings_page.dart';
 
 /// Dashboard — neon-styled status overview with animated bento-grid layout.
 class DashboardPage extends StatefulWidget {
@@ -193,6 +194,13 @@ class _DashboardPageState extends State<DashboardPage> {
             glowRadius: 15,
           ),
           actions: [
+            NeonIconButton(
+              icon: Icons.settings_rounded,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SettingsPage()),
+              ),
+              tooltip: 'Settings',
+            ),
             BlocConsumer<NotificationBloc, NotificationState>(
               listener: (context, state) {
                 if (state is NotificationError) {

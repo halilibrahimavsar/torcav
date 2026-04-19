@@ -771,12 +771,16 @@ class NeonSectionHeader extends StatelessWidget {
   final String label;
   final IconData? icon;
   final Color? color;
+  final Widget? leading;
+  final Widget? trailing;
 
   const NeonSectionHeader({
     super.key,
     required this.label,
     this.icon,
     this.color,
+    this.leading,
+    this.trailing,
   });
 
   @override
@@ -784,6 +788,10 @@ class NeonSectionHeader extends StatelessWidget {
     final effectiveColor = color ?? Theme.of(context).colorScheme.primary;
     return Row(
       children: [
+        if (leading != null) ...[
+          leading!,
+          const SizedBox(width: 8),
+        ],
         if (icon != null) ...[
           Icon(icon, color: effectiveColor, size: 16),
           const SizedBox(width: 8),
@@ -800,6 +808,10 @@ class NeonSectionHeader extends StatelessWidget {
             ),
           ),
         ),
+        if (trailing != null) ...[
+          const SizedBox(width: 8),
+          trailing!,
+        ],
         const SizedBox(width: 12),
         Expanded(child: NeonDivider(color: effectiveColor)),
       ],
@@ -1284,6 +1296,75 @@ class GlowPoint extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class FoldableNeonSection extends StatefulWidget {
+  final String label;
+  final IconData? icon;
+  final Color? color;
+  final Widget? infoBadge;
+  final Widget child;
+  final bool initiallyExpanded;
+
+  const FoldableNeonSection({
+    super.key,
+    required this.label,
+    required this.child,
+    this.icon,
+    this.color,
+    this.infoBadge,
+    this.initiallyExpanded = false,
+  });
+
+  @override
+  State<FoldableNeonSection> createState() => _FoldableNeonSectionState();
+}
+
+class _FoldableNeonSectionState extends State<FoldableNeonSection> {
+  late bool _isExpanded;
+
+  @override
+  void initState() {
+    super.initState();
+    _isExpanded = widget.initiallyExpanded;
+  }
+
+  void _toggleExpand() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: _toggleExpand,
+          behavior: HitTestBehavior.opaque,
+          child: NeonSectionHeader(
+            label: widget.label,
+            icon: widget.icon,
+            color: widget.color,
+            leading: Icon(
+              _isExpanded ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_right_rounded,
+              color: widget.color,
+            ),
+            trailing: widget.infoBadge,
+          ),
+        ),
+        const SizedBox(height: 16),
+        AnimatedCrossFade(
+          firstChild: const SizedBox(width: double.infinity, height: 0),
+          secondChild: widget.child,
+          crossFadeState: _isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          duration: const Duration(milliseconds: 300),
+          alignment: Alignment.topCenter,
+        ),
+      ],
     );
   }
 }

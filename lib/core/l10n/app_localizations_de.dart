@@ -441,6 +441,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsStrictSafetyDesc => 'Gefährliche Operationen einschränken';
 
   @override
+  String get settingsAiClassification => 'AI Device Classification';
+
+  @override
+  String get settingsAiClassificationDesc => 'Enables local AI-powered device detection and identification.';
+
+  @override
+  String get aiBadgeLabel => 'AI';
+
+  @override
   String get darkTheme => 'Dunkel';
 
   @override
@@ -1376,4 +1385,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get dnsIdleDescription => 'Run a scan to verify DNS integrity and performance.';
+
+  @override
+  String get netSecInfoTitle => 'Network Security Module';
+
+  @override
+  String get netSecInfoDesc => 'Monitors the integrity of connected networks, detects rogue access points, and manages your trusted Wi-Fi profiles to protect against Evil Twin attacks.';
 }

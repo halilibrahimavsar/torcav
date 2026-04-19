@@ -11,6 +11,8 @@ import '../datasources/arp_data_source.dart';
 import '../datasources/mdns_data_source.dart';
 import '../datasources/netbios_data_source.dart';
 import '../datasources/upnp_data_source.dart';
+import '../../../settings/domain/services/app_settings_store.dart';
+
 
 @LazySingleton(as: NetworkScanRepository)
 class NetworkScanRepositoryImpl implements NetworkScanRepository {
@@ -19,6 +21,8 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
   final UpnpDataSource _upnpDataSource;
   final NetbiosDataSource _netbiosDataSource;
   final OnnxDeviceClassifierService _deviceClassifier;
+  final AppSettingsStore _appSettingsStore;
+
 
   NetworkScanRepositoryImpl(
     this._arpDataSource,
@@ -26,7 +30,9 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
     this._upnpDataSource,
     this._netbiosDataSource,
     this._deviceClassifier,
+    this._appSettingsStore,
   );
+
 
   @override
   Stream<Either<Failure, List<NetworkDevice>>> scanNetwork(
@@ -101,15 +107,22 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
         }
 
         // AI-based device classification
+        bool isAiClassified = false;
         final enrichedHost = host.copyWith(
           hostName: hostName,
           netbiosName: netbiosName,
         );
-        final aiResult = await _deviceClassifier.classify(enrichedHost);
 
-        if (aiResult != null && aiResult.confidence > 0.6) {
-          deviceType = aiResult.deviceType;
-        } else if (upnpMap.containsKey(host.ip)) {
+        if (_appSettingsStore.value.isAiEnabled) {
+          final aiResult = await _deviceClassifier.classify(enrichedHost);
+          if (aiResult != null && aiResult.confidence > 0.6) {
+            deviceType = aiResult.deviceType;
+            isAiClassified = true;
+          }
+        }
+
+        if (!isAiClassified && upnpMap.containsKey(host.ip)) {
+
           final upnpInfo = upnpMap[host.ip]!.toLowerCase();
           if (upnpInfo.contains('smart tv') ||
               upnpInfo.contains('tizen') ||
@@ -131,8 +144,10 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
             hostName: hostName,
             deviceType: deviceType,
             isGateway: host.isGateway || deviceType == 'Router/Gateway',
+            isAiClassified: isAiClassified,
           ),
         );
+
       }
     } catch (e) {
       yield Left(ScanFailure(e.toString()));

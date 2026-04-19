@@ -13,6 +13,8 @@ import 'package:share_plus/share_plus.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/theme/neon_widgets.dart';
+import '../../../wifi_scan/domain/entities/scan_snapshot.dart';
+import '../../../wifi_scan/domain/entities/wifi_observation.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
 import '../../domain/entities/report_labels.dart';
 import '../../domain/usecases/generate_report_usecase.dart';
@@ -30,8 +32,56 @@ class ReportsPage extends StatelessWidget {
   }
 }
 
-class ReportsView extends StatelessWidget {
+class ReportsView extends StatefulWidget {
   const ReportsView({super.key});
+
+  @override
+  State<ReportsView> createState() => _ReportsViewState();
+}
+
+class _ReportsViewState extends State<ReportsView> {
+  bool _anonymize = false;
+
+  /// Returns a copy of [snapshot] with the last 3 BSSID octets masked.
+  ScanSnapshot _maybeAnonymize(ScanSnapshot snapshot) {
+    if (!_anonymize) return snapshot;
+    final redacted = snapshot.networks.map((obs) {
+      final parts = obs.bssid.split(':');
+      final maskedBssid = parts.length == 6
+          ? '${parts[0]}:${parts[1]}:${parts[2]}:XX:XX:XX'
+          : obs.bssid;
+      return WifiObservation(
+        ssid: obs.ssid,
+        bssid: maskedBssid,
+        signalDbmSamples: obs.signalDbmSamples,
+        avgSignalDbm: obs.avgSignalDbm,
+        signalStdDev: obs.signalStdDev,
+        channel: obs.channel,
+        frequency: obs.frequency,
+        security: obs.security,
+        vendor: obs.vendor,
+        isHidden: obs.isHidden,
+        seenCount: obs.seenCount,
+        channelWidthMhz: obs.channelWidthMhz,
+        wifiStandard: obs.wifiStandard,
+        hasWps: obs.hasWps,
+        hasPmf: obs.hasPmf,
+        rawCapabilities: obs.rawCapabilities,
+        apMldMac: obs.apMldMac,
+        estimatedMaxThroughputMbps: obs.estimatedMaxThroughputMbps,
+        spatialStreams: obs.spatialStreams,
+        isRandomizedBssid: obs.isRandomizedBssid,
+      );
+    }).toList();
+    return ScanSnapshot(
+      timestamp: snapshot.timestamp,
+      backendUsed: snapshot.backendUsed,
+      interfaceName: snapshot.interfaceName,
+      networks: redacted,
+      channelStats: snapshot.channelStats,
+      bandStats: snapshot.bandStats,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +187,62 @@ class ReportsView extends StatelessWidget {
                   timestamp: latest.timestamp,
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 24),
+
+              // ── Privacy / Redaction Toggle ──
+              StaggeredEntry(
+                delay: const Duration(milliseconds: 260),
+                child: NeonCard(
+                  glowColor: Theme.of(context).colorScheme.secondary,
+                  glowIntensity: 0.06,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.privacy_tip_outlined,
+                        size: 20,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'ANONYMIZE BSSID',
+                              style: GoogleFonts.orbitron(
+                                color: Theme.of(context).colorScheme.secondary,
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1,
+                              ),
+                            ),
+                            Text(
+                              'Masks last 3 octets (XX:XX:XX) before export',
+                              style: GoogleFonts.rajdhani(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Switch(
+                        value: _anonymize,
+                        onChanged: (v) => setState(() => _anonymize = v),
+                        activeColor: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
 
               // ── Export Options ──
               StaggeredEntry(
@@ -152,6 +257,7 @@ class ReportsView extends StatelessWidget {
               BlocBuilder<ReportsBloc, ReportsState>(
                 builder: (context, state) {
                   final isLoading = state is ReportsLoading;
+                  final exportSnapshot = _maybeAnonymize(latest);
                   return GridView.count(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -168,7 +274,7 @@ class ReportsView extends StatelessWidget {
                         onTap:
                             () => context.read<ReportsBloc>().add(
                               GenerateReport(
-                                latest,
+                                exportSnapshot,
                                 ReportFormat.json,
                                 _getReportLabels(context),
                               ),
@@ -183,7 +289,7 @@ class ReportsView extends StatelessWidget {
                         onTap:
                             () => context.read<ReportsBloc>().add(
                               GenerateReport(
-                                latest,
+                                exportSnapshot,
                                 ReportFormat.html,
                                 _getReportLabels(context),
                               ),
@@ -198,7 +304,7 @@ class ReportsView extends StatelessWidget {
                         onTap:
                             () => context.read<ReportsBloc>().add(
                               GenerateReport(
-                                latest,
+                                exportSnapshot,
                                 ReportFormat.pdf,
                                 _getReportLabels(context),
                               ),
@@ -213,7 +319,7 @@ class ReportsView extends StatelessWidget {
                         onTap:
                             () => context.read<ReportsBloc>().add(
                               GenerateReport(
-                                latest,
+                                exportSnapshot,
                                 ReportFormat.csv,
                                 _getReportLabels(context),
                               ),
@@ -225,7 +331,7 @@ class ReportsView extends StatelessWidget {
                         label: l10n.printPdf,
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                         isLoading: isLoading,
-                        onTap: () => _printPdf(context),
+                        onTap: () => _printPdf(context, exportSnapshot),
                         delay: const Duration(milliseconds: 600),
                       ),
                     ],
@@ -271,12 +377,7 @@ class ReportsView extends StatelessWidget {
     }
   }
 
-  Future<void> _printPdf(BuildContext context) async {
-    final snapshot = getIt<ScanSessionStore>().latest;
-    if (snapshot == null) {
-      return;
-    }
-
+  Future<void> _printPdf(BuildContext context, ScanSnapshot snapshot) async {
     await Printing.layoutPdf(
       onLayout: (_) async {
         final useCase = getIt<GenerateReportUseCase>();

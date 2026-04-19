@@ -103,20 +103,7 @@ class _SecurityCenterView extends StatelessWidget {
                     const SizedBox(height: 24),
                   ],
 
-                  // ── Network Topology ──
-                  NeonSectionHeader(
-                    label: l10n.networkSecurity,
-                    icon: Icons.hub_rounded,
-                    color: scheme.primary,
-                  ),
-                  const SizedBox(height: 16),
-                  NetworkSecurityCard(
-                    knownNetworks: state.knownNetworks,
-                    trustedProfiles: state.trustedNetworkProfiles,
-                  ),
-                  const SizedBox(height: 32),
-
-                  // ── Protocol Integrity ──
+                  // ── Protocol Integrity (MOVED UP) ──
                   NeonSectionHeader(
                     label: l10n.dnsSecurityTest,
                     icon: Icons.dns_rounded,
@@ -126,14 +113,32 @@ class _SecurityCenterView extends StatelessWidget {
                   DnsSecurityCard(state: state),
                   const SizedBox(height: 32),
 
+                  // ── Network Topology ──
+                  FoldableNeonSection(
+                    label: l10n.networkSecurity,
+                    icon: Icons.hub_rounded,
+                    color: scheme.primary,
+                    initiallyExpanded: true,
+                    infoBadge: InfoIconButton(
+                      title: l10n.netSecInfoTitle,
+                      body: l10n.netSecInfoDesc,
+                      color: scheme.primary,
+                    ),
+                    child: NetworkSecurityCard(
+                      knownNetworks: state.knownNetworks,
+                      trustedProfiles: state.trustedNetworkProfiles,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+
                   // ── Mission Log ──
-                  NeonSectionHeader(
+                  FoldableNeonSection(
                     label: l10n.securityTimeline,
                     icon: Icons.terminal_rounded,
                     color: scheme.tertiary,
+                    initiallyExpanded: false,
+                    child: SecurityTimelineView(events: state.recentEvents),
                   ),
-                  const SizedBox(height: 16),
-                  SecurityTimelineView(events: state.recentEvents),
                 ],
               ),
             );

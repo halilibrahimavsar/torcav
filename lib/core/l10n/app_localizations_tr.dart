@@ -441,6 +441,15 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsStrictSafetyDesc => 'Tehlikeli işlemleri kısıtla';
 
   @override
+  String get settingsAiClassification => 'AI Cihaz Sınıflandırma';
+
+  @override
+  String get settingsAiClassificationDesc => 'Yerel AI destekli cihaz tespiti ve tanımlamayı etkinleştirir.';
+
+  @override
+  String get aiBadgeLabel => 'AI';
+
+  @override
   String get darkTheme => 'Koyu';
 
   @override
@@ -594,7 +603,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get securityScoreDesc => 'Güvenlik puanı (0-100) bu ağın ne kadar iyi korunduğunu gösterir. Yüksek puan daha iyidir. Şifreleme türü, WPS durumu ve diğer güvenlik özellikleri dikkate alınır.';
 
   @override
-  String get networkSecurity => 'Network Security';
+  String get networkSecurity => 'Ağ Güvenliği';
 
   @override
   String get portScanAction => 'PORT SCAN';
@@ -1376,4 +1385,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get dnsIdleDescription => 'DNS bütünlüğünü ve performansını doğrulamak için bir tarama başlatın.';
+
+  @override
+  String get netSecInfoTitle => 'Ağ Güvenliği Modülü';
+
+  @override
+  String get netSecInfoDesc => 'Kötü İkiz (Evil Twin) saldırılarına ve sahte ağlara karşı koruma sağlamak için bağlı ağların bütünlüğünü izler ve güvenilir profillerinizi yönetir.';
 }

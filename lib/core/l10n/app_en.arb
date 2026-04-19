@@ -617,6 +617,18 @@
     "@settingsStrictSafetyDesc": {
         "description": "Settings Strict Safety Desc"
     },
+    "settingsAiClassification": "AI Device Classification",
+    "@settingsAiClassification": {
+        "description": "Label for the AI device classification toggle."
+    },
+    "settingsAiClassificationDesc": "Enables local AI-powered device detection and identification.",
+    "@settingsAiClassificationDesc": {
+        "description": "Description for the AI device classification toggle."
+    },
+    "aiBadgeLabel": "AI",
+    "@aiBadgeLabel": {
+        "description": "Label for the AI badge in device list."
+    },
     "darkTheme": "Dark",
     "@darkTheme": {
         "description": "Dark Theme"
@@ -1828,5 +1840,17 @@
     "liveLabel": "LIVE",
     "@liveLabel": {
         "description": "Live indicator label"
+    },
+    "netSecInfoTitle": "Network Security Module",
+    "@netSecInfoTitle": {
+        "description": "Title for network security info"
+    },
+    "netSecInfoDesc": "Monitors the integrity of connected networks, detects rogue access points, and manages your trusted Wi-Fi profiles to protect against Evil Twin attacks.",
+    "@netSecInfoDesc": {
+        "description": "Description for network security info"
+    },
+    "networkSecurity": "Network Security",
+    "@networkSecurity": {
+        "description": "Label for network security section"
     }
 }

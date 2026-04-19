@@ -4,7 +4,6 @@ import '../../../../core/theme/neon_widgets.dart';
 import '../../../performance/presentation/pages/performance_page.dart';
 import '../../../reports/presentation/pages/reports_page.dart';
 import '../../../security/presentation/pages/security_center_page.dart';
-import '../../../settings/presentation/pages/settings_page.dart';
 import '../../../monitoring/presentation/pages/topology_page.dart';
 import '../../../security/presentation/pages/vulnerability_lab_page.dart';
 import '../../../heatmap/presentation/pages/heatmap_page.dart';
@@ -122,19 +121,6 @@ class OperationsHubPage extends StatelessWidget {
                       ),
                     ),
                 delay: 500,
-              ),
-              _OperationCard(
-                title: l10n.tuningTitle,
-                subtitle: l10n.systemConfig,
-                icon: Icons.settings_suggest_rounded,
-                color: Theme.of(context).colorScheme.secondary,
-                onTap:
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const SettingsPage(),
-                      ),
-                    ),
-                delay: 600,
               ),
             ],
           ),

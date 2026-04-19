@@ -130,6 +130,10 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
                             const SizedBox(width: 8),
                             _IdentifiedBadge(color: scheme.primary),
                           ],
+                          if (widget.host.isAiClassified) ...[
+                            const SizedBox(width: 8),
+                            const _AiBadge(),
+                          ],
                         ],
                       ),
                       const SizedBox(height: 2),
@@ -266,6 +270,55 @@ class _IdentifiedBadge extends StatelessWidget {
     );
   }
 }
+
+class _AiBadge extends StatelessWidget {
+  const _AiBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    final tertiary = Theme.of(context).colorScheme.tertiary;
+
+    return NeonGlowBox(
+      glowColor: tertiary,
+      minOpacity: 0.1,
+      maxOpacity: 0.3,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              tertiary.withValues(alpha: 0.2),
+              tertiary.withValues(alpha: 0.1),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(color: tertiary.withValues(alpha: 0.5)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.auto_awesome_rounded,
+              size: 8,
+              color: tertiary,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              context.l10n.aiBadgeLabel.toUpperCase(),
+              style: GoogleFonts.orbitron(
+                fontSize: 8,
+                fontWeight: FontWeight.w900,
+                color: tertiary,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
 class _PortsCountBadge extends StatelessWidget {
   final int count;
