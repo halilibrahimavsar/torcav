@@ -8,8 +8,6 @@ import '../../domain/entities/network_scan_policy.dart';
 import '../../domain/entities/network_scan_profile.dart';
 import '../../domain/repositories/network_scan_repository.dart';
 import '../../domain/services/new_device_detector.dart';
-import '../../domain/entities/service_fingerprint.dart';
-import '../../domain/usecases/port_scan_usecase.dart';
 
 // Events
 abstract class NetworkScanEvent extends Equatable {
@@ -57,15 +55,17 @@ class NetworkScanLoaded extends NetworkScanState {
   final List<NetworkDevice> devices;
   final List<HostScanResult> hosts;
   final List<HostScanResult> newDevices;
+  final bool isScanning;
 
   const NetworkScanLoaded({
     required this.devices,
     required this.hosts,
     this.newDevices = const [],
+    this.isScanning = false,
   });
 
   @override
-  List<Object?> get props => [devices, hosts, newDevices];
+  List<Object?> get props => [devices, hosts, newDevices, isScanning];
 }
 
 class NetworkScanError extends NetworkScanState {
@@ -79,14 +79,12 @@ class NetworkScanError extends NetworkScanState {
 class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
   final NetworkScanRepository _repository;
   final NewDeviceDetector _newDeviceDetector;
-  final PortScanUseCase _portScanUseCase;
 
   bool _consentGiven = false;
 
   NetworkScanBloc(
     this._repository,
     this._newDeviceDetector,
-    this._portScanUseCase,
   ) : super(NetworkScanInitial()) {
     on<StartNetworkScan>(_onStartScan);
     on<AcknowledgeLegalRisk>(_onAcknowledgeRisk);
@@ -142,7 +140,6 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
         await result.fold(
           (failure) async => emit(NetworkScanError(failure.message)),
           (host) async {
-            // Update local tracking with duplicate-aware logic
             final hostIndex = currentHosts.indexWhere((h) => h.ip == host.ip);
             if (hostIndex != -1) {
               currentHosts[hostIndex] = host;
@@ -169,56 +166,27 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
 
             currentNewDevices = _newDeviceDetector.detectNew(currentHosts);
 
-            // Emit current state for real-time progress
             emit(
               NetworkScanLoaded(
                 devices: List.from(currentDevices),
                 hosts: List.from(currentHosts),
                 newDevices: List.from(currentNewDevices),
+                isScanning: true,
               ),
             );
           },
         );
       }
 
-      // Background Reactive Port Scan Phase
-      if (event.deepScan || event.profile != NetworkScanProfile.fast) {
-        final updatedHosts = List<HostScanResult>.from(currentHosts);
-
-        for (int i = 0; i < updatedHosts.length; i++) {
-          final host = updatedHosts[i];
-          final adaptiveTimeout = Duration(
-            milliseconds: (host.latency * 2).toInt().clamp(100, 1000),
-          );
-
-          await for (final service in _portScanUseCase.callReactive(
-            host.ip,
-            timeout: adaptiveTimeout,
-          )) {
-            final index = updatedHosts.indexWhere((h) => h.ip == host.ip);
-            if (index != -1) {
-              final currentServices = List<ServiceFingerprint>.from(
-                updatedHosts[index].services,
-              );
-
-              if (!currentServices.contains(service)) {
-                currentServices.add(service);
-                updatedHosts[index] = updatedHosts[index].copyWith(
-                  services: currentServices,
-                );
-
-                emit(
-                  NetworkScanLoaded(
-                    devices: List.from(currentDevices),
-                    hosts: List.from(updatedHosts),
-                    newDevices: List.from(currentNewDevices),
-                  ),
-                );
-              }
-            }
-          }
-        }
-      }
+      // Discovery complete – emit final state without scanning flag
+      emit(
+        NetworkScanLoaded(
+          devices: List.from(currentDevices),
+          hosts: List.from(currentHosts),
+          newDevices: List.from(currentNewDevices),
+          isScanning: false,
+        ),
+      );
     } catch (e) {
       emit(NetworkScanError(e.toString()));
     }

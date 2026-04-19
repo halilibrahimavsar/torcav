@@ -11,6 +11,7 @@ import '../../domain/entities/network_scan_profile.dart';
 
 import '../../../../features/network_scan/presentation/widgets/network_scanner_radar.dart';
 import '../bloc/network_scan_bloc.dart';
+import '../widgets/host_device_card.dart';
 import '../widgets/lan_consent_dialog.dart';
 
 class NetworkScanPage extends StatelessWidget {
@@ -38,7 +39,6 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
   bool _vulnOnly = false;
   String _searchQuery = '';
   NetworkScanProfile _profile = NetworkScanProfile.fast;
-  bool _deepScan = false;
 
   @override
   void initState() {
@@ -97,7 +97,10 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
           }
         },
         builder: (context, state) {
-          final isLoading = state is NetworkScanLoading;
+          final loadedState = state is NetworkScanLoaded ? state : null;
+          final isActivelyScanning =
+              state is NetworkScanLoading ||
+              (loadedState != null && loadedState.isScanning);
           return ListView(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
             children: [
@@ -116,38 +119,38 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 delay: const Duration(milliseconds: 100),
                 child: _ScanControlPanel(
                   controller: _targetController,
-                  isScanning: isLoading,
+                  isScanning: isActivelyScanning,
                   profile: _profile,
                   onProfileChanged: (p) => setState(() => _profile = p),
-                  deepScan: _deepScan,
-                  onDeepScanChanged: (v) => setState(() => _deepScan = v),
                   onScan: () {
                     context.read<NetworkScanBloc>().add(
                       StartNetworkScan(
                         target: _targetController.text,
                         profile: _profile,
-                        deepScan: _deepScan,
                       ),
                     );
                   },
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 16),
 
-              // ── Scanning Indicator ──
-              // Keep this widget permanently in the tree (never conditionally
-              // inserted/removed from the list) so Flutter never disposes its
-              // AnimationController mid-animation. Visibility preserves the
-              // element while hiding it, keeping the radar sweep running.
+              // ── Scanning Banner (compact, shown while scanning) ──
               Visibility(
-                visible: isLoading,
+                visible: isActivelyScanning,
                 maintainState: true,
                 maintainAnimation: true,
                 maintainSize: false,
-                child: const _ScanningIndicator(),
+                child: _ScanningBanner(
+                  foundCount: loadedState?.hosts.length ?? 0,
+                ),
               ),
 
-              if (state is NetworkScanLoaded) ...[
+              // ── Full-screen radar (only when no results yet) ──
+              if (state is NetworkScanLoading)
+                const _ScanningIndicator(),
+
+              if (state case final NetworkScanLoaded loaded) ...[
+                const SizedBox(height: 16),
                 // ── Section 2: SCAN ANALYTICS ──
                 StaggeredEntry(
                   delay: const Duration(milliseconds: 150),
@@ -160,8 +163,8 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 const SizedBox(height: 16),
 
                 _NetworkBentoHeader(
-                  devices: state.devices,
-                  hosts: state.hosts,
+                  devices: loaded.devices,
+                  hosts: loaded.hosts,
                   target: _targetController.text,
                 ),
                 const SizedBox(height: 32),
@@ -186,16 +189,13 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 const SizedBox(height: 12),
 
                 ...() {
-                  final hosts =
-                      state.hosts.where((h) {
+                  final hosts = loaded.hosts.where((h) {
                         if (_vulnOnly && h.vulnerabilities.isEmpty) {
                           return false;
                         }
                         if (_searchQuery.isNotEmpty) {
                           if (!h.ip.contains(_searchQuery) &&
-                              !h.hostName.toLowerCase().contains(
-                                _searchQuery,
-                              ) &&
+                              !h.hostName.toLowerCase().contains(_searchQuery) &&
                               !h.vendor.toLowerCase().contains(_searchQuery)) {
                             return false;
                           }
@@ -205,8 +205,8 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
 
                   return hosts.asMap().entries.map((entry) {
                     return StaggeredEntry(
-                      delay: Duration(milliseconds: 250 + entry.key * 50),
-                      child: _DeviceCard(host: entry.value),
+                      delay: Duration(milliseconds: 50 + entry.key * 30),
+                      child: HostDeviceCard(host: entry.value),
                     );
                   });
                 }(),
@@ -238,8 +238,6 @@ class _ScanControlPanel extends StatelessWidget {
   final VoidCallback onScan;
   final NetworkScanProfile profile;
   final ValueChanged<NetworkScanProfile> onProfileChanged;
-  final bool deepScan;
-  final ValueChanged<bool> onDeepScanChanged;
 
   const _ScanControlPanel({
     required this.controller,
@@ -247,8 +245,6 @@ class _ScanControlPanel extends StatelessWidget {
     required this.onScan,
     required this.profile,
     required this.onProfileChanged,
-    required this.deepScan,
-    required this.onDeepScanChanged,
   });
 
   @override
@@ -344,45 +340,6 @@ class _ScanControlPanel extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
-
-          // ── Deep Scan Toggle ──
-          Row(
-            children: [
-              Icon(
-                Icons.security_rounded,
-                size: 16,
-                color: scheme.primary.withValues(alpha: 0.6),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                l10n.deepScan,
-                style: GoogleFonts.orbitron(
-                  fontSize: 11,
-                  color: scheme.primary.withValues(alpha: 0.7),
-                  letterSpacing: 1,
-                ),
-              ),
-              const SizedBox(width: 4),
-              InfoIconButton(
-                title: l10n.deepScan,
-                body:
-                    'Comprehensive port scanning and service fingerprinting. '
-                    'Enabling this will significantly increase scan time but '
-                    'provides much deeper reconnaissance data.',
-                color: scheme.primary,
-              ),
-              const Spacer(),
-              Transform.scale(
-                scale: 0.8,
-                child: Switch.adaptive(
-                  value: deepScan,
-                  activeColor: scheme.primary,
-                  onChanged: isScanning ? null : onDeepScanChanged,
-                ),
-              ),
-            ],
-          ),
           const SizedBox(height: 14),
           SizedBox(
             width: double.infinity,
@@ -440,6 +397,67 @@ class _ScanControlPanel extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ScanningBanner extends StatelessWidget {
+  final int foundCount;
+  const _ScanningBanner({required this.foundCount});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        color: scheme.primary.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: scheme.primary.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 36,
+            height: 36,
+            child: NetworkScannerRadar(isScanning: true, color: scheme.primary),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  context.l10n.activeNodeRecon,
+                  style: GoogleFonts.orbitron(
+                    color: scheme.primary,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+                if (foundCount > 0)
+                  Text(
+                    '$foundCount ${context.l10n.nodesLabel.toLowerCase()} found...',
+                    style: GoogleFonts.rajdhani(
+                      color: scheme.onSurfaceVariant,
+                      fontSize: 12,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          SizedBox(
+            width: 18,
+            height: 18,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: scheme.primary,
             ),
           ),
         ],
@@ -699,331 +717,6 @@ class _PulseRingState extends State<_PulseRing>
   }
 }
 
-class _DeviceCard extends StatelessWidget {
-  final HostScanResult host;
-
-  const _DeviceCard({required this.host});
-
-  Color getRiskColor(BuildContext context) {
-    if (host.exposureScore > 7) return Theme.of(context).colorScheme.error;
-    if (host.exposureScore > 3) return Theme.of(context).colorScheme.outline;
-    return Theme.of(context).colorScheme.tertiary;
-  }
-
-  IconData get _deviceIcon {
-    final type = host.deviceType.toLowerCase();
-
-    if (type.contains('router') || type.contains('gateway')) {
-      return Icons.router_rounded;
-    }
-    if (type.contains('smart tv')) {
-      return Icons.tv_rounded;
-    }
-    if (type.contains('audio') || type.contains('speaker')) {
-      return Icons.speaker_group_rounded;
-    }
-    if (type.contains('printer')) {
-      return Icons.print_rounded;
-    }
-    if (type.contains('workstation')) {
-      return Icons.computer_rounded;
-    }
-    if (type.contains('mobile') || type.contains('phone')) {
-      return Icons.smartphone_rounded;
-    }
-    if (type.contains('nas') || type.contains('storage')) {
-      return Icons.dns_rounded;
-    }
-
-    // Fallback to name/vendor guessing if type is generic
-    final name = host.hostName.toLowerCase();
-    final vendor = host.vendor.toLowerCase();
-    if (name.contains('phone') ||
-        name.contains('android') ||
-        name.contains('iphone')) {
-      return Icons.smartphone_rounded;
-    }
-    if (name.contains('tablet') || name.contains('ipad')) {
-      return Icons.tablet_mac_rounded;
-    }
-    if (name.contains('laptop') ||
-        name.contains('macbook') ||
-        vendor.contains('apple')) {
-      return Icons.laptop_chromebook_rounded;
-    }
-    return Icons.settings_input_component_rounded;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final riskColor = getRiskColor(context);
-    final scheme = Theme.of(context).colorScheme;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: NeonCard(
-        glowColor: riskColor,
-        glowIntensity: 0.08,
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: riskColor.withValues(alpha: 0.1),
-                    border: Border.all(
-                      color: riskColor.withValues(alpha: 0.2),
-                      width: 1,
-                    ),
-                  ),
-                  child: Icon(_deviceIcon, color: riskColor, size: 20),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              host.hostName.isEmpty
-                                  ? '${host.ip} (${host.deviceType.toUpperCase()})'
-                                  : host.hostName.toUpperCase(),
-                              style: GoogleFonts.orbitron(
-                                color: Theme.of(context).colorScheme.onSurface,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          if (host.isGateway) ...[
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: scheme.tertiary.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(4),
-                                border: Border.all(
-                                  color: scheme.tertiary.withValues(alpha: 0.3),
-                                ),
-                              ),
-                              child: Text(
-                                'GATEWAY',
-                                style: GoogleFonts.orbitron(
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.w900,
-                                  color: scheme.tertiary,
-                                ),
-                              ),
-                            ),
-                          ],
-                          if (host.deviceType != 'Unknown') ...[
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: scheme.primary.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(4),
-                                border: Border.all(
-                                  color: scheme.primary.withValues(alpha: 0.3),
-                                ),
-                              ),
-                              child: Text(
-                                'IDENTIFIED',
-                                style: GoogleFonts.orbitron(
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.w900,
-                                  color: scheme.primary,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                      const SizedBox(height: 2),
-                      Row(
-                        children: [
-                          Text(
-                            host.ip,
-                            style: GoogleFonts.sourceCodePro(
-                              color: scheme.primary.withValues(alpha: 0.8),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          if (host.deviceType != 'Unknown') ...[
-                            Text(
-                              ' • ',
-                              style: TextStyle(
-                                color: scheme.onSurface.withValues(alpha: 0.3),
-                              ),
-                            ),
-                            Text(
-                              host.deviceType.toUpperCase(),
-                              style: GoogleFonts.rajdhani(
-                                color: scheme.secondary,
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                _RiskIndicator(score: host.exposureScore),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Container(
-              height: 1,
-              width: double.infinity,
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.1),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                _TechDetail(
-                  label:
-                      host.mac == '00:00:00:00:00:00'
-                          ? 'UNKNOWN MAC (RESTRICTED)'
-                          : host.mac.toUpperCase(),
-                  icon: Icons.fingerprint_rounded,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-                if (host.vendor.isNotEmpty) ...[
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _TechDetail(
-                      label: host.vendor.toUpperCase(),
-                      icon: Icons.factory_rounded,
-                      color: scheme.secondary,
-                    ),
-                  ),
-                ],
-                if (host.services.isNotEmpty) ...[
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: riskColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(
-                        color: riskColor.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: Text(
-                      context.l10n.portsCountLabel(host.services.length),
-                      style: GoogleFonts.orbitron(
-                        color: riskColor,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _RiskIndicator extends StatelessWidget {
-  final double score;
-
-  const _RiskIndicator({required this.score});
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final color =
-        score > 7
-            ? scheme.error
-            : (score > 3 ? scheme.outline : scheme.tertiary);
-    return Column(
-      children: [
-        NeonText(
-          score.toStringAsFixed(1),
-          style: GoogleFonts.orbitron(
-            color: color,
-            fontWeight: FontWeight.w900,
-            fontSize: 16,
-          ),
-          glowColor: color,
-          glowRadius: 4,
-        ),
-        Text(
-          context.l10n.riskLabel,
-          style: GoogleFonts.rajdhani(
-            color: color.withValues(alpha: 0.7),
-            fontSize: 9,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _TechDetail extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final Color color;
-
-  const _TechDetail({
-    required this.label,
-    required this.icon,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 12, color: color.withValues(alpha: 0.6)),
-        const SizedBox(width: 6),
-        Flexible(
-          child: Text(
-            label,
-            style: GoogleFonts.rajdhani(
-              color: color,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 // ── LAN Search & Filter Bar ──────────────────────────────────────────
 

@@ -437,7 +437,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i739.NetworkScanBloc(
         gh<_i1073.NetworkScanRepository>(),
         gh<_i505.NewDeviceDetector>(),
-        gh<_i160.PortScanUseCase>(),
       ),
     );
     gh.lazySingleton<_i422.GetTopologyUseCase>(

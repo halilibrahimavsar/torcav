@@ -97,19 +97,29 @@ class ArpDataSource {
       final canReadArp = Platform.isLinux;
       final baseIp = _extractBaseIp(targetSubnet);
 
-      // Step 1: On Linux, ping-sweep the subnet first to populate the kernel
-      // ARP cache. Without this, /proc/net/arp only contains hosts the OS has
-      // already talked to (typically just the gateway), so scans miss every
-      // other device.
+      // Step 1: Ping-sweep the subnet to populate the kernel ARP cache.
+      // Batch size and parallelism vary by profile to create meaningful speed differences:
+      //   fast       – large batches (50), short ICMP timeout (500ms) → ~3-5 s
+      //   balanced   – medium batches (30), 1 s ICMP timeout → ~8-10 s
+      //   aggressive – small batches (15), 2 s ICMP timeout → slower but catches more hosts
       final liveIps = <String, double>{};
       if (baseIp != null) {
-        const parallelBatches = 30;
+        final parallelBatches = switch (profile) {
+          NetworkScanProfile.fast => 50,
+          NetworkScanProfile.balanced => 30,
+          NetworkScanProfile.aggressive => 15,
+        };
+        final pingTimeoutSec = switch (profile) {
+          NetworkScanProfile.fast => '1',
+          NetworkScanProfile.balanced => '1',
+          NetworkScanProfile.aggressive => '2',
+        };
         for (var i = 1; i < 255; i += parallelBatches) {
           final futures = <Future<_PingResult?>>[];
           for (var j = 0; j < parallelBatches; j++) {
             final hostPart = i + j;
             if (hostPart > 254) break;
-            futures.add(_pingResultStatic('$baseIp.$hostPart'));
+            futures.add(_pingResultStatic('$baseIp.$hostPart', pingTimeoutSec: pingTimeoutSec));
           }
           final results = await Future.wait(futures);
           for (final r in results) {
@@ -195,10 +205,14 @@ class ArpDataSource {
   ) async {
     final services = <ServiceFingerprint>[];
 
-    // Only probe ports for non-fast profiles.
-    if (profile != NetworkScanProfile.fast) {
-      services.addAll(await _probePortsStatic(entry.ip));
+    if (profile == NetworkScanProfile.balanced) {
+      // 10-port quick probe with 500ms timeout
+      services.addAll(await _probePortsStatic(entry.ip, timeoutMs: 500));
+    } else if (profile == NetworkScanProfile.aggressive) {
+      // Extended 10-port probe with 1000ms timeout for better coverage
+      services.addAll(await _probePortsStatic(entry.ip, timeoutMs: 1000));
     }
+    // fast: no port probe during discovery – on-demand scan handles this
 
     // Send partial result back to main thread immediately
     sendPort.send(
@@ -251,7 +265,10 @@ class ArpDataSource {
     }
   }
 
-  static Future<List<ServiceFingerprint>> _probePortsStatic(String ip) async {
+  static Future<List<ServiceFingerprint>> _probePortsStatic(
+    String ip, {
+    int timeoutMs = 500,
+  }) async {
     const commonPorts = <int, String>{
       22: 'ssh',
       53: 'dns',
@@ -269,7 +286,7 @@ class ArpDataSource {
     final futures = <Future<ServiceFingerprint?>>[];
 
     for (final entry in commonPorts.entries) {
-      futures.add(_probePortStatic(ip, entry.key, entry.value));
+      futures.add(_probePortStatic(ip, entry.key, entry.value, timeoutMs: timeoutMs));
     }
 
     final probed = await Future.wait(futures);
@@ -282,13 +299,14 @@ class ArpDataSource {
   static Future<ServiceFingerprint?> _probePortStatic(
     String ip,
     int port,
-    String serviceName,
-  ) async {
+    String serviceName, {
+    int timeoutMs = 500,
+  }) async {
     try {
       final socket = await Socket.connect(
         ip,
         port,
-        timeout: const Duration(milliseconds: 500),
+        timeout: Duration(milliseconds: timeoutMs),
       );
       await socket.close();
       return ServiceFingerprint(
@@ -303,36 +321,27 @@ class ArpDataSource {
     }
   }
 
-  static Future<_PingResult?> _pingResultStatic(String ip) async {
+  static Future<_PingResult?> _pingResultStatic(
+    String ip, {
+    String pingTimeoutSec = '1',
+  }) async {
     try {
       final watch = Stopwatch()..start();
-      final result = await Process.run('ping', ['-c', '1', '-W', '1', ip]);
+      final result = await Process.run('ping', ['-c', '1', '-W', pingTimeoutSec, ip]);
       watch.stop();
       if (result.exitCode == 0) {
-        return _PingResult(
-          ip: ip,
-          latencyMs: watch.elapsedMilliseconds.toDouble(),
-        );
+        return _PingResult(ip: ip, latencyMs: watch.elapsedMilliseconds.toDouble());
       }
     } catch (_) {}
-    // TCP fallback: many hosts (Windows firewall, iOS) drop ICMP but accept
-    // connections on well-known ports. This still populates the kernel ARP
-    // cache on Linux and detects the host as alive on Android.
+    // TCP fallback for hosts that block ICMP (Windows firewall, iOS).
     const fallbackPorts = [80, 443, 22, 445];
     for (final port in fallbackPorts) {
       try {
         final watch = Stopwatch()..start();
-        final socket = await Socket.connect(
-          ip,
-          port,
-          timeout: const Duration(milliseconds: 400),
-        );
+        final socket = await Socket.connect(ip, port, timeout: const Duration(milliseconds: 400));
         watch.stop();
         socket.destroy();
-        return _PingResult(
-          ip: ip,
-          latencyMs: watch.elapsedMilliseconds.toDouble(),
-        );
+        return _PingResult(ip: ip, latencyMs: watch.elapsedMilliseconds.toDouble());
       } catch (_) {}
     }
     return null;
