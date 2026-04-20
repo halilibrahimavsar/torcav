@@ -21,6 +21,10 @@ class AppSettings extends Equatable {
   final bool isAiEnabled;
   final AppBackgroundType backgroundType;
 
+  /// Data retention periods in days (0 = keep forever).
+  final int scanHistoryRetentionDays;
+  final int speedTestRetentionDays;
+  final int securityEventRetentionDays;
 
   const AppSettings({
     this.scanIntervalSeconds = 30,
@@ -33,6 +37,9 @@ class AppSettings extends Equatable {
     this.portScanTimeoutMs = 500,
     this.isAiEnabled = true,
     this.backgroundType = AppBackgroundType.neomorphic,
+    this.scanHistoryRetentionDays = 30,
+    this.speedTestRetentionDays = 30,
+    this.securityEventRetentionDays = 30,
   });
 
 
@@ -47,6 +54,9 @@ class AppSettings extends Equatable {
     int? portScanTimeoutMs,
     bool? isAiEnabled,
     AppBackgroundType? backgroundType,
+    int? scanHistoryRetentionDays,
+    int? speedTestRetentionDays,
+    int? securityEventRetentionDays,
   }) {
     return AppSettings(
       scanIntervalSeconds: scanIntervalSeconds ?? this.scanIntervalSeconds,
@@ -60,6 +70,12 @@ class AppSettings extends Equatable {
       portScanTimeoutMs: portScanTimeoutMs ?? this.portScanTimeoutMs,
       isAiEnabled: isAiEnabled ?? this.isAiEnabled,
       backgroundType: backgroundType ?? this.backgroundType,
+      scanHistoryRetentionDays:
+          scanHistoryRetentionDays ?? this.scanHistoryRetentionDays,
+      speedTestRetentionDays:
+          speedTestRetentionDays ?? this.speedTestRetentionDays,
+      securityEventRetentionDays:
+          securityEventRetentionDays ?? this.securityEventRetentionDays,
     );
   }
 
@@ -76,6 +92,9 @@ class AppSettings extends Equatable {
     portScanTimeoutMs,
     isAiEnabled,
     backgroundType,
+    scanHistoryRetentionDays,
+    speedTestRetentionDays,
+    securityEventRetentionDays,
   ];
 
 
@@ -91,6 +110,9 @@ class AppSettings extends Equatable {
       'portScanTimeoutMs': portScanTimeoutMs,
       'isAiEnabled': isAiEnabled,
       'backgroundType': backgroundType.name,
+      'scanHistoryRetentionDays': scanHistoryRetentionDays,
+      'speedTestRetentionDays': speedTestRetentionDays,
+      'securityEventRetentionDays': securityEventRetentionDays,
     };
 
   }
@@ -110,6 +132,9 @@ class AppSettings extends Equatable {
       portScanTimeoutMs: _readInt(json['portScanTimeoutMs'], fallback: 500),
       isAiEnabled: _readBool(json['isAiEnabled'], fallback: true),
       backgroundType: _parseBackgroundType(bgTypeName),
+      scanHistoryRetentionDays: _readInt(json['scanHistoryRetentionDays'], fallback: 30),
+      speedTestRetentionDays: _readInt(json['speedTestRetentionDays'], fallback: 30),
+      securityEventRetentionDays: _readInt(json['securityEventRetentionDays'], fallback: 30),
     );
 
   }

@@ -479,6 +479,61 @@ class _SettingsPageState extends State<SettingsPage> {
               padding: const EdgeInsets.all(14),
               child: Column(
                 children: [
+                  // Data Retention
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Text(
+                      'DATA RETENTION',
+                      style: GoogleFonts.orbitron(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 10,
+                        letterSpacing: 1.2,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  _NeonSliderTile(
+                    label: 'Scan History',
+                    value: settings.scanHistoryRetentionDays.toDouble(),
+                    min: 7,
+                    max: 365,
+                    divisions: 20,
+                    displayValue: settings.scanHistoryRetentionDays == 0
+                        ? '∞'
+                        : '${settings.scanHistoryRetentionDays}d',
+                    color: Theme.of(context).colorScheme.primary,
+                    onChanged: (v) => _update(
+                      settings.copyWith(scanHistoryRetentionDays: v.round()),
+                    ),
+                  ),
+                  _NeonSliderTile(
+                    label: 'Speed Tests',
+                    value: settings.speedTestRetentionDays.toDouble(),
+                    min: 7,
+                    max: 365,
+                    divisions: 20,
+                    displayValue: '${settings.speedTestRetentionDays}d',
+                    color: Theme.of(context).colorScheme.secondary,
+                    onChanged: (v) => _update(
+                      settings.copyWith(speedTestRetentionDays: v.round()),
+                    ),
+                  ),
+                  _NeonSliderTile(
+                    label: 'Security Events',
+                    value: settings.securityEventRetentionDays.toDouble(),
+                    min: 7,
+                    max: 365,
+                    divisions: 20,
+                    displayValue: '${settings.securityEventRetentionDays}d',
+                    color: Theme.of(context).colorScheme.error,
+                    onChanged: (v) => _update(
+                      settings.copyWith(securityEventRetentionDays: v.round()),
+                    ),
+                  ),
+                  Divider(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                    height: 16,
+                  ),
                   ListTile(
                     leading: _NeonIconCircle(
                       icon: Icons.replay_rounded,

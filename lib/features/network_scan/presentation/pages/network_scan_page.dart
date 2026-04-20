@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -140,6 +142,31 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
           return ListView(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
             children: [
+              if (Platform.isIOS)
+                Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.info_outline_rounded, color: Colors.orange, size: 15),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'iOS: LAN discovery is limited. mDNS browsing and ARP table access may be restricted by the OS.',
+                          style: GoogleFonts.rajdhani(
+                            color: Colors.orange,
+                            fontSize: 12,
+                            height: 1.3,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               // ── Section 1: SCAN CONTROL ──
               StaggeredEntry(
                 delay: const Duration(milliseconds: 50),

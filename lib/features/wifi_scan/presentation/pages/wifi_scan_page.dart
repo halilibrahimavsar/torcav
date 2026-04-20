@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -111,6 +112,13 @@ class _WifiScanViewState extends State<_WifiScanView> {
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
+          if (Platform.isIOS)
+            const Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: _IosPlatformBanner(),
+            ),
           BlocBuilder<WifiScanBloc, WifiScanState>(
             builder: (context, state) {
               final isLoading = state is WifiScanLoading;
@@ -608,6 +616,38 @@ class _SnapshotViewState extends State<_SnapshotView> {
                 ),
               ),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── iOS Platform Notice ────────────────────────────────────────────────────
+
+class _IosPlatformBanner extends StatelessWidget {
+  const _IosPlatformBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: Colors.orange.withValues(alpha: 0.15),
+      child: Row(
+        children: [
+          const Icon(Icons.info_outline_rounded, color: Colors.orange, size: 16),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'iOS: Wi-Fi scan results are limited by Apple APIs. '
+              'Active scan trigger and some network details are unavailable.',
+              style: GoogleFonts.rajdhani(
+                color: Colors.orange,
+                fontSize: 12,
+                height: 1.3,
+              ),
+            ),
+          ),
         ],
       ),
     );
