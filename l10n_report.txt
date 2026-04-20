@@ -231,7 +231,6 @@
     "dnsProvider",
     "runTest",
     "integrityCheck",
-    "portScanAction",
     "hostnameLookupAction",
     "arpInfoAction",
     "portsFoundLabel",

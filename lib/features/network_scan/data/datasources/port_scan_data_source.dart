@@ -6,6 +6,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../features/settings/domain/services/app_settings_store.dart';
 import '../../domain/entities/service_fingerprint.dart';
+import '../../domain/entities/port_scan_event.dart';
 
 @LazySingleton()
 class PortScanDataSource {
@@ -47,34 +48,58 @@ class PortScanDataSource {
   /// Scans the given IP for the target ports, yielding results as they arrive.
   ///
   /// Timeout is read from [AppSettingsStore] so users can tune it in Settings.
-  Stream<ServiceFingerprint> scanPortsReactive(
+  Stream<PortScanEvent> scanPortsReactive(
     String ip, {
+    List<int>? ports,
     Duration? timeout,
   }) async* {
     final effectiveTimeout = timeout ??
         Duration(milliseconds: _settingsStore.value.portScanTimeoutMs);
-    final controller = StreamController<ServiceFingerprint>();
+    final controller = StreamController<PortScanEvent>();
 
-    // We use a small batching approach to avoid overwhelming the socket limit
-    // while maintaining high performance.
-    final ports = _targetPorts.entries.toList();
+    // Prepare the list of (port, serviceName) pairs to scan
+    final List<MapEntry<int, String>> targetEntries;
+    if (ports != null) {
+      targetEntries = ports.map((p) {
+        final knownName = _targetPorts[p];
+        return MapEntry(p, knownName ?? 'unknown');
+      }).toList();
+    } else {
+      targetEntries = _targetPorts.entries.toList();
+    }
+
+    final totalCount = targetEntries.length;
+    var scannedCount = 0;
     const batchSize = 8;
 
     Future<void> runBatch() async {
-      for (var i = 0; i < ports.length; i += batchSize) {
-        final end =
-            (i + batchSize < ports.length) ? i + batchSize : ports.length;
-        final batch = ports.sublist(i, end);
+      for (var i = 0; i < targetEntries.length; i += batchSize) {
+        final end = (i + batchSize < targetEntries.length)
+            ? i + batchSize
+            : targetEntries.length;
+        final batch = targetEntries.sublist(i, end);
 
         final futures = batch.map(
-          (entry) => _probeAndGrabBanner(ip, entry.key, entry.value, effectiveTimeout),
+          (entry) => _probeAndGrabBanner(
+            ip,
+            entry.key,
+            entry.value,
+            effectiveTimeout,
+          ),
         );
 
         final results = await Future.wait(futures);
-        for (final res in results) {
-          if (res != null) {
-            controller.add(res);
-          }
+        for (var j = 0; j < results.length; j++) {
+          scannedCount++;
+          final res = results[j];
+          final entry = batch[j];
+          
+          controller.add(PortScanEvent(
+            totalCount: totalCount,
+            scannedCount: scannedCount,
+            currentPort: entry.key,
+            discovery: res,
+          ));
         }
       }
       controller.close();
@@ -84,9 +109,13 @@ class PortScanDataSource {
     yield* controller.stream;
   }
 
-  /// Legacy one-shot method, now calls the reactive version.
+  /// Legacy one-shot method, now calls the reactive version and filters for discoveries.
   Future<List<ServiceFingerprint>> scanPorts(String ip) async {
-    return scanPortsReactive(ip).toList();
+    final events = await scanPortsReactive(ip).toList();
+    return events
+        .where((e) => e.discovery != null)
+        .map((e) => e.discovery!)
+        .toList();
   }
 
   static Future<ServiceFingerprint?> _probeAndGrabBanner(

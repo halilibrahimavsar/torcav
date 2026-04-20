@@ -640,5 +640,18 @@
     "netInfoGatewayDesc": "Yönlendiricinizin yerel IP adresidir. Tüm trafiğiniz bu noktadan geçer. Bu adres beklenmedik şekilde değişirse, bir Ortadaki Adam (MitM) saldırısına işaret edebilir.",
     "netSecInfoTitle": "Ağ Güvenliği Modülü",
     "netSecInfoDesc": "Kötü İkiz (Evil Twin) saldırılarına ve sahte ağlara karşı koruma sağlamak için bağlı ağların bütünlüğünü izler ve güvenilir profillerinizi yönetir.",
-    "networkSecurity": "Ağ Güvenliği"
+    "networkSecurity": "Ağ Güvenliği",
+    "portScanCommonPorts": "Ortak Portlar",
+    "portScanCustomRange": "Özel Aralık",
+    "portScanAllPorts": "BÜTÜN PORTLAR",
+    "portScanFullScanWarning": "65.535 portun tamamını taramak uzun zaman alacaktır.",
+    "portScanStartPort": "Başlangıç Portu",
+    "portScanEndPort": "Bitiş Portu",
+    "portScanInvalidRange": "Geçersiz port aralığı",
+    "portScanTooManyPorts": "Uyarı: 1000'den fazla portu taramak yavaş olabilir",
+    "portScanSearching": "Açık portlar aranıyor. Bu işlem biraz zaman alabilir...",
+    "portScanProbing": "Port {port} taranıyor...",
+    "portScanFoundCount": "Şu ana kadar {count} açık servis bulundu.",
+    "portScanNoPortsProbed": "Henüz taranmış port yok. Açık servisleri keşfetmek için bir port taraması çalıştırın.",
+    "portScanAction": "PORT TARAMASI"
 }

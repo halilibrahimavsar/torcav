@@ -653,5 +653,63 @@
     "noSpeedTestHistory": "Noch keine Tests. Starten Sie den ersten Test oben.",
     "@noSpeedTestHistory": {"description": "noSpeedTestHistory"},
     "networkScoreLabel": "NETZWERK-BEWERTUNG",
-    "@networkScoreLabel": {"description": "networkScoreLabel"}
+    "@networkScoreLabel": {"description": "networkScoreLabel"},
+    "portScanCommonPorts": "Gängige Ports",
+    "@portScanCommonPorts": {
+        "description": "Label for common ports scan mode"
+    },
+    "portScanCustomRange": "Benutzerdefinierter Bereich",
+    "@portScanCustomRange": {
+        "description": "Label for custom port range scanning mode"
+    },
+    "portScanAllPorts": "ALLE PORTS",
+    "@portScanAllPorts": {
+        "description": "Label for all ports scanning mode"
+    },
+    "portScanFullScanWarning": "Das Scannen aller 65.535 Ports wird einige Zeit in Anspruch nehmen.",
+    "@portScanFullScanWarning": {
+        "description": "Warning message for full port scan"
+    },
+    "portScanStartPort": "Start-Port",
+    "@portScanStartPort": {
+        "description": "Label for start port input"
+    },
+    "portScanEndPort": "End-Port",
+    "@portScanEndPort": {
+        "description": "Label for end port input"
+    },
+    "portScanInvalidRange": "Ungültiger Portbereich angegeben",
+    "@portScanInvalidRange": {
+        "description": "Error message for invalid port range"
+    },
+    "portScanTooManyPorts": "Warnung: Das Scannen von >1000 Ports kann langsam sein",
+    "@portScanTooManyPorts": {
+        "description": "Warning for large port range"
+    },
+    "portScanSearching": "Suche nach offenen Ports. Dies kann einen Moment dauern...",
+    "@portScanSearching": {
+        "description": "Message shown while scanning ports"
+    },
+    "portScanProbing": "Port {port} wird gescannt...",
+    "@portScanProbing": {
+        "description": "Port scanning in progress message.",
+        "placeholders": {
+            "port": {
+                "type": "int"
+            }
+        }
+    },
+    "portScanFoundCount": "Bisher {count} offene Dienste gefunden.",
+    "@portScanFoundCount": {
+        "description": "Message showing count of open services found",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "portScanNoPortsProbed": "Noch keine Ports gescannt. Führen Sie einen Port-Scan durch, um offene Dienste zu finden.",
+    "@portScanNoPortsProbed": {
+        "description": "Message shown when no ports have been scanned yet"
+    }
 }

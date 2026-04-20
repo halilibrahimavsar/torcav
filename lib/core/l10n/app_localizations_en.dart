@@ -633,6 +633,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noPortsFound => 'No open ports found';
 
   @override
+  String get portScanCommonPorts => 'COMMON PORTS';
+
+  @override
+  String get portScanCustomRange => 'CUSTOM RANGE';
+
+  @override
+  String get portScanAllPorts => 'ALL PORTS';
+
+  @override
+  String get portScanFullScanWarning => 'Scanning all 65,535 ports will take considerable time.';
+
+  @override
+  String get portScanStartPort => 'START PORT';
+
+  @override
+  String get portScanEndPort => 'END PORT';
+
+  @override
+  String get portScanInvalidRange => 'Invalid port range';
+
+  @override
+  String get portScanTooManyPorts => 'Scanning too many ports might be slow';
+
+  @override
+  String get portScanSearching => 'Searching for open ports. This may take a moment...';
+
+  @override
+  String portScanProbing(int port) {
+    return 'Probing port $port...';
+  }
+
+  @override
+  String portScanFoundCount(int count) {
+    return 'Found $count open services so far.';
+  }
+
+  @override
+  String get portScanNoPortsProbed => 'No ports probed yet. Run a port scan to discover open services.';
+
+  @override
   String get hostnameLabel => 'HOSTNAME';
 
   @override

@@ -1269,11 +1269,83 @@ abstract class AppLocalizations {
   /// **'OPEN PORTS'**
   String get portsFoundLabel;
 
-  /// Message when no ports are found open
+  /// Message shown when no open ports were discovered
   ///
   /// In en, this message translates to:
   /// **'No open ports found'**
   String get noPortsFound;
+
+  /// Label for common ports scanning mode
+  ///
+  /// In en, this message translates to:
+  /// **'COMMON PORTS'**
+  String get portScanCommonPorts;
+
+  /// Label for custom port range scanning mode
+  ///
+  /// In en, this message translates to:
+  /// **'CUSTOM RANGE'**
+  String get portScanCustomRange;
+
+  /// Label for all ports scanning mode
+  ///
+  /// In en, this message translates to:
+  /// **'ALL PORTS'**
+  String get portScanAllPorts;
+
+  /// Warning message for full port scan
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning all 65,535 ports will take considerable time.'**
+  String get portScanFullScanWarning;
+
+  /// Label for start port input
+  ///
+  /// In en, this message translates to:
+  /// **'START PORT'**
+  String get portScanStartPort;
+
+  /// Label for end port input
+  ///
+  /// In en, this message translates to:
+  /// **'END PORT'**
+  String get portScanEndPort;
+
+  /// Error message for invalid port range
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid port range'**
+  String get portScanInvalidRange;
+
+  /// Warning for large port range
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning too many ports might be slow'**
+  String get portScanTooManyPorts;
+
+  /// Message shown while scanning ports
+  ///
+  /// In en, this message translates to:
+  /// **'Searching for open ports. This may take a moment...'**
+  String get portScanSearching;
+
+  /// Port scanning in progress message.
+  ///
+  /// In en, this message translates to:
+  /// **'Probing port {port}...'**
+  String portScanProbing(int port);
+
+  /// Message showing count of open services found
+  ///
+  /// In en, this message translates to:
+  /// **'Found {count} open services so far.'**
+  String portScanFoundCount(int count);
+
+  /// Message shown when no ports have been scanned yet
+  ///
+  /// In en, this message translates to:
+  /// **'No ports probed yet. Run a port scan to discover open services.'**
+  String get portScanNoPortsProbed;
 
   /// Label for hostname result
   ///

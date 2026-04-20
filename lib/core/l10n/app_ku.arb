@@ -653,5 +653,63 @@
     "noSpeedTestHistory": "Hêj test nehatiye tomar kirin. Testa yekem li jorê dest pê bike.",
     "@noSpeedTestHistory": {"description": "noSpeedTestHistory"},
     "networkScoreLabel": "PUANA TORÊ",
-    "@networkScoreLabel": {"description": "networkScoreLabel"}
+    "@networkScoreLabel": {"description": "networkScoreLabel"},
+    "portScanCommonPorts": "Portên Hevpar",
+    "@portScanCommonPorts": {
+        "description": "Label for common ports scan mode"
+    },
+    "portScanCustomRange": "Rêjeya Taybet",
+    "@portScanCustomRange": {
+        "description": "Label for custom port range scanning mode"
+    },
+    "portScanAllPorts": "HEMÛ PORT",
+    "@portScanAllPorts": {
+        "description": "Label for all ports scanning mode"
+    },
+    "portScanFullScanWarning": "Skankirina hemû 65.535 portan dê demeke dirêj bikişîne.",
+    "@portScanFullScanWarning": {
+        "description": "Warning message for full port scan"
+    },
+    "portScanStartPort": "Porta Destpêkê",
+    "@portScanStartPort": {
+        "description": "Label for start port input"
+    },
+    "portScanEndPort": "Porta Dawî",
+    "@portScanEndPort": {
+        "description": "Label for end port input"
+    },
+    "portScanInvalidRange": "Rêzeya portê ya nelihev hat dayîn",
+    "@portScanInvalidRange": {
+        "description": "Error message for invalid port range"
+    },
+    "portScanTooManyPorts": "Hişyarî: Skankirina >1000 portan dikare hêdî bibe",
+    "@portScanTooManyPorts": {
+        "description": "Warning for large port range"
+    },
+    "portScanSearching": "Li portên vekirî tê gerîn. Dibe ku demekê bikişîne...",
+    "@portScanSearching": {
+        "description": "Message shown while scanning ports"
+    },
+    "portScanProbing": "Porta {port} tê skankirin...",
+    "@portScanProbing": {
+        "description": "Port scanning in progress message.",
+        "placeholders": {
+            "port": {
+                "type": "int"
+            }
+        }
+    },
+    "portScanFoundCount": "Heta niha {count} xizmetên vekirî hatin dîtin.",
+    "@portScanFoundCount": {
+        "description": "Message showing count of open services found",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "portScanNoPortsProbed": "Hîn tu port nehatine skankirin. Ji bo dîtina xizmetên vekirî skanekê bidin destpêkirin.",
+    "@portScanNoPortsProbed": {
+        "description": "Message shown when no ports have been scanned yet"
+    }
 }

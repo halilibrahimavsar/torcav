@@ -633,6 +633,46 @@ class AppLocalizationsKu extends AppLocalizations {
   String get noPortsFound => 'No open ports found';
 
   @override
+  String get portScanCommonPorts => 'Portên Hevpar';
+
+  @override
+  String get portScanCustomRange => 'Rêjeya Taybet';
+
+  @override
+  String get portScanAllPorts => 'HEMÛ PORT';
+
+  @override
+  String get portScanFullScanWarning => 'Skankirina hemû 65.535 portan dê demeke dirêj bikişîne.';
+
+  @override
+  String get portScanStartPort => 'Porta Destpêkê';
+
+  @override
+  String get portScanEndPort => 'Porta Dawî';
+
+  @override
+  String get portScanInvalidRange => 'Rêzeya portê ya nelihev hat dayîn';
+
+  @override
+  String get portScanTooManyPorts => 'Hişyarî: Skankirina >1000 portan dikare hêdî bibe';
+
+  @override
+  String get portScanSearching => 'Li portên vekirî tê gerîn. Dibe ku demekê bikişîne...';
+
+  @override
+  String portScanProbing(int port) {
+    return 'Porta $port tê skankirin...';
+  }
+
+  @override
+  String portScanFoundCount(int count) {
+    return 'Heta niha $count xizmetên vekirî hatin dîtin.';
+  }
+
+  @override
+  String get portScanNoPortsProbed => 'Hîn tu port nehatine skankirin. Ji bo dîtina xizmetên vekirî skanekê bidin destpêkirin.';
+
+  @override
   String get hostnameLabel => 'HOSTNAME';
 
   @override

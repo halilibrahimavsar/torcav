@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../../domain/entities/service_fingerprint.dart';
+import '../../domain/entities/port_scan_event.dart';
 import '../../domain/repositories/port_scan_repository.dart';
 import '../datasources/port_scan_data_source.dart';
 
@@ -23,10 +24,11 @@ class PortScanRepositoryImpl implements PortScanRepository {
   }
 
   @override
-  Stream<ServiceFingerprint> scanPortsReactive(
+  Stream<PortScanEvent> scanPortsReactive(
     String ip, {
+    List<int>? ports,
     Duration timeout = const Duration(milliseconds: 500),
   }) {
-    return _dataSource.scanPortsReactive(ip, timeout: timeout);
+    return _dataSource.scanPortsReactive(ip, ports: ports, timeout: timeout);
   }
 }

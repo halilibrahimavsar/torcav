@@ -878,7 +878,65 @@
     },
     "noPortsFound": "No open ports found",
     "@noPortsFound": {
-        "description": "Message when no ports are found open"
+        "description": "Message shown when no open ports were discovered"
+    },
+    "portScanCommonPorts": "COMMON PORTS",
+    "@portScanCommonPorts": {
+        "description": "Label for common ports scanning mode"
+    },
+    "portScanCustomRange": "CUSTOM RANGE",
+    "@portScanCustomRange": {
+        "description": "Label for custom port range scanning mode"
+    },
+    "portScanAllPorts": "ALL PORTS",
+    "@portScanAllPorts": {
+        "description": "Label for all ports scanning mode"
+    },
+    "portScanFullScanWarning": "Scanning all 65,535 ports will take considerable time.",
+    "@portScanFullScanWarning": {
+        "description": "Warning message for full port scan"
+    },
+    "portScanStartPort": "START PORT",
+    "@portScanStartPort": {
+        "description": "Label for start port input"
+    },
+    "portScanEndPort": "END PORT",
+    "@portScanEndPort": {
+        "description": "Label for end port input"
+    },
+    "portScanInvalidRange": "Invalid port range",
+    "@portScanInvalidRange": {
+        "description": "Error message for invalid port range"
+    },
+    "portScanTooManyPorts": "Scanning too many ports might be slow",
+    "@portScanTooManyPorts": {
+        "description": "Warning for large port range"
+    },
+    "portScanSearching": "Searching for open ports. This may take a moment...",
+    "@portScanSearching": {
+        "description": "Message shown while scanning ports"
+    },
+    "portScanProbing": "Probing port {port}...",
+    "@portScanProbing": {
+        "description": "Port scanning in progress message.",
+        "placeholders": {
+            "port": {
+                "type": "int"
+            }
+        }
+    },
+    "portScanFoundCount": "Found {count} open services so far.",
+    "@portScanFoundCount": {
+        "description": "Message showing count of open services found",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "portScanNoPortsProbed": "No ports probed yet. Run a port scan to discover open services.",
+    "@portScanNoPortsProbed": {
+        "description": "Message shown when no ports have been scanned yet"
     },
     "hostnameLabel": "HOSTNAME",
     "@hostnameLabel": {

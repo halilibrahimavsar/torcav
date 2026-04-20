@@ -618,7 +618,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get networkSecurity => 'Ağ Güvenliği';
 
   @override
-  String get portScanAction => 'PORT SCAN';
+  String get portScanAction => 'PORT TARAMASI';
 
   @override
   String get hostnameLookupAction => 'LOOKUP HOSTNAME';
@@ -631,6 +631,46 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get noPortsFound => 'No open ports found';
+
+  @override
+  String get portScanCommonPorts => 'Ortak Portlar';
+
+  @override
+  String get portScanCustomRange => 'Özel Aralık';
+
+  @override
+  String get portScanAllPorts => 'BÜTÜN PORTLAR';
+
+  @override
+  String get portScanFullScanWarning => '65.535 portun tamamını taramak uzun zaman alacaktır.';
+
+  @override
+  String get portScanStartPort => 'Başlangıç Portu';
+
+  @override
+  String get portScanEndPort => 'Bitiş Portu';
+
+  @override
+  String get portScanInvalidRange => 'Geçersiz port aralığı';
+
+  @override
+  String get portScanTooManyPorts => 'Uyarı: 1000\'den fazla portu taramak yavaş olabilir';
+
+  @override
+  String get portScanSearching => 'Açık portlar aranıyor. Bu işlem biraz zaman alabilir...';
+
+  @override
+  String portScanProbing(int port) {
+    return 'Port $port taranıyor...';
+  }
+
+  @override
+  String portScanFoundCount(int count) {
+    return 'Şu ana kadar $count açık servis bulundu.';
+  }
+
+  @override
+  String get portScanNoPortsProbed => 'Henüz taranmış port yok. Açık servisleri keşfetmek için bir port taraması çalıştırın.';
 
   @override
   String get hostnameLabel => 'HOSTNAME';

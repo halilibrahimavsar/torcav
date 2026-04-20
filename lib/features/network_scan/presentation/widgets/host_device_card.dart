@@ -7,9 +7,11 @@ import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../domain/entities/host_scan_result.dart';
 import '../../domain/entities/service_fingerprint.dart';
+import '../../domain/entities/port_scan_event.dart';
 import '../../domain/usecases/port_scan_usecase.dart';
 
 enum _PortScanState { idle, scanning, done }
+enum _PortScanMode { common, all, custom }
 
 class HostDeviceCard extends StatefulWidget {
   final HostScanResult host;
@@ -24,13 +26,21 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
   bool _isExpanded = false;
   _PortScanState _portScanState = _PortScanState.idle;
   final List<ServiceFingerprint> _scannedServices = [];
-  StreamSubscription<ServiceFingerprint>? _scanSub;
+  StreamSubscription<PortScanEvent>? _scanSub;
   int _scannedPortCount = 0;
-  static const int _totalPorts = 25;
+  int _totalPortsToScan = 25; // Default for target ports
+  int? _currentPortScanning;
+
+  // Controllers for custom range
+  late final TextEditingController _startPortController;
+  late final TextEditingController _endPortController;
+  _PortScanMode _scanMode = _PortScanMode.common;
 
   @override
   void initState() {
     super.initState();
+    _startPortController = TextEditingController(text: '1');
+    _endPortController = TextEditingController(text: '1024');
     // Pre-populate with services already discovered during LAN scan
     _scannedServices.addAll(widget.host.services);
     if (_scannedServices.isNotEmpty) {
@@ -39,37 +49,62 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
   }
 
   @override
-  void didUpdateWidget(HostDeviceCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // Merge newly discovered services (from enrichment phase)
-    for (final s in widget.host.services) {
-      if (!_scannedServices.any((e) => e.port == s.port)) {
-        _scannedServices.add(s);
-      }
-    }
-  }
-
-  @override
   void dispose() {
     _scanSub?.cancel();
+    _startPortController.dispose();
+    _endPortController.dispose();
     super.dispose();
   }
 
   void _startPortScan() {
     if (_portScanState == _PortScanState.scanning) return;
+
+    List<int>? customPorts;
+    int expectedTotal = 25; // Default for target ports
+
+    switch (_scanMode) {
+      case _PortScanMode.common:
+        customPorts = null;
+        expectedTotal = 25; // This matches the PortScanDataSource default count
+        break;
+      case _PortScanMode.all:
+        customPorts = List.generate(65535, (i) => i + 1);
+        expectedTotal = 65535;
+        break;
+      case _PortScanMode.custom:
+        final start = int.tryParse(_startPortController.text) ?? 1;
+        final end = int.tryParse(_endPortController.text) ?? 1024;
+        if (start > 0 && end >= start && end <= 65535) {
+          customPorts = List.generate(end - start + 1, (i) => start + i);
+          expectedTotal = customPorts.length;
+        } else {
+          return;
+        }
+        break;
+    }
+
     setState(() {
       _portScanState = _PortScanState.scanning;
       _scannedPortCount = 0;
+      _totalPortsToScan = expectedTotal;
+      // If doing a fresh custom scan, maybe we want to clear previous manual results?
+      // For now we keep them and just add new ones.
     });
 
     final useCase = getIt<PortScanUseCase>();
-    _scanSub = useCase.callReactive(widget.host.ip).listen(
-      (service) {
+    _scanSub = useCase.callReactive(widget.host.ip, ports: customPorts).listen(
+      (event) {
         if (!mounted) return;
         setState(() {
-          _scannedPortCount++;
-          if (!_scannedServices.any((s) => s.port == service.port)) {
-            _scannedServices.add(service);
+          _scannedPortCount = event.scannedCount;
+          _totalPortsToScan = event.totalCount;
+          _currentPortScanning = event.currentPort;
+          
+          if (event.discovery != null) {
+            final service = event.discovery!;
+            if (!_scannedServices.any((s) => s.port == service.port)) {
+              _scannedServices.add(service);
+            }
           }
         });
       },
@@ -77,12 +112,16 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
         if (!mounted) return;
         setState(() {
           _portScanState = _PortScanState.done;
-          _scannedPortCount = _totalPorts;
+          _scannedPortCount = _totalPortsToScan;
+          _currentPortScanning = null;
         });
       },
       onError: (_) {
         if (!mounted) return;
-        setState(() => _portScanState = _PortScanState.done);
+        setState(() {
+          _portScanState = _PortScanState.done;
+          _currentPortScanning = null;
+        });
       },
     );
   }
@@ -258,7 +297,13 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
                 services: _scannedServices,
                 scanState: _portScanState,
                 scannedPortCount: _scannedPortCount,
+                totalPortsToScan: _totalPortsToScan,
+                currentPort: _currentPortScanning,
                 onScanRequested: _startPortScan,
+                scanMode: _scanMode,
+                onModeChanged: (mode) => setState(() => _scanMode = mode),
+                startPortController: _startPortController,
+                endPortController: _endPortController,
               ),
             ],
           ],
@@ -274,13 +319,25 @@ class _PortScanSection extends StatelessWidget {
   final List<ServiceFingerprint> services;
   final _PortScanState scanState;
   final int scannedPortCount;
+  final int totalPortsToScan;
+  final int? currentPort;
   final VoidCallback onScanRequested;
+  final _PortScanMode scanMode;
+  final ValueChanged<_PortScanMode> onModeChanged;
+  final TextEditingController startPortController;
+  final TextEditingController endPortController;
 
   const _PortScanSection({
     required this.services,
     required this.scanState,
     required this.scannedPortCount,
+    required this.totalPortsToScan,
+    this.currentPort,
     required this.onScanRequested,
+    required this.scanMode,
+    required this.onModeChanged,
+    required this.startPortController,
+    required this.endPortController,
   });
 
   @override
@@ -295,7 +352,7 @@ class _PortScanSection extends StatelessWidget {
             Icon(Icons.manage_search_rounded, size: 14, color: scheme.primary.withValues(alpha: 0.7)),
             const SizedBox(width: 6),
             Text(
-              'PORT SCAN',
+              context.l10n.portScanAction,
               style: GoogleFonts.orbitron(
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
@@ -306,7 +363,7 @@ class _PortScanSection extends StatelessWidget {
             const Spacer(),
             if (scanState == _PortScanState.scanning) ...[
               Text(
-                '$scannedPortCount / 25',
+                '$scannedPortCount / $totalPortsToScan',
                 style: GoogleFonts.sourceCodePro(
                   color: scheme.primary.withValues(alpha: 0.6),
                   fontSize: 10,
@@ -322,7 +379,7 @@ class _PortScanSection extends StatelessWidget {
               Icon(Icons.check_circle_rounded, size: 14, color: scheme.tertiary),
               const SizedBox(width: 4),
               Text(
-                'COMPLETE',
+                context.l10n.phaseIdle,
                 style: GoogleFonts.orbitron(
                   fontSize: 9,
                   color: scheme.tertiary,
@@ -333,16 +390,109 @@ class _PortScanSection extends StatelessWidget {
           ],
         ),
 
-        if (scanState == _PortScanState.scanning && services.isEmpty) ...[
+        const SizedBox(height: 12),
+
+        // ── Scan Mode Toggle ──
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              _ModeTab(
+                label: context.l10n.portScanCommonPorts,
+                isActive: scanMode == _PortScanMode.common,
+                onTap: () => onModeChanged(_PortScanMode.common),
+              ),
+              const SizedBox(width: 8),
+              _ModeTab(
+                label: context.l10n.portScanAllPorts,
+                isActive: scanMode == _PortScanMode.all,
+                onTap: () => onModeChanged(_PortScanMode.all),
+              ),
+              const SizedBox(width: 8),
+              _ModeTab(
+                label: context.l10n.portScanCustomRange,
+                isActive: scanMode == _PortScanMode.custom,
+                onTap: () => onModeChanged(_PortScanMode.custom),
+              ),
+            ],
+          ),
+        ),
+
+        if (scanMode == _PortScanMode.all && scanState != _PortScanState.scanning) ...[
           const SizedBox(height: 12),
-          _ScanProgressBar(progress: scannedPortCount / 25, color: scheme.primary),
-          const SizedBox(height: 8),
-          Text(
-            'Probing ports...',
-            style: GoogleFonts.rajdhani(
-              color: scheme.onSurfaceVariant,
-              fontSize: 12,
+          _CyberInfoBox(
+            message: context.l10n.portScanFullScanWarning,
+            isWarning: true,
+          ),
+        ],
+
+        if (scanMode == _PortScanMode.custom && scanState != _PortScanState.scanning) ...[
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _PortField(
+                  controller: startPortController,
+                  label: context.l10n.portScanStartPort,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _PortField(
+                  controller: endPortController,
+                  label: context.l10n.portScanEndPort,
+                ),
+              ),
+            ],
+          ),
+          Builder(
+            builder: (context) {
+              final start = int.tryParse(startPortController.text) ?? 1;
+              final end = int.tryParse(endPortController.text) ?? 1024;
+              if (end - start > 1000) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: _CyberInfoBox(
+                    message: context.l10n.portScanTooManyPorts,
+                    isWarning: true,
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+        ],
+
+        if (scanState != _PortScanState.scanning) ...[
+          const SizedBox(height: 12),
+          if (services.isEmpty) ...[
+            Text(
+              context.l10n.portScanNoPortsProbed,
+              style: GoogleFonts.rajdhani(
+                color: scheme.onSurfaceVariant,
+                fontSize: 12,
+              ),
             ),
+            const SizedBox(height: 10),
+          ],
+          Center(
+            child: _ScanButton(onTap: onScanRequested),
+          ),
+        ],
+
+        if (scanState == _PortScanState.scanning) ...[
+          const SizedBox(height: 12),
+          _CyberInfoBox(
+            message: currentPort != null 
+              ? context.l10n.portScanProbing(currentPort!)
+              : (services.isEmpty 
+                  ? context.l10n.portScanSearching 
+                  : context.l10n.portScanFoundCount(services.length)),
+          ),
+          const SizedBox(height: 12),
+          _ScanProgressBar(
+            progress: totalPortsToScan > 0 ? scannedPortCount / totalPortsToScan : 0,
+            color: scheme.primary,
           ),
         ],
 
@@ -353,24 +503,6 @@ class _PortScanSection extends StatelessWidget {
             runSpacing: 8,
             children: services.map((s) => _ServiceChip(service: s)).toList(),
           ),
-          if (scanState == _PortScanState.scanning) ...[
-            const SizedBox(height: 10),
-            _ScanProgressBar(progress: scannedPortCount / 25, color: scheme.primary),
-          ],
-        ],
-
-        if (scanState == _PortScanState.idle) ...[
-          const SizedBox(height: 12),
-          if (services.isEmpty)
-            Text(
-              'No ports probed yet. Run a port scan to discover open services.',
-              style: GoogleFonts.rajdhani(
-                color: scheme.onSurfaceVariant,
-                fontSize: 12,
-              ),
-            ),
-          const SizedBox(height: 10),
-          _ScanButton(onTap: onScanRequested),
         ],
 
         if (scanState == _PortScanState.done && services.isEmpty) ...[
@@ -447,6 +579,92 @@ class _ScanButton extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ModeTab extends StatelessWidget {
+  final String label;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _ModeTab({
+    required this.label,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final color = isActive ? scheme.primary : scheme.onSurface.withValues(alpha: 0.4);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: isActive ? scheme.primary.withValues(alpha: 0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: isActive ? scheme.primary.withValues(alpha: 0.3) : scheme.onSurface.withValues(alpha: 0.1)),
+        ),
+        child: Text(
+          label.toUpperCase(),
+          style: GoogleFonts.orbitron(
+            fontSize: 9,
+            fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+            color: color,
+            letterSpacing: 0.5,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PortField extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+
+  const _PortField({required this.controller, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label.toUpperCase(),
+          style: GoogleFonts.orbitron(
+            fontSize: 8,
+            fontWeight: FontWeight.bold,
+            color: scheme.onSurface.withValues(alpha: 0.5),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Container(
+          height: 36,
+          decoration: BoxDecoration(
+            color: scheme.surfaceContainerHighest.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: scheme.onSurface.withValues(alpha: 0.1)),
+          ),
+          child: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            style: GoogleFonts.sourceCodePro(
+              fontSize: 12,
+              color: scheme.onSurface,
+            ),
+            decoration: const InputDecoration(
+              isDense: true,
+              contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              border: InputBorder.none,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -710,6 +928,54 @@ class _TechDetail extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+class _CyberInfoBox extends StatelessWidget {
+  final String message;
+  final bool isWarning;
+
+  const _CyberInfoBox({
+    required this.message,
+    this.isWarning = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final color = isWarning ? scheme.error : scheme.primary;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(
+          color: color.withValues(alpha: 0.2),
+          width: 0.5,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            isWarning ? Icons.warning_amber_rounded : Icons.info_outline_rounded,
+            size: 14,
+            color: color.withValues(alpha: 0.8),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              message,
+              style: GoogleFonts.rajdhani(
+                color: color.withValues(alpha: 0.9),
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.3,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

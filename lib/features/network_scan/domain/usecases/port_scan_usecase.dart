@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../entities/service_fingerprint.dart';
+import '../entities/port_scan_event.dart';
 import '../repositories/port_scan_repository.dart';
 
 /// UseCase to perform an active TCP port scan against a specified IP address.
@@ -16,10 +17,11 @@ class PortScanUseCase {
     return _repository.scanPorts(ip);
   }
 
-  Stream<ServiceFingerprint> callReactive(
+  Stream<PortScanEvent> callReactive(
     String ip, {
+    List<int>? ports,
     Duration timeout = const Duration(milliseconds: 500),
   }) {
-    return _repository.scanPortsReactive(ip, timeout: timeout);
+    return _repository.scanPortsReactive(ip, ports: ports, timeout: timeout);
   }
 }
