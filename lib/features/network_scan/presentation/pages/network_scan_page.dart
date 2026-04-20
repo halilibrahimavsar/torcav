@@ -13,6 +13,7 @@ import '../../../../features/network_scan/presentation/widgets/network_scanner_r
 import '../bloc/network_scan_bloc.dart';
 import '../widgets/host_device_card.dart';
 import '../widgets/lan_consent_dialog.dart';
+import '../../data/datasources/lan_scan_history_local_data_source.dart';
 
 class NetworkScanPage extends StatelessWidget {
   const NetworkScanPage({super.key});
@@ -55,6 +56,41 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
     _targetController.dispose();
     _searchController.dispose();
     super.dispose();
+  }
+
+  Future<void> _clearHistory(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          'CLEAR SCAN HISTORY',
+          style: GoogleFonts.orbitron(fontSize: 13, fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'Delete all LAN scan records? This cannot be undone.',
+          style: GoogleFonts.rajdhani(fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text('CANCEL', style: GoogleFonts.orbitron(fontSize: 10)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(
+              'DELETE ALL',
+              style: GoogleFonts.orbitron(
+                fontSize: 10,
+                color: Theme.of(ctx).colorScheme.error,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      await getIt<LanScanHistoryLocalDataSource>().deleteAllSessions();
+    }
   }
 
   @override
@@ -130,6 +166,11 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                       ),
                     );
                   },
+                  onCancel: () {
+                    context.read<NetworkScanBloc>().add(
+                      const CancelNetworkScan(),
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: 16),
@@ -154,10 +195,26 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 // ── Section 2: SCAN ANALYTICS ──
                 StaggeredEntry(
                   delay: const Duration(milliseconds: 150),
-                  child: NeonSectionHeader(
-                    label: context.l10n.intelligenceReportTitle,
-                    icon: Icons.analytics_outlined,
-                    color: Theme.of(context).colorScheme.secondary,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: NeonSectionHeader(
+                          label: context.l10n.intelligenceReportTitle,
+                          icon: Icons.analytics_outlined,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                      ),
+                      if (!loaded.isScanning)
+                        IconButton(
+                          icon: Icon(
+                            Icons.delete_sweep_rounded,
+                            size: 18,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                          tooltip: 'Clear scan history',
+                          onPressed: () => _clearHistory(context),
+                        ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -236,6 +293,7 @@ class _ScanControlPanel extends StatelessWidget {
   final TextEditingController controller;
   final bool isScanning;
   final VoidCallback onScan;
+  final VoidCallback onCancel;
   final NetworkScanProfile profile;
   final ValueChanged<NetworkScanProfile> onProfileChanged;
 
@@ -243,6 +301,7 @@ class _ScanControlPanel extends StatelessWidget {
     required this.controller,
     required this.isScanning,
     required this.onScan,
+    required this.onCancel,
     required this.profile,
     required this.onProfileChanged,
   });
@@ -341,63 +400,95 @@ class _ScanControlPanel extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 14),
-          SizedBox(
-            width: double.infinity,
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: isScanning ? null : onScan,
-                borderRadius: BorderRadius.circular(12),
-                splashColor: scheme.primary.withValues(alpha: 0.1),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  decoration: BoxDecoration(
+          Row(
+            children: [
+              Expanded(
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: isScanning ? null : onScan,
                     borderRadius: BorderRadius.circular(12),
-                    color:
-                        isScanning
-                            ? scheme.surfaceContainerHighest
-                            : scheme.primary.withValues(alpha: 0.12),
-                    border: Border.all(
-                      color: scheme.primary.withValues(
-                        alpha: isScanning ? 0.1 : 0.3,
+                    splashColor: scheme.primary.withValues(alpha: 0.1),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color:
+                            isScanning
+                                ? scheme.surfaceContainerHighest
+                                : scheme.primary.withValues(alpha: 0.12),
+                        border: Border.all(
+                          color: scheme.primary.withValues(
+                            alpha: isScanning ? 0.1 : 0.3,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (isScanning)
+                            SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: scheme.primary,
+                              ),
+                            )
+                          else
+                            Icon(
+                              Icons.radar_rounded,
+                              color: scheme.primary,
+                              size: 20,
+                            ),
+                          const SizedBox(width: 10),
+                          Text(
+                            isScanning
+                                ? l10n.analyzing.toUpperCase()
+                                : l10n.scanAllCaps,
+                            style: GoogleFonts.orbitron(
+                              color: scheme.primary,
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (isScanning)
-                        SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: scheme.primary,
-                          ),
-                        )
-                      else
-                        Icon(
-                          Icons.radar_rounded,
-                          color: scheme.primary,
-                          size: 20,
-                        ),
-                      const SizedBox(width: 10),
-                      Text(
-                        isScanning
-                            ? l10n.analyzing.toUpperCase()
-                            : l10n.scanAllCaps,
-                        style: GoogleFonts.orbitron(
-                          color: scheme.primary,
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.5,
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
               ),
-            ),
+              if (isScanning) ...[
+                const SizedBox(width: 10),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: onCancel,
+                    borderRadius: BorderRadius.circular(12),
+                    splashColor: scheme.error.withValues(alpha: 0.1),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 14,
+                        horizontal: 18,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: scheme.error.withValues(alpha: 0.08),
+                        border: Border.all(
+                          color: scheme.error.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.stop_rounded,
+                        color: scheme.error,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ],
           ),
         ],
       ),

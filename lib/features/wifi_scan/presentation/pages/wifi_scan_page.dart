@@ -232,6 +232,42 @@ class _SnapshotViewState extends State<_SnapshotView> {
   final _searchController = TextEditingController();
   bool _showRecommendation = true;
 
+  Future<void> _clearScanHistory(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          'CLEAR SCAN HISTORY',
+          style: GoogleFonts.orbitron(fontSize: 13, fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'Delete all saved Wi-Fi scan sessions? This cannot be undone.',
+          style: GoogleFonts.rajdhani(fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text('CANCEL', style: GoogleFonts.orbitron(fontSize: 10)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(
+              'DELETE ALL',
+              style: GoogleFonts.orbitron(
+                fontSize: 10,
+                color: Theme.of(ctx).colorScheme.error,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      getIt<ScanSessionStore>().clear();
+      if (mounted) setState(() {});
+    }
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -341,6 +377,42 @@ class _SnapshotViewState extends State<_SnapshotView> {
             ),
           ),
 
+          // ── Android throttle / cached results banner ──
+          if (widget.snapshot.isFromCache)
+            Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.orange.withValues(alpha: 0.07),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: Colors.orange.withValues(alpha: 0.3),
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.cached_rounded,
+                    size: 16,
+                    color: Colors.orange,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'Showing cached results — Android limits scan frequency. '
+                      'Wait ~30 s and refresh for live data.',
+                      style: GoogleFonts.rajdhani(
+                        color: Colors.orange,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
           // ── Bento Header ──
           WifiBentoHeader(
             snapshot: widget.snapshot,
@@ -348,11 +420,14 @@ class _SnapshotViewState extends State<_SnapshotView> {
           ),
           const SizedBox(height: 12),
 
-          // ── Compare Button ──
+          // ── Compare + Clear History Row ──
           if (getIt<ScanSessionStore>().all.length >= 2)
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: OutlinedButton.icon(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
                 icon: const Icon(Icons.compare_arrows_rounded, size: 16),
                 label: Text(
                   AppLocalizations.of(context)!.compareWithPreviousScan,
@@ -366,12 +441,25 @@ class _SnapshotViewState extends State<_SnapshotView> {
                     ).colorScheme.primary.withValues(alpha: 0.4),
                   ),
                 ),
-                onPressed:
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const ScanComparisonPage(),
-                      ),
+                    onPressed:
+                        () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const ScanComparisonPage(),
+                          ),
+                        ),
                     ),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: Icon(
+                      Icons.delete_sweep_rounded,
+                      size: 18,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                    tooltip: 'Clear scan history',
+                    onPressed: () => _clearScanHistory(context),
+                  ),
+                ],
               ),
             ),
 

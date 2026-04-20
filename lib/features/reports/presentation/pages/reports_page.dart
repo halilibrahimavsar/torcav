@@ -42,7 +42,7 @@ class ReportsView extends StatefulWidget {
 class _ReportsViewState extends State<ReportsView> {
   bool _anonymize = false;
 
-  /// Returns a copy of [snapshot] with the last 3 BSSID octets masked.
+  /// Returns a copy of [snapshot] with the last 3 BSSID octets and SSID masked.
   ScanSnapshot _maybeAnonymize(ScanSnapshot snapshot) {
     if (!_anonymize) return snapshot;
     final redacted = snapshot.networks.map((obs) {
@@ -50,8 +50,11 @@ class _ReportsViewState extends State<ReportsView> {
       final maskedBssid = parts.length == 6
           ? '${parts[0]}:${parts[1]}:${parts[2]}:XX:XX:XX'
           : obs.bssid;
+      final maskedSsid = obs.ssid.isEmpty
+          ? obs.ssid
+          : '${obs.ssid[0]}${'*' * (obs.ssid.length - 1).clamp(1, 12)}';
       return WifiObservation(
-        ssid: obs.ssid,
+        ssid: maskedSsid,
         bssid: maskedBssid,
         signalDbmSamples: obs.signalDbmSamples,
         avgSignalDbm: obs.avgSignalDbm,

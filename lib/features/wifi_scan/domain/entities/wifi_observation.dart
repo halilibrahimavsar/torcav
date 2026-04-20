@@ -138,6 +138,20 @@ class WifiObservation extends Equatable {
     );
   }
 
+  /// Parsed WPA3 sub-mode from [rawCapabilities]. Null when not WPA3.
+  Wpa3Mode? get wpa3Mode {
+    if (security != SecurityType.wpa3) return null;
+    final caps = rawCapabilities?.toUpperCase() ?? '';
+    if (caps.contains('SUITE-B') || caps.contains('EAP_SUITE_B')) {
+      return Wpa3Mode.enterprise;
+    }
+    if (caps.contains('OWE')) return Wpa3Mode.owe;
+    if (caps.contains('SAE') && caps.contains('WPA2')) {
+      return Wpa3Mode.transition;
+    }
+    return Wpa3Mode.sae;
+  }
+
   WifiNetwork toWifiNetwork() {
     return WifiNetwork(
       ssid: ssid,

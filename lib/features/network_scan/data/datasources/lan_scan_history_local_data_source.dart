@@ -16,6 +16,7 @@ abstract class LanScanHistoryLocalDataSource {
     required List<HostScanResult> hosts,
   });
   Future<LanScanSession?> getLatestSession();
+  Future<void> deleteAllSessions();
 }
 
 @LazySingleton(as: LanScanHistoryLocalDataSource)
@@ -94,6 +95,15 @@ class LanScanHistoryLocalDataSourceImpl
       profile: row['profile'] as String? ?? '',
       hosts: hosts,
     );
+  }
+
+  @override
+  Future<void> deleteAllSessions() async {
+    final db = await _database.database;
+    await db.transaction((txn) async {
+      await txn.delete('lan_exposure_findings');
+      await txn.delete('lan_scan_sessions');
+    });
   }
 
   Map<String, dynamic> _hostToJson(HostScanResult host) {

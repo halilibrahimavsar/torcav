@@ -320,6 +320,20 @@ class NotificationTile extends StatelessWidget {
               height: 1.4,
             ),
           ),
+          if (_isHeuristicEvent(event.type)) ...[
+            const SizedBox(height: 8),
+            Text(
+              'Heuristic detection — not a confirmed attack. False positives may occur in congested environments.',
+              style: GoogleFonts.outfit(
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.45),
+                fontSize: 11,
+                fontStyle: FontStyle.italic,
+                height: 1.4,
+              ),
+            ),
+          ],
           if (isUnread) ...[
             const SizedBox(height: 12),
             Row(
@@ -339,6 +353,14 @@ class NotificationTile extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  bool _isHeuristicEvent(SecurityEventType type) {
+    return type == SecurityEventType.deauthBurstDetected ||
+        type == SecurityEventType.deauthAttackSuspected ||
+        type == SecurityEventType.arpSpoofingDetected ||
+        type == SecurityEventType.evilTwinDetected ||
+        type == SecurityEventType.rogueApSuspected;
   }
 
   Color _getSeverityColor(

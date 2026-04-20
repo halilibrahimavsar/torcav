@@ -10,6 +10,7 @@ import 'package:path/path.dart' as p;
 
 import '../../../network_scan/domain/entities/host_scan_result.dart';
 import '../../domain/services/device_classifier.dart';
+import '../stores/device_label_override_store.dart';
 
 /// Runs the device classifier ONNX model on-device.
 ///
@@ -19,11 +20,17 @@ class OnnxDeviceClassifierService {
   OrtSession? _session;
   bool _initFailed = false;
 
+  final DeviceLabelOverrideStore _overrideStore = DeviceLabelOverrideStore();
+
   /// Classify a single host.
   ///
-  /// Returns a vendor heuristic result when the model is unavailable or
-  /// confidence falls below [_confidenceThreshold].
+  /// If the user has set a manual label for this MAC address, that label is
+  /// returned immediately with confidence 1.0 — skipping model inference.
   Future<DeviceClassification?> classify(HostScanResult host) async {
+    final override = await _overrideStore.get(host.mac);
+    if (override != null) {
+      return DeviceClassification(deviceType: override, confidence: 1.0);
+    }
     final features = DeviceFeatureExtractor.extractFeatures(host);
     return _classifyFeatures(features, host);
   }

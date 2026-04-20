@@ -133,6 +133,71 @@ class ReportExportRepositoryImpl implements ReportExportRepository {
     try {
       final document = pw.Document();
       document.addPage(
+        pw.Page(
+          pageFormat: PdfPageFormat.a4,
+          build:
+              (_) => pw.Padding(
+                padding: const pw.EdgeInsets.all(48),
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text(
+                      'TORCAV — Wi-Fi Scan Report',
+                      style: pw.TextStyle(
+                        fontSize: 22,
+                        fontWeight: pw.FontWeight.bold,
+                      ),
+                    ),
+                    pw.SizedBox(height: 32),
+                    pw.Container(
+                      padding: const pw.EdgeInsets.all(16),
+                      decoration: pw.BoxDecoration(
+                        border: pw.Border.all(color: PdfColors.grey400),
+                        borderRadius: pw.BorderRadius.circular(8),
+                      ),
+                      child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          pw.Text(
+                            'Yasal Uyarı / Legal Disclaimer',
+                            style: pw.TextStyle(
+                              fontSize: 13,
+                              fontWeight: pw.FontWeight.bold,
+                            ),
+                          ),
+                          pw.SizedBox(height: 10),
+                          pw.Text(
+                            'Bu rapor yalnızca kullanıcının yetkili olduğu ağ üzerinde yapılan '
+                            'pasif gözlem sonuçlarıdır. Üçüncü tarafların cihaz bilgileri '
+                            'görünüyorsa, rapor paylaşmadan önce KVKK/GDPR açık rıza '
+                            'gereksinimleri değerlendirilmelidir.',
+                            style: const pw.TextStyle(fontSize: 10),
+                          ),
+                          pw.SizedBox(height: 8),
+                          pw.Text(
+                            'This report contains results from passive observation of networks '
+                            'the user is authorized to access. If third-party device information '
+                            'is visible, GDPR/KVKK explicit consent requirements must be '
+                            'evaluated before sharing this report.',
+                            style: const pw.TextStyle(fontSize: 10),
+                          ),
+                        ],
+                      ),
+                    ),
+                    pw.Spacer(),
+                    pw.Text(
+                      'Generated: ${snapshot.timestamp.toIso8601String()}',
+                      style: pw.TextStyle(
+                        fontSize: 9,
+                        color: PdfColors.grey600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+        ),
+      );
+      document.addPage(
         pw.MultiPage(
           pageFormat: PdfPageFormat.a4,
           build:

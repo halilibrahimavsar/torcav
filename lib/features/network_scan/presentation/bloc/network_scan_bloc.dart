@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -31,11 +33,38 @@ class StartNetworkScan extends NetworkScanEvent {
   List<Object?> get props => [target, profile, method, deepScan];
 }
 
+class CancelNetworkScan extends NetworkScanEvent {
+  const CancelNetworkScan();
+  @override
+  List<Object?> get props => [];
+}
+
 class AcknowledgeLegalRisk extends NetworkScanEvent {
   final bool accepted;
   const AcknowledgeLegalRisk(this.accepted);
   @override
   List<Object?> get props => [accepted];
+}
+
+// Internal events
+class _HostFound extends NetworkScanEvent {
+  final HostScanResult host;
+  const _HostFound(this.host);
+  @override
+  List<Object?> get props => [host];
+}
+
+class _ScanComplete extends NetworkScanEvent {
+  const _ScanComplete();
+  @override
+  List<Object?> get props => [];
+}
+
+class _ScanFailed extends NetworkScanEvent {
+  final String message;
+  const _ScanFailed(this.message);
+  @override
+  List<Object?> get props => [message];
 }
 
 // State
@@ -81,13 +110,23 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
   final NewDeviceDetector _newDeviceDetector;
 
   bool _consentGiven = false;
+  StreamSubscription? _scanSubscription;
+
+  // Accumulate partial results so cancel can emit them
+  final List<HostScanResult> _activeHosts = [];
+  final List<NetworkDevice> _activeDevices = [];
+  List<HostScanResult> _activeNewDevices = [];
 
   NetworkScanBloc(
     this._repository,
     this._newDeviceDetector,
   ) : super(NetworkScanInitial()) {
     on<StartNetworkScan>(_onStartScan);
+    on<CancelNetworkScan>(_onCancelScan);
     on<AcknowledgeLegalRisk>(_onAcknowledgeRisk);
+    on<_HostFound>(_onHostFound);
+    on<_ScanComplete>(_onScanComplete);
+    on<_ScanFailed>(_onScanFailed);
   }
 
   void _onAcknowledgeRisk(
@@ -115,7 +154,6 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
       return;
     }
 
-    // Apply safety guardrails
     if (!NetworkScanPolicy.standard.isTargetSafe(event.target)) {
       emit(
         const NetworkScanError(
@@ -125,70 +163,96 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
       return;
     }
 
+    await _scanSubscription?.cancel();
+    _scanSubscription = null;
+    _activeHosts.clear();
+    _activeDevices.clear();
+    _activeNewDevices = [];
+
     emit(NetworkScanLoading());
 
-    final List<HostScanResult> currentHosts = [];
-    final List<NetworkDevice> currentDevices = [];
-    List<HostScanResult> currentNewDevices = [];
-
-    try {
-      await for (final result in _repository.scanWithProfile(
-        event.target,
-        profile: event.profile,
-        method: event.method,
-      )) {
-        await result.fold(
-          (failure) async => emit(NetworkScanError(failure.message)),
-          (host) async {
-            final hostIndex = currentHosts.indexWhere((h) => h.ip == host.ip);
-            if (hostIndex != -1) {
-              currentHosts[hostIndex] = host;
-            } else {
-              currentHosts.add(host);
-            }
-
-            final device = NetworkDevice(
-              ip: host.ip,
-              mac: host.mac,
-              vendor: host.vendor,
-              hostName: host.hostName,
-              latency: host.latency,
-            );
-
-            final deviceIndex = currentDevices.indexWhere(
-              (d) => d.ip == host.ip,
-            );
-            if (deviceIndex != -1) {
-              currentDevices[deviceIndex] = device;
-            } else {
-              currentDevices.add(device);
-            }
-
-            currentNewDevices = _newDeviceDetector.detectNew(currentHosts);
-
-            emit(
-              NetworkScanLoaded(
-                devices: List.from(currentDevices),
-                hosts: List.from(currentHosts),
-                newDevices: List.from(currentNewDevices),
-                isScanning: true,
-              ),
-            );
-          },
+    _scanSubscription = _repository
+        .scanWithProfile(event.target, profile: event.profile, method: event.method)
+        .listen(
+          (result) => result.fold(
+            (failure) => add(_ScanFailed(failure.message)),
+            (host) => add(_HostFound(host)),
+          ),
+          onDone: () => add(const _ScanComplete()),
+          onError: (Object e) => add(_ScanFailed(e.toString())),
         );
-      }
+  }
 
-      // Discovery complete – emit final state without scanning flag
-      emit(
-        NetworkScanLoaded(
-          devices: List.from(currentDevices),
-          hosts: List.from(currentHosts),
-          newDevices: List.from(currentNewDevices),
-          isScanning: false,
-        ),
-      );
-    } catch (e) {
-      emit(NetworkScanError(e.toString()));
+  Future<void> _onCancelScan(
+    CancelNetworkScan event,
+    Emitter<NetworkScanState> emit,
+  ) async {
+    await _scanSubscription?.cancel();
+    _scanSubscription = null;
+    emit(
+      NetworkScanLoaded(
+        devices: List.from(_activeDevices),
+        hosts: List.from(_activeHosts),
+        newDevices: List.from(_activeNewDevices),
+        isScanning: false,
+      ),
+    );
+  }
+
+  void _onHostFound(_HostFound event, Emitter<NetworkScanState> emit) {
+    final host = event.host;
+
+    final hostIndex = _activeHosts.indexWhere((h) => h.ip == host.ip);
+    if (hostIndex != -1) {
+      _activeHosts[hostIndex] = host;
+    } else {
+      _activeHosts.add(host);
     }
+
+    final device = NetworkDevice(
+      ip: host.ip,
+      mac: host.mac,
+      vendor: host.vendor,
+      hostName: host.hostName,
+      latency: host.latency,
+    );
+    final deviceIndex = _activeDevices.indexWhere((d) => d.ip == host.ip);
+    if (deviceIndex != -1) {
+      _activeDevices[deviceIndex] = device;
+    } else {
+      _activeDevices.add(device);
+    }
+
+    _activeNewDevices = _newDeviceDetector.detectNew(_activeHosts);
+
+    emit(
+      NetworkScanLoaded(
+        devices: List.from(_activeDevices),
+        hosts: List.from(_activeHosts),
+        newDevices: List.from(_activeNewDevices),
+        isScanning: true,
+      ),
+    );
+  }
+
+  void _onScanComplete(_ScanComplete event, Emitter<NetworkScanState> emit) {
+    emit(
+      NetworkScanLoaded(
+        devices: List.from(_activeDevices),
+        hosts: List.from(_activeHosts),
+        newDevices: List.from(_activeNewDevices),
+        isScanning: false,
+      ),
+    );
+  }
+
+  void _onScanFailed(_ScanFailed event, Emitter<NetworkScanState> emit) {
+    emit(NetworkScanError(event.message));
+  }
+
+  @override
+  Future<void> close() {
+    _scanSubscription?.cancel();
+    return super.close();
   }
 }

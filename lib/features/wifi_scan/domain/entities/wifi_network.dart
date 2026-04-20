@@ -2,6 +2,21 @@ import 'package:equatable/equatable.dart';
 
 enum SecurityType { open, wep, wpa, wpa2, wpa3, unknown }
 
+/// WPA3 operational sub-modes, parsed from raw capability strings.
+enum Wpa3Mode {
+  /// WPA3-Personal (SAE only, no WPA2 backward compat)
+  sae,
+
+  /// WPA3-SAE Transition Mode (SAE + WPA2-PSK co-exist)
+  transition,
+
+  /// Opportunistic Wireless Encryption (open network with encryption)
+  owe,
+
+  /// WPA3-Enterprise / SUITE-B-192
+  enterprise,
+}
+
 /// WiFi standard generation derived from Android's `ScanResult.wifiStandard`.
 enum WifiStandard { legacy, n, ac, ax, be, unknown }
 

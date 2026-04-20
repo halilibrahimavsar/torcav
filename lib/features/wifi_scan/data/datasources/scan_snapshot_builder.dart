@@ -20,6 +20,7 @@ class ScanSnapshotBuilder {
     required String backendUsed,
     required String interfaceName,
     required List<List<WifiNetwork>> passes,
+    bool isFromCache = false,
   }) async {
     final observations = await _buildObservations(passes);
     final channelStats = _buildChannelStats(observations);
@@ -32,6 +33,7 @@ class ScanSnapshotBuilder {
       networks: observations,
       channelStats: channelStats,
       bandStats: bandStats,
+      isFromCache: isFromCache,
     );
   }
 

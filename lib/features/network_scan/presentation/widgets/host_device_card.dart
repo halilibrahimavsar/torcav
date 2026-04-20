@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../features/ai/data/stores/device_label_override_store.dart';
+import '../../../../features/ai/domain/services/device_classifier.dart';
 import '../../domain/entities/host_scan_result.dart';
 import '../../domain/entities/service_fingerprint.dart';
 import '../../domain/entities/port_scan_event.dart';
@@ -36,6 +38,9 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
   late final TextEditingController _endPortController;
   _PortScanMode _scanMode = _PortScanMode.common;
 
+  final _overrideStore = DeviceLabelOverrideStore();
+  String? _customLabel;
+
   @override
   void initState() {
     super.initState();
@@ -45,6 +50,69 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
     _scannedServices.addAll(widget.host.services);
     if (_scannedServices.isNotEmpty) {
       _portScanState = _PortScanState.done;
+    }
+    _loadOverride();
+  }
+
+  Future<void> _loadOverride() async {
+    final label = await _overrideStore.get(widget.host.mac);
+    if (label != null && mounted) setState(() => _customLabel = label);
+  }
+
+  Future<void> _showLabelPicker(BuildContext context) async {
+    final scheme = Theme.of(context).colorScheme;
+    final picked = await showDialog<String>(
+      context: context,
+      builder:
+          (ctx) => SimpleDialog(
+            backgroundColor: scheme.surfaceContainerHigh,
+            title: Text(
+              'Set Device Type',
+              style: GoogleFonts.orbitron(
+                fontSize: 12,
+                color: scheme.primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            children: [
+              for (final category in DeviceFeatureExtractor.deviceCategories)
+                SimpleDialogOption(
+                  onPressed: () => Navigator.pop(ctx, category),
+                  child: Text(
+                    category,
+                    style: GoogleFonts.rajdhani(
+                      color:
+                          category == (_customLabel ?? widget.host.deviceType)
+                              ? scheme.primary
+                              : scheme.onSurface,
+                      fontSize: 14,
+                      fontWeight:
+                          category == (_customLabel ?? widget.host.deviceType)
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                    ),
+                  ),
+                ),
+              SimpleDialogOption(
+                onPressed: () => Navigator.pop(ctx, '__clear__'),
+                child: Text(
+                  'Reset to AI label',
+                  style: GoogleFonts.rajdhani(
+                    color: scheme.error,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ],
+          ),
+    );
+    if (picked == null) return;
+    if (picked == '__clear__') {
+      await _overrideStore.remove(widget.host.mac);
+      if (mounted) setState(() => _customLabel = null);
+    } else {
+      await _overrideStore.set(widget.host.mac, picked);
+      if (mounted) setState(() => _customLabel = picked);
     }
   }
 
@@ -233,14 +301,23 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          if (widget.host.deviceType != 'Unknown') ...[
+                          ...[
                             Text(' • ', style: TextStyle(color: scheme.onSurface.withValues(alpha: 0.3))),
                             Text(
-                              widget.host.deviceType.toUpperCase(),
+                              (_customLabel ?? widget.host.deviceType).toUpperCase(),
                               style: GoogleFonts.rajdhani(
-                                color: scheme.secondary,
+                                color: _customLabel != null ? scheme.tertiary : scheme.secondary,
                                 fontSize: 11,
                                 fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            GestureDetector(
+                              onTap: () => _showLabelPicker(context),
+                              child: Icon(
+                                Icons.edit_rounded,
+                                size: 12,
+                                color: scheme.onSurface.withValues(alpha: 0.35),
                               ),
                             ),
                           ],

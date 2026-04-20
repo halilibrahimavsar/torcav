@@ -95,6 +95,7 @@ class WifiScanBloc extends Bloc<WifiScanEvent, WifiScanState> {
       networks: sortedNetworks,
       channelStats: snapshot.channelStats,
       bandStats: snapshot.bandStats,
+      isFromCache: snapshot.isFromCache,
     );
   }
 }

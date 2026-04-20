@@ -39,14 +39,15 @@ class ArpSpoofingDetector {
             final isGatewayInvolved = ips.contains(gatewayIp);
 
             if (isGatewayInvolved) {
+              final oui = _ouiPrefix(mac);
               return SecurityEvent(
                 type: SecurityEventType.arpSpoofingDetected,
                 severity: SecurityEventSeverity.critical,
-                ssid: '', // SSID not directly available here
+                ssid: '',
                 bssid: mac,
                 timestamp: DateTime.now(),
                 evidence:
-                    'Multiple IPs (${ips.join(", ")}) share the same MAC address as the Gateway ($gatewayIp). High probability of ARP poisoning.',
+                    'Gateway IP $gatewayIp shares MAC OUI $oui with ${ips.length} addresses. Possible ARP poisoning.',
               );
             }
           }
@@ -55,5 +56,11 @@ class ArpSpoofingDetector {
         return null;
       },
     );
+  }
+
+  /// Returns the first 3 octets (OUI prefix) of a MAC address, e.g. "AA:BB:CC".
+  static String _ouiPrefix(String mac) {
+    final parts = mac.split(':');
+    return parts.length >= 3 ? parts.sublist(0, 3).join(':') : mac;
   }
 }

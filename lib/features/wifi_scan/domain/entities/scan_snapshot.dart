@@ -12,6 +12,7 @@ class ScanSnapshot extends Equatable {
   final List<WifiObservation> networks;
   final List<ChannelOccupancyStat> channelStats;
   final List<BandAnalysisStat> bandStats;
+  final bool isFromCache;
 
   const ScanSnapshot({
     required this.timestamp,
@@ -20,6 +21,7 @@ class ScanSnapshot extends Equatable {
     required this.networks,
     required this.channelStats,
     required this.bandStats,
+    this.isFromCache = false,
   });
 
   List<WifiNetwork> toLegacyNetworks() {
@@ -34,5 +36,6 @@ class ScanSnapshot extends Equatable {
     networks,
     channelStats,
     bandStats,
+    isFromCache,
   ];
 }

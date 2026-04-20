@@ -38,6 +38,7 @@ class AndroidWifiDataSource implements WifiDataSource {
 
     final passCount = max(1, request.passes);
     final passResults = <List<WifiNetwork>>[];
+    var anyPassTriggeredFreshScan = false;
 
     for (var pass = 0; pass < passCount; pass++) {
       // Try to trigger a fresh scan, but if throttled, fall back to
@@ -52,6 +53,8 @@ class AndroidWifiDataSource implements WifiDataSource {
       } catch (_) {
         // Swallow — we'll use cached results.
       }
+
+      if (triggeredFreshScan) anyPassTriggeredFreshScan = true;
 
       if (triggeredFreshScan) {
         // Give the radio time to gather results.
@@ -132,6 +135,7 @@ class AndroidWifiDataSource implements WifiDataSource {
       backendUsed: 'android_wifi_scan',
       interfaceName: request.interfaceName ?? 'wlan0',
       passes: passResults,
+      isFromCache: !anyPassTriggeredFreshScan,
     );
   }
 

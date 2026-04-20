@@ -406,6 +406,33 @@ class _SettingsPageState extends State<SettingsPage> {
                       _update(settings.copyWith(strictSafetyMode: value));
                     },
                   ),
+                  // Deep Scan
+                  SwitchListTile(
+                    value: settings.isDeepScanEnabled,
+                    activeColor: Theme.of(context).colorScheme.error,
+                    title: Text(
+                      'Deep Scan',
+                      style: GoogleFonts.rajdhani(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Banner grab + exposure analysis. Only enable on networks you are authorized to test.',
+                      style: GoogleFonts.rajdhani(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
+                    ),
+                    onChanged: (value) async {
+                      if (value) {
+                        final confirmed = await _confirmDeepScan(context);
+                        if (!confirmed) return;
+                      }
+                      _update(settings.copyWith(isDeepScanEnabled: value));
+                    },
+                  ),
                   Divider(
                     color: Theme.of(
                       context,
@@ -523,6 +550,59 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
           ),
+
+          const SizedBox(height: 24),
+
+          // ── About ──
+          StaggeredEntry(
+            delay: const Duration(milliseconds: 600),
+            child: NeonSectionHeader(
+              label: 'ABOUT',
+              icon: Icons.info_outline_rounded,
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          StaggeredEntry(
+            delay: const Duration(milliseconds: 650),
+            child: NeonCard(
+              glowColor: Theme.of(context).colorScheme.secondary,
+              glowIntensity: 0.04,
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Legal Disclaimer',
+                    style: GoogleFonts.orbitron(
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'This application performs passive Wi-Fi observation and LAN analysis only. '
+                    'No authentication attempts, frame injection, deauthentication packets, '
+                    'ARP poisoning, or credential harvesting are performed.\n\n'
+                    'Use of this application on networks you do not own or are not authorized '
+                    'to test may violate applicable laws (TCK 243/244, EU Directive 2013/40, '
+                    'CFAA). The user is solely responsible for ensuring lawful use.\n\n'
+                    'Bu uygulama yalnızca pasif Wi-Fi gözlemi ve LAN analizi yapar. '
+                    'Yetkisiz ağlarda kullanım TCK 243/244 kapsamında suç teşkil edebilir.',
+                    style: GoogleFonts.outfit(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.65),
+                      fontSize: 12,
+                      height: 1.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -535,6 +615,62 @@ class _SettingsPageState extends State<SettingsPage> {
     navigator.pushReplacement(
       MaterialPageRoute(builder: (_) => const OnboardingPage()),
     );
+  }
+
+  Future<bool> _confirmDeepScan(BuildContext context) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder:
+          (ctx) => AlertDialog(
+            backgroundColor: Theme.of(ctx).colorScheme.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: Text(
+              'ENABLE DEEP SCAN?',
+              style: GoogleFonts.orbitron(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(ctx).colorScheme.error,
+              ),
+            ),
+            content: Text(
+              'Deep scan performs banner grabbing and service exposure analysis. '
+              'This mode must only be used on networks you own or are explicitly '
+              'authorized to test.\n\n'
+              'Proceeding on unauthorized networks may violate applicable laws.',
+              style: GoogleFonts.rajdhani(
+                color: Theme.of(ctx).colorScheme.onSurface,
+                fontSize: 14,
+                height: 1.4,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(
+                  'CANCEL',
+                  style: GoogleFonts.orbitron(
+                    fontSize: 11,
+                    color: Theme.of(ctx).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(
+                  'I UNDERSTAND — ENABLE',
+                  style: GoogleFonts.orbitron(
+                    fontSize: 11,
+                    color: Theme.of(ctx).colorScheme.error,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+    );
+    return result ?? false;
   }
 
   Future<void> _confirmWipeAll(BuildContext context) async {
