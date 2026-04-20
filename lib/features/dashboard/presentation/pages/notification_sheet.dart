@@ -88,7 +88,10 @@ class NotificationSheet extends StatelessWidget {
               if (state is! NotificationLoaded || state.notifications.isEmpty) {
                 return const SizedBox.shrink();
               }
-              return Row(
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+              Row(
                 children: [
                   TextButton.icon(
                     onPressed:
@@ -146,6 +149,16 @@ class NotificationSheet extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Events are retained for 30 days. Swipe left to dismiss.',
+                style: GoogleFonts.rajdhani(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                  fontSize: 11,
+                ),
+              ),
+                ],
               );
             },
           ),
@@ -194,12 +207,32 @@ class NotificationSheet extends StatelessWidget {
           }
 
           return ListView.separated(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
             itemCount: state.notifications.length,
             separatorBuilder: (context, index) => const SizedBox(height: 16),
             itemBuilder: (context, index) {
               final event = state.notifications[index];
-              return NotificationTile(event: event);
+              if (event.id == null) return NotificationTile(event: event);
+              return Dismissible(
+                key: Key('notif_${event.id}'),
+                direction: DismissDirection.endToStart,
+                onDismissed: (_) => context
+                    .read<NotificationBloc>()
+                    .add(DismissNotification(event.id!)),
+                background: Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(right: 20),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.error.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Icon(
+                    Icons.delete_outline_rounded,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+                child: NotificationTile(event: event),
+              );
             },
           );
         }

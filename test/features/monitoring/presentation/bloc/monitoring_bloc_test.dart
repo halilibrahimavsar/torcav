@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:dartz/dartz.dart' as dartz;
 import 'package:fpdart/fpdart.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:torcav/core/errors/failures.dart';
@@ -12,6 +13,8 @@ import 'package:torcav/features/wifi_scan/domain/services/channel_rating_engine.
 import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
 import 'package:torcav/features/wifi_scan/domain/repositories/channel_rating_repository.dart';
 import 'package:torcav/features/wifi_scan/domain/usecases/get_historical_best_channel.dart';
+import 'package:torcav/features/security/domain/repositories/security_repository.dart';
+import 'package:torcav/features/security/domain/entities/security_event.dart';
 
 class MockChannelRatingEngine extends Mock implements ChannelRatingEngine {}
 
@@ -25,6 +28,8 @@ class MockChannelRatingRepository extends Mock
 class MockGetBestHistoricalChannel extends Mock
     implements GetBestHistoricalChannel {}
 
+class MockSecurityRepository extends Mock implements SecurityRepository {}
+
 void main() {
   late MonitoringBloc bloc;
   late MockMonitoringRepository repo;
@@ -32,9 +37,20 @@ void main() {
   late MockScanSessionStore sessionStore;
   late MockChannelRatingRepository historyRepo;
   late MockGetBestHistoricalChannel getHistory;
+  late MockSecurityRepository securityRepo;
 
   setUpAll(() {
     registerFallbackValue(const Duration(seconds: 1));
+    registerFallbackValue(
+      SecurityEvent(
+        type: SecurityEventType.deauthAttackSuspected,
+        severity: SecurityEventSeverity.high,
+        ssid: '',
+        bssid: '',
+        evidence: '',
+        timestamp: DateTime(2020),
+      ),
+    );
   });
 
   setUp(() {
@@ -43,6 +59,7 @@ void main() {
     sessionStore = MockScanSessionStore();
     historyRepo = MockChannelRatingRepository();
     getHistory = MockGetBestHistoricalChannel();
+    securityRepo = MockSecurityRepository();
 
     // Default mock behavior for session store stream
     when(() => sessionStore.snapshots).thenAnswer((_) => const Stream.empty());
@@ -52,8 +69,18 @@ void main() {
     when(
       () => historyRepo.saveRatings(any()),
     ).thenAnswer((_) async => const Right(null));
+    when(
+      () => securityRepo.saveSecurityEvent(any()),
+    ).thenAnswer((_) async => dartz.right<Failure, void>(null));
 
-    bloc = MonitoringBloc(repo, engine, sessionStore, historyRepo, getHistory);
+    bloc = MonitoringBloc(
+      repo,
+      engine,
+      sessionStore,
+      historyRepo,
+      getHistory,
+      securityRepo,
+    );
   });
 
   tearDown(() {

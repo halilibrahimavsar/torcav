@@ -19,6 +19,7 @@ abstract class SecurityLocalDataSource {
   Future<void> saveSecurityEvents(List<SecurityEvent> events);
   Future<void> markSecurityEventAsRead(int id);
   Future<void> markAllSecurityEventsAsRead();
+  Future<void> deleteSecurityEvent(int id);
   Future<void> clearAllSecurityEvents();
   Future<AssessmentSession?> getLatestAssessmentSession();
   Future<void> saveAssessmentSession(AssessmentSession session);
@@ -158,6 +159,12 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
   Future<void> markAllSecurityEventsAsRead() async {
     final db = await _database.database;
     await db.update('security_events', {'is_read': 1});
+  }
+
+  @override
+  Future<void> deleteSecurityEvent(int id) async {
+    final db = await _database.database;
+    await db.delete('security_events', where: 'id = ?', whereArgs: [id]);
   }
 
   @override

@@ -26,7 +26,7 @@ class AppDatabase {
 
     return openDatabase(
       dbPath,
-      version: 7,
+      version: 8,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onConfigure: (db) async {
@@ -86,6 +86,17 @@ class AppDatabase {
     ''');
 
     await _createSpeedTestTable(db);
+    await _createScoreHistoryTable(db);
+  }
+
+  Future<void> _createScoreHistoryTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE security_score_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        score INTEGER NOT NULL,
+        recorded_at INTEGER NOT NULL
+      )
+    ''');
   }
 
   Future<void> _createSpeedTestTable(Database db) async {
@@ -240,6 +251,9 @@ class AppDatabase {
     }
     if (oldVersion < 7) {
       await db.execute('ALTER TABLE known_networks ADD COLUMN gateway TEXT');
+    }
+    if (oldVersion < 8) {
+      await _createScoreHistoryTable(db);
     }
   }
 

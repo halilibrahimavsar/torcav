@@ -187,6 +187,16 @@ class SecurityRepositoryImpl implements SecurityRepository {
   }
 
   @override
+  Future<Either<Failure, void>> deleteSecurityEvent(int id) async {
+    try {
+      await _localDataSource.deleteSecurityEvent(id);
+      return const Right(null);
+    } catch (e) {
+      return Left(DatabaseFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> clearAllSecurityEvents() async {
     try {
       await _localDataSource.clearAllSecurityEvents();

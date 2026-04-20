@@ -10,6 +10,8 @@ import '../../../../features/wifi_scan/domain/entities/channel_rating_sample.dar
 import '../../../../features/wifi_scan/domain/usecases/get_historical_best_channel.dart';
 import '../../../../features/wifi_scan/domain/repositories/channel_rating_repository.dart';
 import '../../domain/repositories/monitoring_repository.dart';
+import '../../../security/domain/entities/security_event.dart';
+import '../../../security/domain/repositories/security_repository.dart';
 
 // Events
 abstract class MonitoringEvent extends Equatable {
@@ -99,6 +101,7 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
   final ScanSessionStore _sessionStore;
   final ChannelRatingRepository _historyRepo;
   final GetBestHistoricalChannel _getHistory;
+  final SecurityRepository _securityRepository;
 
   StreamSubscription? _networkSubscription;
   StreamSubscription? _channelSubscription;
@@ -111,6 +114,7 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
     this._sessionStore,
     this._historyRepo,
     this._getHistory,
+    this._securityRepository,
   ) : super(MonitoringInitial()) {
     on<StartMonitoring>(_onStartMonitoring);
     on<StopMonitoring>(_onStopMonitoring);
@@ -153,10 +157,29 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
   }
 
   void _onUpdateNetwork(_UpdateNetwork event, Emitter<MonitoringState> emit) {
+    final prev = _history.isNotEmpty ? _history.last : null;
     _history.add(event.network.signalStrength);
-    if (_history.length > 20) {
-      _history.removeAt(0);
+    if (_history.length > 20) _history.removeAt(0);
+
+    if (prev != null && (prev - event.network.signalStrength) > 15) {
+      final drop = prev - event.network.signalStrength;
+      unawaited(
+        _securityRepository
+            .saveSecurityEvent(
+              SecurityEvent(
+                type: SecurityEventType.deauthAttackSuspected,
+                severity: SecurityEventSeverity.high,
+                ssid: event.network.ssid,
+                bssid: event.network.bssid,
+                evidence: 'Signal dropped $drop dBm in one interval',
+                timestamp: DateTime.now(),
+              ),
+            )
+            .then((_) {})
+            .catchError((_) {}),
+      );
     }
+
     emit(MonitoringActive(event.network, List.from(_history)));
   }
 

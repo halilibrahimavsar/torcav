@@ -24,6 +24,13 @@ class MarkAllNotificationsAsRead extends NotificationEvent {}
 
 class ClearAllNotifications extends NotificationEvent {}
 
+class DismissNotification extends NotificationEvent {
+  final int id;
+  const DismissNotification(this.id);
+  @override
+  List<Object?> get props => [id];
+}
+
 // States
 abstract class NotificationState extends Equatable {
   const NotificationState();
@@ -63,6 +70,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     on<LoadNotifications>(_onLoadNotifications);
     on<MarkNotificationAsRead>(_onMarkAsRead);
     on<MarkAllNotificationsAsRead>(_onMarkAllAsRead);
+    on<DismissNotification>(_onDismiss);
     on<ClearAllNotifications>(_onClearAll);
   }
 
@@ -107,6 +115,18 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   ) async {
     try {
       await _repository.markAllSecurityEventsAsRead();
+      add(LoadNotifications());
+    } catch (e) {
+      emit(NotificationError(e.toString()));
+    }
+  }
+
+  Future<void> _onDismiss(
+    DismissNotification event,
+    Emitter<NotificationState> emit,
+  ) async {
+    try {
+      await _repository.deleteSecurityEvent(event.id);
       add(LoadNotifications());
     } catch (e) {
       emit(NotificationError(e.toString()));

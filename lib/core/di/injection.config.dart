@@ -16,6 +16,8 @@ import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import '../../features/ai/data/services/onnx_device_classifier_service.dart'
     as _i265;
+import '../../features/dashboard/data/datasources/score_history_local_data_source.dart'
+    as _i955;
 import '../../features/heatmap/data/datasources/ar_camera_pose_datasource.dart'
     as _i188;
 import '../../features/heatmap/data/datasources/barometer_datasource.dart'
@@ -233,6 +235,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i494.HeatmapRepository>(
       () => _i335.HeatmapRepositoryImpl(gh<_i690.AppDatabase>()),
     );
+    gh.lazySingleton<_i955.ScoreHistoryLocalDataSource>(
+      () => _i955.ScoreHistoryLocalDataSourceImpl(gh<_i690.AppDatabase>()),
+    );
     gh.lazySingleton<_i499.SecurityLocalDataSource>(
       () => _i499.SecurityLocalDataSourceImpl(gh<_i690.AppDatabase>()),
     );
@@ -370,6 +375,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i305.ChannelRatingLocalDataSource>(),
       ),
     );
+    gh.factory<_i739.NetworkScanBloc>(
+      () => _i739.NetworkScanBloc(
+        gh<_i1073.NetworkScanRepository>(),
+        gh<_i505.NewDeviceDetector>(),
+      ),
+    );
     gh.factory<_i58.PerformanceBloc>(
       () => _i58.PerformanceBloc(
         gh<_i510.RunSpeedTestUseCase>(),
@@ -433,12 +444,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1027.WifiRepository>(
       () => _i433.WifiRepositoryImpl(gh<_i1012.WifiDataSource>()),
     );
-    gh.factory<_i739.NetworkScanBloc>(
-      () => _i739.NetworkScanBloc(
-        gh<_i1073.NetworkScanRepository>(),
-        gh<_i505.NewDeviceDetector>(),
-      ),
-    );
     gh.lazySingleton<_i422.GetTopologyUseCase>(
       () => _i422.GetTopologyUseCase(gh<_i244.TopologyRepository>()),
     );
@@ -458,6 +463,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i797.ScanSessionStore>(),
         gh<_i332.ChannelRatingRepository>(),
         gh<_i519.GetBestHistoricalChannel>(),
+        gh<_i578.SecurityRepository>(),
       ),
     );
     gh.lazySingleton<_i1072.SignalTracker>(

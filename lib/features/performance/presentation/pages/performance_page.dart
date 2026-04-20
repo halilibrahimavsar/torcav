@@ -93,7 +93,6 @@ class _PerformanceViewState extends State<_PerformanceView> {
           builder: (context, state) {
             final progress = _getProgressFromState(state);
             final isRunning = state is PerformanceRunning;
-            final isInitial = state is PerformanceInitial;
 
             return Column(
               children: [
@@ -105,7 +104,7 @@ class _PerformanceViewState extends State<_PerformanceView> {
                     padding: const EdgeInsets.all(24),
                     child: Column(
                       children: [
-                        // ── Main Gauge ──
+                        // ── Main Gauge (tap to start/stop) ──
                         Container(
                           padding: const EdgeInsets.symmetric(vertical: 40),
                           child: SpeedometerArc(
@@ -113,6 +112,11 @@ class _PerformanceViewState extends State<_PerformanceView> {
                             upload: progress.uploadMbps,
                             phase: progress.phase,
                             maxSpeed: _autoScale(progress),
+                            onTap: isRunning
+                                ? () => context
+                                    .read<PerformanceBloc>()
+                                    .add(StopSpeedTest())
+                                : _startTestWithWarning,
                           ),
                         ),
 
@@ -132,20 +136,9 @@ class _PerformanceViewState extends State<_PerformanceView> {
 
                         const SizedBox(height: 24),
 
-                        // ── Action Button ──
-                        if (isInitial || !isRunning)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 40),
-                            child: NeonButton(
-                              onPressed: _startTestWithWarning,
-                              label:
-                                  isInitial
-                                      ? context.l10n.performanceStart
-                                      : context.l10n.performanceRetry,
-                              icon: Icons.bolt_rounded,
-                              color: AppColors.neonCyan,
-                            ),
-                          ),
+                        // ── Disclaimer ──
+                        if (state is PerformanceSuccess)
+                          _DisclaimerCard(),
 
                         const SizedBox(height: 32),
 
@@ -751,6 +744,46 @@ class _InterpretationCard extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Disclaimer card shown after test completion
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _DisclaimerCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return NeonCard(
+      glowColor: Colors.white24,
+      glowIntensity: 0.02,
+      padding: const EdgeInsets.all(14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.info_outline_rounded,
+            size: 16,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              'Results reflect speed to Cloudflare\'s nearest server and are '
+              'affected by Wi-Fi, device hardware, and PoP distance. '
+              'They are not a direct measure of your ISP contract speed.',
+              style: GoogleFonts.rajdhani(
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                fontSize: 12,
+                height: 1.4,
+              ),
             ),
           ),
         ],

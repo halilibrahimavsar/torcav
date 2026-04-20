@@ -841,8 +841,23 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
             children: [
               if (node.ip != null)
                 _infoRow(l10n.ipAddrLabel, node.ip!, Icons.lan),
-              if (node.mac != null)
+              if (node.mac != null) ...[
                 _infoRow(l10n.macValLabel, node.mac!, Icons.fingerprint),
+                if (node.isMacRandomized)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4, bottom: 4),
+                    child: Chip(
+                      avatar: const Icon(Icons.shuffle_rounded, size: 14),
+                      label: const Text('MAC Randomized'),
+                      labelStyle: const TextStyle(fontSize: 11),
+                      visualDensity: VisualDensity.compact,
+                      backgroundColor: Colors.orange.withValues(alpha: 0.15),
+                      side: BorderSide(
+                        color: Colors.orange.withValues(alpha: 0.4),
+                      ),
+                    ),
+                  ),
+              ],
               if (node.vendor != null && node.vendor!.isNotEmpty)
                 _infoRow(l10n.mnfrLabel, node.vendor!, Icons.factory),
 

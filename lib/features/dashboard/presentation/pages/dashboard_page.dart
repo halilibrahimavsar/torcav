@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,6 +18,7 @@ import '../../../wifi_scan/domain/entities/scan_snapshot.dart';
 import '../../../wifi_scan/domain/entities/wifi_network.dart';
 import '../../../wifi_scan/domain/services/channel_rating_engine.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
+import '../../data/datasources/score_history_local_data_source.dart';
 import '../widgets/security_core.dart';
 import 'notification_sheet.dart';
 import '../../../../core/presentation/widgets/cyber_neomorphic_button.dart';
@@ -44,6 +46,7 @@ class _DashboardPageState extends State<DashboardPage> {
   int? _currentChannel;
   int? _newDeviceCount;
   SecurityAssessment? _worstAssessment;
+  List<int> _scoreHistory = [];
   StreamSubscription<ScanSnapshot>? _scanSub;
 
   @override
@@ -101,6 +104,14 @@ class _DashboardPageState extends State<DashboardPage> {
         newDeviceCount = latestBssids.difference(prevBssids).length;
       }
 
+      // Persist score history.
+      final scoreStore = getIt<ScoreHistoryLocalDataSource>();
+      if (networks.isNotEmpty) {
+        await scoreStore.saveScore(secScore);
+      }
+      final recentScores = await scoreStore.getRecentScores();
+      final scoreHistory = recentScores.map((e) => e.score).toList();
+
       // Best channel recommendation.
       ChannelRating? bestCh;
       int? currentCh;
@@ -139,6 +150,7 @@ class _DashboardPageState extends State<DashboardPage> {
         _currentChannel = currentCh;
         _newDeviceCount = newDeviceCount;
         _worstAssessment = worstAssessment;
+        _scoreHistory = scoreHistory;
         _loading = false;
       });
     } catch (_) {
@@ -346,6 +358,14 @@ class _DashboardPageState extends State<DashboardPage> {
                       : null,
                 ),
               ),
+
+              if (_scoreHistory.length >= 2) ...[
+                const SizedBox(height: 12),
+                StaggeredEntry(
+                  delay: const Duration(milliseconds: 950),
+                  child: _ScoreHistoryChart(scores: _scoreHistory),
+                ),
+              ],
 
               if (_bestChannel != null) ...[
                 const SizedBox(height: 20),
@@ -620,6 +640,58 @@ class _LastScanStrip extends StatelessWidget {
 
     final tertiary = Theme.of(context).colorScheme.tertiary;
 
+    if (networkCount == 0) {
+      return CyberNeomorphicButton(
+        onPressed: onViewDetails,
+        borderRadius: 20,
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: tertiary.withValues(alpha: 0.1),
+                border: Border.all(color: tertiary.withValues(alpha: 0.3)),
+              ),
+              child: Icon(Icons.radar_rounded, color: tertiary, size: 20),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'NO SCAN DATA YET',
+                    style: GoogleFonts.orbitron(
+                      color: tertiary.withValues(alpha: 0.8),
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                  Text(
+                    'Go to Discovery → tap Scan',
+                    style: GoogleFonts.rajdhani(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: tertiary.withValues(alpha: 0.6),
+              size: 14,
+            ),
+          ],
+        ),
+      );
+    }
+
     return CyberNeomorphicButton(
       onPressed: onViewDetails,
       borderRadius: 20,
@@ -651,9 +723,7 @@ class _LastScanStrip extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  networkCount == 0
-                      ? l10n.noSnapshotAvailable
-                      : l10n.networksCount(networkCount),
+                  l10n.networksCount(networkCount),
                   style: GoogleFonts.rajdhani(
                     color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 16,
@@ -708,7 +778,7 @@ class _SafetyBadge extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     if (score >= 85) return l10n.strictSafetyEnabled;
     if (score >= 60) return l10n.activeMonitoringProgress;
-    return l10n.threatsDetected;
+    return 'POTENTIAL THREATS';
   }
 
   @override
@@ -949,6 +1019,124 @@ class _ScoreExplanationSheet extends StatelessWidget {
       default:
         return scheme.primary;
     }
+  }
+}
+
+// ── Score History Chart ─────────────────────────────────────────────
+
+class _ScoreHistoryChart extends StatelessWidget {
+  final List<int> scores;
+
+  const _ScoreHistoryChart({required this.scores});
+
+  Color _colorForScore(BuildContext context, int score) {
+    final scheme = Theme.of(context).colorScheme;
+    if (score >= 85) return scheme.primary;
+    if (score >= 60) return const Color(0xFFFFB300);
+    return scheme.error;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final spots = scores.asMap().entries.map((e) {
+      return FlSpot(e.key.toDouble(), e.value.toDouble());
+    }).toList();
+
+    final lastColor = _colorForScore(context, scores.last);
+
+    return GlassmorphicContainer(
+      padding: const EdgeInsets.fromLTRB(12, 12, 16, 8),
+      borderColor: lastColor.withValues(alpha: 0.2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.show_chart_rounded, color: lastColor, size: 12),
+              const SizedBox(width: 6),
+              Text(
+                'SCORE TREND',
+                style: GoogleFonts.orbitron(
+                  color: scheme.onSurfaceVariant,
+                  fontSize: 8,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1,
+                ),
+              ),
+              const Spacer(),
+              NeonText(
+                '${scores.last}%',
+                style: GoogleFonts.orbitron(
+                  color: lastColor,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w900,
+                ),
+                glowColor: lastColor,
+                glowRadius: 4,
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 60,
+            child: LineChart(
+              LineChartData(
+                minY: 0,
+                maxY: 100,
+                gridData: const FlGridData(show: false),
+                borderData: FlBorderData(show: false),
+                titlesData: const FlTitlesData(show: false),
+                lineTouchData: LineTouchData(
+                  touchTooltipData: LineTouchTooltipData(
+                    getTooltipItems: (spots) => spots
+                        .map(
+                          (s) => LineTooltipItem(
+                            '${s.y.round()}%',
+                            GoogleFonts.orbitron(
+                              color: scheme.onSurface,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: spots,
+                    isCurved: true,
+                    color: lastColor,
+                    barWidth: 2,
+                    dotData: FlDotData(
+                      show: true,
+                      getDotPainter: (spot, _, __, index) =>
+                          FlDotCirclePainter(
+                            radius: index == spots.length - 1 ? 4 : 2,
+                            color: _colorForScore(context, spot.y.round()),
+                            strokeWidth: 0,
+                          ),
+                    ),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      gradient: LinearGradient(
+                        colors: [
+                          lastColor.withValues(alpha: 0.15),
+                          lastColor.withValues(alpha: 0.0),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

@@ -19,6 +19,8 @@ abstract class PerformanceEvent extends Equatable {
 
 class StartSpeedTest extends PerformanceEvent {}
 
+class StopSpeedTest extends PerformanceEvent {}
+
 class _ProgressUpdated extends PerformanceEvent {
   final SpeedTestProgress progress;
   const _ProgressUpdated(this.progress);
@@ -75,6 +77,7 @@ class PerformanceBloc extends Bloc<PerformanceEvent, PerformanceState> {
   PerformanceBloc(this._runSpeedTest, this._history)
     : super(PerformanceInitial()) {
     on<StartSpeedTest>(_onStart);
+    on<StopSpeedTest>(_onStop);
     on<_ProgressUpdated>(_onProgress);
     on<_TestError>(_onError);
   }
@@ -90,6 +93,15 @@ class PerformanceBloc extends Bloc<PerformanceEvent, PerformanceState> {
       (progress) => add(_ProgressUpdated(progress)),
       onError: (Object e) => add(_TestError(e.toString())),
     );
+  }
+
+  Future<void> _onStop(
+    StopSpeedTest event,
+    Emitter<PerformanceState> emit,
+  ) async {
+    await _subscription?.cancel();
+    _subscription = null;
+    emit(PerformanceInitial());
   }
 
   void _onProgress(_ProgressUpdated event, Emitter<PerformanceState> emit) {

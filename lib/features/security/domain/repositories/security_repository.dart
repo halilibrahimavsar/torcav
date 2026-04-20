@@ -38,6 +38,8 @@ abstract class SecurityRepository {
 
   Future<Either<Failure, void>> markAllSecurityEventsAsRead();
 
+  Future<Either<Failure, void>> deleteSecurityEvent(int id);
+
   Future<Either<Failure, void>> clearAllSecurityEvents();
 
   Future<Either<Failure, AssessmentSession?>> getLatestAssessmentSession();

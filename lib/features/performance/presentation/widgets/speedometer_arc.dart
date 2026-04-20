@@ -12,6 +12,7 @@ class SpeedometerArc extends StatefulWidget {
   final SpeedTestPhase phase;
   final Color? downloadColor;
   final Color? uploadColor;
+  final VoidCallback? onTap;
 
   const SpeedometerArc({
     super.key,
@@ -21,6 +22,7 @@ class SpeedometerArc extends StatefulWidget {
     this.phase = SpeedTestPhase.idle,
     this.downloadColor,
     this.uploadColor,
+    this.onTap,
   });
 
   @override
@@ -61,7 +63,19 @@ class _SpeedometerArcState extends State<SpeedometerArc>
           curve: Curves.easeOutCubic,
           tween: Tween<double>(begin: 0, end: widget.upload),
           builder: (context, ulValue, _) {
-            return AspectRatio(
+            final isRunning = widget.phase != SpeedTestPhase.idle &&
+                widget.phase != SpeedTestPhase.done;
+            final semanticLabel = widget.phase == SpeedTestPhase.idle
+                ? 'Speed test gauge. Tap to start.'
+                : isRunning
+                    ? 'Speed test running — ${widget.download.toStringAsFixed(1)} Mbps download. Tap to stop.'
+                    : 'Speed test complete — ${widget.download.toStringAsFixed(1)} Mbps download, ${widget.upload.toStringAsFixed(1)} Mbps upload.';
+            return Semantics(
+              label: semanticLabel,
+              button: widget.onTap != null,
+              child: GestureDetector(
+                onTap: widget.onTap,
+                child: AspectRatio(
               aspectRatio: 1,
               child: Stack(
                 alignment: Alignment.center,
@@ -88,6 +102,8 @@ class _SpeedometerArcState extends State<SpeedometerArc>
                   // ── Metric Content ──
                   _buildMetricContent(dlValue, ulValue, dlColor, ulColor),
                 ],
+              ),
+                ),
               ),
             );
           },
@@ -121,12 +137,12 @@ class _SpeedometerArcState extends State<SpeedometerArc>
           ),
           const SizedBox(height: 12),
           Text(
-            'READY',
+            'TAP TO START',
             style: GoogleFonts.orbitron(
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: FontWeight.w900,
               color: dlColor.withValues(alpha: 0.8),
-              letterSpacing: 4,
+              letterSpacing: 3,
             ),
           ),
         ],
@@ -158,6 +174,15 @@ class _SpeedometerArcState extends State<SpeedometerArc>
         if (!isDone) ...[
           const SizedBox(height: 20),
           _buildMiniStats(dl, ul, dlColor, ulColor),
+          const SizedBox(height: 12),
+          Text(
+            'TAP TO STOP',
+            style: GoogleFonts.orbitron(
+              fontSize: 9,
+              color: Colors.white.withValues(alpha: 0.35),
+              letterSpacing: 2,
+            ),
+          ),
         ],
       ],
     );

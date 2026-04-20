@@ -10,10 +10,42 @@ import '../bloc/heatmap_bloc.dart';
 import '../bloc/monitoring_bloc.dart';
 import 'temporal_heatmap_page.dart';
 
-class SignalGraphPage extends StatelessWidget {
+class SignalGraphPage extends StatefulWidget {
   final WifiNetwork network;
 
   const SignalGraphPage({super.key, required this.network});
+
+  @override
+  State<SignalGraphPage> createState() => _SignalGraphPageState();
+}
+
+class _SignalGraphPageState extends State<SignalGraphPage>
+    with WidgetsBindingObserver {
+  bool _wasMonitoring = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _wasMonitoring = true;
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!mounted) return;
+    final bloc = context.read<MonitoringBloc>();
+    if (state == AppLifecycleState.paused && _wasMonitoring) {
+      bloc.add(StopMonitoring());
+    } else if (state == AppLifecycleState.resumed && _wasMonitoring) {
+      bloc.add(StartMonitoring(widget.network.bssid));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +55,7 @@ class SignalGraphPage extends StatelessWidget {
           create:
               (_) =>
                   GetIt.I<MonitoringBloc>()
-                    ..add(StartMonitoring(network.bssid)),
+                    ..add(StartMonitoring(widget.network.bssid)),
         ),
         BlocProvider(create: (_) => GetIt.I<HeatmapBloc>()),
       ],
@@ -32,7 +64,9 @@ class SignalGraphPage extends StatelessWidget {
           return Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
-              title: Text(context.l10n.signalMonitoringTitle(network.ssid)),
+              title: Text(
+                context.l10n.signalMonitoringTitle(widget.network.ssid),
+              ),
               backgroundColor: Colors.transparent,
               actions: [
                 IconButton(
@@ -42,7 +76,8 @@ class SignalGraphPage extends StatelessWidget {
                     Navigator.of(innerContext).push(
                       MaterialPageRoute(
                         builder:
-                            (_) => TemporalHeatmapPage(bssid: network.bssid),
+                            (_) =>
+                                TemporalHeatmapPage(bssid: widget.network.bssid),
                       ),
                     );
                   },
@@ -147,7 +182,7 @@ class SignalGraphPage extends StatelessWidget {
 
     context.read<HeatmapBloc>().add(
       LogHeatmapPoint(
-        bssid: network.bssid,
+        bssid: widget.network.bssid,
         zoneTag: zone,
         signalDbm: state.currentData.signalStrength,
       ),

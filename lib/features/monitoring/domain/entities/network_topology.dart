@@ -55,6 +55,12 @@ class TopologyNode extends Equatable {
     );
   }
 
+  bool get isMacRandomized {
+    if (mac == null) return false;
+    final firstOctet = int.tryParse(mac!.split(':').first, radix: 16) ?? 0;
+    return (firstOctet & 0x02) != 0;
+  }
+
   @override
   List<Object?> get props => [
     id,
