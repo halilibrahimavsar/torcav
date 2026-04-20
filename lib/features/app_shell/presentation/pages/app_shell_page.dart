@@ -28,19 +28,28 @@ class AppShellPage extends StatefulWidget {
   State<AppShellPage> createState() => _AppShellPageState();
 }
 
-class _AppShellPageState extends State<AppShellPage> {
-  int _index = 0;
+class _AppShellPageState extends State<AppShellPage> with RestorationMixin {
+  final _index = RestorableInt(0);
   final PageController _pageController = PageController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
+  String get restorationId => 'app_shell';
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+    registerForRestoration(_index, 'app_shell_tab');
+  }
+
+  @override
   void dispose() {
     _pageController.dispose();
+    _index.dispose();
     super.dispose();
   }
 
   void _onTabSelected(int index) {
-    setState(() => _index = index);
+    setState(() => _index.value = index);
     _pageController.animateToPage(
       index,
       duration: const Duration(milliseconds: 350),
@@ -54,6 +63,7 @@ class _AppShellPageState extends State<AppShellPage> {
 
     return Scaffold(
       key: _scaffoldKey,
+      restorationId: 'app_shell_scaffold',
       backgroundColor: Colors.transparent,
       drawer: CyberDrawer(onNavigate: _navigateTo),
       body: PageView(
@@ -70,7 +80,7 @@ class _AppShellPageState extends State<AppShellPage> {
       ),
       extendBody: true,
       bottomNavigationBar: _NeonBottomBar(
-        currentIndex: _index,
+        currentIndex: _index.value,
         onTap: _onTabSelected,
         items: [
           _NeonBarItem(
@@ -395,27 +405,32 @@ class _NeonBarButton extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final color = isSelected ? scheme.primary : scheme.onSurfaceVariant;
 
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: SizedBox(
-        width: width,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: color, size: isSelected ? 24 : 22),
-            const SizedBox(height: 4),
-            AnimatedDefaultTextStyle(
-              duration: const Duration(milliseconds: 200),
-              style: GoogleFonts.outfit(
-                color: color,
-                fontSize: 10,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                letterSpacing: 0.5,
+    return Semantics(
+      label: label,
+      selected: isSelected,
+      button: true,
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: SizedBox(
+          width: width,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: color, size: isSelected ? 24 : 22),
+              const SizedBox(height: 4),
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 200),
+                style: GoogleFonts.outfit(
+                  color: color,
+                  fontSize: 10,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                  letterSpacing: 0.5,
+                ),
+                child: Text(label),
               ),
-              child: Text(label),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -285,7 +285,12 @@ class _DrawerActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Semantics(
+      label: label,
+      button: true,
+      child: Tooltip(
+        message: label,
+        child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: InkWell(
         onTap: onTap,
@@ -318,6 +323,8 @@ class _DrawerActionTile extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
         ),
       ),
     );

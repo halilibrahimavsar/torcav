@@ -13,6 +13,8 @@ import '../../../wifi_scan/data/datasources/channel_rating_local_data_source.dar
 import '../../../wifi_scan/data/datasources/wifi_scan_history_local_data_source.dart';
 import '../../../wifi_scan/domain/entities/scan_request.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../app_shell/presentation/pages/onboarding_page.dart';
 import '../../domain/entities/app_settings.dart';
 import '../../domain/services/app_settings_store.dart';
 
@@ -452,6 +454,40 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   ListTile(
                     leading: _NeonIconCircle(
+                      icon: Icons.replay_rounded,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    title: Text(
+                      'Replay Onboarding',
+                      style: GoogleFonts.rajdhani(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'View the welcome tour again.',
+                      style: GoogleFonts.rajdhani(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(
+                        Icons.chevron_right_rounded,
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.6),
+                      ),
+                      onPressed: () => _replayOnboarding(context),
+                    ),
+                    onTap: () => _replayOnboarding(context),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  Divider(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                    height: 8,
+                  ),
+                  ListTile(
+                    leading: _NeonIconCircle(
                       icon: Icons.delete_forever_rounded,
                       color: Theme.of(context).colorScheme.error,
                     ),
@@ -489,6 +525,15 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _replayOnboarding(BuildContext context) async {
+    final navigator = Navigator.of(context);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('onboarding_complete', false);
+    navigator.pushReplacement(
+      MaterialPageRoute(builder: (_) => const OnboardingPage()),
     );
   }
 

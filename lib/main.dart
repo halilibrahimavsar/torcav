@@ -94,6 +94,7 @@ class TorcavApp extends StatelessWidget {
                 return MaterialApp(
                   title: 'Torcav Wi-Fi Analyzer',
                   debugShowCheckedModeBanner: false,
+                  restorationScopeId: 'torcav',
 
                   // Theme Configuration
                   theme: AppTheme.lightTheme,

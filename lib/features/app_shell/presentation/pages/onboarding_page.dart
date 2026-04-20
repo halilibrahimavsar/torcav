@@ -18,6 +18,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   static const _totalPages = 4;
 
+  bool _allAccepted = false;
+
   void _next() {
     if (_page < _totalPages - 1) {
       _controller.nextPage(
@@ -57,11 +59,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
               child: PageView(
                 controller: _controller,
                 onPageChanged: (i) => setState(() => _page = i),
-                children: const [
-                  _WelcomePage(),
-                  _PermissionsPage(),
-                  _TourPage(),
-                  _DonePage(),
+                children: [
+                  const _WelcomePage(),
+                  const _PermissionsPage(),
+                  const _TourPage(),
+                  _DonePage(onAllAccepted: (v) => setState(() => _allAccepted = v)),
                 ],
               ),
             ),
@@ -90,7 +92,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   ),
                   const Spacer(),
                   FilledButton(
-                    onPressed: _next,
+                    onPressed: (_page == _totalPages - 1 && !_allAccepted) ? null : _next,
                     style: FilledButton.styleFrom(
                       backgroundColor: primary,
                       padding: const EdgeInsets.symmetric(
@@ -308,21 +310,129 @@ class _TourItem extends StatelessWidget {
   }
 }
 
-class _DonePage extends StatelessWidget {
-  const _DonePage();
+class _DonePage extends StatefulWidget {
+  final ValueChanged<bool> onAllAccepted;
+  const _DonePage({required this.onAllAccepted});
+
+  @override
+  State<_DonePage> createState() => _DonePageState();
+}
+
+class _DonePageState extends State<_DonePage> {
+  bool _tos = false;
+  bool _authorized = false;
+  bool _age = false;
+
+  void _update(bool tos, bool authorized, bool age) {
+    setState(() {
+      _tos = tos;
+      _authorized = authorized;
+      _age = age;
+    });
+    widget.onAllAccepted(tos && authorized && age);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return _OnboardingSlide(
-      icon: Icons.check_circle_rounded,
-      title: 'ALL SET',
-      body:
-          'Tap "Start Scanning" to begin exploring your wireless environment. '
-          'Look for the ℹ️ icons throughout the app to learn what technical '
-          'terms mean. Torcav is a passive defensive analyzer: it helps you '
-          'inspect and harden networks you own or are authorized to assess, '
-          'and it does not perform attack, capture, or exploitation actions.',
-      color: Theme.of(context).colorScheme.tertiary,
+    final tertiary = Theme.of(context).colorScheme.tertiary;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final onSurfaceVariant = Theme.of(context).colorScheme.onSurfaceVariant;
+
+    return Padding(
+      padding: const EdgeInsets.all(32),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          NeonGlowBox(
+            glowColor: tertiary,
+            child: Icon(Icons.check_circle_rounded, size: 72, color: tertiary),
+          ),
+          const SizedBox(height: 32),
+          Text(
+            'ALL SET',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.orbitron(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: onSurface,
+              letterSpacing: 2,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Torcav is a passive defensive analyzer. It helps you inspect and harden networks you own or are authorized to assess, and it does not perform attack, capture, or exploitation actions.',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.rajdhani(
+              fontSize: 14,
+              color: onSurfaceVariant,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 24),
+          _AgreementCheckbox(
+            value: _tos,
+            onChanged: (v) => _update(v, _authorized, _age),
+            label: 'I have read and accept the Terms of Service and Privacy Policy.',
+          ),
+          const SizedBox(height: 8),
+          _AgreementCheckbox(
+            value: _authorized,
+            onChanged: (v) => _update(_tos, v, _age),
+            label: 'I confirm I have permission to scan the networks I will analyze.',
+          ),
+          const SizedBox(height: 8),
+          _AgreementCheckbox(
+            value: _age,
+            onChanged: (v) => _update(_tos, _authorized, v),
+            label: 'I confirm I am 13 years of age or older.',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AgreementCheckbox extends StatelessWidget {
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  final String label;
+
+  const _AgreementCheckbox({
+    required this.value,
+    required this.onChanged,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => onChanged(!value),
+      borderRadius: BorderRadius.circular(8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Checkbox(
+            value: value,
+            onChanged: (v) => onChanged(v ?? false),
+            activeColor: Theme.of(context).colorScheme.tertiary,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Text(
+                label,
+                style: GoogleFonts.rajdhani(
+                  fontSize: 13,
+                  color: Theme.of(context).colorScheme.onSurface,
+                  height: 1.4,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
