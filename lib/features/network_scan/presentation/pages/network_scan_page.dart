@@ -14,7 +14,7 @@ import '../../domain/entities/network_scan_profile.dart';
 import '../../../../features/network_scan/presentation/widgets/network_scanner_radar.dart';
 import '../bloc/network_scan_bloc.dart';
 import '../widgets/host_device_card.dart';
-import '../widgets/lan_consent_dialog.dart';
+import '../../../../core/theme/prominent_disclosure_dialog.dart';
 import '../../data/datasources/lan_scan_history_local_data_source.dart';
 
 class NetworkScanPage extends StatelessWidget {
@@ -108,7 +108,22 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
             final accepted = await showDialog<bool>(
               context: context,
               barrierDismissible: false,
-              builder: (context) => const LanConsentDialog(),
+              builder: (ctx) => ProminentDisclosureDialog(
+                title: 'NETWORK AUDIT CONSENT',
+                description:
+                    'Active network scanning generates traffic to identify devices and services. This may be flagged by network security systems.',
+                icon: Icons.gavel_rounded,
+                privacyPoints: const [
+                  'Scan local network for active nodes',
+                  'Fingerprint open services and OS',
+                  'Identify potential vulnerabilities',
+                  'Confirm you have authorization for this network',
+                ],
+                actionLabel: 'I UNDERSTAND',
+                onAccept: () => Navigator.of(ctx).pop(true),
+                onCancel: () => Navigator.of(ctx).pop(false),
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             );
             if (context.mounted) {
               context.read<NetworkScanBloc>().add(

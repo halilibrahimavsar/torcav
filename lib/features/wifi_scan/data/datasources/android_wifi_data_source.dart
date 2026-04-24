@@ -39,9 +39,9 @@ class AndroidWifiDataSource implements WifiDataSource {
       throw const ScanFailure('Android scanner is only supported on Android');
     }
 
-    final hasPermission = await Permission.location.request().isGranted;
+    final hasPermission = await Permission.location.status.isGranted;
     if (!hasPermission) {
-      throw const PermissionFailure('Location permission denied');
+      throw const PermissionFailure('Location permission required for Wi-Fi scanning');
     }
 
     // ENFORCEMENT: If strictSafetyMode is ON, we disable hidden SSID scanning

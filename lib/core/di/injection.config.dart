@@ -181,6 +181,7 @@ import '../../features/wifi_scan/domain/usecases/scan_wifi.dart' as _i451;
 import '../../features/wifi_scan/presentation/bloc/wifi_scan_bloc.dart'
     as _i968;
 import '../l10n/locale_cubit.dart' as _i171;
+import '../services/data_retention_service.dart' as _i533;
 import '../services/notification_service.dart' as _i941;
 import '../storage/app_database.dart' as _i690;
 import '../storage/oui_database_service.dart' as _i1050;
@@ -313,6 +314,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i192.ConnectedSignalService>(
       () => _i192.ConnectedSignalServiceImpl(),
+    );
+    gh.lazySingleton<_i533.DataRetentionService>(
+      () => _i533.DataRetentionService(
+        gh<_i690.AppDatabase>(),
+        gh<_i552.AppSettingsStore>(),
+      ),
     );
     gh.lazySingleton<_i104.PositionTracker>(
       () => _i104.PositionTracker(gh<_i989.PositionDataSource>()),

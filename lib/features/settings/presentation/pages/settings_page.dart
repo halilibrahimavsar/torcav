@@ -644,13 +644,15 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'This application performs passive Wi-Fi observation and LAN analysis only. '
-                    'No authentication attempts, frame injection, deauthentication packets, '
+                    'This application performs network observation and authorized LAN discovery. '
+                    'Active probing is strictly limited to service identification and security assessment. '
+                    'No brute-force authentication, frame injection, deauthentication packets, '
                     'ARP poisoning, or credential harvesting are performed.\n\n'
                     'Use of this application on networks you do not own or are not authorized '
                     'to test may violate applicable laws (TCK 243/244, EU Directive 2013/40, '
                     'CFAA). The user is solely responsible for ensuring lawful use.\n\n'
-                    'Bu uygulama yalnızca pasif Wi-Fi gözlemi ve LAN analizi yapar. '
+                    'Bu uygulama ağ gözlemi ve yetkili LAN keşfi gerçekleştirir. '
+                    'Aktif sorgulama yalnızca servis tanımlama ve güvenlik değerlendirmesi ile sınırlıdır. '
                     'Yetkisiz ağlarda kullanım TCK 243/244 kapsamında suç teşkil edebilir.',
                     style: GoogleFonts.outfit(
                       color: Theme.of(

@@ -168,15 +168,15 @@ class ReportExportRepositoryImpl implements ReportExportRepository {
                           pw.SizedBox(height: 10),
                           pw.Text(
                             'Bu rapor yalnızca kullanıcının yetkili olduğu ağ üzerinde yapılan '
-                            'pasif gözlem sonuçlarıdır. Üçüncü tarafların cihaz bilgileri '
+                            'gözlem ve keşif sonuçlarıdır. Üçüncü tarafların cihaz bilgileri '
                             'görünüyorsa, rapor paylaşmadan önce KVKK/GDPR açık rıza '
                             'gereksinimleri değerlendirilmelidir.',
                             style: const pw.TextStyle(fontSize: 10),
                           ),
                           pw.SizedBox(height: 8),
                           pw.Text(
-                            'This report contains results from passive observation of networks '
-                            'the user is authorized to access. If third-party device information '
+                            'This report contains results from authorized observation and discovery of '
+                            'networks the user is authorized to access. If third-party device information '
                             'is visible, GDPR/KVKK explicit consent requirements must be '
                             'evaluated before sharing this report.',
                             style: const pw.TextStyle(fontSize: 10),

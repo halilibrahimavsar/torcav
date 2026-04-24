@@ -13,6 +13,7 @@ import 'package:torcav/core/theme/theme_cubit.dart';
 import 'package:torcav/features/app_shell/presentation/pages/app_shell_page.dart';
 import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
 import 'package:torcav/features/security/presentation/widgets/cyber_grid_background.dart';
+import 'package:torcav/core/services/data_retention_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +33,9 @@ void main() async {
   // Initialize Dependency Injection
   await configureDependencies();
   await getIt<ScanSessionStore>().restore();
+
+  // Enforce data retention policy at startup
+  await getIt<DataRetentionService>().enforceRetention();
 
   runApp(const TorcavApp());
 }

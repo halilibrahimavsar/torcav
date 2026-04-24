@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../../../../core/presentation/widgets/permission_disclosure_dialog.dart';
+import '../../../../core/theme/prominent_disclosure_dialog.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -68,6 +68,47 @@ class _WifiScanViewState extends State<_WifiScanView> {
     final store = getIt<AppSettingsStore>();
     _setupAutoScan(store.value);
     _settingsSub = store.changes.listen(_onSettingsChanged);
+    
+    // Check permission on mount
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkPermissionAndStart());
+  }
+
+  Future<void> _checkPermissionAndStart() async {
+    if (!Platform.isAndroid) return;
+
+    final status = await Permission.location.status;
+    if (status.isGranted) return;
+
+    if (mounted) {
+      final shouldProceed = await showDialog<bool>(
+            context: context,
+            barrierDismissible: false,
+            builder: (ctx) => ProminentDisclosureDialog(
+              title: 'WIFI SCAN PERMISSION',
+              description:
+                  'To discover nearby Wi-Fi networks and analyze signal strength, Torcav requires Location access. This is an Android system requirement for Wi-Fi scanning.',
+              icon: Icons.location_on_rounded,
+              privacyPoints: const [
+                'Scan nearby Wi-Fi SSIDs',
+                'Analyze signal quality and interference',
+                'Torcav never tracks or shares your location',
+              ],
+              actionLabel: 'CONTINUE',
+              onAccept: () => Navigator.of(ctx).pop(true),
+              onCancel: () => Navigator.of(ctx).pop(false),
+            ),
+          ) ??
+          false;
+
+      if (shouldProceed && mounted) {
+        final result = await Permission.location.request();
+        if (result.isGranted && mounted) {
+          context.read<WifiScanBloc>().add(
+            WifiScanStarted(request: _currentRequest),
+          );
+        }
+      }
+    }
   }
 
   void _onSettingsChanged(AppSettings settings) {
@@ -339,7 +380,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
         children: [
-          // ── Passive Scan Guarantee Banner ──
+          // ── Signal Analysis Disclosure Banner ──
           Container(
             margin: const EdgeInsets.only(bottom: 12),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -364,7 +405,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'PASSIVE-ONLY ARCHITECTURE',
+                        'TRANSPARENT SIGNAL ANALYSIS',
                         style: GoogleFonts.orbitron(
                           color: AppColors.neonCyan,
                           fontSize: 10,
@@ -373,7 +414,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
                         ),
                       ),
                       Text(
-                        'Advanced signal analysis without active transmission or identity tracking.',
+                        'Advanced spectrum analysis for security auditing. Local processing only.',
                         style: GoogleFonts.rajdhani(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontSize: 11,
@@ -556,16 +597,19 @@ class _SnapshotViewState extends State<_SnapshotView> {
                 if (!status.isGranted && context.mounted) {
                   final shouldProceed = await showDialog<bool>(
                         context: context,
-                        builder: (ctx) => const PermissionDisclosureDialog(
+                        builder: (ctx) => ProminentDisclosureDialog(
                           title: 'WIFI SCAN PERMISSION',
-                          message:
+                          description:
                               'To discover nearby Wi-Fi networks and analyze signal strength, Torcav requires Location access. This is an Android system requirement for Wi-Fi scanning.',
                           icon: Icons.location_on_rounded,
-                          permissions: [
+                          privacyPoints: const [
                             'Scan nearby Wi-Fi SSIDs',
                             'Analyze signal quality and interference',
                             'Torcav never tracks or shares your location',
                           ],
+                          actionLabel: 'CONTINUE',
+                          onAccept: () => Navigator.of(ctx).pop(true),
+                          onCancel: () => Navigator.of(ctx).pop(false),
                         ),
                       ) ??
                       false;

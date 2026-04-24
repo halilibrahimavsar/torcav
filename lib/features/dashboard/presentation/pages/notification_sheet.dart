@@ -425,7 +425,7 @@ class NotificationTile extends StatelessWidget {
       case SecurityEventType.deauthBurstDetected:
         return 'DEAUTH BURST';
       case SecurityEventType.handshakeCaptureStarted:
-        return 'HANDSHAKE CAPTURE';
+        return 'HANDSHAKE ANALYSIS';
       case SecurityEventType.handshakeCaptureCompleted:
         return 'HANDSHAKE SECURED';
       case SecurityEventType.captivePortalDetected:

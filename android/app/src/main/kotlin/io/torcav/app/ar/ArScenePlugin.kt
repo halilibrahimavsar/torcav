@@ -1,4 +1,4 @@
-package com.halilibrahimavsar.torcav.ar
+package io.torcav.app.ar
 
 import android.content.Context
 import io.flutter.plugin.common.BinaryMessenger

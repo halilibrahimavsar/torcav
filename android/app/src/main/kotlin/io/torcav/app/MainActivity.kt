@@ -1,9 +1,9 @@
-package com.halilibrahimavsar.torcav
+package io.torcav.app
 
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.text.TextUtils
-import com.halilibrahimavsar.torcav.ar.ArScenePlugin
+import io.torcav.app.ar.ArScenePlugin
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel

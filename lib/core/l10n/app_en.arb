@@ -197,9 +197,9 @@
     "@initiatingSpectrumScan": {
         "description": "Initiating Spectrum Scan"
     },
-    "broadcastingProbeRequests": "BROADCASTING PROBE REQUESTS...",
+    "broadcastingProbeRequests": "Analyzing local signal environment...",
     "@broadcastingProbeRequests": {
-        "description": "Broadcasting Probe Requests"
+        "description": "Text shown during wifi scan instead of broadcasting probes."
     },
     "noRadiosInRange": "No radios in range",
     "@noRadiosInRange": {
@@ -1581,7 +1581,7 @@
     "@channelInterferenceDescription": {
         "description": "Explanation of channel interference"
     },
-    "securityEventType": "{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst Detected} handshakeCaptureStarted{Secure Auth Exchange} handshakeCaptureCompleted{Auth Exchange Verified} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} arpSpoofingDetected{ARP Spoofing Detected} dnsHijackingDetected{DNS Hijacking Detected} unsupportedOperation{Unsupported Operation} other{{type}}}",
+    "securityEventType": "{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst Detected} handshakeCaptureStarted{Handshake Protocol Analysis} handshakeCaptureCompleted{Handshake Protocol Secured} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} arpSpoofingDetected{ARP Spoofing Detected} dnsHijackingDetected{DNS Hijacking Detected} unsupportedOperation{Unsupported Operation} other{{type}}}",
     "@securityEventType": {
         "description": "Name of security event type",
         "placeholders": {
