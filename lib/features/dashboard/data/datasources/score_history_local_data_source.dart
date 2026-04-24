@@ -4,6 +4,7 @@ import '../../../../core/storage/app_database.dart';
 abstract class ScoreHistoryLocalDataSource {
   Future<void> saveScore(int score);
   Future<List<({int score, DateTime at})>> getRecentScores({int limit = 10});
+  Future<void> deleteAll();
 }
 
 @LazySingleton(as: ScoreHistoryLocalDataSource)
@@ -39,5 +40,11 @@ class ScoreHistoryLocalDataSourceImpl implements ScoreHistoryLocalDataSource {
           ),
         )
         .toList();
+  }
+
+  @override
+  Future<void> deleteAll() async {
+    final db = await _database.database;
+    await db.delete('security_score_history');
   }
 }

@@ -32,6 +32,12 @@ class FavoritesStore {
 
   bool isPinned(String bssid) => _pinned.contains(bssid);
 
+  Future<void> clearAll() async {
+    _pinned = {};
+    _changes.add({});
+    await _prefs.remove(_key);
+  }
+
   static Set<String> _load(SharedPreferences prefs) {
     return (prefs.getStringList(_key) ?? []).toSet();
   }

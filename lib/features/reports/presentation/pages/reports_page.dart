@@ -40,7 +40,7 @@ class ReportsView extends StatefulWidget {
 }
 
 class _ReportsViewState extends State<ReportsView> {
-  bool _anonymize = false;
+  bool _anonymize = true;
 
   /// Returns a copy of [snapshot] with the last 3 BSSID octets and SSID masked.
   ScanSnapshot _maybeAnonymize(ScanSnapshot snapshot) {

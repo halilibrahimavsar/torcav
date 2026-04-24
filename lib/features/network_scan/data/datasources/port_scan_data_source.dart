@@ -68,9 +68,10 @@ class PortScanDataSource {
       targetEntries = _targetPorts.entries.toList();
     }
 
+    final isStrict = _settingsStore.value.strictSafetyMode;
+    final batchSize = isStrict ? 4 : 8;
     final totalCount = targetEntries.length;
     var scannedCount = 0;
-    const batchSize = 8;
 
     Future<void> runBatch() async {
       for (var i = 0; i < targetEntries.length; i += batchSize) {
@@ -100,6 +101,11 @@ class PortScanDataSource {
             currentPort: entry.key,
             discovery: res,
           ));
+        }
+
+        // If strict safety mode is on, add a delay between batches to be less aggressive.
+        if (isStrict && i + batchSize < targetEntries.length) {
+          await Future<void>.delayed(const Duration(seconds: 1));
         }
       }
       controller.close();

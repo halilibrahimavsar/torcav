@@ -1141,8 +1141,8 @@ class AppLocalizationsKu extends AppLocalizations {
       {
         'rogueApSuspected': 'Gumana AP ya Sexte',
         'deauthBurstDetected': 'Êrîşa Qutkirinê Serî Hatiye Dîtin',
-        'handshakeCaptureStarted': 'Girtina Destguhartinê Dest Pê Kir',
-        'handshakeCaptureCompleted': 'Destguhartin Hat Girtin',
+        'handshakeCaptureStarted': 'Guhertina Nasnameya Ewle',
+        'handshakeCaptureCompleted': 'Guhertina Nasnameyê Hat Piştrastkirin',
         'captivePortalDetected': 'Portala Girtî Hat Dîtin',
         'evilTwinDetected': 'Cêwîyê Xirab Hat Dîtin',
         'deauthAttackSuspected': 'Gumana Êrîşa Qutkirinê',

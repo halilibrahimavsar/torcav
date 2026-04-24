@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:torcav/features/ai/data/services/onnx_device_classifier_service.dart';
 import 'package:torcav/features/network_scan/domain/entities/host_scan_result.dart';
 
@@ -9,6 +10,7 @@ void main() {
     late OnnxDeviceClassifierService service;
 
     setUp(() {
+      SharedPreferences.setMockInitialValues({});
       service = OnnxDeviceClassifierService();
     });
 

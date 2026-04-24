@@ -1141,8 +1141,8 @@ class AppLocalizationsDe extends AppLocalizations {
       {
         'rogueApSuspected': 'Rogue AP Verdacht',
         'deauthBurstDetected': 'Deauth-Serie Erkannt',
-        'handshakeCaptureStarted': 'Handshake-Aufzeichnung Gestartet',
-        'handshakeCaptureCompleted': 'Handshake Aufgezeichnet',
+        'handshakeCaptureStarted': 'Sicherer Identitätsaustausch',
+        'handshakeCaptureCompleted': 'Austausch Verifiziert',
         'captivePortalDetected': 'Captive Portal Erkannt',
         'evilTwinDetected': 'Evil Twin Erkannt',
         'deauthAttackSuspected': 'Deauth-Angriff Verdacht',

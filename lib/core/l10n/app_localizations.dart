@@ -2238,7 +2238,7 @@ abstract class AppLocalizations {
   /// Name of security event type
   ///
   /// In en, this message translates to:
-  /// **'{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst} handshakeCaptureStarted{Handshake Capture Started} handshakeCaptureCompleted{Handshake Captured} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} arpSpoofingDetected{ARP Spoofing Detected} dnsHijackingDetected{DNS Hijacking Detected} unsupportedOperation{Unsupported Operation} other{{type}}}'**
+  /// **'{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst Detected} handshakeCaptureStarted{Secure Auth Exchange} handshakeCaptureCompleted{Auth Exchange Verified} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} arpSpoofingDetected{ARP Spoofing Detected} dnsHijackingDetected{DNS Hijacking Detected} unsupportedOperation{Unsupported Operation} other{{type}}}'**
   String securityEventType(String type);
 
   /// Name of security severity

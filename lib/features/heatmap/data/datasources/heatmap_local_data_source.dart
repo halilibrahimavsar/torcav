@@ -51,6 +51,14 @@ class HeatmapLocalDataSource {
     await _prefs.remove('heatmap_session_$sessionId');
   }
 
+  Future<void> deleteAll() async {
+    final ids = _prefs.getStringList(_indexKey) ?? [];
+    for (final id in ids) {
+      await _prefs.remove('heatmap_session_$id');
+    }
+    await _prefs.remove(_indexKey);
+  }
+
   // ── JSON helpers ───────────────────────────────────────────────────────────
 
   Map<String, dynamic> _toJson(HeatmapSession s) => {

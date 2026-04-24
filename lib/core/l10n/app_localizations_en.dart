@@ -1140,9 +1140,9 @@ class AppLocalizationsEn extends AppLocalizations {
       type,
       {
         'rogueApSuspected': 'Rogue AP Suspected',
-        'deauthBurstDetected': 'Deauth Burst',
-        'handshakeCaptureStarted': 'Handshake Capture Started',
-        'handshakeCaptureCompleted': 'Handshake Captured',
+        'deauthBurstDetected': 'Deauth Burst Detected',
+        'handshakeCaptureStarted': 'Secure Auth Exchange',
+        'handshakeCaptureCompleted': 'Auth Exchange Verified',
         'captivePortalDetected': 'Captive Portal Detected',
         'evilTwinDetected': 'Evil Twin Detected',
         'deauthAttackSuspected': 'Deauth Attack Suspected',

@@ -12,12 +12,20 @@ import '../../domain/entities/scan_snapshot.dart';
 import '../../domain/entities/wifi_network.dart';
 import 'scan_snapshot_builder.dart';
 import 'wifi_data_source.dart';
+import '../../../settings/domain/services/app_settings_store.dart';
 
 @lazySingleton
 class AndroidWifiDataSource implements WifiDataSource {
   final ScanSnapshotBuilder _snapshotBuilder;
+  final AppSettingsStore _settingsStore;
+  final WiFiScan _wifiScan;
 
-  AndroidWifiDataSource(this._snapshotBuilder);
+  AndroidWifiDataSource(
+    this._snapshotBuilder,
+    this._settingsStore,
+    this._wifiScan,
+  );
+
 
   @override
   Future<List<WifiNetwork>> scanNetworks({ScanRequest? request}) async {
@@ -36,6 +44,12 @@ class AndroidWifiDataSource implements WifiDataSource {
       throw const PermissionFailure('Location permission denied');
     }
 
+    // ENFORCEMENT: If strictSafetyMode is ON, we disable hidden SSID scanning
+    // regardless of the request parameter to prevent active probing.
+    final effectiveIncludeHidden = _settingsStore.value.strictSafetyMode
+        ? false
+        : request.includeHidden;
+
     final passCount = max(1, request.passes);
     final passResults = <List<WifiNetwork>>[];
     var anyPassTriggeredFreshScan = false;
@@ -46,9 +60,9 @@ class AndroidWifiDataSource implements WifiDataSource {
       // 2 minutes, so this is expected behaviour.
       var triggeredFreshScan = false;
       try {
-        final canStartScan = await WiFiScan.instance.canStartScan();
+        final canStartScan = await _wifiScan.canStartScan();
         if (canStartScan == CanStartScan.yes) {
-          triggeredFreshScan = await WiFiScan.instance.startScan();
+          triggeredFreshScan = await _wifiScan.startScan();
         }
       } catch (_) {
         // Swallow — we'll use cached results.
@@ -67,7 +81,7 @@ class AndroidWifiDataSource implements WifiDataSource {
       }
 
       // Read whatever results the OS has (fresh or cached).
-      final canGetResults = await WiFiScan.instance.canGetScannedResults();
+      final canGetResults = await _wifiScan.canGetScannedResults();
       if (canGetResults != CanGetScannedResults.yes) {
         throw const ScanFailure(
           'Cannot retrieve Wi-Fi scan results. '
@@ -75,7 +89,8 @@ class AndroidWifiDataSource implements WifiDataSource {
         );
       }
 
-      final results = await WiFiScan.instance.getScannedResults();
+      final results = await _wifiScan.getScannedResults();
+
       if (results.isEmpty && pass == 0) {
         throw const ScanFailure(
           'No Wi-Fi networks found. '
@@ -123,7 +138,8 @@ class AndroidWifiDataSource implements WifiDataSource {
                 );
               })
               .where(
-                (network) => request.includeHidden || network.ssid.isNotEmpty,
+                (network) =>
+                    effectiveIncludeHidden || network.ssid.isNotEmpty,
               )
               .toList();
 

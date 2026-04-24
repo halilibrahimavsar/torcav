@@ -12,6 +12,8 @@ import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_observation.dart';
 import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:torcav/core/theme/theme_cubit.dart';
 
 class MockNetworkInfo extends Mock implements NetworkInfo {}
 
@@ -86,15 +88,18 @@ Future<void> _configureDependencies(NetworkInfo networkInfo) async {
 }
 
 Widget _buildTestApp(Widget child) {
-  return MaterialApp(
-    supportedLocales: AppLocalizations.supportedLocales,
-    localizationsDelegates: const [
-      AppLocalizations.delegate,
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-    ],
-    home: child,
+  return BlocProvider<ThemeCubit>.value(
+    value: getIt<ThemeCubit>(),
+    child: MaterialApp(
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      home: child,
+    ),
   );
 }
 

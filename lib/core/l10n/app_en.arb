@@ -1581,7 +1581,7 @@
     "@channelInterferenceDescription": {
         "description": "Explanation of channel interference"
     },
-    "securityEventType": "{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst} handshakeCaptureStarted{Handshake Capture Started} handshakeCaptureCompleted{Handshake Captured} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} arpSpoofingDetected{ARP Spoofing Detected} dnsHijackingDetected{DNS Hijacking Detected} unsupportedOperation{Unsupported Operation} other{{type}}}",
+    "securityEventType": "{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst Detected} handshakeCaptureStarted{Secure Auth Exchange} handshakeCaptureCompleted{Auth Exchange Verified} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} arpSpoofingDetected{ARP Spoofing Detected} dnsHijackingDetected{DNS Hijacking Detected} unsupportedOperation{Unsupported Operation} other{{type}}}",
     "@securityEventType": {
         "description": "Name of security event type",
         "placeholders": {

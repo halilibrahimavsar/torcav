@@ -92,8 +92,8 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
           hostName = mdnsMap[host.ip]!.first;
         }
 
-        // Fallback to NetBIOS if still empty
-        if (hostName.isEmpty) {
+        // Fallback to NetBIOS if still empty and safety mode allows
+        if (hostName.isEmpty && !_appSettingsStore.value.strictSafetyMode) {
           final nbName = await _netbiosDataSource.queryName(host.ip);
           if (nbName != null && nbName.isNotEmpty) {
             hostName = nbName;
@@ -101,8 +101,8 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
           }
         }
 
-        // Fallback to Reverse DNS if still empty
-        if (hostName.isEmpty) {
+        // Fallback to Reverse DNS if still empty and safety mode allows
+        if (hostName.isEmpty && !_appSettingsStore.value.strictSafetyMode) {
           hostName = await _reverseDnsLookup(host.ip);
         }
 

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:permission_handler/permission_handler.dart';
+import '../../../../core/presentation/widgets/permission_disclosure_dialog.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -362,7 +364,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'PASSIVE-ONLY GUARANTEE',
+                        'PASSIVE-ONLY ARCHITECTURE',
                         style: GoogleFonts.orbitron(
                           color: AppColors.neonCyan,
                           fontSize: 10,
@@ -371,7 +373,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
                         ),
                       ),
                       Text(
-                        'Torcav strictly analyzes traffic without active transmission.',
+                        'Advanced signal analysis without active transmission or identity tracking.',
                         style: GoogleFonts.rajdhani(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontSize: 11,
@@ -547,6 +549,33 @@ class _SnapshotViewState extends State<_SnapshotView> {
                 );
                 if (confirmed != true) return;
               }
+
+              // Google Play Compliance: Prominent Disclosure for Location
+              if (Platform.isAndroid) {
+                final status = await Permission.location.status;
+                if (!status.isGranted && context.mounted) {
+                  final shouldProceed = await showDialog<bool>(
+                        context: context,
+                        builder: (ctx) => const PermissionDisclosureDialog(
+                          title: 'WIFI SCAN PERMISSION',
+                          message:
+                              'To discover nearby Wi-Fi networks and analyze signal strength, Torcav requires Location access. This is an Android system requirement for Wi-Fi scanning.',
+                          icon: Icons.location_on_rounded,
+                          permissions: [
+                            'Scan nearby Wi-Fi SSIDs',
+                            'Analyze signal quality and interference',
+                            'Torcav never tracks or shares your location',
+                          ],
+                        ),
+                      ) ??
+                      false;
+
+                  if (shouldProceed && mounted) {
+                    await Permission.location.request();
+                  }
+                }
+              }
+
               if (!mounted) return;
               final store = getIt<AppSettingsStore>();
               store.update(store.value.copyWith(isDeepScanEnabled: !isQuick));

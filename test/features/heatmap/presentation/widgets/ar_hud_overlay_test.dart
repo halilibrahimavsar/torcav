@@ -12,6 +12,9 @@ import 'package:torcav/features/heatmap/presentation/bloc/scan_phase.dart';
 import 'package:torcav/features/heatmap/domain/entities/survey_gate.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/ar_hud_overlay.dart';
 
+import 'package:torcav/core/l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 class MockHeatmapBloc extends MockCubit<HeatmapState> implements HeatmapBloc {}
 
 void main() {
@@ -60,6 +63,13 @@ void main() {
 
   Widget wrap(Widget child) {
     return MaterialApp(
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: BlocProvider<HeatmapBloc>.value(value: bloc, child: child),
       ),

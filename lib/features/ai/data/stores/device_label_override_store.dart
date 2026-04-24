@@ -33,4 +33,12 @@ class DeviceLabelOverrideStore {
     }
     return result;
   }
+
+  Future<void> clearAll() async {
+    final prefs = await SharedPreferences.getInstance();
+    final keysToRemove = prefs.getKeys().where((k) => k.startsWith(_prefix)).toList();
+    for (final key in keysToRemove) {
+      await prefs.remove(key);
+    }
+  }
 }

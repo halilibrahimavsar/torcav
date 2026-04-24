@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart';
+import 'package:torcav/core/presentation/widgets/permission_disclosure_dialog.dart';
 
 class NewSessionDialog extends StatefulWidget {
   const NewSessionDialog({super.key, required this.bloc, required this.copy});
@@ -79,8 +80,25 @@ class _NewSessionDialogState extends State<NewSessionDialog> {
           onPressed: () async {
             final name = _controller.text.trim();
             if (name.isNotEmpty) {
+              final shouldProceed = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => const PermissionDisclosureDialog(
+                      title: 'HEATMAP PERMISSIONS',
+                      message:
+                          'To generate accurate heatmaps and map your network coverage, Torcav requires access to certain device features:',
+                      icon: Icons.map_rounded,
+                      permissions: [
+                        'Location (to map signal to coordinates)',
+                        'Activity Recognition (to track steps and movement)',
+                        'Camera (optional, for visual mapping features)',
+                      ],
+                    ),
+                  ) ??
+                  false;
+
+              if (!shouldProceed) return;
+
               await [
-                Permission.sensors,
                 Permission.activityRecognition,
                 Permission.location,
                 Permission.camera,

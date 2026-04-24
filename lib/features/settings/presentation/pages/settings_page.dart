@@ -11,12 +11,18 @@ import '../../../performance/domain/repositories/speed_test_history_repository.d
 import '../../../security/data/datasources/security_local_data_source.dart';
 import '../../../wifi_scan/data/datasources/channel_rating_local_data_source.dart';
 import '../../../wifi_scan/data/datasources/wifi_scan_history_local_data_source.dart';
+import '../../../heatmap/data/datasources/heatmap_local_data_source.dart';
+import '../../../network_scan/data/datasources/lan_scan_history_local_data_source.dart';
 import '../../../wifi_scan/domain/entities/scan_request.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../app_shell/presentation/pages/onboarding_page.dart';
+import 'privacy_policy_page.dart';
 import '../../domain/entities/app_settings.dart';
 import '../../domain/services/app_settings_store.dart';
+import '../../../ai/data/stores/device_label_override_store.dart';
+import '../../../wifi_scan/data/services/favorites_store.dart';
+import '../../../dashboard/data/datasources/score_history_local_data_source.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -654,6 +660,34 @@ class _SettingsPageState extends State<SettingsPage> {
                       height: 1.5,
                     ),
                   ),
+                  const Divider(height: 32, thickness: 0.5),
+                  ListTile(
+                    leading: Icon(
+                      Icons.privacy_tip_outlined,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    title: Text(
+                      'PRIVACY POLICY',
+                      style: GoogleFonts.orbitron(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right_rounded,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PrivacyPolicyPage(),
+                        ),
+                      );
+                    },
+                    contentPadding: EdgeInsets.zero,
+                  ),
                 ],
               ),
             ),
@@ -780,11 +814,16 @@ class _SettingsPageState extends State<SettingsPage> {
 
     // Clear in-memory session store and all persisted data.
     getIt<ScanSessionStore>().clear();
-    await Future.wait([
+    await Future.wait<void>([
       getIt<SpeedTestHistoryRepository>().deleteAll(),
-      getIt<SecurityLocalDataSource>().clearAllSecurityEvents(),
+      getIt<SecurityLocalDataSource>().deleteAllData(),
       getIt<ChannelRatingLocalDataSource>().clearHistory(),
       getIt<WifiScanHistoryLocalDataSource>().clear(),
+      getIt<HeatmapLocalDataSource>().deleteAll(),
+      getIt<LanScanHistoryLocalDataSource>().deleteAllSessions(),
+      getIt<DeviceLabelOverrideStore>().clearAll(),
+      getIt<FavoritesStore>().clearAll(),
+      getIt<ScoreHistoryLocalDataSource>().deleteAll(),
     ]);
 
     if (!mounted) return;

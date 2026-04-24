@@ -13,9 +13,12 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:network_info_plus/network_info_plus.dart' as _i846;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
+import 'package:wifi_scan/wifi_scan.dart' as _i797;
 
 import '../../features/ai/data/services/onnx_device_classifier_service.dart'
     as _i265;
+import '../../features/ai/data/stores/device_label_override_store.dart'
+    as _i391;
 import '../../features/dashboard/data/datasources/score_history_local_data_source.dart'
     as _i955;
 import '../../features/heatmap/data/datasources/ar_camera_pose_datasource.dart'
@@ -198,8 +201,12 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.lazySingleton<_i846.NetworkInfo>(() => appModule.networkInfo);
+    gh.lazySingleton<_i797.WiFiScan>(() => appModule.wifiScan);
     gh.lazySingleton<_i941.NotificationService>(
       () => _i941.NotificationService(),
+    );
+    gh.lazySingleton<_i1050.OuiDatabaseService>(
+      () => _i1050.OuiDatabaseService(),
     );
     gh.lazySingleton<_i690.AppDatabase>(() => _i690.AppDatabase());
     gh.lazySingleton<_i969.ChannelRatingEngine>(
@@ -211,27 +218,27 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i927.DnsSecurityUseCase(),
     );
     gh.lazySingleton<_i991.DnsDataSource>(() => _i991.DnsDataSource());
-    gh.lazySingleton<_i165.MdnsDataSource>(() => _i165.MdnsDataSource());
     gh.lazySingleton<_i119.UpnpDataSource>(() => _i119.UpnpDataSource());
+    gh.lazySingleton<_i165.MdnsDataSource>(() => _i165.MdnsDataSource());
+    gh.lazySingleton<_i200.NetbiosDataSource>(() => _i200.NetbiosDataSource());
     gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
-    gh.lazySingleton<_i904.SurveyGuidanceService>(
-      () => const _i904.SurveyGuidanceService(),
-    );
     gh.lazySingleton<_i106.ConnectedSignalSmoother>(
       () => const _i106.ConnectedSignalSmoother(),
     );
-    gh.lazySingleton<_i265.OnnxDeviceClassifierService>(
-      () => _i265.OnnxDeviceClassifierService(),
-      dispose: (i) => i.dispose(),
+    gh.lazySingleton<_i904.SurveyGuidanceService>(
+      () => const _i904.SurveyGuidanceService(),
     );
     gh.lazySingleton<_i188.ArCameraPoseDataSource>(
       () => _i188.ArCameraPoseDataSource(),
       dispose: (i) => i.dispose(),
     );
-    gh.lazySingleton<_i1050.OuiDatabaseService>(
-      () => _i1050.OuiDatabaseService(),
+    gh.lazySingleton<_i265.OnnxDeviceClassifierService>(
+      () => _i265.OnnxDeviceClassifierService(),
+      dispose: (i) => i.dispose(),
     );
-    gh.lazySingleton<_i200.NetbiosDataSource>(() => _i200.NetbiosDataSource());
+    gh.lazySingleton<_i391.DeviceLabelOverrideStore>(
+      () => _i391.DeviceLabelOverrideStore(),
+    );
     gh.lazySingleton<_i494.HeatmapRepository>(
       () => _i335.HeatmapRepositoryImpl(gh<_i690.AppDatabase>()),
     );
@@ -316,9 +323,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i761.BarometerDataSource>(
       () => _i761.BarometerDataSourceImpl(),
     );
-    gh.lazySingleton<_i672.AndroidWifiDataSource>(
-      () => _i672.AndroidWifiDataSource(gh<_i113.ScanSnapshotBuilder>()),
-    );
     gh.lazySingleton<_i653.LinuxWifiDataSource>(
       () => _i653.LinuxWifiDataSource(gh<_i113.ScanSnapshotBuilder>()),
     );
@@ -340,6 +344,20 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i367.GenerateReportUseCase>(
       () => _i367.GenerateReportUseCase(gh<_i119.ReportExportRepository>()),
+    );
+    gh.factory<_i739.NetworkScanBloc>(
+      () => _i739.NetworkScanBloc(
+        gh<_i1073.NetworkScanRepository>(),
+        gh<_i505.NewDeviceDetector>(),
+        gh<_i552.AppSettingsStore>(),
+      ),
+    );
+    gh.lazySingleton<_i672.AndroidWifiDataSource>(
+      () => _i672.AndroidWifiDataSource(
+        gh<_i113.ScanSnapshotBuilder>(),
+        gh<_i552.AppSettingsStore>(),
+        gh<_i797.WiFiScan>(),
+      ),
     );
     gh.factory<_i554.ReportsBloc>(
       () => _i554.ReportsBloc(gh<_i367.GenerateReportUseCase>()),
@@ -373,12 +391,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i332.ChannelRatingRepository>(
       () => _i671.ChannelRatingRepositoryImpl(
         gh<_i305.ChannelRatingLocalDataSource>(),
-      ),
-    );
-    gh.factory<_i739.NetworkScanBloc>(
-      () => _i739.NetworkScanBloc(
-        gh<_i1073.NetworkScanRepository>(),
-        gh<_i505.NewDeviceDetector>(),
       ),
     );
     gh.factory<_i58.PerformanceBloc>(

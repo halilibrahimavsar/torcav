@@ -21,6 +21,7 @@ abstract class SecurityLocalDataSource {
   Future<void> markAllSecurityEventsAsRead();
   Future<void> deleteSecurityEvent(int id);
   Future<void> clearAllSecurityEvents();
+  Future<void> deleteAllData();
   Future<AssessmentSession?> getLatestAssessmentSession();
   Future<void> saveAssessmentSession(AssessmentSession session);
   Future<void> incrementSeenCount(String bssid);
@@ -171,6 +172,17 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
   Future<void> clearAllSecurityEvents() async {
     final db = await _database.database;
     await db.delete('security_events');
+  }
+
+  @override
+  Future<void> deleteAllData() async {
+    final db = await _database.database;
+    await db.transaction((txn) async {
+      await txn.delete('security_events');
+      await txn.delete('known_networks');
+      await txn.delete('trusted_network_profiles');
+      await txn.delete('assessment_sessions');
+    });
   }
 
   @override

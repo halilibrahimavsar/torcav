@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/theme/neon_widgets.dart';
+import '../../../settings/presentation/pages/privacy_policy_page.dart';
+import '../../../settings/presentation/pages/terms_of_service_page.dart';
 import 'app_shell_page.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -199,8 +201,9 @@ class _PermissionsPage extends StatelessWidget {
       title: 'LOCATION PERMISSION',
       body:
           'Android requires Location permission to scan for Wi-Fi networks. '
-          'Your location is never sent anywhere — it is only used to read '
-          'nearby Wi-Fi signals.',
+          'To show signal heatmaps, we also use activity sensors. '
+          'All data stays on your device and is never uploaded. '
+          'Your location is only used to read nearby Wi-Fi signals.',
       color: Theme.of(context).colorScheme.tertiary,
     );
   }
@@ -360,7 +363,7 @@ class _DonePageState extends State<_DonePage> {
           ),
           const SizedBox(height: 12),
           Text(
-            'Torcav is a passive defensive analyzer. It helps you inspect and harden networks you own or are authorized to assess, and it does not perform attack, capture, or exploitation actions.',
+            'Torcav is a privacy-first network assistant. It provides safe network diagnostics and hardening tools for networks you own or are authorized to assess. No data is collected or transmitted externally.',
             textAlign: TextAlign.center,
             style: GoogleFonts.rajdhani(
               fontSize: 14,
@@ -372,19 +375,82 @@ class _DonePageState extends State<_DonePage> {
           _AgreementCheckbox(
             value: _tos,
             onChanged: (v) => _update(v, _authorized, _age),
-            label: 'I have read and accept the Terms of Service and Privacy Policy.',
+            content: Text.rich(
+              TextSpan(
+                style: GoogleFonts.rajdhani(
+                  fontSize: 13,
+                  color: Theme.of(context).colorScheme.onSurface,
+                  height: 1.4,
+                ),
+                children: [
+                  const TextSpan(text: 'I have read and accept the '),
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: InkWell(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const TermsOfServicePage(),
+                        ),
+                      ),
+                      child: Text(
+                        'Terms of Service',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const TextSpan(text: ' and '),
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: InkWell(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PrivacyPolicyPage(),
+                        ),
+                      ),
+                      child: Text(
+                        'Privacy Policy',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const TextSpan(text: '.'),
+                ],
+              ),
+            ),
           ),
           const SizedBox(height: 8),
           _AgreementCheckbox(
             value: _authorized,
             onChanged: (v) => _update(_tos, v, _age),
-            label: 'I confirm I have permission to scan the networks I will analyze.',
+            content: Text(
+              'I confirm I have permission to scan the networks I will analyze.',
+              style: GoogleFonts.rajdhani(
+                fontSize: 13,
+                color: Theme.of(context).colorScheme.onSurface,
+                height: 1.4,
+              ),
+            ),
           ),
           const SizedBox(height: 8),
           _AgreementCheckbox(
             value: _age,
             onChanged: (v) => _update(_tos, _authorized, v),
-            label: 'I confirm I am 13 years of age or older.',
+            content: Text(
+              'I confirm I am 13 years of age or older.',
+              style: GoogleFonts.rajdhani(
+                fontSize: 13,
+                color: Theme.of(context).colorScheme.onSurface,
+                height: 1.4,
+              ),
+            ),
           ),
         ],
       ),
@@ -395,12 +461,12 @@ class _DonePageState extends State<_DonePage> {
 class _AgreementCheckbox extends StatelessWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
-  final String label;
+  final Widget content;
 
   const _AgreementCheckbox({
     required this.value,
     required this.onChanged,
-    required this.label,
+    required this.content,
   });
 
   @override
@@ -421,14 +487,7 @@ class _AgreementCheckbox extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(top: 12),
-              child: Text(
-                label,
-                style: GoogleFonts.rajdhani(
-                  fontSize: 13,
-                  color: Theme.of(context).colorScheme.onSurface,
-                  height: 1.4,
-                ),
-              ),
+              child: content,
             ),
           ),
         ],

@@ -10,6 +10,7 @@ import '../../domain/entities/network_scan_policy.dart';
 import '../../domain/entities/network_scan_profile.dart';
 import '../../domain/repositories/network_scan_repository.dart';
 import '../../domain/services/new_device_detector.dart';
+import '../../../settings/domain/services/app_settings_store.dart';
 
 // Events
 abstract class NetworkScanEvent extends Equatable {
@@ -108,6 +109,7 @@ class NetworkScanError extends NetworkScanState {
 class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
   final NetworkScanRepository _repository;
   final NewDeviceDetector _newDeviceDetector;
+  final AppSettingsStore _settingsStore;
 
   bool _consentGiven = false;
   StreamSubscription? _scanSubscription;
@@ -120,6 +122,7 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
   NetworkScanBloc(
     this._repository,
     this._newDeviceDetector,
+    this._settingsStore,
   ) : super(NetworkScanInitial()) {
     on<StartNetworkScan>(_onStartScan);
     on<CancelNetworkScan>(_onCancelScan);
@@ -158,6 +161,16 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
       emit(
         const NetworkScanError(
           'Scan target exceeds safety limits. Please restrict to /24 or smaller subnets.',
+        ),
+      );
+      return;
+    }
+ 
+    // ENFORCEMENT: If strictSafetyMode is ON, we block deep scans
+    if (_settingsStore.value.strictSafetyMode && event.deepScan) {
+      emit(
+        const NetworkScanError(
+          'Deep scanning is disabled when Strict Safety Mode is active.',
         ),
       );
       return;

@@ -1,4 +1,4 @@
-package com.example.torcav.ar
+package com.halilibrahimavsar.torcav.ar
 
 import android.content.Context
 import android.content.ContextWrapper
