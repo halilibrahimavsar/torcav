@@ -14,12 +14,6 @@ class OuiLookup {
   /// Returns the vendor name for the given MAC address, or 'Unknown' if not found.
   Future<String> lookup(String mac) => _dbService.getVendor(mac);
 
-  /// Static variant for use without an instance (deprecated, use injection).
-  @Deprecated('Use instance lookup(mac) via injection instead')
-  static Future<String> getVendor(String mac, OuiDatabaseService dbService) {
-    return dbService.getVendor(mac);
-  }
-
   /// Returns `true` when the MAC address has a Locally Administered Address
   /// (LAA) bit set — a strong indicator of MAC randomization or spoofing.
   ///

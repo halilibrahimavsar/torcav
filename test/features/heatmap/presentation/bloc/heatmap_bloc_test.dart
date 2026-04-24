@@ -177,8 +177,6 @@ void main() {
       await _flush();
 
       final point = HeatmapPoint(
-        x: 0,
-        y: 0,
         floorX: 1,
         floorY: 1,
         rssi: -63,
@@ -248,8 +246,6 @@ void main() {
         session.copyWith(
           points: [
             HeatmapPoint(
-              x: 0,
-              y: 0,
               floorX: 1,
               floorY: 0,
               rssi: -63,
@@ -290,8 +286,6 @@ void main() {
         session.copyWith(
           points: [
             HeatmapPoint(
-              x: 0,
-              y: 0,
               floorX: 1,
               floorY: 0,
               rssi: -63,
@@ -300,8 +294,6 @@ void main() {
               bssid: 'AA:BB:CC:DD:EE:FF',
             ),
             HeatmapPoint(
-              x: 0,
-              y: 0,
               floorX: 2,
               floorY: 0,
               rssi: -66,

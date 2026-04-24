@@ -1,4 +1,4 @@
-import 'package:fpdart/fpdart.dart';
+import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../features/wifi_scan/domain/entities/wifi_network.dart';
 

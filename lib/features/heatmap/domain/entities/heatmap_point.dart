@@ -7,8 +7,6 @@ import 'package:equatable/equatable.dart';
 /// but are deprecated.
 class HeatmapPoint extends Equatable {
   const HeatmapPoint({
-    required this.x,
-    required this.y,
     required this.floorX,
     required this.floorY,
     required this.rssi,
@@ -22,12 +20,6 @@ class HeatmapPoint extends Equatable {
     this.rssiStdDev = 0.0,
     this.isFlagged = false,
   });
-
-  /// Normalised horizontal position [0.0, 1.0] (deprecated in favour of floorX).
-  final double x;
-
-  /// Normalised vertical position [0.0, 1.0] (deprecated in favour of floorY).
-  final double y;
 
   /// Metric horizontal position in meters from origin.
   final double floorX;
@@ -66,8 +58,6 @@ class HeatmapPoint extends Equatable {
   final bool isFlagged;
 
   HeatmapPoint copyWith({
-    double? x,
-    double? y,
     double? floorX,
     double? floorY,
     double? floorZ,
@@ -81,8 +71,6 @@ class HeatmapPoint extends Equatable {
     double? rssiStdDev,
     bool? isFlagged,
   }) => HeatmapPoint(
-    x: x ?? this.x,
-    y: y ?? this.y,
     floorX: floorX ?? this.floorX,
     floorY: floorY ?? this.floorY,
     floorZ: floorZ ?? this.floorZ,
@@ -99,8 +87,6 @@ class HeatmapPoint extends Equatable {
 
   @override
   List<Object?> get props => [
-    x,
-    y,
     floorX,
     floorY,
     floorZ,

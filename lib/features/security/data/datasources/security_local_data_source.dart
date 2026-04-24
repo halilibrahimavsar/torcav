@@ -1,5 +1,5 @@
 import 'package:injectable/injectable.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart';
 import '../../../../core/storage/app_database.dart';
 import '../../domain/entities/assessment_session.dart';
 import '../../domain/entities/known_network.dart';

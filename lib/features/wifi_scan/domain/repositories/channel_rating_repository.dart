@@ -1,4 +1,4 @@
-import 'package:fpdart/fpdart.dart';
+import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
 import '../entities/channel_rating_sample.dart';
 

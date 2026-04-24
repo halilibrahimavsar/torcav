@@ -31,8 +31,6 @@ void main() {
     final points = List.generate(
       sampleCount,
       (i) => HeatmapPoint(
-        x: 0,
-        y: 0,
         floorX: i.toDouble(),
         floorY: i.toDouble(),
         rssi: rssi ?? -90,

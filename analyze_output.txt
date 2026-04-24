@@ -1,0 +1,44 @@
+Analyzing torcav...                                             
+
+  error • Target of URI doesn't exist: '../../domain/entities/heatmap_point.dart' • lib/features/monitoring/data/repositories/heatmap_repository_impl.dart:3:8 • uri_does_not_exist
+  error • Undefined class 'HeatmapPoint' • lib/features/monitoring/data/repositories/heatmap_repository_impl.dart:13:25 • undefined_class
+  error • The name 'HeatmapPoint' isn't a type, so it can't be used as a type argument • lib/features/monitoring/data/repositories/heatmap_repository_impl.dart:24:15 • non_type_as_type_argument
+  error • The method 'HeatmapPoint' isn't defined for the type 'HeatmapRepositoryImpl' • lib/features/monitoring/data/repositories/heatmap_repository_impl.dart:35:18 • undefined_method
+  error • Target of URI doesn't exist: '../entities/heatmap_point.dart' • lib/features/monitoring/domain/repositories/heatmap_repository.dart:1:8 • uri_does_not_exist
+  error • Undefined class 'HeatmapPoint' • lib/features/monitoring/domain/repositories/heatmap_repository.dart:4:25 • undefined_class
+  error • The name 'HeatmapPoint' isn't a type, so it can't be used as a type argument • lib/features/monitoring/domain/repositories/heatmap_repository.dart:5:15 • non_type_as_type_argument
+  error • Target of URI doesn't exist: '../entities/heatmap_point.dart' • lib/features/monitoring/domain/usecases/log_heatmap_point_usecase.dart:3:8 • uri_does_not_exist
+  error • The method 'HeatmapPoint' isn't defined for the type 'LogHeatmapPointUseCase' • lib/features/monitoring/domain/usecases/log_heatmap_point_usecase.dart:18:7 • undefined_method
+  error • The argument type 'List<ChannelRatingSample> Function(dynamic)' can't be assigned to the parameter type 'List<ChannelRatingSample> Function()'.  • lib/features/monitoring/presentation/pages/channel_rating_page.dart:193:37 • argument_type_not_assignable
+  error • Target of URI doesn't exist: '../../heatmap/presentation/pages/heatmap_page.dart' • lib/features/monitoring/presentation/pages/signal_graph_page.dart:9:8 • uri_does_not_exist
+  error • The name 'MonitoringBloc' isn't a type, so it can't be used as a type argument • lib/features/monitoring/presentation/pages/signal_graph_page.dart:40:31 • non_type_as_type_argument
+  error • The method 'StopMonitoring' isn't defined for the type '_SignalGraphPageState' • lib/features/monitoring/presentation/pages/signal_graph_page.dart:42:16 • undefined_method
+  error • The method 'StartMonitoring' isn't defined for the type '_SignalGraphPageState' • lib/features/monitoring/presentation/pages/signal_graph_page.dart:44:16 • undefined_method
+  error • The name 'MonitoringBloc' isn't a type, so it can't be used as a type argument • lib/features/monitoring/presentation/pages/signal_graph_page.dart:53:23 • non_type_as_type_argument
+  error • The method 'StartMonitoring' isn't defined for the type '_SignalGraphPageState' • lib/features/monitoring/presentation/pages/signal_graph_page.dart:54:23 • undefined_method
+  error • The name 'HeatmapPage' isn't a class • lib/features/monitoring/presentation/pages/signal_graph_page.dart:70:63 • creation_with_non_type
+  error • The name 'MonitoringBloc' isn't a type, so it can't be used as a type argument • lib/features/monitoring/presentation/pages/signal_graph_page.dart:93:24 • non_type_as_type_argument
+  error • The name 'MonitoringState' isn't a type, so it can't be used as a type argument • lib/features/monitoring/presentation/pages/signal_graph_page.dart:93:40 • non_type_as_type_argument
+  error • The name 'MonitoringActive' isn't defined, so it can't be used in an 'is' expression • lib/features/monitoring/presentation/pages/signal_graph_page.dart:95:22 • type_test_with_undefined_name
+warning • The declaration '_buildStatItem' isn't referenced • lib/features/monitoring/presentation/pages/signal_graph_page.dart:156:10 • unused_element
+  error • The name '_buildStatItem' is already defined • lib/features/monitoring/presentation/pages/signal_graph_page.dart:156:10 • duplicate_definition
+  error • The name 'MonitoringBloc' isn't a type, so it can't be used as a type argument • lib/features/monitoring/presentation/pages/signal_graph_page.dart:183:24 • non_type_as_type_argument
+  error • The name 'MonitoringState' isn't a type, so it can't be used as a type argument • lib/features/monitoring/presentation/pages/signal_graph_page.dart:183:40 • non_type_as_type_argument
+  error • The name 'MonitoringLoading' isn't defined, so it can't be used in an 'is' expression • lib/features/monitoring/presentation/pages/signal_graph_page.dart:185:22 • type_test_with_undefined_name
+  error • The name 'MonitoringActive' isn't defined, so it can't be used in an 'is' expression • lib/features/monitoring/presentation/pages/signal_graph_page.dart:187:29 • type_test_with_undefined_name
+  error • The name 'MonitoringFailure' isn't defined, so it can't be used in an 'is' expression • lib/features/monitoring/presentation/pages/signal_graph_page.dart:264:29 • type_test_with_undefined_name
+  error • The named parameter 'x' isn't defined • test/features/heatmap/data/datasources/heatmap_local_data_source_test.dart:33:11 • undefined_named_parameter
+  error • The named parameter 'y' isn't defined • test/features/heatmap/data/datasources/heatmap_local_data_source_test.dart:34:11 • undefined_named_parameter
+  error • The named parameter 'x' isn't defined • test/features/heatmap/domain/services/survey_guidance_service_test.dart:54:5 • undefined_named_parameter
+  error • The named parameter 'y' isn't defined • test/features/heatmap/domain/services/survey_guidance_service_test.dart:55:5 • undefined_named_parameter
+  error • The named parameter 'x' isn't defined • test/features/heatmap/presentation/bloc/heatmap_bloc_test.dart:180:9 • undefined_named_parameter
+  error • The named parameter 'y' isn't defined • test/features/heatmap/presentation/bloc/heatmap_bloc_test.dart:181:9 • undefined_named_parameter
+  error • The named parameter 'x' isn't defined • test/features/heatmap/presentation/bloc/heatmap_bloc_test.dart:251:15 • undefined_named_parameter
+  error • The named parameter 'y' isn't defined • test/features/heatmap/presentation/bloc/heatmap_bloc_test.dart:252:15 • undefined_named_parameter
+  error • The named parameter 'x' isn't defined • test/features/heatmap/presentation/bloc/heatmap_bloc_test.dart:293:15 • undefined_named_parameter
+  error • The named parameter 'y' isn't defined • test/features/heatmap/presentation/bloc/heatmap_bloc_test.dart:294:15 • undefined_named_parameter
+  error • The named parameter 'x' isn't defined • test/features/heatmap/presentation/bloc/heatmap_bloc_test.dart:303:15 • undefined_named_parameter
+  error • The named parameter 'y' isn't defined • test/features/heatmap/presentation/bloc/heatmap_bloc_test.dart:304:15 • undefined_named_parameter
+  error • The named parameter 'x' isn't defined • test/features/heatmap/presentation/widgets/ar_hud_overlay_test.dart:34:9 • undefined_named_parameter
+  error • The named parameter 'y' isn't defined • test/features/heatmap/presentation/widgets/ar_hud_overlay_test.dart:35:9 • undefined_named_parameter
+

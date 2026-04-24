@@ -40,7 +40,6 @@ dependencies:
   flutter_bloc: ^9.1.1
   get_it: ^8.3.0
   injectable: ^2.5.1
-  fpdart: ^1.2.0
   dartz: ^0.10.1
   equatable: ^2.0.8
   google_fonts: ^6.3.2
@@ -55,8 +54,11 @@ dependencies:
   wifi_scan: ^0.4.1+2
   permission_handler: ^12.0.1
   network_info_plus: ^7.0.0
-  shared_preferences: ^2.5.3
-  sqflite: ^2.4.2
+  sqflite_sqlcipher: ^3.3.0
+
+  flutter_secure_storage: ^10.0.0
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
   flutter_local_notifications: ^17.2.4
   vector_math: ^2.1.4
   share_plus: ^12.0.2
@@ -72,6 +74,7 @@ dependencies:
     path: ../remote_auth_module
   unified_flutter_features:
     path: ../unified_flutter_features
+  uuid: ^4.5.3
 
 dev_dependencies:
   flutter_test:

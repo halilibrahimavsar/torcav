@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:dartz/dartz.dart' as dartz;
-import 'package:fpdart/fpdart.dart';
+import 'package:dartz/dartz.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:torcav/core/errors/failures.dart';
 
@@ -71,7 +70,7 @@ void main() {
     ).thenAnswer((_) async => const Right(null));
     when(
       () => securityRepo.saveSecurityEvent(any()),
-    ).thenAnswer((_) async => dartz.right<Failure, void>(null));
+    ).thenAnswer((_) async => right<Failure, void>(null));
 
     bloc = MonitoringBloc(
       repo,

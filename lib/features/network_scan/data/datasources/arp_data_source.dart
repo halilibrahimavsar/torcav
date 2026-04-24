@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:isolate';
 
-import 'package:fpdart/fpdart.dart';
+import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/errors/failures.dart';
@@ -66,23 +66,6 @@ class ArpDataSource {
     } finally {
       receivePort.close();
       isolate.kill(priority: Isolate.immediate);
-    }
-  }
-
-  /// Deprecated: Discovers hosts in a single batch. Use [discoverHostsStream] instead.
-  Future<Either<Failure, List<HostScanResult>>> discoverHosts({
-    String? targetSubnet,
-    NetworkScanProfile profile = NetworkScanProfile.fast,
-  }) async {
-    try {
-      final hosts =
-          await discoverHostsStream(
-            targetSubnet: targetSubnet,
-            profile: profile,
-          ).toList();
-      return Right(hosts);
-    } catch (e) {
-      return Left(ScanFailure(e.toString()));
     }
   }
 

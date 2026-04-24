@@ -1,27 +1,27 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../storage/hive_storage_service.dart';
 
 @singleton
 class LocaleCubit extends Cubit<Locale> {
   static const String _localeKey = 'app_locale';
   static const Set<String> _supportedCodes = {'en', 'tr', 'de', 'ku'};
 
-  final SharedPreferences _prefs;
+  final HiveStorageService _storage;
 
-  LocaleCubit(this._prefs) : super(const Locale('en')) {
+  LocaleCubit(this._storage) : super(const Locale('en')) {
     _loadSavedLocale();
   }
 
   void _loadSavedLocale() {
-    final savedCode = _prefs.getString(_localeKey);
+    final savedCode = _storage.get<String>(_localeKey);
     if (savedCode != null) {
       emit(Locale(savedCode));
     } else {
       final detected = _detectSystemLocale();
       if (detected != null) {
-        _prefs.setString(_localeKey, detected.languageCode);
+        _storage.save(_localeKey, detected.languageCode);
         emit(detected);
       }
     }
@@ -41,7 +41,7 @@ class LocaleCubit extends Cubit<Locale> {
 
   Future<void> setLocale(Locale locale) async {
     if (locale.languageCode != state.languageCode) {
-      await _prefs.setString(_localeKey, locale.languageCode);
+      await _storage.save(_localeKey, locale.languageCode);
       emit(locale);
     }
   }
@@ -54,3 +54,4 @@ class LocaleCubit extends Cubit<Locale> {
     }
   }
 }
+

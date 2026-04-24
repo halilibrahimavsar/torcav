@@ -1,4 +1,4 @@
-import 'package:fpdart/fpdart.dart';
+import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
 import '../entities/scan_request.dart';
 import '../entities/scan_snapshot.dart';

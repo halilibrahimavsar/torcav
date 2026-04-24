@@ -128,8 +128,6 @@ class HeatmapManager {
     }
 
     final newPoint = HeatmapPoint(
-      x: 0,
-      y: 0,
       floorX: candidate.x,
       floorY: candidate.y,
       floorZ: 0,
@@ -166,8 +164,6 @@ class HeatmapManager {
     if (_currentSession == null) return;
 
     final newPoint = HeatmapPoint(
-      x: 0,
-      y: 0,
       floorX: floorX,
       floorY: floorY,
       floorZ: 0,

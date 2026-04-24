@@ -1,4 +1,4 @@
-import 'package:fpdart/fpdart.dart';
+import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../../domain/entities/service_fingerprint.dart';

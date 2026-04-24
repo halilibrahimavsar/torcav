@@ -1,44 +1,47 @@
 import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:torcav/core/storage/hive_storage_service.dart';
 
 /// Persists user-supplied device-type corrections keyed by MAC address.
-/// Overrides are stored in SharedPreferences under the prefix `ai_label_`.
+/// Overrides are stored in Hive under the prefix `ai_label_`.
 @lazySingleton
 class DeviceLabelOverrideStore {
+  DeviceLabelOverrideStore(this._storage);
+
+  final HiveStorageService _storage;
   static const _prefix = 'ai_label_';
 
   Future<void> set(String mac, String deviceType) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('$_prefix${mac.toUpperCase()}', deviceType);
+    await _storage.save('$_prefix${mac.toUpperCase()}', deviceType);
   }
 
   Future<void> remove(String mac) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('$_prefix${mac.toUpperCase()}');
+    await _storage.delete('$_prefix${mac.toUpperCase()}');
   }
 
   Future<String?> get(String mac) async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('$_prefix${mac.toUpperCase()}');
+    return _storage.get<String>('$_prefix${mac.toUpperCase()}');
   }
 
   Future<Map<String, String>> getAll() async {
-    final prefs = await SharedPreferences.getInstance();
+    // In Hive, we'd need to iterate or use a separate box for this to be efficient.
+    // For now, since we're using a single box, we'll iterate.
     final result = <String, String>{};
-    for (final key in prefs.getKeys()) {
-      if (key.startsWith(_prefix)) {
+    final box = _storage.box;
+    for (final key in box.keys) {
+      if (key is String && key.startsWith(_prefix)) {
         final mac = key.substring(_prefix.length);
-        result[mac] = prefs.getString(key)!;
+        result[mac] = box.get(key) as String;
       }
     }
     return result;
   }
 
   Future<void> clearAll() async {
-    final prefs = await SharedPreferences.getInstance();
-    final keysToRemove = prefs.getKeys().where((k) => k.startsWith(_prefix)).toList();
+    final box = _storage.box;
+    final keysToRemove = box.keys.where((k) => k is String && k.startsWith(_prefix)).toList();
     for (final key in keysToRemove) {
-      await prefs.remove(key);
+      await box.delete(key);
     }
   }
 }
+

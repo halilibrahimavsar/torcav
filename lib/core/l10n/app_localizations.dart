@@ -345,10 +345,10 @@ abstract class AppLocalizations {
   /// **'INITIATING SPECTRUM SCAN...'**
   String get initiatingSpectrumScan;
 
-  /// Broadcasting Probe Requests
+  /// Text shown during wifi scan instead of broadcasting probes.
   ///
   /// In en, this message translates to:
-  /// **'BROADCASTING PROBE REQUESTS...'**
+  /// **'Analyzing local signal environment...'**
   String get broadcastingProbeRequests;
 
   /// No Radios In Range
@@ -2238,7 +2238,7 @@ abstract class AppLocalizations {
   /// Name of security event type
   ///
   /// In en, this message translates to:
-  /// **'{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst Detected} handshakeCaptureStarted{Secure Auth Exchange} handshakeCaptureCompleted{Auth Exchange Verified} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} arpSpoofingDetected{ARP Spoofing Detected} dnsHijackingDetected{DNS Hijacking Detected} unsupportedOperation{Unsupported Operation} other{{type}}}'**
+  /// **'{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst Detected} handshakeCaptureStarted{Handshake Protocol Analysis} handshakeCaptureCompleted{Handshake Protocol Secured} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} arpSpoofingDetected{ARP Spoofing Detected} dnsHijackingDetected{DNS Hijacking Detected} unsupportedOperation{Unsupported Operation} other{{type}}}'**
   String securityEventType(String type);
 
   /// Name of security severity

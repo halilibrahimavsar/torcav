@@ -15,7 +15,7 @@ import '../../../heatmap/data/datasources/heatmap_local_data_source.dart';
 import '../../../network_scan/data/datasources/lan_scan_history_local_data_source.dart';
 import '../../../wifi_scan/domain/entities/scan_request.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:torcav/core/storage/hive_storage_service.dart';
 import '../../../app_shell/presentation/pages/onboarding_page.dart';
 import 'privacy_policy_page.dart';
 import '../../domain/entities/app_settings.dart';
@@ -701,8 +701,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _replayOnboarding(BuildContext context) async {
     final navigator = Navigator.of(context);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('onboarding_complete', false);
+    await getIt<HiveStorageService>().save('onboarding_complete', false);
     navigator.pushReplacement(
       MaterialPageRoute(builder: (_) => const OnboardingPage()),
     );

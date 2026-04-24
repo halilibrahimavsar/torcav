@@ -6,11 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:torcav/core/theme/theme_cubit.dart';
-
+import 'package:torcav/core/storage/hive_storage_service.dart';
 import 'package:torcav/core/di/injection.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
@@ -36,26 +35,29 @@ class HeatmapPage extends StatefulWidget {
 }
 
 class _HeatmapPageState extends State<HeatmapPage> {
-  static const _tutorialKey = 'heatmap_tutorial_seen';
   bool _showTutorial = false;
 
   @override
   void initState() {
     super.initState();
-    _checkTutorial();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkFirstLaunch();
+    });
   }
 
-  Future<void> _checkTutorial() async {
-    final prefs = await SharedPreferences.getInstance();
-    final seen = prefs.getBool(_tutorialKey) ?? false;
-    if (!seen && mounted) {
-      setState(() => _showTutorial = true);
+  Future<void> _checkFirstLaunch() async {
+    final hive = getIt<HiveStorageService>();
+    final hasSeenTutorial = hive.get<bool>('heatmap_tutorial_seen') ?? false;
+
+    if (!hasSeenTutorial) {
+      if (mounted) {
+        setState(() => _showTutorial = true);
+        await hive.save('heatmap_tutorial_seen', true);
+      }
     }
   }
 
   Future<void> _dismissTutorial() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_tutorialKey, true);
     if (mounted) {
       setState(() => _showTutorial = false);
     }

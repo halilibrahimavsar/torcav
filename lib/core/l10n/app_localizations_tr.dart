@@ -144,7 +144,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get initiatingSpectrumScan => 'SPEKTRUM TARAMASI BAŞLATILIYOR...';
 
   @override
-  String get broadcastingProbeRequests => 'PROBE İSTEKLERİ YAYINLANIYOR...';
+  String get broadcastingProbeRequests => 'Yerel sinyal ortamı analiz ediliyor...';
 
   @override
   String get noRadiosInRange => 'Menzilde radyo bulunamadı';
@@ -1141,13 +1141,15 @@ class AppLocalizationsTr extends AppLocalizations {
       {
         'rogueApSuspected': 'Şüpheli AP Tespiti',
         'deauthBurstDetected': 'Deauth Patlaması Tespiti',
-        'handshakeCaptureStarted': 'Güvenli Kimlik Doğrulama',
-        'handshakeCaptureCompleted': 'Kimlik Doğrulama Doğrulandı',
+        'handshakeCaptureStarted': 'Handshake Protokol Analizi',
+        'handshakeCaptureCompleted': 'Handshake Protokolü Doğrulandı',
         'captivePortalDetected': 'Captive Portal Tespiti',
         'evilTwinDetected': 'Evil Twin Tespiti',
         'deauthAttackSuspected': 'Şüpheli Deauth Saldırısı',
         'encryptionDowngraded': 'Şifreleme Düzeyi Düşürüldü',
         'unsupportedOperation': 'Desteklenmeyen İşlem',
+        'arpSpoofingDetected': 'ARP Spoofing Tespiti',
+        'dnsHijackingDetected': 'DNS Hijacking Tespiti',
         'other': '$type',
       },
     );

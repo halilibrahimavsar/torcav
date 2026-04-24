@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:injectable/injectable.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart';
 
 import 'package:torcav/core/storage/app_database.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/band_analysis_stat.dart';

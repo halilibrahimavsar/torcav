@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:torcav/core/storage/hive_storage_service.dart';
+import 'package:torcav/core/di/injection.dart';
 
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../settings/presentation/pages/privacy_policy_page.dart';
@@ -34,8 +35,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Future<void> _finish() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('onboarding_complete', true);
+    await getIt<HiveStorageService>().save('onboarding_complete', true);
     if (mounted) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const AppShellPage()),

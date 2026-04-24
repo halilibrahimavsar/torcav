@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:multicast_dns/multicast_dns.dart';
 
-import 'package:fpdart/fpdart.dart';
+import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
 
 @LazySingleton()

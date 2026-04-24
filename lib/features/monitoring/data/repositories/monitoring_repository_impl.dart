@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:fpdart/fpdart.dart';
+import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../features/wifi_scan/domain/entities/wifi_network.dart';
@@ -44,14 +44,17 @@ class MonitoringRepositoryImpl implements MonitoringRepository {
     Duration interval = const Duration(seconds: 5),
   }) async* {
     await for (final result in monitorNetworks(interval: interval)) {
-      yield result.bind((networks) {
-        final network = networks.where((n) => n.bssid == bssid).firstOrNull;
-        if (network != null) {
-          return Right(network);
-        } else {
-          return const Left(ScanFailure('Network not found'));
-        }
-      });
+      yield result.fold(
+        (failure) => Left(failure),
+        (networks) {
+          final network = networks.where((n) => n.bssid == bssid).firstOrNull;
+          if (network != null) {
+            return Right(network);
+          } else {
+            return const Left(ScanFailure('Network not found'));
+          }
+        },
+      );
     }
   }
 }

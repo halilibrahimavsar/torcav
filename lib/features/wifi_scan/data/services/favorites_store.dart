@@ -1,18 +1,18 @@
 import 'dart:async';
 
 import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../core/storage/hive_storage_service.dart';
 
-/// Persists a set of pinned/favourite network BSSIDs in SharedPreferences.
+/// Persists a set of pinned/favourite network BSSIDs in Hive.
 @lazySingleton
 class FavoritesStore {
   static const _key = 'pinned_bssids';
-  final SharedPreferences _prefs;
+  final HiveStorageService _storage;
   final StreamController<Set<String>> _changes =
       StreamController<Set<String>>.broadcast();
   Set<String> _pinned;
 
-  FavoritesStore(this._prefs) : _pinned = _load(_prefs);
+  FavoritesStore(this._storage) : _pinned = _load(_storage);
 
   Set<String> get pinned => _pinned;
 
@@ -27,7 +27,7 @@ class FavoritesStore {
     }
     _pinned = next;
     _changes.add(next);
-    unawaited(_prefs.setStringList(_key, next.toList()));
+    unawaited(_storage.save(_key, next.toList()));
   }
 
   bool isPinned(String bssid) => _pinned.contains(bssid);
@@ -35,10 +35,11 @@ class FavoritesStore {
   Future<void> clearAll() async {
     _pinned = {};
     _changes.add({});
-    await _prefs.remove(_key);
+    await _storage.delete(_key);
   }
 
-  static Set<String> _load(SharedPreferences prefs) {
-    return (prefs.getStringList(_key) ?? []).toSet();
+  static Set<String> _load(HiveStorageService storage) {
+    return (storage.get<List<dynamic>>(_key) ?? []).cast<String>().toSet();
   }
 }
+

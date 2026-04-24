@@ -51,8 +51,6 @@ void main() {
 
 HeatmapPoint _point(double x, double y, int rssi) {
   return HeatmapPoint(
-    x: 0,
-    y: 0,
     floorX: x,
     floorY: y,
     rssi: rssi,

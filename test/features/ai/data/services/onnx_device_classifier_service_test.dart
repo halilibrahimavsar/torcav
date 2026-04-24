@@ -1,17 +1,22 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:torcav/features/ai/data/services/onnx_device_classifier_service.dart';
+import 'package:torcav/features/ai/data/stores/device_label_override_store.dart';
 import 'package:torcav/features/network_scan/domain/entities/host_scan_result.dart';
+
+class MockDeviceLabelOverrideStore extends Mock implements DeviceLabelOverrideStore {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('OnnxDeviceClassifierService', () {
     late OnnxDeviceClassifierService service;
+    late MockDeviceLabelOverrideStore mockOverrideStore;
 
     setUp(() {
-      SharedPreferences.setMockInitialValues({});
-      service = OnnxDeviceClassifierService();
+      mockOverrideStore = MockDeviceLabelOverrideStore();
+      when(() => mockOverrideStore.get(any())).thenAnswer((_) async => null);
+      service = OnnxDeviceClassifierService(mockOverrideStore);
     });
 
     tearDown(() {

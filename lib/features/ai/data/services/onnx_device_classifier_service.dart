@@ -17,10 +17,11 @@ import '../stores/device_label_override_store.dart';
 /// Loaded once as a lazy singleton and reused for all classifications.
 @lazySingleton
 class OnnxDeviceClassifierService {
+  OnnxDeviceClassifierService(this._overrideStore);
+
+  final DeviceLabelOverrideStore _overrideStore;
   OrtSession? _session;
   bool _initFailed = false;
-
-  final DeviceLabelOverrideStore _overrideStore = DeviceLabelOverrideStore();
 
   /// Classify a single host.
   ///

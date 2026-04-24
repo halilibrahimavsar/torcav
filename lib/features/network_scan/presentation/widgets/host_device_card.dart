@@ -38,7 +38,7 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
   late final TextEditingController _endPortController;
   _PortScanMode _scanMode = _PortScanMode.common;
 
-  final _overrideStore = DeviceLabelOverrideStore();
+  final _overrideStore = getIt<DeviceLabelOverrideStore>();
   String? _customLabel;
 
   @override

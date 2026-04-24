@@ -1,62 +1,58 @@
-import 'dart:convert';
-
 import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:torcav/core/storage/hive_storage_service.dart';
 
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
 
-/// Persists [HeatmapSession]s as JSON in SharedPreferences.
+/// Persists [HeatmapSession]s in Hive.
 ///
-/// This avoids a separate SQLite table while keeping data across restarts.
-/// Each session is stored under key `'heatmap_session_<id>'`.  An index list
+/// Each session is stored under key `'heatmap_session_<id>'`. An index list
 /// of session IDs is kept under `'heatmap_session_ids'`.
 @lazySingleton
 class HeatmapLocalDataSource {
-  HeatmapLocalDataSource(this._prefs);
+  HeatmapLocalDataSource(this._storage);
 
-  final SharedPreferences _prefs;
+  final HiveStorageService _storage;
 
   static const _indexKey = 'heatmap_session_ids';
 
   Future<List<HeatmapSession>> getSessions() async {
-    final ids = _prefs.getStringList(_indexKey) ?? [];
+    final ids = _storage.get<List<dynamic>>(_indexKey) ?? [];
     final sessions = <HeatmapSession>[];
     for (final id in ids) {
-      final raw = _prefs.getString('heatmap_session_$id');
-      if (raw == null) continue;
-      final map = jsonDecode(raw) as Map<String, dynamic>;
-      sessions.add(_fromJson(map));
+      final map = _storage.get<Map<dynamic, dynamic>>('heatmap_session_$id');
+      if (map == null) continue;
+      sessions.add(_fromJson(map.cast<String, dynamic>()));
     }
     sessions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return sessions;
   }
 
   Future<void> saveSession(HeatmapSession session) async {
-    final ids = _prefs.getStringList(_indexKey) ?? [];
+    final ids = (_storage.get<List<dynamic>>(_indexKey) ?? []).cast<String>().toList();
     if (!ids.contains(session.id)) {
       ids.add(session.id);
-      await _prefs.setStringList(_indexKey, ids);
+      await _storage.save(_indexKey, ids);
     }
-    await _prefs.setString(
+    await _storage.save(
       'heatmap_session_${session.id}',
-      jsonEncode(_toJson(session)),
+      _toJson(session),
     );
   }
 
   Future<void> deleteSession(String sessionId) async {
-    final ids = _prefs.getStringList(_indexKey) ?? [];
+    final ids = (_storage.get<List<dynamic>>(_indexKey) ?? []).cast<String>().toList();
     ids.remove(sessionId);
-    await _prefs.setStringList(_indexKey, ids);
-    await _prefs.remove('heatmap_session_$sessionId');
+    await _storage.save(_indexKey, ids);
+    await _storage.delete('heatmap_session_$sessionId');
   }
 
   Future<void> deleteAll() async {
-    final ids = _prefs.getStringList(_indexKey) ?? [];
+    final ids = (_storage.get<List<dynamic>>(_indexKey) ?? []).cast<String>().toList();
     for (final id in ids) {
-      await _prefs.remove('heatmap_session_$id');
+      await _storage.delete('heatmap_session_$id');
     }
-    await _prefs.remove(_indexKey);
+    await _storage.delete(_indexKey);
   }
 
   // ── JSON helpers ───────────────────────────────────────────────────────────
@@ -69,8 +65,6 @@ class HeatmapLocalDataSource {
         s.points
             .map(
               (p) => {
-                'x': p.x,
-                'y': p.y,
                 'floorX': p.floorX,
                 'floorY': p.floorY,
                 'floorZ': p.floorZ,
@@ -94,23 +88,23 @@ class HeatmapLocalDataSource {
     createdAt: DateTime.parse(map['createdAt'] as String),
     points:
         (map['points'] as List<dynamic>).map((e) {
-          final rssiNum = e['rssi'] as num;
+          final pointMap = e as Map<dynamic, dynamic>;
+          final rssiNum = pointMap['rssi'] as num;
           return HeatmapPoint(
-            x: (e['x'] as num).toDouble(),
-            y: (e['y'] as num).toDouble(),
-            floorX: (e['floorX'] as num? ?? 0.0).toDouble(),
-            floorY: (e['floorY'] as num? ?? 0.0).toDouble(),
-            floorZ: (e['floorZ'] as num? ?? 0.0).toDouble(),
-            heading: (e['heading'] as num? ?? 0.0).toDouble(),
+            floorX: (pointMap['floorX'] as num? ?? 0.0).toDouble(),
+            floorY: (pointMap['floorY'] as num? ?? 0.0).toDouble(),
+            floorZ: (pointMap['floorZ'] as num? ?? 0.0).toDouble(),
+            heading: (pointMap['heading'] as num? ?? 0.0).toDouble(),
             rssi: rssiNum.toInt(),
-            timestamp: DateTime.parse(e['timestamp'] as String),
-            ssid: e['ssid'] as String? ?? '',
-            bssid: e['bssid'] as String? ?? '',
-            floor: (e['floor'] as num? ?? 0).toInt(),
-            sampleCount: (e['sampleCount'] as num? ?? 1).toInt(),
-            rssiStdDev: (e['rssiStdDev'] as num? ?? 0.0).toDouble(),
-            isFlagged: e['isFlagged'] as bool? ?? false,
+            timestamp: DateTime.parse(pointMap['timestamp'] as String),
+            ssid: pointMap['ssid'] as String? ?? '',
+            bssid: pointMap['bssid'] as String? ?? '',
+            floor: (pointMap['floor'] as num? ?? 0).toInt(),
+            sampleCount: (pointMap['sampleCount'] as num? ?? 1).toInt(),
+            rssiStdDev: (pointMap['rssiStdDev'] as num? ?? 0.0).toDouble(),
+            isFlagged: pointMap['isFlagged'] as bool? ?? false,
           );
         }).toList(),
   );
 }
+

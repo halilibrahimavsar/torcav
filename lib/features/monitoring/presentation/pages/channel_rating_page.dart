@@ -190,7 +190,7 @@ class _HistoryViewState extends State<_HistoryView> {
     final result = await repo.getHistory(limit: const Duration(days: 7));
     if (mounted) {
       setState(() {
-        _samples = result.getOrElse((_) => []);
+        _samples = result.getOrElse(() => []);
         _loading = false;
       });
     }

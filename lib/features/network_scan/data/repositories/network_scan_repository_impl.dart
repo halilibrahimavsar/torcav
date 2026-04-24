@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:fpdart/fpdart.dart';
+import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../ai/data/services/onnx_device_classifier_service.dart';

@@ -144,7 +144,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get initiatingSpectrumScan => 'INITIATING SPECTRUM SCAN...';
 
   @override
-  String get broadcastingProbeRequests => 'BROADCASTING PROBE REQUESTS...';
+  String get broadcastingProbeRequests => 'Analyzing local signal environment...';
 
   @override
   String get noRadiosInRange => 'No radios in range';
@@ -1141,8 +1141,8 @@ class AppLocalizationsEn extends AppLocalizations {
       {
         'rogueApSuspected': 'Rogue AP Suspected',
         'deauthBurstDetected': 'Deauth Burst Detected',
-        'handshakeCaptureStarted': 'Secure Auth Exchange',
-        'handshakeCaptureCompleted': 'Auth Exchange Verified',
+        'handshakeCaptureStarted': 'Handshake Protocol Analysis',
+        'handshakeCaptureCompleted': 'Handshake Protocol Secured',
         'captivePortalDetected': 'Captive Portal Detected',
         'evilTwinDetected': 'Evil Twin Detected',
         'deauthAttackSuspected': 'Deauth Attack Suspected',

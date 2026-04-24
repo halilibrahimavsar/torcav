@@ -4,10 +4,15 @@ import 'dart:convert';
 import 'package:injectable/injectable.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart' hide openDatabase, Database, ConflictAlgorithm;
+import 'package:sqflite_sqlcipher/sqflite.dart' hide databaseFactory;
+import 'secure_storage_service.dart';
 
 @lazySingleton
 class AppDatabase {
+  AppDatabase(this._secureStorage);
+
+  final SecureStorageService _secureStorage;
   Database? _database;
 
   Future<Database> get database async {
@@ -24,8 +29,12 @@ class AppDatabase {
     final baseDir = await getApplicationSupportDirectory();
     final dbPath = p.join(baseDir.path, 'torcav.sqlite');
 
+    // Retrieve or generate the encryption key from secure storage
+    final password = await _secureStorage.getDatabaseEncryptionKey();
+
     return openDatabase(
       dbPath,
+      password: password, // Enable encryption
       version: 8,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,

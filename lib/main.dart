@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +14,7 @@ import 'package:torcav/features/app_shell/presentation/pages/app_shell_page.dart
 import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
 import 'package:torcav/features/security/presentation/widgets/cyber_grid_background.dart';
 import 'package:torcav/core/services/data_retention_service.dart';
+import 'package:torcav/core/storage/hive_storage_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +33,7 @@ void main() async {
 
   // Initialize Dependency Injection
   await configureDependencies();
+  await HiveStorageService.init();
   await getIt<ScanSessionStore>().restore();
 
   // Enforce data retention policy at startup

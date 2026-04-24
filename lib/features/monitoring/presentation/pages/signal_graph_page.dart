@@ -6,9 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../features/wifi_scan/domain/entities/wifi_network.dart';
-import '../bloc/heatmap_bloc.dart';
+import 'package:torcav/features/heatmap/presentation/pages/heatmap_page.dart';
 import '../bloc/monitoring_bloc.dart';
-import 'temporal_heatmap_page.dart';
 
 class SignalGraphPage extends StatefulWidget {
   final WifiNetwork network;
@@ -49,16 +48,11 @@ class _SignalGraphPageState extends State<SignalGraphPage>
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create:
-              (_) =>
-                  GetIt.I<MonitoringBloc>()
-                    ..add(StartMonitoring(widget.network.bssid)),
-        ),
-        BlocProvider(create: (_) => GetIt.I<HeatmapBloc>()),
-      ],
+    return BlocProvider(
+      create:
+          (_) =>
+              GetIt.I<MonitoringBloc>()
+                ..add(StartMonitoring(widget.network.bssid)),
       child: Builder(
         builder: (innerContext) {
           return Scaffold(
@@ -74,18 +68,9 @@ class _SignalGraphPageState extends State<SignalGraphPage>
                   tooltip: context.l10n.heatmapTooltip,
                   onPressed: () {
                     Navigator.of(innerContext).push(
-                      MaterialPageRoute(
-                        builder:
-                            (_) =>
-                                TemporalHeatmapPage(bssid: widget.network.bssid),
-                      ),
+                      MaterialPageRoute(builder: (_) => const HeatmapPage()),
                     );
                   },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.add_location_alt_outlined),
-                  tooltip: context.l10n.tagCurrentPointTooltip,
-                  onPressed: () => _addHeatmapPoint(innerContext),
                 ),
               ],
             ),
@@ -164,81 +149,6 @@ class _SignalGraphPageState extends State<SignalGraphPage>
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
-        ),
-      ],
-    );
-  }
-
-  Future<void> _addHeatmapPoint(BuildContext context) async {
-    final zone = await showDialog<String>(
-      context: context,
-      builder: (context) => const _ZoneInputDialog(),
-    );
-
-    if (!context.mounted || zone == null || zone.isEmpty) return;
-
-    final state = context.read<MonitoringBloc>().state;
-    if (state is! MonitoringActive) return;
-
-    context.read<HeatmapBloc>().add(
-      LogHeatmapPoint(
-        bssid: widget.network.bssid,
-        zoneTag: zone,
-        signalDbm: state.currentData.signalStrength,
-      ),
-    );
-
-    if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.heatmapPointAdded(zone))),
-    );
-  }
-}
-
-class _ZoneInputDialog extends StatefulWidget {
-  const _ZoneInputDialog();
-
-  @override
-  State<_ZoneInputDialog> createState() => _ZoneInputDialogState();
-}
-
-class _ZoneInputDialogState extends State<_ZoneInputDialog> {
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(context.l10n.addZonePoint),
-      content: TextField(
-        controller: _controller,
-        autofocus: true,
-        decoration: InputDecoration(labelText: context.l10n.zoneTagLabel),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(context.l10n.cancel),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            final text = _controller.text.trim();
-            if (text.isNotEmpty) {
-              Navigator.of(context).pop(text);
-            }
-          },
-          child: Text(context.l10n.save),
         ),
       ],
     );

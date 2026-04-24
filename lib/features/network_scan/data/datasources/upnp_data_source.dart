@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:injectable/injectable.dart';
 
-import 'package:fpdart/fpdart.dart';
+import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
 
 @LazySingleton()
