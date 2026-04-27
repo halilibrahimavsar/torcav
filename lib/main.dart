@@ -31,9 +31,9 @@ void main() async {
 
   ErrorWidget.builder = (details) => _NeonErrorWidget(details: details);
 
-  // Initialize Dependency Injection
-  await configureDependencies();
+  // Initialize Storage and Dependency Injection
   await HiveStorageService.init();
+  await configureDependencies();
   await getIt<ScanSessionStore>().restore();
 
   // Enforce data retention policy at startup
