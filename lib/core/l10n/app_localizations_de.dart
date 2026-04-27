@@ -420,13 +420,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get theme => 'Design';
 
   @override
-  String get settingsBackgroundStyle => 'Background Style';
+  String get settingsBackgroundStyle => 'Hintergrundstil';
 
   @override
-  String get backgroundNeomorphic => 'Neomorphic (High Performance)';
+  String get backgroundNeomorphic => 'Neomorph (Hohe Leistung)';
 
   @override
-  String get backgroundClassic => 'Classic Grid';
+  String get backgroundClassic => 'Klassisches Raster';
+
+  @override
+  String get backgroundAuroraMesh => 'Aurora-Netz (Experimentell)';
+
+  @override
+  String get backgroundHoloSphere => 'Holografische Kugel (3D)';
+
+  @override
+  String get backgroundNeuralPulse => 'Neuraler Puls (Animiert)';
 
   @override
   String get backgroundSelectionRestricted => 'Cyber grid styles are optimized for dark mode and only available when using the dark theme.';

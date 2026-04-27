@@ -711,5 +711,11 @@
     "portScanNoPortsProbed": "Hîn tu port nehatine skankirin. Ji bo dîtina xizmetên vekirî skanekê bidin destpêkirin.",
     "@portScanNoPortsProbed": {
         "description": "Message shown when no ports have been scanned yet"
-    }
+    },
+    "backgroundAuroraMesh": "Aurora Mesh (Ezmûnî)",
+    "backgroundHoloSphere": "Gogê Holografîk (3D)",
+    "backgroundNeuralPulse": "Pulsê Nöral (Anîmasyonî)",
+    "backgroundNeomorphic": "Neomorfîk (Performansa Bilind)",
+    "backgroundClassic": "Tora Klasîk",
+    "settingsBackgroundStyle": "Şêwaza Paşperdeyê"
 }

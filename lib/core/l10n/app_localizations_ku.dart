@@ -420,13 +420,22 @@ class AppLocalizationsKu extends AppLocalizations {
   String get theme => 'Tema';
 
   @override
-  String get settingsBackgroundStyle => 'Background Style';
+  String get settingsBackgroundStyle => 'Şêwaza Paşperdeyê';
 
   @override
-  String get backgroundNeomorphic => 'Neomorphic (High Performance)';
+  String get backgroundNeomorphic => 'Neomorfîk (Performansa Bilind)';
 
   @override
-  String get backgroundClassic => 'Classic Grid';
+  String get backgroundClassic => 'Tora Klasîk';
+
+  @override
+  String get backgroundAuroraMesh => 'Aurora Mesh (Ezmûnî)';
+
+  @override
+  String get backgroundHoloSphere => 'Gogê Holografîk (3D)';
+
+  @override
+  String get backgroundNeuralPulse => 'Pulsê Nöral (Anîmasyonî)';
 
   @override
   String get backgroundSelectionRestricted => 'Cyber grid styles are optimized for dark mode and only available when using the dark theme.';

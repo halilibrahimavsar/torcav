@@ -1016,6 +1016,30 @@ class _SettingsPageState extends State<SettingsPage> {
                   Navigator.pop(context);
                 },
               ),
+              _BackgroundOption(
+                label: l10n.backgroundAuroraMesh,
+                type: AppBackgroundType.auroraMesh,
+                onSelected: (type) {
+                  _update(_store.value.copyWith(backgroundType: type));
+                  Navigator.pop(context);
+                },
+              ),
+              _BackgroundOption(
+                label: l10n.backgroundHoloSphere,
+                type: AppBackgroundType.holoSphere,
+                onSelected: (type) {
+                  _update(_store.value.copyWith(backgroundType: type));
+                  Navigator.pop(context);
+                },
+              ),
+              _BackgroundOption(
+                label: l10n.backgroundNeuralPulse,
+                type: AppBackgroundType.neuralPulse,
+                onSelected: (type) {
+                  _update(_store.value.copyWith(backgroundType: type));
+                  Navigator.pop(context);
+                },
+              ),
             ],
           ),
         );
@@ -1027,6 +1051,9 @@ class _SettingsPageState extends State<SettingsPage> {
     return switch (type) {
       AppBackgroundType.neomorphic => l10n.backgroundNeomorphic,
       AppBackgroundType.classic => l10n.backgroundClassic,
+      AppBackgroundType.auroraMesh => l10n.backgroundAuroraMesh,
+      AppBackgroundType.holoSphere => l10n.backgroundHoloSphere,
+      AppBackgroundType.neuralPulse => l10n.backgroundNeuralPulse,
     };
   }
 

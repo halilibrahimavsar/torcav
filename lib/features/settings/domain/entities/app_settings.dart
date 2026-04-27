@@ -5,6 +5,9 @@ import '../../../wifi_scan/domain/entities/scan_request.dart';
 enum AppBackgroundType {
   neomorphic,
   classic,
+  auroraMesh,
+  holoSphere,
+  neuralPulse,
 }
 
 class AppSettings extends Equatable {

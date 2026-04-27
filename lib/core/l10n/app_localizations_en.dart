@@ -429,6 +429,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backgroundClassic => 'Classic Grid';
 
   @override
+  String get backgroundAuroraMesh => 'Aurora Mesh (Experimental)';
+
+  @override
+  String get backgroundHoloSphere => 'Holographic Sphere (3D)';
+
+  @override
+  String get backgroundNeuralPulse => 'Neural Pulse (Animated)';
+
+  @override
   String get backgroundSelectionRestricted => 'Cyber grid styles are optimized for dark mode and only available when using the dark theme.';
 
   @override

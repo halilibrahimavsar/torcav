@@ -117,6 +117,10 @@ class _AppShellPageState extends State<AppShellPage> with RestorationMixin {
         Navigator.of(
           context,
         ).push(MaterialPageRoute(builder: (context) => const TopologyRoute()));
+      case 'monitor/channels':
+      case 'monitor/signal':
+      case 'performance':
+        _onTabSelected(2);
       case 'security':
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => const SecurityCenterPage()),

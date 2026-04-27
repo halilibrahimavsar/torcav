@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:torcav/core/di/injection.dart';
 import '../../../settings/domain/entities/app_settings.dart';
 import '../../../settings/domain/services/app_settings_store.dart';
+import 'aurora_mesh_background.dart';
 import 'classic_grid_background.dart';
+import 'holo_sphere_background.dart';
 import 'neomorphic_background.dart';
+import 'neural_pulse_background.dart';
 
 class CyberGridBackground extends StatefulWidget {
   final Color color;
@@ -43,6 +46,30 @@ class _CyberGridBackgroundState extends State<CyberGridBackground> {
 
         if (settings.backgroundType == AppBackgroundType.classic) {
           return ClassicGridBackground(
+            color: widget.color,
+            scrollVelocity: scrollVelocity,
+            child: widget.child,
+          );
+        }
+
+        if (settings.backgroundType == AppBackgroundType.auroraMesh) {
+          return AuroraMeshBackground(
+            color: widget.color,
+            scrollVelocity: scrollVelocity,
+            child: widget.child,
+          );
+        }
+
+        if (settings.backgroundType == AppBackgroundType.holoSphere) {
+          return HoloSphereBackground(
+            color: widget.color,
+            scrollVelocity: scrollVelocity,
+            child: widget.child,
+          );
+        }
+
+        if (settings.backgroundType == AppBackgroundType.neuralPulse) {
+          return NeuralPulseBackground(
             color: widget.color,
             scrollVelocity: scrollVelocity,
             child: widget.child,

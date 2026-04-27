@@ -601,6 +601,18 @@
     "@backgroundClassic": {
         "description": "Label for the original particle grid background."
     },
+    "backgroundAuroraMesh": "Aurora Mesh (Experimental)",
+    "@backgroundAuroraMesh": {
+        "description": "Label for the aurora mesh shader background."
+    },
+    "backgroundHoloSphere": "Holographic Sphere (3D)",
+    "@backgroundHoloSphere": {
+        "description": "Label for the holographic sphere background."
+    },
+    "backgroundNeuralPulse": "Neural Pulse (Animated)",
+    "@backgroundNeuralPulse": {
+        "description": "Label for the neural pulse background."
+    },
     "backgroundSelectionRestricted": "Cyber grid styles are optimized for dark mode and only available when using the dark theme.",
     "@backgroundSelectionRestricted": {
         "description": "Info message explaining why background selection is disabled in light mode."

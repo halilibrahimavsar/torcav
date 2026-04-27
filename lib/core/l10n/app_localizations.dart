@@ -879,6 +879,24 @@ abstract class AppLocalizations {
   /// **'Classic Grid'**
   String get backgroundClassic;
 
+  /// Label for the aurora mesh shader background.
+  ///
+  /// In en, this message translates to:
+  /// **'Aurora Mesh (Experimental)'**
+  String get backgroundAuroraMesh;
+
+  /// Label for the holographic sphere background.
+  ///
+  /// In en, this message translates to:
+  /// **'Holographic Sphere (3D)'**
+  String get backgroundHoloSphere;
+
+  /// Label for the neural pulse background.
+  ///
+  /// In en, this message translates to:
+  /// **'Neural Pulse (Animated)'**
+  String get backgroundNeuralPulse;
+
   /// Info message explaining why background selection is disabled in light mode.
   ///
   /// In en, this message translates to:

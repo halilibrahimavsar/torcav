@@ -429,6 +429,15 @@ class AppLocalizationsTr extends AppLocalizations {
   String get backgroundClassic => 'Klasik Izgara';
 
   @override
+  String get backgroundAuroraMesh => 'Aurora Mesh (Deneysel)';
+
+  @override
+  String get backgroundHoloSphere => 'Holografik Küre (3D)';
+
+  @override
+  String get backgroundNeuralPulse => 'Nöral Nabız (Animasyonlu)';
+
+  @override
   String get backgroundSelectionRestricted => 'Siber ızgara stilleri karanlık mod için optimize edilmiştir ve yalnızca karanlık tema kullanılırken seçilebilir.';
 
   @override

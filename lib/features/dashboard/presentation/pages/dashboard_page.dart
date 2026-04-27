@@ -1,16 +1,20 @@
 import 'dart:async';
 
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
 import '../../../../core/di/injection.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/l10n/app_localizations.dart';
+import '../../../heatmap/domain/entities/connected_signal.dart';
+import '../../../heatmap/domain/services/connected_signal_service.dart';
+import '../../../performance/domain/entities/speed_test_result.dart';
+import '../../../performance/domain/repositories/speed_test_history_repository.dart';
 import '../../../security/domain/entities/security_assessment.dart';
+import '../../../security/domain/entities/security_event.dart';
+import '../../../security/domain/repositories/security_repository.dart';
 import '../../../security/domain/usecases/security_analyzer.dart';
 import '../../../security/presentation/bloc/notification/notification_bloc.dart';
 import '../../../wifi_scan/domain/entities/channel_rating.dart';
@@ -19,12 +23,14 @@ import '../../../wifi_scan/domain/entities/wifi_network.dart';
 import '../../../wifi_scan/domain/services/channel_rating_engine.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
 import '../../data/datasources/score_history_local_data_source.dart';
-import '../widgets/security_core.dart';
+import '../widgets/activity_timeline.dart';
+import '../widgets/live_metrics_bento.dart';
+import '../widgets/radial_dashboard_core.dart';
 import 'notification_sheet.dart';
-import '../../../../core/presentation/widgets/cyber_neomorphic_button.dart';
 
-
-/// Dashboard — neon-styled status overview with animated bento-grid layout.
+/// Dashboard — radial hero + bento metrics + activity timeline. Pulls live
+/// data from every major feature (security, wifi scan, signal, speed test,
+/// notifications) and animates value transitions.
 class DashboardPage extends StatefulWidget {
   final void Function(String destination) onNavigate;
   final VoidCallback? onOpenDrawer;
@@ -42,25 +48,37 @@ class _DashboardPageState extends State<DashboardPage> {
   int _networkCount = 0;
   bool _loading = true;
   int _securityScore = 100;
+  int? _signalQualityPct;
+  int _threatCount = 0;
+  int _newDeviceCount = 0;
+
   ChannelRating? _bestChannel;
   int? _currentChannel;
-  int? _newDeviceCount;
+  List<ChannelRating> _channelRatings = const [];
+
   SecurityAssessment? _worstAssessment;
-  List<int> _scoreHistory = [];
+  List<int> _scoreHistory = const [];
+  List<int> _rssiHistory = const [];
+  List<SecurityEvent> _recentEvents = const [];
+  List<ScanSnapshot> _recentSnapshots = const [];
+  SpeedTestResult? _lastSpeedTest;
+
   StreamSubscription<ScanSnapshot>? _scanSub;
+  late final NotificationBloc _notificationBloc;
 
   @override
   void initState() {
     super.initState();
+    _notificationBloc = getIt<NotificationBloc>()..add(LoadNotifications());
     _loadNetworkInfo();
-    // Subscribe to live scan updates so the dashboard refreshes automatically.
-    final store = getIt<ScanSessionStore>();
-    _scanSub = store.snapshots.listen((_) => _loadNetworkInfo());
+    _scanSub =
+        getIt<ScanSessionStore>().snapshots.listen((_) => _loadNetworkInfo());
   }
 
   @override
   void dispose() {
     _scanSub?.cancel();
+    _notificationBloc.close();
     super.dispose();
   }
 
@@ -78,9 +96,9 @@ class _DashboardPageState extends State<DashboardPage> {
       final latestSnapshot = store.latest;
       final networks =
           latestSnapshot?.networks.map((n) => n.toWifiNetwork()).toList() ??
-          <WifiNetwork>[];
+              <WifiNetwork>[];
 
-      // Security score: lowest score across all scanned networks.
+      // ── Security score ──
       int secScore = 100;
       SecurityAssessment? worstAssessment;
       if (networks.isNotEmpty) {
@@ -88,14 +106,13 @@ class _DashboardPageState extends State<DashboardPage> {
         final assessments = networks
             .map((n) => analyzer.assess(n, localBaseline: networks))
             .toList();
-        worstAssessment = assessments.reduce(
-          (a, b) => a.score < b.score ? a : b,
-        );
+        worstAssessment =
+            assessments.reduce((a, b) => a.score < b.score ? a : b);
         secScore = worstAssessment.score;
       }
 
-      // Snapshot diffing: count new BSSIDs vs the previous snapshot.
-      int? newDeviceCount;
+      // ── Snapshot diff ──
+      int newDeviceCount = 0;
       if (allSnapshots.length >= 2) {
         final prev = allSnapshots[allSnapshots.length - 2];
         final prevBssids = prev.networks.map((n) => n.bssid).toSet();
@@ -104,7 +121,7 @@ class _DashboardPageState extends State<DashboardPage> {
         newDeviceCount = latestBssids.difference(prevBssids).length;
       }
 
-      // Persist score history.
+      // ── Score history ──
       final scoreStore = getIt<ScoreHistoryLocalDataSource>();
       if (networks.isNotEmpty) {
         await scoreStore.saveScore(secScore);
@@ -112,24 +129,23 @@ class _DashboardPageState extends State<DashboardPage> {
       final recentScores = await scoreStore.getRecentScores();
       final scoreHistory = recentScores.map((e) => e.score).toList();
 
-      // Best channel recommendation.
+      // ── Channel ratings + best-channel recommendation ──
+      List<ChannelRating> ratings = const [];
       ChannelRating? bestCh;
       int? currentCh;
+      final ssid = _cleanSsid(results[0]) ?? '';
       if (networks.isNotEmpty) {
         final engine = getIt<ChannelRatingEngine>();
-        final ratings = engine.calculateRatings(networks);
-        final ssid = _cleanSsid(results[0]) ?? '';
+        ratings = engine.calculateRatings(networks);
         final connected = networks.where((n) => n.ssid == ssid).toList();
         if (connected.isNotEmpty) {
           currentCh = connected.first.channel;
-          final band24 =
-              ratings.where((r) => r.frequency < 4000).toList()
-                ..sort((a, b) => b.rating.compareTo(a.rating));
-          final band5 =
-              ratings
-                  .where((r) => r.frequency >= 4000 && r.frequency < 6000)
-                  .toList()
-                ..sort((a, b) => b.rating.compareTo(a.rating));
+          final band24 = ratings.where((r) => r.frequency < 4000).toList()
+            ..sort((a, b) => b.rating.compareTo(a.rating));
+          final band5 = ratings
+              .where((r) => r.frequency >= 4000 && r.frequency < 6000)
+              .toList()
+            ..sort((a, b) => b.rating.compareTo(a.rating));
           final sameBand = connected.first.frequency < 4000 ? band24 : band5;
           if (sameBand.isNotEmpty &&
               sameBand.first.channel != currentCh &&
@@ -138,6 +154,51 @@ class _DashboardPageState extends State<DashboardPage> {
           }
         }
       }
+
+      // ── Connected signal RSSI ──
+      ConnectedSignal? signal;
+      try {
+        signal = await getIt<ConnectedSignalService>().getConnectedSignal();
+      } catch (_) {
+        signal = null;
+      }
+      final qualityPct = signal == null
+          ? null
+          : (((signal.rssi + 100) / 70) * 100).clamp(0.0, 100.0).round();
+      final rssiHistory = List<int>.from(_rssiHistory);
+      if (signal != null) {
+        rssiHistory.add(signal.rssi);
+        if (rssiHistory.length > 20) {
+          rssiHistory.removeRange(0, rssiHistory.length - 20);
+        }
+      }
+
+      // ── Recent security events ──
+      List<SecurityEvent> events = const [];
+      try {
+        final eventsResult =
+            await getIt<SecurityRepository>().getSecurityEvents();
+        events = eventsResult.fold<List<SecurityEvent>>(
+          (_) => const [],
+          (list) => list,
+        );
+      } catch (_) {
+        events = const [];
+      }
+      final unread = events.where((e) => !e.isRead).toList();
+
+      // ── Latest speed test ──
+      SpeedTestResult? lastSpeed;
+      try {
+        final list =
+            await getIt<SpeedTestHistoryRepository>().getRecent(limit: 1);
+        lastSpeed = list.isEmpty ? null : list.first;
+      } catch (_) {
+        lastSpeed = null;
+      }
+
+      // ── Recent snapshots (newest-first slice) ──
+      final recentSnapshots = allSnapshots.reversed.take(6).toList();
 
       if (!mounted) return;
       setState(() {
@@ -148,9 +209,16 @@ class _DashboardPageState extends State<DashboardPage> {
         _securityScore = secScore;
         _bestChannel = bestCh;
         _currentChannel = currentCh;
+        _channelRatings = ratings;
         _newDeviceCount = newDeviceCount;
         _worstAssessment = worstAssessment;
         _scoreHistory = scoreHistory;
+        _signalQualityPct = qualityPct;
+        _rssiHistory = rssiHistory;
+        _recentEvents = events.take(20).toList();
+        _threatCount = unread.length;
+        _lastSpeedTest = lastSpeed;
+        _recentSnapshots = recentSnapshots;
         _loading = false;
       });
     } catch (_) {
@@ -159,41 +227,39 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  String? _cleanSsid(String? raw) {
-    if (raw == null) return null;
-    return raw.replaceAll('"', '');
-  }
+  String? _cleanSsid(String? raw) => raw?.replaceAll('"', '');
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final scheme = Theme.of(context).colorScheme;
+    final isConnected = _ssid != '—' && _ssid.isNotEmpty;
+    final accentColor = isConnected ? scheme.primary : scheme.error;
+    final statusLabel =
+        isConnected ? l10n.connectedStatusCaps : l10n.disconnectedStatusCaps;
 
-    return BlocProvider(
-      create: (context) => getIt<NotificationBloc>()..add(LoadNotifications()),
+    return BlocProvider.value(
+      value: _notificationBloc,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           centerTitle: true,
           leading: Builder(
-            builder:
-                (context) => IconButton(
-                  icon: Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: const Icon(Icons.menu_rounded, size: 18),
+            builder: (context) => IconButton(
+              icon: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: scheme.primary.withValues(alpha: 0.3),
                   ),
-                  onPressed:
-                      widget.onOpenDrawer ??
-                      () => Scaffold.of(context).openDrawer(),
                 ),
+                child: const Icon(Icons.menu_rounded, size: 18),
+              ),
+              onPressed: widget.onOpenDrawer ??
+                  () => Scaffold.of(context).openDrawer(),
+            ),
           ),
           title: NeonText(
             'TORCAV',
@@ -201,7 +267,7 @@ class _DashboardPageState extends State<DashboardPage> {
               fontWeight: FontWeight.bold,
               fontSize: 20,
               letterSpacing: 4,
-              color: Theme.of(context).colorScheme.primary,
+              color: scheme.primary,
             ),
             glowRadius: 15,
           ),
@@ -223,7 +289,6 @@ class _DashboardPageState extends State<DashboardPage> {
                 if (state is NotificationLoaded) {
                   unreadCount = state.unreadCount;
                 }
-
                 return Stack(
                   alignment: Alignment.center,
                   children: [
@@ -239,7 +304,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         child: Container(
                           padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.error,
+                            color: scheme.error,
                             shape: BoxShape.circle,
                           ),
                           constraints: const BoxConstraints(
@@ -249,7 +314,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           child: Text(
                             unreadCount > 9 ? '9+' : unreadCount.toString(),
                             style: GoogleFonts.rajdhani(
-                              color: Theme.of(context).colorScheme.onError,
+                              color: scheme.onError,
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
                             ),
@@ -265,112 +330,105 @@ class _DashboardPageState extends State<DashboardPage> {
           ],
         ),
         body: RefreshIndicator(
-          color: Theme.of(context).colorScheme.primary,
-          backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+          color: scheme.primary,
+          backgroundColor: scheme.surfaceContainerHigh,
           onRefresh: _loadNetworkInfo,
           child: ListView(
             physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 120),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
             children: [
-              // ── Dynamic Bento Header: Security Core & Primary Stats ──
+              // ── Hero: radial dashboard core with orbital gauges ──
               StaggeredEntry(
-                delay: const Duration(milliseconds: 100),
-                child: _SecurityBentoHeader(
+                delay: const Duration(milliseconds: 80),
+                child: Center(
+                  child: RadialDashboardCore(
+                    statusColor: accentColor,
+                    label: statusLabel,
+                    subLabel: _ssid,
+                    isLoading: _loading,
+                    securityScore: _securityScore,
+                    signalQualityPct: _signalQualityPct,
+                    threatCount: _threatCount,
+                    deviceCount: _networkCount,
+                    onTapSecurity: () => widget.onNavigate('security'),
+                    onTapSignal: () => widget.onNavigate('operations'),
+                    onTapThreats: () => _showNotificationSheet(context),
+                    onTapDevices: () => widget.onNavigate('wifi'),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // ── IP / Gateway compact strip ──
+              StaggeredEntry(
+                delay: const Duration(milliseconds: 200),
+                child: _NetworkIdStrip(
                   ssid: _ssid,
                   ip: _ip,
                   gateway: _gateway,
-                  loading: _loading,
                 ),
               ),
 
-              const SizedBox(height: 32),
+              const SizedBox(height: 24),
 
-              // ── System Metrics Strip ──
+              // ── Live Pulse: bento of mini metrics ──
               StaggeredEntry(
-                delay: const Duration(milliseconds: 300),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: NeonSectionHeader(
-                    label: l10n.livePulse,
-                    color: Theme.of(context).colorScheme.primary,
-                    icon: Icons.monitor_heart_rounded,
-                  ),
+                delay: const Duration(milliseconds: 280),
+                child: NeonSectionHeader(
+                  label: l10n.livePulse,
+                  color: scheme.primary,
+                  icon: Icons.monitor_heart_rounded,
                 ),
               ),
+              const SizedBox(height: 12),
 
-              GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 1.2,
-                children: [
-                  _QuickAction(
-                    index: 0,
-                    icon: Icons.hub_rounded,
-                    label: l10n.operationsLabel,
-                    color: Theme.of(context).colorScheme.secondary,
-                    onTap: () => widget.onNavigate('operations'),
-                  ),
-                  _QuickAction(
-                    index: 1,
-                    icon: Icons.device_hub_rounded,
-                    label: l10n.topologyLabel,
-                    color: Theme.of(context).colorScheme.tertiary,
-                    onTap: () => widget.onNavigate('monitor/topology'),
-                  ),
-                ],
+              LiveMetricsBento(
+                signalQualityPct: _signalQualityPct,
+                rssiHistory: _rssiHistory,
+                scoreHistory: _scoreHistory,
+                channelRatings: _channelRatings,
+                newDeviceCount: _newDeviceCount,
+                recentEvents: _recentEvents,
+                lastDownloadMbps: _lastSpeedTest?.downloadMbps,
+                lastUploadMbps: _lastSpeedTest?.uploadMbps,
+                lastSpeedTestAt: _lastSpeedTest?.recordedAt,
+                onTapSignal: () => widget.onNavigate('operations'),
+                onTapScore: () => _worstAssessment != null
+                    ? _showScoreExplanation(context, _worstAssessment!)
+                    : widget.onNavigate('security'),
+                onTapChannels: () => widget.onNavigate('operations'),
+                onTapDevices: () => widget.onNavigate('wifi'),
+                onTapThreats: () => _showNotificationSheet(context),
+                onTapSpeed: () => widget.onNavigate('operations'),
               ),
 
-              const SizedBox(height: 32),
+              const SizedBox(height: 28),
 
-              // ── Recent Activity Section ──
+              // ── Activity Timeline ──
               StaggeredEntry(
-                delay: const Duration(milliseconds: 700),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: NeonSectionHeader(
-                    label: l10n.networkLogs,
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
+                delay: const Duration(milliseconds: 360),
+                child: NeonSectionHeader(
+                  label: l10n.networkLogs,
+                  color: scheme.tertiary,
+                  icon: Icons.timeline_rounded,
                 ),
               ),
+              const SizedBox(height: 12),
 
               StaggeredEntry(
-                delay: const Duration(milliseconds: 800),
-                child: _LastScanStrip(
-                  networkCount: _networkCount,
-                  newDeviceCount: _newDeviceCount,
-                  onViewDetails: () => widget.onNavigate('wifi'),
+                delay: const Duration(milliseconds: 440),
+                child: ActivityTimeline(
+                  snapshots: _recentSnapshots,
+                  events: _recentEvents,
+                  onNavigate: widget.onNavigate,
                 ),
               ),
-
-              const SizedBox(height: 20),
-
-              StaggeredEntry(
-                delay: const Duration(milliseconds: 900),
-                child: _SafetyBadge(
-                  score: _securityScore,
-                  onTap: () => widget.onNavigate('security'),
-                  onLongPress: _worstAssessment != null
-                      ? () => _showScoreExplanation(context, _worstAssessment!)
-                      : null,
-                ),
-              ),
-
-              if (_scoreHistory.length >= 2) ...[
-                const SizedBox(height: 12),
-                StaggeredEntry(
-                  delay: const Duration(milliseconds: 950),
-                  child: _ScoreHistoryChart(scores: _scoreHistory),
-                ),
-              ],
 
               if (_bestChannel != null) ...[
                 const SizedBox(height: 20),
                 StaggeredEntry(
-                  delay: const Duration(milliseconds: 1000),
+                  delay: const Duration(milliseconds: 520),
                   child: _ChannelRecommendationCard(
                     best: _bestChannel!,
                     currentChannel: _currentChannel,
@@ -398,448 +456,126 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   void _showNotificationSheet(BuildContext context) {
-    final notificationBloc = context.read<NotificationBloc>();
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder:
-          (sheetContext) => BlocProvider.value(
-            value: notificationBloc,
-            child: const NotificationSheet(),
-          ),
+      builder: (sheetContext) => BlocProvider.value(
+        value: _notificationBloc,
+        child: const NotificationSheet(),
+      ),
     );
   }
 }
 
-// ── Bento Header Component ──────────────────────────────────────────
+// ── Compact identity strip below the radial hero ─────────────────────
 
-class _SecurityBentoHeader extends StatelessWidget {
+class _NetworkIdStrip extends StatelessWidget {
   final String ssid;
   final String ip;
   final String gateway;
-  final bool loading;
 
-  const _SecurityBentoHeader({
+  const _NetworkIdStrip({
     required this.ssid,
     required this.ip,
     required this.gateway,
-    required this.loading,
   });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isConnected = ssid != '—' && ssid.isNotEmpty;
     final scheme = Theme.of(context).colorScheme;
-    final accentColor = isConnected ? scheme.primary : scheme.error;
-    final statusLabel =
-        isConnected ? l10n.connectedStatusCaps : l10n.disconnectedStatusCaps;
-
-    return Column(
-      children: [
-        SecurityCore(
-          statusColor: accentColor,
-          label: statusLabel,
-          subLabel: ssid,
-          isLoading: loading,
-        ),
-        const SizedBox(height: 24),
-        Row(
-          children: [
-            Expanded(
-              child: _BentoStatTile(
-                label: l10n.ipLabel,
-                value: ip,
-                icon: Icons.lan_outlined,
-                color: Theme.of(context).colorScheme.primary,
-                delay: const Duration(milliseconds: 400),
-              ),
+    return GlassmorphicContainer(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      borderColor: scheme.primary.withValues(alpha: 0.2),
+      child: Row(
+        children: [
+          Expanded(
+            child: _InlineId(
+              icon: Icons.wifi_rounded,
+              label: 'SSID',
+              value: ssid,
+              color: scheme.primary,
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _BentoStatTile(
-                label: l10n.gatewayLabel,
-                value: gateway,
-                icon: Icons.router_outlined,
-                color: Theme.of(context).colorScheme.secondary,
-                delay: const Duration(milliseconds: 500),
-              ),
+          ),
+          Container(
+            width: 1,
+            height: 30,
+            color: scheme.onSurface.withValues(alpha: 0.08),
+          ),
+          Expanded(
+            child: _InlineId(
+              icon: Icons.lan_outlined,
+              label: l10n.ipLabel,
+              value: ip,
+              color: scheme.secondary,
             ),
-          ],
-        ),
-      ],
+          ),
+          Container(
+            width: 1,
+            height: 30,
+            color: scheme.onSurface.withValues(alpha: 0.08),
+          ),
+          Expanded(
+            child: _InlineId(
+              icon: Icons.router_outlined,
+              label: l10n.gatewayLabel,
+              value: gateway,
+              color: scheme.tertiary,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _BentoStatTile extends StatelessWidget {
+class _InlineId extends StatelessWidget {
+  final IconData icon;
   final String label;
   final String value;
-  final IconData icon;
   final Color color;
-  final Duration delay;
 
-  const _BentoStatTile({
+  const _InlineId({
+    required this.icon,
     required this.label,
     required this.value,
-    required this.icon,
     required this.color,
-    required this.delay,
   });
 
   @override
   Widget build(BuildContext context) {
-    return StaggeredEntry(
-      delay: delay,
-      slideOffset: 20,
-      child: GlassmorphicContainer(
-        padding: const EdgeInsets.all(16),
-        borderColor: color.withValues(alpha: 0.3),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, color: color, size: 14),
-                const SizedBox(width: 6),
-                Text(
-                  label.toUpperCase(),
-                  style: GoogleFonts.orbitron(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontSize: 9,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: GoogleFonts.rajdhani(
-                color: Theme.of(context).colorScheme.onSurface,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── Quick Action Component ──────────────────────────────────────────
-
-class _QuickAction extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color color;
-  final VoidCallback onTap;
-  final int index;
-
-  const _QuickAction({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.onTap,
-    required this.index,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return StaggeredEntry(
-      delay: Duration(milliseconds: 400 + (index * 100)),
-      slideOffset: 20,
-      child: CyberNeomorphicButton(
-        onPressed: onTap,
-        borderRadius: 20,
-        padding: EdgeInsets.zero,
-        child: SizedBox(
-          height: 140, // Match GridView childAspectRatio
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Stack(
-              children: [
-                Positioned(
-                  right: -10,
-                  top: -10,
-                  child: Icon(
-                    icon,
-                    size: 80,
-                    color: color.withValues(alpha: 0.03),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 20,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: color.withValues(alpha: 0.1),
-                          border: Border.all(
-                            color: color.withValues(alpha: 0.2),
-                          ),
-                        ),
-                        child: Icon(icon, color: color, size: 20),
-                      ),
-                      const Spacer(),
-                      Text(
-                        label,
-                        style: GoogleFonts.rajdhani(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        AppLocalizations.of(context)!.accessEngine,
-                        style: GoogleFonts.orbitron(
-                          color: color.withValues(alpha: 0.5),
-                          fontSize: 8,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ── Activity Strip Component ───────────────────────────────────────
-
-class _LastScanStrip extends StatelessWidget {
-  final int networkCount;
-  final int? newDeviceCount;
-  final VoidCallback onViewDetails;
-
-  const _LastScanStrip({
-    required this.networkCount,
-    required this.onViewDetails,
-    this.newDeviceCount,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    final tertiary = Theme.of(context).colorScheme.tertiary;
-
-    if (networkCount == 0) {
-      return CyberNeomorphicButton(
-        onPressed: onViewDetails,
-        borderRadius: 20,
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: tertiary.withValues(alpha: 0.1),
-                border: Border.all(color: tertiary.withValues(alpha: 0.3)),
-              ),
-              child: Icon(Icons.radar_rounded, color: tertiary, size: 20),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'NO SCAN DATA YET',
-                    style: GoogleFonts.orbitron(
-                      color: tertiary.withValues(alpha: 0.8),
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                  Text(
-                    'Go to Discovery → tap Scan',
-                    style: GoogleFonts.rajdhani(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios_rounded,
-              color: tertiary.withValues(alpha: 0.6),
-              size: 14,
-            ),
-          ],
-        ),
-      );
-    }
-
-    return CyberNeomorphicButton(
-      onPressed: onViewDetails,
-      borderRadius: 20,
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: tertiary.withValues(alpha: 0.1),
-              border: Border.all(color: tertiary.withValues(alpha: 0.2)),
-            ),
-            child: Icon(Icons.radar_rounded, color: tertiary, size: 20),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.latestSnapshotTitle,
-                  style: GoogleFonts.orbitron(
-                    color: tertiary.withValues(alpha: 0.7),
-                    fontSize: 8,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                  ),
-                ),
-                Text(
-                  l10n.networksCount(networkCount),
-                  style: GoogleFonts.rajdhani(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                if (newDeviceCount != null && newDeviceCount! > 0)
-                  Text(
-                    '+$newDeviceCount new',
-                    style: GoogleFonts.orbitron(
-                      color: Theme.of(context).colorScheme.error,
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          Icon(
-            Icons.arrow_forward_ios_rounded,
-            color: tertiary.withValues(alpha: 0.5),
-            size: 14,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Safety Badge Component ──────────────────────────────────────────
-
-class _SafetyBadge extends StatelessWidget {
-  final VoidCallback onTap;
-  final VoidCallback? onLongPress;
-  final int score;
-
-  const _SafetyBadge({
-    required this.onTap,
-    required this.score,
-    this.onLongPress,
-  });
-
-  Color _scoreColor(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    if (score >= 85) return scheme.primary;
-    if (score >= 60) return const Color(0xFFFFB300);
-    return scheme.error;
-  }
-
-  String _scoreLabel(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    if (score >= 85) return l10n.strictSafetyEnabled;
-    if (score >= 60) return l10n.activeMonitoringProgress;
-    return 'POTENTIAL THREATS';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final color = _scoreColor(context);
-
-    return CyberNeomorphicButton(
-      onPressed: onTap,
-      onLongPress: onLongPress,
-      borderRadius: 20,
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-      child: Row(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: color.withValues(alpha: 0.1),
-              border: Border.all(color: color.withValues(alpha: 0.3)),
-            ),
-            child: Icon(
-              score >= 85 ? Icons.verified_user_rounded : Icons.shield_outlined,
-              color: color,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.networkScoreLabel,
-                  style: GoogleFonts.orbitron(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontSize: 9,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                  ),
+          Row(
+            children: [
+              Icon(icon, color: color, size: 11),
+              const SizedBox(width: 4),
+              Text(
+                label.toUpperCase(),
+                style: GoogleFonts.orbitron(
+                  color: color.withValues(alpha: 0.8),
+                  fontSize: 8,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1,
                 ),
-                Text(
-                  _scoreLabel(context),
-                  style: GoogleFonts.rajdhani(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-          NeonText(
-            '$score%',
-            style: GoogleFonts.orbitron(
-              color: color,
-              fontSize: 20,
-              fontWeight: FontWeight.w900,
+          const SizedBox(height: 2),
+          Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.rajdhani(
+              color: scheme.onSurface,
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
             ),
-            glowColor: color,
-            glowRadius: 6,
           ),
         ],
       ),
@@ -847,11 +583,10 @@ class _SafetyBadge extends StatelessWidget {
   }
 }
 
-// ── Score Explanation Sheet ─────────────────────────────────────────
+// ── Score Explanation Sheet (kept from previous design) ──────────────
 
 class _ScoreExplanationSheet extends StatelessWidget {
   final SecurityAssessment assessment;
-
   const _ScoreExplanationSheet({required this.assessment});
 
   @override
@@ -915,17 +650,6 @@ class _ScoreExplanationSheet extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  'Hold & release to go to Security Center for full details.',
-                  style: GoogleFonts.rajdhani(
-                    color: scheme.onSurfaceVariant,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
               const SizedBox(height: 12),
               const Divider(height: 1),
               Expanded(
@@ -946,7 +670,8 @@ class _ScoreExplanationSheet extends StatelessWidget {
                         separatorBuilder: (_, __) => const SizedBox(height: 8),
                         itemBuilder: (context, i) {
                           final f = findings[i];
-                          final color = _severityColor(f.severity.name, scheme);
+                          final color =
+                              _severityColor(f.severity.name, scheme);
                           return GlassmorphicContainer(
                             borderColor: color.withValues(alpha: 0.25),
                             padding: const EdgeInsets.all(12),
@@ -1022,125 +747,7 @@ class _ScoreExplanationSheet extends StatelessWidget {
   }
 }
 
-// ── Score History Chart ─────────────────────────────────────────────
-
-class _ScoreHistoryChart extends StatelessWidget {
-  final List<int> scores;
-
-  const _ScoreHistoryChart({required this.scores});
-
-  Color _colorForScore(BuildContext context, int score) {
-    final scheme = Theme.of(context).colorScheme;
-    if (score >= 85) return scheme.primary;
-    if (score >= 60) return const Color(0xFFFFB300);
-    return scheme.error;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final spots = scores.asMap().entries.map((e) {
-      return FlSpot(e.key.toDouble(), e.value.toDouble());
-    }).toList();
-
-    final lastColor = _colorForScore(context, scores.last);
-
-    return GlassmorphicContainer(
-      padding: const EdgeInsets.fromLTRB(12, 12, 16, 8),
-      borderColor: lastColor.withValues(alpha: 0.2),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.show_chart_rounded, color: lastColor, size: 12),
-              const SizedBox(width: 6),
-              Text(
-                'SCORE TREND',
-                style: GoogleFonts.orbitron(
-                  color: scheme.onSurfaceVariant,
-                  fontSize: 8,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1,
-                ),
-              ),
-              const Spacer(),
-              NeonText(
-                '${scores.last}%',
-                style: GoogleFonts.orbitron(
-                  color: lastColor,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w900,
-                ),
-                glowColor: lastColor,
-                glowRadius: 4,
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          SizedBox(
-            height: 60,
-            child: LineChart(
-              LineChartData(
-                minY: 0,
-                maxY: 100,
-                gridData: const FlGridData(show: false),
-                borderData: FlBorderData(show: false),
-                titlesData: const FlTitlesData(show: false),
-                lineTouchData: LineTouchData(
-                  touchTooltipData: LineTouchTooltipData(
-                    getTooltipItems: (spots) => spots
-                        .map(
-                          (s) => LineTooltipItem(
-                            '${s.y.round()}%',
-                            GoogleFonts.orbitron(
-                              color: scheme.onSurface,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                ),
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: spots,
-                    isCurved: true,
-                    color: lastColor,
-                    barWidth: 2,
-                    dotData: FlDotData(
-                      show: true,
-                      getDotPainter: (spot, _, __, index) =>
-                          FlDotCirclePainter(
-                            radius: index == spots.length - 1 ? 4 : 2,
-                            color: _colorForScore(context, spot.y.round()),
-                            strokeWidth: 0,
-                          ),
-                    ),
-                    belowBarData: BarAreaData(
-                      show: true,
-                      gradient: LinearGradient(
-                        colors: [
-                          lastColor.withValues(alpha: 0.15),
-                          lastColor.withValues(alpha: 0.0),
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Channel Recommendation Card ─────────────────────────────────────
+// ── Channel recommendation card (kept from previous design) ──────────
 
 class _ChannelRecommendationCard extends StatelessWidget {
   final ChannelRating best;
@@ -1156,7 +763,8 @@ class _ChannelRecommendationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    const color = AppColors.neonCyan;
+    final scheme = Theme.of(context).colorScheme;
+    final color = scheme.primary;
 
     return GestureDetector(
       onTap: onTap,
@@ -1173,7 +781,7 @@ class _ChannelRecommendationCard extends StatelessWidget {
                 color: color.withValues(alpha: 0.1),
                 border: Border.all(color: color.withValues(alpha: 0.3)),
               ),
-              child: const Icon(Icons.tune_rounded, color: color, size: 20),
+              child: Icon(Icons.tune_rounded, color: color, size: 20),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -1192,7 +800,7 @@ class _ChannelRecommendationCard extends StatelessWidget {
                   Text(
                     l10n.switchToChannel(best.channel),
                     style: GoogleFonts.rajdhani(
-                      color: Theme.of(context).colorScheme.onSurface,
+                      color: scheme.onSurface,
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                     ),
@@ -1201,7 +809,7 @@ class _ChannelRecommendationCard extends StatelessWidget {
                     Text(
                       l10n.channelCongestionHint,
                       style: GoogleFonts.rajdhani(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        color: scheme.onSurfaceVariant,
                         fontSize: 11,
                       ),
                       maxLines: 2,
@@ -1227,3 +835,4 @@ class _ChannelRecommendationCard extends StatelessWidget {
     );
   }
 }
+

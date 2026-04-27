@@ -711,5 +711,11 @@
     "portScanNoPortsProbed": "Noch keine Ports gescannt. Führen Sie einen Port-Scan durch, um offene Dienste zu finden.",
     "@portScanNoPortsProbed": {
         "description": "Message shown when no ports have been scanned yet"
-    }
+    },
+    "backgroundAuroraMesh": "Aurora-Netz (Experimentell)",
+    "backgroundHoloSphere": "Holografische Kugel (3D)",
+    "backgroundNeuralPulse": "Neuraler Puls (Animiert)",
+    "backgroundNeomorphic": "Neomorph (Hohe Leistung)",
+    "backgroundClassic": "Klassisches Raster",
+    "settingsBackgroundStyle": "Hintergrundstil"
 }
