@@ -2,47 +2,55 @@
     "@@locale": "de",
     "wifiScanTitle": "WLAN-SCAN",
     "@wifiScanTitle": {
-        "description": "Titel für den WLAN-Scan-Bildschirm."
+        "description": "Title for the wifi scan screen."
     },
     "searchingNetworksPlaceholder": "NETZWERKE WERDEN GESUCHT...",
     "@searchingNetworksPlaceholder": {
-        "description": "Text, wenn die Suchleiste leer ist."
+        "description": "Text shown when the search bar is empty."
     },
     "filterNetworksPlaceholder": "NETZWERKE FILTERN...",
     "@filterNetworksPlaceholder": {
-        "description": "Platzhalter für die Sucheingabe."
+        "description": "Placeholder for the search input."
     },
     "quickScan": "Schnellscan",
     "@quickScan": {
-        "description": "Passives Scan-Label."
+        "description": "Passive scan label."
     },
     "deepScan": "Tiefenscan",
     "@deepScan": {
-        "description": "Aktives Scan-Label."
+        "description": "Active scan label."
+    },
+    "deepScanExperimentalTitle": "Deep Scan (Experimental)",
+    "@deepScanExperimentalTitle": {
+        "description": "Title for the experimental deep scan toggle in Security Center."
+    },
+    "deepScanExperimentalSubtitle": "Actively probe LAN for devices and ports. Increased battery usage.",
+    "@deepScanExperimentalSubtitle": {
+        "description": "Subtitle for the experimental deep scan toggle in Security Center."
     },
     "scanModesTitle": "Scan-Modi",
     "@scanModesTitle": {
-        "description": "Titel für Scan-Modus-Info."
+        "description": "Title for scan mode info."
     },
     "scanModesInfo": "Der Schnellscan hört auf Broadcasts. Der Tiefenscan sucht aktiv nach Netzwerken.",
     "@scanModesInfo": {
-        "description": "Beschreibung der Scan-Modi."
+        "description": "Description of scan modes."
     },
     "readyToScan": "Bereit zum Scannen",
     "@readyToScan": {
-        "description": "Status im Leerlauf."
+        "description": "Status when idle."
     },
     "noSignalsDetected": "Keine Signale erkannt",
     "@noSignalsDetected": {
-        "description": "Leerer Zustand für WLAN-Scan."
+        "description": "Empty state for wifi scan."
     },
     "compareWithPreviousScan": "MIT VORIGEM SCAN VERGLEICHEN",
     "@compareWithPreviousScan": {
-        "description": "Label für die Vergleichsschaltfläche."
+        "description": "Comparison button label."
     },
     "networksCount": "{count} NETZWERKE",
     "@networksCount": {
-        "description": "Anzahl gefundener Netzwerke.",
+        "description": "Count of networks found.",
         "placeholders": {
             "count": {
                 "type": "int"
@@ -51,7 +59,7 @@
     },
     "filteredNetworksCount": "{count} VON {total} NETZWERKEN",
     "@filteredNetworksCount": {
-        "description": "Anzahl gefilterter Ergebnisse.",
+        "description": "Count of filtered results.",
         "placeholders": {
             "count": {
                 "type": "int"
@@ -63,79 +71,79 @@
     },
     "securityAlertsTooltip": "Sicherheitswarnungen anzeigen",
     "@securityAlertsTooltip": {
-        "description": "Dashboard-Tooltip."
+        "description": "Dashboard tooltip."
     },
     "livePulse": "LIVE-PULS",
     "@livePulse": {
-        "description": "Dashboard-Live-Anzeige."
+        "description": "Dashboard live indicator."
     },
     "liveLabel": "LIVE",
     "@liveLabel": {
-        "description": "Kurzbezeichnung für Live-Status im AR-HUD."
+        "description": "Live indicator label"
     },
     "operationsLabel": "OPERATIONEN",
     "@operationsLabel": {
-        "description": "Dashboard-Abschnitts-Label."
+        "description": "Dashboard section label."
     },
     "topologyLabel": "TOPOLOGIE",
     "@topologyLabel": {
-        "description": "Dashboard-Abschnitts-Label."
+        "description": "Dashboard section label."
     },
     "networkLogs": "NETZWERK-LOGS",
     "@networkLogs": {
-        "description": "Dashboard-Logs-Label."
+        "description": "Dashboard logs label."
     },
     "connectedStatusCaps": "VERBUNDEN",
     "@connectedStatusCaps": {
-        "description": "Status verbunden."
+        "description": "Status connected."
     },
     "disconnectedStatusCaps": "NICHT VERBUNDEN",
     "@disconnectedStatusCaps": {
-        "description": "Status nicht verbunden."
+        "description": "Status disconnected."
     },
     "ipLabel": "IP",
     "@ipLabel": {
-        "description": "IP-Label."
+        "description": "IP label."
     },
     "gatewayLabel": "GATEWAY",
     "@gatewayLabel": {
-        "description": "Gateway-Label."
+        "description": "Gateway label."
     },
     "accessEngine": "ACCESS ENGINE",
     "@accessEngine": {
-        "description": "Status der Access Engine."
+        "description": "Access engine status."
     },
     "latestSnapshotTitle": "Letzter Netzwerk-Schnappschuss",
     "@latestSnapshotTitle": {
-        "description": "Titel des Schnappschuss-Abschnitts."
+        "description": "Snapshot section title."
     },
     "noSnapshotAvailable": "Keine Schnappschussdaten verfügbar...",
     "@noSnapshotAvailable": {
-        "description": "Kein Schnappschuss gefunden."
+        "description": "No snapshot found."
     },
     "strictSafetyEnabled": "Strenge Sicherheitsprotokolle aktiviert",
     "@strictSafetyEnabled": {
-        "description": "Sicherheitsmodus-Text."
+        "description": "Safety mode text."
     },
     "activeMonitoringProgress": "Aktive Überwachung läuft...",
     "@activeMonitoringProgress": {
-        "description": "Überwachungsstatus-Text."
+        "description": "Monitoring status text."
     },
     "scanComparisonTitle": "SCAN-VERGLEICH",
     "@scanComparisonTitle": {
-        "description": "Titel der Vergleichsseite."
+        "description": "Comparison page title."
     },
     "comparisonNeedsTwoScans": "Der Vergleich erfordert mindestens 2 Scans.\n\nFühren Sie einen weiteren Scan durch, um Änderungen zu sehen.",
     "@comparisonNeedsTwoScans": {
-        "description": "Anforderung für den Vergleich."
+        "description": "Requirement for comparison."
     },
     "noChangesDetected": "Keine Änderungen zwischen den letzten beiden Scans erkannt.",
     "@noChangesDetected": {
-        "description": "Leeres Vergleichsergebnis."
+        "description": "Empty comparison result."
     },
     "newNetworksCountLabel": "NEU ({count})",
     "@newNetworksCountLabel": {
-        "description": "Header für neue Netzwerke.",
+        "description": "New networks header.",
         "placeholders": {
             "count": {
                 "type": "int"
@@ -144,7 +152,7 @@
     },
     "goneNetworksCountLabel": "ENTFERNT ({count})",
     "@goneNetworksCountLabel": {
-        "description": "Header für entfernte Netzwerke.",
+        "description": "Removed networks header.",
         "placeholders": {
             "count": {
                 "type": "int"
@@ -153,7 +161,7 @@
     },
     "changedNetworksCountLabel": "GEÄNDERT ({count})",
     "@changedNetworksCountLabel": {
-        "description": "Header für geänderte Netzwerke.",
+        "description": "Modified networks header.",
         "placeholders": {
             "count": {
                 "type": "int"
@@ -161,11 +169,20 @@
         }
     },
     "plusNewLabel": "+ NEU",
+    "@plusNewLabel": {
+        "description": "Plus New Label"
+    },
     "goneLabel": "ENTFERNT",
+    "@goneLabel": {
+        "description": "Gone Label"
+    },
     "hiddenLabel": "[Versteckt]",
+    "@hiddenLabel": {
+        "description": "Hidden Label"
+    },
     "channelLabel": "CH {channel}",
     "@channelLabel": {
-        "description": "WLAN-Kanal.",
+        "description": "Wifi channel.",
         "placeholders": {
             "channel": {
                 "type": "int"
@@ -173,13 +190,32 @@
         }
     },
     "securityLabel": "SICHERHEIT",
+    "@securityLabel": {
+        "description": "Security Label"
+    },
     "initiatingSpectrumScan": "SPEKTRUM-SCAN WIRD GESTARTET...",
+    "@initiatingSpectrumScan": {
+        "description": "Initiating Spectrum Scan"
+    },
     "broadcastingProbeRequests": "PROBE-ANFRAGEN WERDEN GESENDET...",
+    "@broadcastingProbeRequests": {
+        "description": "Text shown during wifi scan instead of broadcasting probes."
+    },
     "noRadiosInRange": "Keine Funkgeräte in Reichweite",
+    "@noRadiosInRange": {
+        "description": "No Radios In Range"
+    },
     "noNetworksMatchFilter": "Keine Netzwerke entsprechen Ihrem Filter",
+    "@noNetworksMatchFilter": {
+        "description": "No Networks Match Filter"
+    },
     "searchSsidBssidVendor": "Suche nach SSID, BSSID oder Hersteller...",
+    "@searchSsidBssidVendor": {
+        "description": "Search Ssid Bssid Vendor"
+    },
     "sortPrefix": "Sortieren: {option}",
     "@sortPrefix": {
+        "description": "Sort Prefix",
         "placeholders": {
             "option": {
                 "type": "String"
@@ -187,13 +223,32 @@
         }
     },
     "bandAll": "ALLE BÄNDER",
+    "@bandAll": {
+        "description": "Band All"
+    },
     "sortSignal": "Signal",
+    "@sortSignal": {
+        "description": "Sort Signal"
+    },
     "sortName": "Name",
+    "@sortName": {
+        "description": "Sort Name"
+    },
     "sortChannel": "Kanal",
+    "@sortChannel": {
+        "description": "Sort Channel"
+    },
     "sortSecurity": "Sicherheit",
+    "@sortSecurity": {
+        "description": "Sort Security"
+    },
     "sortByTitle": "SORTIEREN NACH",
+    "@sortByTitle": {
+        "description": "Sort By Title"
+    },
     "recommendationTip": "Optimale Kanäle auf {band}: {channels}",
     "@recommendationTip": {
+        "description": "Recommendation Tip",
         "placeholders": {
             "channels": {
                 "type": "String"
@@ -204,9 +259,16 @@
         }
     },
     "channelInterferenceTitle": "Kanalstörungen",
+    "@channelInterferenceTitle": {
+        "description": "Channel Interference Title"
+    },
     "networksLabel": "NETZWERKE",
+    "@networksLabel": {
+        "description": "Networks Label"
+    },
     "openCount": "{count} OFFEN",
     "@openCount": {
+        "description": "Open Count",
         "placeholders": {
             "count": {
                 "type": "int"
@@ -214,11 +276,24 @@
         }
     },
     "avgSignalLabel": "DURCHSCHNITTSSIGNAL",
+    "@avgSignalLabel": {
+        "description": "Avg Signal Label"
+    },
     "notAvailable": "n. v.",
+    "@notAvailable": {
+        "description": "Not Available"
+    },
     "dbmCaps": "DBM",
+    "@dbmCaps": {
+        "description": "Dbm Caps"
+    },
     "interfaceLabel": "SCHNITTSTELLE",
+    "@interfaceLabel": {
+        "description": "Interface Label"
+    },
     "frequencyLabel": "{freq} MHz",
     "@frequencyLabel": {
+        "description": "Frequency Label",
         "placeholders": {
             "freq": {
                 "type": "int"
@@ -226,9 +301,16 @@
         }
     },
     "reportsTitle": "BERICHTE",
+    "@reportsTitle": {
+        "description": "Reports Title"
+    },
     "saveReportDialog": "Bericht speichern",
+    "@saveReportDialog": {
+        "description": "Save Report Dialog"
+    },
     "savedToast": "Bericht gespeichert unter {path}",
     "@savedToast": {
+        "description": "Saved Toast",
         "placeholders": {
             "path": {
                 "type": "String"
@@ -236,17 +318,48 @@
         }
     },
     "errorLabel": "Fehler",
+    "@errorLabel": {
+        "description": "Error Label"
+    },
     "savePdfReportDialog": "PDF-Bericht speichern",
+    "@savePdfReportDialog": {
+        "description": "Save Pdf Report Dialog"
+    },
     "scanning": "Scannen...",
+    "@scanning": {
+        "description": "Scanning"
+    },
     "shieldActive": "Schutz aktiv",
+    "@shieldActive": {
+        "description": "Shield Active"
+    },
     "threatsDetected": "BEDROHUNGEN ERKANNT",
+    "@threatsDetected": {
+        "description": "Status text when threats are detected"
+    },
     "trustedLabel": "VERTRAUT",
+    "@trustedLabel": {
+        "description": "Trusted Label"
+    },
     "securityEventTitle": "Sicherheitsereignis",
+    "@securityEventTitle": {
+        "description": "Security Event Title"
+    },
     "networkReconTitle": "NETZWERK-ERKENNUNG",
+    "@networkReconTitle": {
+        "description": "Network Recon Title"
+    },
     "intelligenceReportTitle": "GEHEIMDIENST-BERICHT",
+    "@intelligenceReportTitle": {
+        "description": "Intelligence Report Title"
+    },
     "discoveredEndpointsTitle": "ENTDECKTE ENDPUNKTE",
+    "@discoveredEndpointsTitle": {
+        "description": "Discovered Endpoints Title"
+    },
     "newDeviceFound": "1 neues Gerät: {ip}",
     "@newDeviceFound": {
+        "description": "New Device Found",
         "placeholders": {
             "ip": {
                 "type": "String"
@@ -255,6 +368,7 @@
     },
     "newDevicesFound": "{count} neue Geräte in Ihrem Netzwerk",
     "@newDevicesFound": {
+        "description": "New Devices Found",
         "placeholders": {
             "count": {
                 "type": "int"
@@ -262,27 +376,88 @@
         }
     },
     "targetIpSubnet": "Ziel-IP / Subnetz",
+    "@targetIpSubnet": {
+        "description": "Target Ip Subnet"
+    },
     "scanProfileFast": "Schnell",
+    "@scanProfileFast": {
+        "description": "Scan Profile Fast"
+    },
     "scanProfileBalanced": "Ausgewogen",
+    "@scanProfileBalanced": {
+        "description": "Scan Profile Balanced"
+    },
     "scanProfileAggressive": "Aggressiv",
+    "@scanProfileAggressive": {
+        "description": "Scan Profile Aggressive"
+    },
     "scanProfileNormal": "Normal",
+    "@scanProfileNormal": {
+        "description": "Scan Profile Normal"
+    },
     "scanProfileIntense": "Intensiv",
+    "@scanProfileIntense": {
+        "description": "Scan Profile Intense"
+    },
     "vulnOnlyLabel": "Nur Schwachstellen",
+    "@vulnOnlyLabel": {
+        "description": "Vuln Only Label"
+    },
     "lanReconTitle": "LAN-ERKUNDUNG",
+    "@lanReconTitle": {
+        "description": "Lan Recon Title"
+    },
     "targetSubnet": "Ziel-IP / Subnetz",
+    "@targetSubnet": {
+        "description": "Target Subnet"
+    },
     "scanAllCaps": "SCAN",
+    "@scanAllCaps": {
+        "description": "Scan All Caps"
+    },
     "channelRatingTitle": "KANALBEWERTUNG",
+    "@channelRatingTitle": {
+        "description": "Channel Rating Title"
+    },
     "refreshScanTooltip": "Scan aktualisieren",
+    "@refreshScanTooltip": {
+        "description": "Refresh Scan Tooltip"
+    },
     "band24Ghz": "2,4 GHz",
+    "@band24Ghz": {
+        "description": "Band24 Ghz"
+    },
     "band5Ghz": "5 GHz",
+    "@band5Ghz": {
+        "description": "Band5 Ghz"
+    },
     "band6Ghz": "6 GHz",
+    "@band6Ghz": {
+        "description": "Band6 Ghz"
+    },
     "no24GhzChannels": "Keine 2,4-GHz-Kanäle gefunden.",
+    "@no24GhzChannels": {
+        "description": "No24 Ghz Channels"
+    },
     "no5GhzChannels": "Keine 5-GHz-Kanäle gefunden.",
+    "@no5GhzChannels": {
+        "description": "No5 Ghz Channels"
+    },
     "no6GhzChannels": "Keine 6-GHz-Kanäle gefunden.",
+    "@no6GhzChannels": {
+        "description": "No6 Ghz Channels"
+    },
     "analyzing": "Analysieren...",
+    "@analyzing": {
+        "description": "Analyzing"
+    },
     "historyLabel": "VERLAUF",
+    "@historyLabel": {
+        "description": "History Label"
+    },
     "failedLoadTopology": "Topologie konnte nicht geladen werden: {error}",
     "@failedLoadTopology": {
+        "description": "Failed Load Topology",
         "placeholders": {
             "error": {
                 "type": "String"
@@ -290,51 +465,338 @@
         }
     },
     "trafficLabel": "TRAFFIC",
+    "@trafficLabel": {
+        "description": "Traffic Label"
+    },
     "forceLabel": "FORCE",
+    "@forceLabel": {
+        "description": "Force Label"
+    },
     "normalSpeed": "NORMAL",
+    "@normalSpeed": {
+        "description": "Normal Speed"
+    },
     "fastSpeed": "SCHNELL",
+    "@fastSpeed": {
+        "description": "Fast Speed"
+    },
     "overdriveSpeed": "OVERDRIVE",
+    "@overdriveSpeed": {
+        "description": "Overdrive Speed"
+    },
     "topologyMapTitle": "TOPOLOGIE-KARTE",
+    "@topologyMapTitle": {
+        "description": "Topology Map Title"
+    },
     "noTopologyData": "Keine Topologiedaten",
+    "@noTopologyData": {
+        "description": "No Topology Data"
+    },
     "runScanFirst": "Führen Sie zuerst einen Scan durch, um die Netzwerkkarte zu erstellen",
+    "@runScanFirst": {
+        "description": "Run Scan First"
+    },
     "retry": "WIEDERHOLEN",
+    "@retry": {
+        "description": "Retry"
+    },
     "thisDevice": "DIESES GERÄT",
+    "@thisDevice": {
+        "description": "This Device"
+    },
     "gatewayDevice": "GATEWAY",
+    "@gatewayDevice": {
+        "description": "Gateway Device"
+    },
     "mobileDevice": "MOBIL",
+    "@mobileDevice": {
+        "description": "Mobile Device"
+    },
     "deviceLabel": "GERÄT",
+    "@deviceLabel": {
+        "description": "Device Label"
+    },
     "iotDevice": "IOT",
+    "@iotDevice": {
+        "description": "Iot Device"
+    },
     "analyzingNode": "KNOTEN ANALYSIEREN",
+    "@analyzingNode": {
+        "description": "Analyzing Node"
+    },
+    "topologyGuideTitle": "TOPOLOGY GUIDE",
+    "@topologyGuideTitle": {
+        "description": "Title for the topology information sheet"
+    },
+    "topologyGuideDesc": "Understand your network structure and device connectivity.",
+    "@topologyGuideDesc": {
+        "description": "Description for the topology information sheet"
+    },
+    "gatewayTitle": "The Gateway",
+    "@gatewayTitle": {
+        "description": "Gateway title"
+    },
+    "gatewayDesc": "The central brain of your network. All external traffic flows through this node.",
+    "@gatewayDesc": {
+        "description": "Gateway description"
+    },
+    "deviceLayersTitle": "Device Layers",
+    "@deviceLayersTitle": {
+        "description": "Device layers title"
+    },
+    "deviceLayersDesc": "Devices are categorized by their role: Core (Routers/APs), Mobile, and IoT/Peripheral.",
+    "@deviceLayersDesc": {
+        "description": "Device layers description"
+    },
+    "pathwaysTitle": "Pathways",
+    "@pathwaysTitle": {
+        "description": "Pathways title"
+    },
+    "pathwaysDesc": "Modern networks mix wired (Ethernet) and wireless (Wi-Fi) connections. Solid lines indicate high-speed wired links, while dashed lines show wireless segments.",
+    "@pathwaysDesc": {
+        "description": "Pathways description"
+    },
+    "pingAction": "TEST LATENCY",
+    "@pingAction": {
+        "description": "Action to ping a device"
+    },
+    "pingSuccess": "Latency: {ms}ms",
+    "@pingSuccess": {
+        "description": "Ping success message",
+        "placeholders": {
+            "ms": {
+                "type": "int"
+            }
+        }
+    },
+    "pingFailure": "Host Unreachable",
+    "@pingFailure": {
+        "description": "Ping failure message"
+    },
     "settingsTitle": "EINSTELLUNGEN",
+    "@settingsTitle": {
+        "description": "Settings Title"
+    },
     "appearance": "Erscheinungsbild",
+    "@appearance": {
+        "description": "Appearance"
+    },
     "settingsLanguage": "Sprache",
+    "@settingsLanguage": {
+        "description": "Settings Language"
+    },
     "theme": "Design",
+    "@theme": {
+        "description": "Theme"
+    },
+    "settingsBackgroundStyle": "Hintergrundstil",
+    "@settingsBackgroundStyle": {
+        "description": "Label for the background selection setting."
+    },
+    "backgroundNeomorphic": "Neomorph (Hohe Leistung)",
+    "@backgroundNeomorphic": {
+        "description": "Label for the new shader-based background."
+    },
+    "backgroundClassic": "Klassisches Raster",
+    "@backgroundClassic": {
+        "description": "Label for the original particle grid background."
+    },
+    "backgroundAuroraMesh": "Aurora-Netz (Experimentell)",
+    "@backgroundAuroraMesh": {
+        "description": "Label for the aurora mesh shader background."
+    },
+    "backgroundHoloSphere": "Holografische Kugel (3D)",
+    "@backgroundHoloSphere": {
+        "description": "Label for the holographic sphere background."
+    },
+    "backgroundNeuralPulse": "Neuraler Puls (Animiert)",
+    "@backgroundNeuralPulse": {
+        "description": "Label for the neural pulse background."
+    },
+    "backgroundSelectionRestricted": "Cyber grid styles are optimized for dark mode and only available when using the dark theme.",
+    "@backgroundSelectionRestricted": {
+        "description": "Info message explaining why background selection is disabled in light mode."
+    },
     "settingsScanBehavior": "Scan-Verhalten",
+    "@settingsScanBehavior": {
+        "description": "Settings Scan Behavior"
+    },
     "settingsDefaultScanPasses": "Standard-Scan-Durchgänge",
+    "@settingsDefaultScanPasses": {
+        "description": "Settings Default Scan Passes"
+    },
     "settingsMonitoringInterval": "Überwachungsintervall",
+    "@settingsMonitoringInterval": {
+        "description": "Settings Monitoring Interval"
+    },
     "settingsBackendPreference": "Backend-Präferenz",
+    "@settingsBackendPreference": {
+        "description": "Settings Backend Preference"
+    },
     "settingsIncludeHidden": "Versteckte SSIDs einbeziehen",
+    "@settingsIncludeHidden": {
+        "description": "Settings Include Hidden"
+    },
     "settingsStrictSafety": "Strenger Sicherheitsmodus",
+    "@settingsStrictSafety": {
+        "description": "Settings Strict Safety"
+    },
     "settingsStrictSafetyDesc": "Gefährliche Operationen einschränken",
+    "@settingsStrictSafetyDesc": {
+        "description": "Settings Strict Safety Desc"
+    },
+    "settingsAiClassification": "AI Device Classification",
+    "@settingsAiClassification": {
+        "description": "Label for the AI device classification toggle."
+    },
+    "settingsAiClassificationDesc": "Enables local AI-powered device detection and identification.",
+    "@settingsAiClassificationDesc": {
+        "description": "Description for the AI device classification toggle."
+    },
+    "aiBadgeLabel": "AI",
+    "@aiBadgeLabel": {
+        "description": "Label for the AI badge in device list."
+    },
     "darkTheme": "Dunkel",
+    "@darkTheme": {
+        "description": "Dark Theme"
+    },
     "lightTheme": "Hell",
+    "@lightTheme": {
+        "description": "Light Theme"
+    },
     "systemTheme": "System",
+    "@systemTheme": {
+        "description": "System Theme"
+    },
     "sectionStatus": "Status",
+    "@sectionStatus": {
+        "description": "Section Status"
+    },
     "reportsSubtitle": "Netzwerk-Scan & Sicherheitsintelligenz",
+    "@reportsSubtitle": {
+        "description": "Reports Subtitle"
+    },
     "exportOptionsTitle": "EXPORTOPTIONEN",
+    "@exportOptionsTitle": {
+        "description": "Export Options Title"
+    },
     "exportJson": "Als JSON exportieren",
+    "@exportJson": {
+        "description": "Export Json"
+    },
     "exportHtml": "Als HTML exportieren",
+    "@exportHtml": {
+        "description": "Export Html"
+    },
     "exportPdf": "Als PDF exportieren",
+    "@exportPdf": {
+        "description": "Export Pdf"
+    },
     "printPdf": "PDF drucken",
+    "@printPdf": {
+        "description": "Print Pdf"
+    },
     "navWifi": "WLAN",
+    "@navWifi": {
+        "description": "Nav Wifi"
+    },
     "backendLabel": "BACKEND",
+    "@backendLabel": {
+        "description": "Backend Label"
+    },
     "defenseTitle": "VERTEIDIGUNG",
+    "@defenseTitle": {
+        "description": "Defense Title"
+    },
+    "shieldLabReady": "Ready for Assessment",
+    "@shieldLabReady": {
+        "description": "Shield Lab Ready"
+    },
+    "deepScanRunning": "Scan in progress...",
+    "@deepScanRunning": {
+        "description": "Deep Scan Running"
+    },
     "knownNetworks": "Bekannte Netzwerke",
+    "@knownNetworks": {
+        "description": "Known Networks"
+    },
     "noKnownNetworksYet": "Noch keine bekannten Netzwerke",
+    "@noKnownNetworksYet": {
+        "description": "No Known Networks Yet"
+    },
+    "noIdentifiedNetworks": "No identified networks in laboratory archives",
+    "@noIdentifiedNetworks": {
+        "description": "No Identified Networks"
+    },
+    "knownNetworksDashboard": "KNOWN NETWORKS ARCHIVE",
+    "@knownNetworksDashboard": {
+        "description": "Known Networks Dashboard"
+    },
     "securityTimeline": "Sicherheits-Zeitlinie",
+    "@securityTimeline": {
+        "description": "Security Timeline"
+    },
     "noSecurityEvents": "Keine Sicherheitsereignisse aufgezeichnet",
+    "@noSecurityEvents": {
+        "description": "No Security Events"
+    },
+    "dnsSecurityTitle": "DNS INTEGRITY",
+    "@dnsSecurityTitle": {
+        "description": "Title for DNS Security card"
+    },
+    "dnsSecurityBody": "Verify that your DNS queries are not being hijacked or spoofed.",
+    "@dnsSecurityBody": {
+        "description": "Body for DNS Security card"
+    },
+    "dnsIntegrity": "DNS INTEGRITY",
+    "@dnsIntegrity": {
+        "description": "DNS Integrity status label"
+    },
+    "dnsPerformanceBenchmark": "PERFORMANCE BENCHMARK",
+    "@dnsPerformanceBenchmark": {
+        "description": "Section title for DNS benchmark"
+    },
+    "dnsLatency": "LATENCY",
+    "@dnsLatency": {
+        "description": "Label for latency"
+    },
+    "dnsRecommended": "RECOMMENDED",
+    "@dnsRecommended": {
+        "description": "Badge for recommended provider"
+    },
+    "dnsFastest": "FASTEST",
+    "@dnsFastest": {
+        "description": "Label for fastest provider"
+    },
+    "dnsProvider": "PROVIDER",
+    "@dnsProvider": {
+        "description": "Provider column header"
+    },
+    "dnsResultLatency": "{ms} ms",
+    "@dnsResultLatency": {
+        "description": "Formatted latency value",
+        "placeholders": {
+            "ms": {
+                "type": "int"
+            }
+        }
+    },
+    "runTest": "RUN TEST",
+    "@runTest": {
+        "description": "Label for run test button"
+    },
+    "integrityCheck": "INTEGRITY CHECK",
+    "@integrityCheck": {
+        "description": "Label for integrity check"
+    },
     "authLocalSystem": "AUTH_LOKALES_SYSTEM",
+    "@authLocalSystem": {
+        "description": "Auth Local System"
+    },
     "remoteNodeIdLabel": "REMOTE_KNOTEN_ID: {id}",
     "@remoteNodeIdLabel": {
+        "description": "Remote Node Id Label",
         "placeholders": {
             "id": {
                 "type": "String"
@@ -342,18 +804,52 @@
         }
     },
     "ipAddrLabel": "IP_ADRESSE",
+    "@ipAddrLabel": {
+        "description": "Ip Addr Label"
+    },
     "macValLabel": "MAC_WERT",
+    "@macValLabel": {
+        "description": "Mac Val Label"
+    },
     "mnfrLabel": "HERSTELLER",
+    "@mnfrLabel": {
+        "description": "Mnfr Label"
+    },
     "hiddenNetwork": "Verstecktes Netzwerk",
+    "@hiddenNetwork": {
+        "description": "Hidden Network"
+    },
     "signalGraph": "Signal-Graph",
+    "@signalGraph": {
+        "description": "Signal Graph"
+    },
     "riskFactors": "Risikofaktoren",
+    "@riskFactors": {
+        "description": "Risk Factors"
+    },
     "vulnerabilities": "Schwachstellen",
+    "@vulnerabilities": {
+        "description": "Vulnerabilities"
+    },
     "bssId": "BSSID",
+    "@bssId": {
+        "description": "Bss Id"
+    },
     "channel": "Kanal",
+    "@channel": {
+        "description": "Channel"
+    },
     "security": "Sicherheit",
+    "@security": {
+        "description": "Security"
+    },
     "signal": "Signal",
+    "@signal": {
+        "description": "Signal"
+    },
     "recommendationLabel": "EMPFEHLUNG: {text}",
     "@recommendationLabel": {
+        "description": "Recommendation Label",
         "placeholders": {
             "text": {
                 "type": "String"
@@ -361,302 +857,44 @@
         }
     },
     "noVulnerabilities": "Keine Schwachstellen erkannt.",
+    "@noVulnerabilities": {
+        "description": "No Vulnerabilities"
+    },
     "securityScoreTitle": "Sicherheitsbewertung",
+    "@securityScoreTitle": {
+        "description": "Security Score Title"
+    },
     "securityScoreDesc": "Die Sicherheitsbewertung (0–100) gibt an, wie gut dieses Netzwerk geschützt ist. Höher ist besser. Sie berücksichtigt Verschlüsselungstyp, WPS-Status und andere Sicherheitsmerkmale.",
-    "capabilitiesLabel": "FUNKTIONEN",
-    "wifi7MldLabel": "Wi-Fi 7 MLD",
-    "tagWpa3Desc": "WPA3 ist der neueste Wi-Fi-Sicherheitsstandard – sehr sicher.",
-    "tagWpa2Desc": "WPA2 ist ein starker Sicherheitsstandard – sicher für den täglichen Gebrauch.",
-    "tagWpaDesc": "WPA ist ein älterer Sicherheitsstandard mit bekannten Schwachstellen.",
-    "tagWpsDesc": "WPS (Wi-Fi Protected Setup) weist bekannte Sicherheitslücken auf. Es kann Angreifern ermöglichen, die PIN per Brute-Force zu knacken und Zugriff zu erhalten.",
-    "tagPmfDesc": "Protected Management Frames (PMF/MFP) schützt vor Deauthentifizierungsangriffen.",
-    "tagEssDesc": "ESS (Extended Service Set) bedeutet, dass dies ein Standard-Access-Point-Netzwerk ist.",
-    "tagCcmpDesc": "CCMP (AES) ist eine starke Verschlüsselung, die mit WPA2/WPA3 verwendet wird.",
-    "tagTkipDesc": "TKIP ist eine ältere, schwächere Verschlüsselung. CCMP/AES wird bevorzugt.",
-    "tagUnknownDesc": "Netzwerkfunktions-Flag aus dem Beacon-Frame.",
-    "scanProfileLabel": "SCAN-PROFIL",
-    "infoScanProfilesTitle": "Scan-Profile",
-    "infoScanProfileFastDesc": "Schnell: Schneller Ping-Sweep – findet Geräte in Sekunden.",
-    "infoScanProfileBalancedDesc": "Ausgewogen: Ping + gängige Ports – findet mehr Details.",
-    "infoScanProfileAggressiveDesc": "Aggressiv: Vollständiger Port-Scan – am gründlichsten, aber am langsamsten.",
-    "activeNodeRecon": "AKTIVE KNOTEN-ERKUNDUNG",
-    "interrogatingSubnet": "Subnetz wird nach antwortenden Hosts abgefragt...",
-    "nodesLabel": "Knoten",
-    "riskAvgLabel": "Risiko-Schnitt",
-    "servicesLabel": "Dienste",
-    "openPortsLabel": "OFFENE PORTS",
-    "subnetLabel": "Subnetz",
-    "cidrTargetLabel": "CIDR-ZIEL",
-    "anonymousNode": "ANONYMER KNOTEN",
-    "portsCountLabel": "{count} PORTS",
-    "@portsCountLabel": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        }
+    "@securityScoreDesc": {
+        "description": "Security Score Desc"
     },
-    "riskLabel": "RISIKO",
-    "searchLanPlaceholder": "Suche nach IP, Hostname oder Hersteller...",
-    "hasVulnerabilitiesLabel": "Hat Schwachstellen",
-    "securityStatusSecure": "Sicher",
-    "securityStatusModerate": "Moderat",
-    "securityStatusAtRisk": "Gefährdet",
-    "securityStatusCritical": "Sicherheitskritisch",
-    "securitySummarySecure": "Ihre Verbindung sieht gut aus! Dieses Netzwerk verwendet eine starke Verschlüsselung und ist gut gegen gängige Angriffe geschützt.",
-    "securitySummaryModerate": "Dieses Netzwerk weist eine ordentliche Sicherheit auf, hat jedoch einige potenzielle Schwachstellen. Es ist sicher für den täglichen Gebrauch, aber vermeiden Sie sensible Transaktionen.",
-    "securitySummaryAtRisk": "Dieses Netzwerk weist Sicherheitsprobleme auf, die Ihre Daten gefährden. Vermeiden Sie die Eingabe von Passwörtern oder persönlichen Informationen, während Sie verbunden sind.",
-    "securitySummaryCritical": "Warnung: Dieses Netzwerk ist nicht sicher. Jeder in der Nähe kann möglicherweise Ihren Internetverkehr sehen. Verwenden Sie ein VPN oder wechseln Sie das Netzwerk.",
-    "vulnerabilityOpenNetworkTitle": "Offenes Netzwerk",
-    "vulnerabilityOpenNetworkDesc": "Keine Verschlüsselung erkannt. Der gesamte Datenverkehr kann im Klartext mitgehört werden.",
-    "vulnerabilityOpenNetworkRec": "Vermeiden Sie sensible Aktivitäten. Bevorzugen Sie ein vertrauenswürdiges VPN oder ein anderes Netzwerk.",
-    "vulnerabilityWepTitle": "WEP-Verschlüsselung",
-    "vulnerabilityWepDesc": "WEP ist veraltet und kann schnell geknackt werden.",
-    "vulnerabilityWepRec": "Konfigurieren Sie den AP sofort auf WPA2 oder WPA3 um.",
-    "vulnerabilityLegacyWpaTitle": "Veraltetes WPA",
-    "vulnerabilityLegacyWpaDesc": "WPA/TKIP ist älter und anfälliger für moderne Angriffstechniken.",
-    "vulnerabilityLegacyWpaRec": "Aktualisieren Sie AP und Clients auf WPA2/WPA3.",
-    "vulnerabilityHiddenSsidTitle": "Versteckte SSID",
-    "vulnerabilityHiddenSsidDesc": "Versteckte SSIDs sind weiterhin auffindbar und können die Kompatibilität beeinträchtigen.",
-    "vulnerabilityHiddenSsidRec": "Eine versteckte SSID allein ist kein Schutz. Konzentrieren Sie sich auf eine starke Verschlüsselung.",
-    "vulnerabilityWeakSignalTitle": "Sehr schwaches Signal",
-    "vulnerabilityWeakSignalDesc": "Ein schwaches Signal kann auf instabile Verbindungen und Anfälligkeit für Spoofing hinweisen.",
-    "vulnerabilityWeakSignalRec": "Bewegen Sie sich näher zum AP oder validieren Sie die BSSID-Konsistenz.",
-    "vulnerabilityWpsTitle": "WPS aktiviert",
-    "vulnerabilityWpsDesc": "Wi-Fi Protected Setup (WPS) ist aktiviert. Der WPS-PIN-Modus kann innerhalb von Stunden mittels Pixie-Dust-Angriff durch Brute-Force geknackt werden, wodurch jedes Passwort effektiv umgangen wird.",
-    "vulnerabilityWpsRec": "Deaktivieren Sie WPS im Administrationspanel Ihres Routers. Verwenden Sie ausschließlich eine WPA2/WPA3-Passphrase.",
-    "vulnerabilityPmfTitle": "Management-Frames ungeschützt",
-    "vulnerabilityPmfDesc": "Dieser Zugangspunkt erzwingt keine Protected Management Frames (PMF / 802.11w). Ungeschützte Management-Frames ermöglichen es einem Angreifer, Deauthentifizierungspakete zu fälschen und Clients zu trennen.",
-    "vulnerabilityPmfRec": "Aktivieren Sie PMF in den Router-Einstellungen (oft als '802.11w' oder 'Management Frame Protection' bezeichnet). WPA3 erfordert standardmäßig PMF.",
-    "vulnerabilityEvilTwinTitle": "Potenzieller Evil Twin",
-    "vulnerabilityEvilTwinDesc": "Die SSID erscheint in der Nähe mit einem widersprüchlichen Sicherheits-/Kanal-Fingerabdruck.",
-    "vulnerabilityEvilTwinRec": "Überprüfen Sie BSSID und Zertifikat vor der Authentifizierung oder dem Datenaustausch.",
-    "riskFactorNoEncryption": "Keine Verschlüsselung verwendet",
-    "riskFactorDeprecatedEncryption": "Veraltete Verschlüsselung (WEP)",
-    "riskFactorLegacyWpa": "Veraltetes WPA in Gebrauch",
-    "riskFactorHiddenSsid": "Verhalten bei versteckter SSID",
-    "riskFactorWeakSignal": "Schwache Signalumgebung",
-    "riskFactorWpsEnabled": "WPS-PIN-Angriffsfläche exponiert",
-    "riskFactorPmfNotEnforced": "PMF nicht erzwungen – Deauth-Spoofing möglich",
-    "refresh": "Aktualisieren",
-    "@refresh": {
-        "description": "Label für die Aktualisierungsschaltfläche."
+    "networkSecurity": "Network Security",
+    "@networkSecurity": {
+        "description": "Label for network security section"
     },
-    "addZonePoint": "Zonenpunkt hinzufügen",
-    "@addZonePoint": {
-        "description": "Titel zum Hinzufügen eines Zonenpunkts."
+    "portScanAction": "PORT SCAN",
+    "@portScanAction": {
+        "description": "Action to scan ports on a device"
     },
-    "cancel": "Abbrechen",
-    "@cancel": {
-        "description": "Label für die Abbrechen-Schaltfläche."
+    "hostnameLookupAction": "LOOKUP HOSTNAME",
+    "@hostnameLookupAction": {
+        "description": "Action to lookup hostname of a device"
     },
-    "save": "Speichern",
-    "@save": {
-        "description": "Label für die Speichern-Schaltfläche."
+    "arpInfoAction": "ARP INFO",
+    "@arpInfoAction": {
+        "description": "Action to get ARP information for a device"
     },
-    "waitingForData": "Warten auf Daten...",
-    "@waitingForData": {
-        "description": "Text, der angezeigt wird, während auf das Laden der Daten gewartet wird."
+    "portsFoundLabel": "OPEN PORTS",
+    "@portsFoundLabel": {
+        "description": "Label for discovered open ports"
     },
-    "temporalHeatmap": "Zeitliche Heatmap",
-    "@temporalHeatmap": {
-        "description": "Titel für den zeitlichen Heatmap-Bildschirm."
+    "noPortsFound": "No open ports found",
+    "@noPortsFound": {
+        "description": "Message shown when no open ports were discovered"
     },
-    "failedToSaveHeatmapPoint": "Fehler beim Speichern des Heatmap-Punkts",
-    "signalMonitoringTitle": "SIGNAL-ÜBERWACHUNG: {ssid}",
-    "@signalMonitoringTitle": {
-        "placeholders": {
-            "ssid": {
-                "type": "String"
-            }
-        }
-    },
-    "heatmapTooltip": "Heatmap",
-    "tagCurrentPointTooltip": "Aktuellen Punkt markieren",
-    "signalCaps": "SIGNAL",
-    "channelCaps": "KANAL",
-    "frequencyCaps": "FREQ",
-    "heatmapPointAdded": "Heatmap-Punkt für {zone} hinzugefügt",
-    "@heatmapPointAdded": {
-        "placeholders": {
-            "zone": {
-                "type": "String"
-            }
-        }
-    },
-    "zoneTagLabel": "Zonen-Tag (z. B. Küche)",
-    "errorPrefix": "Fehler: {message}",
-    "@errorPrefix": {
-        "placeholders": {
-            "message": {
-                "type": "String"
-            }
-        }
-    },
-    "noHeatmapPointsYet": "Noch keine Heatmap-Punkte für {bssid}",
-    "@noHeatmapPointsYet": {
-        "placeholders": {
-            "bssid": {
-                "type": "String"
-            }
-        }
-    },
-    "averageSignalByZone": "Durchschnittssignal nach Zone",
-    "bandChannels": "{band}-KANÄLE",
-    "@bandChannels": {
-        "placeholders": {
-            "band": {
-                "type": "String"
-            }
-        }
-    },
-    "recommendedChannel": "EMPFOHLENER KANAL",
-    "channelInfo": "Kanal {ch} · {freq} MHz",
-    "@channelInfo": {
-        "placeholders": {
-            "ch": {
-                "type": "int"
-            },
-            "freq": {
-                "type": "int"
-            }
-        }
-    },
-    "riskFactorFingerprintDrift": "SSID-Fingerabdruck-Drift erkannt",
-    "historyCaps": "VERLAUF",
-    "consistentlyBestChannel": "KONSISTENT BESTER KANAL",
-    "avgScore": "Durchschn. Score",
-    "channelBondingTitle": "Kanalbündelung",
-    "channelBondingDesc": "Kanalbündelung kombiniert 2 oder mehr benachbarte Kanäle, um die Bandbreite zu erhöhen (40 MHz = 2×, 80 MHz = 4×, 160 MHz = 8×). Breitere Kanäle liefern höhere Geschwindigkeiten, können aber mehr benachbarte Netzwerke stören.",
-    "spectrumOptimizationCaps": "SPEKTRUM-OPTIMIERUNG",
-    "spectrumOptimizationDesc": "Kanalbelegung & Interferenzen analysieren",
-    "qualityExcellent": "Exzellent",
-    "qualityVeryGood": "Sehr gut",
-    "qualityGood": "Gut",
-    "qualityFair": "Passabel",
-    "qualityCongested": "Überlastet",
-    "channelBondingHeader": "KANALBÜNDELUNG ({count} APs)",
-    "@channelBondingHeader": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        }
-    },
-    "hiddenSsidLabel": "[Versteckt]",
-    "noHistoryPlaceholder": "Noch kein Verlauf vorhanden.\nKanalbewertungen werden jedes Mal aufgezeichnet, wenn Sie diesen Bildschirm öffnen.",
-    "currentSessionInfo": "Aktuelle Sitzung — höhere Punktzahl = weniger überlastet.",
-    "historySummaryInfo": "{sessions} Sitzungen · {samples} Stichproben · höher = weniger überlastet",
-    "@historySummaryInfo": {
-        "placeholders": {
-            "sessions": {
-                "type": "int"
-            },
-            "samples": {
-                "type": "int"
-            }
-        }
-    },
-    "scanReportTitle": "Torcav Wi-Fi-Scanbericht",
-    "reportTime": "Zeit",
-    "ssidHeader": "SSID",
-    "bssidHeader": "BSSID",
-    "dbmHeader": "dBm",
-    "channelHeader": "CH",
-    "navDashboard": "DASHBOARD",
-    "navDiscovery": "ENTDECKUNG",
-    "navOperations": "OPERATIONEN",
-    "navLan": "LAN",
-    "systemStatus": "Systemstatus",
-    "interfaceTheme": "Schnittstellentheme",
-    "speedTestHeader": "GESCHWINDIGKEITSTEST",
-    "startTest": "TEST STARTEN",
-    "testAgain": "ERNEUT TESTEN",
-    "commandCenters": "KOMMANDOZENTRALEN",
-    "activeShielding": "Aktive Abschirmung",
-    "logisticsTitle": "LOGISTIK",
-    "intelMetrics": "Intel-Metriken",
-    "networkMesh": "Netzwerk-Mesh",
-    "tuningTitle": "ABSTIMMUNG",
-    "systemConfig": "Systemkonfiguration",
-    "phasePing": "PHASE: PING",
-    "phaseDownload": "PHASE: DOWNLOAD",
-    "phaseUpload": "PHASE: UPLOAD",
-    "phaseDone": "PHASE: FERTIG",
-    "riskScore": "Risikobewertung",
-    "loading": "Wird geladen...",
-    "profileTitle": "PROFIL-HUB",
-    "activeSessionLabel": "Aktive Sitzung",
-    "networkStatusLabel": "NETZWERKSTATUS",
-    "ssid": "SSID",
-    "lastScanTitle": "LETZTER SCAN",
-    "lastSnapshot": "Letzter Snapshot",
-    "channelInterferenceDescription": "Wi-Fi-Kanäle sind wie Radiosender. Wenn viele Netzwerke denselben Kanal nutzen, verlangsamen sie sich gegenseitig – als würden alle gleichzeitig sprechen. Ein Wechsel zu einem weniger überfüllten Kanal kann Ihre Geschwindigkeit und Zuverlässigkeit verbessern.",
-    "securityEventType": "{type, select, rogueApSuspected{Rogue AP Verdacht} deauthBurstDetected{Deauth-Serie Erkannt} handshakeCaptureStarted{Sicherer Identitätsaustausch} handshakeCaptureCompleted{Austausch Verifiziert} captivePortalDetected{Captive Portal Erkannt} evilTwinDetected{Evil Twin Erkannt} deauthAttackSuspected{Deauth-Angriff Verdacht} encryptionDowngraded{Verschlüsselung Herabgestuft} unsupportedOperation{Nicht Unterstützter Vorgang} other{{type}}}",
-    "securityEventSeverity": "{severity, select, low{Niedrig} medium{Mittel} info{Info} warning{Warnung} high{Hoch} critical{Kritisch} other{{severity}}}",
-    "evilTwinEvidence": "BSSID-Nichtübereinstimmung! Erwartet: {expected}, Gefunden: {found}. Hohe Wahrscheinlichkeit eines Evil Twin Access Points.",
-    "rogueApEvidence": "Zufällige/LAA-MAC in bekanntem Netzwerk erkannt! Dies ist für legitime Access Points höchst ungewöhnlich und kann auf ein bösartiges Gerät hinweisen.",
-    "downgradeEvidence": "Verschlüsselungsprofil wurde von {oldSec} auf {newSec} geändert. Möglicher Downgrade-Angriff.",
-    "historyAllBands": "ALLE",
-    "historyBestChannel": "BESTER KANAL",
-    "historyAvgRating": "DURCHSCHN.",
-    "historySessions": "SITZUNGEN",
-    "historyLineChart": "Liniendiagramm",
-    "historyHeatmap": "Heatmap",
-    "historyNoDataForFilter": "Keine Daten für den ausgewählten Filter.",
-    "historyChannelRatings": "Kanalbewertungen"
-,
-    "phaseIdle": "BEREIT",
-    "@phaseIdle": {"description": "phaseIdle"},
-    "performanceTitle": "GESCHWINDIGKEITSTEST",
-    "@performanceTitle": {"description": "performanceTitle"},
-    "performanceStart": "TEST STARTEN",
-    "@performanceStart": {"description": "performanceStart"},
-    "performanceRetry": "NOCHMAL",
-    "@performanceRetry": {"description": "performanceRetry"},
-    "latencyLabel": "LATENZ",
-    "@latencyLabel": {"description": "latencyLabel"},
-    "jitterLabel": "JITTER",
-    "@jitterLabel": {"description": "jitterLabel"},
-    "whatThisMeans": "WAS BEDEUTET DAS",
-    "@whatThisMeans": {"description": "whatThisMeans"},
-    "channelRecommendation": "KANAL-EMPFEHLUNG",
-    "@channelRecommendation": {"description": "channelRecommendation"},
-    "switchToChannel": "Zu Kanal {channel} wechseln",
-    "@switchToChannel": {"description": "switchToChannel", "placeholders": {"channel": {"type": "int"}}},
-    "channelCongestionHint": "Ihr aktueller Kanal ist überlastet. Ein Wechsel kann die Geschwindigkeit verbessern.",
-    "@channelCongestionHint": {"description": "channelCongestionHint"},
-    "evilTwinAlertTitle": "EVIL TWIN ERKANNT",
-    "@evilTwinAlertTitle": {"description": "evilTwinAlertTitle"},
-    "evilTwinAlertBody": "Ein Netzwerk gibt vor, ein bekannter Access Point zu sein. Verbinden Sie sich nicht mit unbekannten Netzwerken.",
-    "@evilTwinAlertBody": {"description": "evilTwinAlertBody"},
-    "wpsWarningTitle": "WPS IST AKTIVIERT",
-    "@wpsWarningTitle": {"description": "wpsWarningTitle"},
-    "wpsWarningBody": "WPS hat bekannte Sicherheitslücken. Deaktivieren Sie es in Ihren Router-Einstellungen.",
-    "@wpsWarningBody": {"description": "wpsWarningBody"},
-    "wpsAffectedNetworks": "{count} Netzwerk(e) mit aktiviertem WPS",
-    "@wpsAffectedNetworks": {"description": "wpsAffectedNetworks", "placeholders": {"count": {"type": "int"}}},
-    "heatmapTutorialTitle": "SO NUTZEN SIE DIE HEATMAP",
-    "@heatmapTutorialTitle": {"description": "heatmapTutorialTitle"},
-    "heatmapTutorialStep1": "Tippen Sie auf AUFNAHME STARTEN, um eine neue Sitzung zu beginnen.",
-    "@heatmapTutorialStep1": {"description": "heatmapTutorialStep1"},
-    "heatmapTutorialStep2": "Gehen Sie durch Ihren Raum und tippen Sie an Ihrer aktuellen Position auf die Karte.",
-    "@heatmapTutorialStep2": {"description": "heatmapTutorialStep2"},
-    "heatmapTutorialStep3": "Rot = schwaches Signal. Grün = starkes Signal. Finden Sie tote Zonen.",
-    "@heatmapTutorialStep3": {"description": "heatmapTutorialStep3"},
-    "heatmapTutorialStep4": "Tippen Sie auf STOPP & SPEICHERN wenn fertig.",
-    "@heatmapTutorialStep4": {"description": "heatmapTutorialStep4"},
-    "gotIt": "VERSTANDEN",
-    "@gotIt": {"description": "gotIt"},
-    "speedTestHistory": "TESTVERLAUF",
-    "@speedTestHistory": {"description": "speedTestHistory"},
-    "noSpeedTestHistory": "Noch keine Tests. Starten Sie den ersten Test oben.",
-    "@noSpeedTestHistory": {"description": "noSpeedTestHistory"},
-    "networkScoreLabel": "NETZWERK-BEWERTUNG",
-    "@networkScoreLabel": {"description": "networkScoreLabel"},
     "portScanCommonPorts": "Gängige Ports",
     "@portScanCommonPorts": {
-        "description": "Label for common ports scan mode"
+        "description": "Label for common ports scanning mode"
     },
     "portScanCustomRange": "Benutzerdefinierter Bereich",
     "@portScanCustomRange": {
@@ -712,10 +950,1054 @@
     "@portScanNoPortsProbed": {
         "description": "Message shown when no ports have been scanned yet"
     },
-    "backgroundAuroraMesh": "Aurora-Netz (Experimentell)",
-    "backgroundHoloSphere": "Holografische Kugel (3D)",
-    "backgroundNeuralPulse": "Neuraler Puls (Animiert)",
-    "backgroundNeomorphic": "Neomorph (Hohe Leistung)",
-    "backgroundClassic": "Klassisches Raster",
-    "settingsBackgroundStyle": "Hintergrundstil"
+    "hostnameLabel": "HOSTNAME",
+    "@hostnameLabel": {
+        "description": "Label for hostname result"
+    },
+    "arpInfoLabel": "ARP DATA",
+    "@arpInfoLabel": {
+        "description": "Label for ARP information"
+    },
+    "scanningPortsTitle": "SCANNING PORTS...",
+    "@scanningPortsTitle": {
+        "description": "Loading title for port scanning"
+    },
+    "lookingUpHostnameTitle": "LOOKING UP HOSTNAME...",
+    "@lookingUpHostnameTitle": {
+        "description": "Loading title for hostname lookup"
+    },
+    "fetchingArpTitle": "FETCHING ARP DATA...",
+    "@fetchingArpTitle": {
+        "description": "Loading title for fetching ARP info"
+    },
+    "portRangeHint": "Port range (e.g. 80,443 or 1-1000)",
+    "@portRangeHint": {
+        "description": "Hint for port range input field"
+    },
+    "capabilitiesLabel": "FUNKTIONEN",
+    "@capabilitiesLabel": {
+        "description": "Capabilities Label"
+    },
+    "wifi7MldLabel": "Wi-Fi 7 MLD",
+    "@wifi7MldLabel": {
+        "description": "Wifi7 Mld Label"
+    },
+    "tagWpa3Desc": "WPA3 ist der neueste Wi-Fi-Sicherheitsstandard – sehr sicher.",
+    "@tagWpa3Desc": {
+        "description": "Tag Wpa3 Desc"
+    },
+    "tagWpa2Desc": "WPA2 ist ein starker Sicherheitsstandard – sicher für den täglichen Gebrauch.",
+    "@tagWpa2Desc": {
+        "description": "Tag Wpa2 Desc"
+    },
+    "tagWpaDesc": "WPA ist ein älterer Sicherheitsstandard mit bekannten Schwachstellen.",
+    "@tagWpaDesc": {
+        "description": "Tag Wpa Desc"
+    },
+    "tagWpsDesc": "WPS (Wi-Fi Protected Setup) weist bekannte Sicherheitslücken auf. Es kann Angreifern ermöglichen, die PIN per Brute-Force zu knacken und Zugriff zu erhalten.",
+    "@tagWpsDesc": {
+        "description": "Tag Wps Desc"
+    },
+    "tagPmfDesc": "Protected Management Frames (PMF/MFP) schützt vor Deauthentifizierungsangriffen.",
+    "@tagPmfDesc": {
+        "description": "Tag Pmf Desc"
+    },
+    "tagEssDesc": "ESS (Extended Service Set) bedeutet, dass dies ein Standard-Access-Point-Netzwerk ist.",
+    "@tagEssDesc": {
+        "description": "Tag Ess Desc"
+    },
+    "tagCcmpDesc": "CCMP (AES) ist eine starke Verschlüsselung, die mit WPA2/WPA3 verwendet wird.",
+    "@tagCcmpDesc": {
+        "description": "Tag Ccmp Desc"
+    },
+    "tagTkipDesc": "TKIP ist eine ältere, schwächere Verschlüsselung. CCMP/AES wird bevorzugt.",
+    "@tagTkipDesc": {
+        "description": "Tag Tkip Desc"
+    },
+    "tagUnknownDesc": "Netzwerkfunktions-Flag aus dem Beacon-Frame.",
+    "@tagUnknownDesc": {
+        "description": "Tag Unknown Desc"
+    },
+    "scanProfileLabel": "SCAN-PROFIL",
+    "@scanProfileLabel": {
+        "description": "Scan Profile Label"
+    },
+    "infoScanProfilesTitle": "Scan-Profile",
+    "@infoScanProfilesTitle": {
+        "description": "Info Scan Profiles Title"
+    },
+    "infoScanProfileFastDesc": "Schnell: Schneller Ping-Sweep – findet Geräte in Sekunden.",
+    "@infoScanProfileFastDesc": {
+        "description": "Info Scan Profile Fast Desc"
+    },
+    "infoScanProfileBalancedDesc": "Ausgewogen: Ping + gängige Ports – findet mehr Details.",
+    "@infoScanProfileBalancedDesc": {
+        "description": "Info Scan Profile Balanced Desc"
+    },
+    "infoScanProfileAggressiveDesc": "Aggressiv: Vollständiger Port-Scan – am gründlichsten, aber am langsamsten.",
+    "@infoScanProfileAggressiveDesc": {
+        "description": "Info Scan Profile Aggressive Desc"
+    },
+    "activeNodeRecon": "AKTIVE KNOTEN-ERKUNDUNG",
+    "@activeNodeRecon": {
+        "description": "Active Node Recon"
+    },
+    "interrogatingSubnet": "Subnetz wird nach antwortenden Hosts abgefragt...",
+    "@interrogatingSubnet": {
+        "description": "Interrogating Subnet"
+    },
+    "nodesLabel": "Knoten",
+    "@nodesLabel": {
+        "description": "Nodes Label"
+    },
+    "riskAvgLabel": "Risiko-Schnitt",
+    "@riskAvgLabel": {
+        "description": "Risk Avg Label"
+    },
+    "servicesLabel": "Dienste",
+    "@servicesLabel": {
+        "description": "Services Label"
+    },
+    "openPortsLabel": "OFFENE PORTS",
+    "@openPortsLabel": {
+        "description": "Open Ports Label"
+    },
+    "subnetLabel": "Subnetz",
+    "@subnetLabel": {
+        "description": "Subnet Label"
+    },
+    "cidrTargetLabel": "CIDR-ZIEL",
+    "@cidrTargetLabel": {
+        "description": "Cidr Target Label"
+    },
+    "anonymousNode": "ANONYMER KNOTEN",
+    "@anonymousNode": {
+        "description": "Anonymous Node"
+    },
+    "portsCountLabel": "{count} PORTS",
+    "@portsCountLabel": {
+        "description": "Ports Count Label",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "riskLabel": "RISIKO",
+    "@riskLabel": {
+        "description": "Risk Label"
+    },
+    "searchLanPlaceholder": "Suche nach IP, Hostname oder Hersteller...",
+    "@searchLanPlaceholder": {
+        "description": "Search Lan Placeholder"
+    },
+    "hasVulnerabilitiesLabel": "Hat Schwachstellen",
+    "@hasVulnerabilitiesLabel": {
+        "description": "Has Vulnerabilities Label"
+    },
+    "securityStatusSecure": "Sicher",
+    "@securityStatusSecure": {
+        "description": "Security Status Secure"
+    },
+    "securityStatusModerate": "Moderat",
+    "@securityStatusModerate": {
+        "description": "Security Status Moderate"
+    },
+    "securityStatusAtRisk": "Gefährdet",
+    "@securityStatusAtRisk": {
+        "description": "Security Status At Risk"
+    },
+    "securityStatusCritical": "Sicherheitskritisch",
+    "@securityStatusCritical": {
+        "description": "Security Status Critical"
+    },
+    "securitySummarySecure": "Ihre Verbindung sieht gut aus! Dieses Netzwerk verwendet eine starke Verschlüsselung und ist gut gegen gängige Angriffe geschützt.",
+    "@securitySummarySecure": {
+        "description": "Security Summary Secure"
+    },
+    "securitySummaryModerate": "Dieses Netzwerk weist eine ordentliche Sicherheit auf, hat jedoch einige potenzielle Schwachstellen. Es ist sicher für den täglichen Gebrauch, aber vermeiden Sie sensible Transaktionen.",
+    "@securitySummaryModerate": {
+        "description": "Security Summary Moderate"
+    },
+    "securitySummaryAtRisk": "Dieses Netzwerk weist Sicherheitsprobleme auf, die Ihre Daten gefährden. Vermeiden Sie die Eingabe von Passwörtern oder persönlichen Informationen, während Sie verbunden sind.",
+    "@securitySummaryAtRisk": {
+        "description": "Security Summary At Risk"
+    },
+    "securitySummaryCritical": "Warnung: Dieses Netzwerk ist nicht sicher. Jeder in der Nähe kann möglicherweise Ihren Internetverkehr sehen. Verwenden Sie ein VPN oder wechseln Sie das Netzwerk.",
+    "@securitySummaryCritical": {
+        "description": "Security Summary Critical"
+    },
+    "vulnerabilityOpenNetworkTitle": "Offenes Netzwerk",
+    "@vulnerabilityOpenNetworkTitle": {
+        "description": "Vulnerability Open Network Title"
+    },
+    "vulnerabilityOpenNetworkDesc": "Keine Verschlüsselung erkannt. Der gesamte Datenverkehr kann im Klartext mitgehört werden.",
+    "@vulnerabilityOpenNetworkDesc": {
+        "description": "Vulnerability Open Network Desc"
+    },
+    "vulnerabilityOpenNetworkRec": "Vermeiden Sie sensible Aktivitäten. Bevorzugen Sie ein vertrauenswürdiges VPN oder ein anderes Netzwerk.",
+    "@vulnerabilityOpenNetworkRec": {
+        "description": "Vulnerability Open Network Rec"
+    },
+    "vulnerabilityWepTitle": "WEP-Verschlüsselung",
+    "@vulnerabilityWepTitle": {
+        "description": "Vulnerability Wep Title"
+    },
+    "vulnerabilityWepDesc": "WEP ist veraltet und kann schnell geknackt werden.",
+    "@vulnerabilityWepDesc": {
+        "description": "Vulnerability Wep Desc"
+    },
+    "vulnerabilityWepRec": "Konfigurieren Sie den AP sofort auf WPA2 oder WPA3 um.",
+    "@vulnerabilityWepRec": {
+        "description": "Vulnerability Wep Rec"
+    },
+    "vulnerabilityLegacyWpaTitle": "Veraltetes WPA",
+    "@vulnerabilityLegacyWpaTitle": {
+        "description": "Vulnerability Legacy Wpa Title"
+    },
+    "vulnerabilityLegacyWpaDesc": "WPA/TKIP ist älter und anfälliger für moderne Angriffstechniken.",
+    "@vulnerabilityLegacyWpaDesc": {
+        "description": "Vulnerability Legacy Wpa Desc"
+    },
+    "vulnerabilityLegacyWpaRec": "Aktualisieren Sie AP und Clients auf WPA2/WPA3.",
+    "@vulnerabilityLegacyWpaRec": {
+        "description": "Vulnerability Legacy Wpa Rec"
+    },
+    "vulnerabilityHiddenSsidTitle": "Versteckte SSID",
+    "@vulnerabilityHiddenSsidTitle": {
+        "description": "Vulnerability Hidden Ssid Title"
+    },
+    "vulnerabilityHiddenSsidDesc": "Versteckte SSIDs sind weiterhin auffindbar und können die Kompatibilität beeinträchtigen.",
+    "@vulnerabilityHiddenSsidDesc": {
+        "description": "Vulnerability Hidden Ssid Desc"
+    },
+    "vulnerabilityHiddenSsidRec": "Eine versteckte SSID allein ist kein Schutz. Konzentrieren Sie sich auf eine starke Verschlüsselung.",
+    "@vulnerabilityHiddenSsidRec": {
+        "description": "Vulnerability Hidden Ssid Rec"
+    },
+    "vulnerabilityWeakSignalTitle": "Sehr schwaches Signal",
+    "@vulnerabilityWeakSignalTitle": {
+        "description": "Vulnerability Weak Signal Title"
+    },
+    "vulnerabilityWeakSignalDesc": "Ein schwaches Signal kann auf instabile Verbindungen und Anfälligkeit für Spoofing hinweisen.",
+    "@vulnerabilityWeakSignalDesc": {
+        "description": "Vulnerability Weak Signal Desc"
+    },
+    "vulnerabilityWeakSignalRec": "Bewegen Sie sich näher zum AP oder validieren Sie die BSSID-Konsistenz.",
+    "@vulnerabilityWeakSignalRec": {
+        "description": "Vulnerability Weak Signal Rec"
+    },
+    "vulnerabilityWpsTitle": "WPS aktiviert",
+    "@vulnerabilityWpsTitle": {
+        "description": "Vulnerability Wps Title"
+    },
+    "vulnerabilityWpsDesc": "Wi-Fi Protected Setup (WPS) ist aktiviert. Der WPS-PIN-Modus kann innerhalb von Stunden mittels Pixie-Dust-Angriff durch Brute-Force geknackt werden, wodurch jedes Passwort effektiv umgangen wird.",
+    "@vulnerabilityWpsDesc": {
+        "description": "Vulnerability Wps Desc"
+    },
+    "vulnerabilityWpsRec": "Deaktivieren Sie WPS im Administrationspanel Ihres Routers. Verwenden Sie ausschließlich eine WPA2/WPA3-Passphrase.",
+    "@vulnerabilityWpsRec": {
+        "description": "Vulnerability Wps Rec"
+    },
+    "vulnerabilityPmfTitle": "Management-Frames ungeschützt",
+    "@vulnerabilityPmfTitle": {
+        "description": "Vulnerability Pmf Title"
+    },
+    "vulnerabilityPmfDesc": "Dieser Zugangspunkt erzwingt keine Protected Management Frames (PMF / 802.11w). Ungeschützte Management-Frames ermöglichen es einem Angreifer, Deauthentifizierungspakete zu fälschen und Clients zu trennen.",
+    "@vulnerabilityPmfDesc": {
+        "description": "Vulnerability Pmf Desc"
+    },
+    "vulnerabilityPmfRec": "Aktivieren Sie PMF in den Router-Einstellungen (oft als '802.11w' oder 'Management Frame Protection' bezeichnet). WPA3 erfordert standardmäßig PMF.",
+    "@vulnerabilityPmfRec": {
+        "description": "Vulnerability Pmf Rec"
+    },
+    "vulnerabilityEvilTwinTitle": "Potenzieller Evil Twin",
+    "@vulnerabilityEvilTwinTitle": {
+        "description": "Vulnerability Evil Twin Title"
+    },
+    "vulnerabilityEvilTwinDesc": "Die SSID erscheint in der Nähe mit einem widersprüchlichen Sicherheits-/Kanal-Fingerabdruck.",
+    "@vulnerabilityEvilTwinDesc": {
+        "description": "Vulnerability Evil Twin Desc"
+    },
+    "vulnerabilityEvilTwinRec": "Überprüfen Sie BSSID und Zertifikat vor der Authentifizierung oder dem Datenaustausch.",
+    "@vulnerabilityEvilTwinRec": {
+        "description": "Vulnerability Evil Twin Rec"
+    },
+    "riskFactorNoEncryption": "Keine Verschlüsselung verwendet",
+    "@riskFactorNoEncryption": {
+        "description": "Risk Factor No Encryption"
+    },
+    "riskFactorDeprecatedEncryption": "Veraltete Verschlüsselung (WEP)",
+    "@riskFactorDeprecatedEncryption": {
+        "description": "Risk Factor Deprecated Encryption"
+    },
+    "riskFactorLegacyWpa": "Veraltetes WPA in Gebrauch",
+    "@riskFactorLegacyWpa": {
+        "description": "Risk Factor Legacy Wpa"
+    },
+    "riskFactorHiddenSsid": "Verhalten bei versteckter SSID",
+    "@riskFactorHiddenSsid": {
+        "description": "Risk Factor Hidden Ssid"
+    },
+    "riskFactorWeakSignal": "Schwache Signalumgebung",
+    "@riskFactorWeakSignal": {
+        "description": "Risk Factor Weak Signal"
+    },
+    "riskFactorWpsEnabled": "WPS-PIN-Angriffsfläche exponiert",
+    "@riskFactorWpsEnabled": {
+        "description": "Risk Factor Wps Enabled"
+    },
+    "riskFactorPmfNotEnforced": "PMF nicht erzwungen – Deauth-Spoofing möglich",
+    "@riskFactorPmfNotEnforced": {
+        "description": "Risk Factor Pmf Not Enforced"
+    },
+    "refresh": "Aktualisieren",
+    "@refresh": {
+        "description": "Label for refresh button."
+    },
+    "addZonePoint": "Zonenpunkt hinzufügen",
+    "@addZonePoint": {
+        "description": "Title for adding a zone point."
+    },
+    "cancel": "Abbrechen",
+    "@cancel": {
+        "description": "Label for cancel button."
+    },
+    "save": "Speichern",
+    "@save": {
+        "description": "Label for save button."
+    },
+    "waitingForData": "Warten auf Daten...",
+    "@waitingForData": {
+        "description": "Text shown while waiting for data to load."
+    },
+    "temporalHeatmap": "Zeitliche Heatmap",
+    "@temporalHeatmap": {
+        "description": "Title for the temporal heatmap screen."
+    },
+    "failedToSaveHeatmapPoint": "Fehler beim Speichern des Heatmap-Punkts",
+    "@failedToSaveHeatmapPoint": {
+        "description": "Failed To Save Heatmap Point"
+    },
+    "signalMonitoringTitle": "SIGNAL-ÜBERWACHUNG: {ssid}",
+    "@signalMonitoringTitle": {
+        "description": "Signal Monitoring Title",
+        "placeholders": {
+            "ssid": {
+                "type": "String"
+            }
+        }
+    },
+    "heatmapTooltip": "Heatmap",
+    "@heatmapTooltip": {
+        "description": "Heatmap Tooltip"
+    },
+    "tagCurrentPointTooltip": "Aktuellen Punkt markieren",
+    "@tagCurrentPointTooltip": {
+        "description": "Tag Current Point Tooltip"
+    },
+    "signalCaps": "SIGNAL",
+    "@signalCaps": {
+        "description": "Signal Caps"
+    },
+    "channelCaps": "KANAL",
+    "@channelCaps": {
+        "description": "Channel Caps"
+    },
+    "frequencyCaps": "FREQ",
+    "@frequencyCaps": {
+        "description": "Frequency Caps"
+    },
+    "heatmapPointAdded": "Heatmap-Punkt für {zone} hinzugefügt",
+    "@heatmapPointAdded": {
+        "description": "Heatmap Point Added",
+        "placeholders": {
+            "zone": {
+                "type": "String"
+            }
+        }
+    },
+    "zoneTagLabel": "Zonen-Tag (z. B. Küche)",
+    "@zoneTagLabel": {
+        "description": "Zone Tag Label"
+    },
+    "errorPrefix": "Fehler: {message}",
+    "@errorPrefix": {
+        "description": "Error Prefix",
+        "placeholders": {
+            "message": {
+                "type": "String"
+            }
+        }
+    },
+    "noHeatmapPointsYet": "Noch keine Heatmap-Punkte für {bssid}",
+    "@noHeatmapPointsYet": {
+        "description": "No Heatmap Points Yet",
+        "placeholders": {
+            "bssid": {
+                "type": "String"
+            }
+        }
+    },
+    "averageSignalByZone": "Durchschnittssignal nach Zone",
+    "@averageSignalByZone": {
+        "description": "Average Signal By Zone"
+    },
+    "bandChannels": "{band}-KANÄLE",
+    "@bandChannels": {
+        "description": "Band Channels",
+        "placeholders": {
+            "band": {
+                "type": "String"
+            }
+        }
+    },
+    "recommendedChannel": "EMPFOHLENER KANAL",
+    "@recommendedChannel": {
+        "description": "Recommended Channel"
+    },
+    "channelInfo": "Kanal {ch} · {freq} MHz",
+    "@channelInfo": {
+        "description": "Channel Info",
+        "placeholders": {
+            "ch": {
+                "type": "int"
+            },
+            "freq": {
+                "type": "int"
+            }
+        }
+    },
+    "riskFactorFingerprintDrift": "SSID-Fingerabdruck-Drift erkannt",
+    "@riskFactorFingerprintDrift": {
+        "description": "Risk Factor Fingerprint Drift"
+    },
+    "historyCaps": "VERLAUF",
+    "@historyCaps": {
+        "description": "History Caps"
+    },
+    "consistentlyBestChannel": "KONSISTENT BESTER KANAL",
+    "@consistentlyBestChannel": {
+        "description": "Consistently Best Channel"
+    },
+    "avgScore": "Durchschn. Score",
+    "@avgScore": {
+        "description": "Avg Score"
+    },
+    "channelBondingTitle": "Kanalbündelung",
+    "@channelBondingTitle": {
+        "description": "Channel Bonding Title"
+    },
+    "channelBondingDesc": "Kanalbündelung kombiniert 2 oder mehr benachbarte Kanäle, um die Bandbreite zu erhöhen (40 MHz = 2×, 80 MHz = 4×, 160 MHz = 8×). Breitere Kanäle liefern höhere Geschwindigkeiten, können aber mehr benachbarte Netzwerke stören.",
+    "@channelBondingDesc": {
+        "description": "Channel Bonding Desc"
+    },
+    "spectrumOptimizationCaps": "SPEKTRUM-OPTIMIERUNG",
+    "@spectrumOptimizationCaps": {
+        "description": "Spectrum Optimization Caps"
+    },
+    "spectrumOptimizationDesc": "Kanalbelegung & Interferenzen analysieren",
+    "@spectrumOptimizationDesc": {
+        "description": "Spectrum Optimization Desc"
+    },
+    "qualityExcellent": "Exzellent",
+    "@qualityExcellent": {
+        "description": "Quality Excellent"
+    },
+    "qualityVeryGood": "Sehr gut",
+    "@qualityVeryGood": {
+        "description": "Quality Very Good"
+    },
+    "qualityGood": "Gut",
+    "@qualityGood": {
+        "description": "Quality Good"
+    },
+    "qualityFair": "Passabel",
+    "@qualityFair": {
+        "description": "Quality Fair"
+    },
+    "qualityCongested": "Überlastet",
+    "@qualityCongested": {
+        "description": "Quality Congested"
+    },
+    "channelBondingHeader": "KANALBÜNDELUNG ({count} APs)",
+    "@channelBondingHeader": {
+        "description": "Channel Bonding Header",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "hiddenSsidLabel": "[Versteckt]",
+    "@hiddenSsidLabel": {
+        "description": "Hidden Ssid Label"
+    },
+    "noHistoryPlaceholder": "Noch kein Verlauf vorhanden.\nKanalbewertungen werden jedes Mal aufgezeichnet, wenn Sie diesen Bildschirm öffnen.",
+    "@noHistoryPlaceholder": {
+        "description": "No History Placeholder"
+    },
+    "currentSessionInfo": "Aktuelle Sitzung — höhere Punktzahl = weniger überlastet.",
+    "@currentSessionInfo": {
+        "description": "Current Session Info"
+    },
+    "historySummaryInfo": "{sessions} Sitzungen · {samples} Stichproben · höher = weniger überlastet",
+    "@historySummaryInfo": {
+        "description": "History Summary Info",
+        "placeholders": {
+            "sessions": {
+                "type": "int"
+            },
+            "samples": {
+                "type": "int"
+            }
+        }
+    },
+    "scanReportTitle": "Torcav Wi-Fi-Scanbericht",
+    "@scanReportTitle": {
+        "description": "Scan Report Title"
+    },
+    "reportTime": "Zeit",
+    "@reportTime": {
+        "description": "Report Time"
+    },
+    "ssidHeader": "SSID",
+    "@ssidHeader": {
+        "description": "Ssid Header"
+    },
+    "bssidHeader": "BSSID",
+    "@bssidHeader": {
+        "description": "Bssid Header"
+    },
+    "dbmHeader": "dBm",
+    "@dbmHeader": {
+        "description": "Dbm Header"
+    },
+    "channelHeader": "CH",
+    "@channelHeader": {
+        "description": "Channel Header"
+    },
+    "navDashboard": "DASHBOARD",
+    "@navDashboard": {
+        "description": "Nav Dashboard"
+    },
+    "navDiscovery": "ENTDECKUNG",
+    "@navDiscovery": {
+        "description": "Nav Discovery"
+    },
+    "navOperations": "OPERATIONEN",
+    "@navOperations": {
+        "description": "Nav Operations"
+    },
+    "navLan": "LAN",
+    "@navLan": {
+        "description": "Nav Lan"
+    },
+    "systemStatus": "Systemstatus",
+    "@systemStatus": {
+        "description": "System Status"
+    },
+    "interfaceTheme": "Schnittstellentheme",
+    "@interfaceTheme": {
+        "description": "Interface Theme"
+    },
+    "speedTestHeader": "GESCHWINDIGKEITSTEST",
+    "@speedTestHeader": {
+        "description": "Speed Test Header"
+    },
+    "startTest": "TEST STARTEN",
+    "@startTest": {
+        "description": "Start Test"
+    },
+    "testAgain": "ERNEUT TESTEN",
+    "@testAgain": {
+        "description": "Test Again"
+    },
+    "commandCenters": "KOMMANDOZENTRALEN",
+    "@commandCenters": {
+        "description": "Command Centers"
+    },
+    "activeShielding": "Aktive Abschirmung",
+    "@activeShielding": {
+        "description": "Active Shielding"
+    },
+    "logisticsTitle": "LOGISTIK",
+    "@logisticsTitle": {
+        "description": "Logistics Title"
+    },
+    "intelMetrics": "Intel-Metriken",
+    "@intelMetrics": {
+        "description": "Intel Metrics"
+    },
+    "networkMesh": "Netzwerk-Mesh",
+    "@networkMesh": {
+        "description": "Network Mesh"
+    },
+    "tuningTitle": "ABSTIMMUNG",
+    "@tuningTitle": {
+        "description": "Tuning Title"
+    },
+    "systemConfig": "Systemkonfiguration",
+    "@systemConfig": {
+        "description": "System Config"
+    },
+    "phasePing": "PHASE: PING",
+    "@phasePing": {
+        "description": "Phase Ping"
+    },
+    "phaseDownload": "PHASE: DOWNLOAD",
+    "@phaseDownload": {
+        "description": "Phase Download"
+    },
+    "phaseUpload": "PHASE: UPLOAD",
+    "@phaseUpload": {
+        "description": "Phase Upload"
+    },
+    "phaseDone": "PHASE: FERTIG",
+    "@phaseDone": {
+        "description": "Phase Done"
+    },
+    "riskScore": "Risikobewertung",
+    "@riskScore": {
+        "description": "Risk Score"
+    },
+    "loading": "Wird geladen...",
+    "@loading": {
+        "description": "Loading"
+    },
+    "profileTitle": "PROFIL-HUB",
+    "@profileTitle": {
+        "description": "Profile Title"
+    },
+    "activeSessionLabel": "Aktive Sitzung",
+    "@activeSessionLabel": {
+        "description": "Active Session Label"
+    },
+    "networkStatusLabel": "NETZWERKSTATUS",
+    "@networkStatusLabel": {
+        "description": "Network Status Label"
+    },
+    "ssid": "SSID",
+    "@ssid": {
+        "description": "Ssid"
+    },
+    "lastScanTitle": "LETZTER SCAN",
+    "@lastScanTitle": {
+        "description": "Last Scan Title"
+    },
+    "lastSnapshot": "Letzter Snapshot",
+    "@lastSnapshot": {
+        "description": "Last Snapshot"
+    },
+    "channelInterferenceDescription": "Wi-Fi-Kanäle sind wie Radiosender. Wenn viele Netzwerke denselben Kanal nutzen, verlangsamen sie sich gegenseitig – als würden alle gleichzeitig sprechen. Ein Wechsel zu einem weniger überfüllten Kanal kann Ihre Geschwindigkeit und Zuverlässigkeit verbessern.",
+    "@channelInterferenceDescription": {
+        "description": "Explanation of channel interference"
+    },
+    "securityEventType": "{type, select, rogueApSuspected{Rogue AP Verdacht} deauthBurstDetected{Deauth-Serie Erkannt} handshakeCaptureStarted{Sicherer Identitätsaustausch} handshakeCaptureCompleted{Austausch Verifiziert} captivePortalDetected{Captive Portal Erkannt} evilTwinDetected{Evil Twin Erkannt} deauthAttackSuspected{Deauth-Angriff Verdacht} encryptionDowngraded{Verschlüsselung Herabgestuft} unsupportedOperation{Nicht Unterstützter Vorgang} other{{type}}}",
+    "@securityEventType": {
+        "description": "Name of security event type",
+        "placeholders": {
+            "type": {
+                "type": "String"
+            }
+        }
+    },
+    "securityEventSeverity": "{severity, select, low{Niedrig} medium{Mittel} info{Info} warning{Warnung} high{Hoch} critical{Kritisch} other{{severity}}}",
+    "@securityEventSeverity": {
+        "description": "Name of security severity",
+        "placeholders": {
+            "severity": {
+                "type": "String"
+            }
+        }
+    },
+    "evilTwinEvidence": "BSSID-Nichtübereinstimmung! Erwartet: {expected}, Gefunden: {found}. Hohe Wahrscheinlichkeit eines Evil Twin Access Points.",
+    "@evilTwinEvidence": {
+        "description": "Evil twin evidence text",
+        "placeholders": {
+            "expected": {
+                "type": "String"
+            },
+            "found": {
+                "type": "String"
+            }
+        }
+    },
+    "rogueApEvidence": "Zufällige/LAA-MAC in bekanntem Netzwerk erkannt! Dies ist für legitime Access Points höchst ungewöhnlich und kann auf ein bösartiges Gerät hinweisen.",
+    "@rogueApEvidence": {
+        "description": "Rogue AP evidence text"
+    },
+    "downgradeEvidence": "Verschlüsselungsprofil wurde von {oldSec} auf {newSec} geändert. Möglicher Downgrade-Angriff.",
+    "@downgradeEvidence": {
+        "description": "Downgrade evidence text",
+        "placeholders": {
+            "oldSec": {
+                "type": "String"
+            },
+            "newSec": {
+                "type": "String"
+            }
+        }
+    },
+    "historyAllBands": "ALLE",
+    "@historyAllBands": {
+        "description": "Label for showing all Wi-Fi bands in history filter."
+    },
+    "historyBestChannel": "BESTER KANAL",
+    "@historyBestChannel": {
+        "description": "Label for the best channel stat tile in history view."
+    },
+    "historyAvgRating": "DURCHSCHN.",
+    "@historyAvgRating": {
+        "description": "Label for the average rating stat tile in history view."
+    },
+    "historySessions": "SITZUNGEN",
+    "@historySessions": {
+        "description": "Label for the sessions count stat tile in history view."
+    },
+    "historyLineChart": "Liniendiagramm",
+    "@historyLineChart": {
+        "description": "Tooltip for switching to line chart mode."
+    },
+    "historyHeatmap": "Heatmap",
+    "@historyHeatmap": {
+        "description": "Tooltip for switching to heatmap mode."
+    },
+    "historyNoDataForFilter": "Keine Daten für den ausgewählten Filter.",
+    "@historyNoDataForFilter": {
+        "description": "Shown when history filters result in no data."
+    },
+    "historyChannelRatings": "Kanalbewertungen",
+    "@historyChannelRatings": {
+        "description": "Section header for channel ratings chart in history."
+    },
+    "dnsSecurityTest": "DNS SECURITY TEST",
+    "@dnsSecurityTest": {
+        "description": "Title for the DNS security test card"
+    },
+    "dnsSecure": "SECURE",
+    "@dnsSecure": {
+        "description": "Status label for secure DNS"
+    },
+    "dnsWarning": "WARNING",
+    "@dnsWarning": {
+        "description": "Status label for DNS with warning"
+    },
+    "dnsLeakDetected": "LEAK DETECTED",
+    "@dnsLeakDetected": {
+        "description": "Status label for DNS leak detected"
+    },
+    "dnsHijacked": "HIJACKED",
+    "@dnsHijacked": {
+        "description": "Status label for hijacked DNS"
+    },
+    "dnsVerifyIntegrity": "Run a scan to verify DNS integrity",
+    "@dnsVerifyIntegrity": {
+        "description": "Prompt for verifying DNS integrity"
+    },
+    "dnsLastCheck": "Last check: {hour}:{minute}",
+    "@dnsLastCheck": {
+        "description": "Last check time for DNS test",
+        "placeholders": {
+            "hour": {
+                "type": "String",
+                "description": "Hour of the check"
+            },
+            "minute": {
+                "type": "String",
+                "description": "Minute of the check"
+            }
+        }
+    },
+    "dnsTestNow": "TEST NOW",
+    "@dnsTestNow": {
+        "description": "Button label for running DNS test"
+    },
+    "dnsTesting": "TESTING...",
+    "@dnsTesting": {
+        "description": "Button label when DNS test is running"
+    },
+    "dnsCurrentDns": "CURRENT DNS",
+    "@dnsCurrentDns": {
+        "description": "Label for current DNS server"
+    },
+    "dnsIspProvider": "ISP PROVIDER",
+    "@dnsIspProvider": {
+        "description": "Label for ISP provider in DNS test"
+    },
+    "phaseIdle": "BEREIT",
+    "@phaseIdle": {
+        "description": "Idle phase label"
+    },
+    "performanceTitle": "GESCHWINDIGKEITSTEST",
+    "@performanceTitle": {
+        "description": "Performance page title"
+    },
+    "performanceStart": "TEST STARTEN",
+    "@performanceStart": {
+        "description": "Start speed test button"
+    },
+    "performanceRetry": "NOCHMAL",
+    "@performanceRetry": {
+        "description": "Retry speed test button"
+    },
+    "latencyLabel": "LATENZ",
+    "@latencyLabel": {
+        "description": "Latency stat label"
+    },
+    "jitterLabel": "JITTER",
+    "@jitterLabel": {
+        "description": "Jitter stat label"
+    },
+    "whatThisMeans": "WAS BEDEUTET DAS",
+    "@whatThisMeans": {
+        "description": "Interpretation section header"
+    },
+    "channelRecommendation": "KANAL-EMPFEHLUNG",
+    "@channelRecommendation": {
+        "description": "Channel recommendation card header"
+    },
+    "switchToChannel": "Zu Kanal {channel} wechseln",
+    "@switchToChannel": {
+        "description": "Channel switch recommendation",
+        "placeholders": {
+            "channel": {
+                "type": "int"
+            }
+        }
+    },
+    "channelCongestionHint": "Ihr aktueller Kanal ist überlastet. Ein Wechsel kann die Geschwindigkeit verbessern.",
+    "@channelCongestionHint": {
+        "description": "Channel congestion hint"
+    },
+    "evilTwinAlertTitle": "EVIL TWIN ERKANNT",
+    "@evilTwinAlertTitle": {
+        "description": "Evil twin alert title"
+    },
+    "evilTwinAlertBody": "Ein Netzwerk gibt vor, ein bekannter Access Point zu sein. Verbinden Sie sich nicht mit unbekannten Netzwerken.",
+    "@evilTwinAlertBody": {
+        "description": "Evil twin alert body"
+    },
+    "wpsWarningTitle": "WPS IST AKTIVIERT",
+    "@wpsWarningTitle": {
+        "description": "WPS warning title"
+    },
+    "wpsWarningBody": "WPS hat bekannte Sicherheitslücken. Deaktivieren Sie es in Ihren Router-Einstellungen.",
+    "@wpsWarningBody": {
+        "description": "WPS warning body"
+    },
+    "wpsAffectedNetworks": "{count} Netzwerk(e) mit aktiviertem WPS",
+    "@wpsAffectedNetworks": {
+        "description": "WPS affected networks count",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "heatmapTutorialTitle": "SO NUTZEN SIE DIE HEATMAP",
+    "@heatmapTutorialTitle": {
+        "description": "Heatmap tutorial title"
+    },
+    "heatmapTutorialStep1": "Tippen Sie auf AUFNAHME STARTEN, um eine neue Sitzung zu beginnen.",
+    "@heatmapTutorialStep1": {
+        "description": "Heatmap tutorial step 1"
+    },
+    "heatmapTutorialStep2": "Gehen Sie durch Ihren Raum und tippen Sie an Ihrer aktuellen Position auf die Karte.",
+    "@heatmapTutorialStep2": {
+        "description": "Heatmap tutorial step 2"
+    },
+    "heatmapTutorialStep3": "Rot = schwaches Signal. Grün = starkes Signal. Finden Sie tote Zonen.",
+    "@heatmapTutorialStep3": {
+        "description": "Heatmap tutorial step 3"
+    },
+    "heatmapTutorialStep4": "Tippen Sie auf STOPP & SPEICHERN wenn fertig.",
+    "@heatmapTutorialStep4": {
+        "description": "Heatmap tutorial step 4"
+    },
+    "gotIt": "VERSTANDEN",
+    "@gotIt": {
+        "description": "Dismiss tutorial button"
+    },
+    "speedTestHistory": "TESTVERLAUF",
+    "@speedTestHistory": {
+        "description": "Speed test history section header"
+    },
+    "noSpeedTestHistory": "Noch keine Tests. Starten Sie den ersten Test oben.",
+    "@noSpeedTestHistory": {
+        "description": "Empty speed test history"
+    },
+    "networkScoreLabel": "NETZWERK-BEWERTUNG",
+    "@networkScoreLabel": {
+        "description": "Security score label on dashboard"
+    },
+    "vulnLabTitle": "VULNERABILITY LAB",
+    "@vulnLabTitle": {
+        "description": "Vulnerability Lab screen title"
+    },
+    "vulnLabSubtitle": "Run security tests against your connected network",
+    "@vulnLabSubtitle": {
+        "description": "Vulnerability Lab subtitle"
+    },
+    "vulnLabRunAll": "RUN ALL TESTS",
+    "@vulnLabRunAll": {
+        "description": "Button to run all vulnerability tests"
+    },
+    "vulnLabRunning": "SCANNING...",
+    "@vulnLabRunning": {
+        "description": "Shown while vulnerability tests are running"
+    },
+    "vulnLabNoNetwork": "Not connected to a Wi-Fi network. Connect first to run tests.",
+    "@vulnLabNoNetwork": {
+        "description": "Shown when no network is connected"
+    },
+    "vulnLabAllClear": "All tests passed. No vulnerabilities found on this network.",
+    "@vulnLabAllClear": {
+        "description": "Shown when no vulnerabilities are found"
+    },
+    "vulnLabFoundCount": "{count} issue(s) found",
+    "@vulnLabFoundCount": {
+        "description": "Count of vulnerabilities found",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trustNetwork": "TRUST NETWORK",
+    "@trustNetwork": {
+        "description": "Button to trust a network baseline"
+    },
+    "untrustNetwork": "UNTRUST NETWORK",
+    "@untrustNetwork": {
+        "description": "Button to remove a network from trusted profiles"
+    },
+    "trustedBaselineBadge": "TRUSTED BASELINES",
+    "@trustedBaselineBadge": {
+        "description": "Badge for a network with an established trusted profile"
+    },
+    "dnsEvidenceTitle": "DNS EVIDENCE",
+    "@dnsEvidenceTitle": {
+        "description": "Title for the DNS diagnostic evidence section"
+    },
+    "shieldLabTitle": "SHIELD LABORATORY",
+    "@shieldLabTitle": {
+        "description": "Experimental security testing and analysis title"
+    },
+    "discoveredDevices": "DISCOVERED DEVICES",
+    "@discoveredDevices": {
+        "description": "Header for LAN devices discovery section"
+    },
+    "openPortsFound": "OPEN PORTS DETECTED",
+    "@openPortsFound": {
+        "description": "Header for open ports list"
+    },
+    "experimentalFeature": "EXPERIMENTAL",
+    "@experimentalFeature": {
+        "description": "Badge for experimental features"
+    },
+    "deepScanDescription": "Active port scanning and LAN discovery (May trigger network alerts)",
+    "@deepScanDescription": {
+        "description": "Description for deep scan toggle"
+    },
+    "dnsProtocol": "PROTOCOL",
+    "@dnsProtocol": {
+        "description": "Dns protocol"
+    },
+    "dnsSsec": "DNSSEC",
+    "@dnsSsec": {
+        "description": "Dns ssec"
+    },
+    "dnsWhatIsThat": "What is that?",
+    "@dnsWhatIsThat": {
+        "description": "Dns what is that"
+    },
+    "dnsInfoHijackingTitle": "DNS Hijacking",
+    "@dnsInfoHijackingTitle": {
+        "description": "Dns info hijacking title"
+    },
+    "dnsInfoHijackingDesc": "When your network provider or a malicious actor redirects your DNS queries to rogue servers. This allows them to monitor your activity or block certain websites.",
+    "@dnsInfoHijackingDesc": {
+        "description": "Dns info hijacking desc"
+    },
+    "dnsInfoLeakTitle": "DNS Leak",
+    "@dnsInfoLeakTitle": {
+        "description": "Dns info leak title"
+    },
+    "dnsInfoLeakDesc": "Even when using a VPN, your queries might bypass the secure tunnel and go to your ISP's servers. This 'leaks' your browsing history to the network provider.",
+    "@dnsInfoLeakDesc": {
+        "description": "Dns info leak desc"
+    },
+    "dnsInfoEncryptedTitle": "Encrypted DNS (DoH/DoT)",
+    "@dnsInfoEncryptedTitle": {
+        "description": "Dns info encrypted title"
+    },
+    "dnsInfoEncryptedDesc": "DNS over HTTPS (DoH) and DNS over TLS (DoT) wrap your queries in an encrypted layer. This makes your requests unreadable to local snoopers and network admins.",
+    "@dnsInfoEncryptedDesc": {
+        "description": "Dns info encrypted desc"
+    },
+    "dnsInfoDnssecTitle": "DNSSEC",
+    "@dnsInfoDnssecTitle": {
+        "description": "Dns info dnssec title"
+    },
+    "dnsInfoDnssecDesc": "DNS Security Extensions add cryptographic signatures to your queries. This prevents 'spoofing' where a server sends you fake IP addresses for legitimate sites.",
+    "@dnsInfoDnssecDesc": {
+        "description": "Dns info dnssec desc"
+    },
+    "dnsInfoLatencyTitle": "DNS Latency (RTT)",
+    "@dnsInfoLatencyTitle": {
+        "description": "Dns info latency title"
+    },
+    "dnsInfoLatencyDesc": "Round Trip Time (RTT) measures how long it takes for a query to travel to the server and back. Lower latency means faster web browsing and better performance.",
+    "@dnsInfoLatencyDesc": {
+        "description": "Dns info latency desc"
+    },
+    "dnsInfoResolverDriftTitle": "DNS Resolver Drift",
+    "@dnsInfoResolverDriftTitle": {
+        "description": "Dns info resolver drift title"
+    },
+    "dnsInfoResolverDriftDesc": "Detected when your DNS requests are being handled by different providers than configured, possibly due to transparent proxying or routing changes.",
+    "@dnsInfoResolverDriftDesc": {
+        "description": "Dns info resolver drift desc"
+    },
+    "netInfoSsidTitle": "SSID (Service Set Identifier)",
+    "@netInfoSsidTitle": {
+        "description": "Net info ssid title"
+    },
+    "netInfoSsidDesc": "The public name of your Wi-Fi network. While common, it can be spoofed by attackers to lure you into connecting to a rogue access point.",
+    "@netInfoSsidDesc": {
+        "description": "Net info ssid desc"
+    },
+    "netInfoBssidTitle": "BSSID (Basic Service Set ID)",
+    "@netInfoBssidTitle": {
+        "description": "Net info bssid title"
+    },
+    "netInfoBssidDesc": "The unique hardware address (MAC) of the wireless router. Useful for verifying that you are connected to the legitimate hardware and not a software clone.",
+    "@netInfoBssidDesc": {
+        "description": "Net info bssid desc"
+    },
+    "netInfoGatewayTitle": "Default Gateway",
+    "@netInfoGatewayTitle": {
+        "description": "Net info gateway title"
+    },
+    "netInfoGatewayDesc": "The local IP address of your router. All your traffic passes through this point. If this changes unexpectedly, it could indicate a Man-in-the-Middle attack.",
+    "@netInfoGatewayDesc": {
+        "description": "Net info gateway desc"
+    },
+    "dnsReadyStatus": "READY FOR ASSESSMENT",
+    "@dnsReadyStatus": {
+        "description": "Dns ready status"
+    },
+    "dnsIdleDescription": "Run a scan to verify DNS integrity and performance.",
+    "@dnsIdleDescription": {
+        "description": "Dns idle description"
+    },
+    "netSecInfoTitle": "Network Security Module",
+    "@netSecInfoTitle": {
+        "description": "Title for network security info"
+    },
+    "netSecInfoDesc": "Monitors the integrity of connected networks, detects rogue access points, and manages your trusted Wi-Fi profiles to protect against Evil Twin attacks.",
+    "@netSecInfoDesc": {
+        "description": "Description for network security info"
+    }
 }

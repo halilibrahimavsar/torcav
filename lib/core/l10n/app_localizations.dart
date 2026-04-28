@@ -2637,139 +2637,139 @@ abstract class AppLocalizations {
   /// **'Active port scanning and LAN discovery (May trigger network alerts)'**
   String get deepScanDescription;
 
-  /// No description provided for @dnsProtocol.
+  /// Dns protocol
   ///
   /// In en, this message translates to:
   /// **'PROTOCOL'**
   String get dnsProtocol;
 
-  /// No description provided for @dnsSsec.
+  /// Dns ssec
   ///
   /// In en, this message translates to:
   /// **'DNSSEC'**
   String get dnsSsec;
 
-  /// No description provided for @dnsWhatIsThat.
+  /// Dns what is that
   ///
   /// In en, this message translates to:
   /// **'What is that?'**
   String get dnsWhatIsThat;
 
-  /// No description provided for @dnsInfoHijackingTitle.
+  /// Dns info hijacking title
   ///
   /// In en, this message translates to:
   /// **'DNS Hijacking'**
   String get dnsInfoHijackingTitle;
 
-  /// No description provided for @dnsInfoHijackingDesc.
+  /// Dns info hijacking desc
   ///
   /// In en, this message translates to:
   /// **'When your network provider or a malicious actor redirects your DNS queries to rogue servers. This allows them to monitor your activity or block certain websites.'**
   String get dnsInfoHijackingDesc;
 
-  /// No description provided for @dnsInfoLeakTitle.
+  /// Dns info leak title
   ///
   /// In en, this message translates to:
   /// **'DNS Leak'**
   String get dnsInfoLeakTitle;
 
-  /// No description provided for @dnsInfoLeakDesc.
+  /// Dns info leak desc
   ///
   /// In en, this message translates to:
   /// **'Even when using a VPN, your queries might bypass the secure tunnel and go to your ISP\'s servers. This \'leaks\' your browsing history to the network provider.'**
   String get dnsInfoLeakDesc;
 
-  /// No description provided for @dnsInfoEncryptedTitle.
+  /// Dns info encrypted title
   ///
   /// In en, this message translates to:
   /// **'Encrypted DNS (DoH/DoT)'**
   String get dnsInfoEncryptedTitle;
 
-  /// No description provided for @dnsInfoEncryptedDesc.
+  /// Dns info encrypted desc
   ///
   /// In en, this message translates to:
   /// **'DNS over HTTPS (DoH) and DNS over TLS (DoT) wrap your queries in an encrypted layer. This makes your requests unreadable to local snoopers and network admins.'**
   String get dnsInfoEncryptedDesc;
 
-  /// No description provided for @dnsInfoDnssecTitle.
+  /// Dns info dnssec title
   ///
   /// In en, this message translates to:
   /// **'DNSSEC'**
   String get dnsInfoDnssecTitle;
 
-  /// No description provided for @dnsInfoDnssecDesc.
+  /// Dns info dnssec desc
   ///
   /// In en, this message translates to:
   /// **'DNS Security Extensions add cryptographic signatures to your queries. This prevents \'spoofing\' where a server sends you fake IP addresses for legitimate sites.'**
   String get dnsInfoDnssecDesc;
 
-  /// No description provided for @dnsInfoLatencyTitle.
+  /// Dns info latency title
   ///
   /// In en, this message translates to:
   /// **'DNS Latency (RTT)'**
   String get dnsInfoLatencyTitle;
 
-  /// No description provided for @dnsInfoLatencyDesc.
+  /// Dns info latency desc
   ///
   /// In en, this message translates to:
   /// **'Round Trip Time (RTT) measures how long it takes for a query to travel to the server and back. Lower latency means faster web browsing and better performance.'**
   String get dnsInfoLatencyDesc;
 
-  /// No description provided for @dnsInfoResolverDriftTitle.
+  /// Dns info resolver drift title
   ///
   /// In en, this message translates to:
   /// **'DNS Resolver Drift'**
   String get dnsInfoResolverDriftTitle;
 
-  /// No description provided for @dnsInfoResolverDriftDesc.
+  /// Dns info resolver drift desc
   ///
   /// In en, this message translates to:
   /// **'Detected when your DNS requests are being handled by different providers than configured, possibly due to transparent proxying or routing changes.'**
   String get dnsInfoResolverDriftDesc;
 
-  /// No description provided for @netInfoSsidTitle.
+  /// Net info ssid title
   ///
   /// In en, this message translates to:
   /// **'SSID (Service Set Identifier)'**
   String get netInfoSsidTitle;
 
-  /// No description provided for @netInfoSsidDesc.
+  /// Net info ssid desc
   ///
   /// In en, this message translates to:
   /// **'The public name of your Wi-Fi network. While common, it can be spoofed by attackers to lure you into connecting to a rogue access point.'**
   String get netInfoSsidDesc;
 
-  /// No description provided for @netInfoBssidTitle.
+  /// Net info bssid title
   ///
   /// In en, this message translates to:
   /// **'BSSID (Basic Service Set ID)'**
   String get netInfoBssidTitle;
 
-  /// No description provided for @netInfoBssidDesc.
+  /// Net info bssid desc
   ///
   /// In en, this message translates to:
   /// **'The unique hardware address (MAC) of the wireless router. Useful for verifying that you are connected to the legitimate hardware and not a software clone.'**
   String get netInfoBssidDesc;
 
-  /// No description provided for @netInfoGatewayTitle.
+  /// Net info gateway title
   ///
   /// In en, this message translates to:
   /// **'Default Gateway'**
   String get netInfoGatewayTitle;
 
-  /// No description provided for @netInfoGatewayDesc.
+  /// Net info gateway desc
   ///
   /// In en, this message translates to:
   /// **'The local IP address of your router. All your traffic passes through this point. If this changes unexpectedly, it could indicate a Man-in-the-Middle attack.'**
   String get netInfoGatewayDesc;
 
-  /// No description provided for @dnsReadyStatus.
+  /// Dns ready status
   ///
   /// In en, this message translates to:
   /// **'READY FOR ASSESSMENT'**
   String get dnsReadyStatus;
 
-  /// No description provided for @dnsIdleDescription.
+  /// Dns idle description
   ///
   /// In en, this message translates to:
   /// **'Run a scan to verify DNS integrity and performance.'**

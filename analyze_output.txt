@@ -1,44 +1,150 @@
 Analyzing torcav...                                             
 
-  error • Target of URI doesn't exist: '../../domain/entities/heatmap_point.dart' • lib/features/monitoring/data/repositories/heatmap_repository_impl.dart:3:8 • uri_does_not_exist
-  error • Undefined class 'HeatmapPoint' • lib/features/monitoring/data/repositories/heatmap_repository_impl.dart:13:25 • undefined_class
-  error • The name 'HeatmapPoint' isn't a type, so it can't be used as a type argument • lib/features/monitoring/data/repositories/heatmap_repository_impl.dart:24:15 • non_type_as_type_argument
-  error • The method 'HeatmapPoint' isn't defined for the type 'HeatmapRepositoryImpl' • lib/features/monitoring/data/repositories/heatmap_repository_impl.dart:35:18 • undefined_method
-  error • Target of URI doesn't exist: '../entities/heatmap_point.dart' • lib/features/monitoring/domain/repositories/heatmap_repository.dart:1:8 • uri_does_not_exist
-  error • Undefined class 'HeatmapPoint' • lib/features/monitoring/domain/repositories/heatmap_repository.dart:4:25 • undefined_class
-  error • The name 'HeatmapPoint' isn't a type, so it can't be used as a type argument • lib/features/monitoring/domain/repositories/heatmap_repository.dart:5:15 • non_type_as_type_argument
-  error • Target of URI doesn't exist: '../entities/heatmap_point.dart' • lib/features/monitoring/domain/usecases/log_heatmap_point_usecase.dart:3:8 • uri_does_not_exist
-  error • The method 'HeatmapPoint' isn't defined for the type 'LogHeatmapPointUseCase' • lib/features/monitoring/domain/usecases/log_heatmap_point_usecase.dart:18:7 • undefined_method
-  error • The argument type 'List<ChannelRatingSample> Function(dynamic)' can't be assigned to the parameter type 'List<ChannelRatingSample> Function()'.  • lib/features/monitoring/presentation/pages/channel_rating_page.dart:193:37 • argument_type_not_assignable
-  error • Target of URI doesn't exist: '../../heatmap/presentation/pages/heatmap_page.dart' • lib/features/monitoring/presentation/pages/signal_graph_page.dart:9:8 • uri_does_not_exist
-  error • The name 'MonitoringBloc' isn't a type, so it can't be used as a type argument • lib/features/monitoring/presentation/pages/signal_graph_page.dart:40:31 • non_type_as_type_argument
-  error • The method 'StopMonitoring' isn't defined for the type '_SignalGraphPageState' • lib/features/monitoring/presentation/pages/signal_graph_page.dart:42:16 • undefined_method
-  error • The method 'StartMonitoring' isn't defined for the type '_SignalGraphPageState' • lib/features/monitoring/presentation/pages/signal_graph_page.dart:44:16 • undefined_method
-  error • The name 'MonitoringBloc' isn't a type, so it can't be used as a type argument • lib/features/monitoring/presentation/pages/signal_graph_page.dart:53:23 • non_type_as_type_argument
-  error • The method 'StartMonitoring' isn't defined for the type '_SignalGraphPageState' • lib/features/monitoring/presentation/pages/signal_graph_page.dart:54:23 • undefined_method
-  error • The name 'HeatmapPage' isn't a class • lib/features/monitoring/presentation/pages/signal_graph_page.dart:70:63 • creation_with_non_type
-  error • The name 'MonitoringBloc' isn't a type, so it can't be used as a type argument • lib/features/monitoring/presentation/pages/signal_graph_page.dart:93:24 • non_type_as_type_argument
-  error • The name 'MonitoringState' isn't a type, so it can't be used as a type argument • lib/features/monitoring/presentation/pages/signal_graph_page.dart:93:40 • non_type_as_type_argument
-  error • The name 'MonitoringActive' isn't defined, so it can't be used in an 'is' expression • lib/features/monitoring/presentation/pages/signal_graph_page.dart:95:22 • type_test_with_undefined_name
-warning • The declaration '_buildStatItem' isn't referenced • lib/features/monitoring/presentation/pages/signal_graph_page.dart:156:10 • unused_element
-  error • The name '_buildStatItem' is already defined • lib/features/monitoring/presentation/pages/signal_graph_page.dart:156:10 • duplicate_definition
-  error • The name 'MonitoringBloc' isn't a type, so it can't be used as a type argument • lib/features/monitoring/presentation/pages/signal_graph_page.dart:183:24 • non_type_as_type_argument
-  error • The name 'MonitoringState' isn't a type, so it can't be used as a type argument • lib/features/monitoring/presentation/pages/signal_graph_page.dart:183:40 • non_type_as_type_argument
-  error • The name 'MonitoringLoading' isn't defined, so it can't be used in an 'is' expression • lib/features/monitoring/presentation/pages/signal_graph_page.dart:185:22 • type_test_with_undefined_name
-  error • The name 'MonitoringActive' isn't defined, so it can't be used in an 'is' expression • lib/features/monitoring/presentation/pages/signal_graph_page.dart:187:29 • type_test_with_undefined_name
-  error • The name 'MonitoringFailure' isn't defined, so it can't be used in an 'is' expression • lib/features/monitoring/presentation/pages/signal_graph_page.dart:264:29 • type_test_with_undefined_name
-  error • The named parameter 'x' isn't defined • test/features/heatmap/data/datasources/heatmap_local_data_source_test.dart:33:11 • undefined_named_parameter
-  error • The named parameter 'y' isn't defined • test/features/heatmap/data/datasources/heatmap_local_data_source_test.dart:34:11 • undefined_named_parameter
-  error • The named parameter 'x' isn't defined • test/features/heatmap/domain/services/survey_guidance_service_test.dart:54:5 • undefined_named_parameter
-  error • The named parameter 'y' isn't defined • test/features/heatmap/domain/services/survey_guidance_service_test.dart:55:5 • undefined_named_parameter
-  error • The named parameter 'x' isn't defined • test/features/heatmap/presentation/bloc/heatmap_bloc_test.dart:180:9 • undefined_named_parameter
-  error • The named parameter 'y' isn't defined • test/features/heatmap/presentation/bloc/heatmap_bloc_test.dart:181:9 • undefined_named_parameter
-  error • The named parameter 'x' isn't defined • test/features/heatmap/presentation/bloc/heatmap_bloc_test.dart:251:15 • undefined_named_parameter
-  error • The named parameter 'y' isn't defined • test/features/heatmap/presentation/bloc/heatmap_bloc_test.dart:252:15 • undefined_named_parameter
-  error • The named parameter 'x' isn't defined • test/features/heatmap/presentation/bloc/heatmap_bloc_test.dart:293:15 • undefined_named_parameter
-  error • The named parameter 'y' isn't defined • test/features/heatmap/presentation/bloc/heatmap_bloc_test.dart:294:15 • undefined_named_parameter
-  error • The named parameter 'x' isn't defined • test/features/heatmap/presentation/bloc/heatmap_bloc_test.dart:303:15 • undefined_named_parameter
-  error • The named parameter 'y' isn't defined • test/features/heatmap/presentation/bloc/heatmap_bloc_test.dart:304:15 • undefined_named_parameter
-  error • The named parameter 'x' isn't defined • test/features/heatmap/presentation/widgets/ar_hud_overlay_test.dart:34:9 • undefined_named_parameter
-  error • The named parameter 'y' isn't defined • test/features/heatmap/presentation/widgets/ar_hud_overlay_test.dart:35:9 • undefined_named_parameter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:110:37 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:111:37 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:187:22 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:188:21 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:201:22 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:202:21 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:222:21 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:233:28 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:234:27 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:239:28 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:240:27 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:245:28 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:246:27 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:351:21 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:362:21 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:382:42 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:393:33 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:401:42 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:412:33 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:420:42 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:430:23 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/app_shell/presentation/pages/onboarding_page.dart:443:23 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/dashboard/presentation/pages/dashboard_page.dart:265:21 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/dashboard/presentation/pages/dashboard_page.dart:630:31 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/dashboard/presentation/pages/dashboard_page.dart:659:35 • undefined_getter
+  error • Undefined name 'l10n' • lib/features/dashboard/presentation/pages/notification_sheet.dart:66:19 • undefined_identifier
+  error • Undefined name 'l10n' • lib/features/dashboard/presentation/pages/notification_sheet.dart:107:23 • undefined_identifier
+  error • Undefined name 'l10n' • lib/features/dashboard/presentation/pages/notification_sheet.dart:135:23 • undefined_identifier
+  error • Undefined name 'l10n' • lib/features/dashboard/presentation/pages/notification_sheet.dart:155:17 • undefined_identifier
+  error • Undefined name 'l10n' • lib/features/dashboard/presentation/pages/notification_sheet.dart:196:21 • undefined_identifier
+  error • Undefined name 'l10n' • lib/features/dashboard/presentation/pages/notification_sheet.dart:326:15 • undefined_identifier
+  error • Undefined name 'l10n' • lib/features/dashboard/presentation/pages/notification_sheet.dart:343:19 • undefined_identifier
+  error • Undefined name 'context' • lib/features/dashboard/presentation/pages/notification_sheet.dart:418:16 • undefined_identifier
+  error • Undefined name 'context' • lib/features/dashboard/presentation/pages/notification_sheet.dart:420:16 • undefined_identifier
+  error • Undefined name 'context' • lib/features/dashboard/presentation/pages/notification_sheet.dart:422:16 • undefined_identifier
+  error • Undefined name 'context' • lib/features/dashboard/presentation/pages/notification_sheet.dart:424:16 • undefined_identifier
+  error • Undefined name 'context' • lib/features/dashboard/presentation/pages/notification_sheet.dart:426:16 • undefined_identifier
+  error • Undefined name 'context' • lib/features/dashboard/presentation/pages/notification_sheet.dart:428:16 • undefined_identifier
+  error • Undefined name 'context' • lib/features/dashboard/presentation/pages/notification_sheet.dart:430:16 • undefined_identifier
+  error • Undefined name 'context' • lib/features/dashboard/presentation/pages/notification_sheet.dart:432:16 • undefined_identifier
+  error • Undefined name 'context' • lib/features/dashboard/presentation/pages/notification_sheet.dart:434:16 • undefined_identifier
+  error • Undefined name 'context' • lib/features/dashboard/presentation/pages/notification_sheet.dart:436:16 • undefined_identifier
+  error • Undefined name 'context' • lib/features/dashboard/presentation/pages/notification_sheet.dart:438:16 • undefined_identifier
+  error • Undefined class 'AppLocalizations' • lib/features/dashboard/presentation/widgets/live_metrics_bento.dart:724:38 • undefined_class
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/pages/heatmap_page.dart:150:41 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/pages/heatmap_page.dart:151:41 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/pages/heatmap_page.dart:160:41 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/pages/heatmap_page.dart:161:41 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/pages/heatmap_page.dart:171:39 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/pages/heatmap_page.dart:188:41 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/pages/heatmap_page.dart:202:45 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/pages/heatmap_page.dart:203:45 • undefined_getter
+  error • Target of URI doesn't exist: 'package:torcav/core/theme/app_colors.dart' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:5:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../../domain/entities/heatmap_session.dart' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:6:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../../domain/entities/heatmap_point.dart' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:7:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: '../../domain/entities/survey_guidance.dart' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:8:8 • uri_does_not_exist
+  error • Undefined class 'HeatmapSession' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:21:14 • undefined_class
+  error • Undefined name 'AppColors' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:57:7 • undefined_identifier
+  error • Undefined name 'AppColors' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:60:49 • undefined_identifier
+  error • The name 'HeatmapPoint' isn't a type, so it can't be used as a type argument • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:103:44 • non_type_as_type_argument
+  error • The getter 'heatmapStartNow' isn't defined for the type 'AppLocalizations' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:235:31 • undefined_getter
+  error • The body might complete normally, causing 'null' to be returned, but the return type, 'Color', is a potentially non-nullable type • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:275:9 • body_might_complete_normally
+  error • Undefined class 'SurveyGuidance' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:275:23 • undefined_class
+  error • Undefined name 'SurveyTone' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:278:12 • undefined_identifier
+  error • Undefined name 'AppColors' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:279:26 • undefined_identifier
+  error • Undefined name 'AppColors' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:279:46 • undefined_identifier
+  error • Undefined name 'SurveyTone' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:280:12 • undefined_identifier
+  error • Undefined name 'AppColors' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:281:26 • undefined_identifier
+  error • Undefined name 'AppColors' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:281:47 • undefined_identifier
+  error • Undefined name 'SurveyTone' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:282:12 • undefined_identifier
+  error • Undefined name 'AppColors' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:283:26 • undefined_identifier
+  error • Undefined name 'AppColors' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:283:48 • undefined_identifier
+  error • Undefined name 'SurveyTone' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:284:12 • undefined_identifier
+  error • Undefined name 'AppColors' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:285:26 • undefined_identifier
+  error • Undefined name 'AppColors' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:285:46 • undefined_identifier
+  error • The body might complete normally, causing 'null' to be returned, but the return type, 'IconData', is a potentially non-nullable type • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:289:12 • body_might_complete_normally
+  error • Undefined class 'SurveyGuidance' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:289:25 • undefined_class
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:291:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:293:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:295:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:297:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:299:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:301:12 • undefined_identifier
+  error • The body might complete normally, causing 'null' to be returned, but the return type, 'String', is a potentially non-nullable type • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:306:10 • body_might_complete_normally
+  error • Undefined class 'SurveyGuidance' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:306:24 • undefined_class
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:308:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:310:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:312:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:314:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:316:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:318:12 • undefined_identifier
+  error • The body might complete normally, causing 'null' to be returned, but the return type, 'String', is a potentially non-nullable type • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:323:10 • body_might_complete_normally
+  error • Undefined class 'SurveyGuidance' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:323:23 • undefined_class
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:325:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:327:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:329:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:331:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:333:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:335:12 • undefined_identifier
+  error • The body might complete normally, causing 'null' to be returned, but the return type, 'String', is a potentially non-nullable type • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:341:10 • body_might_complete_normally
+  error • Undefined class 'SurveyGuidance' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:341:26 • undefined_class
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:346:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:348:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:350:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:352:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:354:12 • undefined_identifier
+  error • Undefined name 'SurveyStage' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:356:12 • undefined_identifier
+  error • The body might complete normally, causing 'null' to be returned, but the return type, 'String', is a potentially non-nullable type • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:361:10 • body_might_complete_normally
+  error • Undefined class 'SparseRegion' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:361:25 • undefined_class
+  error • Undefined name 'SparseRegion' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:363:12 • undefined_identifier
+  error • Undefined name 'SparseRegion' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:365:12 • undefined_identifier
+  error • Undefined name 'SparseRegion' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:367:12 • undefined_identifier
+  error • Undefined name 'SparseRegion' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:369:12 • undefined_identifier
+  error • Undefined class 'SurveyGuidance' • lib/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart:376:26 • undefined_class
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/new_session_dialog.dart:86:38 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/new_session_dialog.dart:87:44 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/new_session_dialog.dart:90:33 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/new_session_dialog.dart:91:33 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/new_session_dialog.dart:92:33 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/new_session_dialog.dart:94:44 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/signal_probe_overlay.dart:48:23 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/signal_probe_overlay.dart:50:23 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/signal_probe_overlay.dart:51:23 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/signal_probe_overlay.dart:61:30 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/signal_probe_overlay.dart:65:34 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/signal_probe_overlay.dart:116:43 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/signal_probe_overlay.dart:155:46 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/signal_probe_overlay.dart:163:46 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/signal_probe_overlay.dart:171:46 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/signal_probe_overlay.dart:183:40 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/signal_probe_overlay.dart:189:40 • undefined_getter
+  error • The getter 'l10n' isn't defined for the type 'BuildContext' • lib/features/heatmap/presentation/widgets/heatmap/signal_probe_overlay.dart:195:40 • undefined_getter
+warning • The declaration '_getLocalizedCategory' isn't referenced • lib/features/network_scan/presentation/widgets/host_device_card.dart:823:10 • unused_element
+  error • Undefined class 'AppLocalizations' • lib/features/performance/presentation/pages/performance_page.dart:408:35 • undefined_class
+  error • Undefined class 'AppLocalizations' • lib/features/performance/presentation/pages/performance_page.dart:415:34 • undefined_class
+  error • Undefined class 'AppLocalizations' • lib/features/performance/presentation/pages/performance_page.dart:430:34 • undefined_class
+  error • Undefined class 'AppLocalizations' • lib/features/performance/presentation/pages/performance_page.dart:437:33 • undefined_class
+  error • Undefined class 'AppLocalizations' • lib/features/performance/presentation/pages/performance_page.dart:452:38 • undefined_class
+  error • Undefined class 'AppLocalizations' • lib/features/performance/presentation/pages/performance_page.dart:459:37 • undefined_class
+  error • Undefined class 'AppLocalizations' • lib/features/performance/presentation/pages/performance_page.dart:475:36 • undefined_class
+  error • Undefined class 'AppLocalizations' • lib/features/performance/presentation/pages/performance_page.dart:482:35 • undefined_class
+  error • Undefined class 'AppLocalizations' • lib/features/performance/presentation/pages/performance_page.dart:497:43 • undefined_class
+  error • Undefined class 'AppLocalizations' • lib/features/performance/presentation/pages/performance_page.dart:502:42 • undefined_class
+  error • Undefined class 'AppLocalizations' • lib/features/performance/presentation/pages/performance_page.dart:517:58 • undefined_class
+  error • Undefined class 'AppLocalizations' • lib/features/performance/presentation/pages/performance_page.dart:526:57 • undefined_class
+  error • Undefined name 'l10n' • lib/features/reports/presentation/pages/reports_page.dart:398:13 • undefined_identifier
 
+146 issues found. (ran in 2.1s)

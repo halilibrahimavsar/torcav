@@ -1,5 +1,4 @@
 {
-    "@@locale": "en",
     "wifiScanTitle": "WIFI SCAN",
     "@wifiScanTitle": {
         "description": "Title for the wifi scan screen."
@@ -79,7 +78,7 @@
     },
     "liveLabel": "LIVE",
     "@liveLabel": {
-        "description": "Short label for live status in AR HUD."
+        "description": "Live indicator label"
     },
     "operationsLabel": "OPERATIONS",
     "@operationsLabel": {
@@ -1901,31 +1900,96 @@
         "description": "Description for deep scan toggle"
     },
     "dnsProtocol": "PROTOCOL",
+    "@dnsProtocol": {
+        "description": "Dns protocol"
+    },
     "dnsSsec": "DNSSEC",
+    "@dnsSsec": {
+        "description": "Dns ssec"
+    },
     "dnsWhatIsThat": "What is that?",
+    "@dnsWhatIsThat": {
+        "description": "Dns what is that"
+    },
     "dnsInfoHijackingTitle": "DNS Hijacking",
+    "@dnsInfoHijackingTitle": {
+        "description": "Dns info hijacking title"
+    },
     "dnsInfoHijackingDesc": "When your network provider or a malicious actor redirects your DNS queries to rogue servers. This allows them to monitor your activity or block certain websites.",
+    "@dnsInfoHijackingDesc": {
+        "description": "Dns info hijacking desc"
+    },
     "dnsInfoLeakTitle": "DNS Leak",
+    "@dnsInfoLeakTitle": {
+        "description": "Dns info leak title"
+    },
     "dnsInfoLeakDesc": "Even when using a VPN, your queries might bypass the secure tunnel and go to your ISP's servers. This 'leaks' your browsing history to the network provider.",
+    "@dnsInfoLeakDesc": {
+        "description": "Dns info leak desc"
+    },
     "dnsInfoEncryptedTitle": "Encrypted DNS (DoH/DoT)",
+    "@dnsInfoEncryptedTitle": {
+        "description": "Dns info encrypted title"
+    },
     "dnsInfoEncryptedDesc": "DNS over HTTPS (DoH) and DNS over TLS (DoT) wrap your queries in an encrypted layer. This makes your requests unreadable to local snoopers and network admins.",
+    "@dnsInfoEncryptedDesc": {
+        "description": "Dns info encrypted desc"
+    },
     "dnsInfoDnssecTitle": "DNSSEC",
+    "@dnsInfoDnssecTitle": {
+        "description": "Dns info dnssec title"
+    },
     "dnsInfoDnssecDesc": "DNS Security Extensions add cryptographic signatures to your queries. This prevents 'spoofing' where a server sends you fake IP addresses for legitimate sites.",
+    "@dnsInfoDnssecDesc": {
+        "description": "Dns info dnssec desc"
+    },
     "dnsInfoLatencyTitle": "DNS Latency (RTT)",
+    "@dnsInfoLatencyTitle": {
+        "description": "Dns info latency title"
+    },
     "dnsInfoLatencyDesc": "Round Trip Time (RTT) measures how long it takes for a query to travel to the server and back. Lower latency means faster web browsing and better performance.",
+    "@dnsInfoLatencyDesc": {
+        "description": "Dns info latency desc"
+    },
     "dnsInfoResolverDriftTitle": "DNS Resolver Drift",
+    "@dnsInfoResolverDriftTitle": {
+        "description": "Dns info resolver drift title"
+    },
     "dnsInfoResolverDriftDesc": "Detected when your DNS requests are being handled by different providers than configured, possibly due to transparent proxying or routing changes.",
+    "@dnsInfoResolverDriftDesc": {
+        "description": "Dns info resolver drift desc"
+    },
     "netInfoSsidTitle": "SSID (Service Set Identifier)",
+    "@netInfoSsidTitle": {
+        "description": "Net info ssid title"
+    },
     "netInfoSsidDesc": "The public name of your Wi-Fi network. While common, it can be spoofed by attackers to lure you into connecting to a rogue access point.",
+    "@netInfoSsidDesc": {
+        "description": "Net info ssid desc"
+    },
     "netInfoBssidTitle": "BSSID (Basic Service Set ID)",
+    "@netInfoBssidTitle": {
+        "description": "Net info bssid title"
+    },
     "netInfoBssidDesc": "The unique hardware address (MAC) of the wireless router. Useful for verifying that you are connected to the legitimate hardware and not a software clone.",
+    "@netInfoBssidDesc": {
+        "description": "Net info bssid desc"
+    },
     "netInfoGatewayTitle": "Default Gateway",
+    "@netInfoGatewayTitle": {
+        "description": "Net info gateway title"
+    },
     "netInfoGatewayDesc": "The local IP address of your router. All your traffic passes through this point. If this changes unexpectedly, it could indicate a Man-in-the-Middle attack.",
+    "@netInfoGatewayDesc": {
+        "description": "Net info gateway desc"
+    },
     "dnsReadyStatus": "READY FOR ASSESSMENT",
+    "@dnsReadyStatus": {
+        "description": "Dns ready status"
+    },
     "dnsIdleDescription": "Run a scan to verify DNS integrity and performance.",
-    "liveLabel": "LIVE",
-    "@liveLabel": {
-        "description": "Live indicator label"
+    "@dnsIdleDescription": {
+        "description": "Dns idle description"
     },
     "netSecInfoTitle": "Network Security Module",
     "@netSecInfoTitle": {
@@ -1935,8 +1999,5 @@
     "@netSecInfoDesc": {
         "description": "Description for network security info"
     },
-    "networkSecurity": "Network Security",
-    "@networkSecurity": {
-        "description": "Label for network security section"
-    }
+    "@@locale": "en"
 }
