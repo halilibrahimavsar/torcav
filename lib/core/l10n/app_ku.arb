@@ -1999,5 +1999,144 @@
     "netSecInfoDesc": "Monitors the integrity of connected networks, detects rogue access points, and manages your trusted Wi-Fi profiles to protect against Evil Twin attacks.",
     "@netSecInfoDesc": {
         "description": "Description for network security info"
-    }
+    },
+    "spectrumOptimizationOpsSubtitle": "Nirxandina kanalê · tevliheviyê",
+    "@spectrumOptimizationOpsSubtitle": {
+        "description": "Operations Hub subtitle for the Spectrum Optimization card"
+    },
+    "aboutSpectrumTitle": "Optîmîzekirina Spektrumê Çi ye?",
+    "@aboutSpectrumTitle": {
+        "description": "Title of the about-spectrum expandable info panel"
+    },
+    "aboutSpectrumWhatHeader": "Çi ye?",
+    "@aboutSpectrumWhatHeader": {
+        "description": "Header for the 'What is it' subsection"
+    },
+    "aboutSpectrumWhatBody": "Cîhazên Wi-Fi bi rêya beşên frekansê yên bi navê \"kanal\" diaxivin. Bandê 2.4 GHz tenê 3 kanalên bi rastî ne-li-ser-hev hene (1, 6, 11) û herî gelemperî ye. Bandê 5 GHz pir kanalên zêdetir û tevliheviya kêmtir heye. Bandê herî nû 6 GHz (Wi-Fi 6E/7) di piraniya malan de hema bibêje vala ye.",
+    "@aboutSpectrumWhatBody": {
+        "description": "Body for 'What is it' subsection"
+    },
+    "aboutSpectrumWhyHeader": "Bi kêrî çi tê?",
+    "@aboutSpectrumWhyHeader": {
+        "description": "Header for the 'What it does' subsection"
+    },
+    "aboutSpectrumWhyBody": "Gava gelek tor heman kanalê parve dikin, divê dorê bigirin û her tişt hêdî dibe (Tevliheviya Heman Kanalê). Li 2.4 GHz, kanalên cîran jî li ser hev radikevin û dengê paşxaneyî çêdikin (Tevliheviya Kanalê Cîran). Hilbijartina kanaleke bêdeng rasterast lez, derengî û aramiya girêdanê baştir dike.",
+    "@aboutSpectrumWhyBody": {
+        "description": "Body for 'What it does' subsection"
+    },
+    "aboutSpectrumHowHeader": "Çawa dixebite?",
+    "@aboutSpectrumHowHeader": {
+        "description": "Header for the 'How' subsection"
+    },
+    "aboutSpectrumHowBody": "Ev rûpel hemû torên Wi-Fi yên derdorê dişopîne û her kanalê li gorî hejmara torên hevrik, hêza sînyalê û li-ser-hev-ketina bi cîranan re ji 0 heya 10 puan dide. Kanalek bi rengê kesk (≥8) hilbijêre: ev kanal niha herî kêm gelemperî ye. Tabela Dîrokê nîşan dide ku kanal li ser demê paqij dimîne an na.",
+    "@aboutSpectrumHowBody": {
+        "description": "Body for 'How' subsection"
+    },
+    "bandSpectrumTitle": "Spektruma Kanalê",
+    "@bandSpectrumTitle": {
+        "description": "Header above the per-band spectrum bar chart"
+    },
+    "bandSpectrumInfoTitle": "Spektruma Kanalê",
+    "@bandSpectrumInfoTitle": {
+        "description": "Title of the Channel Spectrum info sheet"
+    },
+    "bandSpectrumInfoBody": "Her bar yek kanal e. Barên bilind û kesk bêdeng in; barên kurt û sor gelemperî ne. Li barekê bide ku puanê (0-10) bibînî. Her tora ku heman kanalê parve dike 2 puanan kêm dike (Tevliheviya Heman Kanalê); li 2.4 GHz torên kanalên cîran jî kêmtir kêm dikin (Tevliheviya Kanalê Cîran). Torên nêzîk û xurt bêtir tê cezakirin ji yên dûr û qels.",
+    "@bandSpectrumInfoBody": {
+        "description": "Body of the Channel Spectrum info sheet"
+    },
+    "recommendationInfoTitle": "Pêşniyaz Çawa Tê Kirin?",
+    "@recommendationInfoTitle": {
+        "description": "Title of the recommendation info sheet"
+    },
+    "recommendationInfoBody": "Her kanal ji 10 puanan dest pê dike. Tora bi heman kanalê her yek 2 puanan (×hêza sînyalê) kêm dike. Torên cîran ên 2.4 GHz li gorî mesafeyê 0.2-1.5 puanan kêm dikin. Kanalên DFS (parve bi radarê) 0.5 puanan winda dikin. Kanala bi puanê herî bilind serketî ye. Di rewşa wekheviyê de kanala bi hejmara biçûktir tê tercîhkirin.",
+    "@recommendationInfoBody": {
+        "description": "Body of the recommendation info sheet"
+    },
+    "consistentChannelInfoTitle": "Kanala Herî Baş ya Berdewam",
+    "@consistentChannelInfoTitle": {
+        "description": "Title of the consistent best channel info sheet"
+    },
+    "consistentChannelInfoBody": "Wêneyek anî dikare şaşxistîner be: kanaleke ku niha bêdeng e dikare paşê gelemperî bibe. Em hemû şopandinên berê yên her kanalê navber dikin û ya ku bi awayekî berdewam puanê herî bilind digire diyar dikin. Heke ji pêşniyaza niha cuda be, kanala dîrokî ya aram bi gelemperî hilbijartineke ewletir e ji bo demê dirêj.",
+    "@consistentChannelInfoBody": {
+        "description": "Body of the consistent best channel info sheet"
+    },
+    "dfsBadgeLabel": "DFS",
+    "@dfsBadgeLabel": {
+        "description": "Short DFS badge label shown next to channel tiles"
+    },
+    "dfsBadgeTooltip": "DFS — bi radara hewa/leşkerî re tê parvekirin; routerê dibe ku ji vê kanalê demek kurt derkeve",
+    "@dfsBadgeTooltip": {
+        "description": "Tooltip explaining DFS badge"
+    },
+    "dfsInfoTitle": "DFS Çi ye?",
+    "@dfsInfoTitle": {
+        "description": "Title of the DFS info sheet"
+    },
+    "dfsInfoBody": "Kanalên DFS (Dynamic Frequency Selection) di bandê 5 GHz de (52-64 û 100-144) bi awayekî yasayî bi radarên hewa û leşkerî re têne parvekirin. Wi-Fi divê pêşîniyê bide van radaran: heke router lêgerîna radarê tespît bike, divê herî kêm 60 çirkeyan ji kanalê derkeve — cihazên we demek kurt qut dibin û diçin ser kanaleke din. Kanalên DFS bi gelemperî kêm gelemperî ne (loma puanê wan bilind e), lê li nêzîkê balafirgehan, bendergehan an stasyonên hewa dikarin nêbawer bin. Em ji bo nîşandana vê metirsiyê 0.5 puanan kêm dikin. Heke çavkaniya radarê nêzîk tune be wan bikar bînin; an na, ji wan dûr bikevin.",
+    "@dfsInfoBody": {
+        "description": "Body of the DFS info sheet"
+    },
+    "howToChangeChannelTitle": "Kanalê Wi-Fi çawa biguherînim?",
+    "@howToChangeChannelTitle": {"description": "Title of the router admin guide section"},
+    "howToChangeChannelSubtitle": "Rêbera gav-bi-gav ji bo routera te",
+    "@howToChangeChannelSubtitle": {"description": "Subtitle"},
+    "guideConnectedTo": "Tora girêdayî",
+    "@guideConnectedTo": {"description": "Connected SSID label"},
+    "guideRouterVendor": "Marka routerê",
+    "@guideRouterVendor": {"description": "Vendor label"},
+    "guideRouterUnknown": "Nenas — rêbera giştî tê nîşandan",
+    "@guideRouterUnknown": {"description": "Unknown vendor"},
+    "guideStep1": "Gav 1 · Panela rêveberiyê veke",
+    "@guideStep1": {"description": "Step 1"},
+    "guideStep1Body": "Bişkoja VEKE ya jêr bitikîne — gerokê te yê standard di rûpela rêveberiya routerê de vedibe. (An jî navnîşanê kopî bike û destî bispêre.) Ji bo navnîşan bixebite, divê li vê Wi-Fi ve girêdayî bî; tenê bi daneya mobîl nagihîje.",
+    "@guideStep1Body": {"description": "Step 1 body"},
+    "guideOpenInBrowser": "Veke",
+    "@guideOpenInBrowser": {"description": "Open URL"},
+    "guideOpenFailedMessage": "Gerokê bixweber venebû — navnîşanê kopî bike û destî bispêre.",
+    "@guideOpenFailedMessage": {"description": "Open failed"},
+    "guideCredentialsHeader": "Navê bikarhêner û şîfre",
+    "@guideCredentialsHeader": {"description": "Credentials header"},
+    "guideCredentialsBody": "Gava rûpela rêveberiyê ji te têketinê dixwaze:\n\n1. Li binî an pişta routerê binêre — bi gelemperî li wir etîketek heye ku şîfreya Wi-Fi û her wiha agahiyên têketina REVEBERIYÊ jî dinivîse. Têketina rêveberiyê wek \"Admin password\", \"Web password\", \"Modem password\" an \"Şîfreya Rêveberiyê\" tê nîşandan. Ev bi şîfreya Wi-Fi NEYAN E.\n\n2. Heke etîket tune be, van standardên fabrîkayê biceribîne:\n   • admin / admin\n   • admin / password\n   • admin / 1234\n   • root / admin\n   • Navê bikarhêner vala / şîfre admin\n\n3. Heke router ji aliyê pêşkêşkarê înternetê hatibe sazkirin, şîfreya rêveberiyê bi gelemperî 6-8 karakterên dawî yên seriya cihazê ye, ku ew jî li ser etîketê dinivîse. Gelek pêşkêşkar şîfreyek taybet a cihazî çap dikin.\n\n4. Heke tu yek nexebite, kesek berê şîfre guherandî ye. Dikarî bişkoja RESET ya li pişta routerê 10-15 çirkeyan bigirî da ku rewşa fabrîkayê vegere — lê ev navê Wi-Fi û şîfreya wê jî paqij dike, divê ji nû ve saz bikî.\n\n5. Hin routerên nû panela web bi sepanê telefonê re diguherînin (mînak TP-Link Tether, ASUS Router, Mi WiFi, Huawei AI Life). Heke rûpela web te ber bi sazkirina sepanê ve dişîne, sepanê saz bike û ji wir berdewam bike.",
+    "@guideCredentialsBody": {"description": "Credentials body"},
+    "guideAddressLabel": "Navnîşana rêveberiyê",
+    "@guideAddressLabel": {"description": "URL label"},
+    "guideCopyAddress": "Kopî bike",
+    "@guideCopyAddress": {"description": "Copy button"},
+    "guideAddressCopied": "Navnîşan hate kopîkirin — di gerokê de veke",
+    "@guideAddressCopied": {"description": "Copied snack"},
+    "guideStep2": "Gav 2 · Menûya Wi-Fi / Wireless bibîne",
+    "@guideStep2": {"description": "Step 2"},
+    "guideStep2Body": "Piştî têketinê li menûyek bi navê Wi-Fi, Wireless an Mîhengên Torê bigere. Marka cuda navên cuda dikin — rêya jêrîn ji bo marka te ye:",
+    "@guideStep2Body": {"description": "Step 2 body"},
+    "guideStep3": "Gav 3 · Kanalê saz bike û bisepîne",
+    "@guideStep3": {"description": "Step 3"},
+    "guideStep3Body": "Bijareya Channel/Kanal bibîne. Auto-yê biguhêre bo kanala pêşniyazkirî di ekrana berê de. Heke routerê te ji bo 2.4 GHz û 5 GHz cuda nîşan dide, ji bo her bandê kanala xwe ya pêşniyazkirî saz bike. Tê tomarkirin/sepandinê bitikîne. Wi-Fi dê demek kurt ji nû ve dest pê bike.",
+    "@guideStep3Body": {"description": "Step 3 body"},
+    "guideMenuPathLabel": "Riya menûyê",
+    "@guideMenuPathLabel": {"description": "Menu path header"},
+    "guideGenericMenuPath": "Wireless / Wi-Fi → Bingehîn / Pêşkeftî Mîheng → Kanal",
+    "@guideGenericMenuPath": {"description": "Fallback menu path"},
+    "channelWidthHeader": "Pehnatiya kanalê — 20 / 40 / 80 / 160 MHz",
+    "@channelWidthHeader": {"description": "Header"},
+    "channelWidthBody": "Pehnatiya kanalê wek hejmara şiritan a otoyolê ye:\n• 20 MHz = 1 şirit. Hêdî lê li hember trafîkê bi hêz. Ji bo 2.4 GHz a tijî baştirîn.\n• 40 MHz = 2 şirit. Du qatî leza daneyan, lê bi cîranan re zêdetir li hev radikeve.\n• 80 MHz = 4 şirit. Lez — tenê di 5 GHz/6 GHz de.\n• 160 MHz = 8 şirit. Lezê herî bilind, lê nîvê bandê 5 GHz digire; tenê heke cîran tune be watedar e.\n\nQayîdeya giştî: di 2.4 GHz de 20 MHz; di 5 GHz de 80 MHz; di 6 GHz de heke berdest be 160 MHz.",
+    "@channelWidthBody": {"description": "Body"},
+    "guideRisksHeader": "Guhertina kanalê ewle ye?",
+    "@guideRisksHeader": {"description": "Risks header"},
+    "guideRisksBody": "Erê — bi tevahî ewle ye. Guhertina kanalê ji bilî qutbûnek 5-10 çirkeyî ya ku dema router radio ji nû ve dest pê dike çêdibe, hîç bandorek ewlehiyê an performansê tune. Navê torê (SSID), şîfre, qaîdeyên port-yönlendirmeyê, kontrolên dêûbavî û her mîhengek din çawa hebû dimîne. Cihazên girêdayî bixweber ji nû ve têne girêdan. Heke paşê tişt xerabtir xuya bike, dikarî ji heman menûyê vegerî ser Auto û router bi xwe kanalek hilbijêre.",
+    "@guideRisksBody": {"description": "Body"},
+    "guideNoConnection": "Bi tora Wi-Fi ve ne girêdayî yî — ji bo dîtina navnîşana rêveberiyê û rêbera taybet a markeyê pêşî girê bide.",
+    "@guideNoConnection": {"description": "No connection"},
+    "unstableChannelLabel": "NEARAM",
+    "@unstableChannelLabel": {
+        "description": "Badge for channels that fluctuate heavily across history"
+    },
+    "unstableChannelTooltip": "Puanê vê kanalê di rûniştinên dawî de ji 1.5 puanan zêdetir guherî",
+    "@unstableChannelTooltip": {
+        "description": "Tooltip for unstable channel badge"
+    },
+    "historyHeatmapInfoTitle": "Nexşeya Germayê Çi ye?",
+    "@historyHeatmapInfoTitle": {
+        "description": "Title of the heatmap info sheet"
+    },
+    "historyHeatmapInfoBody": "Her rêz kanalek e û her stûn demek e ku te şopandin kir. Rengê hucreyê puanê wê demê nîşan dide: sor (xirab) → zer (orte) → kesk (zehf baş). Hucreyên vala wateya wê ye ku kanal di wê şopandinê de nediyar bû. Li rêzên temamî kesk bigere — ev ew kanal in ku bi demê re paqij dimînin."
 }

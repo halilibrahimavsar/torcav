@@ -5,6 +5,7 @@ import '../../../performance/presentation/pages/performance_page.dart';
 import '../../../reports/presentation/pages/reports_page.dart';
 import '../../../security/presentation/pages/security_center_page.dart';
 import '../../../monitoring/presentation/pages/topology_page.dart';
+import '../../../monitoring/presentation/pages/spectrum_optimization_page.dart';
 import '../../../security/presentation/pages/vulnerability_lab_page.dart';
 import '../../../heatmap/presentation/pages/heatmap_page.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
@@ -121,6 +122,19 @@ class OperationsHubPage extends StatelessWidget {
                       ),
                     ),
                 delay: 500,
+              ),
+              _OperationCard(
+                title: l10n.spectrumOptimizationCaps,
+                subtitle: l10n.spectrumOptimizationOpsSubtitle,
+                icon: Icons.auto_graph_rounded,
+                color: AppColors.neonPurple,
+                onTap:
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const SpectrumOptimizationPage(),
+                      ),
+                    ),
+                delay: 550,
               ),
             ],
           ),

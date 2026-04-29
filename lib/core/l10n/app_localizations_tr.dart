@@ -1454,4 +1454,148 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get netSecInfoDesc => 'Kötü İkiz (Evil Twin) saldırılarına ve sahte ağlara karşı koruma sağlamak için bağlı ağların bütünlüğünü izler ve güvenilir profillerinizi yönetir.';
+
+  @override
+  String get spectrumOptimizationOpsSubtitle => 'Kanal puanlama · parazit';
+
+  @override
+  String get aboutSpectrumTitle => 'Spektrum Optimizasyonu Nedir?';
+
+  @override
+  String get aboutSpectrumWhatHeader => 'Nedir?';
+
+  @override
+  String get aboutSpectrumWhatBody => 'Wi-Fi cihazları, radyo spektrumunun \"kanal\" denilen dilimleri üzerinden konuşur. 2.4 GHz bandında üst üste binmeyen yalnızca 3 kanal vardır (1, 6, 11) ve bu band en kalabalık olanıdır. 5 GHz bandında çok daha fazla kanal bulunur ve parazit azdır. En yeni 6 GHz bandı (Wi-Fi 6E/7) ise çoğu evde neredeyse boştur.';
+
+  @override
+  String get aboutSpectrumWhyHeader => 'Ne işe yarar?';
+
+  @override
+  String get aboutSpectrumWhyBody => 'Birden fazla ağ aynı kanalı paylaşırsa sırayla konuşmak zorunda kalır ve hız düşer (Aynı Kanal Paraziti). 2.4 GHz\'de yan kanallar bile birbirinin üzerine biner ve cızırtı oluşturur (Komşu Kanal Paraziti). Sessiz bir kanal seçmek; hızı, gecikmeyi ve bağlantı kararlılığını doğrudan iyileştirir.';
+
+  @override
+  String get aboutSpectrumHowHeader => 'Nasıl yapılır?';
+
+  @override
+  String get aboutSpectrumHowBody => 'Bu ekran çevredeki tüm Wi-Fi ağlarını tarar; her kanalı rakip ağ sayısına, sinyal güçlerine ve komşu kanallarla örtüşmeye göre 0-10 arasında puanlar. Yeşil işaretli (≥8) bir kanal seçin: şu an en az kalabalık olan budur. Geçmiş sekmesi, o kanalın zaman içinde temiz kalıp kalmadığını gösterir.';
+
+  @override
+  String get bandSpectrumTitle => 'Kanal Spektrumu';
+
+  @override
+  String get bandSpectrumInfoTitle => 'Kanal Spektrumu';
+
+  @override
+  String get bandSpectrumInfoBody => 'Her bar bir kanaldır. Yüksek ve yeşil barlar sessiz; kısa kırmızı barlar kalabalık demektir. Bara dokunarak puanı (0-10) görebilirsiniz. Aynı kanalı paylaşan her ağ puandan 2 düşer (Aynı Kanal Paraziti); 2.4 GHz\'de komşu kanallardaki ağlar daha az puan düşürür (Komşu Kanal Paraziti). Yakın ve güçlü ağlar, uzak ve zayıf ağlardan daha fazla cezalandırılır.';
+
+  @override
+  String get recommendationInfoTitle => 'Öneri Nasıl Yapılır?';
+
+  @override
+  String get recommendationInfoBody => 'Her kanal 10 puandan başlar. Aynı kanalı paylaşan her ağ 2 puan (×sinyal gücü) düşürür. Komşu 2.4 GHz ağları mesafeye göre 0.2-1.5 puan düşürür. DFS kanalları (radar paylaşımlı) 0.5 puan kaybeder. En yüksek puanı alan kanal kazanır. Eşitlik durumunda küçük numaralı kanal tercih edilir.';
+
+  @override
+  String get consistentChannelInfoTitle => 'Tutarlı En İyi Kanal';
+
+  @override
+  String get consistentChannelInfoBody => 'Anlık tarama yanıltıcı olabilir: şu an sessiz olan bir kanal birazdan kalabalıklaşabilir. Geçmiş tüm taramalarınızı her kanal için ortalayıp en yüksek skorla istikrarlı kalan kanalı öne çıkarırız. Anlık öneriden farklıysa, geçmişte istikrarlı olan kanal genellikle uzun vadede daha güvenli seçimdir.';
+
+  @override
+  String get dfsBadgeLabel => 'DFS';
+
+  @override
+  String get dfsBadgeTooltip => 'DFS — meteoroloji/askeri radarla paylaşılır; yönlendiriciniz bu kanaldan kısa süreliğine ayrılabilir';
+
+  @override
+  String get dfsInfoTitle => 'DFS Nedir?';
+
+  @override
+  String get dfsInfoBody => 'DFS (Dynamic Frequency Selection — Dinamik Frekans Seçimi) kanalları, 5 GHz bandının 52-64 ve 100-144 arasındaki kanallarıdır. Bu kanallar yasal olarak hava durumu ve askeri radarlarla paylaşılır. Wi-Fi, bu radarlara öncelik vermek zorundadır: yönlendiriciniz bir radar darbesi algılarsa kanaldan en az 60 saniye boyunca ayrılmak zorundadır — bu süre boyunca cihazlarınız kısa süreliğine bağlantısı kopar ve başka bir kanala geçer. DFS kanalları genelde daha az kalabalık olduğu için yüksek puan alır; ancak havalimanı, liman veya meteoroloji istasyonu yakınlarında istikrarsız olabilir. Bu riski yansıtmak için skordan 0.5 puan düşürürüz. Yakında radar kaynağı yoksa kullanılabilir; aksi takdirde tercih etmemekte fayda vardır.';
+
+  @override
+  String get howToChangeChannelTitle => 'Wi-Fi kanalımı nasıl değiştiririm?';
+
+  @override
+  String get howToChangeChannelSubtitle => 'Yönlendiriciniz için adım adım kılavuz';
+
+  @override
+  String get guideConnectedTo => 'Bağlı olduğun ağ';
+
+  @override
+  String get guideRouterVendor => 'Yönlendirici markası';
+
+  @override
+  String get guideRouterUnknown => 'Tanınmadı — genel kılavuz gösteriliyor';
+
+  @override
+  String get guideStep1 => 'Adım 1 · Yönetim panelini aç';
+
+  @override
+  String get guideStep1Body => 'Aşağıdaki AÇ butonuna dokun — varsayılan tarayıcın yönlendiricinin yönetim sayfasında açılır. (Tercih edersen adresi kopyalayıp tarayıcıya elle yapıştırabilirsin.) Adresin çalışması için bu Wi-Fi\'a bağlı olmalısın; sadece mobil veriyle erişemezsin.';
+
+  @override
+  String get guideOpenInBrowser => 'Aç';
+
+  @override
+  String get guideOpenFailedMessage => 'Tarayıcı otomatik açılamadı — adresi kopyalayıp elle yapıştırabilirsin.';
+
+  @override
+  String get guideCredentialsHeader => 'Kullanıcı adı ve şifre';
+
+  @override
+  String get guideCredentialsBody => 'Yönetim sayfası giriş istediğinde:\n\n1. Yönlendiricinin altına veya arkasına bak — orada genellikle Wi-Fi şifresinin yanında YÖNETİM giriş bilgileri de yazar. Yönetim girişi \"Yönetim şifresi\", \"Web şifresi\", \"Modem şifresi\", \"Admin password\" veya \"Web password\" olarak etiketlenir. Bu, Wi-Fi şifresiyle AYNI DEĞİLDİR.\n\n2. Etiket yoksa şu fabrika varsayılanlarını dene:\n   • admin / admin\n   • admin / password\n   • admin / 1234\n   • root / admin\n   • Kullanıcı adı boş / şifre admin\n\n3. Yönlendiriciyi internet sağlayıcın kurduysa (Türk Telekom, TurkNet, Vodafone, Superonline, vb.) yönetim şifresi genellikle cihazın seri numarasının son 6-8 karakteridir; bu da etikette yazar. Birçok sağlayıcı her cihaza özel rastgele şifre basar.\n\n4. Hiçbiri olmuyorsa: birisi daha önce şifreyi değiştirmiş demektir. Yönlendiricinin arkasındaki RESET deliğine 10-15 saniye basılı tutarak fabrika ayarlarına dönebilirsin — ancak bu Wi-Fi adını ve şifresini de sıfırlar; tekrar baştan kurman gerekir.\n\n5. Bazı yeni yönlendiriciler web yönetim panelini bir telefon uygulamasıyla değiştirir (örn. TP-Link Tether, ASUS Router, Mi WiFi, Huawei AI Life). Web sayfası seni uygulamayı yüklemeye yönlendiriyorsa uygulamayı kurup oradan devam et.';
+
+  @override
+  String get guideAddressLabel => 'Yönetim adresi';
+
+  @override
+  String get guideCopyAddress => 'Kopyala';
+
+  @override
+  String get guideAddressCopied => 'Adres kopyalandı — tarayıcında aç';
+
+  @override
+  String get guideStep2 => 'Adım 2 · Wi-Fi / Kablosuz menüsünü bul';
+
+  @override
+  String get guideStep2Body => 'Giriş yaptıktan sonra Wi-Fi, Kablosuz, Wireless veya Ağ Ayarları adlı menüyü ara. Markalara göre isim değişebilir — aşağıda senin yönlendiricinin markasına göre yol verilmiştir:';
+
+  @override
+  String get guideStep3 => 'Adım 3 · Kanalı ayarla ve uygula';
+
+  @override
+  String get guideStep3Body => 'Kanal seçeneğini bul (Channel, Kanal veya Wireless Channel olarak yazabilir). Otomatik (Auto) olan değeri önceki ekranda önerilen kanal numarasına çevir. Yönlendiricin 2.4 GHz ile 5 GHz için ayrı seçenek gösteriyorsa her bandın kendi önerilen kanalını ayarla. Kaydet/Uygula\'ya bas. Yönlendirici Wi-Fi yayınını kısa bir an yeniden başlatacak.';
+
+  @override
+  String get guideMenuPathLabel => 'Menü yolu';
+
+  @override
+  String get guideGenericMenuPath => 'Wireless / Kablosuz → Temel / Gelişmiş Ayarlar → Kanal';
+
+  @override
+  String get channelWidthHeader => 'Kanal genişliği — 20 / 40 / 80 / 160 MHz';
+
+  @override
+  String get channelWidthBody => 'Kanal genişliği bir otoyolun şerit sayısı gibidir:\n• 20 MHz = 1 şerit. Yavaş ama trafiğe karşı dayanıklı. Kalabalık 2.4 GHz için en uygunu.\n• 40 MHz = 2 şerit. İki kat veri akışı, ama yan kanallarla daha çok çakışır.\n• 80 MHz = 4 şerit. Hızlı — yalnızca 5 GHz/6 GHz\'de kullanılabilir.\n• 160 MHz = 8 şerit. En yüksek hız, ama 5 GHz bandının yarısını kaplar; ancak komşu yoksa anlamlı.\n\nGenel kural: 2.4 GHz\'de 20 MHz; 5 GHz\'de 80 MHz; varsa 6 GHz\'de 160 MHz.';
+
+  @override
+  String get guideRisksHeader => 'Kanalı değiştirmek güvenli mi?';
+
+  @override
+  String get guideRisksBody => 'Evet — tamamen güvenli. Kanal değiştirmenin, yönlendirici radyoyu yeniden başlatırken oluşan 5-10 saniyelik kısa bir kesinti dışında hiçbir güvenlik veya performans yan etkisi yoktur. Ağ adın (SSID), şifren, port yönlendirme kuralların, ebeveyn denetimleri ve diğer tüm ayarlar aynen kalır. Bağlı cihazlar otomatik olarak yeniden bağlanır. Sonradan bir şey daha kötü gibi görünürse, aynı menüden Otomatik (Auto) ayarına geri dönebilirsin; yönlendirici kanalı kendisi seçer.';
+
+  @override
+  String get guideNoConnection => 'Bir Wi-Fi ağına bağlı değilsin — yönetim adresini ve markaya özel kılavuzu görmek için önce bağlan.';
+
+  @override
+  String get unstableChannelLabel => 'DENGESİZ';
+
+  @override
+  String get unstableChannelTooltip => 'Bu kanalın puanı son oturumlarda 1.5 puandan fazla dalgalandı';
+
+  @override
+  String get historyHeatmapInfoTitle => 'Isı Haritası Nedir?';
+
+  @override
+  String get historyHeatmapInfoBody => 'Her satır bir kanal, her sütun ise bir tarama yaptığınız andır. Hücre rengi o anda kanalın aldığı puanı gösterir: kırmızı (kötü) → sarı (orta) → yeşil (mükemmel). Boş hücreler, o taramada kanalın görünmediği anlamına gelir. Tamamen yeşil satırları kollayın — bunlar zamanla temiz kalan kanallardır.';
 }

@@ -19,6 +19,10 @@ const _timeRanges = <Duration>[
 ];
 const _timeRangeLabels = ['1H', '6H', '24H', '7D'];
 
+/// A channel is considered unstable when its rating fluctuates by more than
+/// this many points across the visible sessions.
+const double _unstableThreshold = 1.5;
+
 /// Displays channel rating history with filtering, stats, and multiple
 /// chart modes (bar / line / heatmap).
 class ChannelHistoryChart extends StatefulWidget {
@@ -82,6 +86,23 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
     return map;
   }
 
+  /// Channels whose rating spread (max-min) across sessions exceeds the
+  /// unstable threshold. Useful to flag channels that swing wildly.
+  Set<int> _unstableChannels(Map<int, List<ChannelRatingSample>> byChannel) {
+    final result = <int>{};
+    for (final entry in byChannel.entries) {
+      if (entry.value.length < 3) continue;
+      double minR = double.infinity;
+      double maxR = -double.infinity;
+      for (final s in entry.value) {
+        if (s.rating < minR) minR = s.rating;
+        if (s.rating > maxR) maxR = s.rating;
+      }
+      if (maxR - minR > _unstableThreshold) result.add(entry.key);
+    }
+    return result;
+  }
+
   // ── Color generation ────────────────────────────────────────────────
 
   static Color _colorForIndex(int i, int total) {
@@ -113,6 +134,7 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
     final byChannel = _groupByChannel(filtered);
     final channels = byChannel.keys.toList()..sort();
     final sessions = _buildSessions(filtered);
+    final unstable = _unstableChannels(byChannel);
 
     // Stats
     final bestEntry = _bestChannel(byChannel);
@@ -147,9 +169,21 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
           sessionCount: sessions.length,
         ),
         const SizedBox(height: 16),
-        NeonSectionHeader(
-          label: context.l10n.historyChannelRatings,
-          icon: Icons.bar_chart_rounded,
+        Row(
+          children: [
+            Expanded(
+              child: NeonSectionHeader(
+                label: context.l10n.historyChannelRatings,
+                icon: Icons.bar_chart_rounded,
+              ),
+            ),
+            if (_heatmapMode && sessions.length > 1)
+              InfoIconButton(
+                title: context.l10n.historyHeatmapInfoTitle,
+                body: context.l10n.historyHeatmapInfoBody,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+          ],
         ),
         const SizedBox(height: 8),
         AnimatedSwitcher(
@@ -166,6 +200,7 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
           channels: channels,
           colorForIndex: _colorForIndex,
           highlighted: _highlightedChannels,
+          unstable: unstable,
           onToggle: _toggleChannel,
         ),
         const SizedBox(height: 8),
@@ -294,6 +329,13 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
       ],
     );
   }
+}
+
+/// Returns a responsive chart height bounded by reasonable min/max so the
+/// chart never collapses on small screens nor wastes space on tablets.
+double _chartHeight(BuildContext context) {
+  final h = MediaQuery.of(context).size.height;
+  return math.min(420.0, math.max(280.0, h * 0.42));
 }
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -514,64 +556,87 @@ class _SummaryStatsRow extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-//  Interactive Legend
+//  Interactive Legend (Wrap so many channels overflow to next line)
 // ═══════════════════════════════════════════════════════════════════════
 
 class _InteractiveLegend extends StatelessWidget {
   final List<int> channels;
   final Color Function(int index, int total) colorForIndex;
   final Set<int> highlighted;
+  final Set<int> unstable;
   final ValueChanged<int> onToggle;
 
   const _InteractiveLegend({
     required this.channels,
     required this.colorForIndex,
     required this.highlighted,
+    required this.unstable,
     required this.onToggle,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 30,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: channels.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 6),
-        itemBuilder: (context, i) {
-          final ch = channels[i];
-          final color = colorForIndex(i, channels.length);
-          final isActive = highlighted.isEmpty || highlighted.contains(ch);
-          return GestureDetector(
-            onTap: () => onToggle(ch),
-            child: AnimatedOpacity(
-              opacity: isActive ? 1.0 : 0.25,
-              duration: const Duration(milliseconds: 200),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: color.withValues(alpha: isActive ? 0.15 : 0.05),
-                  border: Border.all(
-                    color: color.withValues(alpha: isActive ? 0.5 : 0.2),
-                  ),
-                ),
-                child: Text(
-                  'CH $ch',
-                  style: GoogleFonts.rajdhani(
-                    fontSize: 12,
-                    color: color,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+    final l10n = context.l10n;
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: [
+        for (var i = 0; i < channels.length; i++)
+          _legendChip(context, i, channels[i], l10n.unstableChannelTooltip),
+      ],
+    );
+  }
+
+  Widget _legendChip(
+    BuildContext context,
+    int i,
+    int ch,
+    String unstableTooltip,
+  ) {
+    final color = colorForIndex(i, channels.length);
+    final isActive = highlighted.isEmpty || highlighted.contains(ch);
+    final isUnstable = unstable.contains(ch);
+
+    final chip = AnimatedOpacity(
+      opacity: isActive ? 1.0 : 0.35,
+      duration: const Duration(milliseconds: 200),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: color.withValues(alpha: isActive ? 0.15 : 0.05),
+          border: Border.all(
+            color: color.withValues(alpha: isActive ? 0.6 : 0.25),
+            width: isUnstable ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'CH $ch',
+              style: GoogleFonts.rajdhani(
+                fontSize: 12,
+                color: color,
+                fontWeight: FontWeight.bold,
               ),
             ),
-          );
-        },
+            if (isUnstable) ...[
+              const SizedBox(width: 4),
+              Icon(
+                Icons.warning_amber_rounded,
+                size: 12,
+                color: AppColors.neonOrange,
+              ),
+            ],
+          ],
+        ),
       ),
+    );
+
+    return GestureDetector(
+      onTap: () => onToggle(ch),
+      child: isUnstable ? Tooltip(message: unstableTooltip, child: chip) : chip,
     );
   }
 }
@@ -598,6 +663,7 @@ class _BarView extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final onSurface = Theme.of(context).colorScheme.onSurface;
+    final manyChannels = channels.length > 12;
 
     final groups =
         channels.asMap().entries.map((entry) {
@@ -612,8 +678,8 @@ class _BarView extends StatelessWidget {
             barRods: [
               BarChartRodData(
                 toY: rating,
-                color: color.withValues(alpha: isActive ? 1.0 : 0.2),
-                width: channels.length > 12 ? 10 : 18,
+                color: color.withValues(alpha: isActive ? 1.0 : 0.25),
+                width: manyChannels ? 12 : 18,
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(4),
                 ),
@@ -629,102 +695,106 @@ class _BarView extends StatelessWidget {
 
     return NeonCard(
       padding: const EdgeInsets.fromLTRB(8, 16, 16, 8),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final height = constraints.maxWidth > 400 ? 260.0 : 200.0;
-          return SizedBox(
-            height: height,
-            child: BarChart(
-              swapAnimationDuration: const Duration(milliseconds: 300),
-              swapAnimationCurve: Curves.easeOutCubic,
-              BarChartData(
-                barGroups: groups,
-                maxY: 10,
-                gridData: FlGridData(
-                  drawHorizontalLine: true,
-                  drawVerticalLine: false,
-                  getDrawingHorizontalLine:
-                      (_) => FlLine(
-                        color: onSurface.withValues(alpha: 0.08),
-                        strokeWidth: 1,
+      child: SizedBox(
+        height: _chartHeight(context),
+        child: BarChart(
+          swapAnimationDuration: const Duration(milliseconds: 300),
+          swapAnimationCurve: Curves.easeOutCubic,
+          BarChartData(
+            barGroups: groups,
+            maxY: 10,
+            gridData: FlGridData(
+              drawHorizontalLine: true,
+              drawVerticalLine: false,
+              getDrawingHorizontalLine:
+                  (_) => FlLine(
+                    color: onSurface.withValues(alpha: 0.08),
+                    strokeWidth: 1,
+                  ),
+            ),
+            borderData: FlBorderData(show: false),
+            titlesData: FlTitlesData(
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: manyChannels ? 38 : 24,
+                  getTitlesWidget: (v, _) {
+                    final idx = v.toInt();
+                    if (idx < 0 || idx >= channels.length) {
+                      return const SizedBox.shrink();
+                    }
+                    final color = colorForIndex(idx, channels.length);
+                    final text = Text(
+                      'CH${channels[idx]}',
+                      style: GoogleFonts.rajdhani(
+                        fontSize: 9,
+                        color: color,
+                        fontWeight: FontWeight.bold,
                       ),
-                ),
-                borderData: FlBorderData(show: false),
-                titlesData: FlTitlesData(
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: (v, _) {
-                        final idx = v.toInt();
-                        if (idx < 0 || idx >= channels.length) {
-                          return const SizedBox.shrink();
-                        }
-                        if (channels.length > 12 && idx % 2 != 0) {
-                          return const SizedBox.shrink();
-                        }
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Text(
-                            'CH${channels[idx]}',
-                            style: GoogleFonts.rajdhani(
-                              fontSize: 9,
-                              color: colorForIndex(idx, channels.length),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        );
-                      },
-                      reservedSize: 24,
-                    ),
-                  ),
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 32,
-                      interval: 2,
-                      getTitlesWidget:
-                          (v, _) => Text(
-                            v.toInt().toString(),
-                            style: GoogleFonts.rajdhani(
-                              fontSize: 10,
-                              color: onSurface.withValues(alpha: 0.5),
-                            ),
-                          ),
-                    ),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                ),
-                barTouchData: BarTouchData(
-                  touchTooltipData: BarTouchTooltipData(
-                    fitInsideHorizontally: true,
-                    fitInsideVertically: true,
-                    getTooltipColor:
-                        (_) =>
-                            isDark
-                                ? const Color(0xFF1E293B)
-                                : Theme.of(context).colorScheme.surface,
-                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                      final ch = channels[group.x];
-                      return BarTooltipItem(
-                        'CH $ch\n${rod.toY.toStringAsFixed(0)}',
-                        GoogleFonts.rajdhani(
-                          color: colorForIndex(groupIndex, channels.length),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
+                    );
+                    if (manyChannels) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: Transform.rotate(
+                          angle: -0.65,
+                          alignment: Alignment.topCenter,
+                          child: text,
                         ),
                       );
-                    },
-                  ),
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: text,
+                    );
+                  },
                 ),
               ),
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 32,
+                  interval: 2,
+                  getTitlesWidget:
+                      (v, _) => Text(
+                        v.toInt().toString(),
+                        style: GoogleFonts.rajdhani(
+                          fontSize: 10,
+                          color: onSurface.withValues(alpha: 0.5),
+                        ),
+                      ),
+                ),
+              ),
+              topTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              rightTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
             ),
-          );
-        },
+            barTouchData: BarTouchData(
+              touchTooltipData: BarTouchTooltipData(
+                fitInsideHorizontally: true,
+                fitInsideVertically: true,
+                getTooltipColor:
+                    (_) =>
+                        isDark
+                            ? const Color(0xFF1E293B)
+                            : Theme.of(context).colorScheme.surface,
+                getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                  final ch = channels[group.x];
+                  return BarTooltipItem(
+                    'CH $ch\n${rod.toY.toStringAsFixed(0)}',
+                    GoogleFonts.rajdhani(
+                      color: colorForIndex(groupIndex, channels.length),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -782,15 +852,22 @@ class _LineView extends StatelessWidget {
             }
           }
 
+          // Only paint a fill below the line when this channel is the
+          // *only* highlighted one — otherwise every channel's fill area
+          // (0..rating) stacks and the highest-scoring channel's fill
+          // hides every line beneath it.
+          final isFocused = highlighted.contains(ch);
           return LineChartBarData(
             spots: spots,
             isCurved: spots.length > 2,
-            color: color.withValues(alpha: isActive ? 1.0 : 0.12),
-            barWidth: isActive ? 2.5 : 1,
-            dotData: FlDotData(show: isActive && spots.length <= 5),
+            color: color.withValues(alpha: isActive ? 1.0 : 0.25),
+            barWidth: isActive ? 2.5 : 1.2,
+            dotData: FlDotData(
+              show: isFocused || spots.length <= 10,
+            ),
             belowBarData: BarAreaData(
-              show: isActive,
-              color: color.withValues(alpha: 0.08),
+              show: isFocused,
+              color: color.withValues(alpha: 0.18),
             ),
           );
         }).toList();
@@ -815,116 +892,112 @@ class _LineView extends StatelessWidget {
 
     return NeonCard(
       padding: const EdgeInsets.fromLTRB(8, 16, 16, 8),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final height = constraints.maxWidth > 400 ? 260.0 : 200.0;
-          return SizedBox(
-            height: height,
-            child: LineChart(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOutCubic,
-              LineChartData(
-                lineBarsData: lines,
-                minY: 0,
-                maxY: 10,
-                minX: 0,
-                maxX: (sessions.length - 1).toDouble(),
-                gridData: FlGridData(
-                  drawHorizontalLine: true,
-                  drawVerticalLine: false,
-                  getDrawingHorizontalLine:
-                      (_) => FlLine(
-                        color: onSurface.withValues(alpha: 0.08),
-                        strokeWidth: 1,
+      child: SizedBox(
+        height: _chartHeight(context),
+        child: LineChart(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+          LineChartData(
+            lineBarsData: lines,
+            minY: 0,
+            maxY: 10,
+            minX: 0,
+            maxX: (sessions.length - 1).toDouble(),
+            gridData: FlGridData(
+              drawHorizontalLine: true,
+              drawVerticalLine: false,
+              getDrawingHorizontalLine:
+                  (_) => FlLine(
+                    color: onSurface.withValues(alpha: 0.08),
+                    strokeWidth: 1,
+                  ),
+            ),
+            borderData: FlBorderData(show: false),
+            titlesData: FlTitlesData(
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 32,
+                  interval: 2,
+                  getTitlesWidget:
+                      (v, _) => Text(
+                        v.toInt().toString(),
+                        style: GoogleFonts.rajdhani(
+                          fontSize: 10,
+                          color: onSurface.withValues(alpha: 0.5),
+                        ),
                       ),
                 ),
-                borderData: FlBorderData(show: false),
-                titlesData: FlTitlesData(
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 32,
-                      interval: 2,
-                      getTitlesWidget:
-                          (v, _) => Text(
-                            v.toInt().toString(),
-                            style: GoogleFonts.rajdhani(
-                              fontSize: 10,
-                              color: onSurface.withValues(alpha: 0.5),
-                            ),
-                          ),
-                    ),
-                  ),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 28,
-                      interval: labelStep.toDouble(),
-                      getTitlesWidget: (v, _) {
-                        final idx = v.toInt();
-                        if (idx % labelStep != 0) {
-                          return const SizedBox.shrink();
-                        }
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Text(
-                            sessionLabel(idx),
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.rajdhani(
-                              fontSize: 9,
-                              color: onSurface.withValues(alpha: 0.5),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                ),
-                lineTouchData: LineTouchData(
-                  touchTooltipData: LineTouchTooltipData(
-                    fitInsideHorizontally: true,
-                    fitInsideVertically: true,
-                    getTooltipColor:
-                        (_) =>
-                            isDark
-                                ? const Color(0xFF1E293B)
-                                : Theme.of(context).colorScheme.surface,
-                    getTooltipItems: (touchedSpots) {
-                      return touchedSpots.map((spot) {
-                        final ch = channels[spot.barIndex];
-                        final time = sessionLabel(spot.x.toInt());
-                        return LineTooltipItem(
-                          'CH $ch: ${spot.y.toStringAsFixed(0)}'
-                          '${time.isNotEmpty ? '\n$time' : ''}',
-                          GoogleFonts.rajdhani(
-                            color:
-                                spot.bar.color ??
-                                Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
-                        );
-                      }).toList();
-                    },
-                  ),
+              ),
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 32,
+                  interval: labelStep.toDouble(),
+                  getTitlesWidget: (v, _) {
+                    final idx = v.toInt();
+                    if (idx % labelStep != 0) {
+                      return const SizedBox.shrink();
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        sessionLabel(idx),
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.rajdhani(
+                          fontSize: 9,
+                          color: onSurface.withValues(alpha: 0.5),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
+              topTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              rightTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
             ),
-          );
-        },
+            lineTouchData: LineTouchData(
+              touchTooltipData: LineTouchTooltipData(
+                fitInsideHorizontally: true,
+                fitInsideVertically: true,
+                getTooltipColor:
+                    (_) =>
+                        isDark
+                            ? const Color(0xFF1E293B)
+                            : Theme.of(context).colorScheme.surface,
+                getTooltipItems: (touchedSpots) {
+                  return touchedSpots.map((spot) {
+                    final ch = channels[spot.barIndex];
+                    final time = sessionLabel(spot.x.toInt());
+                    return LineTooltipItem(
+                      'CH $ch: ${spot.y.toStringAsFixed(0)}'
+                      '${time.isNotEmpty ? '\n$time' : ''}',
+                      GoogleFonts.rajdhani(
+                        color:
+                            spot.bar.color ??
+                            Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    );
+                  }).toList();
+                },
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-//  Heatmap View (multi-session)
+//  Heatmap View (multi-session) — adaptive cells, single horizontal scroll
+//  containing both header (time labels) and grid so they stay in sync.
 // ═══════════════════════════════════════════════════════════════════════
 
 class _HeatmapView extends StatelessWidget {
@@ -943,6 +1016,7 @@ class _HeatmapView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final onSurface = Theme.of(context).colorScheme.onSurface;
 
     // Build rating matrix: [channelIdx][sessionIdx] → rating (or null)
@@ -968,57 +1042,72 @@ class _HeatmapView extends StatelessWidget {
       }
     }
 
-    const cellW = 28.0;
-    const cellH = 24.0;
-    const labelW = 48.0;
-    final totalWidth = labelW + (sessions.length * cellW);
-    final totalHeight = channels.length * cellH;
+    final maxH = _chartHeight(context);
 
     return NeonCard(
       padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Session time labels (horizontal scroll)
-          SizedBox(
-            height: 20,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Padding(
-                padding: const EdgeInsets.only(left: labelW),
-                child: Row(
-                  children: [
-                    for (var si = 0; si < sessions.length; si++)
-                      SizedBox(
-                        width: cellW,
-                        child:
-                            si % math.max(1, (sessions.length / 6).ceil()) == 0
-                                ? Text(
-                                  '${sessions[si].hour.toString().padLeft(2, '0')}:'
-                                  '${sessions[si].minute.toString().padLeft(2, '0')}',
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.rajdhani(
-                                    fontSize: 8,
-                                    color: onSurface.withValues(alpha: 0.5),
-                                  ),
-                                )
-                                : const SizedBox.shrink(),
-                      ),
-                  ],
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          const labelW = 48.0;
+          const headerH = 22.0;
+          const minCellW = 24.0;
+          const minCellH = 16.0;
+          const maxCellH = 32.0;
+
+          final available = constraints.maxWidth;
+          final available5 = available - labelW;
+          // Fit-to-width if possible; otherwise fall back to minCellW and let
+          // the user scroll horizontally.
+          final cellW = math.max(minCellW, available5 / sessions.length);
+
+          // Available vertical space for the grid itself (minus header & legend).
+          final gridSpace = maxH - headerH - 32;
+          final cellH = (gridSpace / channels.length).clamp(
+            minCellH,
+            maxCellH,
+          );
+          final totalGridW = labelW + sessions.length * cellW;
+          final totalGridH = channels.length * cellH;
+          final needsHScroll = totalGridW > available + 0.5;
+
+          // The grid + time-label header live in the same horizontal scroll
+          // view so they stay perfectly aligned.
+          final timeStep = math.max(1, (sessions.length / 6).ceil());
+          final body = SizedBox(
+            width: totalGridW,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: headerH,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: labelW),
+                    child: Row(
+                      children: [
+                        for (var si = 0; si < sessions.length; si++)
+                          SizedBox(
+                            width: cellW,
+                            child:
+                                si % timeStep == 0
+                                    ? Text(
+                                      '${sessions[si].hour.toString().padLeft(2, '0')}:'
+                                      '${sessions[si].minute.toString().padLeft(2, '0')}',
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.rajdhani(
+                                        fontSize: 8,
+                                        color: onSurface.withValues(alpha: 0.5),
+                                      ),
+                                    )
+                                    : const SizedBox.shrink(),
+                          ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 4),
-          // Heatmap grid
-          SizedBox(
-            height: math.min(totalHeight, 300),
-            child: SingleChildScrollView(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: SizedBox(
-                  width: totalWidth,
-                  height: totalHeight,
+                const SizedBox(height: 4),
+                SizedBox(
+                  width: totalGridW,
+                  height: totalGridH,
                   child: CustomPaint(
                     painter: _HeatmapPainter(
                       channels: channels,
@@ -1029,16 +1118,29 @@ class _HeatmapView extends StatelessWidget {
                       cellH: cellH,
                       labelW: labelW,
                       textColor: onSurface,
+                      isDark: isDark,
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ),
-          const SizedBox(height: 8),
-          // Color scale legend
-          _HeatmapColorScale(textColor: onSurface),
-        ],
+          );
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (needsHScroll)
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: body,
+                )
+              else
+                body,
+              const SizedBox(height: 8),
+              _HeatmapColorScale(textColor: onSurface, isDark: isDark),
+            ],
+          );
+        },
       ),
     );
   }
@@ -1053,6 +1155,7 @@ class _HeatmapPainter extends CustomPainter {
   final double cellH;
   final double labelW;
   final Color textColor;
+  final bool isDark;
 
   _HeatmapPainter({
     required this.channels,
@@ -1063,6 +1166,7 @@ class _HeatmapPainter extends CustomPainter {
     required this.cellH,
     required this.labelW,
     required this.textColor,
+    required this.isDark,
   });
 
   @override
@@ -1098,7 +1202,8 @@ class _HeatmapPainter extends CustomPainter {
         if (rating != null) {
           final color = _ratingColor(
             rating,
-          ).withValues(alpha: isActive ? 0.85 : 0.15);
+            isDark,
+          ).withValues(alpha: isActive ? 0.85 : 0.18);
           canvas.drawRRect(
             RRect.fromRectAndRadius(rect, const Radius.circular(3)),
             Paint()..color = color,
@@ -1113,37 +1218,41 @@ class _HeatmapPainter extends CustomPainter {
     }
   }
 
-  static Color _ratingColor(double rating) {
-    // 0 = red, 5 = yellow, 10 = green
+  /// Light theme uses a more saturated orange mid-stop because the
+  /// fluorescent yellow used for dark theme nearly disappears on white.
+  static Color _ratingColor(double rating, bool isDark) {
     final t = (rating / 10).clamp(0.0, 1.0);
+    final low = const Color(0xFFFF1744);
+    final mid = isDark ? const Color(0xFFEEFF41) : const Color(0xFFFF8F00);
+    final high =
+        isDark ? const Color(0xFF39FF14) : const Color(0xFF2E7D32);
     if (t < 0.5) {
-      return Color.lerp(
-        const Color(0xFFFF1744),
-        const Color(0xFFEEFF41),
-        t * 2,
-      )!;
+      return Color.lerp(low, mid, t * 2)!;
     }
-    return Color.lerp(
-      const Color(0xFFEEFF41),
-      const Color(0xFF39FF14),
-      (t - 0.5) * 2,
-    )!;
+    return Color.lerp(mid, high, (t - 0.5) * 2)!;
   }
 
   @override
   bool shouldRepaint(covariant _HeatmapPainter oldDelegate) =>
       oldDelegate.matrix != matrix ||
       oldDelegate.highlighted != highlighted ||
-      oldDelegate.channels != channels;
+      oldDelegate.channels != channels ||
+      oldDelegate.cellW != cellW ||
+      oldDelegate.cellH != cellH ||
+      oldDelegate.isDark != isDark;
 }
 
 class _HeatmapColorScale extends StatelessWidget {
   final Color textColor;
+  final bool isDark;
 
-  const _HeatmapColorScale({required this.textColor});
+  const _HeatmapColorScale({required this.textColor, required this.isDark});
 
   @override
   Widget build(BuildContext context) {
+    final low = const Color(0xFFFF1744);
+    final mid = isDark ? const Color(0xFFEEFF41) : const Color(0xFFFF8F00);
+    final high = isDark ? const Color(0xFF39FF14) : const Color(0xFF2E7D32);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -1160,9 +1269,7 @@ class _HeatmapColorScale extends StatelessWidget {
           height: 8,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
-            gradient: const LinearGradient(
-              colors: [Color(0xFFFF1744), Color(0xFFEEFF41), Color(0xFF39FF14)],
-            ),
+            gradient: LinearGradient(colors: [low, mid, high]),
           ),
         ),
         const SizedBox(width: 4),

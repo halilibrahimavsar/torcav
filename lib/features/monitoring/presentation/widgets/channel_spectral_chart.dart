@@ -1,5 +1,9 @@
+import 'dart:math' as math;
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import '../../../../features/wifi_scan/domain/entities/channel_rating.dart';
 
 class ChannelSpectralChart extends StatelessWidget {
@@ -17,10 +21,16 @@ class ChannelSpectralChart extends StatelessWidget {
     if (ratings.isEmpty) return const SizedBox.shrink();
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final onSurface = Theme.of(context).colorScheme.onSurface;
+    final screenH = MediaQuery.of(context).size.height;
+
+    // Responsive height: tall enough for bars + rotated labels.
+    final chartHeight = math.min(360.0, math.max(220.0, screenH * 0.32));
+    final manyChannels = ratings.length > 10;
+    final barWidth = manyChannels ? 12.0 : 18.0;
 
     return Container(
-      height: 200,
-      padding: const EdgeInsets.fromLTRB(16, 28, 16, 8),
+      height: chartHeight,
+      padding: const EdgeInsets.fromLTRB(12, 24, 12, 8),
       decoration: BoxDecoration(
         color:
             isDark
@@ -69,31 +79,59 @@ class ChannelSpectralChart extends StatelessWidget {
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
+                reservedSize: manyChannels ? 36 : 22,
                 getTitlesWidget: (value, meta) {
                   final index = value.toInt();
                   if (index < 0 || index >= ratings.length) {
-                    return const SizedBox();
+                    return const SizedBox.shrink();
                   }
-                  // Show every 2nd or 3rd label to avoid crowding
-                  if (ratings.length > 10 && index % 2 != 0) {
-                    return const SizedBox();
+                  final label = '${ratings[index].channel}';
+                  final color = onSurface.withValues(alpha: 0.62);
+                  if (manyChannels) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Transform.rotate(
+                        angle: -0.65, // ~ -37°
+                        alignment: Alignment.topCenter,
+                        child: Text(
+                          label,
+                          style: GoogleFonts.rajdhani(
+                            color: color,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    );
                   }
-
                   return Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
+                    padding: const EdgeInsets.only(top: 6.0),
                     child: Text(
-                      '${ratings[index].channel}',
-                      style: TextStyle(
-                        color: onSurface.withValues(alpha: 0.5),
-                        fontSize: 10,
+                      label,
+                      style: GoogleFonts.rajdhani(
+                        color: color,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   );
                 },
               ),
             ),
-            leftTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 26,
+                interval: 2,
+                getTitlesWidget:
+                    (value, _) => Text(
+                      value.toInt().toString(),
+                      style: GoogleFonts.rajdhani(
+                        color: onSurface.withValues(alpha: 0.45),
+                        fontSize: 10,
+                      ),
+                    ),
+              ),
             ),
             topTitles: const AxisTitles(
               sideTitles: SideTitles(showTitles: false),
@@ -102,7 +140,15 @@ class ChannelSpectralChart extends StatelessWidget {
               sideTitles: SideTitles(showTitles: false),
             ),
           ),
-          gridData: const FlGridData(show: false),
+          gridData: FlGridData(
+            show: true,
+            drawVerticalLine: false,
+            getDrawingHorizontalLine:
+                (_) => FlLine(
+                  color: onSurface.withValues(alpha: 0.06),
+                  strokeWidth: 1,
+                ),
+          ),
           borderData: FlBorderData(show: false),
           barGroups:
               ratings.asMap().entries.map((entry) {
@@ -115,7 +161,7 @@ class ChannelSpectralChart extends StatelessWidget {
                     BarChartRodData(
                       toY: rating.rating,
                       color: _getColorForRating(rating.rating, accentColor),
-                      width: 8,
+                      width: barWidth,
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(4),
                       ),

@@ -16,12 +16,16 @@ class ChannelRating extends Equatable {
   /// Enum representation of quality for localization.
   final ChannelQuality quality;
 
+  /// True for 5 GHz channels subject to Dynamic Frequency Selection (radar).
+  final bool isDfs;
+
   const ChannelRating({
     required this.channel,
     required this.frequency,
     required this.rating,
     required this.networkCount,
     required this.quality,
+    this.isDfs = false,
   });
 
   @override
@@ -31,5 +35,6 @@ class ChannelRating extends Equatable {
     rating,
     networkCount,
     quality,
+    isDfs,
   ];
 }

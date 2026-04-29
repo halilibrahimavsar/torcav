@@ -68,6 +68,7 @@ dependencies:
   sensors_plus: ^6.1.1
   flutter_compass: ^0.8.0
   onnxruntime: ^1.4.1
+  url_launcher: ^6.3.1
 
   # Shared Modules (Added as per User Rules & Roadmap Audit)
   remote_auth_module:

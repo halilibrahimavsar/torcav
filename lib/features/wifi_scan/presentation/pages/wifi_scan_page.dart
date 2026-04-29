@@ -17,7 +17,6 @@ import '../../domain/entities/scan_request.dart';
 import '../../domain/entities/scan_snapshot.dart';
 import '../bloc/wifi_scan_bloc.dart';
 import '../../domain/services/scan_session_store.dart';
-import '../widgets/channel_rating_link.dart';
 import '../widgets/recommendation_banner.dart';
 import '../widgets/scan_filter_state.dart';
 import '../widgets/scan_mode_toggle.dart';
@@ -521,20 +520,6 @@ class _SnapshotViewState extends State<_SnapshotView> {
               onDismiss: () => setState(() => _showRecommendation = false),
             ),
           const SizedBox(height: 12),
-
-          // ── Channel Rating Quick Link ──
-          BlocBuilder<WifiScanBloc, WifiScanState>(
-            builder: (context, state) {
-              if (state is! WifiScanLoaded) return const SizedBox.shrink();
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: ChannelRatingLink(
-                  snapshot: widget.snapshot,
-                  request: widget.currentRequest,
-                ),
-              );
-            },
-          ),
 
           // ── Quick / Deep Scan Toggle ──
           ScanModeToggle(

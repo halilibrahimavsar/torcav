@@ -2786,6 +2786,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Monitors the integrity of connected networks, detects rogue access points, and manages your trusted Wi-Fi profiles to protect against Evil Twin attacks.'**
   String get netSecInfoDesc;
+
+  /// Operations Hub subtitle for the Spectrum Optimization card
+  ///
+  /// In en, this message translates to:
+  /// **'Channel rating · interference'**
+  String get spectrumOptimizationOpsSubtitle;
+
+  /// Title of the about-spectrum expandable info panel
+  ///
+  /// In en, this message translates to:
+  /// **'What is Spectrum Optimization?'**
+  String get aboutSpectrumTitle;
+
+  /// Header for the 'What is it' subsection
+  ///
+  /// In en, this message translates to:
+  /// **'What is it?'**
+  String get aboutSpectrumWhatHeader;
+
+  /// Body for 'What is it' subsection
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi devices communicate over slices of the radio spectrum called channels. The 2.4 GHz band has only 3 truly non-overlapping channels (1, 6, 11) and is the most crowded. The 5 GHz band has many more channels and less interference. The newest 6 GHz band (Wi-Fi 6E/7) is almost empty in most homes.'**
+  String get aboutSpectrumWhatBody;
+
+  /// Header for the 'What it does' subsection
+  ///
+  /// In en, this message translates to:
+  /// **'What is it for?'**
+  String get aboutSpectrumWhyHeader;
+
+  /// Body for 'What it does' subsection
+  ///
+  /// In en, this message translates to:
+  /// **'When many networks share the same channel, they take turns talking, which slows everything down (Co-channel Interference). On 2.4 GHz, even nearby channels overlap and create static (Adjacent Channel Interference). Picking a quiet channel directly improves speed, latency and connection stability.'**
+  String get aboutSpectrumWhyBody;
+
+  /// Header for the 'How' subsection
+  ///
+  /// In en, this message translates to:
+  /// **'How does it work?'**
+  String get aboutSpectrumHowHeader;
+
+  /// Body for 'How' subsection
+  ///
+  /// In en, this message translates to:
+  /// **'This screen scans every Wi-Fi network within range, then scores each channel from 0 to 10 based on the number of competing networks, their signal strength and any overlap with neighbors. Pick a channel marked green (≥8): it is the least crowded right now. The History tab shows whether that channel stays clear over time.'**
+  String get aboutSpectrumHowBody;
+
+  /// Header above the per-band spectrum bar chart
+  ///
+  /// In en, this message translates to:
+  /// **'Channel Spectrum'**
+  String get bandSpectrumTitle;
+
+  /// Title of the Channel Spectrum info sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Channel Spectrum'**
+  String get bandSpectrumInfoTitle;
+
+  /// Body of the Channel Spectrum info sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Each bar is one channel. Taller and greener bars are quieter; shorter red bars are crowded. Tap a bar to see the score (0-10). The score drops by 2 for every Wi-Fi network sharing the channel (Co-channel Interference) and by smaller amounts for networks on neighboring 2.4 GHz channels (Adjacent Channel Interference). Strong nearby networks penalise more than weak distant ones.'**
+  String get bandSpectrumInfoBody;
+
+  /// Title of the recommendation info sheet
+  ///
+  /// In en, this message translates to:
+  /// **'How is the Recommendation Made?'**
+  String get recommendationInfoTitle;
+
+  /// Body of the recommendation info sheet
+  ///
+  /// In en, this message translates to:
+  /// **'We start every channel at 10 points, then subtract for each interfering network. Co-channel networks take 2 points each (×signal strength). Adjacent 2.4 GHz networks take 0.2-1.5 points based on distance. DFS channels lose 0.5 points (radar-shared). The channel with the highest remaining score wins. If two channels tie, the lower-numbered one is preferred.'**
+  String get recommendationInfoBody;
+
+  /// Title of the consistent best channel info sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Consistent Best Channel'**
+  String get consistentChannelInfoTitle;
+
+  /// Body of the consistent best channel info sheet
+  ///
+  /// In en, this message translates to:
+  /// **'A snapshot can be misleading: a quiet channel right now may get crowded later. We average all your past scans on each channel and surface the one that consistently scores highest. If this differs from the current snapshot, the historically stable channel is often the safer long-term choice.'**
+  String get consistentChannelInfoBody;
+
+  /// Short DFS badge label shown next to channel tiles
+  ///
+  /// In en, this message translates to:
+  /// **'DFS'**
+  String get dfsBadgeLabel;
+
+  /// Tooltip explaining DFS badge
+  ///
+  /// In en, this message translates to:
+  /// **'DFS — shared with weather/military radar; your router may briefly switch off this channel'**
+  String get dfsBadgeTooltip;
+
+  /// Title of the DFS info sheet
+  ///
+  /// In en, this message translates to:
+  /// **'What is DFS?'**
+  String get dfsInfoTitle;
+
+  /// Body of the DFS info sheet
+  ///
+  /// In en, this message translates to:
+  /// **'DFS (Dynamic Frequency Selection) channels in the 5 GHz band (52-64 and 100-144) are legally shared with weather and military radar. Wi-Fi must give priority to those radars: if the router detects a radar pulse, it has to leave the channel for at least 60 seconds — your devices will briefly disconnect and switch to another channel. DFS channels are usually less crowded (so the score is high), but they can be unreliable near airports, harbors or weather stations. We deduct 0.5 points from the score to reflect that risk. Use them if you have no nearby radar source; avoid them otherwise.'**
+  String get dfsInfoBody;
+
+  /// Title of the router admin guide section
+  ///
+  /// In en, this message translates to:
+  /// **'How do I change my Wi-Fi channel?'**
+  String get howToChangeChannelTitle;
+
+  /// Subtitle of the router admin guide section
+  ///
+  /// In en, this message translates to:
+  /// **'Step-by-step guide for your router'**
+  String get howToChangeChannelSubtitle;
+
+  /// Connected SSID label in router guide
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to'**
+  String get guideConnectedTo;
+
+  /// Router vendor label
+  ///
+  /// In en, this message translates to:
+  /// **'Router brand'**
+  String get guideRouterVendor;
+
+  /// Shown when vendor cannot be identified
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown — generic guide shown'**
+  String get guideRouterUnknown;
+
+  /// Router guide step 1 header
+  ///
+  /// In en, this message translates to:
+  /// **'Step 1 · Open the admin panel'**
+  String get guideStep1;
+
+  /// Router guide step 1 body
+  ///
+  /// In en, this message translates to:
+  /// **'Tap OPEN below — it launches your default browser at the router\'s admin page. (Or copy the address and paste it manually if you prefer.) You must be on this Wi-Fi for the address to work; mobile data alone won\'t reach it.'**
+  String get guideStep1Body;
+
+  /// Open URL in browser button label
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get guideOpenInBrowser;
+
+  /// Shown when url_launcher fails
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the browser automatically — copy the address and paste it manually.'**
+  String get guideOpenFailedMessage;
+
+  /// Header for credentials sub-section
+  ///
+  /// In en, this message translates to:
+  /// **'Username & password'**
+  String get guideCredentialsHeader;
+
+  /// Detailed credentials body
+  ///
+  /// In en, this message translates to:
+  /// **'When the admin page asks you to sign in:\n\n1. Look at the bottom or back of your router — there\'s usually a sticker with the default Wi-Fi password AND the admin login. The admin login is labeled \"Admin password\", \"Web password\", \"Modem password\" or \"Yönetim şifresi\". This is NOT the same as the Wi-Fi password.\n\n2. If your router has no sticker, try these factory defaults:\n   • admin / admin\n   • admin / password\n   • admin / 1234\n   • root / admin\n   • Username empty / password admin\n\n3. If your ISP installed the router (Türk Telekom, TurkNet, Vodafone, Superonline, etc.), the admin password is often the last 6-8 characters of the device serial number, also on the sticker. Many ISPs ship a unique password printed only on the sticker.\n\n4. If nothing works: someone has changed the password before. You can press and hold the RESET pin on the back of the router for 10-15 seconds to restore factory defaults — but this also wipes your Wi-Fi name and password, so you\'ll have to set them up again.\n\n5. Some modern routers replace the web admin with a phone app (e.g. TP-Link Tether, ASUS Router, Mi WiFi, Huawei AI Life). If the web page redirects you to install an app, install it and continue from there.'**
+  String get guideCredentialsBody;
+
+  /// Label for admin URL/IP
+  ///
+  /// In en, this message translates to:
+  /// **'Admin address'**
+  String get guideAddressLabel;
+
+  /// Copy button label
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get guideCopyAddress;
+
+  /// Snack message after copying admin address
+  ///
+  /// In en, this message translates to:
+  /// **'Address copied — open it in your browser'**
+  String get guideAddressCopied;
+
+  /// Router guide step 2 header
+  ///
+  /// In en, this message translates to:
+  /// **'Step 2 · Find the Wi-Fi / Wireless menu'**
+  String get guideStep2;
+
+  /// Router guide step 2 body
+  ///
+  /// In en, this message translates to:
+  /// **'After signing in, look for a menu called Wi-Fi, Wireless or Network Settings. Routers from different brands name it differently — the path below is for your router brand:'**
+  String get guideStep2Body;
+
+  /// Router guide step 3 header
+  ///
+  /// In en, this message translates to:
+  /// **'Step 3 · Set the channel and apply'**
+  String get guideStep3;
+
+  /// Router guide step 3 body
+  ///
+  /// In en, this message translates to:
+  /// **'Find the Channel option (often labeled Channel, Kanal or Wireless Channel). Change Auto to the recommended channel from the previous screen. If your router shows a separate option for 2.4 GHz and 5 GHz, set each band to its own recommended channel. Click Save / Apply. The router will briefly restart its Wi-Fi.'**
+  String get guideStep3Body;
+
+  /// Header for the menu path list
+  ///
+  /// In en, this message translates to:
+  /// **'Menu path'**
+  String get guideMenuPathLabel;
+
+  /// Fallback menu path
+  ///
+  /// In en, this message translates to:
+  /// **'Wireless / Wi-Fi → Basic / Advanced Settings → Channel'**
+  String get guideGenericMenuPath;
+
+  /// Channel width section header
+  ///
+  /// In en, this message translates to:
+  /// **'Channel width — 20 / 40 / 80 / 160 MHz'**
+  String get channelWidthHeader;
+
+  /// Channel width explanation body
+  ///
+  /// In en, this message translates to:
+  /// **'Channel width is like the number of lanes on a highway:\n• 20 MHz = 1 lane. Slow but resilient to traffic. Best for crowded 2.4 GHz.\n• 40 MHz = 2 lanes. Twice the throughput, but overlaps more neighbors.\n• 80 MHz = 4 lanes. Fast — only available on 5 GHz/6 GHz.\n• 160 MHz = 8 lanes. Maximum speed, but uses half the 5 GHz band; only worth it if no neighbors are around.\n\nRule of thumb: 20 MHz on 2.4 GHz; 80 MHz on 5 GHz; 160 MHz on 6 GHz if available.'**
+  String get channelWidthBody;
+
+  /// Safety/risk section header
+  ///
+  /// In en, this message translates to:
+  /// **'Is it safe to change the channel?'**
+  String get guideRisksHeader;
+
+  /// Safety/risk section body
+  ///
+  /// In en, this message translates to:
+  /// **'Yes — completely safe. Changing the channel has no security or performance side-effects beyond a 5-10 second pause while the router restarts the radio. Your network name (SSID), password, port-forwarding rules, parental controls and every other setting stay exactly the same. Connected devices reconnect automatically. If anything seems worse afterwards, you can return to Auto in the same menu and the router will pick a channel itself.'**
+  String get guideRisksBody;
+
+  /// Shown when no Wi-Fi is connected
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected to a Wi-Fi network — connect first to see your router\'s admin address and a tailored guide.'**
+  String get guideNoConnection;
+
+  /// Badge for channels that fluctuate heavily across history
+  ///
+  /// In en, this message translates to:
+  /// **'UNSTABLE'**
+  String get unstableChannelLabel;
+
+  /// Tooltip for unstable channel badge
+  ///
+  /// In en, this message translates to:
+  /// **'This channel\'s quality has fluctuated by more than 1.5 points across the last sessions'**
+  String get unstableChannelTooltip;
+
+  /// Title of the heatmap info sheet
+  ///
+  /// In en, this message translates to:
+  /// **'What is the Heatmap?'**
+  String get historyHeatmapInfoTitle;
+
+  /// Body of the heatmap info sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Each row is a channel and each column is a moment in time when you ran a scan. The cell colour is the channel score at that moment: red (poor) → yellow (ok) → green (excellent). Empty cells mean the channel was not visible in that scan. Look for solid green rows — those are channels that stay clean over time.'**
+  String get historyHeatmapInfoBody;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

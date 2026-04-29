@@ -2,70 +2,103 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:torcav/core/l10n/app_localizations.dart';
-import 'package:torcav/core/extensions/context_extensions.dart';
-import '../../../../core/theme/neon_widgets.dart';
 
-import '../../../../features/wifi_scan/domain/entities/channel_rating_sample.dart';
-import '../../../../features/wifi_scan/domain/entities/scan_request.dart';
-import '../../../../features/wifi_scan/domain/entities/wifi_network.dart';
-import '../../../../features/wifi_scan/domain/entities/channel_rating.dart';
-import '../../../../features/wifi_scan/domain/repositories/channel_rating_repository.dart';
-import '../../../../features/wifi_scan/presentation/bloc/wifi_scan_bloc.dart';
+import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/theme/neon_widgets.dart';
+import '../../../wifi_scan/domain/entities/channel_rating.dart';
+import '../../../wifi_scan/domain/entities/channel_rating_sample.dart';
+import '../../../wifi_scan/domain/entities/scan_request.dart';
+import '../../../wifi_scan/domain/entities/wifi_network.dart';
+import '../../../wifi_scan/domain/repositories/channel_rating_repository.dart';
+import '../../../wifi_scan/presentation/bloc/wifi_scan_bloc.dart';
 import '../bloc/monitoring_bloc.dart';
+import '../widgets/about_spectrum_panel.dart';
 import '../widgets/channel_history_chart.dart';
 import '../widgets/channel_spectral_chart.dart';
+import '../widgets/router_admin_guide_card.dart';
 
-class ChannelRatingPage extends StatelessWidget {
-  final List<WifiNetwork> networks;
-  final ScanRequest? request;
-
-  const ChannelRatingPage({super.key, required this.networks, this.request});
+/// Operations Hub entry-point for the Spectrum / Channel Optimization tool.
+///
+/// Triggers a fresh Wi-Fi scan on open and pipes the result into
+/// [MonitoringBloc] for channel rating analysis. Hosts a 4-tab view:
+/// 2.4 GHz · 5 GHz · 6 GHz · History.
+class SpectrumOptimizationPage extends StatelessWidget {
+  const SpectrumOptimizationPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create:
-              (_) => GetIt.I<MonitoringBloc>()..add(AnalyzeChannels(networks)),
-        ),
+        BlocProvider(create: (_) => GetIt.I<MonitoringBloc>()),
         BlocProvider.value(value: GetIt.I<WifiScanBloc>()),
       ],
-      child: _ChannelRatingView(networks: networks, request: request),
+      child: const _SpectrumView(),
     );
   }
 }
 
-class _ChannelRatingView extends StatelessWidget {
-  final List<WifiNetwork> networks;
-  final ScanRequest? request;
-  const _ChannelRatingView({required this.networks, this.request});
+class _SpectrumView extends StatefulWidget {
+  const _SpectrumView();
+
+  @override
+  State<_SpectrumView> createState() => _SpectrumViewState();
+}
+
+class _SpectrumViewState extends State<_SpectrumView> {
+  static const _scanRequest = ScanRequest();
+
+  @override
+  void initState() {
+    super.initState();
+    // Trigger a scan as soon as the page mounts. If the bloc already has a
+    // recent loaded snapshot, the BlocListener below will analyse it
+    // immediately; otherwise the listener fires when the new scan finishes.
+    final scanBloc = context.read<WifiScanBloc>();
+    final state = scanBloc.state;
+    if (state is WifiScanLoaded) {
+      _analyse(state);
+    }
+    scanBloc.add(const WifiScanRefreshed(request: _scanRequest));
+  }
+
+  void _analyse(WifiScanLoaded state) {
+    final networks =
+        state.snapshot.networks.map((n) => n.toWifiNetwork()).toList();
+    context.read<MonitoringBloc>().add(AnalyzeChannels(networks));
+  }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.l10n;
     final onSurface = Theme.of(context).colorScheme.onSurface;
-    return DefaultTabController(
-      length: 4,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            l10n.channelRatingTitle,
-            style: GoogleFonts.orbitron(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-              letterSpacing: 2,
+    return BlocListener<WifiScanBloc, WifiScanState>(
+      listenWhen:
+          (prev, curr) => curr is WifiScanLoaded && prev != curr,
+      listener: (context, state) {
+        if (state is WifiScanLoaded) _analyse(state);
+      },
+      child: DefaultTabController(
+        length: 4,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              l10n.spectrumOptimizationCaps,
+              style: GoogleFonts.orbitron(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                letterSpacing: 2,
+              ),
             ),
-          ),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          actions: [
-            BlocBuilder<WifiScanBloc, WifiScanState>(
-              builder: (context, state) {
-                if (state is WifiScanLoading) {
-                  return Center(
-                    child: Padding(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            actions: [
+              BlocBuilder<WifiScanBloc, WifiScanState>(
+                builder: (context, state) {
+                  final loading =
+                      state is WifiScanLoading ||
+                      (state is WifiScanLoaded && state.isRefreshing);
+                  if (loading) {
+                    return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: SizedBox(
                         width: 20,
@@ -75,107 +108,182 @@ class _ChannelRatingView extends StatelessWidget {
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
-                    ),
-                  );
-                }
-                return IconButton(
-                  icon: const Icon(Icons.refresh),
-                  tooltip: l10n.refreshScanTooltip,
-                  onPressed: () {
-                    context.read<WifiScanBloc>().add(
-                      WifiScanRefreshed(
-                        request: request ?? const ScanRequest(),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ],
-          bottom: TabBar(
-            indicatorColor: Theme.of(context).colorScheme.primary,
-            labelColor: Theme.of(context).colorScheme.primary,
-            unselectedLabelColor: onSurface.withValues(alpha: 0.5),
-            labelStyle: GoogleFonts.orbitron(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1,
-            ),
-            tabs: [
-              Tab(text: l10n.band24Ghz),
-              Tab(text: l10n.band5Ghz),
-              Tab(text: l10n.band6Ghz),
-              Tab(text: l10n.historyCaps),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            // Tabs 1-3: driven by MonitoringBloc state
-            for (final band in [0, 1, 2])
-              BlocBuilder<MonitoringBloc, MonitoringState>(
-                builder: (context, state) {
-                  if (state is MonitoringLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is ChannelAnalysisReady) {
-                    final ratings =
-                        switch (band) {
-                            0 => state.ratings.where((r) => r.frequency < 4000),
-                            1 => state.ratings.where(
-                              (r) => r.frequency >= 4000 && r.frequency < 6000,
-                            ),
-                            _ => state.ratings.where(
-                              (r) => r.frequency >= 6000,
-                            ),
-                          }.toList()
-                          ..sort((a, b) => b.rating.compareTo(a.rating));
-
-                    return _BandView(
-                      ratings: ratings,
-                      historicalAverages: state.historicalAverages,
-                      bandLabel:
-                          [l10n.band24Ghz, l10n.band5Ghz, l10n.band6Ghz][band],
-                      accentColor:
-                          [
-                            const Color(0xFF00E5FF),
-                            const Color(0xFF76FF03),
-                            const Color(0xFFEEFF41),
-                          ][band],
-                      emptyHint:
-                          [
-                            l10n.no24GhzChannels,
-                            l10n.no5GhzChannels,
-                            l10n.no6GhzChannels,
-                          ][band],
-                      networks: networks,
-                    );
-                  } else if (state is MonitoringFailure) {
-                    return NeonErrorCard(
-                      message: '${l10n.errorLabel}: ${state.message}',
-                      onRetry:
-                          () => context.read<MonitoringBloc>().add(
-                            AnalyzeChannels(networks),
-                          ),
                     );
                   }
-                  return Center(child: Text(l10n.analyzing));
+                  return IconButton(
+                    icon: const Icon(Icons.refresh),
+                    tooltip: l10n.refreshScanTooltip,
+                    onPressed: () {
+                      context.read<WifiScanBloc>().add(
+                        const WifiScanRefreshed(request: _scanRequest),
+                      );
+                    },
+                  );
                 },
               ),
-            // Tab 4: independent history view
-            _HistoryView(),
-          ],
+            ],
+            bottom: TabBar(
+              indicatorColor: Theme.of(context).colorScheme.primary,
+              labelColor: Theme.of(context).colorScheme.primary,
+              unselectedLabelColor: onSurface.withValues(alpha: 0.5),
+              labelStyle: GoogleFonts.orbitron(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1,
+              ),
+              tabs: [
+                Tab(text: l10n.band24Ghz),
+                Tab(text: l10n.band5Ghz),
+                Tab(text: l10n.band6Ghz),
+                Tab(text: l10n.historyCaps),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              for (final band in [0, 1, 2])
+                _BandTab(
+                  band: band,
+                  bandLabel:
+                      [l10n.band24Ghz, l10n.band5Ghz, l10n.band6Ghz][band],
+                  accentColor:
+                      [
+                        const Color(0xFF00E5FF),
+                        const Color(0xFF76FF03),
+                        const Color(0xFFEEFF41),
+                      ][band],
+                  emptyHint:
+                      [
+                        l10n.no24GhzChannels,
+                        l10n.no5GhzChannels,
+                        l10n.no6GhzChannels,
+                      ][band],
+                ),
+              const _HistoryTab(),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _HistoryView extends StatefulWidget {
+// ── Per-band tab ────────────────────────────────────────────────────────
+
+class _BandTab extends StatelessWidget {
+  final int band; // 0 = 2.4, 1 = 5, 2 = 6
+  final String bandLabel;
+  final Color accentColor;
+  final String emptyHint;
+
+  const _BandTab({
+    required this.band,
+    required this.bandLabel,
+    required this.accentColor,
+    required this.emptyHint,
+  });
+
   @override
-  State<_HistoryView> createState() => _HistoryViewState();
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return BlocBuilder<MonitoringBloc, MonitoringState>(
+      builder: (context, state) {
+        if (state is MonitoringLoading || state is MonitoringInitial) {
+          return _ScanningPlaceholder(label: l10n.initiatingSpectrumScan);
+        }
+        if (state is MonitoringFailure) {
+          return NeonErrorCard(
+            message: '${l10n.errorLabel}: ${state.message}',
+            onRetry: () {
+              final s = context.read<WifiScanBloc>().state;
+              if (s is WifiScanLoaded) {
+                final networks =
+                    s.snapshot.networks
+                        .map((n) => n.toWifiNetwork())
+                        .toList();
+                context.read<MonitoringBloc>().add(AnalyzeChannels(networks));
+              }
+            },
+          );
+        }
+        if (state is ChannelAnalysisReady) {
+          final ratings =
+              switch (band) {
+                  0 => state.ratings.where((r) => r.frequency < 4000),
+                  1 => state.ratings.where(
+                    (r) => r.frequency >= 5000 && r.frequency < 5925,
+                  ),
+                  _ => state.ratings.where((r) => r.frequency >= 5925),
+                }.toList()
+                ..sort((a, b) => b.rating.compareTo(a.rating));
+
+          final scanState = context.watch<WifiScanBloc>().state;
+          final networks =
+              scanState is WifiScanLoaded
+                  ? scanState.snapshot.networks
+                      .map((n) => n.toWifiNetwork())
+                      .toList()
+                  : <WifiNetwork>[];
+
+          return _BandView(
+            ratings: ratings,
+            historicalAverages: state.historicalAverages,
+            bandLabel: bandLabel,
+            accentColor: accentColor,
+            emptyHint: emptyHint,
+            networks: networks,
+          );
+        }
+        return _ScanningPlaceholder(label: l10n.analyzing);
+      },
+    );
+  }
 }
 
-class _HistoryViewState extends State<_HistoryView> {
+class _ScanningPlaceholder extends StatelessWidget {
+  final String label;
+  const _ScanningPlaceholder({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const AboutSpectrumPanel(),
+        const SizedBox(height: 32),
+        Center(
+          child: Column(
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
+              Text(
+                label,
+                style: GoogleFonts.orbitron(
+                  fontSize: 11,
+                  letterSpacing: 1.5,
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ── History tab (loads samples from repository) ────────────────────────
+
+class _HistoryTab extends StatefulWidget {
+  const _HistoryTab();
+
+  @override
+  State<_HistoryTab> createState() => _HistoryTabState();
+}
+
+class _HistoryTabState extends State<_HistoryTab> {
   List<ChannelRatingSample>? _samples;
   bool _loading = true;
 
@@ -257,6 +365,7 @@ class _HistoryViewState extends State<_HistoryView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const AboutSpectrumPanel(),
             if (_samples != null && _samples!.isNotEmpty)
               Align(
                 alignment: Alignment.centerRight,
@@ -294,6 +403,8 @@ class _HistoryViewState extends State<_HistoryView> {
   }
 }
 
+// ── Band view (per-band content rendered inside each tab) ─────────────
+
 class _BandView extends StatelessWidget {
   final List<ChannelRating> ratings;
   final Map<int, double> historicalAverages;
@@ -313,46 +424,75 @@ class _BandView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.l10n;
     final onSurface = Theme.of(context).colorScheme.onSurface;
+
     if (ratings.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.wifi_off,
-              color: onSurface.withValues(alpha: 0.35),
-              size: 48,
+      return ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          const AboutSpectrumPanel(),
+          const SizedBox(height: 24),
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.wifi_off,
+                  color: onSurface.withValues(alpha: 0.35),
+                  size: 48,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  emptyHint,
+                  style: GoogleFonts.rajdhani(
+                    color: onSurface.withValues(alpha: 0.58),
+                    fontSize: 16,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 12),
-            Text(
-              emptyHint,
-              style: GoogleFonts.rajdhani(
-                color: onSurface.withValues(alpha: 0.58),
-                fontSize: 16,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       );
     }
 
     final best = ratings.first;
-    // Find consistently best channel from history in this band
     final bandChannels = ratings.map((r) => r.channel).toSet();
     final historicalBest =
         historicalAverages.entries
             .where((e) => bandChannels.contains(e.key))
             .toList()
           ..sort((a, b) => b.value.compareTo(a.value));
-
     final consistentlyBest =
         historicalBest.isNotEmpty ? historicalBest.first : null;
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        const AboutSpectrumPanel(),
+        // ── Channel Spectrum bar chart with header + info ──
+        Row(
+          children: [
+            Icon(Icons.equalizer_rounded, color: accentColor, size: 18),
+            const SizedBox(width: 8),
+            Text(
+              l10n.bandSpectrumTitle,
+              style: GoogleFonts.orbitron(
+                color: accentColor,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
+              ),
+            ),
+            InfoIconButton(
+              title: l10n.bandSpectrumInfoTitle,
+              body: l10n.bandSpectrumInfoBody,
+              color: accentColor,
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
         ChannelSpectralChart(ratings: ratings, accentColor: accentColor),
         const SizedBox(height: 24),
         if (consistentlyBest != null &&
@@ -366,6 +506,7 @@ class _BandView extends StatelessWidget {
         ],
         _RecommendationCard(rating: best, accentColor: accentColor),
         const SizedBox(height: 16),
+        const RouterAdminGuideCard(),
         Text(
           l10n.bandChannels(bandLabel),
           style: GoogleFonts.orbitron(
@@ -418,13 +559,24 @@ class _HistoricalBestCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  l10n.consistentlyBestChannel,
-                  style: GoogleFonts.rajdhani(
-                    fontSize: 11,
-                    color: accentColor.withValues(alpha: 0.7),
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        l10n.consistentlyBestChannel,
+                        style: GoogleFonts.rajdhani(
+                          fontSize: 11,
+                          color: accentColor.withValues(alpha: 0.7),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    InfoIconButton(
+                      title: l10n.consistentChannelInfoTitle,
+                      body: l10n.consistentChannelInfoBody,
+                      color: accentColor,
+                    ),
+                  ],
                 ),
                 Text(
                   l10n.channelLabel(channel),
@@ -471,7 +623,7 @@ class _RecommendationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.l10n;
     final onSurface = Theme.of(context).colorScheme.onSurface;
     return Container(
       padding: const EdgeInsets.all(16),
@@ -510,14 +662,25 @@ class _RecommendationCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  l10n.recommendedChannel,
-                  style: GoogleFonts.rajdhani(
-                    color: accentColor,
-                    fontSize: 11,
-                    letterSpacing: 1.5,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        l10n.recommendedChannel,
+                        style: GoogleFonts.rajdhani(
+                          color: accentColor,
+                          fontSize: 11,
+                          letterSpacing: 1.5,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    InfoIconButton(
+                      title: l10n.recommendationInfoTitle,
+                      body: l10n.recommendationInfoBody,
+                      color: accentColor,
+                    ),
+                  ],
                 ),
                 Text(
                   l10n.channelInfo(rating.channel, rating.frequency),
@@ -594,6 +757,10 @@ class _ChannelTile extends StatelessWidget {
                         fontSize: 13,
                       ),
                     ),
+                    if (rating.isDfs) ...[
+                      const SizedBox(width: 8),
+                      _DfsBadge(),
+                    ],
                     const Spacer(),
                     Text(
                       _qualityString(l10n, rating.quality),
@@ -780,7 +947,116 @@ class _ChannelBondingSectionState extends State<_ChannelBondingSection> {
   }
 }
 
-String _qualityString(AppLocalizations l10n, ChannelQuality quality) {
+/// DFS rozeti — dokunulduğunda detaylı açıklama bottomsheet'i açar.
+class _DfsBadge extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Tooltip(
+      message: l10n.dfsBadgeTooltip,
+      child: InkWell(
+        onTap: () => _showDfsInfo(context),
+        borderRadius: BorderRadius.circular(4),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          decoration: BoxDecoration(
+            color: Colors.orangeAccent.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(
+              color: Colors.orangeAccent.withValues(alpha: 0.5),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                l10n.dfsBadgeLabel,
+                style: GoogleFonts.orbitron(
+                  fontSize: 9,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orangeAccent,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              const SizedBox(width: 3),
+              Icon(
+                Icons.info_outline_rounded,
+                size: 10,
+                color: Colors.orangeAccent.withValues(alpha: 0.85),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showDfsInfo(BuildContext context) {
+    final l10n = context.l10n;
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder:
+          (_) => GlassmorphicContainer(
+            padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            borderColor: Colors.orangeAccent,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.orangeAccent.withValues(alpha: 0.4),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.radar_rounded,
+                      color: Colors.orangeAccent,
+                      size: 22,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        l10n.dfsInfoTitle,
+                        style: GoogleFonts.orbitron(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orangeAccent,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  l10n.dfsInfoBody,
+                  style: GoogleFonts.rajdhani(
+                    fontSize: 14,
+                    height: 1.5,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.85),
+                  ),
+                ),
+              ],
+            ),
+          ),
+    );
+  }
+}
+
+String _qualityString(dynamic l10n, ChannelQuality quality) {
   switch (quality) {
     case ChannelQuality.excellent:
       return l10n.qualityExcellent;

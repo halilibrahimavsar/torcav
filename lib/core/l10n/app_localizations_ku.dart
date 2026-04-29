@@ -1452,4 +1452,148 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get netSecInfoDesc => 'Monitors the integrity of connected networks, detects rogue access points, and manages your trusted Wi-Fi profiles to protect against Evil Twin attacks.';
+
+  @override
+  String get spectrumOptimizationOpsSubtitle => 'Nirxandina kanalê · tevliheviyê';
+
+  @override
+  String get aboutSpectrumTitle => 'Optîmîzekirina Spektrumê Çi ye?';
+
+  @override
+  String get aboutSpectrumWhatHeader => 'Çi ye?';
+
+  @override
+  String get aboutSpectrumWhatBody => 'Cîhazên Wi-Fi bi rêya beşên frekansê yên bi navê \"kanal\" diaxivin. Bandê 2.4 GHz tenê 3 kanalên bi rastî ne-li-ser-hev hene (1, 6, 11) û herî gelemperî ye. Bandê 5 GHz pir kanalên zêdetir û tevliheviya kêmtir heye. Bandê herî nû 6 GHz (Wi-Fi 6E/7) di piraniya malan de hema bibêje vala ye.';
+
+  @override
+  String get aboutSpectrumWhyHeader => 'Bi kêrî çi tê?';
+
+  @override
+  String get aboutSpectrumWhyBody => 'Gava gelek tor heman kanalê parve dikin, divê dorê bigirin û her tişt hêdî dibe (Tevliheviya Heman Kanalê). Li 2.4 GHz, kanalên cîran jî li ser hev radikevin û dengê paşxaneyî çêdikin (Tevliheviya Kanalê Cîran). Hilbijartina kanaleke bêdeng rasterast lez, derengî û aramiya girêdanê baştir dike.';
+
+  @override
+  String get aboutSpectrumHowHeader => 'Çawa dixebite?';
+
+  @override
+  String get aboutSpectrumHowBody => 'Ev rûpel hemû torên Wi-Fi yên derdorê dişopîne û her kanalê li gorî hejmara torên hevrik, hêza sînyalê û li-ser-hev-ketina bi cîranan re ji 0 heya 10 puan dide. Kanalek bi rengê kesk (≥8) hilbijêre: ev kanal niha herî kêm gelemperî ye. Tabela Dîrokê nîşan dide ku kanal li ser demê paqij dimîne an na.';
+
+  @override
+  String get bandSpectrumTitle => 'Spektruma Kanalê';
+
+  @override
+  String get bandSpectrumInfoTitle => 'Spektruma Kanalê';
+
+  @override
+  String get bandSpectrumInfoBody => 'Her bar yek kanal e. Barên bilind û kesk bêdeng in; barên kurt û sor gelemperî ne. Li barekê bide ku puanê (0-10) bibînî. Her tora ku heman kanalê parve dike 2 puanan kêm dike (Tevliheviya Heman Kanalê); li 2.4 GHz torên kanalên cîran jî kêmtir kêm dikin (Tevliheviya Kanalê Cîran). Torên nêzîk û xurt bêtir tê cezakirin ji yên dûr û qels.';
+
+  @override
+  String get recommendationInfoTitle => 'Pêşniyaz Çawa Tê Kirin?';
+
+  @override
+  String get recommendationInfoBody => 'Her kanal ji 10 puanan dest pê dike. Tora bi heman kanalê her yek 2 puanan (×hêza sînyalê) kêm dike. Torên cîran ên 2.4 GHz li gorî mesafeyê 0.2-1.5 puanan kêm dikin. Kanalên DFS (parve bi radarê) 0.5 puanan winda dikin. Kanala bi puanê herî bilind serketî ye. Di rewşa wekheviyê de kanala bi hejmara biçûktir tê tercîhkirin.';
+
+  @override
+  String get consistentChannelInfoTitle => 'Kanala Herî Baş ya Berdewam';
+
+  @override
+  String get consistentChannelInfoBody => 'Wêneyek anî dikare şaşxistîner be: kanaleke ku niha bêdeng e dikare paşê gelemperî bibe. Em hemû şopandinên berê yên her kanalê navber dikin û ya ku bi awayekî berdewam puanê herî bilind digire diyar dikin. Heke ji pêşniyaza niha cuda be, kanala dîrokî ya aram bi gelemperî hilbijartineke ewletir e ji bo demê dirêj.';
+
+  @override
+  String get dfsBadgeLabel => 'DFS';
+
+  @override
+  String get dfsBadgeTooltip => 'DFS — bi radara hewa/leşkerî re tê parvekirin; routerê dibe ku ji vê kanalê demek kurt derkeve';
+
+  @override
+  String get dfsInfoTitle => 'DFS Çi ye?';
+
+  @override
+  String get dfsInfoBody => 'Kanalên DFS (Dynamic Frequency Selection) di bandê 5 GHz de (52-64 û 100-144) bi awayekî yasayî bi radarên hewa û leşkerî re têne parvekirin. Wi-Fi divê pêşîniyê bide van radaran: heke router lêgerîna radarê tespît bike, divê herî kêm 60 çirkeyan ji kanalê derkeve — cihazên we demek kurt qut dibin û diçin ser kanaleke din. Kanalên DFS bi gelemperî kêm gelemperî ne (loma puanê wan bilind e), lê li nêzîkê balafirgehan, bendergehan an stasyonên hewa dikarin nêbawer bin. Em ji bo nîşandana vê metirsiyê 0.5 puanan kêm dikin. Heke çavkaniya radarê nêzîk tune be wan bikar bînin; an na, ji wan dûr bikevin.';
+
+  @override
+  String get howToChangeChannelTitle => 'Kanalê Wi-Fi çawa biguherînim?';
+
+  @override
+  String get howToChangeChannelSubtitle => 'Rêbera gav-bi-gav ji bo routera te';
+
+  @override
+  String get guideConnectedTo => 'Tora girêdayî';
+
+  @override
+  String get guideRouterVendor => 'Marka routerê';
+
+  @override
+  String get guideRouterUnknown => 'Nenas — rêbera giştî tê nîşandan';
+
+  @override
+  String get guideStep1 => 'Gav 1 · Panela rêveberiyê veke';
+
+  @override
+  String get guideStep1Body => 'Bişkoja VEKE ya jêr bitikîne — gerokê te yê standard di rûpela rêveberiya routerê de vedibe. (An jî navnîşanê kopî bike û destî bispêre.) Ji bo navnîşan bixebite, divê li vê Wi-Fi ve girêdayî bî; tenê bi daneya mobîl nagihîje.';
+
+  @override
+  String get guideOpenInBrowser => 'Veke';
+
+  @override
+  String get guideOpenFailedMessage => 'Gerokê bixweber venebû — navnîşanê kopî bike û destî bispêre.';
+
+  @override
+  String get guideCredentialsHeader => 'Navê bikarhêner û şîfre';
+
+  @override
+  String get guideCredentialsBody => 'Gava rûpela rêveberiyê ji te têketinê dixwaze:\n\n1. Li binî an pişta routerê binêre — bi gelemperî li wir etîketek heye ku şîfreya Wi-Fi û her wiha agahiyên têketina REVEBERIYÊ jî dinivîse. Têketina rêveberiyê wek \"Admin password\", \"Web password\", \"Modem password\" an \"Şîfreya Rêveberiyê\" tê nîşandan. Ev bi şîfreya Wi-Fi NEYAN E.\n\n2. Heke etîket tune be, van standardên fabrîkayê biceribîne:\n   • admin / admin\n   • admin / password\n   • admin / 1234\n   • root / admin\n   • Navê bikarhêner vala / şîfre admin\n\n3. Heke router ji aliyê pêşkêşkarê înternetê hatibe sazkirin, şîfreya rêveberiyê bi gelemperî 6-8 karakterên dawî yên seriya cihazê ye, ku ew jî li ser etîketê dinivîse. Gelek pêşkêşkar şîfreyek taybet a cihazî çap dikin.\n\n4. Heke tu yek nexebite, kesek berê şîfre guherandî ye. Dikarî bişkoja RESET ya li pişta routerê 10-15 çirkeyan bigirî da ku rewşa fabrîkayê vegere — lê ev navê Wi-Fi û şîfreya wê jî paqij dike, divê ji nû ve saz bikî.\n\n5. Hin routerên nû panela web bi sepanê telefonê re diguherînin (mînak TP-Link Tether, ASUS Router, Mi WiFi, Huawei AI Life). Heke rûpela web te ber bi sazkirina sepanê ve dişîne, sepanê saz bike û ji wir berdewam bike.';
+
+  @override
+  String get guideAddressLabel => 'Navnîşana rêveberiyê';
+
+  @override
+  String get guideCopyAddress => 'Kopî bike';
+
+  @override
+  String get guideAddressCopied => 'Navnîşan hate kopîkirin — di gerokê de veke';
+
+  @override
+  String get guideStep2 => 'Gav 2 · Menûya Wi-Fi / Wireless bibîne';
+
+  @override
+  String get guideStep2Body => 'Piştî têketinê li menûyek bi navê Wi-Fi, Wireless an Mîhengên Torê bigere. Marka cuda navên cuda dikin — rêya jêrîn ji bo marka te ye:';
+
+  @override
+  String get guideStep3 => 'Gav 3 · Kanalê saz bike û bisepîne';
+
+  @override
+  String get guideStep3Body => 'Bijareya Channel/Kanal bibîne. Auto-yê biguhêre bo kanala pêşniyazkirî di ekrana berê de. Heke routerê te ji bo 2.4 GHz û 5 GHz cuda nîşan dide, ji bo her bandê kanala xwe ya pêşniyazkirî saz bike. Tê tomarkirin/sepandinê bitikîne. Wi-Fi dê demek kurt ji nû ve dest pê bike.';
+
+  @override
+  String get guideMenuPathLabel => 'Riya menûyê';
+
+  @override
+  String get guideGenericMenuPath => 'Wireless / Wi-Fi → Bingehîn / Pêşkeftî Mîheng → Kanal';
+
+  @override
+  String get channelWidthHeader => 'Pehnatiya kanalê — 20 / 40 / 80 / 160 MHz';
+
+  @override
+  String get channelWidthBody => 'Pehnatiya kanalê wek hejmara şiritan a otoyolê ye:\n• 20 MHz = 1 şirit. Hêdî lê li hember trafîkê bi hêz. Ji bo 2.4 GHz a tijî baştirîn.\n• 40 MHz = 2 şirit. Du qatî leza daneyan, lê bi cîranan re zêdetir li hev radikeve.\n• 80 MHz = 4 şirit. Lez — tenê di 5 GHz/6 GHz de.\n• 160 MHz = 8 şirit. Lezê herî bilind, lê nîvê bandê 5 GHz digire; tenê heke cîran tune be watedar e.\n\nQayîdeya giştî: di 2.4 GHz de 20 MHz; di 5 GHz de 80 MHz; di 6 GHz de heke berdest be 160 MHz.';
+
+  @override
+  String get guideRisksHeader => 'Guhertina kanalê ewle ye?';
+
+  @override
+  String get guideRisksBody => 'Erê — bi tevahî ewle ye. Guhertina kanalê ji bilî qutbûnek 5-10 çirkeyî ya ku dema router radio ji nû ve dest pê dike çêdibe, hîç bandorek ewlehiyê an performansê tune. Navê torê (SSID), şîfre, qaîdeyên port-yönlendirmeyê, kontrolên dêûbavî û her mîhengek din çawa hebû dimîne. Cihazên girêdayî bixweber ji nû ve têne girêdan. Heke paşê tişt xerabtir xuya bike, dikarî ji heman menûyê vegerî ser Auto û router bi xwe kanalek hilbijêre.';
+
+  @override
+  String get guideNoConnection => 'Bi tora Wi-Fi ve ne girêdayî yî — ji bo dîtina navnîşana rêveberiyê û rêbera taybet a markeyê pêşî girê bide.';
+
+  @override
+  String get unstableChannelLabel => 'NEARAM';
+
+  @override
+  String get unstableChannelTooltip => 'Puanê vê kanalê di rûniştinên dawî de ji 1.5 puanan zêdetir guherî';
+
+  @override
+  String get historyHeatmapInfoTitle => 'Nexşeya Germayê Çi ye?';
+
+  @override
+  String get historyHeatmapInfoBody => 'Her rêz kanalek e û her stûn demek e ku te şopandin kir. Rengê hucreyê puanê wê demê nîşan dide: sor (xirab) → zer (orte) → kesk (zehf baş). Hucreyên vala wateya wê ye ku kanal di wê şopandinê de nediyar bû. Li rêzên temamî kesk bigere — ev ew kanal in ku bi demê re paqij dimînin.';
 }

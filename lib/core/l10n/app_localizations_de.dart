@@ -1452,4 +1452,148 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get netSecInfoDesc => 'Monitors the integrity of connected networks, detects rogue access points, and manages your trusted Wi-Fi profiles to protect against Evil Twin attacks.';
+
+  @override
+  String get spectrumOptimizationOpsSubtitle => 'Kanalbewertung · Störungen';
+
+  @override
+  String get aboutSpectrumTitle => 'Was ist Spektrum-Optimierung?';
+
+  @override
+  String get aboutSpectrumWhatHeader => 'Was ist es?';
+
+  @override
+  String get aboutSpectrumWhatBody => 'WLAN-Geräte kommunizieren über Frequenzabschnitte des Funkspektrums, sogenannte Kanäle. Das 2,4-GHz-Band hat nur 3 wirklich überschneidungsfreie Kanäle (1, 6, 11) und ist am stärksten belegt. Das 5-GHz-Band bietet viel mehr Kanäle und weniger Störungen. Das neueste 6-GHz-Band (Wi-Fi 6E/7) ist in den meisten Haushalten fast leer.';
+
+  @override
+  String get aboutSpectrumWhyHeader => 'Wozu dient es?';
+
+  @override
+  String get aboutSpectrumWhyBody => 'Wenn viele Netzwerke denselben Kanal teilen, müssen sie sich abwechseln, was alles verlangsamt (Co-Channel-Interferenz). Auf 2,4 GHz überlappen sich auch benachbarte Kanäle und erzeugen Rauschen (Adjacent-Channel-Interferenz). Die Wahl eines ruhigen Kanals verbessert direkt Geschwindigkeit, Latenz und Stabilität.';
+
+  @override
+  String get aboutSpectrumHowHeader => 'Wie funktioniert es?';
+
+  @override
+  String get aboutSpectrumHowBody => 'Diese Seite scannt alle WLAN-Netzwerke in Reichweite und bewertet jeden Kanal von 0 bis 10 anhand der konkurrierenden Netzwerke, deren Signalstärke und der Überlappung mit Nachbarn. Wählen Sie einen grün markierten Kanal (≥8): er ist gerade am wenigsten belegt. Der Verlauf-Tab zeigt, ob er auch dauerhaft frei bleibt.';
+
+  @override
+  String get bandSpectrumTitle => 'Kanalspektrum';
+
+  @override
+  String get bandSpectrumInfoTitle => 'Kanalspektrum';
+
+  @override
+  String get bandSpectrumInfoBody => 'Jeder Balken ist ein Kanal. Hohe und grüne Balken sind ruhig; kurze rote Balken sind belegt. Tippen Sie auf einen Balken, um die Bewertung (0-10) zu sehen. Jedes WLAN-Netzwerk auf demselben Kanal verringert die Bewertung um 2 Punkte (Co-Channel-Interferenz); auf 2,4 GHz auch benachbarte Kanäle in geringerem Maß (Adjacent-Channel-Interferenz). Starke nahe Netzwerke gewichten stärker als schwache entfernte.';
+
+  @override
+  String get recommendationInfoTitle => 'Wie wird die Empfehlung erstellt?';
+
+  @override
+  String get recommendationInfoBody => 'Jeder Kanal startet mit 10 Punkten. Co-Channel-Netzwerke ziehen je 2 Punkte ab (×Signalstärke). Benachbarte 2,4-GHz-Netzwerke ziehen je nach Abstand 0,2-1,5 Punkte ab. DFS-Kanäle (radarbelegt) verlieren 0,5 Punkte. Der Kanal mit der höchsten Restpunktzahl gewinnt. Bei Gleichstand wird der niedrigere Kanal bevorzugt.';
+
+  @override
+  String get consistentChannelInfoTitle => 'Beständig bester Kanal';
+
+  @override
+  String get consistentChannelInfoBody => 'Eine Momentaufnahme kann täuschen: ein jetzt ruhiger Kanal kann später belebt sein. Wir mitteln alle bisherigen Scans pro Kanal und heben den Kanal hervor, der durchgehend am besten abschneidet. Weicht dieser von der aktuellen Empfehlung ab, ist der historisch stabile Kanal langfristig oft die sicherere Wahl.';
+
+  @override
+  String get dfsBadgeLabel => 'DFS';
+
+  @override
+  String get dfsBadgeTooltip => 'DFS — wird mit Wetter/Militärradar geteilt; Ihr Router kann diesen Kanal kurz verlassen';
+
+  @override
+  String get dfsInfoTitle => 'Was ist DFS?';
+
+  @override
+  String get dfsInfoBody => 'DFS-Kanäle (Dynamic Frequency Selection) im 5-GHz-Band (52-64 und 100-144) werden gesetzlich mit Wetter- und Militärradar geteilt. WLAN muss diesen Radaren Vorrang geben: Erkennt der Router einen Radarimpuls, muss er den Kanal mindestens 60 Sekunden verlassen — Ihre Geräte werden kurz getrennt und wechseln auf einen anderen Kanal. DFS-Kanäle sind meist weniger belegt (daher die hohe Bewertung), können jedoch in der Nähe von Flughäfen, Häfen oder Wetterstationen unzuverlässig sein. Wir ziehen 0,5 Punkte ab, um dieses Risiko widerzuspiegeln. Nutzen Sie sie, wenn keine Radarquelle in der Nähe ist; andernfalls vermeiden.';
+
+  @override
+  String get howToChangeChannelTitle => 'Wie ändere ich meinen WLAN-Kanal?';
+
+  @override
+  String get howToChangeChannelSubtitle => 'Schritt-für-Schritt-Anleitung für Ihren Router';
+
+  @override
+  String get guideConnectedTo => 'Verbunden mit';
+
+  @override
+  String get guideRouterVendor => 'Router-Marke';
+
+  @override
+  String get guideRouterUnknown => 'Unbekannt — generische Anleitung wird angezeigt';
+
+  @override
+  String get guideStep1 => 'Schritt 1 · Adminoberfläche öffnen';
+
+  @override
+  String get guideStep1Body => 'Tippen Sie unten auf ÖFFNEN — Ihr Standardbrowser startet auf der Admin-Seite des Routers. (Sie können die Adresse alternativ kopieren und manuell einfügen.) Sie müssen mit diesem WLAN verbunden sein; mobile Daten allein erreichen die Adresse nicht.';
+
+  @override
+  String get guideOpenInBrowser => 'Öffnen';
+
+  @override
+  String get guideOpenFailedMessage => 'Browser konnte nicht automatisch geöffnet werden — Adresse kopieren und manuell einfügen.';
+
+  @override
+  String get guideCredentialsHeader => 'Benutzername & Passwort';
+
+  @override
+  String get guideCredentialsBody => 'Wenn die Adminseite eine Anmeldung verlangt:\n\n1. Schauen Sie auf die Unter- oder Rückseite des Routers — dort befindet sich meist ein Aufkleber mit dem WLAN-Passwort UND den Admin-Zugangsdaten. Die Admin-Anmeldung ist als \"Admin password\", \"Web password\", \"Modem password\" oder \"Geräteanmeldung\" beschriftet. Das ist NICHT das WLAN-Passwort.\n\n2. Falls kein Aufkleber vorhanden ist, probieren Sie diese Werkseinstellungen:\n   • admin / admin\n   • admin / password\n   • admin / 1234\n   • root / admin\n   • Benutzername leer / Passwort admin\n\n3. Wurde der Router vom Internetanbieter installiert (Telekom, Vodafone, 1&1, o2, etc.), ist das Admin-Passwort oft auf dem Aufkleber als „Geräte-PIN\" oder die letzten 6-8 Zeichen der Seriennummer angegeben. Viele Anbieter drucken ein gerätespezifisches Passwort.\n\n4. Wenn nichts funktioniert, wurde das Passwort geändert. Sie können den RESET-Knopf auf der Rückseite 10-15 Sekunden gedrückt halten, um die Werkseinstellungen wiederherzustellen — dies löscht aber auch den WLAN-Namen und das WLAN-Passwort.\n\n5. Manche neue Router ersetzen die Weboberfläche durch eine App (z. B. TP-Link Tether, ASUS Router, Mi WiFi, Huawei AI Life). Wenn die Webseite Sie zur App-Installation auffordert, installieren Sie diese und fahren Sie dort fort.';
+
+  @override
+  String get guideAddressLabel => 'Admin-Adresse';
+
+  @override
+  String get guideCopyAddress => 'Kopieren';
+
+  @override
+  String get guideAddressCopied => 'Adresse kopiert — im Browser öffnen';
+
+  @override
+  String get guideStep2 => 'Schritt 2 · WLAN/Wireless-Menü finden';
+
+  @override
+  String get guideStep2Body => 'Suchen Sie nach der Anmeldung ein Menü namens WLAN, Wireless oder Netzwerkeinstellungen. Verschiedene Hersteller benennen es unterschiedlich — der Pfad unten passt zu Ihrer Marke:';
+
+  @override
+  String get guideStep3 => 'Schritt 3 · Kanal einstellen und übernehmen';
+
+  @override
+  String get guideStep3Body => 'Suchen Sie die Option Kanal (Channel oder Wireless Channel). Ändern Sie Auto auf den im vorherigen Bildschirm empfohlenen Kanal. Wenn 2,4 GHz und 5 GHz getrennt sind, stellen Sie für jedes Band den eigenen empfohlenen Kanal ein. Speichern/Übernehmen klicken. Der Router startet das WLAN kurz neu.';
+
+  @override
+  String get guideMenuPathLabel => 'Menüpfad';
+
+  @override
+  String get guideGenericMenuPath => 'Wireless / WLAN → Basis / Erweiterte Einstellungen → Kanal';
+
+  @override
+  String get channelWidthHeader => 'Kanalbreite — 20 / 40 / 80 / 160 MHz';
+
+  @override
+  String get channelWidthBody => 'Die Kanalbreite ist wie die Anzahl der Spuren einer Autobahn:\n• 20 MHz = 1 Spur. Langsam, aber resistent gegen Verkehr. Ideal für volles 2,4 GHz.\n• 40 MHz = 2 Spuren. Doppelter Durchsatz, überlappt mehr Nachbarn.\n• 80 MHz = 4 Spuren. Schnell — nur auf 5 GHz/6 GHz.\n• 160 MHz = 8 Spuren. Höchste Geschwindigkeit, belegt aber das halbe 5-GHz-Band; nur lohnenswert ohne Nachbarn.\n\nFaustregel: 20 MHz auf 2,4 GHz; 80 MHz auf 5 GHz; 160 MHz auf 6 GHz wenn verfügbar.';
+
+  @override
+  String get guideRisksHeader => 'Ist ein Kanalwechsel sicher?';
+
+  @override
+  String get guideRisksBody => 'Ja — vollkommen sicher. Ein Kanalwechsel hat außer einer 5-10 Sekunden langen Pause beim Neustart der Funkmodule keine Sicherheits- oder Leistungsnebenwirkungen. Netzwerkname (SSID), Passwort, Portfreigaben, Kindersicherung und alle anderen Einstellungen bleiben gleich. Verbundene Geräte verbinden sich automatisch wieder. Sollte etwas schlechter wirken, können Sie im selben Menü auf Auto zurückstellen — der Router wählt dann selbst.';
+
+  @override
+  String get guideNoConnection => 'Nicht mit einem WLAN verbunden — verbinden Sie sich, um die Admin-Adresse und eine markenspezifische Anleitung zu sehen.';
+
+  @override
+  String get unstableChannelLabel => 'INSTABIL';
+
+  @override
+  String get unstableChannelTooltip => 'Die Bewertung dieses Kanals schwankte in den letzten Sitzungen um mehr als 1,5 Punkte';
+
+  @override
+  String get historyHeatmapInfoTitle => 'Was ist die Heatmap?';
+
+  @override
+  String get historyHeatmapInfoBody => 'Jede Zeile ist ein Kanal, jede Spalte ein Scan-Zeitpunkt. Die Zellfarbe zeigt die Bewertung zu diesem Moment: rot (schlecht) → gelb (ok) → grün (sehr gut). Leere Zellen bedeuten, dass der Kanal in diesem Scan nicht sichtbar war. Achten Sie auf durchgehend grüne Zeilen — diese Kanäle bleiben über Zeit sauber.';
 }
