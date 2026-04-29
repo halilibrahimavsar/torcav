@@ -1588,6 +1588,133 @@ class AppLocalizationsTr extends AppLocalizations {
   String get guideNoConnection => 'Bir Wi-Fi ağına bağlı değilsin — yönetim adresini ve markaya özel kılavuzu görmek için önce bağlan.';
 
   @override
+  String get currentChannelLabel => 'ŞİMDİ';
+
+  @override
+  String currentChannelBannerYouAreOn(String channel) {
+    return 'Şu an $channel üzerindesin';
+  }
+
+  @override
+  String currentChannelBannerSwitchTo(String channel, String delta) {
+    return '$channel kanalına geçersen +$delta puan kazanırsın';
+  }
+
+  @override
+  String get currentChannelBannerOptimal => 'Zaten önerilen kanaldasın';
+
+  @override
+  String get spectrumOverlapTitle => 'Ağ Çakışması';
+
+  @override
+  String get spectrumOverlapInfoTitle => 'Ağ Çakışması';
+
+  @override
+  String get spectrumOverlapInfoBody => 'Her renkli şekil bir Wi-Fi ağıdır. X eksenindeki konumu merkez frekansını, genişliği kanal genişliğini (20/40/80/160 MHz), yüksekliği ise sinyal gücünü temsil eder (üst = güçlü, alt = zayıf). Şekillerin üst üste bindiği yerlerde, o ağlar aynı yayın süresini paylaşır ve birbirini yavaşlatır. Dikey bir dilim ki içinde hiç şekil olmasın (veya sadece zayıf olanlar altta kalsın) — orası sessiz bir kanaldır. Bir şekle dokunarak hangi ağ olduğunu görebilirsin.';
+
+  @override
+  String get spectrumOverlapEmptyHint => 'Bu bandda görünür ağ yok';
+
+  @override
+  String get channelDrilldownHeader => 'Bu kanaldaki ağlar';
+
+  @override
+  String get channelDrilldownEmpty => 'Burada yayın yapan ağ yok';
+
+  @override
+  String get hiddenSsidPlaceholder => '<gizli ağ>';
+
+  @override
+  String scanComparisonImproved(String delta) {
+    return 'Son taramaya göre $delta puan iyileşti';
+  }
+
+  @override
+  String scanComparisonWorsened(String delta) {
+    return 'Son taramaya göre $delta puan kötüleşti';
+  }
+
+  @override
+  String get scanComparisonStable => 'Son taramadan beri sabit';
+
+  @override
+  String get countryAllowlistHeader => 'Bölge';
+
+  @override
+  String get countryAllowlistInfoBody => 'Wi-Fi kanalları her ülkede farklı düzenlenir. Bölgenizde yasak olan kanallar soluk gösterilir ve yönlendiricinizde kullanılamaz. Yurt dışındaysanız bölgeyi değiştirebilirsiniz; öneri yalnızca seçilen bölge için yasal kanallar arasından yapılır.';
+
+  @override
+  String get channelIllegalBadge => 'İZİNSİZ';
+
+  @override
+  String get channelIllegalTooltip => 'Seçilen bölgede bu kanal Wi-Fi için yasal değil.';
+
+  @override
+  String get regionUS => 'Amerika Birleşik Devletleri';
+
+  @override
+  String get regionEU => 'Avrupa / Türkiye';
+
+  @override
+  String get regionJP => 'Japonya';
+
+  @override
+  String get regionWorld => 'Dünya (en geniş)';
+
+  @override
+  String get hourlyHeatmapTitle => 'Saate göre en iyi kanal';
+
+  @override
+  String get hourlyHeatmapInsufficient => 'Yeterli geçmiş yok. Bu ekranı günün farklı saatlerinde aç ki desen oluşsun.';
+
+  @override
+  String get afcInfoTitle => '6 GHz Güç Sınıfları (AFC)';
+
+  @override
+  String get afcInfoBody => '6 GHz Wi-Fi üç güç sınıfına ayrılır:\n\n• LPI (Düşük Güç İç Mekan) — Ev yönlendiricileri için varsayılan. 30 dBm EIRP\'ye kadar, yalnızca iç mekanda yasal. Konum koordinasyonu gerekmez.\n\n• Standard Power (SP) — Dış mekan + yüksek güçlü iç mekan. 36 dBm\'e kadar. AFC (Otomatik Frekans Koordinasyonu) gerektirir: yönlendirici resmi bir veritabanına GPS konumunu gönderir, hangi kanalların yerleşik kullanıcılardan (uydu uplink, sabit mikrodalga linkleri) boş olduğu söylenir.\n\n• VLP (Çok Düşük Güç) — Mobil/taşınabilir kullanım, 14 dBm\'e kadar. Koordinasyon gerekmez ama menzil çok kısa; çoğunlukla AR/VR gözlüklerinde ve dizüstülerde.\n\nÇoğu ev ağı yalnızca LPI görür; dış mekanda güçlü 6 GHz sinyali görüyorsan büyük olasılıkla SP\'dir ve AFC ile koordine edilmiştir.';
+
+  @override
+  String get advancedTopicsHeader => 'İleri konular';
+
+  @override
+  String get advancedMeshTitle => 'Mesh ve dolaşım (roaming)';
+
+  @override
+  String get advancedMeshBody => 'Mesh ağda (Google Nest, Eero, TP-Link Deco vb.) kanalı manuel seçmezsin — kontrolör her düğüm için bir kanal seçer ve komşular değişince yeniden dengeler. Bazı kontrolörlerde düğüm bazında kanal geçersiz kılma var; ama otomatik mod genelde en iyisidir, çünkü sistem mesh düğümleri arasındaki çakışmayı da ölçer. Yine de elle ayarlamak istersen, ana düğümün ön-uç (istemciye bakan) radyosunu önerilen kanala al; arka-uç (düğümler arası) radyo otomatik kalsın.';
+
+  @override
+  String get advancedBandSteeringTitle => 'Band steering & tek SSID vs ikisi';
+
+  @override
+  String get advancedBandSteeringBody => 'Modern yönlendiriciler band-steering sunar: tek SSID hem 2.4 hem 5 GHz için, yönlendirici uygun cihazları 5 GHz\'e iter. Artıları: basit, cihazlar otomatik geçiş yapar. Eksileri: bazı IoT cihazlar (akıllı priz, kamera) sadece 2.4 GHz görür; yönlendirici steering sırasında o bandı gizlerse bağlantı kuramaz. Geçici çözüm: SSID\'leri ayır (örn. \"EvWiFi\" 5 GHz\'de, \"EvWiFi-IoT\" 2.4 GHz\'de), kurulumdan sonra istersen birleştir.';
+
+  @override
+  String get advancedWmmTitle => 'WMM / QoS';
+
+  @override
+  String get advancedWmmBody => 'WMM (Wi-Fi Multimedia) trafiği 4 sınıfa ayırır: ses, video, normal, arka plan. Wi-Fi 4+ sertifikası için zorunludur ve daima açık kalmalı. Kapatırsan hızın 802.11g seviyesine (~54 Mbps) düşer. Kanal seçimi WMM\'i etkilemez ama temiz bir kanal 4 sınıfı da aynı anda iyileştirir.';
+
+  @override
+  String get dfsCacWarning => '⚠ DFS kanalı: yönlendiricin bu kanala geçtiğinde 60 saniye sessizce dinleme yapması gerekir (Kanal Uygunluk Kontrolü — CAC). O sürede Wi-Fi yayını kesilir.';
+
+  @override
+  String get densityTrendStable => 'Yoğunluk sabit';
+
+  @override
+  String densityTrendVolatile(String delta) {
+    return 'Değişken bölge · son 1 saatte yoğunluk $delta ağ kadar dalgalandı';
+  }
+
+  @override
+  String get exportPdfTitle => 'Spektrum raporunu paylaş';
+
+  @override
+  String get exportPdfSuccess => 'Rapor oluşturuldu · paylaşılıyor…';
+
+  @override
+  String get exportPdfFailed => 'Rapor üretilemedi.';
+
+  @override
   String get unstableChannelLabel => 'DENGESİZ';
 
   @override

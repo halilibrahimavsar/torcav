@@ -1071,8 +1071,12 @@ class _HeatmapView extends StatelessWidget {
           final needsHScroll = totalGridW > available + 0.5;
 
           // The grid + time-label header live in the same horizontal scroll
-          // view so they stay perfectly aligned.
-          final timeStep = math.max(1, (sessions.length / 6).ceil());
+          // view so they stay perfectly aligned. Step adapts to actual cell
+          // width so wider screens show more labels without crowding.
+          // Each label needs ~36px of horizontal room.
+          const minLabelGap = 36.0;
+          final stepFromWidth = (minLabelGap / cellW).ceil();
+          final timeStep = math.max(1, stepFromWidth);
           final body = SizedBox(
             width: totalGridW,
             child: Column(

@@ -66,8 +66,123 @@ class AboutSpectrumPanel extends StatelessWidget {
               color: AppColors.neonGreen,
               onSurface: onSurface,
             ),
+            const SizedBox(height: 16),
+            // ── Advanced topics ────────────────────────────────────
+            Text(
+              l10n.advancedTopicsHeader.toUpperCase(),
+              style: GoogleFonts.orbitron(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
+                color: onSurface.withValues(alpha: 0.5),
+              ),
+            ),
+            const SizedBox(height: 8),
+            _AdvancedTile(
+              icon: Icons.account_tree_rounded,
+              title: l10n.advancedMeshTitle,
+              body: l10n.advancedMeshBody,
+              color: AppColors.neonCyan,
+              onSurface: onSurface,
+            ),
+            const SizedBox(height: 6),
+            _AdvancedTile(
+              icon: Icons.swap_horiz_rounded,
+              title: l10n.advancedBandSteeringTitle,
+              body: l10n.advancedBandSteeringBody,
+              color: AppColors.neonPurple,
+              onSurface: onSurface,
+            ),
+            const SizedBox(height: 6),
+            _AdvancedTile(
+              icon: Icons.high_quality_rounded,
+              title: l10n.advancedWmmTitle,
+              body: l10n.advancedWmmBody,
+              color: AppColors.neonGreen,
+              onSurface: onSurface,
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _AdvancedTile extends StatefulWidget {
+  final IconData icon;
+  final String title;
+  final String body;
+  final Color color;
+  final Color onSurface;
+  const _AdvancedTile({
+    required this.icon,
+    required this.title,
+    required this.body,
+    required this.color,
+    required this.onSurface,
+  });
+
+  @override
+  State<_AdvancedTile> createState() => _AdvancedTileState();
+}
+
+class _AdvancedTileState extends State<_AdvancedTile> {
+  bool _open = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: widget.color.withValues(alpha: 0.05),
+        border: Border.all(color: widget.color.withValues(alpha: 0.18)),
+      ),
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () => setState(() => _open = !_open),
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              child: Row(
+                children: [
+                  Icon(widget.icon, size: 14, color: widget.color),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      widget.title,
+                      style: GoogleFonts.orbitron(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.bold,
+                        color: widget.color.withValues(alpha: 0.9),
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    _open
+                        ? Icons.keyboard_arrow_up_rounded
+                        : Icons.keyboard_arrow_down_rounded,
+                    size: 16,
+                    color: widget.color.withValues(alpha: 0.6),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (_open)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              child: Text(
+                widget.body,
+                style: GoogleFonts.rajdhani(
+                  fontSize: 13,
+                  height: 1.5,
+                  color: widget.onSurface.withValues(alpha: 0.85),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

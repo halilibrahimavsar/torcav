@@ -1588,6 +1588,133 @@ class AppLocalizationsEn extends AppLocalizations {
   String get guideNoConnection => 'Not connected to a Wi-Fi network — connect first to see your router\'s admin address and a tailored guide.';
 
   @override
+  String get currentChannelLabel => 'ON NOW';
+
+  @override
+  String currentChannelBannerYouAreOn(String channel) {
+    return 'Currently on $channel';
+  }
+
+  @override
+  String currentChannelBannerSwitchTo(String channel, String delta) {
+    return 'Switch to $channel for +$delta points';
+  }
+
+  @override
+  String get currentChannelBannerOptimal => 'You\'re already on the recommended channel';
+
+  @override
+  String get spectrumOverlapTitle => 'Network Overlap';
+
+  @override
+  String get spectrumOverlapInfoTitle => 'Network Overlap';
+
+  @override
+  String get spectrumOverlapInfoBody => 'Each colored shape is a Wi-Fi network. The position on the X-axis is its centre frequency, the width matches the channel width (20/40/80/160 MHz) and the height shows signal strength (top = strong, bottom = weak). Where shapes overlap, those networks share the same airtime and slow each other down. Look for a vertical slice with no shapes (or only weak ones at the bottom) — that\'s a quiet channel. Tap a shape to identify the network.';
+
+  @override
+  String get spectrumOverlapEmptyHint => 'No networks visible on this band';
+
+  @override
+  String get channelDrilldownHeader => 'Networks on this channel';
+
+  @override
+  String get channelDrilldownEmpty => 'No networks broadcasting here';
+
+  @override
+  String get hiddenSsidPlaceholder => '<hidden network>';
+
+  @override
+  String scanComparisonImproved(String delta) {
+    return '$delta pts vs last scan (improved)';
+  }
+
+  @override
+  String scanComparisonWorsened(String delta) {
+    return '$delta pts vs last scan (worsened)';
+  }
+
+  @override
+  String get scanComparisonStable => 'Stable since last scan';
+
+  @override
+  String get countryAllowlistHeader => 'Region';
+
+  @override
+  String get countryAllowlistInfoBody => 'Wi-Fi channels are regulated differently per country. Channels disallowed in your region are dimmed and can\'t be used by your router. Switch the region if you\'re abroad — but the recommendation will only show legal channels for the selected region.';
+
+  @override
+  String get channelIllegalBadge => 'NOT ALLOWED';
+
+  @override
+  String get channelIllegalTooltip => 'This channel is not legal for Wi-Fi use in the selected region.';
+
+  @override
+  String get regionUS => 'United States';
+
+  @override
+  String get regionEU => 'Europe / Türkiye';
+
+  @override
+  String get regionJP => 'Japan';
+
+  @override
+  String get regionWorld => 'World (most permissive)';
+
+  @override
+  String get hourlyHeatmapTitle => 'Best channel by hour of day';
+
+  @override
+  String get hourlyHeatmapInsufficient => 'Need more history. Open this screen at different times of day to build the pattern.';
+
+  @override
+  String get afcInfoTitle => '6 GHz Power Classes (AFC)';
+
+  @override
+  String get afcInfoBody => '6 GHz Wi-Fi is divided into three power classes:\n\n• LPI (Low Power Indoor) — Default for home routers. Up to 30 dBm EIRP, only legal indoors. No location coordination needed.\n\n• Standard Power (SP) — Outdoor + high-power indoor. Up to 36 dBm. Requires AFC (Automated Frequency Coordination): the router contacts an FCC/regulator database, supplies its GPS location, and is told which channels are free of incumbent users (satellite uplinks, fixed microwave links).\n\n• VLP (Very Low Power) — Mobile/portable use, up to 14 dBm. No coordination needed but very short range; mainly for AR/VR headsets and laptops.\n\nMost home networks see only LPI; if you spot a 6 GHz AP outdoors with strong signal, it likely runs SP and was AFC-coordinated.';
+
+  @override
+  String get advancedTopicsHeader => 'Advanced topics';
+
+  @override
+  String get advancedMeshTitle => 'Mesh & roaming';
+
+  @override
+  String get advancedMeshBody => 'In a mesh network (e.g. Google Nest, Eero, TP-Link Deco) you don\'t pick the channel manually — the controller picks one per node and re-balances when neighbours change. Some controllers expose a per-node channel override, but auto-mode is usually best because the system can detect interference between mesh nodes themselves. If you must override, set the front-haul (client-facing) radio of the main node to the recommended channel and let the back-haul (node-to-node) radio stay on auto.';
+
+  @override
+  String get advancedBandSteeringTitle => 'Band steering & one SSID vs two';
+
+  @override
+  String get advancedBandSteeringBody => 'Modern routers offer band-steering: one SSID for both 2.4 GHz and 5 GHz, with the router pushing capable devices to 5 GHz. Pros: simple, devices roam automatically. Cons: some IoT devices (smart plugs, cameras) can only see 2.4 GHz and may fail to connect when the router hides it during steering. Workaround: split the SSIDs (e.g. \"MyHome\" on 5 GHz, \"MyHome-IoT\" on 2.4 GHz) for IoT setup and merge later if you wish.';
+
+  @override
+  String get advancedWmmTitle => 'WMM / QoS';
+
+  @override
+  String get advancedWmmBody => 'WMM (Wi-Fi Multimedia) prioritises traffic into 4 categories: voice, video, best-effort, background. It\'s required for Wi-Fi 4+ certification and should always stay enabled. Disabling it caps your throughput at 802.11g speeds (~54 Mbps). The Channel choice doesn\'t affect WMM, but a clean channel improves all 4 categories simultaneously.';
+
+  @override
+  String get dfsCacWarning => '⚠ DFS channel: when your router moves here it must listen silently for 60 seconds before broadcasting (Channel Availability Check). Wi-Fi will be temporarily unavailable during that window.';
+
+  @override
+  String get densityTrendStable => 'Stable density';
+
+  @override
+  String densityTrendVolatile(String delta) {
+    return 'Volatile area · density swings $delta APs in last hour';
+  }
+
+  @override
+  String get exportPdfTitle => 'Export spectrum report';
+
+  @override
+  String get exportPdfSuccess => 'Report saved · sharing…';
+
+  @override
+  String get exportPdfFailed => 'Couldn\'t generate report.';
+
+  @override
   String get unstableChannelLabel => 'UNSTABLE';
 
   @override

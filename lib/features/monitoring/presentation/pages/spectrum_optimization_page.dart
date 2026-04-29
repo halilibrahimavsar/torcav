@@ -1,9 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:network_info_plus/network_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/services/notification_service.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../wifi_scan/domain/entities/channel_rating.dart';
 import '../../../wifi_scan/domain/entities/channel_rating_sample.dart';
@@ -11,11 +18,15 @@ import '../../../wifi_scan/domain/entities/scan_request.dart';
 import '../../../wifi_scan/domain/entities/wifi_network.dart';
 import '../../../wifi_scan/domain/repositories/channel_rating_repository.dart';
 import '../../../wifi_scan/presentation/bloc/wifi_scan_bloc.dart';
+import '../../data/spectrum_report_exporter.dart';
+import '../../domain/wifi_region.dart';
 import '../bloc/monitoring_bloc.dart';
 import '../widgets/about_spectrum_panel.dart';
 import '../widgets/channel_history_chart.dart';
 import '../widgets/channel_spectral_chart.dart';
+import '../widgets/hour_of_day_heatmap.dart';
 import '../widgets/router_admin_guide_card.dart';
+import '../widgets/spectrum_overlap_chart.dart';
 
 /// Operations Hub entry-point for the Spectrum / Channel Optimization tool.
 ///
@@ -46,10 +57,18 @@ class _SpectrumView extends StatefulWidget {
 
 class _SpectrumViewState extends State<_SpectrumView> {
   static const _scanRequest = ScanRequest();
+  static const double _alertThreshold = 6.0;
+  String? _connectedBssid;
+  WifiRegion? _region;
+  // Channel for which we already fired an alert in this page session — we
+  // only re-alert if the user moves to a different channel and that one
+  // drops too. This prevents notification spam while staying on the page.
+  int? _alertedChannel;
 
   @override
   void initState() {
     super.initState();
+    _detectConnectedBssid();
     // Trigger a scan as soon as the page mounts. If the bloc already has a
     // recent loaded snapshot, the BlocListener below will analyse it
     // immediately; otherwise the listener fires when the new scan finishes.
@@ -59,6 +78,172 @@ class _SpectrumViewState extends State<_SpectrumView> {
       _analyse(state);
     }
     scanBloc.add(const WifiScanRefreshed(request: _scanRequest));
+  }
+
+  void _maybeAlertOnLowQuality(ChannelAnalysisReady state) {
+    final bssid = _connectedBssid?.toUpperCase();
+    if (bssid == null) return;
+    final scanState = context.read<WifiScanBloc>().state;
+    if (scanState is! WifiScanLoaded) return;
+    final connected = scanState.snapshot.networks.firstWhere(
+      (n) => n.bssid.toUpperCase() == bssid,
+      orElse:
+          () => scanState.snapshot.networks.isEmpty
+              ? scanState.snapshot.networks.first
+              : scanState.snapshot.networks.first,
+    );
+    final ratingForConnected = state.ratings.firstWhere(
+      (r) =>
+          r.channel == connected.channel &&
+          (r.frequency - connected.frequency).abs() <= 5,
+      orElse:
+          () => const ChannelRating(
+            channel: -1,
+            frequency: 0,
+            rating: 10,
+            networkCount: 0,
+            quality: ChannelQuality.excellent,
+          ),
+    );
+    if (ratingForConnected.channel < 0) return;
+    if (ratingForConnected.rating >= _alertThreshold) {
+      _alertedChannel = null;
+      return;
+    }
+    if (_alertedChannel == ratingForConnected.channel) return;
+    _alertedChannel = ratingForConnected.channel;
+
+    // Find the best alternative for the same band.
+    final freq = ratingForConnected.frequency;
+    final sameBand = state.ratings.where((r) {
+      if (freq < 4000) return r.frequency < 4000;
+      if (freq < 5925) return r.frequency >= 5000 && r.frequency < 5925;
+      return r.frequency >= 5925;
+    }).toList()
+      ..sort((a, b) => b.rating.compareTo(a.rating));
+    if (sameBand.isEmpty) return;
+    final best = sameBand.first;
+    if (best.channel == ratingForConnected.channel) return;
+    if (best.rating - ratingForConnected.rating < 1.0) return;
+
+    GetIt.I<NotificationService>().showSpectrumChannelAlert(
+      channel: ratingForConnected.channel,
+      rating: ratingForConnected.rating,
+      recommendedChannel: best.channel,
+      recommendedRating: best.rating,
+    );
+  }
+
+  Future<void> _exportPdf(WifiRegion region) async {
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    final state = context.read<MonitoringBloc>().state;
+    if (state is! ChannelAnalysisReady) {
+      messenger.showSnackBar(SnackBar(content: Text(l10n.exportPdfFailed)));
+      return;
+    }
+    final ratings = state.ratings;
+    final by = <String, List<ChannelRating>>{
+      l10n.band24Ghz: ratings.where((r) => r.frequency < 4000).toList()
+        ..sort((a, b) => b.rating.compareTo(a.rating)),
+      l10n.band5Ghz: ratings
+          .where((r) => r.frequency >= 5000 && r.frequency < 5925)
+          .toList()
+        ..sort((a, b) => b.rating.compareTo(a.rating)),
+      l10n.band6Ghz: ratings
+          .where((r) => r.frequency >= 5925)
+          .toList()
+        ..sort((a, b) => b.rating.compareTo(a.rating)),
+    };
+    final allow = RegionAllowlist.forRegion(region);
+    final recommended = <String, ChannelRating?>{
+      for (final e in by.entries)
+        e.key: e.value
+            .where((r) => allow.isAllowed(r.channel, r.frequency))
+            .cast<ChannelRating?>()
+            .firstWhere((_) => true, orElse: () => null),
+    };
+    // Connected channel per band — only meaningful where SSID/BSSID matches.
+    final scanState = context.read<WifiScanBloc>().state;
+    final networks =
+        scanState is WifiScanLoaded
+            ? scanState.snapshot.networks.map((n) => n.toWifiNetwork()).toList()
+            : <WifiNetwork>[];
+    String? connectedSsid;
+    if (scanState is WifiScanLoaded) {
+      connectedSsid =
+          (await NetworkInfo().getWifiName())?.replaceAll('"', '');
+    }
+    final connected = <String, ChannelRating?>{};
+    final bssid = _connectedBssid?.toUpperCase();
+    if (bssid != null) {
+      for (final entry in by.entries) {
+        final match = networks.firstWhere(
+          (n) => n.bssid.toUpperCase() == bssid,
+          orElse:
+              () => const WifiNetwork(
+                ssid: '',
+                bssid: '',
+                signalStrength: 0,
+                channel: -1,
+                frequency: -1,
+                security: SecurityType.unknown,
+              ),
+        );
+        if (match.channel < 0) {
+          connected[entry.key] = null;
+          continue;
+        }
+        final rating = entry.value.firstWhere(
+          (r) =>
+              r.channel == match.channel &&
+              (r.frequency - match.frequency).abs() <= 5,
+          orElse:
+              () => const ChannelRating(
+                channel: -1,
+                frequency: 0,
+                rating: 0,
+                networkCount: 0,
+                quality: ChannelQuality.fair,
+              ),
+        );
+        connected[entry.key] = rating.channel < 0 ? null : rating;
+      }
+    }
+
+    try {
+      final exporter = SpectrumReportExporter();
+      final bytes = await exporter.build(
+        ratingsByBand: by,
+        recommendedByBand: recommended,
+        connectedByBand: connected,
+        region: region,
+        connectedSsid: connectedSsid,
+        routerVendor: null,
+        generatedAt: DateTime.now(),
+      );
+      final dir = await getTemporaryDirectory();
+      final file = File(
+        '${dir.path}/torcav_spectrum_${DateTime.now().millisecondsSinceEpoch}.pdf',
+      );
+      await file.writeAsBytes(bytes);
+      messenger.showSnackBar(SnackBar(content: Text(l10n.exportPdfSuccess)));
+      await SharePlus.instance.share(
+        ShareParams(files: [XFile(file.path)], subject: l10n.exportPdfTitle),
+      );
+    } catch (_) {
+      messenger.showSnackBar(SnackBar(content: Text(l10n.exportPdfFailed)));
+    }
+  }
+
+  Future<void> _detectConnectedBssid() async {
+    try {
+      final bssid = await NetworkInfo().getWifiBSSID();
+      if (mounted) setState(() => _connectedBssid = bssid);
+    } catch (_) {
+      // Permission denied or platform error — silently ignore; the page
+      // still works, just without the "ON NOW" current-channel indicator.
+    }
   }
 
   void _analyse(WifiScanLoaded state) {
@@ -71,12 +256,37 @@ class _SpectrumViewState extends State<_SpectrumView> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final onSurface = Theme.of(context).colorScheme.onSurface;
-    return BlocListener<WifiScanBloc, WifiScanState>(
-      listenWhen:
-          (prev, curr) => curr is WifiScanLoaded && prev != curr,
-      listener: (context, state) {
-        if (state is WifiScanLoaded) _analyse(state);
-      },
+    final region =
+        _region ??
+        RegionAllowlist.fromCountryCode(
+          Localizations.localeOf(context).countryCode,
+        );
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<WifiScanBloc, WifiScanState>(
+          // Re-analyse whenever a fresh non-refreshing scan snapshot lands.
+          listenWhen: (prev, curr) {
+            if (curr is! WifiScanLoaded) return false;
+            if (curr.isRefreshing) return false;
+            if (prev is WifiScanLoaded) {
+              return prev.snapshot != curr.snapshot ||
+                  prev.isRefreshing != curr.isRefreshing;
+            }
+            return true;
+          },
+          listener: (context, state) {
+            if (state is WifiScanLoaded) _analyse(state);
+          },
+        ),
+        BlocListener<MonitoringBloc, MonitoringState>(
+          listenWhen:
+              (_, curr) => curr is ChannelAnalysisReady && _connectedBssid != null,
+          listener: (context, state) {
+            if (state is! ChannelAnalysisReady) return;
+            _maybeAlertOnLowQuality(state);
+          },
+        ),
+      ],
       child: DefaultTabController(
         length: 4,
         child: Scaffold(
@@ -121,6 +331,32 @@ class _SpectrumViewState extends State<_SpectrumView> {
                   );
                 },
               ),
+              PopupMenuButton<WifiRegion>(
+                icon: const Icon(Icons.public_rounded),
+                tooltip: l10n.countryAllowlistHeader,
+                onSelected: (r) => setState(() => _region = r),
+                itemBuilder: (ctx) => [
+                  for (final r in WifiRegion.values)
+                    PopupMenuItem(
+                      value: r,
+                      child: Row(
+                        children: [
+                          if (region == r)
+                            const Icon(Icons.check_rounded, size: 16)
+                          else
+                            const SizedBox(width: 16),
+                          const SizedBox(width: 8),
+                          Text(_regionLabel(l10n, r)),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+              IconButton(
+                icon: const Icon(Icons.ios_share_rounded),
+                tooltip: l10n.exportPdfTitle,
+                onPressed: () => _exportPdf(region),
+              ),
             ],
             bottom: TabBar(
               indicatorColor: Theme.of(context).colorScheme.primary,
@@ -158,6 +394,8 @@ class _SpectrumViewState extends State<_SpectrumView> {
                         l10n.no5GhzChannels,
                         l10n.no6GhzChannels,
                       ][band],
+                  connectedBssid: _connectedBssid,
+                  region: region,
                 ),
               const _HistoryTab(),
             ],
@@ -175,12 +413,16 @@ class _BandTab extends StatelessWidget {
   final String bandLabel;
   final Color accentColor;
   final String emptyHint;
+  final String? connectedBssid;
+  final WifiRegion region;
 
   const _BandTab({
     required this.band,
     required this.bandLabel,
     required this.accentColor,
     required this.emptyHint,
+    required this.connectedBssid,
+    required this.region,
   });
 
   @override
@@ -228,10 +470,13 @@ class _BandTab extends StatelessWidget {
           return _BandView(
             ratings: ratings,
             historicalAverages: state.historicalAverages,
+            previousRatings: state.previousRatings,
             bandLabel: bandLabel,
             accentColor: accentColor,
             emptyHint: emptyHint,
             networks: networks,
+            connectedBssid: connectedBssid,
+            region: region,
           );
         }
         return _ScanningPlaceholder(label: l10n.analyzing);
@@ -396,6 +641,30 @@ class _HistoryTabState extends State<_HistoryTab> {
               ),
             const SizedBox(height: 8),
             StaggeredEntry(child: ChannelHistoryChart(samples: _samples ?? [])),
+            if (_samples != null && _samples!.isNotEmpty) ...[
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Icon(
+                    Icons.access_time_rounded,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 18,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    context.l10n.hourlyHeatmapTitle,
+                    style: GoogleFonts.orbitron(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              HourOfDayHeatmap(samples: _samples!),
+            ],
           ],
         ),
       ),
@@ -408,19 +677,52 @@ class _HistoryTabState extends State<_HistoryTab> {
 class _BandView extends StatelessWidget {
   final List<ChannelRating> ratings;
   final Map<int, double> historicalAverages;
+  final Map<int, double> previousRatings;
   final String bandLabel;
   final Color accentColor;
   final String emptyHint;
   final List<WifiNetwork> networks;
+  final String? connectedBssid;
+  final WifiRegion region;
 
   const _BandView({
     required this.ratings,
     required this.historicalAverages,
+    required this.previousRatings,
     required this.bandLabel,
     required this.accentColor,
     required this.emptyHint,
     required this.networks,
+    required this.connectedBssid,
+    required this.region,
   });
+
+  /// Returns the channel the user's own router is currently broadcasting on,
+  /// matched by BSSID against the scan results — null if not in this band.
+  ChannelRating? _findConnectedRating() {
+    if (connectedBssid == null) return null;
+    final target = connectedBssid!.toUpperCase();
+    final connectedNet = networks.firstWhere(
+      (n) => n.bssid.toUpperCase() == target,
+      orElse:
+          () => const WifiNetwork(
+            ssid: '',
+            bssid: '',
+            signalStrength: 0,
+            channel: -1,
+            frequency: -1,
+            security: SecurityType.unknown,
+          ),
+    );
+    if (connectedNet.channel < 0) return null;
+    for (final r in ratings) {
+      if (r.channel == connectedNet.channel &&
+          (r.frequency - connectedNet.frequency).abs() <= 5) {
+        return r;
+      }
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -457,7 +759,16 @@ class _BandView extends StatelessWidget {
       );
     }
 
-    final best = ratings.first;
+    // Region allowlist controls (a) which channels we recommend and (b)
+    // how individual channel tiles are styled.
+    final allow = RegionAllowlist.forRegion(region);
+    final allowedRatings = ratings
+        .where((r) => allow.isAllowed(r.channel, r.frequency))
+        .toList();
+    // Recommend from allowed-only; if region disallows everything we have,
+    // fall back to the global best to avoid an empty card.
+    final best =
+        (allowedRatings.isNotEmpty ? allowedRatings : ratings).first;
     final bandChannels = ratings.map((r) => r.channel).toSet();
     final historicalBest =
         historicalAverages.entries
@@ -466,11 +777,73 @@ class _BandView extends StatelessWidget {
           ..sort((a, b) => b.value.compareTo(a.value));
     final consistentlyBest =
         historicalBest.isNotEmpty ? historicalBest.first : null;
+    final connectedRating = _findConnectedRating();
+    final is6Ghz = ratings.first.frequency >= 5925;
+
+    // Networks belonging to *this* band (filtered by frequency, mirroring
+    // the band-split rule used for the rating list).
+    final bandNetworks =
+        networks.where((n) {
+          if (n.frequency <= 0) return false;
+          if (ratings.isEmpty) return false;
+          final f = n.frequency;
+          // Use the rating list's frequency span as the band identifier.
+          final firstFreq = ratings.first.frequency;
+          if (firstFreq < 4000) return f >= 2400 && f < 2500;
+          if (firstFreq < 5925) return f >= 5000 && f < 5925;
+          return f >= 5925 && f < 7200;
+        }).toList();
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         const AboutSpectrumPanel(),
+        if (connectedRating != null) ...[
+          _CurrentChannelBanner(
+            current: connectedRating,
+            recommended: best,
+            accentColor: accentColor,
+          ),
+          const SizedBox(height: 16),
+        ],
+        if (is6Ghz) ...[
+          _InfoChip(
+            icon: Icons.bolt_rounded,
+            label: l10n.afcInfoTitle,
+            color: accentColor,
+            sheetTitle: l10n.afcInfoTitle,
+            sheetBody: l10n.afcInfoBody,
+          ),
+          const SizedBox(height: 16),
+        ],
+        // ── Network Overlap (classic spectrum analyzer) ──
+        Row(
+          children: [
+            Icon(Icons.show_chart_rounded, color: accentColor, size: 18),
+            const SizedBox(width: 8),
+            Text(
+              l10n.spectrumOverlapTitle,
+              style: GoogleFonts.orbitron(
+                color: accentColor,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
+              ),
+            ),
+            InfoIconButton(
+              title: l10n.spectrumOverlapInfoTitle,
+              body: l10n.spectrumOverlapInfoBody,
+              color: accentColor,
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        SpectrumOverlapChart(
+          networks: bandNetworks,
+          accentColor: accentColor,
+          connectedBssid: connectedBssid,
+        ),
+        const SizedBox(height: 20),
         // ── Channel Spectrum bar chart with header + info ──
         Row(
           children: [
@@ -504,20 +877,74 @@ class _BandView extends StatelessWidget {
           ),
           const SizedBox(height: 16),
         ],
-        _RecommendationCard(rating: best, accentColor: accentColor),
+        _RecommendationCard(
+          rating: best,
+          accentColor: accentColor,
+          previousRating: previousRatings[best.channel],
+        ),
+        if (best.isDfs) ...[
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: Colors.orangeAccent.withValues(alpha: 0.08),
+              border: Border.all(
+                color: Colors.orangeAccent.withValues(alpha: 0.35),
+              ),
+            ),
+            child: Text(
+              l10n.dfsCacWarning,
+              style: GoogleFonts.rajdhani(
+                fontSize: 12,
+                height: 1.4,
+                color: onSurface.withValues(alpha: 0.85),
+              ),
+            ),
+          ),
+        ],
         const SizedBox(height: 16),
         const RouterAdminGuideCard(),
-        Text(
-          l10n.bandChannels(bandLabel),
-          style: GoogleFonts.orbitron(
-            color: onSurface.withValues(alpha: 0.82),
-            fontSize: 13,
-            letterSpacing: 1,
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                l10n.bandChannels(bandLabel),
+                style: GoogleFonts.orbitron(
+                  color: onSurface.withValues(alpha: 0.82),
+                  fontSize: 13,
+                  letterSpacing: 1,
+                ),
+              ),
+            ),
+            _DensityTrendChip(
+              ratings: ratings,
+              previousRatings: previousRatings,
+            ),
+          ],
         ),
         const SizedBox(height: 8),
         ...ratings.map(
-          (r) => _ChannelTile(rating: r, accentColor: accentColor),
+          (r) => _ChannelTile(
+            rating: r,
+            accentColor: accentColor,
+            isConnected:
+                connectedRating != null &&
+                r.channel == connectedRating.channel &&
+                r.frequency == connectedRating.frequency,
+            isAllowedInRegion: allow.isAllowed(r.channel, r.frequency),
+            networksOnChannel:
+                bandNetworks
+                    .where(
+                      (n) =>
+                          n.channel == r.channel &&
+                          (n.frequency - r.frequency).abs() <= 5,
+                    )
+                    .toList()
+                  ..sort(
+                    (a, b) => b.signalStrength.compareTo(a.signalStrength),
+                  ),
+          ),
         ),
         _ChannelBondingSection(
           ratings: ratings,
@@ -618,8 +1045,13 @@ class _HistoricalBestCard extends StatelessWidget {
 class _RecommendationCard extends StatelessWidget {
   final ChannelRating rating;
   final Color accentColor;
+  final double? previousRating;
 
-  const _RecommendationCard({required this.rating, required this.accentColor});
+  const _RecommendationCard({
+    required this.rating,
+    required this.accentColor,
+    this.previousRating,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -698,6 +1130,13 @@ class _RecommendationCard extends StatelessWidget {
                     fontSize: 14,
                   ),
                 ),
+                if (previousRating != null) ...[
+                  const SizedBox(height: 4),
+                  _DeltaLine(
+                    delta: rating.rating - previousRating!,
+                    color: accentColor,
+                  ),
+                ],
               ],
             ),
           ),
@@ -708,97 +1147,272 @@ class _RecommendationCard extends StatelessWidget {
   }
 }
 
-class _ChannelTile extends StatelessWidget {
+class _DeltaLine extends StatelessWidget {
+  final double delta;
+  final Color color;
+  const _DeltaLine({required this.delta, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final abs = delta.abs();
+    if (abs < 0.3) {
+      return Text(
+        l10n.scanComparisonStable,
+        style: GoogleFonts.rajdhani(
+          fontSize: 12,
+          color: onSurface.withValues(alpha: 0.55),
+          fontStyle: FontStyle.italic,
+        ),
+      );
+    }
+    final improved = delta > 0;
+    final fmt = '${improved ? '+' : '−'}${abs.toStringAsFixed(1)}';
+    final text =
+        improved
+            ? l10n.scanComparisonImproved(fmt)
+            : l10n.scanComparisonWorsened(fmt);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          improved ? Icons.trending_up_rounded : Icons.trending_down_rounded,
+          size: 14,
+          color: improved ? AppColors.neonGreen : Colors.redAccent,
+        ),
+        const SizedBox(width: 4),
+        Flexible(
+          child: Text(
+            text,
+            style: GoogleFonts.rajdhani(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: improved ? AppColors.neonGreen : Colors.redAccent,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ChannelTile extends StatefulWidget {
   final ChannelRating rating;
   final Color accentColor;
+  final bool isConnected;
+  final bool isAllowedInRegion;
+  final List<WifiNetwork> networksOnChannel;
 
-  const _ChannelTile({required this.rating, required this.accentColor});
+  const _ChannelTile({
+    required this.rating,
+    required this.accentColor,
+    this.isConnected = false,
+    this.isAllowedInRegion = true,
+    this.networksOnChannel = const [],
+  });
+
+  @override
+  State<_ChannelTile> createState() => _ChannelTileState();
+}
+
+class _ChannelTileState extends State<_ChannelTile> {
+  bool _expanded = false;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final onSurface = Theme.of(context).colorScheme.onSurface;
     final primary = Theme.of(context).colorScheme.primary;
+    final rating = widget.rating;
     final color = _getColorForRating(rating.rating, primary);
     final fraction = (rating.rating / 10).clamp(0.0, 1.0);
+    final hasNetworks = widget.networksOnChannel.isNotEmpty;
 
-    return Container(
+    final disallowed = !widget.isAllowedInRegion;
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 180),
       margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerLow,
+        color: Theme.of(context).colorScheme.surfaceContainerLow.withValues(
+          alpha: disallowed ? 0.5 : 1.0,
+        ),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withValues(alpha: 0.35)),
+        border: Border.all(
+          color:
+              widget.isConnected
+                  ? AppColors.neonCyan.withValues(alpha: 0.7)
+                  : color.withValues(alpha: disallowed ? 0.18 : 0.35),
+          width: widget.isConnected ? 1.5 : 1,
+        ),
       ),
-      child: Row(
+      child: Opacity(
+        opacity: disallowed ? 0.55 : 1.0,
+        child: Column(
         children: [
-          SizedBox(
-            width: 38,
-            child: Text(
-              '${rating.channel}',
-              style: GoogleFonts.orbitron(
-                color: color,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      '${rating.frequency} MHz',
-                      style: GoogleFonts.rajdhani(
-                        color: onSurface.withValues(alpha: 0.68),
-                        fontSize: 13,
-                      ),
-                    ),
-                    if (rating.isDfs) ...[
-                      const SizedBox(width: 8),
-                      _DfsBadge(),
-                    ],
-                    const Spacer(),
-                    Text(
-                      _qualityString(l10n, rating.quality),
-                      style: GoogleFonts.rajdhani(
+          InkWell(
+            onTap:
+                hasNetworks ? () => setState(() => _expanded = !_expanded) : null,
+            borderRadius: BorderRadius.circular(10),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 38,
+                    child: Text(
+                      '${rating.channel}',
+                      style: GoogleFonts.orbitron(
                         color: color,
                         fontWeight: FontWeight.bold,
-                        fontSize: 13,
+                        fontSize: 16,
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: fraction,
-                    backgroundColor: color.withValues(alpha: 0.12),
-                    valueColor: AlwaysStoppedAnimation<Color>(color),
-                    minHeight: 6,
                   ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          SizedBox(
-            width: 46,
-            child: Text(
-              rating.rating.toStringAsFixed(1),
-              textAlign: TextAlign.right,
-              style: GoogleFonts.orbitron(
-                color: color,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              '${rating.frequency} MHz',
+                              style: GoogleFonts.rajdhani(
+                                color: onSurface.withValues(alpha: 0.68),
+                                fontSize: 13,
+                              ),
+                            ),
+                            if (widget.isConnected) ...[
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color:
+                                      AppColors.neonCyan.withValues(alpha: 0.18),
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(
+                                    color: AppColors.neonCyan
+                                        .withValues(alpha: 0.6),
+                                  ),
+                                ),
+                                child: Text(
+                                  l10n.currentChannelLabel,
+                                  style: GoogleFonts.orbitron(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.neonCyan,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ),
+                            ],
+                            if (rating.isDfs) ...[
+                              const SizedBox(width: 8),
+                              _DfsBadge(),
+                            ],
+                            if (disallowed) ...[
+                              const SizedBox(width: 8),
+                              Tooltip(
+                                message: l10n.channelIllegalTooltip,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        Colors.redAccent.withValues(alpha: 0.12),
+                                    borderRadius: BorderRadius.circular(4),
+                                    border: Border.all(
+                                      color:
+                                          Colors.redAccent.withValues(alpha: 0.5),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    l10n.channelIllegalBadge,
+                                    style: GoogleFonts.orbitron(
+                                      fontSize: 8,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.redAccent,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                            const Spacer(),
+                            if (hasNetworks)
+                              Padding(
+                                padding: const EdgeInsets.only(right: 6),
+                                child: Text(
+                                  '${widget.networksOnChannel.length}×',
+                                  style: GoogleFonts.rajdhani(
+                                    fontSize: 11,
+                                    color: onSurface.withValues(alpha: 0.55),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            Text(
+                              _qualityString(l10n, rating.quality),
+                              style: GoogleFonts.rajdhani(
+                                color: color,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            value: fraction,
+                            backgroundColor: color.withValues(alpha: 0.12),
+                            valueColor: AlwaysStoppedAnimation<Color>(color),
+                            minHeight: 6,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  SizedBox(
+                    width: 46,
+                    child: Text(
+                      rating.rating.toStringAsFixed(1),
+                      textAlign: TextAlign.right,
+                      style: GoogleFonts.orbitron(
+                        color: color,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                  if (hasNetworks)
+                    Icon(
+                      _expanded
+                          ? Icons.keyboard_arrow_up_rounded
+                          : Icons.keyboard_arrow_down_rounded,
+                      size: 18,
+                      color: onSurface.withValues(alpha: 0.45),
+                    ),
+                ],
               ),
             ),
           ),
+          if (_expanded && hasNetworks)
+            _ChannelDrilldown(
+              networks: widget.networksOnChannel,
+              accentColor: color,
+            ),
         ],
+      ),
       ),
     );
   }
@@ -807,6 +1421,154 @@ class _ChannelTile extends StatelessWidget {
     if (r >= 8) return primary;
     if (r >= 5) return Colors.orange;
     return Colors.red;
+  }
+}
+
+class _ChannelDrilldown extends StatelessWidget {
+  final List<WifiNetwork> networks;
+  final Color accentColor;
+  const _ChannelDrilldown({required this.networks, required this.accentColor});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(14, 4, 14, 10),
+      decoration: BoxDecoration(
+        color: accentColor.withValues(alpha: 0.04),
+        borderRadius: const BorderRadius.vertical(
+          bottom: Radius.circular(10),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 6, top: 2),
+            child: Text(
+              l10n.channelDrilldownHeader.toUpperCase(),
+              style: GoogleFonts.orbitron(
+                fontSize: 9,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1,
+                color: accentColor.withValues(alpha: 0.9),
+              ),
+            ),
+          ),
+          ...networks.map((n) => _NetworkRow(network: n)),
+          if (networks.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Text(
+                l10n.channelDrilldownEmpty,
+                style: GoogleFonts.rajdhani(
+                  fontSize: 12,
+                  color: onSurface.withValues(alpha: 0.5),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _NetworkRow extends StatelessWidget {
+  final WifiNetwork network;
+  const _NetworkRow({required this.network});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final width = network.channelWidthMhz ?? 20;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        children: [
+          Icon(
+            Icons.wifi_rounded,
+            size: 13,
+            color: _signalColor(network.signalStrength),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              network.ssid.isEmpty ? l10n.hiddenSsidPlaceholder : network.ssid,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.rajdhani(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color:
+                    network.isHidden || network.ssid.isEmpty
+                        ? onSurface.withValues(alpha: 0.55)
+                        : onSurface.withValues(alpha: 0.9),
+                fontStyle:
+                    network.ssid.isEmpty
+                        ? FontStyle.italic
+                        : FontStyle.normal,
+              ),
+            ),
+          ),
+          const SizedBox(width: 6),
+          _miniBadge('$width MHz', AppColors.neonCyan),
+          const SizedBox(width: 4),
+          _miniBadge(_securityLabel(network.security), AppColors.neonPurple),
+          const SizedBox(width: 6),
+          Text(
+            '${network.signalStrength} dBm',
+            style: GoogleFonts.firaCode(
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              color: _signalColor(network.signalStrength),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _miniBadge(String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Text(
+        text,
+        style: GoogleFonts.orbitron(
+          fontSize: 8,
+          fontWeight: FontWeight.bold,
+          color: color,
+        ),
+      ),
+    );
+  }
+
+  Color _signalColor(int dbm) {
+    if (dbm >= -55) return AppColors.neonGreen;
+    if (dbm >= -75) return Colors.orangeAccent;
+    return Colors.redAccent;
+  }
+
+  String _securityLabel(SecurityType s) {
+    switch (s) {
+      case SecurityType.open:
+        return 'OPEN';
+      case SecurityType.wep:
+        return 'WEP';
+      case SecurityType.wpa:
+        return 'WPA';
+      case SecurityType.wpa2:
+        return 'WPA2';
+      case SecurityType.wpa3:
+        return 'WPA3';
+      case SecurityType.unknown:
+        return '?';
+    }
   }
 }
 
@@ -947,6 +1709,270 @@ class _ChannelBondingSectionState extends State<_ChannelBondingSection> {
   }
 }
 
+/// Compact chip indicating whether the channel-rating distribution moved
+/// significantly since the previous scan — a proxy for AP density volatility.
+class _DensityTrendChip extends StatelessWidget {
+  final List<ChannelRating> ratings;
+  final Map<int, double> previousRatings;
+  const _DensityTrendChip({
+    required this.ratings,
+    required this.previousRatings,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    if (previousRatings.isEmpty) return const SizedBox.shrink();
+
+    double maxAbsDelta = 0;
+    for (final r in ratings) {
+      final prev = previousRatings[r.channel];
+      if (prev == null) continue;
+      final d = (r.rating - prev).abs();
+      if (d > maxAbsDelta) maxAbsDelta = d;
+    }
+    final volatile = maxAbsDelta >= 1.5;
+    final label =
+        volatile
+            ? l10n.densityTrendVolatile(maxAbsDelta.toStringAsFixed(1))
+            : l10n.densityTrendStable;
+    final color = volatile ? Colors.orangeAccent : AppColors.neonGreen;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            volatile
+                ? Icons.show_chart_rounded
+                : Icons.horizontal_rule_rounded,
+            size: 12,
+            color: color,
+          ),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.rajdhani(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color: color,
+                letterSpacing: 0.4,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    // ignore: dead_code
+    onSurface; // kept for future styling reuse
+  }
+}
+
+/// Compact pill that opens a full info bottom sheet when tapped — used for
+/// contextual education chips (AFC, mesh, band-steering, …).
+class _InfoChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final String sheetTitle;
+  final String sheetBody;
+
+  const _InfoChip({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.sheetTitle,
+    required this.sheetBody,
+  });
+
+  void _openSheet(BuildContext context) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder:
+          (_) => GlassmorphicContainer(
+            padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            borderColor: color,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: 0.4),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  Row(
+                    children: [
+                      Icon(icon, color: color, size: 22),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          sheetTitle,
+                          style: GoogleFonts.orbitron(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: color,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    sheetBody,
+                    style: GoogleFonts.rajdhani(
+                      fontSize: 14,
+                      height: 1.55,
+                      color: onSurface.withValues(alpha: 0.85),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => _openSheet(context),
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: color.withValues(alpha: 0.08),
+          border: Border.all(color: color.withValues(alpha: 0.32)),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 16, color: color),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                label,
+                style: GoogleFonts.orbitron(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                  letterSpacing: 0.8,
+                ),
+              ),
+            ),
+            Icon(
+              Icons.info_outline_rounded,
+              size: 14,
+              color: color.withValues(alpha: 0.7),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Banner showing the user's currently-broadcast channel and the gain they
+/// would get by switching to the recommended one.
+class _CurrentChannelBanner extends StatelessWidget {
+  final ChannelRating current;
+  final ChannelRating recommended;
+  final Color accentColor;
+
+  const _CurrentChannelBanner({
+    required this.current,
+    required this.recommended,
+    required this.accentColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final delta = recommended.rating - current.rating;
+    final isOptimal = current.channel == recommended.channel || delta < 0.5;
+    final color = isOptimal ? AppColors.neonGreen : AppColors.neonCyan;
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        gradient: LinearGradient(
+          colors: [
+            color.withValues(alpha: 0.18),
+            color.withValues(alpha: 0.06),
+          ],
+        ),
+        border: Border.all(color: color.withValues(alpha: 0.45)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                isOptimal
+                    ? Icons.check_circle_rounded
+                    : Icons.swap_horiz_rounded,
+                color: color,
+                size: 18,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  l10n.currentChannelBannerYouAreOn(
+                    'CH ${current.channel} · ${current.rating.toStringAsFixed(1)}/10',
+                  ),
+                  style: GoogleFonts.orbitron(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                    letterSpacing: 0.8,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            isOptimal
+                ? l10n.currentChannelBannerOptimal
+                : l10n.currentChannelBannerSwitchTo(
+                  'CH ${recommended.channel}',
+                  delta.toStringAsFixed(1),
+                ),
+            style: GoogleFonts.rajdhani(
+              fontSize: 13,
+              color: onSurface.withValues(alpha: 0.85),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// DFS rozeti — dokunulduğunda detaylı açıklama bottomsheet'i açar.
 class _DfsBadge extends StatelessWidget {
   @override
@@ -1053,6 +2079,19 @@ class _DfsBadge extends StatelessWidget {
             ),
           ),
     );
+  }
+}
+
+String _regionLabel(dynamic l10n, WifiRegion r) {
+  switch (r) {
+    case WifiRegion.us:
+      return l10n.regionUS;
+    case WifiRegion.eu:
+      return l10n.regionEU;
+    case WifiRegion.jp:
+      return l10n.regionJP;
+    case WifiRegion.world:
+      return l10n.regionWorld;
   }
 }
 

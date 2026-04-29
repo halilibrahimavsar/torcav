@@ -3051,6 +3051,240 @@ abstract class AppLocalizations {
   /// **'Not connected to a Wi-Fi network — connect first to see your router\'s admin address and a tailored guide.'**
   String get guideNoConnection;
 
+  /// Badge label for the currently used channel
+  ///
+  /// In en, this message translates to:
+  /// **'ON NOW'**
+  String get currentChannelLabel;
+
+  /// Banner text — current channel
+  ///
+  /// In en, this message translates to:
+  /// **'Currently on {channel}'**
+  String currentChannelBannerYouAreOn(String channel);
+
+  /// Banner suggestion when current and recommended differ
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to {channel} for +{delta} points'**
+  String currentChannelBannerSwitchTo(String channel, String delta);
+
+  /// Banner when current = recommended
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re already on the recommended channel'**
+  String get currentChannelBannerOptimal;
+
+  /// Header for the spectrum analyzer overlap chart
+  ///
+  /// In en, this message translates to:
+  /// **'Network Overlap'**
+  String get spectrumOverlapTitle;
+
+  /// Info sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Network Overlap'**
+  String get spectrumOverlapInfoTitle;
+
+  /// Info body
+  ///
+  /// In en, this message translates to:
+  /// **'Each colored shape is a Wi-Fi network. The position on the X-axis is its centre frequency, the width matches the channel width (20/40/80/160 MHz) and the height shows signal strength (top = strong, bottom = weak). Where shapes overlap, those networks share the same airtime and slow each other down. Look for a vertical slice with no shapes (or only weak ones at the bottom) — that\'s a quiet channel. Tap a shape to identify the network.'**
+  String get spectrumOverlapInfoBody;
+
+  /// Shown when no networks to draw
+  ///
+  /// In en, this message translates to:
+  /// **'No networks visible on this band'**
+  String get spectrumOverlapEmptyHint;
+
+  /// Header when expanding a channel tile
+  ///
+  /// In en, this message translates to:
+  /// **'Networks on this channel'**
+  String get channelDrilldownHeader;
+
+  /// Empty drill-down
+  ///
+  /// In en, this message translates to:
+  /// **'No networks broadcasting here'**
+  String get channelDrilldownEmpty;
+
+  /// Placeholder for empty SSID
+  ///
+  /// In en, this message translates to:
+  /// **'<hidden network>'**
+  String get hiddenSsidPlaceholder;
+
+  /// No description provided for @scanComparisonImproved.
+  ///
+  /// In en, this message translates to:
+  /// **'{delta} pts vs last scan (improved)'**
+  String scanComparisonImproved(String delta);
+
+  /// No description provided for @scanComparisonWorsened.
+  ///
+  /// In en, this message translates to:
+  /// **'{delta} pts vs last scan (worsened)'**
+  String scanComparisonWorsened(String delta);
+
+  /// No description provided for @scanComparisonStable.
+  ///
+  /// In en, this message translates to:
+  /// **'Stable since last scan'**
+  String get scanComparisonStable;
+
+  /// Country selector header
+  ///
+  /// In en, this message translates to:
+  /// **'Region'**
+  String get countryAllowlistHeader;
+
+  /// Region selector info
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi channels are regulated differently per country. Channels disallowed in your region are dimmed and can\'t be used by your router. Switch the region if you\'re abroad — but the recommendation will only show legal channels for the selected region.'**
+  String get countryAllowlistInfoBody;
+
+  /// Badge for region-illegal channels
+  ///
+  /// In en, this message translates to:
+  /// **'NOT ALLOWED'**
+  String get channelIllegalBadge;
+
+  /// Tooltip for illegal channel
+  ///
+  /// In en, this message translates to:
+  /// **'This channel is not legal for Wi-Fi use in the selected region.'**
+  String get channelIllegalTooltip;
+
+  /// No description provided for @regionUS.
+  ///
+  /// In en, this message translates to:
+  /// **'United States'**
+  String get regionUS;
+
+  /// No description provided for @regionEU.
+  ///
+  /// In en, this message translates to:
+  /// **'Europe / Türkiye'**
+  String get regionEU;
+
+  /// No description provided for @regionJP.
+  ///
+  /// In en, this message translates to:
+  /// **'Japan'**
+  String get regionJP;
+
+  /// No description provided for @regionWorld.
+  ///
+  /// In en, this message translates to:
+  /// **'World (most permissive)'**
+  String get regionWorld;
+
+  /// Hour-of-day heatmap title
+  ///
+  /// In en, this message translates to:
+  /// **'Best channel by hour of day'**
+  String get hourlyHeatmapTitle;
+
+  /// Insufficient hour-of-day data
+  ///
+  /// In en, this message translates to:
+  /// **'Need more history. Open this screen at different times of day to build the pattern.'**
+  String get hourlyHeatmapInsufficient;
+
+  /// AFC info sheet
+  ///
+  /// In en, this message translates to:
+  /// **'6 GHz Power Classes (AFC)'**
+  String get afcInfoTitle;
+
+  /// No description provided for @afcInfoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'6 GHz Wi-Fi is divided into three power classes:\n\n• LPI (Low Power Indoor) — Default for home routers. Up to 30 dBm EIRP, only legal indoors. No location coordination needed.\n\n• Standard Power (SP) — Outdoor + high-power indoor. Up to 36 dBm. Requires AFC (Automated Frequency Coordination): the router contacts an FCC/regulator database, supplies its GPS location, and is told which channels are free of incumbent users (satellite uplinks, fixed microwave links).\n\n• VLP (Very Low Power) — Mobile/portable use, up to 14 dBm. No coordination needed but very short range; mainly for AR/VR headsets and laptops.\n\nMost home networks see only LPI; if you spot a 6 GHz AP outdoors with strong signal, it likely runs SP and was AFC-coordinated.'**
+  String get afcInfoBody;
+
+  /// No description provided for @advancedTopicsHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced topics'**
+  String get advancedTopicsHeader;
+
+  /// No description provided for @advancedMeshTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mesh & roaming'**
+  String get advancedMeshTitle;
+
+  /// No description provided for @advancedMeshBody.
+  ///
+  /// In en, this message translates to:
+  /// **'In a mesh network (e.g. Google Nest, Eero, TP-Link Deco) you don\'t pick the channel manually — the controller picks one per node and re-balances when neighbours change. Some controllers expose a per-node channel override, but auto-mode is usually best because the system can detect interference between mesh nodes themselves. If you must override, set the front-haul (client-facing) radio of the main node to the recommended channel and let the back-haul (node-to-node) radio stay on auto.'**
+  String get advancedMeshBody;
+
+  /// No description provided for @advancedBandSteeringTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Band steering & one SSID vs two'**
+  String get advancedBandSteeringTitle;
+
+  /// No description provided for @advancedBandSteeringBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Modern routers offer band-steering: one SSID for both 2.4 GHz and 5 GHz, with the router pushing capable devices to 5 GHz. Pros: simple, devices roam automatically. Cons: some IoT devices (smart plugs, cameras) can only see 2.4 GHz and may fail to connect when the router hides it during steering. Workaround: split the SSIDs (e.g. \"MyHome\" on 5 GHz, \"MyHome-IoT\" on 2.4 GHz) for IoT setup and merge later if you wish.'**
+  String get advancedBandSteeringBody;
+
+  /// No description provided for @advancedWmmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'WMM / QoS'**
+  String get advancedWmmTitle;
+
+  /// No description provided for @advancedWmmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'WMM (Wi-Fi Multimedia) prioritises traffic into 4 categories: voice, video, best-effort, background. It\'s required for Wi-Fi 4+ certification and should always stay enabled. Disabling it caps your throughput at 802.11g speeds (~54 Mbps). The Channel choice doesn\'t affect WMM, but a clean channel improves all 4 categories simultaneously.'**
+  String get advancedWmmBody;
+
+  /// Shown next to recommended-channel banner when channel is DFS
+  ///
+  /// In en, this message translates to:
+  /// **'⚠ DFS channel: when your router moves here it must listen silently for 60 seconds before broadcasting (Channel Availability Check). Wi-Fi will be temporarily unavailable during that window.'**
+  String get dfsCacWarning;
+
+  /// No description provided for @densityTrendStable.
+  ///
+  /// In en, this message translates to:
+  /// **'Stable density'**
+  String get densityTrendStable;
+
+  /// No description provided for @densityTrendVolatile.
+  ///
+  /// In en, this message translates to:
+  /// **'Volatile area · density swings {delta} APs in last hour'**
+  String densityTrendVolatile(String delta);
+
+  /// PDF export menu item
+  ///
+  /// In en, this message translates to:
+  /// **'Export spectrum report'**
+  String get exportPdfTitle;
+
+  /// No description provided for @exportPdfSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Report saved · sharing…'**
+  String get exportPdfSuccess;
+
+  /// No description provided for @exportPdfFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t generate report.'**
+  String get exportPdfFailed;
+
   /// Badge for channels that fluctuate heavily across history
   ///
   /// In en, this message translates to:

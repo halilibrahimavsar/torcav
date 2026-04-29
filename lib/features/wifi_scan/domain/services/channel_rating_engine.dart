@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:injectable/injectable.dart';
 import '../entities/channel_rating.dart';
 import '../entities/wifi_network.dart';
@@ -68,6 +70,12 @@ class ChannelRatingEngine {
       double score = 10.0;
       int count = 0;
 
+      // Candidate channels are always assumed to be 20 MHz wide for scoring
+      // purposes; the analysis answers "how clean is this 20 MHz slot?".
+      const candWidth = 20.0;
+      final candLow = frequency - candWidth / 2;
+      final candHigh = frequency + candWidth / 2;
+
       for (final network in networks) {
         if (network.channel <= 0) continue;
         final nFreq = network.frequency;
@@ -84,21 +92,30 @@ class ChannelRatingEngine {
         final signalWeight =
             1.0 + ((network.signalStrength + 100) / 70.0).clamp(0.0, 1.0);
 
-        final dist = (network.channel - channel).abs();
-        if (dist == 0) {
-          // Co-Channel Interference (CCI)
-          score -= 2.0 * signalWeight;
-          count++;
-        } else if (is24 && dist < 5) {
-          // Adjacent Channel Interference (ACI) — significant on 2.4 GHz only.
-          final penalty = switch (dist) {
-            1 => 1.5,
-            2 => 1.0,
-            3 => 0.5,
-            4 => 0.2,
-            _ => 0.0,
-          };
-          score -= penalty * signalWeight;
+        // Width-aware overlap: a 40/80/160 MHz network occupies its full
+        // frequency block, so it interferes with every 20 MHz candidate
+        // inside that block, not only with its centre channel.
+        final width = (network.channelWidthMhz ?? 20).toDouble();
+        final netLow = nFreq - width / 2;
+        final netHigh = nFreq + width / 2;
+
+        final overlapLow = math.max(netLow, candLow);
+        final overlapHigh = math.min(netHigh, candHigh);
+        final overlap =
+            math.max(0.0, overlapHigh - overlapLow) / candWidth; // 0..1
+
+        if (overlap > 0) {
+          // Linear scaling: full overlap = full -2.0 CCI penalty.
+          // Partial overlap (e.g. 2.4 GHz adjacent channels at dist=1..3)
+          // produces the same curve the legacy engine had hardcoded.
+          score -= 2.0 * overlap * signalWeight;
+          if (overlap >= 0.95) count++;
+        } else if (is24) {
+          // 2.4 GHz spectral side-lobe leakage: even without true overlap,
+          // a narrow neighbour 4 channels away (~20 MHz) bleeds slightly.
+          if ((network.channel - channel).abs() == 4) {
+            score -= 0.2 * signalWeight;
+          }
         }
       }
 

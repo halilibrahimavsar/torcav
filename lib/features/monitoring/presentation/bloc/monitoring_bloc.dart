@@ -77,14 +77,24 @@ class ChannelAnalysisReady extends MonitoringState {
   final Map<int, double> historicalAverages;
   final DateTime timestamp;
 
+  /// Per-channel rating from the most recent prior analysis emission, used to
+  /// show "+/- X pts vs last scan" deltas. Empty on the first emission.
+  final Map<int, double> previousRatings;
+
   const ChannelAnalysisReady(
     this.ratings, {
     this.historicalAverages = const {},
     required this.timestamp,
+    this.previousRatings = const {},
   });
 
   @override
-  List<Object?> get props => [ratings, historicalAverages, timestamp];
+  List<Object?> get props => [
+    ratings,
+    historicalAverages,
+    timestamp,
+    previousRatings,
+  ];
 }
 
 class MonitoringFailure extends MonitoringState {
@@ -107,6 +117,10 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
   StreamSubscription? _channelSubscription;
 
   List<int> _history = [];
+
+  /// Snapshot of the previous emission's ratings, keyed by channel — fed to
+  /// the next emission so the UI can show "delta vs last scan".
+  Map<int, double> _previousRatings = const {};
 
   MonitoringBloc(
     this._repository,
@@ -190,11 +204,33 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
     // Initial analysis
     final initialRatings = _channelEngine.calculateRatings(event.networks);
     final history = await _getHistory();
+    // Pull the most recent prior sample for each channel from history (the
+    // current analysis hasn't been persisted yet, so this is the *previous*
+    // run).
+    final previousByChannel = <int, double>{};
+    final priorSamples = await _historyRepo.getHistory(
+      limit: const Duration(hours: 1),
+    );
+    priorSamples.fold((_) => null, (samples) {
+      // Latest sample per channel.
+      final latest = <int, ChannelRatingSample>{};
+      for (final s in samples) {
+        final cur = latest[s.channel];
+        if (cur == null || s.timestamp.isAfter(cur.timestamp)) {
+          latest[s.channel] = s;
+        }
+      }
+      previousByChannel.addAll({
+        for (final e in latest.entries) e.key: e.value.rating,
+      });
+    });
+    _previousRatings = previousByChannel;
     emit(
       ChannelAnalysisReady(
         initialRatings,
         historicalAverages: history,
         timestamp: DateTime.now(),
+        previousRatings: previousByChannel,
       ),
     );
 
@@ -251,11 +287,18 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
     Emitter<MonitoringState> emit,
   ) async {
     final history = await _getHistory();
+    // Live updates: previous = the snapshot we just emitted last.
+    final cur = state;
+    final prev =
+        cur is ChannelAnalysisReady
+            ? {for (final r in cur.ratings) r.channel: r.rating}
+            : _previousRatings;
     emit(
       ChannelAnalysisReady(
         event.ratings,
         historicalAverages: history,
         timestamp: DateTime.now(),
+        previousRatings: prev,
       ),
     );
   }

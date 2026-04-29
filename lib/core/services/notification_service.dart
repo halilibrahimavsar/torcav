@@ -72,6 +72,26 @@ class NotificationService {
     );
   }
 
+  /// Posts a low-priority alert when the user's currently-active Wi-Fi
+  /// channel drops below a quality threshold the user can act upon.
+  Future<void> showSpectrumChannelAlert({
+    required int channel,
+    required double rating,
+    required int recommendedChannel,
+    required double recommendedRating,
+  }) async {
+    if (!_initialized) await initialize();
+    await _plugin.show(
+      888888 + channel,
+      '📶 Wi-Fi channel quality dropped',
+      'Channel $channel is now ${rating.toStringAsFixed(1)}/10. '
+          'Channel $recommendedChannel is at '
+          '${recommendedRating.toStringAsFixed(1)}/10 — consider switching.',
+      _buildNotificationDetails(SecurityEventSeverity.warning),
+      payload: 'spectrum|$channel',
+    );
+  }
+
   Future<void> showAttackDetected(String attackType, String details) async {
     if (!_initialized) await initialize();
 

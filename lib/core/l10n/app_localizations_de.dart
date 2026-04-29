@@ -1586,6 +1586,133 @@ class AppLocalizationsDe extends AppLocalizations {
   String get guideNoConnection => 'Nicht mit einem WLAN verbunden — verbinden Sie sich, um die Admin-Adresse und eine markenspezifische Anleitung zu sehen.';
 
   @override
+  String get currentChannelLabel => 'AKTIV';
+
+  @override
+  String currentChannelBannerYouAreOn(String channel) {
+    return 'Aktuell auf $channel';
+  }
+
+  @override
+  String currentChannelBannerSwitchTo(String channel, String delta) {
+    return 'Wechsel auf $channel für +$delta Punkte';
+  }
+
+  @override
+  String get currentChannelBannerOptimal => 'Sie sind bereits auf dem empfohlenen Kanal';
+
+  @override
+  String get spectrumOverlapTitle => 'Netzwerk-Überlappung';
+
+  @override
+  String get spectrumOverlapInfoTitle => 'Netzwerk-Überlappung';
+
+  @override
+  String get spectrumOverlapInfoBody => 'Jede farbige Form ist ein WLAN-Netzwerk. Position auf der X-Achse zeigt die Mittenfrequenz, die Breite entspricht der Kanalbreite (20/40/80/160 MHz) und die Höhe gibt die Signalstärke an (oben = stark, unten = schwach). Überschneiden sich Formen, teilen sich die Netzwerke die Sendezeit und bremsen sich gegenseitig. Suchen Sie eine senkrechte Lücke ohne Formen (oder nur schwache am Boden) — das ist ein ruhiger Kanal. Tippen Sie auf eine Form, um das Netzwerk zu identifizieren.';
+
+  @override
+  String get spectrumOverlapEmptyHint => 'Keine Netzwerke auf diesem Band sichtbar';
+
+  @override
+  String get channelDrilldownHeader => 'Netzwerke auf diesem Kanal';
+
+  @override
+  String get channelDrilldownEmpty => 'Keine Netzwerke senden hier';
+
+  @override
+  String get hiddenSsidPlaceholder => '<verstecktes Netz>';
+
+  @override
+  String scanComparisonImproved(String delta) {
+    return '$delta Punkte ggü. letztem Scan (besser)';
+  }
+
+  @override
+  String scanComparisonWorsened(String delta) {
+    return '$delta Punkte ggü. letztem Scan (schlechter)';
+  }
+
+  @override
+  String get scanComparisonStable => 'Seit letztem Scan stabil';
+
+  @override
+  String get countryAllowlistHeader => 'Region';
+
+  @override
+  String get countryAllowlistInfoBody => 'WLAN-Kanäle sind länderweise reguliert. In Ihrer Region nicht zugelassene Kanäle werden ausgegraut. Wechseln Sie die Region, wenn Sie im Ausland sind — die Empfehlung zeigt nur legale Kanäle der gewählten Region.';
+
+  @override
+  String get channelIllegalBadge => 'NICHT ERLAUBT';
+
+  @override
+  String get channelIllegalTooltip => 'Dieser Kanal ist in der gewählten Region nicht zulässig.';
+
+  @override
+  String get regionUS => 'USA';
+
+  @override
+  String get regionEU => 'Europa / Türkei';
+
+  @override
+  String get regionJP => 'Japan';
+
+  @override
+  String get regionWorld => 'Welt (am wenigsten restriktiv)';
+
+  @override
+  String get hourlyHeatmapTitle => 'Bester Kanal nach Tageszeit';
+
+  @override
+  String get hourlyHeatmapInsufficient => 'Mehr Verlauf nötig. Öffnen Sie diesen Bildschirm zu verschiedenen Tageszeiten, um das Muster aufzubauen.';
+
+  @override
+  String get afcInfoTitle => '6 GHz Leistungsklassen (AFC)';
+
+  @override
+  String get afcInfoBody => '6 GHz WLAN ist in drei Leistungsklassen unterteilt:\n\n• LPI (Low Power Indoor) — Standard für Heimrouter. Bis 30 dBm EIRP, nur in Innenräumen zulässig. Keine Standortkoordination nötig.\n\n• Standard Power (SP) — Außenbereich + leistungsstarke Innenanwendungen. Bis 36 dBm. Erfordert AFC (Automated Frequency Coordination): der Router meldet seinen GPS-Standort an eine Regulierungsdatenbank und erhält die freien Kanäle (frei von Satelliten-Uplinks und festen Richtfunkstrecken).\n\n• VLP (Very Low Power) — Mobile/tragbare Nutzung, bis 14 dBm. Keine Koordination, sehr kurze Reichweite; vor allem für AR/VR-Headsets und Laptops.\n\nIn den meisten Heimnetzwerken sieht man nur LPI; ein starker 6-GHz-AP im Außenbereich ist meist SP-AFC-koordiniert.';
+
+  @override
+  String get advancedTopicsHeader => 'Fortgeschrittene Themen';
+
+  @override
+  String get advancedMeshTitle => 'Mesh & Roaming';
+
+  @override
+  String get advancedMeshBody => 'In Mesh-Netzwerken (z. B. Google Nest, Eero, TP-Link Deco) wählen Sie den Kanal nicht manuell — der Controller wählt einen pro Knoten und gleicht aus, wenn sich Nachbarn ändern. Manche Controller bieten eine knotenspezifische Override-Option, aber Auto ist meist am besten, weil das System auch die Interferenz zwischen den Mesh-Knoten misst. Wenn Sie es überschreiben müssen, stellen Sie das Front-Haul-Radio (Client-Seite) des Hauptknotens auf den empfohlenen Kanal und lassen Sie das Back-Haul-Radio auf Auto.';
+
+  @override
+  String get advancedBandSteeringTitle => 'Band Steering & 1 SSID vs 2';
+
+  @override
+  String get advancedBandSteeringBody => 'Moderne Router bieten Band-Steering: eine SSID für 2,4 und 5 GHz, der Router schiebt fähige Geräte auf 5 GHz. Vorteile: einfach, automatisches Roaming. Nachteile: einige IoT-Geräte (Smart Plugs, Kameras) sehen nur 2,4 GHz und scheitern, wenn der Router das Band während des Steerings versteckt. Workaround: SSIDs trennen (z. B. \"MeinHeim\" auf 5 GHz, \"MeinHeim-IoT\" auf 2,4 GHz) für die Einrichtung und ggf. später zusammenführen.';
+
+  @override
+  String get advancedWmmTitle => 'WMM / QoS';
+
+  @override
+  String get advancedWmmBody => 'WMM (Wi-Fi Multimedia) priorisiert Datenverkehr in 4 Klassen: Sprache, Video, Best-Effort, Hintergrund. Für Wi-Fi 4+ Zertifizierung erforderlich und sollte immer aktiv bleiben. Deaktivieren limitiert den Durchsatz auf 802.11g (~54 Mbit/s). Die Kanalwahl beeinflusst WMM nicht, aber ein freier Kanal verbessert alle 4 Klassen gleichzeitig.';
+
+  @override
+  String get dfsCacWarning => '⚠ DFS-Kanal: wechselt der Router hierher, muss er 60 Sekunden lautlos lauschen (Channel Availability Check), bevor er sendet. Während dieses Fensters ist WLAN nicht verfügbar.';
+
+  @override
+  String get densityTrendStable => 'Stabile Dichte';
+
+  @override
+  String densityTrendVolatile(String delta) {
+    return 'Volatile Umgebung · Dichte schwankte in der letzten Stunde um $delta APs';
+  }
+
+  @override
+  String get exportPdfTitle => 'Spektrum-Bericht teilen';
+
+  @override
+  String get exportPdfSuccess => 'Bericht erstellt · wird geteilt…';
+
+  @override
+  String get exportPdfFailed => 'Bericht konnte nicht erstellt werden.';
+
+  @override
   String get unstableChannelLabel => 'INSTABIL';
 
   @override

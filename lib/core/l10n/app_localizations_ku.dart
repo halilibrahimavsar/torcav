@@ -1586,6 +1586,133 @@ class AppLocalizationsKu extends AppLocalizations {
   String get guideNoConnection => 'Bi tora Wi-Fi ve ne girêdayî yî — ji bo dîtina navnîşana rêveberiyê û rêbera taybet a markeyê pêşî girê bide.';
 
   @override
+  String get currentChannelLabel => 'NIHA';
+
+  @override
+  String currentChannelBannerYouAreOn(String channel) {
+    return 'Niha li ser $channel yî';
+  }
+
+  @override
+  String currentChannelBannerSwitchTo(String channel, String delta) {
+    return 'Ji bo +$delta puan biçe ser $channel';
+  }
+
+  @override
+  String get currentChannelBannerOptimal => 'Tu jixwe li ser kanala pêşniyazkirî yî';
+
+  @override
+  String get spectrumOverlapTitle => 'Li-ser-hev-ketina Toran';
+
+  @override
+  String get spectrumOverlapInfoTitle => 'Li-ser-hev-ketina Toran';
+
+  @override
+  String get spectrumOverlapInfoBody => 'Her şeklê rengîn yek tora Wi-Fi ye. Cihê wê li ser axa X frekansa navendê nîşan dide, fireh̥iya wê pehnatiya kanalê (20/40/80/160 MHz), bilindahî jî hêza sînyalê (jor = xurt, jêr = qels). Cihên ku şekl li ser hev radikevin, ew tor heman dema weşanê parve dikin û hev hêdî dikin. Li firehîyek dîkî ku tê de tu şekil tune (an jî tenê yên qels li jêr) bigere — ew kanaleke bêdeng e. Li şeklekê bide ku tora wê bibînî.';
+
+  @override
+  String get spectrumOverlapEmptyHint => 'Li ser vî bandî tor xuya nake';
+
+  @override
+  String get channelDrilldownHeader => 'Torên li ser vê kanalê';
+
+  @override
+  String get channelDrilldownEmpty => 'Li vir tor weşanê nake';
+
+  @override
+  String get hiddenSsidPlaceholder => '<tora veşartî>';
+
+  @override
+  String scanComparisonImproved(String delta) {
+    return 'Li gor şopandina dawî $delta puan baştir bûye';
+  }
+
+  @override
+  String scanComparisonWorsened(String delta) {
+    return 'Li gor şopandina dawî $delta puan xirabtir bûye';
+  }
+
+  @override
+  String get scanComparisonStable => 'Ji şopandina dawî vir ve aram';
+
+  @override
+  String get countryAllowlistHeader => 'Herêm';
+
+  @override
+  String get countryAllowlistInfoBody => 'Kanalên Wi-Fi li her welatî bi awayekî cuda têne rêvebirin. Kanalên ku li herêma we qedexe ne kêmreng têne nîşandan û ji aliyê routerê we nayên bikaranîn. Heke li derveyê welêt bî, herêmê biguherîne — pêşniyaz tenê kanalên yasayî yên herêma hilbijartî nîşan dide.';
+
+  @override
+  String get channelIllegalBadge => 'QEDEXEYÎ';
+
+  @override
+  String get channelIllegalTooltip => 'Ev kanal li herêma hilbijartî ji bo Wi-Fi yasayî nîne.';
+
+  @override
+  String get regionUS => 'Dewletên Yekgirtî';
+
+  @override
+  String get regionEU => 'Ewropa / Tirkiye';
+
+  @override
+  String get regionJP => 'Japonya';
+
+  @override
+  String get regionWorld => 'Cîhan (kêmtirîn sînor)';
+
+  @override
+  String get hourlyHeatmapTitle => 'Kanala herî baş li gor saetê';
+
+  @override
+  String get hourlyHeatmapInsufficient => 'Dîroka bes têrê nake. Vê ekranê di saetên cuda yên rojê de veke ku rêjeya saetan ava bibe.';
+
+  @override
+  String get afcInfoTitle => 'Sinifên Hêza 6 GHz (AFC)';
+
+  @override
+  String get afcInfoBody => 'Wi-Fi 6 GHz dabeşbûyî sê sînifên hêzê ye:\n\n• LPI (Hêza Kêm a Hindurîn) — Pêşbinîn ji bo routerên malê. Heya 30 dBm EIRP, tenê di hindurê de yasayî ye. Koordînasyona cihê ne hewce ye.\n\n• Standard Power (SP) — Derve û hindurê hêza bilind. Heya 36 dBm. AFC (Koordînasyona Frekansa Otomatîk) hewce dike: router cihê GPS xwe ji databasaya rêveberiyê re dişîne û tê gotin ka kîjan kanal ji bikarhênerên niştecîh (uplink satelîtî, lînkên mîkrowave) vala ne.\n\n• VLP (Hêza Pir Kêm) — Bikaranîna mobîl, heya 14 dBm. Koordînasyon ne hewce ye lê dûrahiya wê pir kurt e; piranî ji bo AR/VR û laptopan.\n\nPiraniya torên malê tenê LPI dibînin; eger li derve îşareta xurt a 6 GHz bibînî, mimkun e ku ew SP û bi AFC hatî koordîne kirin be.';
+
+  @override
+  String get advancedTopicsHeader => 'Mijarên pêşkeftî';
+
+  @override
+  String get advancedMeshTitle => 'Mesh û geştûgeşt (roaming)';
+
+  @override
+  String get advancedMeshBody => 'Di tora mesh de (Google Nest, Eero, TP-Link Deco hwd.) tu kanalê bi destan hilnabijêrî — kontrolker ji bo her girêkê kanalek hildibijêre û gava cîran diguherin ji nû ve dibalans dike. Hin kontrolker overrideya ji bo girêka îstîsna pêşkêş dikin; lê moda otomatîk bi gelemperî baştir e, ji ber ku sîstem tevliheviya navbera girêkên mesh jî dipîve. Heke pêwîst bibe, radyoya pêş (a aliyê xerîdar) ya girêka sereke saz bike ser kanala pêşniyazkirî û radyoya paş (girêk-girêk) bila otomatîk bimîne.';
+
+  @override
+  String get advancedBandSteeringTitle => 'Band steering & yek SSID an du';
+
+  @override
+  String get advancedBandSteeringBody => 'Routerên nû band-steering pêşkêş dikin: yek SSID ji bo hem 2.4 hem 5 GHz, router cihazên kapasîteyî dixe nav 5 GHz. Erêniyên: hêsan, cihaz bi awayekî otomatîk diguhere. Neyîniyên: hin cihazên IoT (priz, kamera) tenê 2.4 GHz dibînin; gava router wê bandê di dema steeringê de veşêre nikare têkeve. Çareya temerî: SSID-an cuda bike (mînak \"MalaMin\" li ser 5 GHz, \"MalaMin-IoT\" li ser 2.4 GHz) ji bo sazkirinê û paşê heke bixwazî bike yek.';
+
+  @override
+  String get advancedWmmTitle => 'WMM / QoS';
+
+  @override
+  String get advancedWmmBody => 'WMM (Wi-Fi Multimedia) trafîkê dabeş dike li 4 sinifan: deng, vîdyo, normal, paşxane. Ji bo sertîfîkayê Wi-Fi 4+ pêwîst e û divê her dem vekirî bimîne. Vegirtinê leza te tixûb dike li 802.11g (~54 Mbps). Kanal ne dibe ku WMM bandor bike, lê kanaleke paqij hemû 4 sinifan bi hev re baştir dike.';
+
+  @override
+  String get dfsCacWarning => '⚠ Kanala DFS: gava router biçe vê kanalê, divê 60 çirkeyan bêdeng guhdarî bike (Channel Availability Check) berî ku weşanê dest pê bike. Di vê demê de Wi-Fi nayê bikaranîn.';
+
+  @override
+  String get densityTrendStable => 'Pestoya aram';
+
+  @override
+  String densityTrendVolatile(String delta) {
+    return 'Herêma guherbar · di saeta dawî de pestoy $delta tor heng kir';
+  }
+
+  @override
+  String get exportPdfTitle => 'Raporê parve bike';
+
+  @override
+  String get exportPdfSuccess => 'Rapor hat çêkirin · tê parvekirin…';
+
+  @override
+  String get exportPdfFailed => 'Rapor nehate çêkirin.';
+
+  @override
   String get unstableChannelLabel => 'NEARAM';
 
   @override
