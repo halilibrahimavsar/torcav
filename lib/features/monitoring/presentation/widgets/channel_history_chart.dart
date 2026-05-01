@@ -28,7 +28,16 @@ const double _unstableThreshold = 1.5;
 class ChannelHistoryChart extends StatefulWidget {
   final List<ChannelRatingSample> samples;
 
-  const ChannelHistoryChart({super.key, required this.samples});
+  /// Optional currently-connected channel — when present, rendered with
+  /// extra emphasis (always-bold line in the line view, pre-selected in the
+  /// legend, leading position).
+  final int? connectedChannel;
+
+  const ChannelHistoryChart({
+    super.key,
+    required this.samples,
+    this.connectedChannel,
+  });
 
   @override
   State<ChannelHistoryChart> createState() => _ChannelHistoryChartState();
@@ -39,6 +48,16 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
   int _timeRangeIdx = 3; // default 7D
   Set<int> _highlightedChannels = {};
   bool _heatmapMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Pre-select the user's currently-connected channel so its line is
+    // immediately bolded against the noise of nearby channels.
+    if (widget.connectedChannel != null) {
+      _highlightedChannels = {widget.connectedChannel!};
+    }
+  }
 
   // ── Filtering ───────────────────────────────────────────────────────
 
@@ -106,9 +125,13 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
   // ── Color generation ────────────────────────────────────────────────
 
   static Color _colorForIndex(int i, int total) {
-    if (total <= _kFixedPalette.length) return _kFixedPalette[i];
-    final hue = (i * 360.0 / total) % 360;
-    return HSLColor.fromAHSL(1.0, hue, 0.85, 0.6).toColor();
+    if (i < _kFixedPalette.length) return _kFixedPalette[i];
+    // Beyond the fixed palette use the golden angle (137.508°) so any number
+    // of channels still yields perceptually distinct hues. Alternating
+    // lightness gives extra separation between adjacent indices.
+    final hue = (i * 137.508) % 360;
+    final lightness = i.isEven ? 0.62 : 0.50;
+    return HSLColor.fromAHSL(1.0, hue, 0.78, lightness).toColor();
   }
 
   static const _kFixedPalette = [
@@ -201,6 +224,7 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
           colorForIndex: _colorForIndex,
           highlighted: _highlightedChannels,
           unstable: unstable,
+          connectedChannel: widget.connectedChannel,
           onToggle: _toggleChannel,
         ),
         const SizedBox(height: 8),
@@ -230,6 +254,7 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
         byChannel: byChannel,
         colorForIndex: _colorForIndex,
         highlighted: _highlightedChannels,
+        connectedChannel: widget.connectedChannel,
       );
     }
     if (_heatmapMode) {
@@ -239,6 +264,7 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
         byChannel: byChannel,
         sessions: sessions,
         highlighted: _highlightedChannels,
+        connectedChannel: widget.connectedChannel,
       );
     }
     return _LineView(
@@ -249,6 +275,7 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
       colorForIndex: _colorForIndex,
       totalSamples: _filtered.length,
       highlighted: _highlightedChannels,
+      connectedChannel: widget.connectedChannel,
     );
   }
 
@@ -564,6 +591,7 @@ class _InteractiveLegend extends StatelessWidget {
   final Color Function(int index, int total) colorForIndex;
   final Set<int> highlighted;
   final Set<int> unstable;
+  final int? connectedChannel;
   final ValueChanged<int> onToggle;
 
   const _InteractiveLegend({
@@ -571,17 +599,27 @@ class _InteractiveLegend extends StatelessWidget {
     required this.colorForIndex,
     required this.highlighted,
     required this.unstable,
+    required this.connectedChannel,
     required this.onToggle,
   });
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    // Render order: connected channel always first, the rest in their
+    // original (rating-sorted) order. Original color indexing is preserved.
+    final order = <int>[];
+    if (connectedChannel != null && channels.contains(connectedChannel)) {
+      order.add(channels.indexOf(connectedChannel!));
+    }
+    for (var i = 0; i < channels.length; i++) {
+      if (!order.contains(i)) order.add(i);
+    }
     return Wrap(
       spacing: 6,
       runSpacing: 6,
       children: [
-        for (var i = 0; i < channels.length; i++)
+        for (final i in order)
           _legendChip(context, i, channels[i], l10n.unstableChannelTooltip),
       ],
     );
@@ -596,6 +634,7 @@ class _InteractiveLegend extends StatelessWidget {
     final color = colorForIndex(i, channels.length);
     final isActive = highlighted.isEmpty || highlighted.contains(ch);
     final isUnstable = unstable.contains(ch);
+    final isConnected = connectedChannel == ch;
 
     final chip = AnimatedOpacity(
       opacity: isActive ? 1.0 : 0.35,
@@ -606,13 +645,19 @@ class _InteractiveLegend extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           color: color.withValues(alpha: isActive ? 0.15 : 0.05),
           border: Border.all(
-            color: color.withValues(alpha: isActive ? 0.6 : 0.25),
-            width: isUnstable ? 1.5 : 1,
+            color: color.withValues(
+              alpha: isActive ? (isConnected ? 0.95 : 0.6) : 0.25,
+            ),
+            width: isConnected ? 1.8 : (isUnstable ? 1.5 : 1),
           ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (isConnected) ...[
+              Icon(Icons.wifi_tethering_rounded, size: 11, color: color),
+              const SizedBox(width: 4),
+            ],
             Text(
               'CH $ch',
               style: GoogleFonts.rajdhani(
@@ -650,6 +695,7 @@ class _BarView extends StatelessWidget {
   final Map<int, List<ChannelRatingSample>> byChannel;
   final Color Function(int index, int total) colorForIndex;
   final Set<int> highlighted;
+  final int? connectedChannel;
 
   const _BarView({
     super.key,
@@ -657,6 +703,7 @@ class _BarView extends StatelessWidget {
     required this.byChannel,
     required this.colorForIndex,
     required this.highlighted,
+    this.connectedChannel,
   });
 
   @override
@@ -672,14 +719,17 @@ class _BarView extends StatelessWidget {
           final rating = byChannel[ch]!.last.rating.clamp(0.0, 10.0);
           final color = colorForIndex(i, channels.length);
           final isActive = highlighted.isEmpty || highlighted.contains(ch);
+          final isConnected = connectedChannel == ch;
 
           return BarChartGroupData(
             x: i,
             barRods: [
               BarChartRodData(
                 toY: rating,
-                color: color.withValues(alpha: isActive ? 1.0 : 0.25),
-                width: manyChannels ? 12 : 18,
+                color: color.withValues(
+                  alpha: isConnected ? 1.0 : (isActive ? 1.0 : 0.25),
+                ),
+                width: manyChannels ? (isConnected ? 16 : 12) : 18,
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(4),
                 ),
@@ -721,6 +771,15 @@ class _BarView extends StatelessWidget {
                   getTitlesWidget: (v, _) {
                     final idx = v.toInt();
                     if (idx < 0 || idx >= channels.length) {
+                      return const SizedBox.shrink();
+                    }
+                    // Stride so labels don't collide. Connected channel is
+                    // always shown regardless of the stride.
+                    final stride = manyChannels
+                        ? math.max(1, (channels.length / 8).ceil())
+                        : 1;
+                    final isConnected = connectedChannel == channels[idx];
+                    if (idx % stride != 0 && !isConnected) {
                       return const SizedBox.shrink();
                     }
                     final color = colorForIndex(idx, channels.length);
@@ -811,6 +870,7 @@ class _LineView extends StatelessWidget {
   final Color Function(int index, int total) colorForIndex;
   final int totalSamples;
   final Set<int> highlighted;
+  final int? connectedChannel;
 
   const _LineView({
     super.key,
@@ -820,6 +880,7 @@ class _LineView extends StatelessWidget {
     required this.colorForIndex,
     required this.totalSamples,
     required this.highlighted,
+    this.connectedChannel,
   });
 
   @override
@@ -827,13 +888,56 @@ class _LineView extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final onSurface = Theme.of(context).colorScheme.onSurface;
 
+    // Pre-compute per-channel average so we know which lines belong to the
+    // visually-prominent "top 3" tier. Below them goes a thin background
+    // tier so the chart doesn't degrade into spaghetti.
+    final avgByChannel = <int, double>{};
+    for (final ch in channels) {
+      final s = byChannel[ch] ?? const [];
+      if (s.isEmpty) {
+        avgByChannel[ch] = 0;
+      } else {
+        avgByChannel[ch] = s.map((x) => x.rating).reduce((a, b) => a + b) /
+            s.length;
+      }
+    }
+    final topChannels = ([...channels]..sort(
+            (a, b) => avgByChannel[b]!.compareTo(avgByChannel[a]!)))
+        .take(3)
+        .toSet();
+
+    // Adaptive dot radius: visible at any session count, shrinks for crowd.
+    final dotRadius =
+        math.max(1.0, 4.0 - sessions.length / 15).clamp(1.0, 4.0);
+
     final lines =
         channels.asMap().entries.map((entry) {
           final i = entry.key;
           final ch = entry.value;
           final color = colorForIndex(i, channels.length);
           final chSamples = byChannel[ch]!;
-          final isActive = highlighted.isEmpty || highlighted.contains(ch);
+          final isHighlighted = highlighted.contains(ch);
+          final isConnected = connectedChannel != null && connectedChannel == ch;
+          final isTop = topChannels.contains(ch);
+          final hasFocus = highlighted.isNotEmpty;
+
+          // Layered emphasis:
+          // - Connected channel = always thick + opaque, regardless of focus.
+          // - Highlighted (legend-tap) channel = thick + opaque.
+          // - Top-3 channel = medium thick, slightly faded if not focused.
+          // - Rest = thin thread, low opacity, but never invisible.
+          final double barWidth;
+          final double alpha;
+          if (isConnected || isHighlighted) {
+            barWidth = 2.8;
+            alpha = 1.0;
+          } else if (isTop) {
+            barWidth = 1.8;
+            alpha = hasFocus ? 0.20 : 0.75;
+          } else {
+            barWidth = 0.9;
+            alpha = hasFocus ? 0.08 : 0.22;
+          }
 
           final spots = <FlSpot>[];
           for (var si = 0; si < sessions.length; si++) {
@@ -852,21 +956,25 @@ class _LineView extends StatelessWidget {
             }
           }
 
-          // Only paint a fill below the line when this channel is the
-          // *only* highlighted one — otherwise every channel's fill area
-          // (0..rating) stacks and the highest-scoring channel's fill
-          // hides every line beneath it.
-          final isFocused = highlighted.contains(ch);
+          // Fill only when this channel alone is highlighted — otherwise the
+          // tallest fill blots out every line below it.
           return LineChartBarData(
             spots: spots,
-            isCurved: spots.length > 2,
-            color: color.withValues(alpha: isActive ? 1.0 : 0.25),
-            barWidth: isActive ? 2.5 : 1.2,
+            isCurved: false,
+            isStrokeCapRound: false,
+            isStrokeJoinRound: false,
+            color: color.withValues(alpha: alpha),
+            barWidth: barWidth,
             dotData: FlDotData(
-              show: isFocused || spots.length <= 10,
+              show: isConnected || isHighlighted,
+              getDotPainter: (spot, _, __, ___) => FlDotCirclePainter(
+                radius: dotRadius,
+                color: color,
+                strokeWidth: 0,
+              ),
             ),
             belowBarData: BarAreaData(
-              show: isFocused,
+              show: isHighlighted && highlighted.length == 1,
               color: color.withValues(alpha: 0.18),
             ),
           );
@@ -1005,6 +1113,7 @@ class _HeatmapView extends StatelessWidget {
   final Map<int, List<ChannelRatingSample>> byChannel;
   final List<DateTime> sessions;
   final Set<int> highlighted;
+  final int? connectedChannel;
 
   const _HeatmapView({
     super.key,
@@ -1012,36 +1121,13 @@ class _HeatmapView extends StatelessWidget {
     required this.byChannel,
     required this.sessions,
     required this.highlighted,
+    this.connectedChannel,
   });
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final onSurface = Theme.of(context).colorScheme.onSurface;
-
-    // Build rating matrix: [channelIdx][sessionIdx] → rating (or null)
-    final matrix = <int, Map<int, double>>{};
-    for (var ci = 0; ci < channels.length; ci++) {
-      final ch = channels[ci];
-      final samples = byChannel[ch]!;
-      matrix[ci] = {};
-      for (var si = 0; si < sessions.length; si++) {
-        final sessionTs = sessions[si];
-        ChannelRatingSample? best;
-        int bestDiff = 999999;
-        for (final s in samples) {
-          final diff = s.timestamp.difference(sessionTs).inSeconds.abs();
-          if (diff < bestDiff) {
-            bestDiff = diff;
-            best = s;
-          }
-        }
-        if (best != null && bestDiff <= 30) {
-          matrix[ci]![si] = best.rating.clamp(0.0, 10.0);
-        }
-      }
-    }
-
     final maxH = _chartHeight(context);
 
     return NeonCard(
@@ -1050,33 +1136,81 @@ class _HeatmapView extends StatelessWidget {
         builder: (context, constraints) {
           const labelW = 48.0;
           const headerH = 22.0;
-          const minCellW = 24.0;
+          const targetMinCellW = 18.0;
           const minCellH = 16.0;
           const maxCellH = 32.0;
 
           final available = constraints.maxWidth;
           final available5 = available - labelW;
-          // Fit-to-width if possible; otherwise fall back to minCellW and let
-          // the user scroll horizontally.
-          final cellW = math.max(minCellW, available5 / sessions.length);
 
-          // Available vertical space for the grid itself (minus header & legend).
+          // Auto-bucket: if a 1-session-per-cell view would force cells below
+          // 18px wide, group N consecutive sessions into one cell so the
+          // chart stays readable at any session count.
+          final naiveCellW =
+              available5 > 0 ? available5 / sessions.length : 0.0;
+          final bucketSize =
+              naiveCellW < targetMinCellW
+                  ? math.max(
+                    1,
+                    (targetMinCellW * sessions.length / available5).ceil(),
+                  )
+                  : 1;
+
+          // Build buckets: each bucket has its own representative ts and a
+          // [channelIdx → averaged rating?] map.
+          final buckets = <_HeatBucket>[];
+          for (var i = 0; i < sessions.length; i += bucketSize) {
+            final end = math.min(i + bucketSize, sessions.length);
+            final perChannel = <int, double>{};
+            for (var ci = 0; ci < channels.length; ci++) {
+              final ch = channels[ci];
+              final samples = byChannel[ch]!;
+              double sum = 0;
+              int count = 0;
+              for (var si = i; si < end; si++) {
+                final sessionTs = sessions[si];
+                ChannelRatingSample? best;
+                int bestDiff = 999999;
+                for (final s in samples) {
+                  final diff = s.timestamp.difference(sessionTs).inSeconds.abs();
+                  if (diff < bestDiff) {
+                    bestDiff = diff;
+                    best = s;
+                  }
+                }
+                if (best != null && bestDiff <= 30) {
+                  sum += best.rating.clamp(0.0, 10.0);
+                  count++;
+                }
+              }
+              if (count > 0) perChannel[ci] = sum / count;
+            }
+            // Representative timestamp = bucket centre.
+            final mid = sessions[i + (end - i - 1) ~/ 2];
+            buckets.add(
+              _HeatBucket(
+                centre: mid,
+                bucketed: end - i > 1,
+                perChannel: perChannel,
+              ),
+            );
+          }
+
+          final cellW = available5 / buckets.length;
+          // Vertical: shrink-to-fit but keep min for readability.
           final gridSpace = maxH - headerH - 32;
           final cellH = (gridSpace / channels.length).clamp(
             minCellH,
             maxCellH,
           );
-          final totalGridW = labelW + sessions.length * cellW;
+          final totalGridW = labelW + buckets.length * cellW;
           final totalGridH = channels.length * cellH;
           final needsHScroll = totalGridW > available + 0.5;
 
-          // The grid + time-label header live in the same horizontal scroll
-          // view so they stay perfectly aligned. Step adapts to actual cell
-          // width so wider screens show more labels without crowding.
-          // Each label needs ~36px of horizontal room.
+          // Time-label step: ≥36px between labels, regardless of bucket size.
           const minLabelGap = 36.0;
-          final stepFromWidth = (minLabelGap / cellW).ceil();
-          final timeStep = math.max(1, stepFromWidth);
+          final timeStep = math.max(1, (minLabelGap / cellW).ceil());
+
           final body = SizedBox(
             width: totalGridW,
             child: Column(
@@ -1088,14 +1222,14 @@ class _HeatmapView extends StatelessWidget {
                     padding: const EdgeInsets.only(left: labelW),
                     child: Row(
                       children: [
-                        for (var si = 0; si < sessions.length; si++)
+                        for (var bi = 0; bi < buckets.length; bi++)
                           SizedBox(
                             width: cellW,
                             child:
-                                si % timeStep == 0
+                                bi % timeStep == 0
                                     ? Text(
-                                      '${sessions[si].hour.toString().padLeft(2, '0')}:'
-                                      '${sessions[si].minute.toString().padLeft(2, '0')}',
+                                      '${buckets[bi].centre.hour.toString().padLeft(2, '0')}:'
+                                      '${buckets[bi].centre.minute.toString().padLeft(2, '0')}',
                                       textAlign: TextAlign.center,
                                       style: GoogleFonts.rajdhani(
                                         fontSize: 8,
@@ -1115,9 +1249,9 @@ class _HeatmapView extends StatelessWidget {
                   child: CustomPaint(
                     painter: _HeatmapPainter(
                       channels: channels,
-                      sessions: sessions,
-                      matrix: matrix,
+                      buckets: buckets,
                       highlighted: highlighted,
+                      connectedChannel: connectedChannel,
                       cellW: cellW,
                       cellH: cellH,
                       labelW: labelW,
@@ -1150,11 +1284,24 @@ class _HeatmapView extends StatelessWidget {
   }
 }
 
+/// Single column of the heatmap — a single session or an aggregation of
+/// several when the chart is too dense for one-per-cell rendering.
+class _HeatBucket {
+  final DateTime centre;
+  final bool bucketed;
+  final Map<int, double> perChannel; // channelIdx → averaged rating
+  const _HeatBucket({
+    required this.centre,
+    required this.bucketed,
+    required this.perChannel,
+  });
+}
+
 class _HeatmapPainter extends CustomPainter {
   final List<int> channels;
-  final List<DateTime> sessions;
-  final Map<int, Map<int, double>> matrix;
+  final List<_HeatBucket> buckets;
   final Set<int> highlighted;
+  final int? connectedChannel;
   final double cellW;
   final double cellH;
   final double labelW;
@@ -1163,9 +1310,9 @@ class _HeatmapPainter extends CustomPainter {
 
   _HeatmapPainter({
     required this.channels,
-    required this.sessions,
-    required this.matrix,
+    required this.buckets,
     required this.highlighted,
+    required this.connectedChannel,
     required this.cellW,
     required this.cellH,
     required this.labelW,
@@ -1176,31 +1323,40 @@ class _HeatmapPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final labelPainter = TextPainter(textDirection: TextDirection.ltr);
+    // When the row height is too tight, alternate channel labels to avoid
+    // text collisions while still giving every channel its band of cells.
+    final dropEveryOther = cellH < 18;
 
     for (var ci = 0; ci < channels.length; ci++) {
       final ch = channels[ci];
       final isActive = highlighted.isEmpty || highlighted.contains(ch);
+      final isConnected = connectedChannel == ch;
       final y = ci * cellH;
 
       // Channel label
-      labelPainter.text = TextSpan(
-        text: 'CH $ch',
-        style: GoogleFonts.rajdhani(
-          fontSize: 10,
-          fontWeight: FontWeight.bold,
-          color: textColor.withValues(alpha: isActive ? 0.7 : 0.2),
-        ),
-      );
-      labelPainter.layout(maxWidth: labelW - 4);
-      labelPainter.paint(
-        canvas,
-        Offset(0, y + (cellH - labelPainter.height) / 2),
-      );
+      if (!dropEveryOther || ci.isEven || isConnected) {
+        labelPainter.text = TextSpan(
+          text: 'CH $ch',
+          style: GoogleFonts.rajdhani(
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+            color:
+                isConnected
+                    ? const Color(0xFF00F5FF)
+                    : textColor.withValues(alpha: isActive ? 0.7 : 0.2),
+          ),
+        );
+        labelPainter.layout(maxWidth: labelW - 4);
+        labelPainter.paint(
+          canvas,
+          Offset(0, y + (cellH - labelPainter.height) / 2),
+        );
+      }
 
       // Cells
-      for (var si = 0; si < sessions.length; si++) {
-        final x = labelW + si * cellW;
-        final rating = matrix[ci]?[si];
+      for (var bi = 0; bi < buckets.length; bi++) {
+        final x = labelW + bi * cellW;
+        final rating = buckets[bi].perChannel[ci];
         final rect = Rect.fromLTWH(x + 1, y + 1, cellW - 2, cellH - 2);
 
         if (rating != null) {
@@ -1212,12 +1368,40 @@ class _HeatmapPainter extends CustomPainter {
             RRect.fromRectAndRadius(rect, const Radius.circular(3)),
             Paint()..color = color,
           );
+          // ⋯ marker for cells aggregated from multiple sessions.
+          if (buckets[bi].bucketed && cellW >= 14 && cellH >= 14) {
+            final dotPaint =
+                Paint()
+                  ..color = textColor.withValues(alpha: 0.55);
+            final cy = y + cellH - 4;
+            final cx = x + cellW / 2;
+            canvas.drawCircle(Offset(cx - 3, cy), 0.8, dotPaint);
+            canvas.drawCircle(Offset(cx, cy), 0.8, dotPaint);
+            canvas.drawCircle(Offset(cx + 3, cy), 0.8, dotPaint);
+          }
         } else {
           canvas.drawRRect(
             RRect.fromRectAndRadius(rect, const Radius.circular(3)),
             Paint()..color = textColor.withValues(alpha: 0.04),
           );
         }
+      }
+
+      // Connected-channel emphasis: subtle border around the whole row.
+      if (isConnected) {
+        final rowRect = Rect.fromLTWH(
+          labelW + 1,
+          y + 1,
+          buckets.length * cellW - 2,
+          cellH - 2,
+        );
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(rowRect, const Radius.circular(4)),
+          Paint()
+            ..color = const Color(0xFF00F5FF).withValues(alpha: 0.7)
+            ..strokeWidth = 1.4
+            ..style = PaintingStyle.stroke,
+        );
       }
     }
   }
@@ -1238,9 +1422,10 @@ class _HeatmapPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _HeatmapPainter oldDelegate) =>
-      oldDelegate.matrix != matrix ||
+      oldDelegate.buckets != buckets ||
       oldDelegate.highlighted != highlighted ||
       oldDelegate.channels != channels ||
+      oldDelegate.connectedChannel != connectedChannel ||
       oldDelegate.cellW != cellW ||
       oldDelegate.cellH != cellH ||
       oldDelegate.isDark != isDark;

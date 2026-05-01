@@ -1704,13 +1704,18 @@ class AppLocalizationsKu extends AppLocalizations {
   }
 
   @override
-  String get exportPdfTitle => 'Raporê parve bike';
+  String get routerGroupsHeader => 'Routerên nêzîk (du-band)';
 
   @override
-  String get exportPdfSuccess => 'Rapor hat çêkirin · tê parvekirin…';
+  String get routerGroupsInfoBody => 'Gava heman router heman SSID li ser ji yek bandê zêdetir weşan dike (mînak 2.4 GHz CH 6 û 5 GHz CH 36), em wan li vir kom dikin da ku tu her du radyoyan bera ya hev bidî. Bişkokek bandê bide ku biçî wê tabê.';
 
   @override
-  String get exportPdfFailed => 'Rapor nehate çêkirin.';
+  String crossBandSiblingHint(String band, String channel, String rating) {
+    return 'Heman router li ser $band CH $channel · $rating/10';
+  }
+
+  @override
+  String get connectedChannelGuideLabel => 'TU';
 
   @override
   String get unstableChannelLabel => 'NEARAM';

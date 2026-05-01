@@ -1,12 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:network_info_plus/network_info_plus.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/services/notification_service.dart';
@@ -18,7 +14,7 @@ import '../../../wifi_scan/domain/entities/scan_request.dart';
 import '../../../wifi_scan/domain/entities/wifi_network.dart';
 import '../../../wifi_scan/domain/repositories/channel_rating_repository.dart';
 import '../../../wifi_scan/presentation/bloc/wifi_scan_bloc.dart';
-import '../../data/spectrum_report_exporter.dart';
+import '../../domain/router_grouping.dart';
 import '../../domain/wifi_region.dart';
 import '../bloc/monitoring_bloc.dart';
 import '../widgets/about_spectrum_panel.dart';
@@ -26,6 +22,7 @@ import '../widgets/channel_history_chart.dart';
 import '../widgets/channel_spectral_chart.dart';
 import '../widgets/hour_of_day_heatmap.dart';
 import '../widgets/router_admin_guide_card.dart';
+import '../widgets/router_groups_card.dart';
 import '../widgets/spectrum_overlap_chart.dart';
 
 /// Operations Hub entry-point for the Spectrum / Channel Optimization tool.
@@ -134,108 +131,6 @@ class _SpectrumViewState extends State<_SpectrumView> {
     );
   }
 
-  Future<void> _exportPdf(WifiRegion region) async {
-    final l10n = context.l10n;
-    final messenger = ScaffoldMessenger.of(context);
-    final state = context.read<MonitoringBloc>().state;
-    if (state is! ChannelAnalysisReady) {
-      messenger.showSnackBar(SnackBar(content: Text(l10n.exportPdfFailed)));
-      return;
-    }
-    final ratings = state.ratings;
-    final by = <String, List<ChannelRating>>{
-      l10n.band24Ghz: ratings.where((r) => r.frequency < 4000).toList()
-        ..sort((a, b) => b.rating.compareTo(a.rating)),
-      l10n.band5Ghz: ratings
-          .where((r) => r.frequency >= 5000 && r.frequency < 5925)
-          .toList()
-        ..sort((a, b) => b.rating.compareTo(a.rating)),
-      l10n.band6Ghz: ratings
-          .where((r) => r.frequency >= 5925)
-          .toList()
-        ..sort((a, b) => b.rating.compareTo(a.rating)),
-    };
-    final allow = RegionAllowlist.forRegion(region);
-    final recommended = <String, ChannelRating?>{
-      for (final e in by.entries)
-        e.key: e.value
-            .where((r) => allow.isAllowed(r.channel, r.frequency))
-            .cast<ChannelRating?>()
-            .firstWhere((_) => true, orElse: () => null),
-    };
-    // Connected channel per band — only meaningful where SSID/BSSID matches.
-    final scanState = context.read<WifiScanBloc>().state;
-    final networks =
-        scanState is WifiScanLoaded
-            ? scanState.snapshot.networks.map((n) => n.toWifiNetwork()).toList()
-            : <WifiNetwork>[];
-    String? connectedSsid;
-    if (scanState is WifiScanLoaded) {
-      connectedSsid =
-          (await NetworkInfo().getWifiName())?.replaceAll('"', '');
-    }
-    final connected = <String, ChannelRating?>{};
-    final bssid = _connectedBssid?.toUpperCase();
-    if (bssid != null) {
-      for (final entry in by.entries) {
-        final match = networks.firstWhere(
-          (n) => n.bssid.toUpperCase() == bssid,
-          orElse:
-              () => const WifiNetwork(
-                ssid: '',
-                bssid: '',
-                signalStrength: 0,
-                channel: -1,
-                frequency: -1,
-                security: SecurityType.unknown,
-              ),
-        );
-        if (match.channel < 0) {
-          connected[entry.key] = null;
-          continue;
-        }
-        final rating = entry.value.firstWhere(
-          (r) =>
-              r.channel == match.channel &&
-              (r.frequency - match.frequency).abs() <= 5,
-          orElse:
-              () => const ChannelRating(
-                channel: -1,
-                frequency: 0,
-                rating: 0,
-                networkCount: 0,
-                quality: ChannelQuality.fair,
-              ),
-        );
-        connected[entry.key] = rating.channel < 0 ? null : rating;
-      }
-    }
-
-    try {
-      final exporter = SpectrumReportExporter();
-      final bytes = await exporter.build(
-        ratingsByBand: by,
-        recommendedByBand: recommended,
-        connectedByBand: connected,
-        region: region,
-        connectedSsid: connectedSsid,
-        routerVendor: null,
-        generatedAt: DateTime.now(),
-      );
-      final dir = await getTemporaryDirectory();
-      final file = File(
-        '${dir.path}/torcav_spectrum_${DateTime.now().millisecondsSinceEpoch}.pdf',
-      );
-      await file.writeAsBytes(bytes);
-      messenger.showSnackBar(SnackBar(content: Text(l10n.exportPdfSuccess)));
-      await SharePlus.instance.share(
-        ShareParams(files: [XFile(file.path)], subject: l10n.exportPdfTitle),
-      );
-    } catch (_) {
-      messenger.showSnackBar(SnackBar(content: Text(l10n.exportPdfFailed)));
-    }
-  }
-
   Future<void> _detectConnectedBssid() async {
     try {
       final bssid = await NetworkInfo().getWifiBSSID();
@@ -340,22 +235,24 @@ class _SpectrumViewState extends State<_SpectrumView> {
                     PopupMenuItem(
                       value: r,
                       child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           if (region == r)
                             const Icon(Icons.check_rounded, size: 16)
                           else
                             const SizedBox(width: 16),
                           const SizedBox(width: 8),
-                          Text(_regionLabel(l10n, r)),
+                          Flexible(
+                            child: Text(
+                              _regionLabel(l10n, r),
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: false,
+                            ),
+                          ),
                         ],
                       ),
                     ),
                 ],
-              ),
-              IconButton(
-                icon: const Icon(Icons.ios_share_rounded),
-                tooltip: l10n.exportPdfTitle,
-                onPressed: () => _exportPdf(region),
               ),
             ],
             bottom: TabBar(
@@ -397,7 +294,7 @@ class _SpectrumViewState extends State<_SpectrumView> {
                   connectedBssid: _connectedBssid,
                   region: region,
                 ),
-              const _HistoryTab(),
+              _HistoryTab(connectedBssid: _connectedBssid),
             ],
           ),
         ),
@@ -469,6 +366,7 @@ class _BandTab extends StatelessWidget {
 
           return _BandView(
             ratings: ratings,
+            allRatings: state.ratings,
             historicalAverages: state.historicalAverages,
             previousRatings: state.previousRatings,
             bandLabel: bandLabel,
@@ -522,7 +420,8 @@ class _ScanningPlaceholder extends StatelessWidget {
 // ── History tab (loads samples from repository) ────────────────────────
 
 class _HistoryTab extends StatefulWidget {
-  const _HistoryTab();
+  final String? connectedBssid;
+  const _HistoryTab({this.connectedBssid});
 
   @override
   State<_HistoryTab> createState() => _HistoryTabState();
@@ -531,6 +430,17 @@ class _HistoryTab extends StatefulWidget {
 class _HistoryTabState extends State<_HistoryTab> {
   List<ChannelRatingSample>? _samples;
   bool _loading = true;
+
+  int? _resolveConnectedChannel(BuildContext context) {
+    final bssid = widget.connectedBssid?.toUpperCase();
+    if (bssid == null) return null;
+    final scanState = context.read<WifiScanBloc>().state;
+    if (scanState is! WifiScanLoaded) return null;
+    for (final n in scanState.snapshot.networks) {
+      if (n.bssid.toUpperCase() == bssid) return n.channel;
+    }
+    return null;
+  }
 
   @override
   void initState() {
@@ -640,7 +550,12 @@ class _HistoryTabState extends State<_HistoryTab> {
                 ),
               ),
             const SizedBox(height: 8),
-            StaggeredEntry(child: ChannelHistoryChart(samples: _samples ?? [])),
+            StaggeredEntry(
+              child: ChannelHistoryChart(
+                samples: _samples ?? [],
+                connectedChannel: _resolveConnectedChannel(context),
+              ),
+            ),
             if (_samples != null && _samples!.isNotEmpty) ...[
               const SizedBox(height: 24),
               Row(
@@ -674,8 +589,9 @@ class _HistoryTabState extends State<_HistoryTab> {
 
 // ── Band view (per-band content rendered inside each tab) ─────────────
 
-class _BandView extends StatelessWidget {
+class _BandView extends StatefulWidget {
   final List<ChannelRating> ratings;
+  final List<ChannelRating> allRatings;
   final Map<int, double> historicalAverages;
   final Map<int, double> previousRatings;
   final String bandLabel;
@@ -687,6 +603,7 @@ class _BandView extends StatelessWidget {
 
   const _BandView({
     required this.ratings,
+    required this.allRatings,
     required this.historicalAverages,
     required this.previousRatings,
     required this.bandLabel,
@@ -697,12 +614,20 @@ class _BandView extends StatelessWidget {
     required this.region,
   });
 
+  @override
+  State<_BandView> createState() => _BandViewState();
+}
+
+class _BandViewState extends State<_BandView> {
+  final GlobalKey _connectedTileKey = GlobalKey();
+  bool _didAutoScroll = false;
+
   /// Returns the channel the user's own router is currently broadcasting on,
   /// matched by BSSID against the scan results — null if not in this band.
   ChannelRating? _findConnectedRating() {
-    if (connectedBssid == null) return null;
-    final target = connectedBssid!.toUpperCase();
-    final connectedNet = networks.firstWhere(
+    if (widget.connectedBssid == null) return null;
+    final target = widget.connectedBssid!.toUpperCase();
+    final connectedNet = widget.networks.firstWhere(
       (n) => n.bssid.toUpperCase() == target,
       orElse:
           () => const WifiNetwork(
@@ -715,7 +640,7 @@ class _BandView extends StatelessWidget {
           ),
     );
     if (connectedNet.channel < 0) return null;
-    for (final r in ratings) {
+    for (final r in widget.ratings) {
       if (r.channel == connectedNet.channel &&
           (r.frequency - connectedNet.frequency).abs() <= 5) {
         return r;
@@ -728,6 +653,18 @@ class _BandView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final onSurface = Theme.of(context).colorScheme.onSurface;
+    // Local aliases for the widget's fields keep the rest of this large
+    // build method readable without `widget.` noise on every reference.
+    final ratings = widget.ratings;
+    final allRatings = widget.allRatings;
+    final historicalAverages = widget.historicalAverages;
+    final previousRatings = widget.previousRatings;
+    final bandLabel = widget.bandLabel;
+    final accentColor = widget.accentColor;
+    final emptyHint = widget.emptyHint;
+    final networks = widget.networks;
+    final connectedBssid = widget.connectedBssid;
+    final region = widget.region;
 
     if (ratings.isEmpty) {
       return ListView(
@@ -779,6 +716,23 @@ class _BandView extends StatelessWidget {
         historicalBest.isNotEmpty ? historicalBest.first : null;
     final connectedRating = _findConnectedRating();
     final is6Ghz = ratings.first.frequency >= 5925;
+
+    // First-paint auto-scroll: bring the user's connected channel tile into
+    // view so they don't have to hunt for it in a long list.
+    if (!_didAutoScroll && connectedRating != null) {
+      _didAutoScroll = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final ctx = _connectedTileKey.currentContext;
+        if (ctx != null && mounted) {
+          Scrollable.ensureVisible(
+            ctx,
+            duration: const Duration(milliseconds: 600),
+            curve: Curves.easeOutCubic,
+            alignment: 0.3,
+          );
+        }
+      });
+    }
 
     // Networks belonging to *this* band (filtered by frequency, mirroring
     // the band-split rule used for the rating list).
@@ -905,6 +859,40 @@ class _BandView extends StatelessWidget {
         ],
         const SizedBox(height: 16),
         const RouterAdminGuideCard(),
+        // ── Cross-band router groups (dual-band detection) ──
+        Builder(
+          builder: (ctx) {
+            final groups = groupDualBandRouters(networks);
+            if (groups.isEmpty) return const SizedBox.shrink();
+            return RouterGroupsCard(
+              groups: groups,
+              ratingFor: (radio) {
+                final r = allRatings.firstWhere(
+                  (cr) =>
+                      cr.channel == radio.channel &&
+                      (cr.frequency - radio.frequency).abs() <= 5,
+                  orElse:
+                      () => const ChannelRating(
+                        channel: -1,
+                        frequency: 0,
+                        rating: 0,
+                        networkCount: 0,
+                        quality: ChannelQuality.fair,
+                      ),
+                );
+                final key = radio.frequency < 2500
+                    ? '2.4'
+                    : radio.frequency < 5925
+                        ? '5'
+                        : '6';
+                return {key: r.channel < 0 ? null : r};
+              },
+              onJumpToBand: (idx) {
+                DefaultTabController.of(ctx).animateTo(idx);
+              },
+            );
+          },
+        ),
         Row(
           children: [
             Expanded(
@@ -925,14 +913,16 @@ class _BandView extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         ...ratings.map(
-          (r) => _ChannelTile(
-            rating: r,
-            accentColor: accentColor,
-            isConnected:
-                connectedRating != null &&
+          (r) {
+            final isConnected = connectedRating != null &&
                 r.channel == connectedRating.channel &&
-                r.frequency == connectedRating.frequency,
-            isAllowedInRegion: allow.isAllowed(r.channel, r.frequency),
+                r.frequency == connectedRating.frequency;
+            return _ChannelTile(
+              key: isConnected ? _connectedTileKey : null,
+              rating: r,
+              accentColor: accentColor,
+              isConnected: isConnected,
+              isAllowedInRegion: allow.isAllowed(r.channel, r.frequency),
             networksOnChannel:
                 bandNetworks
                     .where(
@@ -944,7 +934,10 @@ class _BandView extends StatelessWidget {
                   ..sort(
                     (a, b) => b.signalStrength.compareTo(a.signalStrength),
                   ),
-          ),
+            allNetworks: networks,
+            allRatings: allRatings,
+            );
+          },
         ),
         _ChannelBondingSection(
           ratings: ratings,
@@ -1203,13 +1196,18 @@ class _ChannelTile extends StatefulWidget {
   final bool isConnected;
   final bool isAllowedInRegion;
   final List<WifiNetwork> networksOnChannel;
+  final List<WifiNetwork> allNetworks;
+  final List<ChannelRating> allRatings;
 
   const _ChannelTile({
+    super.key,
     required this.rating,
     required this.accentColor,
     this.isConnected = false,
     this.isAllowedInRegion = true,
     this.networksOnChannel = const [],
+    this.allNetworks = const [],
+    this.allRatings = const [],
   });
 
   @override
@@ -1286,30 +1284,7 @@ class _ChannelTileState extends State<_ChannelTile> {
                             ),
                             if (widget.isConnected) ...[
                               const SizedBox(width: 8),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color:
-                                      AppColors.neonCyan.withValues(alpha: 0.18),
-                                  borderRadius: BorderRadius.circular(4),
-                                  border: Border.all(
-                                    color: AppColors.neonCyan
-                                        .withValues(alpha: 0.6),
-                                  ),
-                                ),
-                                child: Text(
-                                  l10n.currentChannelLabel,
-                                  style: GoogleFonts.orbitron(
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.neonCyan,
-                                    letterSpacing: 0.5,
-                                  ),
-                                ),
-                              ),
+                              _PulsingNowBadge(label: l10n.currentChannelLabel),
                             ],
                             if (rating.isDfs) ...[
                               const SizedBox(width: 8),
@@ -1410,6 +1385,8 @@ class _ChannelTileState extends State<_ChannelTile> {
             _ChannelDrilldown(
               networks: widget.networksOnChannel,
               accentColor: color,
+              allNetworks: widget.allNetworks,
+              allRatings: widget.allRatings,
             ),
         ],
       ),
@@ -1427,7 +1404,14 @@ class _ChannelTileState extends State<_ChannelTile> {
 class _ChannelDrilldown extends StatelessWidget {
   final List<WifiNetwork> networks;
   final Color accentColor;
-  const _ChannelDrilldown({required this.networks, required this.accentColor});
+  final List<WifiNetwork> allNetworks;
+  final List<ChannelRating> allRatings;
+  const _ChannelDrilldown({
+    required this.networks,
+    required this.accentColor,
+    this.allNetworks = const [],
+    this.allRatings = const [],
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1457,7 +1441,16 @@ class _ChannelDrilldown extends StatelessWidget {
               ),
             ),
           ),
-          ...networks.map((n) => _NetworkRow(network: n)),
+          ...networks.map(
+            (n) => _NetworkRow(
+              network: n,
+              crossBandSiblings:
+                  allNetworks.isEmpty
+                      ? const []
+                      : crossBandSiblingsOf(n, allNetworks),
+              allRatings: allRatings,
+            ),
+          ),
           if (networks.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 6),
@@ -1477,7 +1470,14 @@ class _ChannelDrilldown extends StatelessWidget {
 
 class _NetworkRow extends StatelessWidget {
   final WifiNetwork network;
-  const _NetworkRow({required this.network});
+  final List<WifiNetwork> crossBandSiblings;
+  final List<ChannelRating> allRatings;
+
+  const _NetworkRow({
+    required this.network,
+    this.crossBandSiblings = const [],
+    this.allRatings = const [],
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1486,45 +1486,52 @@ class _NetworkRow extends StatelessWidget {
     final width = network.channelWidthMhz ?? 20;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.wifi_rounded,
-            size: 13,
-            color: _signalColor(network.signalStrength),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              network.ssid.isEmpty ? l10n.hiddenSsidPlaceholder : network.ssid,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.rajdhani(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color:
-                    network.isHidden || network.ssid.isEmpty
+          Row(
+            children: [
+              Icon(
+                Icons.wifi_rounded,
+                size: 13,
+                color: _signalColor(network.signalStrength),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  network.ssid.isEmpty
+                      ? l10n.hiddenSsidPlaceholder
+                      : network.ssid,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.rajdhani(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: network.isHidden || network.ssid.isEmpty
                         ? onSurface.withValues(alpha: 0.55)
                         : onSurface.withValues(alpha: 0.9),
-                fontStyle:
-                    network.ssid.isEmpty
+                    fontStyle: network.ssid.isEmpty
                         ? FontStyle.italic
                         : FontStyle.normal,
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(width: 6),
+              _miniBadge('$width MHz', AppColors.neonCyan),
+              const SizedBox(width: 4),
+              _miniBadge(_securityLabel(network.security), AppColors.neonPurple),
+              const SizedBox(width: 6),
+              Text(
+                '${network.signalStrength} dBm',
+                style: GoogleFonts.firaCode(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: _signalColor(network.signalStrength),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 6),
-          _miniBadge('$width MHz', AppColors.neonCyan),
-          const SizedBox(width: 4),
-          _miniBadge(_securityLabel(network.security), AppColors.neonPurple),
-          const SizedBox(width: 6),
-          Text(
-            '${network.signalStrength} dBm',
-            style: GoogleFonts.firaCode(
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              color: _signalColor(network.signalStrength),
-            ),
-          ),
+          for (final sibling in crossBandSiblings)
+            _CrossBandSiblingHint(sibling: sibling, allRatings: allRatings),
         ],
       ),
     );
@@ -1968,6 +1975,166 @@ class _CurrentChannelBanner extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// "ŞİMDİ" badge with a soft breathing glow so users see at a glance which
+/// channel their router is currently broadcasting on.
+class _PulsingNowBadge extends StatefulWidget {
+  final String label;
+  const _PulsingNowBadge({required this.label});
+
+  @override
+  State<_PulsingNowBadge> createState() => _PulsingNowBadgeState();
+}
+
+class _PulsingNowBadgeState extends State<_PulsingNowBadge>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1600),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: _ctrl,
+        builder: (context, _) {
+          // 0..1 ease-in-out via Curves.easeInOut.
+          final t = Curves.easeInOut.transform(_ctrl.value);
+          final glow = 4.0 + 10.0 * t;
+          final glowAlpha = 0.25 + 0.45 * t;
+          return Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: AppColors.neonCyan.withValues(alpha: 0.18),
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(
+                color: AppColors.neonCyan.withValues(alpha: 0.6),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.neonCyan.withValues(alpha: glowAlpha),
+                  blurRadius: glow,
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+            child: Text(
+              widget.label,
+              style: GoogleFonts.orbitron(
+                fontSize: 9,
+                fontWeight: FontWeight.bold,
+                color: AppColors.neonCyan,
+                letterSpacing: 0.5,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Inline hint shown under a network row when the same router is also
+/// broadcasting on a different band — tap to jump to that band's tab.
+class _CrossBandSiblingHint extends StatelessWidget {
+  final WifiNetwork sibling;
+  final List<ChannelRating> allRatings;
+
+  const _CrossBandSiblingHint({
+    required this.sibling,
+    required this.allRatings,
+  });
+
+  int _bandIndex(int frequency) {
+    if (frequency < 2500) return 0;
+    if (frequency < 5925) return 1;
+    return 2;
+  }
+
+  String _bandLabel(int frequency) {
+    if (frequency < 2500) return '2.4 GHz';
+    if (frequency < 5925) return '5 GHz';
+    return '6 GHz';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final rating = allRatings.firstWhere(
+      (r) =>
+          r.channel == sibling.channel &&
+          (r.frequency - sibling.frequency).abs() <= 5,
+      orElse: () => const ChannelRating(
+        channel: -1,
+        frequency: 0,
+        rating: 0,
+        networkCount: 0,
+        quality: ChannelQuality.fair,
+      ),
+    );
+    final ratingText = rating.channel < 0
+        ? '—'
+        : rating.rating.toStringAsFixed(1);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(21, 2, 0, 0),
+      child: InkWell(
+        onTap: () {
+          final controller = DefaultTabController.maybeOf(context);
+          controller?.animateTo(_bandIndex(sibling.frequency));
+        },
+        borderRadius: BorderRadius.circular(4),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+          child: Row(
+            children: [
+              Icon(
+                Icons.swap_horiz_rounded,
+                size: 12,
+                color: onSurface.withValues(alpha: 0.55),
+              ),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  l10n.crossBandSiblingHint(
+                    _bandLabel(sibling.frequency),
+                    '${sibling.channel}',
+                    ratingText,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.rajdhani(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: onSurface.withValues(alpha: 0.7),
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.chevron_right_rounded,
+                size: 14,
+                color: onSurface.withValues(alpha: 0.4),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -1706,13 +1706,18 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get exportPdfTitle => 'Spektrum raporunu paylaş';
+  String get routerGroupsHeader => 'Yakındaki Router\'lar (çift band)';
 
   @override
-  String get exportPdfSuccess => 'Rapor oluşturuldu · paylaşılıyor…';
+  String get routerGroupsInfoBody => 'Aynı router\'ın aynı SSID\'i birden fazla bandda yayınladığı (ör. 2.4 GHz CH 6 ve 5 GHz CH 36) durumlarda iki radyoyu yan yana karşılaştırabilmen için burada gruplayıp listeleriz. Bir band chip\'ine dokunarak o sekmeye geç.';
 
   @override
-  String get exportPdfFailed => 'Rapor üretilemedi.';
+  String crossBandSiblingHint(String band, String channel, String rating) {
+    return 'Aynı router $band CH $channel\'de · $rating/10';
+  }
+
+  @override
+  String get connectedChannelGuideLabel => 'SİZ';
 
   @override
   String get unstableChannelLabel => 'DENGESİZ';

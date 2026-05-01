@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../wifi_scan/domain/entities/wifi_network.dart';
 
 /// Classic Wi-Fi-Analyzer-style spectrum view: each network is rendered as a
@@ -109,6 +110,7 @@ class _SpectrumOverlapChartState extends State<SpectrumOverlapChart> {
                 isDark: isDark,
                 selectedBssid: _selected?.bssid,
                 connectedBssid: connectedBssid,
+                connectedLabel: l10n.connectedChannelGuideLabel,
                 padLeft: _padLeft,
                 padRight: _padRight,
                 padTop: _padTop,
@@ -222,6 +224,7 @@ class _SpectrumPainter extends CustomPainter {
   final bool isDark;
   final String? selectedBssid;
   final String? connectedBssid;
+  final String connectedLabel;
   final double padLeft;
   final double padRight;
   final double padTop;
@@ -237,6 +240,7 @@ class _SpectrumPainter extends CustomPainter {
     required this.isDark,
     required this.selectedBssid,
     required this.connectedBssid,
+    required this.connectedLabel,
     required this.padLeft,
     required this.padRight,
     required this.padTop,
@@ -263,6 +267,80 @@ class _SpectrumPainter extends CustomPainter {
       if (n.frequency <= 0) continue;
       _drawNetwork(canvas, n, w, h);
     }
+
+    // "YOU" guide line — drawn last so it sits above bell curves.
+    _drawConnectedGuide(canvas, w, h);
+  }
+
+  void _drawConnectedGuide(Canvas canvas, double w, double h) {
+    final bssid = connectedBssid;
+    if (bssid == null) return;
+    WifiNetwork? me;
+    for (final n in networks) {
+      if (n.bssid.toUpperCase() == bssid) {
+        me = n;
+        break;
+      }
+    }
+    if (me == null || me.frequency <= 0) return;
+    if (me.frequency < range.low || me.frequency > range.high) return;
+
+    final x =
+        padLeft + ((me.frequency - range.low) / (range.high - range.low)) * w;
+    final color = AppColors.neonCyan;
+
+    // Dashed vertical line.
+    final dashPaint =
+        Paint()
+          ..color = color.withValues(alpha: 0.85)
+          ..strokeWidth = 1.5
+          ..style = PaintingStyle.stroke;
+    const dashLen = 4.0;
+    const gapLen = 3.0;
+    double y = padTop + 14;
+    final yMax = padTop + h;
+    while (y < yMax) {
+      final yEnd = math.min(y + dashLen, yMax);
+      canvas.drawLine(Offset(x, y), Offset(x, yEnd), dashPaint);
+      y = yEnd + gapLen;
+    }
+
+    // Downward triangle marker at top.
+    final triPath =
+        Path()
+          ..moveTo(x - 4, padTop + 4)
+          ..lineTo(x + 4, padTop + 4)
+          ..lineTo(x, padTop + 12)
+          ..close();
+    canvas.drawPath(triPath, Paint()..color = color);
+
+    // YOU label centred on top of the line.
+    final label = TextPainter(
+      text: TextSpan(
+        text: connectedLabel,
+        style: GoogleFonts.orbitron(
+          fontSize: 9,
+          fontWeight: FontWeight.bold,
+          color: color,
+          letterSpacing: 1.2,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    // Background plate for readability over busy areas.
+    final bgRect = Rect.fromLTWH(
+      x - label.width / 2 - 4,
+      0,
+      label.width + 8,
+      label.height + 2,
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(bgRect, const Radius.circular(3)),
+      Paint()
+        ..color = (isDark ? const Color(0xFF0F172A) : Colors.white)
+            .withValues(alpha: 0.85),
+    );
+    label.paint(canvas, Offset(x - label.width / 2, 1));
   }
 
   void _drawAxes(Canvas canvas, Size size, double w, double h) {

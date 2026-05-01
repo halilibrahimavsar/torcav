@@ -1706,13 +1706,18 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get exportPdfTitle => 'Export spectrum report';
+  String get routerGroupsHeader => 'Nearby routers (dual-band)';
 
   @override
-  String get exportPdfSuccess => 'Report saved · sharing…';
+  String get routerGroupsInfoBody => 'When the same router broadcasts the same SSID on more than one band (e.g. 2.4 GHz CH 6 and 5 GHz CH 36), we group them here so you can compare both radios side by side. Tap a band chip to jump to it.';
 
   @override
-  String get exportPdfFailed => 'Couldn\'t generate report.';
+  String crossBandSiblingHint(String band, String channel, String rating) {
+    return 'Same router on $band CH $channel · $rating/10';
+  }
+
+  @override
+  String get connectedChannelGuideLabel => 'YOU';
 
   @override
   String get unstableChannelLabel => 'UNSTABLE';

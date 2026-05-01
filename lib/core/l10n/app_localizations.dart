@@ -3267,23 +3267,29 @@ abstract class AppLocalizations {
   /// **'Volatile area · density swings {delta} APs in last hour'**
   String densityTrendVolatile(String delta);
 
-  /// PDF export menu item
+  /// Header above the cross-band router cards
   ///
   /// In en, this message translates to:
-  /// **'Export spectrum report'**
-  String get exportPdfTitle;
+  /// **'Nearby routers (dual-band)'**
+  String get routerGroupsHeader;
 
-  /// No description provided for @exportPdfSuccess.
+  /// Info body for the router groups section
   ///
   /// In en, this message translates to:
-  /// **'Report saved · sharing…'**
-  String get exportPdfSuccess;
+  /// **'When the same router broadcasts the same SSID on more than one band (e.g. 2.4 GHz CH 6 and 5 GHz CH 36), we group them here so you can compare both radios side by side. Tap a band chip to jump to it.'**
+  String get routerGroupsInfoBody;
 
-  /// No description provided for @exportPdfFailed.
+  /// No description provided for @crossBandSiblingHint.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t generate report.'**
-  String get exportPdfFailed;
+  /// **'Same router on {band} CH {channel} · {rating}/10'**
+  String crossBandSiblingHint(String band, String channel, String rating);
+
+  /// Tag for the vertical guide line in the spectrum analyzer pointing at the user's own router
+  ///
+  /// In en, this message translates to:
+  /// **'YOU'**
+  String get connectedChannelGuideLabel;
 
   /// Badge for channels that fluctuate heavily across history
   ///
