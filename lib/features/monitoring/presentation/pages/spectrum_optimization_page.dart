@@ -23,7 +23,9 @@ import '../widgets/channel_spectral_chart.dart';
 import '../widgets/hour_of_day_heatmap.dart';
 import '../widgets/router_admin_guide_card.dart';
 import '../widgets/router_groups_card.dart';
+import '../widgets/spectrum_colors.dart';
 import '../widgets/spectrum_overlap_chart.dart';
+import '../../../wifi_scan/domain/entities/wifi_band.dart';
 
 /// Operations Hub entry-point for the Spectrum / Channel Optimization tool.
 ///
@@ -82,27 +84,20 @@ class _SpectrumViewState extends State<_SpectrumView> {
     if (bssid == null) return;
     final scanState = context.read<WifiScanBloc>().state;
     if (scanState is! WifiScanLoaded) return;
-    final connected = scanState.snapshot.networks.firstWhere(
-      (n) => n.bssid.toUpperCase() == bssid,
-      orElse:
-          () => scanState.snapshot.networks.isEmpty
-              ? scanState.snapshot.networks.first
-              : scanState.snapshot.networks.first,
-    );
-    final ratingForConnected = state.ratings.firstWhere(
-      (r) =>
-          r.channel == connected.channel &&
-          (r.frequency - connected.frequency).abs() <= 5,
-      orElse:
-          () => const ChannelRating(
-            channel: -1,
-            frequency: 0,
-            rating: 10,
-            networkCount: 0,
-            quality: ChannelQuality.excellent,
-          ),
-    );
-    if (ratingForConnected.channel < 0) return;
+    final networks = scanState.snapshot.networks;
+    final connectedIdx =
+        networks.indexWhere((n) => n.bssid.toUpperCase() == bssid);
+    if (connectedIdx < 0) return;
+    final connected = networks[connectedIdx];
+    ChannelRating? ratingForConnected;
+    for (final r in state.ratings) {
+      if (r.channel == connected.channel &&
+          (r.frequency - connected.frequency).abs() <= 5) {
+        ratingForConnected = r;
+        break;
+      }
+    }
+    if (ratingForConnected == null) return;
     if (ratingForConnected.rating >= _alertThreshold) {
       _alertedChannel = null;
       return;
@@ -111,12 +106,10 @@ class _SpectrumViewState extends State<_SpectrumView> {
     _alertedChannel = ratingForConnected.channel;
 
     // Find the best alternative for the same band.
-    final freq = ratingForConnected.frequency;
-    final sameBand = state.ratings.where((r) {
-      if (freq < 4000) return r.frequency < 4000;
-      if (freq < 5925) return r.frequency >= 5000 && r.frequency < 5925;
-      return r.frequency >= 5925;
-    }).toList()
+    final connectedBand = bandFromFrequency(ratingForConnected.frequency);
+    final sameBand = state.ratings
+        .where((r) => bandFromFrequency(r.frequency) == connectedBand)
+        .toList()
       ..sort((a, b) => b.rating.compareTo(a.rating));
     if (sameBand.isEmpty) return;
     final best = sameBand.first;
@@ -279,12 +272,7 @@ class _SpectrumViewState extends State<_SpectrumView> {
                   band: band,
                   bandLabel:
                       [l10n.band24Ghz, l10n.band5Ghz, l10n.band6Ghz][band],
-                  accentColor:
-                      [
-                        const Color(0xFF00E5FF),
-                        const Color(0xFF76FF03),
-                        const Color(0xFFEEFF41),
-                      ][band],
+                  accentColor: bandAccentColor(WifiBand.values[band]),
                   emptyHint:
                       [
                         l10n.no24GhzChannels,
@@ -346,15 +334,11 @@ class _BandTab extends StatelessWidget {
           );
         }
         if (state is ChannelAnalysisReady) {
-          final ratings =
-              switch (band) {
-                  0 => state.ratings.where((r) => r.frequency < 4000),
-                  1 => state.ratings.where(
-                    (r) => r.frequency >= 5000 && r.frequency < 5925,
-                  ),
-                  _ => state.ratings.where((r) => r.frequency >= 5925),
-                }.toList()
-                ..sort((a, b) => b.rating.compareTo(a.rating));
+          final tabBand = WifiBand.values[band];
+          final ratings = state.ratings
+              .where((r) => bandFromFrequency(r.frequency) == tabBand)
+              .toList()
+            ..sort((a, b) => b.rating.compareTo(a.rating));
 
           final scanState = context.watch<WifiScanBloc>().state;
           final networks =
@@ -460,45 +444,45 @@ class _HistoryTabState extends State<_HistoryTab> {
   }
 
   Future<void> _clearHistory() async {
+    final l10n = context.l10n;
     final confirm = await showDialog<bool>(
       context: context,
-      builder:
-          (ctx) => AlertDialog(
-            backgroundColor: Theme.of(ctx).colorScheme.surface,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            title: Text(
-              'CLEAR CHANNEL HISTORY',
-              style: GoogleFonts.orbitron(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            content: Text(
-              'Delete all channel rating records? This cannot be undone.',
-              style: GoogleFonts.rajdhani(fontSize: 14),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx, false),
-                child: Text(
-                  'CANCEL',
-                  style: GoogleFonts.orbitron(fontSize: 10),
-                ),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(ctx, true),
-                child: Text(
-                  'DELETE ALL',
-                  style: GoogleFonts.orbitron(
-                    fontSize: 10,
-                    color: Theme.of(ctx).colorScheme.error,
-                  ),
-                ),
-              ),
-            ],
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Theme.of(ctx).colorScheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: Text(
+          l10n.clearChannelHistoryTitle,
+          style: GoogleFonts.orbitron(
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
           ),
+        ),
+        content: Text(
+          l10n.clearChannelHistoryConfirmBody,
+          style: GoogleFonts.rajdhani(fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(
+              l10n.cancel.toUpperCase(),
+              style: GoogleFonts.orbitron(fontSize: 10),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(
+              l10n.deleteAllLabel,
+              style: GoogleFonts.orbitron(
+                fontSize: 10,
+                color: Theme.of(ctx).colorScheme.error,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
     if (confirm == true) {
       await GetIt.I<ChannelRatingRepository>().clearHistory();
@@ -622,29 +606,39 @@ class _BandViewState extends State<_BandView> {
   final GlobalKey _connectedTileKey = GlobalKey();
   bool _didAutoScroll = false;
 
-  /// Returns the channel the user's own router is currently broadcasting on,
-  /// matched by BSSID against the scan results — null if not in this band.
-  ChannelRating? _findConnectedRating() {
-    if (widget.connectedBssid == null) return null;
-    final target = widget.connectedBssid!.toUpperCase();
-    final connectedNet = widget.networks.firstWhere(
-      (n) => n.bssid.toUpperCase() == target,
-      orElse:
-          () => const WifiNetwork(
-            ssid: '',
-            bssid: '',
-            signalStrength: 0,
-            channel: -1,
-            frequency: -1,
-            security: SecurityType.unknown,
-          ),
-    );
-    if (connectedNet.channel < 0) return null;
-    for (final r in widget.ratings) {
-      if (r.channel == connectedNet.channel &&
-          (r.frequency - connectedNet.frequency).abs() <= 5) {
-        return r;
+  /// Returns the channel the user's own router is broadcasting on within this
+  /// band. Two cases produce a hit:
+  ///
+  /// 1. **Direct** — the connected BSSID itself sits on this band.
+  /// 2. **Dual-band sibling** — the connected BSSID is on another band but
+  ///    the same physical router exposes a sibling radio on this band
+  ///    (matched via SSID + BSSID prefix). The hit is flagged so the UI can
+  ///    label it differently — the user is not actually using this radio
+  ///    right now.
+  ({ChannelRating rating, bool isSibling})? _findConnectedHit() {
+    final connectedBssid = widget.connectedBssid;
+    if (connectedBssid == null) return null;
+    final target = connectedBssid.toUpperCase();
+    final idx =
+        widget.networks.indexWhere((n) => n.bssid.toUpperCase() == target);
+    if (idx < 0) return null;
+    final connectedNet = widget.networks[idx];
+
+    ChannelRating? matchInBand(int channel, int frequency) {
+      for (final r in widget.ratings) {
+        if (r.channel == channel && (r.frequency - frequency).abs() <= 5) {
+          return r;
+        }
       }
+      return null;
+    }
+
+    final direct = matchInBand(connectedNet.channel, connectedNet.frequency);
+    if (direct != null) return (rating: direct, isSibling: false);
+
+    for (final s in crossBandSiblingsOf(connectedNet, widget.networks)) {
+      final hit = matchInBand(s.channel, s.frequency);
+      if (hit != null) return (rating: hit, isSibling: true);
     }
     return null;
   }
@@ -714,8 +708,10 @@ class _BandViewState extends State<_BandView> {
           ..sort((a, b) => b.value.compareTo(a.value));
     final consistentlyBest =
         historicalBest.isNotEmpty ? historicalBest.first : null;
-    final connectedRating = _findConnectedRating();
-    final is6Ghz = ratings.first.frequency >= 5925;
+    final connectedHit = _findConnectedHit();
+    final connectedRating = connectedHit?.rating;
+    final isSiblingHit = connectedHit?.isSibling ?? false;
+    final is6Ghz = bandFromFrequency(ratings.first.frequency) == WifiBand.ghz6;
 
     // First-paint auto-scroll: bring the user's connected channel tile into
     // view so they don't have to hunt for it in a long list.
@@ -736,17 +732,15 @@ class _BandViewState extends State<_BandView> {
 
     // Networks belonging to *this* band (filtered by frequency, mirroring
     // the band-split rule used for the rating list).
-    final bandNetworks =
-        networks.where((n) {
-          if (n.frequency <= 0) return false;
-          if (ratings.isEmpty) return false;
-          final f = n.frequency;
-          // Use the rating list's frequency span as the band identifier.
-          final firstFreq = ratings.first.frequency;
-          if (firstFreq < 4000) return f >= 2400 && f < 2500;
-          if (firstFreq < 5925) return f >= 5000 && f < 5925;
-          return f >= 5925 && f < 7200;
-        }).toList();
+    final bandNetworks = ratings.isEmpty
+        ? <WifiNetwork>[]
+        : () {
+            final tabBand = bandFromFrequency(ratings.first.frequency);
+            return networks
+                .where((n) =>
+                    n.frequency > 0 && bandFromFrequency(n.frequency) == tabBand)
+                .toList();
+          }();
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -757,6 +751,8 @@ class _BandViewState extends State<_BandView> {
             current: connectedRating,
             recommended: best,
             accentColor: accentColor,
+            isSibling: isSiblingHit,
+            bandLabel: bandLabel,
           ),
           const SizedBox(height: 16),
         ],
@@ -880,11 +876,11 @@ class _BandViewState extends State<_BandView> {
                         quality: ChannelQuality.fair,
                       ),
                 );
-                final key = radio.frequency < 2500
-                    ? '2.4'
-                    : radio.frequency < 5925
-                        ? '5'
-                        : '6';
+                final key = switch (bandFromFrequency(radio.frequency)) {
+                  WifiBand.ghz24 => '2.4',
+                  WifiBand.ghz5 => '5',
+                  WifiBand.ghz6 => '6',
+                };
                 return {key: r.channel < 0 ? null : r};
               },
               onJumpToBand: (idx) {
@@ -922,6 +918,7 @@ class _BandViewState extends State<_BandView> {
               rating: r,
               accentColor: accentColor,
               isConnected: isConnected,
+              isSibling: isConnected && isSiblingHit,
               isAllowedInRegion: allow.isAllowed(r.channel, r.frequency),
             networksOnChannel:
                 bandNetworks
@@ -1194,6 +1191,7 @@ class _ChannelTile extends StatefulWidget {
   final ChannelRating rating;
   final Color accentColor;
   final bool isConnected;
+  final bool isSibling;
   final bool isAllowedInRegion;
   final List<WifiNetwork> networksOnChannel;
   final List<WifiNetwork> allNetworks;
@@ -1204,6 +1202,7 @@ class _ChannelTile extends StatefulWidget {
     required this.rating,
     required this.accentColor,
     this.isConnected = false,
+    this.isSibling = false,
     this.isAllowedInRegion = true,
     this.networksOnChannel = const [],
     this.allNetworks = const [],
@@ -1223,7 +1222,7 @@ class _ChannelTileState extends State<_ChannelTile> {
     final onSurface = Theme.of(context).colorScheme.onSurface;
     final primary = Theme.of(context).colorScheme.primary;
     final rating = widget.rating;
-    final color = _getColorForRating(rating.rating, primary);
+    final color = ratingScoreColor(rating.rating, primary);
     final fraction = (rating.rating / 10).clamp(0.0, 1.0);
     final hasNetworks = widget.networksOnChannel.isNotEmpty;
 
@@ -1284,7 +1283,11 @@ class _ChannelTileState extends State<_ChannelTile> {
                             ),
                             if (widget.isConnected) ...[
                               const SizedBox(width: 8),
-                              _PulsingNowBadge(label: l10n.currentChannelLabel),
+                              _PulsingNowBadge(
+                                label: widget.isSibling
+                                    ? l10n.dualBandSiblingLabel
+                                    : l10n.currentChannelLabel,
+                              ),
                             ],
                             if (rating.isDfs) ...[
                               const SizedBox(width: 8),
@@ -1394,11 +1397,6 @@ class _ChannelTileState extends State<_ChannelTile> {
     );
   }
 
-  Color _getColorForRating(double r, Color primary) {
-    if (r >= 8) return primary;
-    if (r >= 5) return Colors.orange;
-    return Colors.red;
-  }
 }
 
 class _ChannelDrilldown extends StatelessWidget {
@@ -1729,7 +1727,6 @@ class _DensityTrendChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final onSurface = Theme.of(context).colorScheme.onSurface;
     if (previousRatings.isEmpty) return const SizedBox.shrink();
 
     double maxAbsDelta = 0;
@@ -1779,8 +1776,6 @@ class _DensityTrendChip extends StatelessWidget {
         ],
       ),
     );
-    // ignore: dead_code
-    onSurface; // kept for future styling reuse
   }
 }
 
@@ -1906,11 +1901,15 @@ class _CurrentChannelBanner extends StatelessWidget {
   final ChannelRating current;
   final ChannelRating recommended;
   final Color accentColor;
+  final bool isSibling;
+  final String bandLabel;
 
   const _CurrentChannelBanner({
     required this.current,
     required this.recommended,
     required this.accentColor,
+    this.isSibling = false,
+    this.bandLabel = '',
   });
 
   @override
@@ -1919,7 +1918,9 @@ class _CurrentChannelBanner extends StatelessWidget {
     final onSurface = Theme.of(context).colorScheme.onSurface;
     final delta = recommended.rating - current.rating;
     final isOptimal = current.channel == recommended.channel || delta < 0.5;
-    final color = isOptimal ? AppColors.neonGreen : AppColors.neonCyan;
+    final color = isSibling
+        ? accentColor
+        : (isOptimal ? AppColors.neonGreen : AppColors.neonCyan);
 
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
@@ -1939,18 +1940,25 @@ class _CurrentChannelBanner extends StatelessWidget {
           Row(
             children: [
               Icon(
-                isOptimal
-                    ? Icons.check_circle_rounded
-                    : Icons.swap_horiz_rounded,
+                isSibling
+                    ? Icons.swap_calls_rounded
+                    : isOptimal
+                        ? Icons.check_circle_rounded
+                        : Icons.swap_horiz_rounded,
                 color: color,
                 size: 18,
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  l10n.currentChannelBannerYouAreOn(
-                    'CH ${current.channel} · ${current.rating.toStringAsFixed(1)}/10',
-                  ),
+                  isSibling
+                      ? l10n.dualBandSiblingBanner(
+                          bandLabel,
+                          'CH ${current.channel} · ${current.rating.toStringAsFixed(1)}/10',
+                        )
+                      : l10n.currentChannelBannerYouAreOn(
+                          'CH ${current.channel} · ${current.rating.toStringAsFixed(1)}/10',
+                        ),
                   style: GoogleFonts.orbitron(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
@@ -2063,43 +2071,22 @@ class _CrossBandSiblingHint extends StatelessWidget {
     required this.allRatings,
   });
 
-  int _bandIndex(int frequency) {
-    if (frequency < 2500) return 0;
-    if (frequency < 5925) return 1;
-    return 2;
-  }
-
-  String _bandLabel(int frequency) {
-    if (frequency < 2500) return '2.4 GHz';
-    if (frequency < 5925) return '5 GHz';
-    return '6 GHz';
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final onSurface = Theme.of(context).colorScheme.onSurface;
-    final rating = allRatings.firstWhere(
-      (r) =>
-          r.channel == sibling.channel &&
-          (r.frequency - sibling.frequency).abs() <= 5,
-      orElse: () => const ChannelRating(
-        channel: -1,
-        frequency: 0,
-        rating: 0,
-        networkCount: 0,
-        quality: ChannelQuality.fair,
-      ),
-    );
-    final ratingText = rating.channel < 0
+    final ratingIdx = allRatings.indexWhere((r) =>
+        r.channel == sibling.channel &&
+        (r.frequency - sibling.frequency).abs() <= 5);
+    final ratingText = ratingIdx < 0
         ? '—'
-        : rating.rating.toStringAsFixed(1);
+        : allRatings[ratingIdx].rating.toStringAsFixed(1);
     return Padding(
       padding: const EdgeInsets.fromLTRB(21, 2, 0, 0),
       child: InkWell(
         onTap: () {
           final controller = DefaultTabController.maybeOf(context);
-          controller?.animateTo(_bandIndex(sibling.frequency));
+          controller?.animateTo(bandIndex(bandFromFrequency(sibling.frequency)));
         },
         borderRadius: BorderRadius.circular(4),
         child: Padding(
@@ -2115,7 +2102,7 @@ class _CrossBandSiblingHint extends StatelessWidget {
               Flexible(
                 child: Text(
                   l10n.crossBandSiblingHint(
-                    _bandLabel(sibling.frequency),
+                    bandShortLabel(bandFromFrequency(sibling.frequency)),
                     '${sibling.channel}',
                     ratingText,
                   ),

@@ -1728,4 +1728,24 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get historyHeatmapInfoBody => 'Jede Zeile ist ein Kanal, jede Spalte ein Scan-Zeitpunkt. Die Zellfarbe zeigt die Bewertung zu diesem Moment: rot (schlecht) → gelb (ok) → grün (sehr gut). Leere Zellen bedeuten, dass der Kanal in diesem Scan nicht sichtbar war. Achten Sie auf durchgehend grüne Zeilen — diese Kanäle bleiben über Zeit sauber.';
+
+  @override
+  String get clearChannelHistoryTitle => 'KANALVERLAUF LÖSCHEN';
+
+  @override
+  String get clearChannelHistoryConfirmBody => 'Alle Kanal-Bewertungseinträge löschen? Dies kann nicht rückgängig gemacht werden.';
+
+  @override
+  String get deleteAllLabel => 'ALLES LÖSCHEN';
+
+  @override
+  String get dualBandSiblingLabel => 'DUAL BAND';
+
+  @override
+  String dualBandSiblingBanner(String band, String channel) {
+    return '$band-Radio Ihres Routers: $channel';
+  }
+
+  @override
+  String get acknowledgedLabel => 'VERSTANDEN';
 }

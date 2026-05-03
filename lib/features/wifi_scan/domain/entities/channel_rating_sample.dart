@@ -4,34 +4,22 @@ import 'package:equatable/equatable.dart';
 class ChannelRatingSample extends Equatable {
   final int? id;
   final int channel;
+
+  /// Center frequency in MHz. Required so that channel numbers that exist in
+  /// multiple bands (e.g. CH 1 in both 2.4 GHz and 6 GHz) can be classified
+  /// unambiguously by historical readers.
+  final int frequency;
   final double rating;
   final DateTime timestamp;
 
   const ChannelRatingSample({
     this.id,
     required this.channel,
+    required this.frequency,
     required this.rating,
     required this.timestamp,
   });
 
   @override
-  List<Object?> get props => [id, channel, rating, timestamp];
-
-  Map<String, dynamic> toMap() {
-    return {
-      if (id != null) 'id': id,
-      'channel': channel,
-      'rating': rating,
-      'timestamp': timestamp.millisecondsSinceEpoch,
-    };
-  }
-
-  factory ChannelRatingSample.fromMap(Map<String, dynamic> map) {
-    return ChannelRatingSample(
-      id: map['id'] as int?,
-      channel: map['channel'] as int,
-      rating: map['rating'] as double,
-      timestamp: DateTime.fromMillisecondsSinceEpoch(map['timestamp'] as int),
-    );
-  }
+  List<Object?> get props => [id, channel, frequency, rating, timestamp];
 }

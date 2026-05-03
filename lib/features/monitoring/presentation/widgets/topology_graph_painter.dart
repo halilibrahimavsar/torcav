@@ -467,7 +467,16 @@ class TopologyGraphPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant TopologyGraphPainter oldDelegate) {
-    return true; // Simple for now due to animations
+    return oldDelegate.topology != topology ||
+        oldDelegate.nodePositions != nodePositions ||
+        oldDelegate.pulseValue != pulseValue ||
+        oldDelegate.selectedNodeId != selectedNodeId ||
+        oldDelegate.searchQuery != searchQuery ||
+        oldDelegate.filterType != filterType ||
+        oldDelegate.showTraffic != showTraffic ||
+        oldDelegate.flowSpeed != flowSpeed ||
+        oldDelegate.isScanning != isScanning ||
+        oldDelegate.colorScheme != colorScheme;
   }
 }
 

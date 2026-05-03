@@ -2218,5 +2218,11 @@
     "@historyHeatmapInfoTitle": {
         "description": "Title of the heatmap info sheet"
     },
-    "historyHeatmapInfoBody": "Her rêz kanalek e û her stûn demek e ku te şopandin kir. Rengê hucreyê puanê wê demê nîşan dide: sor (xirab) → zer (orte) → kesk (zehf baş). Hucreyên vala wateya wê ye ku kanal di wê şopandinê de nediyar bû. Li rêzên temamî kesk bigere — ev ew kanal in ku bi demê re paqij dimînin."
+    "historyHeatmapInfoBody": "Her rêz kanalek e û her stûn demek e ku te şopandin kir. Rengê hucreyê puanê wê demê nîşan dide: sor (xirab) → zer (orte) → kesk (zehf baş). Hucreyên vala wateya wê ye ku kanal di wê şopandinê de nediyar bû. Li rêzên temamî kesk bigere — ev ew kanal in ku bi demê re paqij dimînin.",
+    "clearChannelHistoryTitle": "DÎROKA KANALÊ PAQIJ BIKE",
+    "clearChannelHistoryConfirmBody": "Hemû tomarên puanê kanalê werin jêbirin? Ev nayê vegerandin.",
+    "deleteAllLabel": "HEMÛ JÊBIBE",
+    "dualBandSiblingLabel": "DU-BAND",
+    "dualBandSiblingBanner": "Radyoya {band} ya routera te: {channel}",
+    "acknowledgedLabel": "TÊGEHIŞTÎ"
 }

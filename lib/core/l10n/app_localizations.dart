@@ -3314,6 +3314,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Each row is a channel and each column is a moment in time when you ran a scan. The cell colour is the channel score at that moment: red (poor) → yellow (ok) → green (excellent). Empty cells mean the channel was not visible in that scan. Look for solid green rows — those are channels that stay clean over time.'**
   String get historyHeatmapInfoBody;
+
+  /// Title of the confirmation dialog when clearing channel rating history
+  ///
+  /// In en, this message translates to:
+  /// **'CLEAR CHANNEL HISTORY'**
+  String get clearChannelHistoryTitle;
+
+  /// Body of the confirmation dialog when clearing channel rating history
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all channel rating records? This cannot be undone.'**
+  String get clearChannelHistoryConfirmBody;
+
+  /// Label for the destructive confirm button when clearing channel rating history
+  ///
+  /// In en, this message translates to:
+  /// **'DELETE ALL'**
+  String get deleteAllLabel;
+
+  /// Badge shown on a channel tile when the user's connected router exposes another radio on this band (the user is not actually using this radio right now)
+  ///
+  /// In en, this message translates to:
+  /// **'DUAL BAND'**
+  String get dualBandSiblingLabel;
+
+  /// Banner copy on a band tab when the user is connected to a different band of the same router. {band} is e.g. '2.4 GHz', {channel} is e.g. 'CH 6 · 8.2/10'.
+  ///
+  /// In en, this message translates to:
+  /// **'Your router\'s {band} radio: {channel}'**
+  String dualBandSiblingBanner(String band, String channel);
+
+  /// Confirmation button label that closes an info bottom sheet (Topology legend)
+  ///
+  /// In en, this message translates to:
+  /// **'ACKNOWLEDGED'**
+  String get acknowledgedLabel;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1730,4 +1730,24 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get historyHeatmapInfoBody => 'Her satır bir kanal, her sütun ise bir tarama yaptığınız andır. Hücre rengi o anda kanalın aldığı puanı gösterir: kırmızı (kötü) → sarı (orta) → yeşil (mükemmel). Boş hücreler, o taramada kanalın görünmediği anlamına gelir. Tamamen yeşil satırları kollayın — bunlar zamanla temiz kalan kanallardır.';
+
+  @override
+  String get clearChannelHistoryTitle => 'KANAL GEÇMİŞİNİ TEMİZLE';
+
+  @override
+  String get clearChannelHistoryConfirmBody => 'Tüm kanal puanı kayıtları silinsin mi? Bu işlem geri alınamaz.';
+
+  @override
+  String get deleteAllLabel => 'TÜMÜNÜ SİL';
+
+  @override
+  String get dualBandSiblingLabel => 'AYNI ROUTER';
+
+  @override
+  String dualBandSiblingBanner(String band, String channel) {
+    return 'Router\'ınızın $band radyosu: $channel';
+  }
+
+  @override
+  String get acknowledgedLabel => 'ANLAŞILDI';
 }

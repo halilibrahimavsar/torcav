@@ -2289,5 +2289,33 @@
     "@historyHeatmapInfoBody": {
         "description": "Body of the heatmap info sheet"
     },
+    "clearChannelHistoryTitle": "CLEAR CHANNEL HISTORY",
+    "@clearChannelHistoryTitle": {
+        "description": "Title of the confirmation dialog when clearing channel rating history"
+    },
+    "clearChannelHistoryConfirmBody": "Delete all channel rating records? This cannot be undone.",
+    "@clearChannelHistoryConfirmBody": {
+        "description": "Body of the confirmation dialog when clearing channel rating history"
+    },
+    "deleteAllLabel": "DELETE ALL",
+    "@deleteAllLabel": {
+        "description": "Label for the destructive confirm button when clearing channel rating history"
+    },
+    "dualBandSiblingLabel": "DUAL BAND",
+    "@dualBandSiblingLabel": {
+        "description": "Badge shown on a channel tile when the user's connected router exposes another radio on this band (the user is not actually using this radio right now)"
+    },
+    "dualBandSiblingBanner": "Your router's {band} radio: {channel}",
+    "@dualBandSiblingBanner": {
+        "description": "Banner copy on a band tab when the user is connected to a different band of the same router. {band} is e.g. '2.4 GHz', {channel} is e.g. 'CH 6 · 8.2/10'.",
+        "placeholders": {
+            "band": {"type": "String"},
+            "channel": {"type": "String"}
+        }
+    },
+    "acknowledgedLabel": "ACKNOWLEDGED",
+    "@acknowledgedLabel": {
+        "description": "Confirmation button label that closes an info bottom sheet (Topology legend)"
+    },
     "@@locale": "en"
 }

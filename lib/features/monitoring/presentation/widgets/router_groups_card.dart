@@ -5,8 +5,10 @@ import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../wifi_scan/domain/entities/channel_rating.dart';
+import '../../../wifi_scan/domain/entities/wifi_band.dart';
 import '../../../wifi_scan/domain/entities/wifi_network.dart';
 import '../../domain/router_grouping.dart';
+import 'spectrum_colors.dart';
 
 /// Compact list of dual-band routers detected in the current scan.
 /// Each chip jumps to the relevant band tab when tapped.
@@ -128,8 +130,9 @@ class _GroupRow extends StatelessWidget {
                 radio: group.radios[i],
                 rating: ratingFor(group.radios[i])[_bandKey(group.radios[i])],
                 isLast: i == group.radios.length - 1,
-                onTap: () =>
-                    onJumpToBand(_bandIndex(group.radios[i].frequency)),
+                onTap: () => onJumpToBand(
+                  bandIndex(bandFromFrequency(group.radios[i].frequency)),
+                ),
               ),
           ],
         ),
@@ -137,17 +140,12 @@ class _GroupRow extends StatelessWidget {
     );
   }
 
-  static String _bandKey(WifiNetwork n) {
-    if (n.frequency < 2500) return '2.4';
-    if (n.frequency < 5925) return '5';
-    return '6';
-  }
-
-  static int _bandIndex(int frequency) {
-    if (frequency < 2500) return 0;
-    if (frequency < 5925) return 1;
-    return 2;
-  }
+  static String _bandKey(WifiNetwork n) =>
+      switch (bandFromFrequency(n.frequency)) {
+        WifiBand.ghz24 => '2.4',
+        WifiBand.ghz5 => '5',
+        WifiBand.ghz6 => '6',
+      };
 }
 
 class _BandChip extends StatelessWidget {
@@ -165,8 +163,9 @@ class _BandChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = _bandColor(radio.frequency);
-    final label = _bandLabel(radio.frequency);
+    final band = bandFromFrequency(radio.frequency);
+    final color = bandAccentColor(band);
+    final label = bandShortLabel(band);
     final ratingText =
         rating != null ? ' · ${rating!.rating.toStringAsFixed(1)}' : '';
     return InkWell(
@@ -192,15 +191,4 @@ class _BandChip extends StatelessWidget {
     );
   }
 
-  Color _bandColor(int freq) {
-    if (freq < 2500) return const Color(0xFF00E5FF);
-    if (freq < 5925) return const Color(0xFF76FF03);
-    return const Color(0xFFEEFF41);
-  }
-
-  String _bandLabel(int freq) {
-    if (freq < 2500) return '2.4 GHz';
-    if (freq < 5925) return '5 GHz';
-    return '6 GHz';
-  }
 }

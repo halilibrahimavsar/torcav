@@ -35,7 +35,7 @@ class AppDatabase {
     return openDatabase(
       dbPath,
       password: password, // Enable encryption
-      version: 8,
+      version: 9,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onConfigure: (db) async {
@@ -79,6 +79,7 @@ class AppDatabase {
       CREATE TABLE channel_rating_history (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         channel INTEGER NOT NULL,
+        frequency INTEGER NOT NULL,
         rating REAL NOT NULL,
         timestamp TEXT NOT NULL
       )
@@ -263,6 +264,21 @@ class AppDatabase {
     }
     if (oldVersion < 8) {
       await _createScoreHistoryTable(db);
+    }
+    if (oldVersion < 9) {
+      // App is still in development; the channel rating history table is
+      // recreated cleanly so we don't have to worry about back-filling
+      // frequency on legacy rows.
+      await db.execute('DROP TABLE IF EXISTS channel_rating_history');
+      await db.execute('''
+        CREATE TABLE channel_rating_history (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          channel INTEGER NOT NULL,
+          frequency INTEGER NOT NULL,
+          rating REAL NOT NULL,
+          timestamp TEXT NOT NULL
+        )
+      ''');
     }
   }
 

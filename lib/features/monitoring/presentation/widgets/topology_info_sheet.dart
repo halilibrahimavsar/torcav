@@ -144,7 +144,7 @@ class TopologyInfoSheet extends StatelessWidget {
                 ),
               ),
               child: Text(
-                'ACKNOWLEDGED',
+                l10n.acknowledgedLabel,
                 style: GoogleFonts.orbitron(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,

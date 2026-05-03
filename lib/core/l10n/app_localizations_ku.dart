@@ -1728,4 +1728,24 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get historyHeatmapInfoBody => 'Her rêz kanalek e û her stûn demek e ku te şopandin kir. Rengê hucreyê puanê wê demê nîşan dide: sor (xirab) → zer (orte) → kesk (zehf baş). Hucreyên vala wateya wê ye ku kanal di wê şopandinê de nediyar bû. Li rêzên temamî kesk bigere — ev ew kanal in ku bi demê re paqij dimînin.';
+
+  @override
+  String get clearChannelHistoryTitle => 'DÎROKA KANALÊ PAQIJ BIKE';
+
+  @override
+  String get clearChannelHistoryConfirmBody => 'Hemû tomarên puanê kanalê werin jêbirin? Ev nayê vegerandin.';
+
+  @override
+  String get deleteAllLabel => 'HEMÛ JÊBIBE';
+
+  @override
+  String get dualBandSiblingLabel => 'DU-BAND';
+
+  @override
+  String dualBandSiblingBanner(String band, String channel) {
+    return 'Radyoya $band ya routera te: $channel';
+  }
+
+  @override
+  String get acknowledgedLabel => 'TÊGEHIŞTÎ';
 }

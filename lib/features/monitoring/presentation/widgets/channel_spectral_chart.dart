@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../features/wifi_scan/domain/entities/channel_rating.dart';
+import 'spectrum_colors.dart';
 
 class ChannelSpectralChart extends StatelessWidget {
   final List<ChannelRating> ratings;
@@ -160,7 +161,7 @@ class ChannelSpectralChart extends StatelessWidget {
                   barRods: [
                     BarChartRodData(
                       toY: rating.rating,
-                      color: _getColorForRating(rating.rating, accentColor),
+                      color: ratingScoreColor(rating.rating, accentColor),
                       width: barWidth,
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(4),
@@ -179,9 +180,4 @@ class ChannelSpectralChart extends StatelessWidget {
     );
   }
 
-  Color _getColorForRating(double r, Color defaultColor) {
-    if (r >= 8) return defaultColor;
-    if (r >= 5) return Colors.orangeAccent;
-    return Colors.redAccent;
-  }
 }

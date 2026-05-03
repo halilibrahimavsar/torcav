@@ -236,50 +236,43 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
 
     // Save initial ratings synchronously so DB is populated before the
     // History tab's FutureBuilder runs.
-    if (initialRatings.isNotEmpty) {
-      await _historyRepo
-          .saveRatings(
-            initialRatings
-                .map(
-                  (r) => ChannelRatingSample(
-                    channel: r.channel,
-                    rating: r.rating,
-                    timestamp: DateTime.now(),
-                  ),
-                )
-                .toList(),
-          )
-          .then((_) {})
-          .catchError((_) {});
-    }
+    await _persistRatings(initialRatings, DateTime.now(), awaitWrite: true);
 
     // Start real-time updates
     await _channelSubscription?.cancel();
     _channelSubscription = _sessionStore.snapshots.listen((snapshot) {
       final networks = snapshot.networks.map((o) => o.toWifiNetwork()).toList();
       final liveRatings = _channelEngine.calculateRatings(networks);
-
-      // Save to history asynchronously — fire-and-forget.
-      final timestamp = DateTime.now();
-      unawaited(
-        _historyRepo
-            .saveRatings(
-              liveRatings
-                  .map(
-                    (r) => ChannelRatingSample(
-                      channel: r.channel,
-                      rating: r.rating,
-                      timestamp: timestamp,
-                    ),
-                  )
-                  .toList(),
-            )
-            .then((_) {})
-            .catchError((_) {}),
-      );
-
+      _persistRatings(liveRatings, DateTime.now());
       add(_UpdateRatings(liveRatings));
     });
+  }
+
+  /// Persists [ratings] as history samples. By default fire-and-forget; pass
+  /// [awaitWrite] to make the caller block until the DB write completes (used
+  /// for the initial analysis so the History tab's FutureBuilder sees data).
+  Future<void> _persistRatings(
+    List<ChannelRating> ratings,
+    DateTime timestamp, {
+    bool awaitWrite = false,
+  }) async {
+    if (ratings.isEmpty) return;
+    final samples = [
+      for (final r in ratings)
+        ChannelRatingSample(
+          channel: r.channel,
+          frequency: r.frequency,
+          rating: r.rating,
+          timestamp: timestamp,
+        ),
+    ];
+    final future =
+        _historyRepo.saveRatings(samples).then((_) {}).catchError((_) {});
+    if (awaitWrite) {
+      await future;
+    } else {
+      unawaited(future);
+    }
   }
 
   Future<void> _onUpdateRatings(

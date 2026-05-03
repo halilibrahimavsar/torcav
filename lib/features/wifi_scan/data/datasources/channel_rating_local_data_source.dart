@@ -22,6 +22,7 @@ class ChannelRatingLocalDataSourceImpl implements ChannelRatingLocalDataSource {
         await txn.insert('channel_rating_history', {
           if (sample.id != null) 'id': sample.id,
           'channel': sample.channel,
+          'frequency': sample.frequency,
           'rating': sample.rating,
           'timestamp': sample.timestamp.toIso8601String(),
         });
@@ -52,6 +53,7 @@ class ChannelRatingLocalDataSourceImpl implements ChannelRatingLocalDataSource {
       return ChannelRatingSample(
         id: map['id'] as int?,
         channel: map['channel'] as int,
+        frequency: map['frequency'] as int,
         rating: map['rating'] as double,
         timestamp: DateTime.parse(map['timestamp'] as String),
       );

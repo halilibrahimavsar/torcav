@@ -1,3 +1,5 @@
+import '../../wifi_scan/domain/entities/wifi_band.dart';
+
 /// Regional Wi-Fi channel allowlists.
 ///
 /// Each region declares the per-band set of channel numbers that are legal
@@ -34,10 +36,11 @@ class RegionAllowlist {
   });
 
   bool isAllowed(int channel, int frequency) {
-    if (frequency >= 2400 && frequency < 2500) return band24.contains(channel);
-    if (frequency >= 5000 && frequency < 5925) return band5.contains(channel);
-    if (frequency >= 5925 && frequency < 7200) return band6.contains(channel);
-    return true; // unknown band — assume allowed
+    return switch (bandFromFrequency(frequency)) {
+      WifiBand.ghz24 => band24.contains(channel),
+      WifiBand.ghz5 => band5.contains(channel),
+      WifiBand.ghz6 => band6.contains(channel),
+    };
   }
 
   static const _world = RegionAllowlist(

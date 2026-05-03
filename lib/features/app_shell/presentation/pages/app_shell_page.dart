@@ -11,6 +11,9 @@ import '../../../reports/presentation/pages/reports_page.dart';
 import '../../../security/presentation/pages/security_center_page.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
 import '../../../monitoring/presentation/pages/topology_page.dart';
+import '../../../monitoring/presentation/pages/spectrum_optimization_page.dart';
+import '../../../performance/presentation/pages/performance_page.dart';
+import '../../../heatmap/presentation/pages/heatmap_page.dart';
 import '../../../wifi_scan/presentation/pages/wifi_scan_page.dart';
 import '../widgets/cyber_drawer.dart';
 import 'operations_hub_page.dart';
@@ -113,14 +116,31 @@ class _AppShellPageState extends State<AppShellPage> with RestorationMixin {
       case 'operations':
         _onTabSelected(2);
       case 'monitor/topology':
-        _onTabSelected(2);
         Navigator.of(
           context,
         ).push(MaterialPageRoute(builder: (context) => const TopologyRoute()));
       case 'monitor/channels':
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const SpectrumOptimizationPage(),
+          ),
+        );
       case 'monitor/signal':
+        // Signal Graph requires a selected network; route to the Spectrum
+        // page which surfaces the connected radio across bands.
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const SpectrumOptimizationPage(),
+          ),
+        );
       case 'performance':
-        _onTabSelected(2);
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const PerformancePage()),
+        );
+      case 'heatmap':
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (context) => const HeatmapPage()));
       case 'security':
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => const SecurityCenterPage()),

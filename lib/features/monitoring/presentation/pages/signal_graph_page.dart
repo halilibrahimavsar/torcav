@@ -9,24 +9,36 @@ import '../../../../features/wifi_scan/domain/entities/wifi_network.dart';
 import 'package:torcav/features/heatmap/presentation/pages/heatmap_page.dart';
 import '../bloc/monitoring_bloc.dart';
 
-class SignalGraphPage extends StatefulWidget {
+class SignalGraphPage extends StatelessWidget {
   final WifiNetwork network;
 
   const SignalGraphPage({super.key, required this.network});
 
   @override
-  State<SignalGraphPage> createState() => _SignalGraphPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) =>
+          GetIt.I<MonitoringBloc>()..add(StartMonitoring(network.bssid)),
+      child: _SignalGraphContent(network: network),
+    );
+  }
 }
 
-class _SignalGraphPageState extends State<SignalGraphPage>
-    with WidgetsBindingObserver {
-  bool _wasMonitoring = false;
+class _SignalGraphContent extends StatefulWidget {
+  final WifiNetwork network;
 
+  const _SignalGraphContent({required this.network});
+
+  @override
+  State<_SignalGraphContent> createState() => _SignalGraphContentState();
+}
+
+class _SignalGraphContentState extends State<_SignalGraphContent>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _wasMonitoring = true;
   }
 
   @override
@@ -38,54 +50,46 @@ class _SignalGraphPageState extends State<SignalGraphPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (!mounted) return;
+    // Now safe: this State sits *below* the BlocProvider injected by
+    // SignalGraphPage, so context.read finds the bloc.
     final bloc = context.read<MonitoringBloc>();
-    if (state == AppLifecycleState.paused && _wasMonitoring) {
+    if (state == AppLifecycleState.paused) {
       bloc.add(StopMonitoring());
-    } else if (state == AppLifecycleState.resumed && _wasMonitoring) {
+    } else if (state == AppLifecycleState.resumed) {
       bloc.add(StartMonitoring(widget.network.bssid));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create:
-          (_) =>
-              GetIt.I<MonitoringBloc>()
-                ..add(StartMonitoring(widget.network.bssid)),
-      child: Builder(
-        builder: (innerContext) {
-          return Scaffold(
-            resizeToAvoidBottomInset: false,
-            appBar: AppBar(
-              title: Text(
-                context.l10n.signalMonitoringTitle(widget.network.ssid),
-              ),
-              backgroundColor: Colors.transparent,
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.map_outlined),
-                  tooltip: context.l10n.heatmapTooltip,
-                  onPressed: () {
-                    Navigator.of(innerContext).push(
-                      MaterialPageRoute(builder: (_) => const HeatmapPage()),
-                    );
-                  },
-                ),
-              ],
-            ),
-            body: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Expanded(child: _SignalChart()),
-                  const SizedBox(height: 20),
-                  _buildStats(innerContext),
-                ],
-              ),
-            ),
-          );
-        },
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: Text(
+          context.l10n.signalMonitoringTitle(widget.network.ssid),
+        ),
+        backgroundColor: Colors.transparent,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.map_outlined),
+            tooltip: context.l10n.heatmapTooltip,
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const HeatmapPage()),
+              );
+            },
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Expanded(child: _SignalChart()),
+            const SizedBox(height: 20),
+            _buildStats(context),
+          ],
+        ),
       ),
     );
   }

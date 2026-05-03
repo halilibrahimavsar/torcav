@@ -268,7 +268,7 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
         );
 
         emit(
-          currentState.copyWith(
+          afterState.copyWith(
             topology: updatedTopology,
             clearPinging: true,
             clearErrorMessage: true,

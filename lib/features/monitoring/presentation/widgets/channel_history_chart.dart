@@ -9,6 +9,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../features/wifi_scan/domain/entities/channel_rating_sample.dart';
 import '../../../../features/wifi_scan/domain/entities/wifi_band.dart';
+import 'spectrum_colors.dart';
 
 // ── Duration options for time-range filter ────────────────────────────
 const _timeRanges = <Duration>[
@@ -66,7 +67,7 @@ class _ChannelHistoryChartState extends State<ChannelHistoryChart> {
     return widget.samples.where((s) {
       if (s.timestamp.isBefore(cutoff)) return false;
       if (_selectedBand != null &&
-          bandFromChannel(s.channel) != _selectedBand) {
+          bandFromFrequency(s.frequency) != _selectedBand) {
         return false;
       }
       return true;
@@ -407,12 +408,22 @@ class _ControlBar extends StatelessWidget {
                 context,
                 WifiBand.ghz24,
                 '2.4',
-                const Color(0xFF00E5FF),
+                bandAccentColor(WifiBand.ghz24),
               ),
               const SizedBox(width: 6),
-              _bandChip(context, WifiBand.ghz5, '5', const Color(0xFF76FF03)),
+              _bandChip(
+                context,
+                WifiBand.ghz5,
+                '5',
+                bandAccentColor(WifiBand.ghz5),
+              ),
               const SizedBox(width: 6),
-              _bandChip(context, WifiBand.ghz6, '6', const Color(0xFFEEFF41)),
+              _bandChip(
+                context,
+                WifiBand.ghz6,
+                '6',
+                bandAccentColor(WifiBand.ghz6),
+              ),
             ],
           ),
         ),
@@ -1406,19 +1417,8 @@ class _HeatmapPainter extends CustomPainter {
     }
   }
 
-  /// Light theme uses a more saturated orange mid-stop because the
-  /// fluorescent yellow used for dark theme nearly disappears on white.
-  static Color _ratingColor(double rating, bool isDark) {
-    final t = (rating / 10).clamp(0.0, 1.0);
-    final low = const Color(0xFFFF1744);
-    final mid = isDark ? const Color(0xFFEEFF41) : const Color(0xFFFF8F00);
-    final high =
-        isDark ? const Color(0xFF39FF14) : const Color(0xFF2E7D32);
-    if (t < 0.5) {
-      return Color.lerp(low, mid, t * 2)!;
-    }
-    return Color.lerp(mid, high, (t - 0.5) * 2)!;
-  }
+  static Color _ratingColor(double rating, bool isDark) =>
+      ratingHeatmapColor(rating, isDark: isDark);
 
   @override
   bool shouldRepaint(covariant _HeatmapPainter oldDelegate) =>

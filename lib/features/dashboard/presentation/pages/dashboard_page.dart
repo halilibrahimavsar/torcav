@@ -351,7 +351,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     threatCount: _threatCount,
                     deviceCount: _networkCount,
                     onTapSecurity: () => widget.onNavigate('security'),
-                    onTapSignal: () => widget.onNavigate('operations'),
+                    onTapSignal: () => widget.onNavigate('monitor/channels'),
                     onTapThreats: () => _showNotificationSheet(context),
                     onTapDevices: () => widget.onNavigate('wifi'),
                   ),
@@ -393,14 +393,14 @@ class _DashboardPageState extends State<DashboardPage> {
                 lastDownloadMbps: _lastSpeedTest?.downloadMbps,
                 lastUploadMbps: _lastSpeedTest?.uploadMbps,
                 lastSpeedTestAt: _lastSpeedTest?.recordedAt,
-                onTapSignal: () => widget.onNavigate('operations'),
+                onTapSignal: () => widget.onNavigate('monitor/channels'),
                 onTapScore: () => _worstAssessment != null
                     ? _showScoreExplanation(context, _worstAssessment!)
                     : widget.onNavigate('security'),
-                onTapChannels: () => widget.onNavigate('operations'),
+                onTapChannels: () => widget.onNavigate('monitor/channels'),
                 onTapDevices: () => widget.onNavigate('wifi'),
                 onTapThreats: () => _showNotificationSheet(context),
-                onTapSpeed: () => widget.onNavigate('operations'),
+                onTapSpeed: () => widget.onNavigate('performance'),
               ),
 
               const SizedBox(height: 28),

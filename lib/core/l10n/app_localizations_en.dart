@@ -1730,4 +1730,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get historyHeatmapInfoBody => 'Each row is a channel and each column is a moment in time when you ran a scan. The cell colour is the channel score at that moment: red (poor) → yellow (ok) → green (excellent). Empty cells mean the channel was not visible in that scan. Look for solid green rows — those are channels that stay clean over time.';
+
+  @override
+  String get clearChannelHistoryTitle => 'CLEAR CHANNEL HISTORY';
+
+  @override
+  String get clearChannelHistoryConfirmBody => 'Delete all channel rating records? This cannot be undone.';
+
+  @override
+  String get deleteAllLabel => 'DELETE ALL';
+
+  @override
+  String get dualBandSiblingLabel => 'DUAL BAND';
+
+  @override
+  String dualBandSiblingBanner(String band, String channel) {
+    return 'Your router\'s $band radio: $channel';
+  }
+
+  @override
+  String get acknowledgedLabel => 'ACKNOWLEDGED';
 }

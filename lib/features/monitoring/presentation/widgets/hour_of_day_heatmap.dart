@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../wifi_scan/domain/entities/channel_rating_sample.dart';
+import 'spectrum_colors.dart';
 
 /// 24h × channel grid that aggregates the rating history into the average
 /// score each channel had during each hour of the day. Useful to spot
@@ -19,6 +20,7 @@ class HourOfDayHeatmap extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final onSurface = Theme.of(context).colorScheme.onSurface;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (samples.isEmpty) {
       return _empty(context, l10n.hourlyHeatmapInsufficient);
@@ -70,6 +72,7 @@ class HourOfDayHeatmap extends StatelessWidget {
               cellH: cellH,
               labelW: labelW,
               textColor: onSurface,
+              isDark: isDark,
             ),
           ),
         );
@@ -104,6 +107,7 @@ class _HourlyPainter extends CustomPainter {
   final double cellH;
   final double labelW;
   final Color textColor;
+  final bool isDark;
 
   _HourlyPainter({
     required this.channels,
@@ -112,6 +116,7 @@ class _HourlyPainter extends CustomPainter {
     required this.cellH,
     required this.labelW,
     required this.textColor,
+    required this.isDark,
   });
 
   @override
@@ -166,27 +171,13 @@ class _HourlyPainter extends CustomPainter {
           final avg = values.reduce((a, b) => a + b) / values.length;
           canvas.drawRRect(
             RRect.fromRectAndRadius(rect, const Radius.circular(2)),
-            Paint()..color = _ratingColor(avg).withValues(alpha: 0.85),
+            Paint()
+              ..color = ratingHeatmapColor(avg, isDark: isDark)
+                  .withValues(alpha: 0.85),
           );
         }
       }
     }
-  }
-
-  static Color _ratingColor(double rating) {
-    final t = (rating / 10).clamp(0.0, 1.0);
-    if (t < 0.5) {
-      return Color.lerp(
-        const Color(0xFFFF1744),
-        const Color(0xFFEEFF41),
-        t * 2,
-      )!;
-    }
-    return Color.lerp(
-      const Color(0xFFEEFF41),
-      const Color(0xFF39FF14),
-      (t - 0.5) * 2,
-    )!;
   }
 
   @override
@@ -194,5 +185,6 @@ class _HourlyPainter extends CustomPainter {
       old.channels != channels ||
       old.byChannelHour != byChannelHour ||
       old.cellW != cellW ||
-      old.cellH != cellH;
+      old.cellH != cellH ||
+      old.isDark != isDark;
 }

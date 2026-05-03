@@ -43,8 +43,9 @@ class TopologyRepositoryImpl implements TopologyRepository {
       final latestSnapshot = _scanStore.latest;
       final wifiNetworks = latestSnapshot?.toLegacyNetworks() ?? [];
 
-      if (currentIp != null) {
-        final subnet = currentIp.substring(0, currentIp.lastIndexOf('.'));
+      final dotIdx = currentIp?.lastIndexOf('.') ?? -1;
+      if (currentIp != null && dotIdx > 0) {
+        final subnet = currentIp.substring(0, dotIdx);
         final scanStream = _networkScanRepo.scanNetwork('$subnet.0/24');
 
         await for (final result in scanStream) {
