@@ -14,6 +14,7 @@ import '../../domain/entities/vulnerability.dart';
 import '../../domain/repositories/security_repository.dart';
 import '../../domain/entities/vulnerable_router.dart';
 import '../datasources/vulnerability_data_source.dart';
+import '../../domain/services/network_context_resolver.dart';
 import '../../domain/usecases/deauth_detector.dart';
 import '../../domain/usecases/security_analyzer.dart';
 import '../../domain/usecases/arp_spoofing_detector.dart';
@@ -33,6 +34,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
   final NotificationService _notificationService;
   final DeauthDetector _deauthDetector;
   final SecurityAnalyzer _securityAnalyzer;
+  final NetworkContextResolver _contextResolver;
   final DnsDataSource _dnsDataSource;
   final VulnerabilityDataSource _vulnerabilityDataSource;
   final ArpSpoofingDetector _arpSpoofingDetector;
@@ -45,6 +47,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
     this._notificationService,
     this._deauthDetector,
     this._securityAnalyzer,
+    this._contextResolver,
     this._dnsDataSource,
     this._vulnerabilityDataSource,
     this._arpSpoofingDetector,
@@ -243,12 +246,17 @@ class SecurityRepositoryImpl implements SecurityRepository {
       final arpEvent = await _arpSpoofingDetector.check();
       final dnsEvent = await _dnsSecurityUseCase.check();
 
+      final context = await _contextResolver.resolve(
+        network,
+        trustedProfile: trustedProfile,
+      );
       final assessment = _securityAnalyzer.assess(
         network,
         localBaseline: localBaseline,
         trustedProfile: trustedProfile,
         hardwareVulnerabilities: vulnerabilities,
         isDeepScan: isDeepScan,
+        context: context,
       );
 
       // Deep scan logic
@@ -495,12 +503,18 @@ class SecurityRepositoryImpl implements SecurityRepository {
         final vRes = await findVulnerabilities(network.bssid);
         final vulnerabilities = vRes.getOrElse(() => []);
 
+        final resolvedTrusted = exactTrusted ?? trustedBySsid.firstOrNull;
+        final context = await _contextResolver.resolve(
+          network,
+          trustedProfile: resolvedTrusted,
+        );
         final assessment = _securityAnalyzer.assess(
           network,
           localBaseline: networks,
-          trustedProfile: exactTrusted ?? trustedBySsid.firstOrNull,
+          trustedProfile: resolvedTrusted,
           hardwareVulnerabilities: vulnerabilities,
           isDeepScan: isDeepScan,
+          context: context,
         );
 
         allFindings.addAll(assessment.evidenceFindings);

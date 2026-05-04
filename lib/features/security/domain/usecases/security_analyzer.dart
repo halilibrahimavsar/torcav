@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
+import '../entities/network_context_type.dart';
 import '../entities/network_fingerprint.dart';
 import '../entities/security_assessment.dart';
 import '../entities/security_drift_finding.dart';
@@ -18,7 +19,10 @@ class SecurityAnalyzer {
     TrustedNetworkProfile? trustedProfile,
     List<VulnerableRouter> hardwareVulnerabilities = const [],
     bool isDeepScan = false,
+    NetworkContextType context = NetworkContextType.unknown,
   }) {
+    int adjust(int base, String ruleId) =>
+        _contextAdjustedDeduction(base, ruleId, context);
     final findings = <SecurityFinding>[];
     final riskFactors = <String>[];
     var score = 100;
@@ -63,7 +67,7 @@ class SecurityAnalyzer {
           ),
         );
         riskFactors.add('No encryption in use');
-        score -= 80;
+        score -= adjust(80, 'wifi.open_network');
         break;
       case SecurityType.wep:
         findings.add(
@@ -82,7 +86,7 @@ class SecurityAnalyzer {
           ),
         );
         riskFactors.add('Deprecated encryption (WEP)');
-        score -= 70;
+        score -= adjust(70, 'wifi.wep');
         break;
       case SecurityType.wpa:
         findings.add(
@@ -102,7 +106,7 @@ class SecurityAnalyzer {
           ),
         );
         riskFactors.add('Legacy WPA in use');
-        score -= 40;
+        score -= adjust(40, 'wifi.legacy_wpa');
         break;
       case SecurityType.wpa2:
       case SecurityType.wpa3:
@@ -129,7 +133,7 @@ class SecurityAnalyzer {
         ),
       );
       riskFactors.add('Hidden SSID behavior');
-      score -= 5;
+      score -= adjust(5, 'wifi.hidden_ssid');
     }
 
     if (network.signalStrength < -85) {
@@ -150,7 +154,7 @@ class SecurityAnalyzer {
         ),
       );
       riskFactors.add('Weak signal environment');
-      score -= 5;
+      score -= adjust(5, 'wifi.very_weak_signal');
     }
 
     if (network.hasWps == true) {
@@ -175,7 +179,7 @@ class SecurityAnalyzer {
         ),
       );
       riskFactors.add('WPS PIN attack surface exposed');
-      score -= 30;
+      score -= adjust(30, 'wifi.wps_enabled');
     }
 
     final isWpa2OrBetter =
@@ -203,7 +207,7 @@ class SecurityAnalyzer {
         ),
       );
       riskFactors.add('PMF not enforced — deauth spoofing possible');
-      score -= 10;
+      score -= adjust(10, 'wifi.pmf_not_enforced');
     }
 
     if (_isPotentialEvilTwin(network, localBaseline)) {
@@ -225,7 +229,7 @@ class SecurityAnalyzer {
         ),
       );
       riskFactors.add('SSID fingerprint drift detected');
-      score -= 35;
+      score -= adjust(35, 'wifi.suspicious_sibling_ap');
     }
 
     if (_isSuspiciousSsid(network.ssid)) {
@@ -250,7 +254,7 @@ class SecurityAnalyzer {
         ),
       );
       riskFactors.add('SSID matches known honeypot pattern');
-      score -= 15;
+      score -= adjust(15, 'wifi.suspicious_ssid');
     }
 
     final sameChannelCount =
@@ -282,7 +286,7 @@ class SecurityAnalyzer {
         ),
       );
       riskFactors.add('Channel ${network.channel} is heavily congested');
-      score -= 5;
+      score -= adjust(5, 'wifi.high_channel_congestion');
     }
 
     if (network.frequency < 3000 && localBaseline.isNotEmpty) {
@@ -314,7 +318,7 @@ class SecurityAnalyzer {
           ),
         );
         riskFactors.add('No 5 GHz band detected');
-        score -= 3;
+        score -= adjust(3, 'wifi.only_24ghz');
       }
     }
 
@@ -347,7 +351,10 @@ class SecurityAnalyzer {
           ),
         );
         riskFactors.add('Trusted fingerprint drift: ${drift.join(', ')}');
-        score -= severity == VulnerabilitySeverity.high ? 25 : 12;
+        score -= adjust(
+          severity == VulnerabilitySeverity.high ? 25 : 12,
+          'trusted.baseline_drift',
+        );
       }
     }
 
@@ -369,7 +376,10 @@ class SecurityAnalyzer {
         ),
       );
       riskFactors.add('Known vulnerability in ${vulnerable.model}');
-      score -= _scoreDeductionForSeverity(severity);
+      score -= adjust(
+        _scoreDeductionForSeverity(severity),
+        'hardware.vulnerability',
+      );
     }
 
     score = score.clamp(0, 100);
@@ -387,11 +397,13 @@ class SecurityAnalyzer {
     WifiNetwork network, {
     List<WifiNetwork> localBaseline = const [],
     TrustedNetworkProfile? trustedProfile,
+    NetworkContextType context = NetworkContextType.unknown,
   }) {
     final assessment = assess(
       network,
       localBaseline: localBaseline,
       trustedProfile: trustedProfile,
+      context: context,
     );
     return SecurityReport(
       score: assessment.score,
@@ -399,6 +411,45 @@ class SecurityAnalyzer {
           assessment.evidenceFindings.map((f) => f.toVulnerability()).toList(),
       overallStatus: assessment.statusLabel,
     );
+  }
+
+  /// Adjusts a base score deduction based on the network context.
+  ///
+  /// `home` networks are held to a stricter standard (router-side issues
+  /// like WPS, missing PMF and trusted-baseline drift weigh more heavily).
+  /// `public` networks accept that the user does not control the router,
+  /// so router-config issues weigh less, but lure SSIDs and unencrypted
+  /// links weigh slightly more — the dominant risk there is impersonation.
+  /// `guest` accepts natural drift on a known network. `unknown` keeps the
+  /// neutral baseline so existing behaviour does not regress.
+  int _contextAdjustedDeduction(
+    int base,
+    String ruleId,
+    NetworkContextType context,
+  ) {
+    final multiplier = switch (context) {
+      NetworkContextType.home => switch (ruleId) {
+        'wifi.wps_enabled' => 1.5,
+        'wifi.pmf_not_enforced' => 1.5,
+        'trusted.baseline_drift' => 1.5,
+        _ => 1.0,
+      },
+      NetworkContextType.public => switch (ruleId) {
+        'wifi.suspicious_ssid' => 1.5,
+        'wifi.suspicious_sibling_ap' => 1.3,
+        'wifi.wps_enabled' => 0.5,
+        'wifi.pmf_not_enforced' => 0.5,
+        'trusted.baseline_drift' => 0.5,
+        _ => 1.0,
+      },
+      NetworkContextType.guest => switch (ruleId) {
+        'trusted.baseline_drift' => 0.4,
+        _ => 1.0,
+      },
+      NetworkContextType.unknown => 1.0,
+    };
+    if (multiplier == 1.0) return base;
+    return (base * multiplier).round();
   }
 
   int _scoreDeductionForSeverity(VulnerabilitySeverity severity) {

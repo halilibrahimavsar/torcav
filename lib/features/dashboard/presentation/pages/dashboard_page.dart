@@ -12,9 +12,11 @@ import '../../../heatmap/domain/entities/connected_signal.dart';
 import '../../../heatmap/domain/services/connected_signal_service.dart';
 import '../../../performance/domain/entities/speed_test_result.dart';
 import '../../../performance/domain/repositories/speed_test_history_repository.dart';
+import '../../../security/domain/entities/network_context_type.dart';
 import '../../../security/domain/entities/security_assessment.dart';
 import '../../../security/domain/entities/security_event.dart';
 import '../../../security/domain/repositories/security_repository.dart';
+import '../../../security/domain/services/network_context_resolver.dart';
 import '../../../security/domain/usecases/security_analyzer.dart';
 import '../../../security/presentation/bloc/notification/notification_bloc.dart';
 import '../../../wifi_scan/domain/entities/channel_rating.dart';
@@ -57,6 +59,8 @@ class _DashboardPageState extends State<DashboardPage> {
   List<ChannelRating> _channelRatings = const [];
 
   SecurityAssessment? _worstAssessment;
+  NetworkContextType? _connectedContext;
+  String? _connectedBssid;
   List<int> _scoreHistory = const [];
   List<int> _rssiHistory = const [];
   List<SecurityEvent> _recentEvents = const [];
@@ -98,17 +102,41 @@ class _DashboardPageState extends State<DashboardPage> {
           latestSnapshot?.networks.map((n) => n.toWifiNetwork()).toList() ??
               <WifiNetwork>[];
 
-      // ── Security score ──
+      // ── Security score (context-aware) ──
       int secScore = 100;
       SecurityAssessment? worstAssessment;
+      final ssidForCtx = _cleanSsid(results[0]) ?? '';
+      WifiNetwork? connectedNet;
+      NetworkContextType? connectedCtx;
       if (networks.isNotEmpty) {
         final analyzer = getIt<SecurityAnalyzer>();
-        final assessments = networks
-            .map((n) => analyzer.assess(n, localBaseline: networks))
-            .toList();
+        final resolver = getIt<NetworkContextResolver>();
+        final contexts = await Future.wait(
+          networks.map((n) => resolver.resolve(n)),
+        );
+        final assessments = <SecurityAssessment>[];
+        for (var i = 0; i < networks.length; i++) {
+          assessments.add(
+            analyzer.assess(
+              networks[i],
+              localBaseline: networks,
+              context: contexts[i],
+            ),
+          );
+        }
         worstAssessment =
             assessments.reduce((a, b) => a.score < b.score ? a : b);
         secScore = worstAssessment.score;
+
+        if (ssidForCtx.isNotEmpty) {
+          for (var i = 0; i < networks.length; i++) {
+            if (networks[i].ssid == ssidForCtx) {
+              connectedNet = networks[i];
+              connectedCtx = contexts[i];
+              break;
+            }
+          }
+        }
       }
 
       // ── Snapshot diff ──
@@ -212,6 +240,8 @@ class _DashboardPageState extends State<DashboardPage> {
         _channelRatings = ratings;
         _newDeviceCount = newDeviceCount;
         _worstAssessment = worstAssessment;
+        _connectedContext = connectedCtx;
+        _connectedBssid = connectedNet?.bssid;
         _scoreHistory = scoreHistory;
         _signalQualityPct = qualityPct;
         _rssiHistory = rssiHistory;
@@ -370,6 +400,17 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
               ),
 
+              if (_connectedBssid != null) ...[
+                const SizedBox(height: 8),
+                StaggeredEntry(
+                  delay: const Duration(milliseconds: 240),
+                  child: _NetworkContextBadge(
+                    context: _connectedContext ?? NetworkContextType.unknown,
+                    onTap: _showContextOverrideSheet,
+                  ),
+                ),
+              ],
+
               const SizedBox(height: 24),
 
               // ── Live Pulse: bento of mini metrics ──
@@ -465,6 +506,29 @@ class _DashboardPageState extends State<DashboardPage> {
         child: const NotificationSheet(),
       ),
     );
+  }
+
+  Future<void> _showContextOverrideSheet() async {
+    final bssid = _connectedBssid;
+    if (bssid == null) return;
+    final resolver = getIt<NetworkContextResolver>();
+    final selected = await showModalBottomSheet<_ContextSheetResult>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => _NetworkContextSheet(
+        current: _connectedContext ?? NetworkContextType.unknown,
+        ssid: _ssid,
+      ),
+    );
+    if (selected == null) return;
+    if (selected.reset) {
+      await resolver.clearOverride(bssid);
+    } else if (selected.context != null) {
+      await resolver.setOverride(bssid, selected.context!);
+    }
+    if (!mounted) return;
+    await _loadNetworkInfo();
   }
 }
 
@@ -830,6 +894,265 @@ class _ChannelRecommendationCard extends StatelessWidget {
               glowRadius: 5,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Network context badge + override sheet ──────────────────────────
+
+class _ContextSheetResult {
+  final NetworkContextType? context;
+  final bool reset;
+  const _ContextSheetResult({this.context, this.reset = false});
+}
+
+Color _contextColor(NetworkContextType ctx, ColorScheme scheme) =>
+    switch (ctx) {
+      NetworkContextType.home => scheme.primary,
+      NetworkContextType.public => scheme.error,
+      NetworkContextType.guest => scheme.tertiary,
+      NetworkContextType.unknown => scheme.onSurfaceVariant,
+    };
+
+IconData _contextIcon(NetworkContextType ctx) => switch (ctx) {
+      NetworkContextType.home => Icons.home_rounded,
+      NetworkContextType.public => Icons.public_rounded,
+      NetworkContextType.guest => Icons.group_rounded,
+      NetworkContextType.unknown => Icons.help_outline_rounded,
+    };
+
+class _NetworkContextBadge extends StatelessWidget {
+  final NetworkContextType context;
+  final VoidCallback onTap;
+
+  const _NetworkContextBadge({required this.context, required this.onTap});
+
+  @override
+  Widget build(BuildContext buildContext) {
+    final scheme = Theme.of(buildContext).colorScheme;
+    final color = _contextColor(context, scheme);
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: color.withValues(alpha: 0.4)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(_contextIcon(context), size: 14, color: color),
+            const SizedBox(width: 8),
+            Text(
+              context.label.toUpperCase(),
+              style: GoogleFonts.orbitron(
+                color: color,
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.4,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Icon(
+              Icons.tune_rounded,
+              size: 12,
+              color: color.withValues(alpha: 0.6),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NetworkContextSheet extends StatelessWidget {
+  final NetworkContextType current;
+  final String ssid;
+
+  const _NetworkContextSheet({required this.current, required this.ssid});
+
+  static const _options = [
+    (
+      NetworkContextType.home,
+      'Your home, office, or known router. Strict standards apply.',
+    ),
+    (
+      NetworkContextType.public,
+      'Café, hotel, airport, or open hotspot. VPN/HTTPS strongly advised.',
+    ),
+    (
+      NetworkContextType.guest,
+      'Guest segment of a known network. Natural drift expected.',
+    ),
+    (
+      NetworkContextType.unknown,
+      'Let Torcav infer the context from passive signals.',
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext buildContext) {
+    final scheme = Theme.of(buildContext).colorScheme;
+    return DraggableScrollableSheet(
+      initialChildSize: 0.55,
+      minChildSize: 0.35,
+      maxChildSize: 0.85,
+      builder: (_, scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+            color: scheme.surface,
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(24)),
+            border: Border(
+              top: BorderSide(
+                color: scheme.primary.withValues(alpha: 0.2),
+                width: 1,
+              ),
+            ),
+          ),
+          child: ListView(
+            controller: scrollController,
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: scheme.onSurfaceVariant.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              NeonText(
+                'NETWORK CONTEXT',
+                style: GoogleFonts.orbitron(
+                  color: scheme.primary,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2,
+                ),
+                glowRadius: 6,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                ssid,
+                style: GoogleFonts.rajdhani(
+                  color: scheme.onSurfaceVariant,
+                  fontSize: 13,
+                ),
+              ),
+              const SizedBox(height: 16),
+              for (final option in _options)
+                _ContextOption(
+                  type: option.$1,
+                  description: option.$2,
+                  selected: option.$1 == current,
+                  onTap: () {
+                    Navigator.pop(
+                      buildContext,
+                      _ContextSheetResult(context: option.$1),
+                    );
+                  },
+                ),
+              const SizedBox(height: 12),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(
+                    buildContext,
+                    const _ContextSheetResult(reset: true),
+                  );
+                },
+                child: Text(
+                  'Reset to inferred',
+                  style: GoogleFonts.orbitron(
+                    color: scheme.onSurfaceVariant,
+                    fontSize: 11,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ContextOption extends StatelessWidget {
+  final NetworkContextType type;
+  final String description;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _ContextOption({
+    required this.type,
+    required this.description,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final color = _contextColor(type, scheme);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: selected
+                  ? color.withValues(alpha: 0.6)
+                  : scheme.outlineVariant.withValues(alpha: 0.3),
+              width: selected ? 2 : 1,
+            ),
+            color: selected ? color.withValues(alpha: 0.06) : null,
+          ),
+          child: Row(
+            children: [
+              Icon(_contextIcon(type), color: color, size: 22),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      type.label.toUpperCase(),
+                      style: GoogleFonts.orbitron(
+                        color: color,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      description,
+                      style: GoogleFonts.rajdhani(
+                        color: scheme.onSurface,
+                        fontSize: 13,
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (selected)
+                Icon(Icons.check_circle_rounded, color: color, size: 20),
+            ],
+          ),
         ),
       ),
     );
