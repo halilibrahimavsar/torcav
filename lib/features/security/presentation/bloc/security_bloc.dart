@@ -111,16 +111,16 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
       // Surface the per-network policy state on initial load / refresh: if
       // deep scan + restrict guard are both ON and the connected network
       // resolves to public/guest, expose it so the UI can show a banner.
-      NetworkContextType? suppressedFor;
       final settings = _settingsStore.value;
+      final connectedCtx = _lastNetworks.isEmpty
+          ? null
+          : await _resolveConnectedContext(_lastNetworks);
+      NetworkContextType? suppressedFor;
       if (settings.isDeepScanEnabled &&
           settings.restrictDeepScanOnPublic &&
-          _lastNetworks.isNotEmpty) {
-        final connectedCtx = await _resolveConnectedContext(_lastNetworks);
-        if (connectedCtx == NetworkContextType.public ||
-            connectedCtx == NetworkContextType.guest) {
-          suppressedFor = connectedCtx;
-        }
+          (connectedCtx == NetworkContextType.public ||
+              connectedCtx == NetworkContextType.guest)) {
+        suppressedFor = connectedCtx;
       }
 
       if (isClosed) return;
@@ -135,6 +135,7 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
           latestSession: latestSession,
           isDeepScanEnabled: settings.isDeepScanEnabled,
           suppressedDeepScanContext: suppressedFor,
+          connectedContext: connectedCtx,
         ),
       );
     } catch (e) {
@@ -153,16 +154,17 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
       final requestedDeepScan =
           event.isDeepScan ?? settings.isDeepScanEnabled;
 
-      // Suppress deep scan on public/guest networks if the safety guard is on.
+      // Resolve the connected network's context once for both the suppression
+      // decision and the public-Wi-Fi safety card.
+      final connectedCtx = await _resolveConnectedContext(event.networks);
       var isDeepScan = requestedDeepScan;
       NetworkContextType? suppressedFor;
-      if (requestedDeepScan && settings.restrictDeepScanOnPublic) {
-        final connectedCtx = await _resolveConnectedContext(event.networks);
-        if (connectedCtx == NetworkContextType.public ||
-            connectedCtx == NetworkContextType.guest) {
-          isDeepScan = false;
-          suppressedFor = connectedCtx;
-        }
+      if (requestedDeepScan &&
+          settings.restrictDeepScanOnPublic &&
+          (connectedCtx == NetworkContextType.public ||
+              connectedCtx == NetworkContextType.guest)) {
+        isDeepScan = false;
+        suppressedFor = connectedCtx;
       }
 
       final currentState = state;
@@ -199,6 +201,7 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
           isDeepScanning: false,
           latestSession: latestSession,
           suppressedDeepScanContext: suppressedFor,
+          connectedContext: connectedCtx,
         ),
       );
     } catch (e) {

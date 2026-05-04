@@ -8,6 +8,7 @@ import '../bloc/security_bloc.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../widgets/dns_security_card.dart';
 import '../widgets/network_security_card.dart';
+import '../widgets/public_wifi_safety_card.dart';
 import '../widgets/scan_overview_card.dart';
 import '../widgets/security_alerts.dart';
 import '../widgets/security_header.dart';
@@ -130,6 +131,18 @@ class _SecurityCenterView extends StatelessWidget {
                   if (state.scanSummary != null) ...[
                     ScanOverviewCard(summary: state.scanSummary!),
                     const SizedBox(height: 24),
+                  ],
+
+                  // ── Public Wi-Fi safety panel ──
+                  if (state.connectedContext == NetworkContextType.public ||
+                      state.connectedContext == NetworkContextType.guest) ...[
+                    PublicWifiSafetyCard(
+                      context: state.connectedContext!,
+                      onRunDnsTest: () => context
+                          .read<SecurityBloc>()
+                          .add(const SecurityDnsTestRequested()),
+                    ),
+                    const SizedBox(height: 20),
                   ],
 
                   // ── Protocol Integrity (MOVED UP) ──

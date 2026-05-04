@@ -45,6 +45,11 @@ class SecurityLoaded extends SecurityState {
   /// next cycle. UI shows a one-shot snackbar/banner from this.
   final NetworkContextType? suppressedDeepScanContext;
 
+  /// The resolved context of the currently-connected network, when one is
+  /// reachable. Powers the public-Wi-Fi safety card and any other
+  /// context-driven UI hooks.
+  final NetworkContextType? connectedContext;
+
   const SecurityLoaded({
     required this.knownNetworks,
     required this.trustedNetworkProfiles,
@@ -57,6 +62,7 @@ class SecurityLoaded extends SecurityState {
     this.isDeepScanning = false,
     this.latestSession,
     this.suppressedDeepScanContext,
+    this.connectedContext,
   });
 
   SecurityLoaded copyWith({
@@ -72,6 +78,7 @@ class SecurityLoaded extends SecurityState {
     AssessmentSession? latestSession,
     NetworkContextType? suppressedDeepScanContext,
     bool clearSuppressedDeepScan = false,
+    NetworkContextType? connectedContext,
   }) {
     return SecurityLoaded(
       knownNetworks: knownNetworks ?? this.knownNetworks,
@@ -88,6 +95,7 @@ class SecurityLoaded extends SecurityState {
       suppressedDeepScanContext: clearSuppressedDeepScan
           ? null
           : (suppressedDeepScanContext ?? this.suppressedDeepScanContext),
+      connectedContext: connectedContext ?? this.connectedContext,
     );
   }
 
@@ -104,6 +112,7 @@ class SecurityLoaded extends SecurityState {
     isDeepScanning,
     latestSession,
     suppressedDeepScanContext,
+    connectedContext,
   ];
 }
 
