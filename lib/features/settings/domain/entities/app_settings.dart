@@ -18,6 +18,13 @@ class AppSettings extends Equatable {
   final bool strictSafetyMode;
   final bool autoScanEnabled;
   final bool isDeepScanEnabled;
+
+  /// When `true`, deep scan is automatically suppressed on networks resolved
+  /// to a `public` or `guest` context. Active probing on networks the user
+  /// does not own is the dominant legal/ethical risk; this default-on guard
+  /// prevents accidental aggressive scans at cafés, hotels, etc.
+  final bool restrictDeepScanOnPublic;
+
   /// Timeout in milliseconds for each port probe during LAN scanning.
   /// Lower values are faster but may miss open ports on slow networks.
   final int portScanTimeoutMs;
@@ -37,6 +44,7 @@ class AppSettings extends Equatable {
     this.strictSafetyMode = true,
     this.autoScanEnabled = false,
     this.isDeepScanEnabled = false,
+    this.restrictDeepScanOnPublic = true,
     this.portScanTimeoutMs = 500,
     this.isAiEnabled = true,
     this.backgroundType = AppBackgroundType.neomorphic,
@@ -54,6 +62,7 @@ class AppSettings extends Equatable {
     bool? strictSafetyMode,
     bool? autoScanEnabled,
     bool? isDeepScanEnabled,
+    bool? restrictDeepScanOnPublic,
     int? portScanTimeoutMs,
     bool? isAiEnabled,
     AppBackgroundType? backgroundType,
@@ -70,6 +79,8 @@ class AppSettings extends Equatable {
       strictSafetyMode: strictSafetyMode ?? this.strictSafetyMode,
       autoScanEnabled: autoScanEnabled ?? this.autoScanEnabled,
       isDeepScanEnabled: isDeepScanEnabled ?? this.isDeepScanEnabled,
+      restrictDeepScanOnPublic:
+          restrictDeepScanOnPublic ?? this.restrictDeepScanOnPublic,
       portScanTimeoutMs: portScanTimeoutMs ?? this.portScanTimeoutMs,
       isAiEnabled: isAiEnabled ?? this.isAiEnabled,
       backgroundType: backgroundType ?? this.backgroundType,
@@ -92,6 +103,7 @@ class AppSettings extends Equatable {
     strictSafetyMode,
     autoScanEnabled,
     isDeepScanEnabled,
+    restrictDeepScanOnPublic,
     portScanTimeoutMs,
     isAiEnabled,
     backgroundType,
@@ -110,6 +122,7 @@ class AppSettings extends Equatable {
       'strictSafetyMode': strictSafetyMode,
       'autoScanEnabled': autoScanEnabled,
       'isDeepScanEnabled': isDeepScanEnabled,
+      'restrictDeepScanOnPublic': restrictDeepScanOnPublic,
       'portScanTimeoutMs': portScanTimeoutMs,
       'isAiEnabled': isAiEnabled,
       'backgroundType': backgroundType.name,
@@ -132,6 +145,8 @@ class AppSettings extends Equatable {
       strictSafetyMode: _readBool(json['strictSafetyMode'], fallback: true),
       autoScanEnabled: _readBool(json['autoScanEnabled'], fallback: false),
       isDeepScanEnabled: _readBool(json['isDeepScanEnabled'], fallback: false),
+      restrictDeepScanOnPublic:
+          _readBool(json['restrictDeepScanOnPublic'], fallback: true),
       portScanTimeoutMs: _readInt(json['portScanTimeoutMs'], fallback: 500),
       isAiEnabled: _readBool(json['isAiEnabled'], fallback: true),
       backgroundType: _parseBackgroundType(bgTypeName),

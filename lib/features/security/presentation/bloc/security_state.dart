@@ -40,6 +40,11 @@ class SecurityLoaded extends SecurityState {
   final bool isDeepScanning;
   final AssessmentSession? latestSession;
 
+  /// Set when the most recent analyze cycle suppressed deep scan because the
+  /// connected network resolved to a public/guest context. Cleared on the
+  /// next cycle. UI shows a one-shot snackbar/banner from this.
+  final NetworkContextType? suppressedDeepScanContext;
+
   const SecurityLoaded({
     required this.knownNetworks,
     required this.trustedNetworkProfiles,
@@ -51,6 +56,7 @@ class SecurityLoaded extends SecurityState {
     this.isDeepScanEnabled = false,
     this.isDeepScanning = false,
     this.latestSession,
+    this.suppressedDeepScanContext,
   });
 
   SecurityLoaded copyWith({
@@ -64,6 +70,8 @@ class SecurityLoaded extends SecurityState {
     bool? isDeepScanEnabled,
     bool? isDeepScanning,
     AssessmentSession? latestSession,
+    NetworkContextType? suppressedDeepScanContext,
+    bool clearSuppressedDeepScan = false,
   }) {
     return SecurityLoaded(
       knownNetworks: knownNetworks ?? this.knownNetworks,
@@ -77,6 +85,9 @@ class SecurityLoaded extends SecurityState {
       isDeepScanEnabled: isDeepScanEnabled ?? this.isDeepScanEnabled,
       isDeepScanning: isDeepScanning ?? this.isDeepScanning,
       latestSession: latestSession ?? this.latestSession,
+      suppressedDeepScanContext: clearSuppressedDeepScan
+          ? null
+          : (suppressedDeepScanContext ?? this.suppressedDeepScanContext),
     );
   }
 
@@ -92,6 +103,7 @@ class SecurityLoaded extends SecurityState {
     isDeepScanEnabled,
     isDeepScanning,
     latestSession,
+    suppressedDeepScanContext,
   ];
 }
 

@@ -439,6 +439,33 @@ class _SettingsPageState extends State<SettingsPage> {
                       _update(settings.copyWith(isDeepScanEnabled: value));
                     },
                   ),
+                  // Restrict deep scan on public networks
+                  SwitchListTile(
+                    value: settings.restrictDeepScanOnPublic,
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    title: Text(
+                      'Restrict Deep Scan on Public Wi-Fi',
+                      style: GoogleFonts.rajdhani(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Suppress active probing when connected to a public or '
+                      'guest network. Recommended — active scans on networks '
+                      'you do not own are the dominant legal risk.',
+                      style: GoogleFonts.rajdhani(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
+                    ),
+                    onChanged: (value) {
+                      _update(
+                        settings.copyWith(restrictDeepScanOnPublic: value),
+                      );
+                    },
+                  ),
                   Divider(
                     color: Theme.of(
                       context,

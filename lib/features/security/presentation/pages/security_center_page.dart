@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
 import '../../../../core/di/injection.dart';
+import '../../domain/entities/network_context_type.dart';
 import '../bloc/security_bloc.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../widgets/dns_security_card.dart';
@@ -76,7 +77,35 @@ class _SecurityCenterView extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocBuilder<SecurityBloc, SecurityState>(
+      body: BlocConsumer<SecurityBloc, SecurityState>(
+        listenWhen: (prev, curr) =>
+            curr is SecurityLoaded &&
+            curr.suppressedDeepScanContext != null &&
+            (prev is! SecurityLoaded ||
+                prev.suppressedDeepScanContext !=
+                    curr.suppressedDeepScanContext),
+        listener: (context, state) {
+          if (state is! SecurityLoaded) return;
+          final ctx = state.suppressedDeepScanContext;
+          if (ctx == null) return;
+          final label = ctx == NetworkContextType.public ? 'public' : 'guest';
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                duration: const Duration(seconds: 5),
+                backgroundColor: scheme.error.withValues(alpha: 0.92),
+                content: Text(
+                  'Deep scan suppressed — connected to a $label network. '
+                  'Disable the safety guard in Settings to override.',
+                  style: GoogleFonts.rajdhani(
+                    color: scheme.onError,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            );
+        },
         builder: (context, state) {
           if (state is SecurityInitial || state is SecurityLoading) {
             return const Center(child: CircularProgressIndicator());

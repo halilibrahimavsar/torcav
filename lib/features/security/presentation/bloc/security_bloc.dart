@@ -1,9 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 import '../../domain/entities/known_network.dart';
+import '../../domain/entities/network_context_type.dart';
 import '../../domain/entities/security_event.dart' as domain_event;
 import '../../domain/repositories/security_repository.dart';
+import '../../domain/services/network_context_resolver.dart';
 import '../../domain/usecases/analyze_network_security_usecase.dart';
 import '../../domain/usecases/security_analyzer.dart';
 import '../../domain/usecases/dns_leak_test_usecase.dart';
@@ -26,6 +29,8 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
   final SecurityAnalyzer _analyzer;
   final DnsLeakTestUsecase _dnsLeakTestUsecase;
   final AppSettingsStore _settingsStore;
+  final NetworkContextResolver _contextResolver;
+  final NetworkInfo _networkInfo = NetworkInfo();
   StreamSubscription? _scanSubscription;
   StreamSubscription? _settingsSubscription;
 
@@ -38,6 +43,7 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
     this._analyzer,
     this._dnsLeakTestUsecase,
     this._settingsStore,
+    this._contextResolver,
   ) : super(SecurityInitial()) {
     on<SecurityStarted>(_onStarted);
     on<SecurityAnalyzeRequested>(_onAnalyzeRequested);
@@ -102,6 +108,21 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
       final sessionResult = await _repository.getLatestAssessmentSession();
       final latestSession = sessionResult.getOrElse(() => null);
 
+      // Surface the per-network policy state on initial load / refresh: if
+      // deep scan + restrict guard are both ON and the connected network
+      // resolves to public/guest, expose it so the UI can show a banner.
+      NetworkContextType? suppressedFor;
+      final settings = _settingsStore.value;
+      if (settings.isDeepScanEnabled &&
+          settings.restrictDeepScanOnPublic &&
+          _lastNetworks.isNotEmpty) {
+        final connectedCtx = await _resolveConnectedContext(_lastNetworks);
+        if (connectedCtx == NetworkContextType.public ||
+            connectedCtx == NetworkContextType.guest) {
+          suppressedFor = connectedCtx;
+        }
+      }
+
       if (isClosed) return;
 
       emit(
@@ -112,6 +133,8 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
           overallScore: score,
           scanSummary: summary,
           latestSession: latestSession,
+          isDeepScanEnabled: settings.isDeepScanEnabled,
+          suppressedDeepScanContext: suppressedFor,
         ),
       );
     } catch (e) {
@@ -126,8 +149,21 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
   ) async {
     try {
       _lastNetworks = event.networks;
-      final isDeepScan =
-          event.isDeepScan ?? _settingsStore.value.isDeepScanEnabled;
+      final settings = _settingsStore.value;
+      final requestedDeepScan =
+          event.isDeepScan ?? settings.isDeepScanEnabled;
+
+      // Suppress deep scan on public/guest networks if the safety guard is on.
+      var isDeepScan = requestedDeepScan;
+      NetworkContextType? suppressedFor;
+      if (requestedDeepScan && settings.restrictDeepScanOnPublic) {
+        final connectedCtx = await _resolveConnectedContext(event.networks);
+        if (connectedCtx == NetworkContextType.public ||
+            connectedCtx == NetworkContextType.guest) {
+          isDeepScan = false;
+          suppressedFor = connectedCtx;
+        }
+      }
 
       final currentState = state;
       if (currentState is SecurityLoaded && isDeepScan) {
@@ -162,11 +198,41 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
           isDeepScanEnabled: isDeepScan,
           isDeepScanning: false,
           latestSession: latestSession,
+          suppressedDeepScanContext: suppressedFor,
         ),
       );
     } catch (e) {
       if (isClosed) return;
       emit(SecurityError(e.toString()));
+    }
+  }
+
+  /// Resolves the context of the currently-connected network, when one is
+  /// reachable in [networks]. Returns `null` if the device is not connected
+  /// to a network present in the scan list.
+  Future<NetworkContextType?> _resolveConnectedContext(
+    List<WifiNetwork> networks,
+  ) async {
+    try {
+      final rawSsid = await _networkInfo.getWifiName();
+      final ssid = rawSsid?.replaceAll('"', '') ?? '';
+      if (ssid.isEmpty) return null;
+      final connected = networks.firstWhere(
+        (n) => n.ssid == ssid,
+        orElse: () => const WifiNetwork(
+          ssid: '',
+          bssid: '',
+          signalStrength: 0,
+          channel: 0,
+          frequency: 0,
+          security: SecurityType.unknown,
+          vendor: '',
+        ),
+      );
+      if (connected.bssid.isEmpty) return null;
+      return _contextResolver.resolve(connected);
+    } catch (_) {
+      return null;
     }
   }
 

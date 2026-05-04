@@ -476,14 +476,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i796.NotificationBloc>(
       () => _i796.NotificationBloc(gh<_i578.SecurityRepository>()),
     );
-    gh.lazySingleton<_i869.HeatmapManager>(
-      () => _i869.HeatmapManager(
-        gh<_i1072.SignalTracker>(),
-        gh<_i104.PositionTracker>(),
-        gh<_i747.HeatmapRepository>(),
-        gh<_i761.BarometerDataSource>(),
-      ),
-    );
     gh.factory<_i676.SecurityBloc>(
       () => _i676.SecurityBloc(
         gh<_i578.SecurityRepository>(),
@@ -492,6 +484,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i471.SecurityAnalyzer>(),
         gh<_i315.DnsLeakTestUsecase>(),
         gh<_i552.AppSettingsStore>(),
+        gh<_i640.NetworkContextResolver>(),
+      ),
+    );
+    gh.lazySingleton<_i869.HeatmapManager>(
+      () => _i869.HeatmapManager(
+        gh<_i1072.SignalTracker>(),
+        gh<_i104.PositionTracker>(),
+        gh<_i747.HeatmapRepository>(),
+        gh<_i761.BarometerDataSource>(),
       ),
     );
     gh.factory<_i361.WifiDetailsBloc>(
