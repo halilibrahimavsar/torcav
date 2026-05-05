@@ -19,6 +19,7 @@ import '../../../wifi_scan/domain/services/scan_session_store.dart';
 import '../../domain/entities/report_labels.dart';
 import '../../domain/usecases/generate_report_usecase.dart';
 import '../bloc/reports_bloc.dart';
+import '../widgets/local_data_export_card.dart';
 
 class ReportsPage extends StatelessWidget {
   const ReportsPage({super.key});
@@ -342,6 +343,13 @@ class _ReportsViewState extends State<ReportsView> {
                 },
               ),
             ],
+            const SizedBox(height: 24),
+
+            // ── Export Local Data (full GDPR-style data dump) ──
+            const StaggeredEntry(
+              delay: Duration(milliseconds: 700),
+              child: LocalDataExportCard(),
+            ),
           ],
         ),
       ),

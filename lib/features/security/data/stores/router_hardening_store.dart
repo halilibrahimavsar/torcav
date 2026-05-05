@@ -39,4 +39,16 @@ class RouterHardeningStore {
   Future<void> clear(String bssid) async {
     await _storage.delete(_key(bssid));
   }
+
+  /// Removes hardening progress for every BSSID — used by the global
+  /// "Wipe All Local Data" flow.
+  Future<void> clearAll() async {
+    final box = _storage.box;
+    final keysToRemove = box.keys
+        .where((k) => k is String && k.startsWith(_prefix))
+        .toList();
+    for (final key in keysToRemove) {
+      await box.delete(key);
+    }
+  }
 }

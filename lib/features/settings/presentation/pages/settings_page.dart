@@ -21,6 +21,8 @@ import 'privacy_policy_page.dart';
 import '../../domain/entities/app_settings.dart';
 import '../../domain/services/app_settings_store.dart';
 import '../../../ai/data/stores/device_label_override_store.dart';
+import '../../../security/data/stores/network_context_override_store.dart';
+import '../../../security/data/stores/router_hardening_store.dart';
 import '../../../wifi_scan/data/services/favorites_store.dart';
 import '../../../dashboard/data/datasources/score_history_local_data_source.dart';
 
@@ -852,6 +854,8 @@ class _SettingsPageState extends State<SettingsPage> {
       getIt<DeviceLabelOverrideStore>().clearAll(),
       getIt<FavoritesStore>().clearAll(),
       getIt<ScoreHistoryLocalDataSource>().deleteAll(),
+      getIt<NetworkContextOverrideStore>().clearAll(),
+      getIt<RouterHardeningStore>().clearAll(),
     ]);
 
     if (!mounted) return;

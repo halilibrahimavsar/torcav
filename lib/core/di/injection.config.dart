@@ -21,6 +21,14 @@ import '../../features/ai/data/stores/device_label_override_store.dart'
     as _i391;
 import '../../features/dashboard/data/datasources/score_history_local_data_source.dart'
     as _i955;
+import '../../features/diagnostics/data/repositories/diagnostics_repository_impl.dart'
+    as _i901;
+import '../../features/diagnostics/domain/repositories/diagnostics_repository.dart'
+    as _i13;
+import '../../features/diagnostics/domain/usecases/diagnose_usecase.dart'
+    as _i350;
+import '../../features/diagnostics/presentation/bloc/diagnostics_bloc.dart'
+    as _i516;
 import '../../features/heatmap/data/datasources/ar_camera_pose_datasource.dart'
     as _i188;
 import '../../features/heatmap/data/datasources/barometer_datasource.dart'
@@ -104,8 +112,12 @@ import '../../features/performance/presentation/bloc/performance_bloc.dart'
     as _i58;
 import '../../features/reports/data/repositories/report_export_repository_impl.dart'
     as _i953;
+import '../../features/reports/data/services/local_data_export_service_impl.dart'
+    as _i731;
 import '../../features/reports/domain/repositories/report_export_repository.dart'
     as _i119;
+import '../../features/reports/domain/services/local_data_export_service.dart'
+    as _i743;
 import '../../features/reports/domain/usecases/generate_report_usecase.dart'
     as _i367;
 import '../../features/reports/presentation/bloc/reports_bloc.dart' as _i554;
@@ -331,6 +343,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i797.WiFiScan>(),
       ),
     );
+    gh.lazySingleton<_i350.DiagnoseUseCase>(
+      () => _i350.DiagnoseUseCase(gh<_i969.ChannelRatingEngine>()),
+    );
     gh.factory<_i554.ReportsBloc>(
       () => _i554.ReportsBloc(gh<_i367.GenerateReportUseCase>()),
     );
@@ -414,6 +429,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1027.WifiRepository>(
       () => _i433.WifiRepositoryImpl(gh<_i1012.WifiDataSource>()),
     );
+    gh.lazySingleton<_i743.LocalDataExportService>(
+      () => _i731.LocalDataExportServiceImpl(
+        gh<_i239.WifiScanHistoryLocalDataSource>(),
+        gh<_i885.SpeedTestHistoryRepository>(),
+        gh<_i499.SecurityLocalDataSource>(),
+        gh<_i305.ChannelRatingLocalDataSource>(),
+        gh<_i652.HeatmapLocalDataSource>(),
+        gh<_i190.LanScanHistoryLocalDataSource>(),
+        gh<_i955.ScoreHistoryLocalDataSource>(),
+        gh<_i391.DeviceLabelOverrideStore>(),
+        gh<_i696.FavoritesStore>(),
+        gh<_i131.HiveStorageService>(),
+      ),
+    );
     gh.lazySingleton<_i797.ScanSessionStore>(
       () => _i797.ScanSessionStore(gh<_i239.WifiScanHistoryLocalDataSource>()),
     );
@@ -422,6 +451,15 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i365.MonitoringRepository>(
       () => _i592.MonitoringRepositoryImpl(gh<_i1027.WifiRepository>()),
+    );
+    gh.lazySingleton<_i13.DiagnosticsRepository>(
+      () => _i901.DiagnosticsRepositoryImpl(
+        gh<_i510.RunSpeedTestUseCase>(),
+        gh<_i991.DnsDataSource>(),
+        gh<_i192.ConnectedSignalService>(),
+        gh<_i797.ScanSessionStore>(),
+        gh<_i640.NetworkContextResolver>(),
+      ),
     );
     gh.lazySingleton<_i244.TopologyRepository>(
       () => _i21.TopologyRepositoryImpl(
@@ -448,6 +486,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i332.ChannelRatingRepository>(
       () => _i671.ChannelRatingRepositoryImpl(
         gh<_i305.ChannelRatingLocalDataSource>(),
+      ),
+    );
+    gh.factory<_i516.DiagnosticsBloc>(
+      () => _i516.DiagnosticsBloc(
+        gh<_i13.DiagnosticsRepository>(),
+        gh<_i350.DiagnoseUseCase>(),
       ),
     );
     gh.lazySingleton<_i451.ScanWifi>(

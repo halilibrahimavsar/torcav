@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/neon_widgets.dart';
+import '../../../diagnostics/presentation/pages/speed_doctor_page.dart';
 import '../../../performance/presentation/pages/performance_page.dart';
 import '../../../reports/presentation/pages/reports_page.dart';
 import '../../../security/presentation/pages/router_hardening_wizard_page.dart';
@@ -148,6 +149,18 @@ class OperationsHubPage extends StatelessWidget {
                   ),
                 ),
                 delay: 600,
+              ),
+              _OperationCard(
+                title: 'SPEED DOCTOR',
+                subtitle: 'Why is it slow?',
+                icon: Icons.medical_services_rounded,
+                color: AppColors.neonPurple,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const SpeedDoctorPage(),
+                  ),
+                ),
+                delay: 650,
               ),
             ],
           ),
