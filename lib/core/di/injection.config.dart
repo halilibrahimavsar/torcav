@@ -25,6 +25,8 @@ import '../../features/diagnostics/data/repositories/diagnostics_repository_impl
     as _i901;
 import '../../features/diagnostics/domain/repositories/diagnostics_repository.dart'
     as _i13;
+import '../../features/diagnostics/domain/services/diagnosis_explainer.dart'
+    as _i972;
 import '../../features/diagnostics/domain/usecases/diagnose_usecase.dart'
     as _i350;
 import '../../features/diagnostics/presentation/bloc/diagnostics_bloc.dart'
@@ -251,6 +253,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i188.ArCameraPoseDataSource>(
       () => _i188.ArCameraPoseDataSource(),
       dispose: (i) => i.dispose(),
+    );
+    gh.lazySingleton<_i972.DiagnosisExplainer>(
+      () => const _i972.DiagnosisExplainer(),
     );
     gh.lazySingleton<_i683.OuiLookup>(
       () => _i683.OuiLookup(gh<_i1050.OuiDatabaseService>()),
@@ -488,14 +493,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i305.ChannelRatingLocalDataSource>(),
       ),
     );
+    gh.lazySingleton<_i451.ScanWifi>(
+      () => _i451.ScanWifi(gh<_i1027.WifiRepository>()),
+    );
     gh.factory<_i516.DiagnosticsBloc>(
       () => _i516.DiagnosticsBloc(
         gh<_i13.DiagnosticsRepository>(),
         gh<_i350.DiagnoseUseCase>(),
+        gh<_i972.DiagnosisExplainer>(),
       ),
-    );
-    gh.lazySingleton<_i451.ScanWifi>(
-      () => _i451.ScanWifi(gh<_i1027.WifiRepository>()),
     );
     gh.lazySingleton<_i1072.SignalTracker>(
       () => _i1072.SignalTracker(

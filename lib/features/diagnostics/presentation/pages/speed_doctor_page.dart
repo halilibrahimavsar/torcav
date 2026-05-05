@@ -53,12 +53,15 @@ class _SpeedDoctorView extends StatelessWidget {
               children: [
                 _Header(theme: theme),
                 const SizedBox(height: 20),
-                if (state.status == DiagnosticsStatus.idle)
+                if (state.status == DiagnosticsStatus.idle) ...[
                   _IdleBody(
                     onStart: () => context
                         .read<DiagnosticsBloc>()
                         .add(const DiagnosticsStarted()),
                   ),
+                  const SizedBox(height: 22),
+                  const _AboutSection(),
+                ],
                 if (state.status == DiagnosticsStatus.running)
                   _RunningBody(state: state),
                 if (state.status == DiagnosticsStatus.ready &&
@@ -69,6 +72,10 @@ class _SpeedDoctorView extends StatelessWidget {
                         .read<DiagnosticsBloc>()
                         .add(const DiagnosticsStarted()),
                   ),
+                if (state.status == DiagnosticsStatus.ready) ...[
+                  const SizedBox(height: 14),
+                  const _AboutSection(),
+                ],
                 if (state.status == DiagnosticsStatus.failure)
                   _FailureBody(
                     message: state.errorMessage ?? 'Unknown error',
@@ -193,7 +200,10 @@ class _ResultBody extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           for (final evidence in result.allEvidence)
-            EvidenceCard(evidence: evidence),
+            EvidenceCard(
+              evidence: evidence,
+              explanation: state.explanations[evidence.category],
+            ),
         ],
         const SizedBox(height: 12),
         SizedBox(
@@ -204,6 +214,183 @@ class _ResultBody extends StatelessWidget {
             icon: Icons.refresh_rounded,
           ),
         ),
+      ],
+    );
+  }
+}
+
+class _AboutSection extends StatefulWidget {
+  const _AboutSection();
+
+  @override
+  State<_AboutSection> createState() => _AboutSectionState();
+}
+
+class _AboutSectionState extends State<_AboutSection> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        color: theme.colorScheme.surface.withValues(alpha: 0.4),
+        border: Border.all(
+          color: theme.colorScheme.outlineVariant.withValues(alpha: 0.4),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InkWell(
+            onTap: () => setState(() => _expanded = !_expanded),
+            borderRadius: BorderRadius.circular(8),
+            child: Row(
+              children: [
+                Icon(
+                  _expanded
+                      ? Icons.keyboard_arrow_up_rounded
+                      : Icons.keyboard_arrow_down_rounded,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  'ABOUT SPEED DOCTOR',
+                  style: GoogleFonts.orbitron(
+                    color: theme.colorScheme.primary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.3,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (_expanded) ...[
+            const SizedBox(height: 12),
+            _AboutBlock(
+              title: 'What is it?',
+              body:
+                  'A one-tap diagnostic that finds the likely bottleneck '
+                  'between you and the internet — without you having to '
+                  'compare numbers across separate screens.',
+            ),
+            const SizedBox(height: 10),
+            _AboutBlock(
+              title: 'How does it work?',
+              body:
+                  'Five short probes run end-to-end and the results are '
+                  'compared against published thresholds:',
+              bullets: const [
+                'Signal — reads RSSI from the connected access point.',
+                'Channel — scores your channel against neighbouring APs.',
+                'Speed — runs a real download/upload test against Cloudflare.',
+                'Bufferbloat — measures latency under load (Waveform A–F).',
+                'DNS — benchmarks public resolvers vs. your current one.',
+              ],
+            ),
+            const SizedBox(height: 10),
+            _AboutBlock(
+              title: 'What do the categories mean?',
+              body: '',
+              bullets: const [
+                'Weak Signal — Wi-Fi link forced into slower modes by '
+                    'distance / walls.',
+                'Crowded Channel — neighbouring APs on the same channel '
+                    'eat your air-time.',
+                'Bufferbloat — latency balloons when the link is fully '
+                    'loaded; calls and games suffer.',
+                'ISP Slow — Wi-Fi is fine but your plan / upstream is the '
+                    'ceiling.',
+                'Slow DNS — page loads feel laggy because name lookups '
+                    'take too long.',
+              ],
+            ),
+            const SizedBox(height: 10),
+            _AboutBlock(
+              title: 'About the speed-up estimate',
+              body:
+                  'Each finding shows a conservative projected gain — what '
+                  'you can realistically expect after applying the fix. It '
+                  'is a lower bound, not a guarantee, and it depends on the '
+                  'test conditions.',
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _AboutBlock extends StatelessWidget {
+  const _AboutBlock({
+    required this.title,
+    required this.body,
+    this.bullets = const [],
+  });
+
+  final String title;
+  final String body;
+  final List<String> bullets;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title.toUpperCase(),
+          style: GoogleFonts.orbitron(
+            color: theme.colorScheme.primary,
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.2,
+          ),
+        ),
+        if (body.isNotEmpty) ...[
+          const SizedBox(height: 4),
+          Text(
+            body,
+            style: GoogleFonts.rajdhani(
+              color: theme.colorScheme.onSurface,
+              fontSize: 13,
+              height: 1.4,
+            ),
+          ),
+        ],
+        if (bullets.isNotEmpty) ...[
+          const SizedBox(height: 6),
+          for (final b in bullets)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5),
+                    child: Icon(
+                      Icons.chevron_right_rounded,
+                      size: 14,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      b,
+                      style: GoogleFonts.rajdhani(
+                        color: theme.colorScheme.onSurface,
+                        fontSize: 12,
+                        height: 1.35,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
       ],
     );
   }

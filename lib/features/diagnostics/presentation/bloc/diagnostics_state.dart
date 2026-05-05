@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 
+import '../../domain/entities/category_explanation.dart';
 import '../../domain/entities/diagnosis_result.dart';
+import '../../domain/entities/root_cause_category.dart';
 import '../../domain/repositories/diagnostics_repository.dart';
 
 enum DiagnosticsStatus { idle, running, ready, failure }
@@ -10,6 +12,7 @@ class DiagnosticsState extends Equatable {
   final double progress;
   final DiagnosticsStep? currentStep;
   final DiagnosisResult? result;
+  final Map<RootCauseCategory, CategoryExplanation> explanations;
   final String? errorMessage;
 
   const DiagnosticsState({
@@ -17,6 +20,7 @@ class DiagnosticsState extends Equatable {
     this.progress = 0,
     this.currentStep,
     this.result,
+    this.explanations = const {},
     this.errorMessage,
   });
 
@@ -25,6 +29,7 @@ class DiagnosticsState extends Equatable {
     double? progress,
     DiagnosticsStep? currentStep,
     DiagnosisResult? result,
+    Map<RootCauseCategory, CategoryExplanation>? explanations,
     String? errorMessage,
   }) {
     return DiagnosticsState(
@@ -32,6 +37,7 @@ class DiagnosticsState extends Equatable {
       progress: progress ?? this.progress,
       currentStep: currentStep ?? this.currentStep,
       result: result ?? this.result,
+      explanations: explanations ?? this.explanations,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
@@ -42,6 +48,7 @@ class DiagnosticsState extends Equatable {
     progress,
     currentStep,
     result,
+    explanations,
     errorMessage,
   ];
 }

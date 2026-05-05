@@ -1,7 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../domain/entities/category_explanation.dart';
+import '../../domain/entities/root_cause_category.dart';
 import '../../domain/repositories/diagnostics_repository.dart';
+import '../../domain/services/diagnosis_explainer.dart';
 import '../../domain/usecases/diagnose_usecase.dart';
 import 'diagnostics_event.dart';
 import 'diagnostics_state.dart';
@@ -10,8 +13,9 @@ import 'diagnostics_state.dart';
 class DiagnosticsBloc extends Bloc<DiagnosticsEvent, DiagnosticsState> {
   final DiagnosticsRepository _repository;
   final DiagnoseUseCase _diagnose;
+  final DiagnosisExplainer _explainer;
 
-  DiagnosticsBloc(this._repository, this._diagnose)
+  DiagnosticsBloc(this._repository, this._diagnose, this._explainer)
     : super(const DiagnosticsState()) {
     on<DiagnosticsStarted>(_onStarted);
     on<DiagnosticsReset>(
@@ -43,11 +47,16 @@ class DiagnosticsBloc extends Bloc<DiagnosticsEvent, DiagnosticsState> {
         if (progress.step == DiagnosticsStep.finalize &&
             progress.partialInputs != null) {
           final result = _diagnose(progress.partialInputs!);
+          final explanations = <RootCauseCategory, CategoryExplanation>{
+            for (final ev in result.allEvidence)
+              ev.category: _explainer.explain(ev, progress.partialInputs!),
+          };
           emit(
             state.copyWith(
               status: DiagnosticsStatus.ready,
               progress: 1,
               result: result,
+              explanations: explanations,
             ),
           );
           return;
