@@ -119,6 +119,8 @@ import '../../features/security/data/repositories/security_repository_impl.dart'
     as _i997;
 import '../../features/security/data/stores/network_context_override_store.dart'
     as _i256;
+import '../../features/security/data/stores/router_hardening_store.dart'
+    as _i172;
 import '../../features/security/domain/repositories/security_repository.dart'
     as _i578;
 import '../../features/security/domain/services/captive_portal_detector.dart'
@@ -294,6 +296,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i256.NetworkContextOverrideStore>(
       () => _i256.NetworkContextOverrideStore(gh<_i131.HiveStorageService>()),
+    );
+    gh.lazySingleton<_i172.RouterHardeningStore>(
+      () => _i172.RouterHardeningStore(gh<_i131.HiveStorageService>()),
     );
     gh.lazySingleton<_i363.CaptivePortalDetector>(
       () => _i363.CaptivePortalDetector(gh<_i846.NetworkInfo>()),

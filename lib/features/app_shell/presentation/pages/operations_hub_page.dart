@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../performance/presentation/pages/performance_page.dart';
 import '../../../reports/presentation/pages/reports_page.dart';
+import '../../../security/presentation/pages/router_hardening_wizard_page.dart';
 import '../../../security/presentation/pages/security_center_page.dart';
 import '../../../monitoring/presentation/pages/topology_page.dart';
 import '../../../monitoring/presentation/pages/spectrum_optimization_page.dart';
@@ -135,6 +136,18 @@ class OperationsHubPage extends StatelessWidget {
                       ),
                     ),
                 delay: 550,
+              ),
+              _OperationCard(
+                title: 'HARDEN ROUTER',
+                subtitle: 'Security checklist',
+                icon: Icons.shield_moon_rounded,
+                color: Colors.greenAccent,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const RouterHardeningWizardPage(),
+                  ),
+                ),
+                delay: 600,
               ),
             ],
           ),
