@@ -4,6 +4,7 @@ import 'package:torcav/core/theme/neon_widgets.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
 import 'package:torcav/features/security/domain/entities/security_event.dart'
     as domain_event;
+import 'package:torcav/features/security/presentation/pages/evil_twin_detail_page.dart';
 import '../bloc/security_bloc.dart';
 
 class EvilTwinAlertBanner extends StatelessWidget {
@@ -12,10 +13,13 @@ class EvilTwinAlertBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasEvilTwin = state.recentEvents.any(
-      (e) => e.type == domain_event.SecurityEventType.evilTwinDetected,
-    );
-    if (!hasEvilTwin) return const SizedBox.shrink();
+    final evilTwinEvent = state.recentEvents
+        .where(
+          (e) => e.type == domain_event.SecurityEventType.evilTwinDetected,
+        )
+        .cast<domain_event.SecurityEvent?>()
+        .firstWhere((e) => true, orElse: () => null);
+    if (evilTwinEvent == null) return const SizedBox.shrink();
 
     final l10n = AppLocalizations.of(context)!;
     final errorColor = Theme.of(context).colorScheme.error;
@@ -24,11 +28,20 @@ class EvilTwinAlertBanner extends StatelessWidget {
       delay: const Duration(milliseconds: 100),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 16),
-        child: NeonCard(
-          glowColor: errorColor,
-          glowIntensity: 0.25,
-          padding: const EdgeInsets.all(16),
-          child: Row(
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => EvilTwinDetailPage(
+                flaggedSsid: evilTwinEvent.ssid,
+              ),
+            ),
+          ),
+          child: NeonCard(
+            glowColor: errorColor,
+            glowIntensity: 0.25,
+            padding: const EdgeInsets.all(16),
+            child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
@@ -89,6 +102,7 @@ class EvilTwinAlertBanner extends StatelessWidget {
                 ),
               ),
             ],
+          ),
           ),
         ),
       ),

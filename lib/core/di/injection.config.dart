@@ -48,6 +48,8 @@ import '../../features/heatmap/domain/services/connected_signal_service.dart'
 import '../../features/heatmap/domain/services/connected_signal_smoother.dart'
     as _i106;
 import '../../features/heatmap/domain/services/heatmap_manager.dart' as _i869;
+import '../../features/heatmap/domain/services/heatmap_placement_service.dart'
+    as _i858;
 import '../../features/heatmap/domain/services/position_tracker.dart' as _i104;
 import '../../features/heatmap/domain/services/signal_tracker.dart' as _i1072;
 import '../../features/heatmap/domain/services/survey_guidance_service.dart'
@@ -94,6 +96,8 @@ import '../../features/network_scan/domain/repositories/network_scan_repository.
     as _i1073;
 import '../../features/network_scan/domain/repositories/port_scan_repository.dart'
     as _i269;
+import '../../features/network_scan/domain/services/host_trust_classifier.dart'
+    as _i970;
 import '../../features/network_scan/domain/services/new_device_detector.dart'
     as _i505;
 import '../../features/network_scan/domain/usecases/port_scan_usecase.dart'
@@ -118,6 +122,8 @@ import '../../features/reports/data/services/local_data_export_service_impl.dart
     as _i731;
 import '../../features/reports/domain/repositories/report_export_repository.dart'
     as _i119;
+import '../../features/reports/domain/services/home_health_report_builder.dart'
+    as _i648;
 import '../../features/reports/domain/services/local_data_export_service.dart'
     as _i743;
 import '../../features/reports/domain/usecases/generate_report_usecase.dart'
@@ -129,6 +135,8 @@ import '../../features/security/data/datasources/security_local_data_source.dart
     as _i499;
 import '../../features/security/data/datasources/vulnerability_data_source.dart'
     as _i5;
+import '../../features/security/data/datasources/vulnerability_db_meta_data_source.dart'
+    as _i656;
 import '../../features/security/data/repositories/security_repository_impl.dart'
     as _i997;
 import '../../features/security/data/stores/network_context_override_store.dart'
@@ -139,6 +147,14 @@ import '../../features/security/domain/repositories/security_repository.dart'
     as _i578;
 import '../../features/security/domain/services/captive_portal_detector.dart'
     as _i363;
+import '../../features/security/domain/services/evil_twin_classifier.dart'
+    as _i333;
+import '../../features/security/domain/services/evil_twin_explainer.dart'
+    as _i618;
+import '../../features/security/domain/services/gateway_drift_detector.dart'
+    as _i187;
+import '../../features/security/domain/services/mesh_vendor_database.dart'
+    as _i641;
 import '../../features/security/domain/services/network_context_inferrer.dart'
     as _i241;
 import '../../features/security/domain/services/network_context_resolver.dart'
@@ -235,7 +251,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i927.DnsSecurityUseCase>(
       () => _i927.DnsSecurityUseCase(),
     );
-    gh.lazySingleton<_i471.SecurityAnalyzer>(() => _i471.SecurityAnalyzer());
     gh.lazySingleton<_i241.NetworkContextInferrer>(
       () => const _i241.NetworkContextInferrer(),
     );
@@ -256,6 +271,21 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i972.DiagnosisExplainer>(
       () => const _i972.DiagnosisExplainer(),
+    );
+    gh.lazySingleton<_i618.EvilTwinExplainer>(
+      () => const _i618.EvilTwinExplainer(),
+    );
+    gh.lazySingleton<_i970.HostTrustClassifier>(
+      () => const _i970.HostTrustClassifier(),
+    );
+    gh.lazySingleton<_i187.GatewayDriftDetector>(
+      () => const _i187.GatewayDriftDetector(),
+    );
+    gh.lazySingleton<_i858.HeatmapPlacementService>(
+      () => const _i858.HeatmapPlacementService(),
+    );
+    gh.lazySingleton<_i656.VulnerabilityDbMetaDataSource>(
+      () => _i656.VulnerabilityDbMetaDataSource(),
     );
     gh.lazySingleton<_i683.OuiLookup>(
       () => _i683.OuiLookup(gh<_i1050.OuiDatabaseService>()),
@@ -289,6 +319,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i653.LinuxWifiDataSource>(
       () => _i653.LinuxWifiDataSource(gh<_i113.ScanSnapshotBuilder>()),
+    );
+    gh.lazySingleton<_i333.EvilTwinClassifier>(
+      () => _i333.EvilTwinClassifier(meshDb: gh<_i641.MeshVendorDatabase>()),
     );
     gh.singleton<_i171.LocaleCubit>(
       () => _i171.LocaleCubit(gh<_i131.HiveStorageService>()),
@@ -335,12 +368,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i367.GenerateReportUseCase>(
       () => _i367.GenerateReportUseCase(gh<_i119.ReportExportRepository>()),
     );
-    gh.lazySingleton<_i640.NetworkContextResolver>(
-      () => _i640.NetworkContextResolver(
-        gh<_i241.NetworkContextInferrer>(),
-        gh<_i256.NetworkContextOverrideStore>(),
-      ),
-    );
     gh.lazySingleton<_i672.AndroidWifiDataSource>(
       () => _i672.AndroidWifiDataSource(
         gh<_i113.ScanSnapshotBuilder>(),
@@ -350,6 +377,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i350.DiagnoseUseCase>(
       () => _i350.DiagnoseUseCase(gh<_i969.ChannelRatingEngine>()),
+    );
+    gh.lazySingleton<_i648.HomeHealthReportBuilder>(
+      () => _i648.HomeHealthReportBuilder(gh<_i970.HostTrustClassifier>()),
     );
     gh.factory<_i554.ReportsBloc>(
       () => _i554.ReportsBloc(gh<_i367.GenerateReportUseCase>()),
@@ -387,6 +417,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i305.ChannelRatingLocalDataSource>(
       () => _i305.ChannelRatingLocalDataSourceImpl(gh<_i690.AppDatabase>()),
     );
+    gh.lazySingleton<_i471.SecurityAnalyzer>(
+      () => _i471.SecurityAnalyzer(gh<_i333.EvilTwinClassifier>()),
+    );
     gh.lazySingleton<_i533.DataRetentionService>(
       () => _i533.DataRetentionService(
         gh<_i690.AppDatabase>(),
@@ -407,6 +440,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i239.WifiScanHistoryLocalDataSource>(
       () => _i239.WifiScanHistoryLocalDataSourceImpl(gh<_i690.AppDatabase>()),
+    );
+    gh.lazySingleton<_i640.NetworkContextResolver>(
+      () => _i640.NetworkContextResolver(
+        gh<_i241.NetworkContextInferrer>(),
+        gh<_i256.NetworkContextOverrideStore>(),
+        gh<_i552.AppSettingsStore>(),
+      ),
     );
     gh.lazySingleton<_i1073.NetworkScanRepository>(
       () => _i551.NetworkScanRepositoryImpl(
@@ -457,15 +497,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i365.MonitoringRepository>(
       () => _i592.MonitoringRepositoryImpl(gh<_i1027.WifiRepository>()),
     );
-    gh.lazySingleton<_i13.DiagnosticsRepository>(
-      () => _i901.DiagnosticsRepositoryImpl(
-        gh<_i510.RunSpeedTestUseCase>(),
-        gh<_i991.DnsDataSource>(),
-        gh<_i192.ConnectedSignalService>(),
-        gh<_i797.ScanSessionStore>(),
-        gh<_i640.NetworkContextResolver>(),
-      ),
-    );
     gh.lazySingleton<_i244.TopologyRepository>(
       () => _i21.TopologyRepositoryImpl(
         gh<_i846.NetworkInfo>(),
@@ -473,6 +504,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1073.NetworkScanRepository>(),
         gh<_i892.TopologyBuilder>(),
       ),
+    );
+    gh.lazySingleton<_i332.ChannelRatingRepository>(
+      () => _i671.ChannelRatingRepositoryImpl(
+        gh<_i305.ChannelRatingLocalDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i451.ScanWifi>(
+      () => _i451.ScanWifi(gh<_i1027.WifiRepository>()),
     );
     gh.lazySingleton<_i578.SecurityRepository>(
       () => _i997.SecurityRepositoryImpl(
@@ -486,21 +525,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i151.ArpSpoofingDetector>(),
         gh<_i927.DnsSecurityUseCase>(),
         gh<_i1073.NetworkScanRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i332.ChannelRatingRepository>(
-      () => _i671.ChannelRatingRepositoryImpl(
-        gh<_i305.ChannelRatingLocalDataSource>(),
-      ),
-    );
-    gh.lazySingleton<_i451.ScanWifi>(
-      () => _i451.ScanWifi(gh<_i1027.WifiRepository>()),
-    );
-    gh.factory<_i516.DiagnosticsBloc>(
-      () => _i516.DiagnosticsBloc(
-        gh<_i13.DiagnosticsRepository>(),
-        gh<_i350.DiagnoseUseCase>(),
-        gh<_i972.DiagnosisExplainer>(),
+        gh<_i187.GatewayDriftDetector>(),
       ),
     );
     gh.lazySingleton<_i1072.SignalTracker>(
@@ -587,6 +612,23 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i422.GetTopologyUseCase>(),
         gh<_i534.PingNodeUseCase>(),
         gh<_i244.TopologyRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i13.DiagnosticsRepository>(
+      () => _i901.DiagnosticsRepositoryImpl(
+        gh<_i510.RunSpeedTestUseCase>(),
+        gh<_i991.DnsDataSource>(),
+        gh<_i192.ConnectedSignalService>(),
+        gh<_i797.ScanSessionStore>(),
+        gh<_i640.NetworkContextResolver>(),
+        gh<_i534.PingNodeUseCase>(),
+      ),
+    );
+    gh.factory<_i516.DiagnosticsBloc>(
+      () => _i516.DiagnosticsBloc(
+        gh<_i13.DiagnosticsRepository>(),
+        gh<_i350.DiagnoseUseCase>(),
+        gh<_i972.DiagnosisExplainer>(),
       ),
     );
     return this;

@@ -3350,6 +3350,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'ACKNOWLEDGED'**
   String get acknowledgedLabel;
+
+  String get speedDoctorTitle;
+  String get speedDoctorTagline;
+  String get speedDoctorOpsTile;
+  String get speedDoctorOpsSubtitle;
+  String get evilTwinDetailTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

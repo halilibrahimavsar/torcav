@@ -1750,4 +1750,15 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get acknowledgedLabel => 'ANLAŞILDI';
+
+  @override
+  String get speedDoctorTitle => 'HIZ DOKTORU';
+  @override
+  String get speedDoctorTagline => 'İnternet neden yavaş?';
+  @override
+  String get speedDoctorOpsTile => 'HIZ DOKTORU';
+  @override
+  String get speedDoctorOpsSubtitle => 'Niye yavaş?';
+  @override
+  String get evilTwinDetailTitle => 'EVIL TWIN DETAYI';
 }

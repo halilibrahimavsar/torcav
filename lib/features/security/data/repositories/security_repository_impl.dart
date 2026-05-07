@@ -14,6 +14,7 @@ import '../../domain/entities/vulnerability.dart';
 import '../../domain/repositories/security_repository.dart';
 import '../../domain/entities/vulnerable_router.dart';
 import '../datasources/vulnerability_data_source.dart';
+import '../../domain/services/gateway_drift_detector.dart';
 import '../../domain/services/network_context_resolver.dart';
 import '../../domain/usecases/deauth_detector.dart';
 import '../../domain/usecases/security_analyzer.dart';
@@ -40,6 +41,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
   final ArpSpoofingDetector _arpSpoofingDetector;
   final DnsSecurityUseCase _dnsSecurityUseCase;
   final NetworkScanRepository _networkScanRepository;
+  final GatewayDriftDetector _gatewayDriftDetector;
   final NetworkInfo _networkInfo = NetworkInfo();
 
   SecurityRepositoryImpl(
@@ -53,6 +55,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
     this._arpSpoofingDetector,
     this._dnsSecurityUseCase,
     this._networkScanRepository,
+    this._gatewayDriftDetector,
   );
 
   @override
@@ -246,6 +249,10 @@ class SecurityRepositoryImpl implements SecurityRepository {
       final arpEvent = await _arpSpoofingDetector.check();
       final dnsEvent = await _dnsSecurityUseCase.check();
 
+      final allTrusted = await _localDataSource.getTrustedNetworkProfiles();
+      final trustedBssids =
+          allTrusted.map((p) => p.bssid).toSet();
+
       final context = await _contextResolver.resolve(
         network,
         trustedProfile: trustedProfile,
@@ -257,6 +264,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
         hardwareVulnerabilities: vulnerabilities,
         isDeepScan: isDeepScan,
         context: context,
+        trustedBssids: trustedBssids,
       );
 
       // Deep scan logic
@@ -385,6 +393,45 @@ class SecurityRepositoryImpl implements SecurityRepository {
 
       final dnsEvent = await _dnsSecurityUseCase.check();
       if (dnsEvent != null) alerts.add(dnsEvent);
+
+      // Gateway-baseline drift: compare current gateway IP against the one
+      // saved when the network was first trusted. Catches rogue DHCP /
+      // gateway-impersonation MITM stages.
+      final currentGatewayIp = await _networkInfo.getWifiGatewayIP();
+      final connectedBssid = await _networkInfo.getWifiBSSID();
+      if (connectedBssid != null && connectedBssid.isNotEmpty) {
+        final trustedProfilesNow =
+            await _localDataSource.getTrustedNetworkProfiles();
+        final trustedNow = trustedProfilesNow.firstWhere(
+          (p) => p.bssid.toLowerCase() == connectedBssid.toLowerCase(),
+          orElse: () => trustedProfilesNow.firstWhere(
+            (_) => false,
+            orElse: () => TrustedNetworkProfile(
+              ssid: '',
+              bssid: '',
+              fingerprint: const NetworkFingerprint(
+                ssid: '',
+                bssid: '',
+                security: '',
+                vendor: '',
+                isHidden: false,
+                channel: 0,
+                frequency: 0,
+                bandLabel: '',
+              ),
+              trustedAt: DateTime.fromMillisecondsSinceEpoch(0),
+              lastConfirmedAt: DateTime.fromMillisecondsSinceEpoch(0),
+            ),
+          ),
+        );
+        if (trustedNow.bssid.isNotEmpty) {
+          final driftEvent = _gatewayDriftDetector.check(
+            currentGateway: currentGatewayIp,
+            trusted: trustedNow,
+          );
+          if (driftEvent != null) alerts.add(driftEvent);
+        }
+      }
 
       final dnsResult = await _dnsDataSource.performTest();
       final allFindings = <SecurityFinding>[];
@@ -515,6 +562,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
           hardwareVulnerabilities: vulnerabilities,
           isDeepScan: isDeepScan,
           context: context,
+          trustedBssids: trustedProfiles.map((p) => p.bssid).toSet(),
         );
 
         allFindings.addAll(assessment.evidenceFindings);

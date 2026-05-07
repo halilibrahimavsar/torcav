@@ -2224,5 +2224,10 @@
     "deleteAllLabel": "ALLES LÖSCHEN",
     "dualBandSiblingLabel": "DUAL BAND",
     "dualBandSiblingBanner": "{band}-Radio Ihres Routers: {channel}",
-    "acknowledgedLabel": "VERSTANDEN"
+    "acknowledgedLabel": "VERSTANDEN",
+    "speedDoctorTitle": "GESCHWINDIGKEITS-DOKTOR",
+    "speedDoctorTagline": "Warum ist das Internet langsam?",
+    "speedDoctorOpsTile": "SPEED-DOKTOR",
+    "speedDoctorOpsSubtitle": "Warum langsam?",
+    "evilTwinDetailTitle": "EVIL-TWIN-DETAILS"
 }

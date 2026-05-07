@@ -8,6 +8,7 @@ import 'package:network_info_plus/network_info_plus.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/l10n/app_localizations.dart';
+import '../../../diagnostics/presentation/pages/speed_doctor_page.dart';
 import '../../../heatmap/domain/entities/connected_signal.dart';
 import '../../../heatmap/domain/services/connected_signal_service.dart';
 import '../../../performance/domain/entities/speed_test_result.dart';
@@ -477,6 +478,17 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                 ),
               ],
+              const SizedBox(height: 20),
+              StaggeredEntry(
+                delay: const Duration(milliseconds: 580),
+                child: _SpeedDoctorTile(
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const SpeedDoctorPage(),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -1159,3 +1171,80 @@ class _ContextOption extends StatelessWidget {
   }
 }
 
+class _SpeedDoctorTile extends StatelessWidget {
+  const _SpeedDoctorTile({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              const Color(0xFFB91DFB).withValues(alpha: 0.18),
+              const Color(0xFF1E0F3D).withValues(alpha: 0.04),
+            ],
+          ),
+          border: Border.all(
+            color: const Color(0xFFB91DFB).withValues(alpha: 0.45),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFB91DFB).withValues(alpha: 0.15),
+                shape: BoxShape.circle,
+                border: Border.all(color: const Color(0xFFB91DFB)),
+              ),
+              child: const Icon(
+                Icons.medical_services_rounded,
+                color: Color(0xFFB91DFB),
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'INTERNET YAVAŞ MI?',
+                    style: GoogleFonts.orbitron(
+                      color: const Color(0xFFB91DFB),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Run Speed Doctor — 30-second root-cause diagnostic.',
+                    style: GoogleFonts.rajdhani(
+                      color: theme.colorScheme.onSurface,
+                      fontSize: 13,
+                      height: 1.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

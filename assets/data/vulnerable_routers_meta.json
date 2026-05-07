@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "lastUpdated": "2026-05-07",
+  "source": "Manually curated from CISA KEV + vendor advisories",
+  "sourceUrl": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+  "entryCount": 6,
+  "notes": "This is a local snapshot. To refresh: clone the Torcav repo, pull the latest assets/data/vulnerable_routers.json, and increment version + lastUpdated. The app will warn when this snapshot is more than 90 days old."
+}

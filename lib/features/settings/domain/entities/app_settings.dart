@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../security/domain/entities/network_context_type.dart';
 import '../../../wifi_scan/domain/entities/scan_request.dart';
 
 enum AppBackgroundType {
@@ -36,6 +37,11 @@ class AppSettings extends Equatable {
   final int speedTestRetentionDays;
   final int securityEventRetentionDays;
 
+  /// User's declared default trust posture for unknown networks. Set during
+  /// onboarding and used by [NetworkContextResolver] as a fallback when the
+  /// inferrer can't classify a network on its own.
+  final NetworkContextType defaultNetworkContext;
+
   const AppSettings({
     this.scanIntervalSeconds = 30,
     this.defaultScanPasses = 3,
@@ -51,6 +57,7 @@ class AppSettings extends Equatable {
     this.scanHistoryRetentionDays = 30,
     this.speedTestRetentionDays = 30,
     this.securityEventRetentionDays = 30,
+    this.defaultNetworkContext = NetworkContextType.unknown,
   });
 
 
@@ -69,6 +76,7 @@ class AppSettings extends Equatable {
     int? scanHistoryRetentionDays,
     int? speedTestRetentionDays,
     int? securityEventRetentionDays,
+    NetworkContextType? defaultNetworkContext,
   }) {
     return AppSettings(
       scanIntervalSeconds: scanIntervalSeconds ?? this.scanIntervalSeconds,
@@ -90,6 +98,8 @@ class AppSettings extends Equatable {
           speedTestRetentionDays ?? this.speedTestRetentionDays,
       securityEventRetentionDays:
           securityEventRetentionDays ?? this.securityEventRetentionDays,
+      defaultNetworkContext:
+          defaultNetworkContext ?? this.defaultNetworkContext,
     );
   }
 
@@ -110,6 +120,7 @@ class AppSettings extends Equatable {
     scanHistoryRetentionDays,
     speedTestRetentionDays,
     securityEventRetentionDays,
+    defaultNetworkContext,
   ];
 
 
@@ -129,6 +140,7 @@ class AppSettings extends Equatable {
       'scanHistoryRetentionDays': scanHistoryRetentionDays,
       'speedTestRetentionDays': speedTestRetentionDays,
       'securityEventRetentionDays': securityEventRetentionDays,
+      'defaultNetworkContext': defaultNetworkContext.name,
     };
 
   }
@@ -153,6 +165,9 @@ class AppSettings extends Equatable {
       scanHistoryRetentionDays: _readInt(json['scanHistoryRetentionDays'], fallback: 30),
       speedTestRetentionDays: _readInt(json['speedTestRetentionDays'], fallback: 30),
       securityEventRetentionDays: _readInt(json['securityEventRetentionDays'], fallback: 30),
+      defaultNetworkContext: _parseNetworkContext(
+        json['defaultNetworkContext'] as String?,
+      ),
     );
 
   }
@@ -185,5 +200,14 @@ class AppSettings extends Equatable {
       }
     }
     return AppBackgroundType.neomorphic;
+  }
+
+  static NetworkContextType _parseNetworkContext(String? name) {
+    for (final value in NetworkContextType.values) {
+      if (value.name == name) {
+        return value;
+      }
+    }
+    return NetworkContextType.unknown;
   }
 }

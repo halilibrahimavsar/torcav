@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:injectable/injectable.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 
 import '../../../heatmap/domain/services/connected_signal_service.dart';
+import '../../../monitoring/domain/usecases/ping_node_usecase.dart';
 import '../../../performance/domain/entities/speed_test_progress.dart';
 import '../../../performance/domain/entities/speed_test_result.dart';
 import '../../../performance/domain/usecases/run_speed_test_usecase.dart';
@@ -22,6 +24,7 @@ class DiagnosticsRepositoryImpl implements DiagnosticsRepository {
   final ConnectedSignalService _connectedSignal;
   final ScanSessionStore _scanStore;
   final NetworkContextResolver _contextResolver;
+  final PingNodeUseCase _pingNode;
 
   DiagnosticsRepositoryImpl(
     this._runSpeedTest,
@@ -29,6 +32,7 @@ class DiagnosticsRepositoryImpl implements DiagnosticsRepository {
     this._connectedSignal,
     this._scanStore,
     this._contextResolver,
+    this._pingNode,
   );
 
   @override
@@ -56,9 +60,10 @@ class DiagnosticsRepositoryImpl implements DiagnosticsRepository {
       ),
     );
 
-    // Step 2: kick off speed test and DNS benchmark in parallel.
+    // Step 2: kick off speed test, DNS benchmark, and gateway ping in parallel.
     final dnsFuture = _safeDnsBenchmark();
     final contextFuture = _safeContext(connected);
+    final gatewayPingFuture = _safeGatewayPing();
 
     yield const DiagnosticsProgress(
       step: DiagnosticsStep.speedTest,
@@ -94,12 +99,13 @@ class DiagnosticsRepositoryImpl implements DiagnosticsRepository {
 
     final dns = await dnsFuture;
     final context = await contextFuture;
+    final gatewayPing = await gatewayPingFuture;
 
     final inputs = DiagnosisInputs(
       connectedNetwork: connected,
       visibleNetworks: visible,
       speedTest: speedTest,
-      gatewayPingMs: null,
+      gatewayPingMs: gatewayPing,
       dnsBenchmark: dns,
       context: context,
     );
@@ -147,6 +153,20 @@ class DiagnosticsRepositoryImpl implements DiagnosticsRepository {
         if (b.latencyMs >= 0) return b;
       }
       return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Resolve the default gateway IP via [NetworkInfo] and ping it. Best-
+  /// effort: any failure (no Wi-Fi, permission denied, ICMP blocked)
+  /// returns null and the caller treats gateway latency as unknown.
+  Future<int?> _safeGatewayPing() async {
+    try {
+      final gateway = await NetworkInfo().getWifiGatewayIP();
+      if (gateway == null || gateway.isEmpty) return null;
+      final result = await _pingNode(gateway);
+      return result.fold((_) => null, (latency) => latency);
     } catch (_) {
       return null;
     }

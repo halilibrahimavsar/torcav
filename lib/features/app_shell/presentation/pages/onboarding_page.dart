@@ -4,6 +4,8 @@ import 'package:torcav/core/storage/hive_storage_service.dart';
 import 'package:torcav/core/di/injection.dart';
 
 import '../../../../core/theme/neon_widgets.dart';
+import '../../../security/domain/entities/network_context_type.dart';
+import '../../../settings/domain/services/app_settings_store.dart';
 import '../../../settings/presentation/pages/privacy_policy_page.dart';
 import '../../../settings/presentation/pages/terms_of_service_page.dart';
 import 'app_shell_page.dart';
@@ -19,9 +21,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final _controller = PageController();
   int _page = 0;
 
-  static const _totalPages = 4;
+  static const _totalPages = 5;
 
   bool _allAccepted = false;
+  NetworkContextType _chosenContext = NetworkContextType.unknown;
 
   void _next() {
     if (_page < _totalPages - 1) {
@@ -36,6 +39,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   Future<void> _finish() async {
     await getIt<HiveStorageService>().save('onboarding_complete', true);
+    // Persist the user's declared default trust posture so the network
+    // context resolver can fall back to it for unknown networks.
+    try {
+      final store = getIt<AppSettingsStore>();
+      store.update(
+        store.value.copyWith(defaultNetworkContext: _chosenContext),
+      );
+    } catch (_) {
+      // Onboarding must never block on settings persistence.
+    }
     if (mounted) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const AppShellPage()),
@@ -65,6 +78,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   const _WelcomePage(),
                   const _PermissionsPage(),
                   const _TourPage(),
+                  _NetworkContextPage(
+                    selected: _chosenContext,
+                    onSelected: (c) => setState(() => _chosenContext = c),
+                  ),
                   _DonePage(onAllAccepted: (v) => setState(() => _allAccepted = v)),
                 ],
               ),
@@ -251,6 +268,166 @@ class _TourPage extends StatelessWidget {
             color: Theme.of(context).colorScheme.tertiary,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _NetworkContextPage extends StatelessWidget {
+  const _NetworkContextPage({required this.selected, required this.onSelected});
+
+  final NetworkContextType selected;
+  final ValueChanged<NetworkContextType> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(28, 28, 28, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'WHERE WILL YOU USE TORCAV?',
+            style: GoogleFonts.orbitron(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: theme.colorScheme.onSurface,
+              letterSpacing: 1.6,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'This shapes how strict the security score is when we can\'t '
+            'tell on our own. You can change it any time, and it can be '
+            'overridden per network later.',
+            style: GoogleFonts.rajdhani(
+              fontSize: 14,
+              color: theme.colorScheme.onSurfaceVariant,
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 22),
+          _ContextChoice(
+            type: NetworkContextType.home,
+            icon: Icons.home_rounded,
+            title: 'Mostly my own home / office',
+            body:
+                'Strict scoring. Any unexpected change in encryption or new '
+                'devices on the LAN gets flagged loudly.',
+            isSelected: selected == NetworkContextType.home,
+            onTap: () => onSelected(NetworkContextType.home),
+          ),
+          const SizedBox(height: 12),
+          _ContextChoice(
+            type: NetworkContextType.public,
+            icon: Icons.coffee_rounded,
+            title: 'Mostly cafés / hotels / airports',
+            body:
+                'Relaxed scoring on encryption (these networks are often '
+                'open) but heightened sensitivity to lure SSIDs and evil-twin '
+                'patterns. Active LAN scanning is suppressed by default.',
+            isSelected: selected == NetworkContextType.public,
+            onTap: () => onSelected(NetworkContextType.public),
+          ),
+          const SizedBox(height: 12),
+          _ContextChoice(
+            type: NetworkContextType.guest,
+            icon: Icons.group_rounded,
+            title: 'Mostly guest / shared networks',
+            body:
+                'Same Wi-Fi as friends, family, or coworkers. Drift is '
+                'expected; we don\'t alert on every new device.',
+            isSelected: selected == NetworkContextType.guest,
+            onTap: () => onSelected(NetworkContextType.guest),
+          ),
+          const SizedBox(height: 12),
+          _ContextChoice(
+            type: NetworkContextType.unknown,
+            icon: Icons.help_outline_rounded,
+            title: 'Not sure yet',
+            body:
+                'No strong default. We\'ll guess from each network\'s '
+                'fingerprint and let you correct it.',
+            isSelected: selected == NetworkContextType.unknown,
+            onTap: () => onSelected(NetworkContextType.unknown),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ContextChoice extends StatelessWidget {
+  const _ContextChoice({
+    required this.type,
+    required this.icon,
+    required this.title,
+    required this.body,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final NetworkContextType type;
+  final IconData icon;
+  final String title;
+  final String body;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final accent = theme.colorScheme.primary;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: isSelected
+              ? accent.withValues(alpha: 0.12)
+              : theme.colorScheme.surface.withValues(alpha: 0.4),
+          border: Border.all(
+            color: isSelected
+                ? accent.withValues(alpha: 0.7)
+                : theme.colorScheme.outlineVariant.withValues(alpha: 0.4),
+            width: isSelected ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, color: isSelected ? accent : theme.colorScheme.onSurfaceVariant),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.rajdhani(
+                      fontWeight: FontWeight.w700,
+                      color: theme.colorScheme.onSurface,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    body,
+                    style: GoogleFonts.rajdhani(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontSize: 13,
+                      height: 1.35,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (isSelected) Icon(Icons.check_circle_rounded, color: accent),
+          ],
+        ),
       ),
     );
   }

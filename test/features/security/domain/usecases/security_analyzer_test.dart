@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:torcav/features/security/domain/entities/network_context_type.dart';
 import 'package:torcav/features/security/domain/entities/vulnerability.dart';
+import 'package:torcav/features/security/domain/services/evil_twin_classifier.dart';
 import 'package:torcav/features/security/domain/usecases/security_analyzer.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 
@@ -8,7 +9,7 @@ void main() {
   late SecurityAnalyzer analyzer;
 
   setUp(() {
-    analyzer = SecurityAnalyzer();
+    analyzer = SecurityAnalyzer(const EvilTwinClassifier());
   });
 
   test('should identify Open network as critical risk', () {

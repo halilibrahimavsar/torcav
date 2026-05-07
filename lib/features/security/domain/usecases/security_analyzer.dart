@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
+import '../entities/evil_twin_assessment.dart';
 import '../entities/network_context_type.dart';
 import '../entities/network_fingerprint.dart';
 import '../entities/security_assessment.dart';
@@ -10,9 +11,13 @@ import '../entities/security_report.dart';
 import '../entities/trusted_network_profile.dart';
 import '../entities/vulnerability.dart';
 import '../entities/vulnerable_router.dart';
+import '../services/evil_twin_classifier.dart';
 
 @lazySingleton
 class SecurityAnalyzer {
+  final EvilTwinClassifier _evilTwinClassifier;
+
+  SecurityAnalyzer(this._evilTwinClassifier);
   SecurityAssessment assess(
     WifiNetwork network, {
     List<WifiNetwork> localBaseline = const [],
@@ -20,6 +25,7 @@ class SecurityAnalyzer {
     List<VulnerableRouter> hardwareVulnerabilities = const [],
     bool isDeepScan = false,
     NetworkContextType context = NetworkContextType.unknown,
+    Set<String> trustedBssids = const {},
   }) {
     int adjust(int base, String ruleId) =>
         _contextAdjustedDeduction(base, ruleId, context);
@@ -210,26 +216,44 @@ class SecurityAnalyzer {
       score -= adjust(10, 'wifi.pmf_not_enforced');
     }
 
-    if (_isPotentialEvilTwin(network, localBaseline)) {
+    final evilTwin = _evilTwinClassifier.assessAll(
+      network,
+      localBaseline,
+      trustedBssids: trustedBssids,
+    );
+    if (evilTwin.isCandidate) {
+      final severity = evilTwin.confidence >= 0.75
+          ? VulnerabilitySeverity.critical
+          : VulnerabilitySeverity.high;
       findings.add(
         SecurityFinding(
           ruleId: 'wifi.suspicious_sibling_ap',
           category: SecurityFindingCategory.trustedBaseline,
           title: 'Potential Evil Twin',
           description:
-              'SSID appears with conflicting security/channel fingerprint nearby.',
-          severity: VulnerabilitySeverity.high,
+              'A nearby access point shares this SSID but its fingerprint '
+              'doesn\'t match — that\'s the pattern an attacker uses to '
+              'impersonate a real Wi-Fi.',
+          severity: severity,
           recommendation:
-              'Verify BSSID and certificate before authentication or data exchange.',
+              'Don\'t enter passwords on this network until you\'ve '
+              'verified the BSSID printed on the back of your real router.',
           confidence: SecurityFindingConfidence.heuristic,
-          evidence:
-              'Another AP with the same SSID was detected nearby with a conflicting security or channel profile.',
+          evidence: _formatEvilTwinEvidence(evilTwin),
           timestamp: now,
           subject: network.ssid,
         ),
       );
-      riskFactors.add('SSID fingerprint drift detected');
-      score -= adjust(35, 'wifi.suspicious_sibling_ap');
+      riskFactors.add(
+        'Evil twin candidate (${(evilTwin.confidence * 100).round()}% '
+        'confidence) sharing this SSID',
+      );
+      // Scale the score deduction with confidence: a low-confidence finding
+      // costs ~15 points, a high-confidence one ~50.
+      final deduction = (15 + (evilTwin.confidence - 0.5) * 70)
+          .round()
+          .clamp(15, 50);
+      score -= adjust(deduction, 'wifi.suspicious_sibling_ap');
     }
 
     if (_isSuspiciousSsid(network.ssid)) {
@@ -505,94 +529,21 @@ class SecurityAnalyzer {
     );
   }
 
-  bool _isPotentialEvilTwin(WifiNetwork target, List<WifiNetwork> baseline) {
-    final sameSsid =
-        baseline
-            .where(
-              (entry) =>
-                  entry.ssid.isNotEmpty &&
-                  entry.ssid == target.ssid &&
-                  entry.bssid != target.bssid,
-            )
-            .toList();
-    if (sameSsid.isEmpty) {
-      return false;
+  String _formatEvilTwinEvidence(EvilTwinAssessment a) {
+    final parts = <String>[
+      'Confidence ${(a.confidence * 100).round()}% '
+          '(threshold ${(EvilTwinClassifier.candidateThreshold * 100).round()}%)',
+      'Peer BSSID: ${a.peerBssid}',
+    ];
+    if (a.suspicions.isNotEmpty) {
+      parts.add('Suspicion signals: ${a.suspicions.map((s) => s.name).join(', ')}');
     }
-
-    // Check each peer with the same SSID
-    for (final peer in sameSsid) {
-      // Skip if this is a legitimate multi-band/multi-radio sibling
-      if (_isLegitimateMultiBandSibling(target, peer)) continue;
-
-      // Flag 1: Conflicting security type (e.g. WPA2 vs Open)
-      if (peer.security != target.security) return true;
-
-      // Flag 2: Heavy channel drift *within the same frequency band*
-      if (_isSameBand(target.frequency, peer.frequency)) {
-        if ((peer.channel - target.channel).abs() >= 6) return true;
-      }
+    if (a.mitigations.isNotEmpty) {
+      parts.add(
+        'Mitigations applied: ${a.mitigations.map((s) => s.name).join(', ')}',
+      );
     }
-
-    return false;
+    return parts.join(' · ');
   }
 
-  /// Determines whether two APs with the same SSID are likely from the
-  /// same physical router broadcasting on different bands (2.4/5/6 GHz).
-  bool _isLegitimateMultiBandSibling(WifiNetwork a, WifiNetwork b) {
-    // If on the same band, they are NOT multi-band siblings
-    if (_isSameBand(a.frequency, b.frequency)) return false;
-
-    // Wi-Fi 7 MLD: if both share the same AP MLD MAC, they are the same device
-    if (a.apMldMac != null &&
-        a.apMldMac!.isNotEmpty &&
-        a.apMldMac == b.apMldMac) {
-      return true;
-    }
-
-    // BSSID proximity: manufacturers typically assign sequential MACs
-    // to radios on the same device (e.g. AA:BB:CC:DD:EE:01 and :02)
-    if (_areBssidsClose(a.bssid, b.bssid)) return true;
-
-    // Same vendor + same security across different bands is very likely
-    // a legitimate dual-band router
-    if (a.vendor == b.vendor &&
-        a.vendor != 'Unknown' &&
-        a.security == b.security) {
-      return true;
-    }
-
-    return false;
-  }
-
-  /// Returns true if two frequencies belong to the same Wi-Fi band.
-  bool _isSameBand(int freqA, int freqB) {
-    return _bandOf(freqA) == _bandOf(freqB);
-  }
-
-  /// Maps a frequency (MHz) to its band identifier.
-  int _bandOf(int freq) {
-    if (freq < 3000) return 2; // 2.4 GHz
-    if (freq < 5900) return 5; // 5 GHz
-    return 6; // 6 GHz
-  }
-
-  /// Checks if two BSSIDs differ by at most 3 in the last octet,
-  /// with identical prefix — a strong indicator of same physical device.
-  bool _areBssidsClose(String bssidA, String bssidB) {
-    final partsA = bssidA.split(':');
-    final partsB = bssidB.split(':');
-    if (partsA.length != 6 || partsB.length != 6) return false;
-
-    // First 5 octets must match exactly
-    for (int i = 0; i < 5; i++) {
-      if (partsA[i].toLowerCase() != partsB[i].toLowerCase()) return false;
-    }
-
-    // Last octet should be within 3 (covers up to 4 radios: 2.4, 5L, 5H, 6)
-    final lastA = int.tryParse(partsA[5], radix: 16) ?? -1;
-    final lastB = int.tryParse(partsB[5], radix: 16) ?? -1;
-    if (lastA < 0 || lastB < 0) return false;
-
-    return (lastA - lastB).abs() <= 3;
-  }
 }

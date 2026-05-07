@@ -1748,4 +1748,15 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get acknowledgedLabel => 'VERSTANDEN';
+
+  @override
+  String get speedDoctorTitle => 'GESCHWINDIGKEITS-DOKTOR';
+  @override
+  String get speedDoctorTagline => 'Warum ist das Internet langsam?';
+  @override
+  String get speedDoctorOpsTile => 'SPEED-DOKTOR';
+  @override
+  String get speedDoctorOpsSubtitle => 'Warum langsam?';
+  @override
+  String get evilTwinDetailTitle => 'EVIL-TWIN-DETAILS';
 }

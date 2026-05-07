@@ -10,7 +10,9 @@ import '../../../../features/ai/domain/services/device_classifier.dart';
 import '../../domain/entities/host_scan_result.dart';
 import '../../domain/entities/service_fingerprint.dart';
 import '../../domain/entities/port_scan_event.dart';
+import '../../domain/services/host_trust_classifier.dart';
 import '../../domain/usecases/port_scan_usecase.dart';
+import 'host_trust_badge.dart';
 
 enum _PortScanState { idle, scanning, done }
 enum _PortScanMode { common, all, custom }
@@ -357,6 +359,11 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
                   const SizedBox(width: 8),
                   _PortsCountBadge(count: _scannedServices.length, color: riskColor),
                 ],
+                const SizedBox(width: 8),
+                HostTrustBadge(
+                  assessment:
+                      const HostTrustClassifier().classify(widget.host),
+                ),
                 Icon(
                   _isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
                   color: scheme.onSurfaceVariant.withValues(alpha: 0.5),

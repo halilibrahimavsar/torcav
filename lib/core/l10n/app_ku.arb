@@ -2224,5 +2224,10 @@
     "deleteAllLabel": "HEMÛ JÊBIBE",
     "dualBandSiblingLabel": "DU-BAND",
     "dualBandSiblingBanner": "Radyoya {band} ya routera te: {channel}",
-    "acknowledgedLabel": "TÊGEHIŞTÎ"
+    "acknowledgedLabel": "TÊGEHIŞTÎ",
+    "speedDoctorTitle": "DOKTORÊ LEZ",
+    "speedDoctorTagline": "Çima înternet hêdî ye?",
+    "speedDoctorOpsTile": "DOKTORÊ LEZ",
+    "speedDoctorOpsSubtitle": "Çima hêdî ye?",
+    "evilTwinDetailTitle": "BÊTIRA EVIL TWIN"
 }

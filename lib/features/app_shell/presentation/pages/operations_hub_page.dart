@@ -151,8 +151,8 @@ class OperationsHubPage extends StatelessWidget {
                 delay: 600,
               ),
               _OperationCard(
-                title: 'SPEED DOCTOR',
-                subtitle: 'Why is it slow?',
+                title: l10n.speedDoctorOpsTile,
+                subtitle: l10n.speedDoctorOpsSubtitle,
                 icon: Icons.medical_services_rounded,
                 color: AppColors.neonPurple,
                 onTap: () => Navigator.of(context).push(

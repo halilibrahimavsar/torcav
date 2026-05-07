@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:torcav/core/l10n/app_localizations.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
@@ -32,10 +33,11 @@ class _SpeedDoctorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'SPEED DOCTOR',
+          l10n.speedDoctorTitle,
           style: GoogleFonts.orbitron(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.4,
@@ -99,11 +101,12 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Why is the internet slow?',
+          l10n.speedDoctorTagline,
           style: GoogleFonts.orbitron(
             color: AppColors.neonPurple,
             fontSize: 18,

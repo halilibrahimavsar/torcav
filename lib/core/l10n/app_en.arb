@@ -2317,5 +2317,15 @@
     "@acknowledgedLabel": {
         "description": "Confirmation button label that closes an info bottom sheet (Topology legend)"
     },
+    "speedDoctorTitle": "SPEED DOCTOR",
+    "@speedDoctorTitle": {"description": "Speed Doctor app-bar title"},
+    "speedDoctorTagline": "Why is the internet slow?",
+    "@speedDoctorTagline": {"description": "Speed Doctor subtitle"},
+    "speedDoctorOpsTile": "SPEED DOCTOR",
+    "@speedDoctorOpsTile": {"description": "Operations Hub tile for Speed Doctor"},
+    "speedDoctorOpsSubtitle": "Why is it slow?",
+    "@speedDoctorOpsSubtitle": {"description": "Operations Hub tile subtitle for Speed Doctor"},
+    "evilTwinDetailTitle": "EVIL TWIN DETAIL",
+    "@evilTwinDetailTitle": {"description": "Evil-twin detail page title"},
     "@@locale": "en"
 }

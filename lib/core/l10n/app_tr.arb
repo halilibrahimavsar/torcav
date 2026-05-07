@@ -2274,5 +2274,10 @@
     "deleteAllLabel": "TÜMÜNÜ SİL",
     "dualBandSiblingLabel": "AYNI ROUTER",
     "dualBandSiblingBanner": "Router'ınızın {band} radyosu: {channel}",
-    "acknowledgedLabel": "ANLAŞILDI"
+    "acknowledgedLabel": "ANLAŞILDI",
+    "speedDoctorTitle": "HIZ DOKTORU",
+    "speedDoctorTagline": "İnternet neden yavaş?",
+    "speedDoctorOpsTile": "HIZ DOKTORU",
+    "speedDoctorOpsSubtitle": "Niye yavaş?",
+    "evilTwinDetailTitle": "EVIL TWIN DETAYI"
 }

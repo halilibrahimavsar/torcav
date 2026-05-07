@@ -17,6 +17,7 @@ import '../../../wifi_scan/domain/entities/scan_snapshot.dart';
 import '../../../wifi_scan/domain/entities/wifi_observation.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
 import '../../domain/entities/report_labels.dart';
+import '../../domain/services/pdf_lock_service.dart';
 import '../../domain/usecases/generate_report_usecase.dart';
 import '../bloc/reports_bloc.dart';
 import '../widgets/local_data_export_card.dart';
@@ -42,6 +43,7 @@ class ReportsView extends StatefulWidget {
 
 class _ReportsViewState extends State<ReportsView> {
   bool _anonymize = true;
+  String _pdfPassword = '';
 
   /// Returns a copy of [snapshot] with the last 3 BSSID octets and SSID masked.
   ScanSnapshot _maybeAnonymize(ScanSnapshot snapshot) {
@@ -248,6 +250,13 @@ class _ReportsViewState extends State<ReportsView> {
               ),
               const SizedBox(height: 16),
 
+              // ── PDF password (optional, applied post-export) ──
+              _PdfPasswordField(
+                value: _pdfPassword,
+                onChanged: (v) => setState(() => _pdfPassword = v),
+              ),
+              const SizedBox(height: 16),
+
               // ── Export Options ──
               StaggeredEntry(
                 delay: const Duration(milliseconds: 300),
@@ -374,10 +383,19 @@ class _ReportsViewState extends State<ReportsView> {
         contents: state.content as String,
       );
     } else if (state.format == ReportFormat.pdf) {
+      var bytes = state.content as Uint8List;
+      var name = 'torcav_scan_$timestamp.pdf';
+      if (_pdfPassword.isNotEmpty) {
+        bytes = const PdfLockService().lock(
+          payload: bytes,
+          password: _pdfPassword,
+        );
+        name = 'torcav_scan_$timestamp.torcav-pdf';
+      }
       await _savePdfFile(
         context: context,
-        suggestedName: 'torcav_scan_$timestamp.pdf',
-        bytes: state.content as Uint8List,
+        suggestedName: name,
+        bytes: bytes,
       );
     } else if (state.format == ReportFormat.csv) {
       await _saveTextFile(
@@ -728,6 +746,117 @@ class _NeonIconCircle extends StatelessWidget {
         ],
       ),
       child: Icon(icon, color: color, size: 20),
+    );
+  }
+}
+
+class _PdfPasswordField extends StatefulWidget {
+  const _PdfPasswordField({required this.value, required this.onChanged});
+
+  final String value;
+  final ValueChanged<String> onChanged;
+
+  @override
+  State<_PdfPasswordField> createState() => _PdfPasswordFieldState();
+}
+
+class _PdfPasswordFieldState extends State<_PdfPasswordField> {
+  bool _expanded = false;
+  bool _obscure = true;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface.withValues(alpha: 0.4),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: theme.colorScheme.outlineVariant.withValues(alpha: 0.4),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          InkWell(
+            onTap: () => setState(() => _expanded = !_expanded),
+            child: Row(
+              children: [
+                Icon(Icons.lock_outline_rounded,
+                    color: theme.colorScheme.primary),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'PROTECT PDF WITH A PASSWORD',
+                        style: GoogleFonts.orbitron(
+                          color: theme.colorScheme.primary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        widget.value.isEmpty
+                            ? 'Optional. Locked file: .torcav-pdf — open it again from Reports.'
+                            : 'Locked file: .torcav-pdf — open it again from Reports.',
+                        style: GoogleFonts.rajdhani(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontSize: 12,
+                          height: 1.3,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  _expanded
+                      ? Icons.keyboard_arrow_up_rounded
+                      : Icons.keyboard_arrow_down_rounded,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ],
+            ),
+          ),
+          if (_expanded) ...[
+            const SizedBox(height: 10),
+            TextField(
+              obscureText: _obscure,
+              decoration: InputDecoration(
+                hintText: 'Password (leave empty for plain PDF)',
+                isDense: true,
+                border: const OutlineInputBorder(),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _obscure
+                        ? Icons.visibility_off_rounded
+                        : Icons.visibility_rounded,
+                  ),
+                  onPressed: () => setState(() => _obscure = !_obscure),
+                ),
+              ),
+              onChanged: widget.onChanged,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Heads up: this is lightweight obfuscation, not bank-grade '
+              'encryption. It protects the file against casual leaks (cloud '
+              'thumbnails, mailbox cache) but a determined attacker who has '
+              'the file could still attempt to brute-force a weak password. '
+              'Use a long, unique passphrase.',
+              style: GoogleFonts.rajdhani(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontSize: 11,
+                height: 1.4,
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
