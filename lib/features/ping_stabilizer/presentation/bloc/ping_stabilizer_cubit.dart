@@ -1,13 +1,16 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../core/services/notification_service.dart';
 import '../../domain/entities/dns_candidate.dart';
 import '../../domain/entities/live_stats.dart';
 import '../../domain/entities/stabilization_profile.dart';
 import '../../domain/entities/stabilizer_recommendation.dart';
+import '../../domain/repositories/ping_stabilizer_repository.dart';
 import '../../domain/usecases/apply_dns_usecase.dart';
 import '../../domain/usecases/baseline_ping_usecase.dart';
 import '../../domain/usecases/benchmark_dns_usecase.dart';
@@ -30,8 +33,10 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
   final ListProfilesUseCase _listProfiles;
   final BaselinePingUseCase _baseline;
   final NotificationService _notifications;
+  final PingStabilizerRepository _repository;
 
   StreamSubscription? _statsSub;
+  StreamSubscription? _stoppedSub;
   final Set<String> _notifiedKeys = {};
   bool _bootstrapped = false;
 
@@ -49,7 +54,28 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
     this._listProfiles,
     this._baseline,
     this._notifications,
-  ) : super(PingStabilizerState.initial());
+    this._repository,
+  ) : super(PingStabilizerState.initial()) {
+    // Always-on listener for native-driven teardown (notification "Stop"
+    // action, system VPN revoke). The stream is broadcast and replays no
+    // events, so this is safe to wire up immediately.
+    _stoppedSub = _repository.observeTunnelStopped().listen((_) {
+      _onNativeStopped();
+    });
+  }
+
+  void _onNativeStopped() {
+    if (isClosed) return;
+    _statsSub?.cancel();
+    _statsSub = null;
+    _notifiedKeys.clear();
+    emit(state.copyWith(
+      status: StabilizerStatus.idle,
+      stats: LiveStats.empty(),
+      recommendations: const [],
+      clearSession: true,
+    ));
+  }
 
   /// Idempotent. Called from every UI surface that mounts a
   /// PingStabilizerCubit consumer; subsequent calls are no-ops because the
@@ -99,6 +125,26 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
     if (profile == null) return;
     emit(state.copyWith(status: StabilizerStatus.starting, clearError: true));
 
+    // Android 13+ requires POST_NOTIFICATIONS at runtime; without it the
+    // foreground HUD won't render even though the foreground service is up.
+    // We ask once on first start; user can deny — VPN still works, just
+    // without the in-shade ping HUD.
+    if (Platform.isAndroid) {
+      var status = await Permission.notification.status;
+      if (status.isDenied) {
+        status = await Permission.notification.request();
+      }
+      if (isClosed) return;
+      // Granted normally; denied → user can still run the tunnel but won't
+      // see the live HUD. permanentlyDenied → must use system settings.
+      // MIUI sometimes reports `granted` while sub-toggles (lock-screen,
+      // floating, banner) are off — we surface a banner regardless when
+      // the user reports they cannot see the HUD.
+      emit(state.copyWith(
+        notificationsBlocked: !status.isGranted,
+      ));
+    }
+
     final result = await _start(profile);
     result.fold(
       (failure) => emit(state.copyWith(
@@ -135,6 +181,14 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
       recommendations: const [],
       clearSession: true,
     ));
+  }
+
+  /// Opens the OS notification settings page for this app. On MIUI this is
+  /// the right entry point because Xiaomi exposes per-toggle controls
+  /// (lock screen, floating, banner) that the standard runtime permission
+  /// prompt does not surface.
+  Future<void> openNotificationSettings() async {
+    await openAppSettings();
   }
 
   void selectProfile(StabilizationProfile profile) {
@@ -275,6 +329,7 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
   @override
   Future<void> close() async {
     await _statsSub?.cancel();
+    await _stoppedSub?.cancel();
     return super.close();
   }
 }

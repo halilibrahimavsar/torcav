@@ -25,6 +25,11 @@ abstract class PingStabilizerRepository {
   /// 1 Hz stream of raw jitter samples emitted by the native service.
   Stream<JitterSample> observeSamples();
 
+  /// Fires when the native tunnel terminates outside of the cubit's
+  /// `stop()` flow — e.g. the user tapped "Stop" in the notification or
+  /// revoked the VPN from system settings.
+  Stream<void> observeTunnelStopped();
+
   Future<Either<Failure, List<DnsCandidate>>> benchmarkDns(
     List<DnsCandidate> candidates,
   );

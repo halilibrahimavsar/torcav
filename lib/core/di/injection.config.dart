@@ -680,6 +680,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i613.ListProfilesUseCase>(),
         gh<_i646.BaselinePingUseCase>(),
         gh<_i941.NotificationService>(),
+        gh<_i852.PingStabilizerRepository>(),
       ),
     );
     gh.factory<_i95.TopologyBloc>(

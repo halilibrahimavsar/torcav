@@ -76,6 +76,9 @@ class PingStabilizerRepositoryImpl implements PingStabilizerRepository {
   Stream<JitterSample> observeSamples() => _channel.samples();
 
   @override
+  Stream<void> observeTunnelStopped() => _channel.tunnelStopped();
+
+  @override
   Future<Either<Failure, List<DnsCandidate>>> benchmarkDns(
     List<DnsCandidate> candidates,
   ) async {

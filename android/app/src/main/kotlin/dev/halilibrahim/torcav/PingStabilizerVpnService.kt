@@ -419,7 +419,12 @@ class PingStabilizerVpnService : VpnService() {
     }
 
     private fun tearDown() {
-        running.set(false)
+        if (!running.getAndSet(false)) return
+        // Notify Flutter so the Cubit transitions back to idle when the user
+        // stops the tunnel from the notification action (or via VpnService.revoke).
+        try {
+            PingStabilizerStatsSink.emit(mapOf("stopped" to true))
+        } catch (_: Exception) {}
         try { workerThread?.interrupt() } catch (_: Exception) {}
         try { statsThread?.interrupt() } catch (_: Exception) {}
         try { tunInterface?.close() } catch (_: Exception) {}
@@ -512,13 +517,13 @@ class PingStabilizerVpnService : VpnService() {
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .setContentIntent(openPending)
             .addAction(
-                android.R.drawable.ic_menu_rotate,
-                "Cycle",
+                android.R.drawable.ic_popup_sync,
+                "🔄 Cycle",
                 cyclePending,
             )
             .addAction(
-                android.R.drawable.ic_menu_close_clear_cancel,
-                "Stop",
+                android.R.drawable.ic_media_pause,
+                "⏹ Stop",
                 stopPending,
             )
             .build()

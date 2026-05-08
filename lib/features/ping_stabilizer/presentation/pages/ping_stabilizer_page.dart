@@ -61,6 +61,57 @@ class _PingStabilizerView extends StatelessWidget {
                       child: Text(state.errorMessage!),
                     ),
                   ),
+                if (state.notificationsBlocked)
+                  Card(
+                    color: Colors.orangeAccent.withValues(alpha: 0.12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                        color: Colors.orangeAccent.withValues(alpha: 0.5),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Row(
+                            children: [
+                              Icon(Icons.notifications_off_rounded,
+                                  color: Colors.orangeAccent),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Notifications are blocked',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          const Text(
+                            'The live ping HUD lives in the notification '
+                            'shade. Without notifications you cannot see ping '
+                            'while gaming. On MIUI/Xiaomi, also enable '
+                            '"Show on Lock screen" and "Floating notifications".',
+                            style: TextStyle(fontSize: 13),
+                          ),
+                          const SizedBox(height: 8),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: FilledButton.icon(
+                              onPressed: () => context
+                                  .read<PingStabilizerCubit>()
+                                  .openNotificationSettings(),
+                              icon: const Icon(Icons.settings_rounded),
+                              label: const Text('Open settings'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 const RecommendationBanner(),
                 const SizedBox(height: 16),
                 Card(

@@ -28,6 +28,7 @@ class PingStabilizerState extends Equatable {
   final double jitterThresholdMs;
   final int? baselineLatencyMs;
   final String? errorMessage;
+  final bool notificationsBlocked;
 
   const PingStabilizerState({
     this.status = StabilizerStatus.idle,
@@ -42,6 +43,7 @@ class PingStabilizerState extends Equatable {
     this.jitterThresholdMs = 30,
     this.baselineLatencyMs,
     this.errorMessage,
+    this.notificationsBlocked = false,
   });
 
   factory PingStabilizerState.initial() => PingStabilizerState(
@@ -61,6 +63,7 @@ class PingStabilizerState extends Equatable {
     double? jitterThresholdMs,
     int? baselineLatencyMs,
     String? errorMessage,
+    bool? notificationsBlocked,
     bool clearError = false,
     bool clearSession = false,
   }) {
@@ -77,6 +80,8 @@ class PingStabilizerState extends Equatable {
       jitterThresholdMs: jitterThresholdMs ?? this.jitterThresholdMs,
       baselineLatencyMs: baselineLatencyMs ?? this.baselineLatencyMs,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+      notificationsBlocked:
+          notificationsBlocked ?? this.notificationsBlocked,
     );
   }
 
@@ -94,5 +99,6 @@ class PingStabilizerState extends Equatable {
         jitterThresholdMs,
         baselineLatencyMs,
         errorMessage,
+        notificationsBlocked,
       ];
 }

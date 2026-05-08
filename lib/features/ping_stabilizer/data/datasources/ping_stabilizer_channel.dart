@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 
@@ -15,7 +17,13 @@ class PingStabilizerChannel {
   static const _method = MethodChannel('torcav/ping_stabilizer');
   static const _events = EventChannel('torcav/ping_stabilizer/stats');
 
-  Stream<JitterSample>? _statsStream;
+  // Single underlying EventChannel subscription, fanned out to two
+  // broadcast streams: jitter samples and tunnel-lifecycle events.
+  StreamSubscription? _eventSub;
+  final StreamController<JitterSample> _samplesCtrl =
+      StreamController.broadcast();
+  final StreamController<void> _stoppedCtrl =
+      StreamController.broadcast();
 
   Future<bool> isPrepared() async {
     try {
@@ -99,18 +107,40 @@ class PingStabilizerChannel {
   }
 
   Stream<JitterSample> samples() {
-    return _statsStream ??= _events.receiveBroadcastStream().map((event) {
-      final m = (event as Map?) ?? const {};
-      return JitterSample(
-        ts: DateTime.fromMillisecondsSinceEpoch(
-          (m['tsMs'] as num?)?.toInt() ?? DateTime.now().millisecondsSinceEpoch,
-        ),
-        latencyMs: (m['latencyMs'] as num?)?.toDouble() ?? 0,
-        jitterMs: (m['jitterMs'] as num?)?.toDouble() ?? 0,
-        lossPct: (m['lossPct'] as num?)?.toDouble() ?? 0,
-      );
-    }).handleError((_) {
-      // Swallow; UI keeps last known sample.
-    });
+    _ensureListening();
+    return _samplesCtrl.stream;
+  }
+
+  /// Fires when the native tunnel tears down — including via the
+  /// notification "Stop" action or the system VPN revoke flow. The Cubit
+  /// listens to this so the UI returns to idle without the user having to
+  /// re-open the app and toggle off.
+  Stream<void> tunnelStopped() {
+    _ensureListening();
+    return _stoppedCtrl.stream;
+  }
+
+  void _ensureListening() {
+    _eventSub ??= _events.receiveBroadcastStream().listen(
+      (event) {
+        final m = (event as Map?) ?? const {};
+        if (m['stopped'] == true) {
+          _stoppedCtrl.add(null);
+          return;
+        }
+        _samplesCtrl.add(JitterSample(
+          ts: DateTime.fromMillisecondsSinceEpoch(
+            (m['tsMs'] as num?)?.toInt() ??
+                DateTime.now().millisecondsSinceEpoch,
+          ),
+          latencyMs: (m['latencyMs'] as num?)?.toDouble() ?? 0,
+          jitterMs: (m['jitterMs'] as num?)?.toDouble() ?? 0,
+          lossPct: (m['lossPct'] as num?)?.toDouble() ?? 0,
+        ));
+      },
+      onError: (_) {
+        // Swallow — UI keeps last known sample.
+      },
+    );
   }
 }
