@@ -42,6 +42,11 @@ class AppSettings extends Equatable {
   /// inferrer can't classify a network on its own.
   final NetworkContextType defaultNetworkContext;
 
+  /// When true, the platform's background monitoring service runs while
+  /// the app is closed. Off by default — opt-in to keep battery + privacy
+  /// posture conservative.
+  final bool backgroundMonitoringEnabled;
+
   const AppSettings({
     this.scanIntervalSeconds = 30,
     this.defaultScanPasses = 3,
@@ -58,6 +63,7 @@ class AppSettings extends Equatable {
     this.speedTestRetentionDays = 30,
     this.securityEventRetentionDays = 30,
     this.defaultNetworkContext = NetworkContextType.unknown,
+    this.backgroundMonitoringEnabled = false,
   });
 
 
@@ -77,6 +83,7 @@ class AppSettings extends Equatable {
     int? speedTestRetentionDays,
     int? securityEventRetentionDays,
     NetworkContextType? defaultNetworkContext,
+    bool? backgroundMonitoringEnabled,
   }) {
     return AppSettings(
       scanIntervalSeconds: scanIntervalSeconds ?? this.scanIntervalSeconds,
@@ -100,6 +107,8 @@ class AppSettings extends Equatable {
           securityEventRetentionDays ?? this.securityEventRetentionDays,
       defaultNetworkContext:
           defaultNetworkContext ?? this.defaultNetworkContext,
+      backgroundMonitoringEnabled:
+          backgroundMonitoringEnabled ?? this.backgroundMonitoringEnabled,
     );
   }
 
@@ -121,6 +130,7 @@ class AppSettings extends Equatable {
     speedTestRetentionDays,
     securityEventRetentionDays,
     defaultNetworkContext,
+    backgroundMonitoringEnabled,
   ];
 
 
@@ -141,6 +151,7 @@ class AppSettings extends Equatable {
       'speedTestRetentionDays': speedTestRetentionDays,
       'securityEventRetentionDays': securityEventRetentionDays,
       'defaultNetworkContext': defaultNetworkContext.name,
+      'backgroundMonitoringEnabled': backgroundMonitoringEnabled,
     };
 
   }
@@ -167,6 +178,10 @@ class AppSettings extends Equatable {
       securityEventRetentionDays: _readInt(json['securityEventRetentionDays'], fallback: 30),
       defaultNetworkContext: _parseNetworkContext(
         json['defaultNetworkContext'] as String?,
+      ),
+      backgroundMonitoringEnabled: _readBool(
+        json['backgroundMonitoringEnabled'],
+        fallback: false,
       ),
     );
 

@@ -49,5 +49,15 @@
 	<string>Used to scan room layout for signal mapping</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Used to track your position as you walk through rooms</string>
+	<!-- Background monitoring (opt-in feature). Only fires when the user
+	     enables Settings → Privacy → Background monitoring. -->
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>dev.halilibrahim.torcav.refresh</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+	</array>
 </dict>
 </plist>

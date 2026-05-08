@@ -63,10 +63,14 @@ import '../../features/monitoring/data/repositories/monitoring_repository_impl.d
     as _i592;
 import '../../features/monitoring/data/repositories/topology_repository_impl.dart'
     as _i21;
+import '../../features/monitoring/data/services/background_monitor_impl.dart'
+    as _i190;
 import '../../features/monitoring/domain/repositories/monitoring_repository.dart'
     as _i365;
 import '../../features/monitoring/domain/repositories/topology_repository.dart'
     as _i244;
+import '../../features/monitoring/domain/services/background_monitor.dart'
+    as _i167;
 import '../../features/monitoring/domain/services/topology_builder.dart'
     as _i892;
 import '../../features/monitoring/domain/usecases/get_topology_usecase.dart'
@@ -310,6 +314,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i104.PositionTracker>(
       () => _i104.PositionTracker(gh<_i989.PositionDataSource>()),
+    );
+    gh.lazySingleton<_i167.BackgroundMonitor>(
+      () => _i190.BackgroundMonitorImpl(),
     );
     gh.lazySingleton<_i389.SpeedTestRepository>(
       () => const _i275.SpeedTestRepositoryImpl(),

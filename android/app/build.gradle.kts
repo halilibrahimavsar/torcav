@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "io.torcav.app"
+    namespace = "dev.halilibrahim.torcav"
     compileSdk = 36
     ndkVersion = "27.0.12077973"
 
@@ -21,7 +21,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "io.torcav.app"
+        applicationId = "dev.halilibrahim.torcav"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = maxOf(flutter.minSdkVersion, 24)

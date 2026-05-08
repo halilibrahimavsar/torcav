@@ -12,6 +12,7 @@ import '../../../security/data/datasources/security_local_data_source.dart';
 import '../../../wifi_scan/data/datasources/channel_rating_local_data_source.dart';
 import '../../../wifi_scan/data/datasources/wifi_scan_history_local_data_source.dart';
 import '../../../heatmap/data/datasources/heatmap_local_data_source.dart';
+import '../../../monitoring/domain/services/background_monitor.dart';
 import '../../../network_scan/data/datasources/lan_scan_history_local_data_source.dart';
 import '../../../wifi_scan/domain/entities/scan_request.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
@@ -466,6 +467,41 @@ class _SettingsPageState extends State<SettingsPage> {
                       _update(
                         settings.copyWith(restrictDeepScanOnPublic: value),
                       );
+                    },
+                  ),
+                  // Background monitoring (opt-in)
+                  SwitchListTile(
+                    value: settings.backgroundMonitoringEnabled,
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    title: Text(
+                      'Background Monitoring',
+                      style: GoogleFonts.rajdhani(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Run a quiet Wi-Fi check every 30 minutes while the app '
+                      'is closed. You\'ll get a notification if a new device '
+                      'appears, the connected network swaps, or encryption '
+                      'changes. Battery impact is minimal. iOS support is '
+                      'limited (system-controlled refresh).',
+                      style: GoogleFonts.rajdhani(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
+                    ),
+                    onChanged: (value) async {
+                      _update(
+                        settings.copyWith(backgroundMonitoringEnabled: value),
+                      );
+                      final monitor = getIt<BackgroundMonitor>();
+                      if (value) {
+                        await monitor.start();
+                      } else {
+                        await monitor.stop();
+                      }
                     },
                   ),
                   Divider(

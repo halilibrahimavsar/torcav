@@ -1,9 +1,9 @@
-package io.torcav.app
+package dev.halilibrahim.torcav
 
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.text.TextUtils
-import io.torcav.app.ar.ArScenePlugin
+import dev.halilibrahim.torcav.ar.ArScenePlugin
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -11,6 +11,7 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterActivity() {
 
     private val WIFI_EXTENDED_CHANNEL = "torcav/wifi_extended"
+    private val MONITORING_CHANNEL = "torcav/background_monitor"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -38,6 +39,24 @@ class MainActivity : FlutterActivity() {
                     } catch (e: Exception) {
                         result.error("WIFI_CONNECTED_ERROR", e.message, null)
                     }
+                }
+                else -> result.notImplemented()
+            }
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            MONITORING_CHANNEL,
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "start" -> {
+                    val tickMs = (call.argument<Number>("tickMs") ?: 1_800_000L).toLong()
+                    MonitoringService.start(applicationContext, tickMs)
+                    result.success(true)
+                }
+                "stop" -> {
+                    MonitoringService.stop(applicationContext)
+                    result.success(true)
                 }
                 else -> result.notImplemented()
             }
