@@ -82,8 +82,13 @@ class StabilizerExplainer extends StatelessWidget {
                     'normal and required by the system.',
                 'Only one VPN can run at a time. If you have another VPN app '
                     'connected, this will refuse to start.',
-                'A persistent low-priority notification is mandatory for VPN '
-                    'foreground services on modern Android.',
+                'A persistent live notification (current ping + Stop / Cycle '
+                    'buttons) stays in the shade while the tunnel runs — that '
+                    'is your in-game HUD; do not swipe it away.',
+                'On Xiaomi/MIUI, OnePlus/OxygenOS and similar skins, you may '
+                    'need to allow Torcav under Settings → Notifications and '
+                    'Settings → Battery → No restrictions, or the OS will '
+                    'silently hide the notification.',
                 'DNS auto-switch will change which resolver answers your '
                     'queries while the tunnel is on. That switch reverts when '
                     'you stop the stabilizer.',
