@@ -12,6 +12,8 @@ import '../../../diagnostics/presentation/pages/speed_doctor_page.dart';
 import '../../../heatmap/domain/entities/connected_signal.dart';
 import '../../../heatmap/domain/services/connected_signal_service.dart';
 import '../../../performance/domain/entities/speed_test_result.dart';
+import '../../../ping_stabilizer/presentation/bloc/ping_stabilizer_cubit.dart';
+import '../../../ping_stabilizer/presentation/widgets/stabilizer_toggle_card.dart';
 import '../../../performance/domain/repositories/speed_test_history_repository.dart';
 import '../../../security/domain/entities/network_context_type.dart';
 import '../../../security/domain/entities/security_assessment.dart';
@@ -443,6 +445,19 @@ class _DashboardPageState extends State<DashboardPage> {
                 onTapDevices: () => widget.onNavigate('wifi'),
                 onTapThreats: () => _showNotificationSheet(context),
                 onTapSpeed: () => widget.onNavigate('performance'),
+              ),
+
+              const SizedBox(height: 20),
+
+              // ── Ping Stabilizer quick-toggle ──
+              StaggeredEntry(
+                delay: const Duration(milliseconds: 320),
+                child: BlocProvider<PingStabilizerCubit>.value(
+                  value: getIt<PingStabilizerCubit>()..bootstrap(),
+                  child: StabilizerToggleCard(
+                    onTap: () => widget.onNavigate('ping_stabilizer'),
+                  ),
+                ),
               ),
 
               const SizedBox(height: 28),

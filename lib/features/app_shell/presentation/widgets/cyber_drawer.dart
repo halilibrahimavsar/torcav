@@ -78,6 +78,14 @@ class CyberDrawer extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             _DrawerActionTile(
+              icon: Icons.shield_outlined,
+              label: l10n.pingStabilizerDrawerLabel,
+              onTap: () {
+                Navigator.pop(context);
+                onNavigate('ping_stabilizer');
+              },
+            ),
+            _DrawerActionTile(
               icon: Icons.settings_outlined,
               label: l10n.settingsTitle,
               onTap: () {

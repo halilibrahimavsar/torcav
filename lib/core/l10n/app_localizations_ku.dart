@@ -1751,12 +1751,28 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get speedDoctorTitle => 'DOKTORÊ LEZ';
+
   @override
   String get speedDoctorTagline => 'Çima înternet hêdî ye?';
+
   @override
   String get speedDoctorOpsTile => 'DOKTORÊ LEZ';
+
   @override
   String get speedDoctorOpsSubtitle => 'Çima hêdî ye?';
+
   @override
   String get evilTwinDetailTitle => 'BÊTIRA EVIL TWIN';
+
+  @override
+  String get pingStabilizerTitle => 'STABÎLÎZATORÊ PING';
+
+  @override
+  String get pingStabilizerSubtitle => 'Tunela derengmayînê ya li ser cîhazê';
+
+  @override
+  String get pingStabilizerToggleHint => 'Bide bo stabîlîzekirinê';
+
+  @override
+  String get pingStabilizerDrawerLabel => 'Stabîlîzatorê Ping';
 }

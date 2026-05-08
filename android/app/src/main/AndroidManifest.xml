@@ -16,6 +16,12 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!-- Ping Stabilizer (opt-in, default OFF). Establishes an on-device
+         VPN tunnel to perform DNS-routing + jitter monitoring. No traffic
+         leaves the device beyond the user's normal upstream. -->
+    <uses-permission android:name="android.permission.BIND_VPN_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
     <!-- Remove unused sensitive permissions injected by plugins -->
     <uses-permission android:name="android.permission.BODY_SENSORS" tools:node="remove" />
     <uses-permission android:name="android.permission.HIGH_SAMPLING_RATE_SENSORS" tools:node="remove" />
@@ -75,6 +81,21 @@
             android:name=".MonitoringService"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
+
+        <!-- Ping Stabilizer VPN. specialUse subtype because the tunnel is
+             local-only (no remote relay); we are not a generic VPN client. -->
+        <service
+            android:name=".PingStabilizerVpnService"
+            android:permission="android.permission.BIND_VPN_SERVICE"
+            android:foregroundServiceType="specialUse"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.net.VpnService" />
+            </intent-filter>
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="local_ping_stabilizer_tunnel" />
+        </service>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

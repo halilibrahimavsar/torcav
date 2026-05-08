@@ -2279,5 +2279,9 @@
     "speedDoctorTagline": "İnternet neden yavaş?",
     "speedDoctorOpsTile": "HIZ DOKTORU",
     "speedDoctorOpsSubtitle": "Niye yavaş?",
-    "evilTwinDetailTitle": "EVIL TWIN DETAYI"
+    "evilTwinDetailTitle": "EVIL TWIN DETAYI",
+    "pingStabilizerTitle": "PING STABİLİZATÖR",
+    "pingStabilizerSubtitle": "Cihaz üstü gecikme tüneli",
+    "pingStabilizerToggleHint": "Stabilize etmek için dokun",
+    "pingStabilizerDrawerLabel": "Ping Stabilizatör"
 }

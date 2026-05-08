@@ -2229,5 +2229,9 @@
     "speedDoctorTagline": "Warum ist das Internet langsam?",
     "speedDoctorOpsTile": "SPEED-DOKTOR",
     "speedDoctorOpsSubtitle": "Warum langsam?",
-    "evilTwinDetailTitle": "EVIL-TWIN-DETAILS"
+    "evilTwinDetailTitle": "EVIL-TWIN-DETAILS",
+    "pingStabilizerTitle": "PING-STABILISATOR",
+    "pingStabilizerSubtitle": "Latenztunnel auf dem Gerät",
+    "pingStabilizerToggleHint": "Tippen zum Stabilisieren",
+    "pingStabilizerDrawerLabel": "Ping-Stabilisator"
 }

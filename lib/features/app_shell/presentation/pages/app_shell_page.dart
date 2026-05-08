@@ -13,6 +13,7 @@ import '../../../settings/presentation/pages/settings_page.dart';
 import '../../../monitoring/presentation/pages/topology_page.dart';
 import '../../../monitoring/presentation/pages/spectrum_optimization_page.dart';
 import '../../../performance/presentation/pages/performance_page.dart';
+import '../../../ping_stabilizer/presentation/pages/ping_stabilizer_page.dart';
 import '../../../heatmap/presentation/pages/heatmap_page.dart';
 import '../../../wifi_scan/presentation/pages/wifi_scan_page.dart';
 import '../widgets/cyber_drawer.dart';
@@ -157,6 +158,10 @@ class _AppShellPageState extends State<AppShellPage> with RestorationMixin {
         Navigator.of(
           context,
         ).push(MaterialPageRoute(builder: (context) => const ProfileHubPage()));
+      case 'ping_stabilizer':
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const PingStabilizerPage()),
+        );
     }
   }
 }

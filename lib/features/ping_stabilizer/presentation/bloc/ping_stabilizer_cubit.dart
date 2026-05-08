@@ -1,0 +1,280 @@
+import 'dart:async';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
+
+import '../../../../core/services/notification_service.dart';
+import '../../domain/entities/dns_candidate.dart';
+import '../../domain/entities/live_stats.dart';
+import '../../domain/entities/stabilization_profile.dart';
+import '../../domain/entities/stabilizer_recommendation.dart';
+import '../../domain/usecases/apply_dns_usecase.dart';
+import '../../domain/usecases/baseline_ping_usecase.dart';
+import '../../domain/usecases/benchmark_dns_usecase.dart';
+import '../../domain/usecases/list_profiles_usecase.dart';
+import '../../domain/usecases/observe_live_stats_usecase.dart';
+import '../../domain/usecases/start_stabilization_usecase.dart';
+import '../../domain/usecases/stop_stabilization_usecase.dart';
+import 'ping_stabilizer_state.dart';
+
+/// Singleton: the tunnel itself is process-global (one VpnService at a time)
+/// so the cubit's state must be too. Multiple BlocProviders (dashboard tile +
+/// dedicated page) share this single instance via `BlocProvider.value`.
+@lazySingleton
+class PingStabilizerCubit extends Cubit<PingStabilizerState> {
+  final StartStabilizationUseCase _start;
+  final StopStabilizationUseCase _stop;
+  final ObserveLiveStatsUseCase _observe;
+  final BenchmarkDnsUseCase _benchmarkDns;
+  final ApplyDnsUseCase _applyDns;
+  final ListProfilesUseCase _listProfiles;
+  final BaselinePingUseCase _baseline;
+  final NotificationService _notifications;
+
+  StreamSubscription? _statsSub;
+  final Set<String> _notifiedKeys = {};
+  bool _bootstrapped = false;
+
+  /// Number of consecutive over-threshold samples before a reconnect
+  /// recommendation fires. Three samples ≈ 3 s at 1 Hz — long enough to ride
+  /// out one-shot spikes, short enough to react to a sticky bad path.
+  static const int _breachWindow = 3;
+
+  PingStabilizerCubit(
+    this._start,
+    this._stop,
+    this._observe,
+    this._benchmarkDns,
+    this._applyDns,
+    this._listProfiles,
+    this._baseline,
+    this._notifications,
+  ) : super(PingStabilizerState.initial());
+
+  /// Idempotent. Called from every UI surface that mounts a
+  /// PingStabilizerCubit consumer; subsequent calls are no-ops because the
+  /// cubit is a singleton and the bootstrap pings should only run once.
+  Future<void> bootstrap() async {
+    if (_bootstrapped || isClosed) return;
+    _bootstrapped = true;
+
+    final profilesEither = await _listProfiles();
+    if (isClosed) return;
+    final profiles = profilesEither.getOrElse(
+      () => StabilizationProfile.builtIns(),
+    );
+    emit(
+      state.copyWith(
+        profiles: profiles,
+        profile: state.profile ?? profiles.first,
+        dnsCandidates: DnsCandidate.defaults,
+      ),
+    );
+
+    // Pre-tunnel baseline so the user sees a "before/after" delta on start.
+    final baseline = await _baseline();
+    if (isClosed) return;
+    baseline.fold(
+      (_) {},
+      (rttMs) => emit(state.copyWith(baselineLatencyMs: rttMs)),
+    );
+
+    // Pre-bench candidate DNS resolvers.
+    final benched = await _benchmarkDns();
+    if (isClosed) return;
+    benched.fold(
+      (_) {},
+      (list) {
+        final ranked = BenchmarkDnsUseCase.rank(list);
+        emit(state.copyWith(
+          dnsCandidates: ranked,
+          activeDns: ranked.isNotEmpty ? ranked.first : null,
+        ));
+      },
+    );
+  }
+
+  Future<void> startStabilizer() async {
+    final profile = state.profile;
+    if (profile == null) return;
+    emit(state.copyWith(status: StabilizerStatus.starting, clearError: true));
+
+    final result = await _start(profile);
+    result.fold(
+      (failure) => emit(state.copyWith(
+        status: StabilizerStatus.failure,
+        errorMessage: failure.message,
+      )),
+      (session) {
+        emit(state.copyWith(
+          status: StabilizerStatus.active,
+          session: session,
+          stats: LiveStats.empty(),
+        ));
+        _statsSub?.cancel();
+        _statsSub = _observe().listen(_onSample);
+
+        // Push the resolved active DNS down to the native tunnel so its
+        // interceptor uses the fastest one immediately.
+        final dns = state.activeDns;
+        if (dns != null) {
+          unawaited(_applyDns(dns));
+        }
+      },
+    );
+  }
+
+  Future<void> stopStabilizer() async {
+    emit(state.copyWith(status: StabilizerStatus.stopping));
+    await _statsSub?.cancel();
+    _statsSub = null;
+    await _stop();
+    emit(state.copyWith(
+      status: StabilizerStatus.idle,
+      stats: LiveStats.empty(),
+      recommendations: const [],
+      clearSession: true,
+    ));
+  }
+
+  void selectProfile(StabilizationProfile profile) {
+    emit(state.copyWith(profile: profile));
+  }
+
+  Future<void> selectDns(DnsCandidate candidate) async {
+    emit(state.copyWith(activeDns: candidate));
+    await _applyDns(candidate);
+  }
+
+  void setAutoSwitchDns(bool enabled) {
+    emit(state.copyWith(autoSwitchDns: enabled));
+  }
+
+  void setJitterThreshold(double ms) {
+    emit(state.copyWith(jitterThresholdMs: ms));
+  }
+
+  void dismissRecommendation(StabilizerRecommendation rec) {
+    final next = state.recommendations.where((r) => r != rec).toList();
+    emit(state.copyWith(recommendations: next));
+  }
+
+  Future<void> acceptRecommendation(StabilizerRecommendation rec) async {
+    switch (rec.type) {
+      case RecommendationType.switchDns:
+        final ip = rec.payload['ip'] as String?;
+        if (ip == null) break;
+        final candidate = state.dnsCandidates.firstWhere(
+          (c) => c.ip == ip,
+          orElse: () => DnsCandidate(ip: ip, label: ip),
+        );
+        await selectDns(candidate);
+      case RecommendationType.reconnectTunnel:
+        await stopStabilizer();
+        await startStabilizer();
+      case RecommendationType.suggestDual:
+        // Phase 2: enable dual-interface on active profile.
+        break;
+    }
+    dismissRecommendation(rec);
+  }
+
+  void _onSample(sample) {
+    final updated = state.stats.add(sample, activeDns: state.activeDns);
+    final recs = _evaluateRecommendations(updated);
+    emit(state.copyWith(stats: updated, recommendations: recs));
+
+    // Surface new (not previously seen this session) recommendations as
+    // system notifications so the user is informed even when the page is
+    // backgrounded. Auto-dismiss-style suppression via the _notifiedKeys
+    // set prevents toast spam when the same condition holds for many
+    // consecutive samples.
+    for (final r in recs) {
+      final key = r.type.name;
+      if (_notifiedKeys.add(key)) {
+        unawaited(
+          _notifications.showStabilizerAlert(
+            title: switch (r.type) {
+              RecommendationType.switchDns => 'Faster DNS available',
+              RecommendationType.reconnectTunnel => 'Jitter spike detected',
+              RecommendationType.suggestDual => 'Persistent packet loss',
+            },
+            body: r.message,
+            actionable: r.type != RecommendationType.suggestDual,
+          ),
+        );
+      }
+    }
+    // Clear keys whose recommendation has gone away so they can re-fire
+    // next time the condition reappears.
+    _notifiedKeys.removeWhere(
+      (k) => !recs.any((r) => r.type.name == k),
+    );
+
+    // Auto-apply DNS swap when user opted in.
+    final auto = state.autoSwitchDns;
+    if (auto) {
+      final swap = recs.firstWhere(
+        (r) => r.type == RecommendationType.switchDns,
+        orElse: () => StabilizerRecommendation(
+          type: RecommendationType.switchDns,
+          severity: RecommendationSeverity.info,
+          message: '',
+          payload: const {},
+        ),
+      );
+      final ip = swap.payload['ip'] as String?;
+      if (ip != null && ip.isNotEmpty) {
+        unawaited(acceptRecommendation(swap));
+      }
+    }
+  }
+
+  List<StabilizerRecommendation> _evaluateRecommendations(LiveStats s) {
+    final recs = <StabilizerRecommendation>[];
+
+    if (s.jitterBreached(state.jitterThresholdMs, _breachWindow)) {
+      recs.add(StabilizerRecommendation(
+        type: RecommendationType.reconnectTunnel,
+        severity: RecommendationSeverity.warning,
+        message:
+            'Jitter exceeded ${state.jitterThresholdMs.toStringAsFixed(0)} ms '
+            'for $_breachWindow samples. Cycling the tunnel may break a '
+            'sticky bad path.',
+      ));
+    }
+
+    final active = s.activeDns;
+    final ranked = BenchmarkDnsUseCase.rank(state.dnsCandidates);
+    if (active != null && ranked.isNotEmpty) {
+      final best = ranked.first;
+      final activeRtt = active.lastRttMs ?? double.infinity;
+      final bestRtt = best.lastRttMs ?? double.infinity;
+      if (best.ip != active.ip && bestRtt * 1.5 < activeRtt) {
+        recs.add(StabilizerRecommendation(
+          type: RecommendationType.switchDns,
+          severity: RecommendationSeverity.info,
+          message: 'A faster DNS (${best.label}) is available.',
+          payload: {'ip': best.ip},
+        ));
+      }
+    }
+
+    if (s.lossPct > 1.0) {
+      recs.add(StabilizerRecommendation(
+        type: RecommendationType.suggestDual,
+        severity: RecommendationSeverity.info,
+        message:
+            'Packet loss is ${s.lossPct.toStringAsFixed(1)}%. Dual-interface '
+            'send (Wi-Fi + cellular) can mask transient drops.',
+      ));
+    }
+    return recs;
+  }
+
+  @override
+  Future<void> close() async {
+    await _statsSub?.cancel();
+    return super.close();
+  }
+}

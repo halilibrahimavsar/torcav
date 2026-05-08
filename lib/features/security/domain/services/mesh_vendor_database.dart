@@ -1,3 +1,5 @@
+import 'package:injectable/injectable.dart';
+
 /// Static OUI prefix database for popular consumer mesh-router vendors.
 ///
 /// Used by [EvilTwinClassifier] to recognise mesh siblings whose BSSIDs
@@ -8,6 +10,7 @@
 /// This list is intentionally short — false-classifying a generic Asus
 /// router as "AiMesh" only matters when that router is paired with a
 /// suspicious peer, and even then only adds a small mitigation weight.
+@lazySingleton
 class MeshVendorDatabase {
   const MeshVendorDatabase();
 

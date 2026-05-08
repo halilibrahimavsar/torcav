@@ -2229,5 +2229,9 @@
     "speedDoctorTagline": "Çima înternet hêdî ye?",
     "speedDoctorOpsTile": "DOKTORÊ LEZ",
     "speedDoctorOpsSubtitle": "Çima hêdî ye?",
-    "evilTwinDetailTitle": "BÊTIRA EVIL TWIN"
+    "evilTwinDetailTitle": "BÊTIRA EVIL TWIN",
+    "pingStabilizerTitle": "STABÎLÎZATORÊ PING",
+    "pingStabilizerSubtitle": "Tunela derengmayînê ya li ser cîhazê",
+    "pingStabilizerToggleHint": "Bide bo stabîlîzekirinê",
+    "pingStabilizerDrawerLabel": "Stabîlîzatorê Ping"
 }

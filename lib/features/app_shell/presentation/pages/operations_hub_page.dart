@@ -10,6 +10,7 @@ import '../../../monitoring/presentation/pages/topology_page.dart';
 import '../../../monitoring/presentation/pages/spectrum_optimization_page.dart';
 import '../../../security/presentation/pages/vulnerability_lab_page.dart';
 import '../../../heatmap/presentation/pages/heatmap_page.dart';
+import '../../../ping_stabilizer/presentation/pages/ping_stabilizer_page.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
 import '../../../../core/presentation/widgets/cyber_neomorphic_button.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -161,6 +162,18 @@ class OperationsHubPage extends StatelessWidget {
                   ),
                 ),
                 delay: 650,
+              ),
+              _OperationCard(
+                title: l10n.pingStabilizerTitle,
+                subtitle: l10n.pingStabilizerSubtitle,
+                icon: Icons.shield_rounded,
+                color: AppColors.neonPurple,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const PingStabilizerPage(),
+                  ),
+                ),
+                delay: 700,
               ),
             ],
           ),

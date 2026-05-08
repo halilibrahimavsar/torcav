@@ -92,6 +92,26 @@ class NotificationService {
     );
   }
 
+  /// Posts a notification when the Ping Stabilizer surfaces a new
+  /// recommendation (jitter spike, faster DNS available, persistent loss).
+  /// [actionable] is `true` for items the user can apply with one tap.
+  Future<void> showStabilizerAlert({
+    required String title,
+    required String body,
+    required bool actionable,
+  }) async {
+    if (!_initialized) await initialize();
+    final severity =
+        actionable ? SecurityEventSeverity.warning : SecurityEventSeverity.info;
+    await _plugin.show(
+      777000 + title.hashCode % 1000,
+      title,
+      body,
+      _buildNotificationDetails(severity),
+      payload: 'ping_stabilizer',
+    );
+  }
+
   Future<void> showAttackDetected(String attackType, String details) async {
     if (!_initialized) await initialize();
 

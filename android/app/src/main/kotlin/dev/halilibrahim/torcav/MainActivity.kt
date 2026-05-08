@@ -1,5 +1,6 @@
 package dev.halilibrahim.torcav
 
+import android.content.Intent
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.text.TextUtils
@@ -13,6 +14,8 @@ class MainActivity : FlutterActivity() {
     private val WIFI_EXTENDED_CHANNEL = "torcav/wifi_extended"
     private val MONITORING_CHANNEL = "torcav/background_monitor"
 
+    private var pingStabilizerHandler: PingStabilizerChannelHandler? = null
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
@@ -20,6 +23,10 @@ class MainActivity : FlutterActivity() {
             flutterEngine.dartExecutor.binaryMessenger,
             flutterEngine.platformViewsController.registry,
         )
+
+        pingStabilizerHandler = PingStabilizerChannelHandler(this, applicationContext).also {
+            it.register(flutterEngine.dartExecutor.binaryMessenger)
+        }
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
@@ -61,6 +68,13 @@ class MainActivity : FlutterActivity() {
                 else -> result.notImplemented()
             }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (pingStabilizerHandler?.onActivityResult(requestCode, resultCode) == true) {
+            return
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     @Suppress("DEPRECATION")

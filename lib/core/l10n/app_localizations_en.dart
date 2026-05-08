@@ -1753,12 +1753,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get speedDoctorTitle => 'SPEED DOCTOR';
+
   @override
   String get speedDoctorTagline => 'Why is the internet slow?';
+
   @override
   String get speedDoctorOpsTile => 'SPEED DOCTOR';
+
   @override
   String get speedDoctorOpsSubtitle => 'Why is it slow?';
+
   @override
   String get evilTwinDetailTitle => 'EVIL TWIN DETAIL';
+
+  @override
+  String get pingStabilizerTitle => 'PING STABILIZER';
+
+  @override
+  String get pingStabilizerSubtitle => 'On-device latency tunnel';
+
+  @override
+  String get pingStabilizerToggleHint => 'Tap to stabilize';
+
+  @override
+  String get pingStabilizerDrawerLabel => 'Ping Stabilizer';
 }

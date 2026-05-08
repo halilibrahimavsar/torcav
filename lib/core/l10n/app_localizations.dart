@@ -3351,11 +3351,59 @@ abstract class AppLocalizations {
   /// **'ACKNOWLEDGED'**
   String get acknowledgedLabel;
 
+  /// Speed Doctor app-bar title
+  ///
+  /// In en, this message translates to:
+  /// **'SPEED DOCTOR'**
   String get speedDoctorTitle;
+
+  /// Speed Doctor subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Why is the internet slow?'**
   String get speedDoctorTagline;
+
+  /// Operations Hub tile for Speed Doctor
+  ///
+  /// In en, this message translates to:
+  /// **'SPEED DOCTOR'**
   String get speedDoctorOpsTile;
+
+  /// Operations Hub tile subtitle for Speed Doctor
+  ///
+  /// In en, this message translates to:
+  /// **'Why is it slow?'**
   String get speedDoctorOpsSubtitle;
+
+  /// Evil-twin detail page title
+  ///
+  /// In en, this message translates to:
+  /// **'EVIL TWIN DETAIL'**
   String get evilTwinDetailTitle;
+
+  /// Ping Stabilizer feature title
+  ///
+  /// In en, this message translates to:
+  /// **'PING STABILIZER'**
+  String get pingStabilizerTitle;
+
+  /// Operations Hub subtitle for Ping Stabilizer
+  ///
+  /// In en, this message translates to:
+  /// **'On-device latency tunnel'**
+  String get pingStabilizerSubtitle;
+
+  /// Hint shown on the inactive Ping Stabilizer toggle card
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to stabilize'**
+  String get pingStabilizerToggleHint;
+
+  /// Drawer entry label for Ping Stabilizer
+  ///
+  /// In en, this message translates to:
+  /// **'Ping Stabilizer'**
+  String get pingStabilizerDrawerLabel;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

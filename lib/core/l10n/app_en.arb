@@ -2327,5 +2327,13 @@
     "@speedDoctorOpsSubtitle": {"description": "Operations Hub tile subtitle for Speed Doctor"},
     "evilTwinDetailTitle": "EVIL TWIN DETAIL",
     "@evilTwinDetailTitle": {"description": "Evil-twin detail page title"},
+    "pingStabilizerTitle": "PING STABILIZER",
+    "@pingStabilizerTitle": {"description": "Ping Stabilizer feature title"},
+    "pingStabilizerSubtitle": "On-device latency tunnel",
+    "@pingStabilizerSubtitle": {"description": "Operations Hub subtitle for Ping Stabilizer"},
+    "pingStabilizerToggleHint": "Tap to stabilize",
+    "@pingStabilizerToggleHint": {"description": "Hint shown on the inactive Ping Stabilizer toggle card"},
+    "pingStabilizerDrawerLabel": "Ping Stabilizer",
+    "@pingStabilizerDrawerLabel": {"description": "Drawer entry label for Ping Stabilizer"},
     "@@locale": "en"
 }
