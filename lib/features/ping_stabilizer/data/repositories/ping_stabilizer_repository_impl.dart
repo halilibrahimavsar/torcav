@@ -9,17 +9,18 @@ import '../../domain/entities/stabilization_profile.dart';
 import '../../domain/entities/stabilization_session.dart';
 import '../../domain/repositories/ping_stabilizer_repository.dart';
 import '../datasources/ping_stabilizer_channel.dart';
+import '../datasources/ping_stabilizer_settings_store.dart';
 
 @LazySingleton(as: PingStabilizerRepository)
 class PingStabilizerRepositoryImpl implements PingStabilizerRepository {
   final PingStabilizerChannel _channel;
+  final PingStabilizerSettingsStore _settings;
   final _uuid = const Uuid();
 
-  // Custom profiles persisted in-memory for v1; settings UI can swap this for
-  // the existing storage layer later without touching the domain contract.
-  final List<StabilizationProfile> _customProfiles = [];
+  // Loaded lazily on first listProfiles() call from the persisted store.
+  List<StabilizationProfile>? _cachedCustomProfiles;
 
-  PingStabilizerRepositoryImpl(this._channel);
+  PingStabilizerRepositoryImpl(this._channel, this._settings);
 
   @override
   Future<Either<Failure, bool>> isVpnPrepared() async {
@@ -101,20 +102,24 @@ class PingStabilizerRepositoryImpl implements PingStabilizerRepository {
 
   @override
   Future<Either<Failure, List<StabilizationProfile>>> listProfiles() async {
-    final all = [...StabilizationProfile.builtIns(), ..._customProfiles];
-    return Right(all);
+    final custom = _cachedCustomProfiles ??= _settings.loadCustomProfiles();
+    return Right([...StabilizationProfile.builtIns(), ...custom]);
   }
 
   @override
   Future<Either<Failure, void>> upsertProfile(
     StabilizationProfile profile,
   ) async {
-    final idx = _customProfiles.indexWhere((p) => p.id == profile.id);
+    final custom = _cachedCustomProfiles ??= _settings.loadCustomProfiles();
+    final next = List<StabilizationProfile>.from(custom);
+    final idx = next.indexWhere((p) => p.id == profile.id);
     if (idx >= 0) {
-      _customProfiles[idx] = profile;
+      next[idx] = profile;
     } else {
-      _customProfiles.add(profile);
+      next.add(profile);
     }
+    _cachedCustomProfiles = next;
+    await _settings.saveCustomProfiles(next);
     return const Right(null);
   }
 }

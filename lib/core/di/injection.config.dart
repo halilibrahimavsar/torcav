@@ -122,6 +122,8 @@ import '../../features/performance/presentation/bloc/performance_bloc.dart'
     as _i58;
 import '../../features/ping_stabilizer/data/datasources/ping_stabilizer_channel.dart'
     as _i1014;
+import '../../features/ping_stabilizer/data/datasources/ping_stabilizer_settings_store.dart'
+    as _i544;
 import '../../features/ping_stabilizer/data/repositories/ping_stabilizer_repository_impl.dart'
     as _i934;
 import '../../features/ping_stabilizer/domain/repositories/ping_stabilizer_repository.dart'
@@ -319,11 +321,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1014.PingStabilizerChannel>(
       () => _i1014.PingStabilizerChannel(),
     );
-    gh.lazySingleton<_i852.PingStabilizerRepository>(
-      () => _i934.PingStabilizerRepositoryImpl(
-        gh<_i1014.PingStabilizerChannel>(),
-      ),
-    );
     gh.lazySingleton<_i683.OuiLookup>(
       () => _i683.OuiLookup(gh<_i1050.OuiDatabaseService>()),
     );
@@ -363,6 +360,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i333.EvilTwinClassifier>(
       () => _i333.EvilTwinClassifier(meshDb: gh<_i641.MeshVendorDatabase>()),
     );
+    gh.lazySingleton<_i544.PingStabilizerSettingsStore>(
+      () => _i544.PingStabilizerSettingsStore(gh<_i131.HiveStorageService>()),
+    );
     gh.singleton<_i171.LocaleCubit>(
       () => _i171.LocaleCubit(gh<_i131.HiveStorageService>()),
     );
@@ -389,26 +389,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i172.RouterHardeningStore>(
       () => _i172.RouterHardeningStore(gh<_i131.HiveStorageService>()),
-    );
-    gh.lazySingleton<_i875.StartStabilizationUseCase>(
-      () =>
-          _i875.StartStabilizationUseCase(gh<_i852.PingStabilizerRepository>()),
-    );
-    gh.lazySingleton<_i932.StopStabilizationUseCase>(
-      () =>
-          _i932.StopStabilizationUseCase(gh<_i852.PingStabilizerRepository>()),
-    );
-    gh.lazySingleton<_i761.ObserveLiveStatsUseCase>(
-      () => _i761.ObserveLiveStatsUseCase(gh<_i852.PingStabilizerRepository>()),
-    );
-    gh.lazySingleton<_i886.BenchmarkDnsUseCase>(
-      () => _i886.BenchmarkDnsUseCase(gh<_i852.PingStabilizerRepository>()),
-    );
-    gh.lazySingleton<_i613.ListProfilesUseCase>(
-      () => _i613.ListProfilesUseCase(gh<_i852.PingStabilizerRepository>()),
-    );
-    gh.lazySingleton<_i577.ApplyDnsUseCase>(
-      () => _i577.ApplyDnsUseCase(gh<_i852.PingStabilizerRepository>()),
     );
     gh.lazySingleton<_i363.CaptivePortalDetector>(
       () => _i363.CaptivePortalDetector(gh<_i846.NetworkInfo>()),
@@ -468,6 +448,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i978.PortScanDataSource>(
       () => _i978.PortScanDataSource(gh<_i552.AppSettingsStore>()),
     );
+    gh.lazySingleton<_i852.PingStabilizerRepository>(
+      () => _i934.PingStabilizerRepositoryImpl(
+        gh<_i1014.PingStabilizerChannel>(),
+        gh<_i544.PingStabilizerSettingsStore>(),
+      ),
+    );
     gh.lazySingleton<_i510.RunSpeedTestUseCase>(
       () => _i510.RunSpeedTestUseCase(gh<_i389.SpeedTestRepository>()),
     );
@@ -517,6 +503,26 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i265.OnnxDeviceClassifierService>(),
         gh<_i552.AppSettingsStore>(),
       ),
+    );
+    gh.lazySingleton<_i875.StartStabilizationUseCase>(
+      () =>
+          _i875.StartStabilizationUseCase(gh<_i852.PingStabilizerRepository>()),
+    );
+    gh.lazySingleton<_i932.StopStabilizationUseCase>(
+      () =>
+          _i932.StopStabilizationUseCase(gh<_i852.PingStabilizerRepository>()),
+    );
+    gh.lazySingleton<_i761.ObserveLiveStatsUseCase>(
+      () => _i761.ObserveLiveStatsUseCase(gh<_i852.PingStabilizerRepository>()),
+    );
+    gh.lazySingleton<_i886.BenchmarkDnsUseCase>(
+      () => _i886.BenchmarkDnsUseCase(gh<_i852.PingStabilizerRepository>()),
+    );
+    gh.lazySingleton<_i613.ListProfilesUseCase>(
+      () => _i613.ListProfilesUseCase(gh<_i852.PingStabilizerRepository>()),
+    );
+    gh.lazySingleton<_i577.ApplyDnsUseCase>(
+      () => _i577.ApplyDnsUseCase(gh<_i852.PingStabilizerRepository>()),
     );
     gh.factory<_i739.NetworkScanBloc>(
       () => _i739.NetworkScanBloc(
@@ -650,6 +656,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i646.BaselinePingUseCase>(
       () => _i646.BaselinePingUseCase(gh<_i534.PingNodeUseCase>()),
     );
+    gh.lazySingleton<_i548.PingStabilizerCubit>(
+      () => _i548.PingStabilizerCubit(
+        gh<_i875.StartStabilizationUseCase>(),
+        gh<_i932.StopStabilizationUseCase>(),
+        gh<_i761.ObserveLiveStatsUseCase>(),
+        gh<_i886.BenchmarkDnsUseCase>(),
+        gh<_i577.ApplyDnsUseCase>(),
+        gh<_i613.ListProfilesUseCase>(),
+        gh<_i646.BaselinePingUseCase>(),
+        gh<_i941.NotificationService>(),
+        gh<_i852.PingStabilizerRepository>(),
+        gh<_i544.PingStabilizerSettingsStore>(),
+      ),
+    );
     gh.factory<_i931.HeatmapBloc>(
       () => _i931.HeatmapBloc(
         gh<_i716.GetHeatmapSessionsUsecase>(),
@@ -668,19 +688,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i332.ChannelRatingRepository>(),
         gh<_i519.GetBestHistoricalChannel>(),
         gh<_i578.SecurityRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i548.PingStabilizerCubit>(
-      () => _i548.PingStabilizerCubit(
-        gh<_i875.StartStabilizationUseCase>(),
-        gh<_i932.StopStabilizationUseCase>(),
-        gh<_i761.ObserveLiveStatsUseCase>(),
-        gh<_i886.BenchmarkDnsUseCase>(),
-        gh<_i577.ApplyDnsUseCase>(),
-        gh<_i613.ListProfilesUseCase>(),
-        gh<_i646.BaselinePingUseCase>(),
-        gh<_i941.NotificationService>(),
-        gh<_i852.PingStabilizerRepository>(),
       ),
     );
     gh.factory<_i95.TopologyBloc>(

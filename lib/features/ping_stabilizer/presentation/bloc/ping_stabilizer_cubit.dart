@@ -6,6 +6,7 @@ import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../core/services/notification_service.dart';
+import '../../data/datasources/ping_stabilizer_settings_store.dart';
 import '../../domain/entities/dns_candidate.dart';
 import '../../domain/entities/live_stats.dart';
 import '../../domain/entities/stabilization_profile.dart';
@@ -34,6 +35,7 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
   final BaselinePingUseCase _baseline;
   final NotificationService _notifications;
   final PingStabilizerRepository _repository;
+  final PingStabilizerSettingsStore _settings;
 
   StreamSubscription? _statsSub;
   StreamSubscription? _stoppedSub;
@@ -55,7 +57,11 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
     this._baseline,
     this._notifications,
     this._repository,
-  ) : super(PingStabilizerState.initial()) {
+    this._settings,
+  ) : super(PingStabilizerState.initial().copyWith(
+          autoSwitchDns: _settings.autoSwitchDns,
+          jitterThresholdMs: _settings.jitterThresholdMs,
+        )) {
     // Always-on listener for native-driven teardown (notification "Stop"
     // action, system VPN revoke). The stream is broadcast and replays no
     // events, so this is safe to wire up immediately.
@@ -89,10 +95,18 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
     final profiles = profilesEither.getOrElse(
       () => StabilizationProfile.builtIns(),
     );
+    // Restore the last-selected profile from disk; falls back to first.
+    final savedId = _settings.selectedProfileId;
+    final initialProfile = (savedId == null)
+        ? profiles.first
+        : profiles.firstWhere(
+            (p) => p.id == savedId,
+            orElse: () => profiles.first,
+          );
     emit(
       state.copyWith(
         profiles: profiles,
-        profile: state.profile ?? profiles.first,
+        profile: state.profile ?? initialProfile,
         dnsCandidates: DnsCandidate.defaults,
       ),
     );
@@ -193,6 +207,7 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
 
   void selectProfile(StabilizationProfile profile) {
     emit(state.copyWith(profile: profile));
+    unawaited(_settings.setSelectedProfileId(profile.id));
   }
 
   Future<void> selectDns(DnsCandidate candidate) async {
@@ -202,10 +217,12 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
 
   void setAutoSwitchDns(bool enabled) {
     emit(state.copyWith(autoSwitchDns: enabled));
+    unawaited(_settings.setAutoSwitchDns(enabled));
   }
 
   void setJitterThreshold(double ms) {
     emit(state.copyWith(jitterThresholdMs: ms));
+    unawaited(_settings.setJitterThresholdMs(ms));
   }
 
   void dismissRecommendation(StabilizerRecommendation rec) {
