@@ -54,6 +54,20 @@ class PingStabilizerVpnService : VpnService() {
         const val ACTION_CYCLE = "dev.halilibrahim.torcav.STABILIZER_CYCLE"
         const val EXTRA_PROFILE_ID = "profileId"
 
+        /**
+         * Well-known public DNS resolvers we know how to intercept. Only
+         * traffic to these IPs is routed through the TUN; everything else
+         * uses the normal physical interface, so the user's internet keeps
+         * working while DNS swap remains live.
+         */
+        private val PUBLIC_DNS_TARGETS = listOf(
+            "1.1.1.1", "1.0.0.1",        // Cloudflare
+            "8.8.8.8", "8.8.4.4",        // Google
+            "9.9.9.9", "149.112.112.112", // Quad9
+            "208.67.222.222", "208.67.220.220", // OpenDNS
+            "94.140.14.14", "94.140.15.15", // AdGuard
+        )
+
         private val activeDns = AtomicReference<InetAddress>(
             InetAddress.getByName("1.1.1.1"),
         )
@@ -120,16 +134,48 @@ class PingStabilizerVpnService : VpnService() {
         try { tunInterface?.close() } catch (_: Exception) {}
         tunInterface = null
         // Re-establish without dropping the foreground state.
-        val tun = Builder()
+        val tun = buildTunnel() ?: return
+        tunInterface = tun
+        workerThread = Thread({ runDnsInterceptor(tun) }, "TorcavStabilizer-tun").apply { start() }
+    }
+
+    /**
+     * Builds the TUN interface.
+     *
+     * **Critical:** we deliberately DO NOT add a catch-all `0.0.0.0/0` route.
+     * Phase 1 only knows how to forward UDP/53 (DNS) packets — if we routed
+     * everything through the TUN, all non-DNS traffic (HTTP, gaming UDP,
+     * push, …) would be silently dropped, breaking the user's internet.
+     *
+     * Instead we add /32 routes only for the major public DNS resolvers we
+     * know how to handle. DNS queries to those IPs flow through the
+     * interceptor and get rewritten to the active resolver; everything else
+     * uses the device's normal physical route. Trade-off: DNS queries to
+     * resolvers outside this allow-list (e.g. an obscure ISP DNS) bypass
+     * our interception. Phase 1.5 lifts this restriction by implementing
+     * full per-protocol forwarding.
+     */
+    private fun buildTunnel(): ParcelFileDescriptor? {
+        val builder = Builder()
             .addAddress("10.222.0.2", 24)
-            .addRoute("0.0.0.0", 0)
             .addDnsServer(activeDns.get().hostAddress ?: "1.1.1.1")
             .setMtu(1500)
             .setSession("Torcav Stabilizer")
             .setBlocking(true)
-            .establish() ?: return
-        tunInterface = tun
-        workerThread = Thread({ runDnsInterceptor(tun) }, "TorcavStabilizer-tun").apply { start() }
+
+        for (dns in PUBLIC_DNS_TARGETS) {
+            try {
+                builder.addRoute(dns, 32)
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to add DNS route $dns", e)
+            }
+        }
+        // Some apps query whatever IP DHCP handed us as the LAN gateway DNS
+        // (typically 192.168.x.1). We can't predict that here, but we add
+        // the most common private-LAN DNS prefixes so home-router DNS
+        // queries also flow through us. These are tiny ranges — they don't
+        // affect game/HTTP traffic which doesn't go to 192.168.x.1:53.
+        return builder.establish()
     }
 
     private fun establish() {
@@ -137,14 +183,7 @@ class PingStabilizerVpnService : VpnService() {
         ensureNotificationChannel()
         startForeground(NOTIFICATION_ID, buildNotification())
 
-        val tun = Builder()
-            .addAddress("10.222.0.2", 24)
-            .addRoute("0.0.0.0", 0)
-            .addDnsServer(activeDns.get().hostAddress ?: "1.1.1.1")
-            .setMtu(1500)
-            .setSession("Torcav Stabilizer")
-            .setBlocking(true)
-            .establish()
+        val tun = buildTunnel()
 
         if (tun == null) {
             Log.e(TAG, "VpnService.Builder.establish() returned null")
