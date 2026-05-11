@@ -82,8 +82,7 @@ class _RouterHardeningWizardPageState extends State<RouterHardeningWizardPage> {
     bool launched = false;
     try {
       if (await canLaunchUrl(url)) {
-        launched =
-            await launchUrl(url, mode: LaunchMode.externalApplication);
+        launched = await launchUrl(url, mode: LaunchMode.externalApplication);
       }
     } catch (_) {
       launched = false;
@@ -145,58 +144,60 @@ class _RouterHardeningWizardPageState extends State<RouterHardeningWizardPage> {
         ),
         centerTitle: true,
       ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-              physics: const BouncingScrollPhysics(),
-              children: [
-                _ProgressHeader(
-                  ssid: _ssid,
-                  gateway: _gateway,
-                  done: done,
-                  total: total,
-                  progress: pct,
-                  onCopyGateway: _gateway == null ? null : _copyGateway,
-                ),
-                const SizedBox(height: 14),
-                _OpenAdminButton(
-                  gateway: _gateway,
-                  onTap: _gateway == null ? null : _openAdminPanel,
-                ),
-                const SizedBox(height: 8),
-                _OpenAdminHint(gateway: _gateway),
-                const SizedBox(height: 20),
-                if (_bssid == null)
-                  Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: scheme.error.withValues(alpha: 0.06),
-                      borderRadius: BorderRadius.circular(12),
-                      border:
-                          Border.all(color: scheme.error.withValues(alpha: 0.4)),
-                    ),
-                    child: Text(
-                      context.l10n.hardeningConnectWifiHint,
-                      style: GoogleFonts.rajdhani(
-                        color: scheme.onSurfaceVariant,
-                        fontSize: 13,
-                        height: 1.3,
+      body:
+          _loading
+              ? const Center(child: CircularProgressIndicator())
+              : ListView(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+                physics: const BouncingScrollPhysics(),
+                children: [
+                  _ProgressHeader(
+                    ssid: _ssid,
+                    gateway: _gateway,
+                    done: done,
+                    total: total,
+                    progress: pct,
+                    onCopyGateway: _gateway == null ? null : _copyGateway,
+                  ),
+                  const SizedBox(height: 14),
+                  _OpenAdminButton(
+                    gateway: _gateway,
+                    onTap: _gateway == null ? null : _openAdminPanel,
+                  ),
+                  const SizedBox(height: 8),
+                  _OpenAdminHint(gateway: _gateway),
+                  const SizedBox(height: 20),
+                  if (_bssid == null)
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: scheme.error.withValues(alpha: 0.06),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: scheme.error.withValues(alpha: 0.4),
+                        ),
+                      ),
+                      child: Text(
+                        context.l10n.hardeningConnectWifiHint,
+                        style: GoogleFonts.rajdhani(
+                          color: scheme.onSurfaceVariant,
+                          fontSize: 13,
+                          height: 1.3,
+                        ),
                       ),
                     ),
-                  ),
-                if (_bssid == null) const SizedBox(height: 16),
-                for (var i = 0; i < hardeningCatalog.length; i++) ...[
-                  _CheckTile(
-                    index: i + 1,
-                    meta: hardeningCatalog[i],
-                    completed: _completed.contains(hardeningCatalog[i].id),
-                    onToggle: () => _toggle(hardeningCatalog[i].id),
-                  ),
-                  const SizedBox(height: 10),
+                  if (_bssid == null) const SizedBox(height: 16),
+                  for (var i = 0; i < hardeningCatalog.length; i++) ...[
+                    _CheckTile(
+                      index: i + 1,
+                      meta: hardeningCatalog[i],
+                      completed: _completed.contains(hardeningCatalog[i].id),
+                      onToggle: () => _toggle(hardeningCatalog[i].id),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
                 ],
-              ],
-            ),
+              ),
     );
   }
 }
@@ -221,9 +222,10 @@ class _ProgressHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final accent = progress >= 1
-        ? scheme.tertiary
-        : (progress >= 0.5 ? scheme.primary : scheme.error);
+    final accent =
+        progress >= 1
+            ? scheme.tertiary
+            : (progress >= 0.5 ? scheme.primary : scheme.error);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -293,8 +295,7 @@ class _ProgressHeader extends StatelessWidget {
               onLongPress: onCopyGateway,
               borderRadius: BorderRadius.circular(8),
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
                 child: Row(
                   children: [
                     Icon(
@@ -313,16 +314,14 @@ class _ProgressHeader extends StatelessWidget {
                     const SizedBox(width: 8),
                     Icon(
                       Icons.content_copy_rounded,
-                      color:
-                          scheme.onSurfaceVariant.withValues(alpha: 0.6),
+                      color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
                       size: 12,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       context.l10n.tapToCopy,
                       style: GoogleFonts.rajdhani(
-                        color:
-                            scheme.onSurfaceVariant.withValues(alpha: 0.7),
+                        color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
                         fontSize: 10,
                       ),
                     ),
@@ -396,11 +395,7 @@ class _OpenAdminButton extends StatelessWidget {
               ],
             ),
             const SizedBox(width: 8),
-            Icon(
-              Icons.arrow_forward_rounded,
-              color: accent,
-              size: 20,
-            ),
+            Icon(Icons.arrow_forward_rounded, color: accent, size: 20),
           ],
         ),
       ),
@@ -416,9 +411,10 @@ class _OpenAdminHint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final body = gateway == null
-        ? context.l10n.hardeningGatewayHintDisconnected
-        : context.l10n.hardeningGatewayHintConnected;
+    final body =
+        gateway == null
+            ? context.l10n.hardeningGatewayHintDisconnected
+            : context.l10n.hardeningGatewayHintConnected;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Row(
@@ -462,14 +458,16 @@ class _CheckTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final accent = completed
-        ? scheme.tertiary
-        : (meta.critical ? scheme.error : scheme.primary);
+    final accent =
+        completed
+            ? scheme.tertiary
+            : (meta.critical ? scheme.error : scheme.primary);
     return Container(
       decoration: BoxDecoration(
-        color: completed
-            ? accent.withValues(alpha: 0.05)
-            : scheme.surface.withValues(alpha: 0.4),
+        color:
+            completed
+                ? accent.withValues(alpha: 0.05)
+                : scheme.surface.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: accent.withValues(alpha: 0.4)),
       ),
@@ -489,23 +487,25 @@ class _CheckTile extends StatelessWidget {
               height: 32,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: completed
-                    ? accent.withValues(alpha: 0.15)
-                    : Colors.transparent,
+                color:
+                    completed
+                        ? accent.withValues(alpha: 0.15)
+                        : Colors.transparent,
                 border: Border.all(color: accent, width: 2),
               ),
-              child: completed
-                  ? Icon(Icons.check_rounded, color: accent, size: 18)
-                  : Center(
-                      child: Text(
-                        '$index',
-                        style: GoogleFonts.orbitron(
-                          color: accent,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w900,
+              child:
+                  completed
+                      ? Icon(Icons.check_rounded, color: accent, size: 18)
+                      : Center(
+                        child: Text(
+                          '$index',
+                          style: GoogleFonts.orbitron(
+                            color: accent,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w900,
+                          ),
                         ),
                       ),
-                    ),
             ),
           ),
           title: Text(
@@ -519,20 +519,21 @@ class _CheckTile extends StatelessWidget {
               decorationColor: accent.withValues(alpha: 0.6),
             ),
           ),
-          subtitle: meta.critical && !completed
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text(
-                    context.l10n.hardeningCriticalBadge,
-                    style: GoogleFonts.orbitron(
-                      color: scheme.error,
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.2,
+          subtitle:
+              meta.critical && !completed
+                  ? Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      context.l10n.hardeningCriticalBadge,
+                      style: GoogleFonts.orbitron(
+                        color: scheme.error,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.2,
+                      ),
                     ),
-                  ),
-                )
-              : null,
+                  )
+                  : null,
           children: [
             // ── WHY ──
             Container(
@@ -649,7 +650,9 @@ class _CheckTile extends StatelessWidget {
                   size: 18,
                 ),
                 label: Text(
-                  completed ? context.l10n.markAsTodoLabel : context.l10n.hardeningMarkDone,
+                  completed
+                      ? context.l10n.markAsTodoLabel
+                      : context.l10n.hardeningMarkDone,
                   style: GoogleFonts.orbitron(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,

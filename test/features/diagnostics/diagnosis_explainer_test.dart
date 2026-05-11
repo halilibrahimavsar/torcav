@@ -132,17 +132,20 @@ void main() {
     expect(exp.howToFix, isEmpty);
   });
 
-  test('weak signal estimate suppressed when download is too low to project', () {
-    final ev = DiagnosisEvidence(
-      category: RootCauseCategory.weakSignal,
-      severity: 0.6,
-      metricLabel: '',
-      thresholdLabel: '',
-    );
-    final exp = explainer.explain(
-      ev,
-      inputs(speedTest: speed(download: 0.5)),
-    );
-    expect(exp.estimatedImprovement, isNull);
-  });
+  test(
+    'weak signal estimate suppressed when download is too low to project',
+    () {
+      final ev = DiagnosisEvidence(
+        category: RootCauseCategory.weakSignal,
+        severity: 0.6,
+        metricLabel: '',
+        thresholdLabel: '',
+      );
+      final exp = explainer.explain(
+        ev,
+        inputs(speedTest: speed(download: 0.5)),
+      );
+      expect(exp.estimatedImprovement, isNull);
+    },
+  );
 }

@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:wifi_scan/wifi_scan.dart';
 
-
 import 'package:injectable/injectable.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
@@ -12,7 +11,6 @@ import '../../features/wifi_scan/data/datasources/wifi_data_source.dart';
 @module
 abstract class AppModule {
   @lazySingleton
-
   NetworkInfo get networkInfo => NetworkInfo();
 
   @lazySingleton
@@ -20,7 +18,6 @@ abstract class AppModule {
 
   @lazySingleton
   WifiDataSource wifiDataSource(
-
     AndroidWifiDataSource android,
     LinuxWifiDataSource linux,
   ) {

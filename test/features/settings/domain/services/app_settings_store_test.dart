@@ -29,7 +29,9 @@ void main() {
       when(() => mockStorage.save(any(), any())).thenAnswer((invocation) async {
         persistedData = invocation.positionalArguments[1] as String;
       });
-      when(() => mockStorage.get<String>(any())).thenAnswer((_) => persistedData);
+      when(
+        () => mockStorage.get<String>(any()),
+      ).thenAnswer((_) => persistedData);
 
       final store = AppSettingsStore(mockStorage);
       const updated = AppSettings(
@@ -60,4 +62,3 @@ void main() {
     );
   });
 }
-

@@ -14,9 +14,7 @@ class EvilTwinAlertBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final evilTwinEvent = state.recentEvents
-        .where(
-          (e) => e.type == domain_event.SecurityEventType.evilTwinDetected,
-        )
+        .where((e) => e.type == domain_event.SecurityEventType.evilTwinDetected)
         .cast<domain_event.SecurityEvent?>()
         .firstWhere((e) => true, orElse: () => null);
     if (evilTwinEvent == null) return const SizedBox.shrink();
@@ -30,81 +28,85 @@ class EvilTwinAlertBanner extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 16),
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => EvilTwinDetailPage(
-                flaggedSsid: evilTwinEvent.ssid,
+          onTap:
+              () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder:
+                      (_) =>
+                          EvilTwinDetailPage(flaggedSsid: evilTwinEvent.ssid),
+                ),
               ),
-            ),
-          ),
           child: NeonCard(
             glowColor: errorColor,
             glowIntensity: 0.25,
             padding: const EdgeInsets.all(16),
             child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: errorColor.withValues(alpha: 0.15),
-                  border: Border.all(
-                    color: errorColor.withValues(alpha: 0.5),
-                    width: 2,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: errorColor.withValues(alpha: 0.15),
+                    border: Border.all(
+                      color: errorColor.withValues(alpha: 0.5),
+                      width: 2,
+                    ),
                   ),
-                ),
-                child: Center(
-                  child: PulseAnimation(
-                    color: errorColor,
-                    child: Icon(
-                      Icons.gpp_maybe_rounded,
+                  child: Center(
+                    child: PulseAnimation(
                       color: errorColor,
-                      size: 28,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: NeonText(
-                            l10n.evilTwinAlertTitle.toUpperCase(),
-                            style: GoogleFonts.orbitron(
-                              color: errorColor,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 1.5,
-                            ),
-                            glowColor: errorColor,
-                            glowRadius: 8,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        _AlertBadge(label: l10n.criticalCaps, color: errorColor),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      l10n.evilTwinAlertBody,
-                      style: GoogleFonts.rajdhani(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        height: 1.4,
+                      child: Icon(
+                        Icons.gpp_maybe_rounded,
+                        color: errorColor,
+                        size: 28,
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
-          ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: NeonText(
+                              l10n.evilTwinAlertTitle.toUpperCase(),
+                              style: GoogleFonts.orbitron(
+                                color: errorColor,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.5,
+                              ),
+                              glowColor: errorColor,
+                              glowRadius: 8,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          _AlertBadge(
+                            label: l10n.criticalCaps,
+                            color: errorColor,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        l10n.evilTwinAlertBody,
+                        style: GoogleFonts.rajdhani(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -175,7 +177,10 @@ class WpsWarningCard extends StatelessWidget {
                             glowRadius: 5,
                           ),
                         ),
-                        _AlertBadge(label: l10n.wpsActiveCaps, color: warnColor),
+                        _AlertBadge(
+                          label: l10n.wpsActiveCaps,
+                          color: warnColor,
+                        ),
                       ],
                     ),
                     const SizedBox(height: 8),

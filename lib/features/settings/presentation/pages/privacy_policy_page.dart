@@ -103,7 +103,10 @@ class PrivacyPolicyPage extends StatelessWidget {
                   content: l10n.privacyAiBody,
                 ),
                 const SizedBox(height: 24),
-                _buildSectionHeader(context, l10n.privacyExternalEndpointsTitle),
+                _buildSectionHeader(
+                  context,
+                  l10n.privacyExternalEndpointsTitle,
+                ),
                 _buildPolicyCard(
                   context,
                   icon: Icons.speed_rounded,
@@ -308,14 +311,16 @@ class PrivacyPolicyPage extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isHighlight
-            ? colorScheme.error.withValues(alpha: 0.05)
-            : colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        color:
+            isHighlight
+                ? colorScheme.error.withValues(alpha: 0.05)
+                : colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isHighlight
-              ? colorScheme.error.withValues(alpha: 0.2)
-              : colorScheme.outlineVariant.withValues(alpha: 0.5),
+          color:
+              isHighlight
+                  ? colorScheme.error.withValues(alpha: 0.2)
+                  : colorScheme.outlineVariant.withValues(alpha: 0.5),
         ),
       ),
       child: Row(
@@ -324,9 +329,10 @@ class PrivacyPolicyPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: isHighlight
-                  ? colorScheme.error.withValues(alpha: 0.1)
-                  : colorScheme.primary.withValues(alpha: 0.1),
+              color:
+                  isHighlight
+                      ? colorScheme.error.withValues(alpha: 0.1)
+                      : colorScheme.primary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(

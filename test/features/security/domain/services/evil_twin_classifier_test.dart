@@ -36,21 +36,22 @@ void main() {
   }
 
   group('early dismissal — dual-band / mesh / Wi-Fi 7', () {
-    test('legitimate dual-band sibling (2.4 + 5 GHz, same vendor) dismissed',
-        () {
-      final target = net(channel: 36, frequency: 5180);
-      final peer = net(
-        bssid: 'AA:BB:CC:DD:EE:11',
-        channel: 6,
-        frequency: 2437,
-      );
-      final result = classifier.assess(target, peer);
-      expect(result.dismissedAsLegitimate, isTrue);
-      expect(result.confidence, 0);
-      expect(result.isCandidate, isFalse);
-      expect(result.mitigations,
-          contains(EvilTwinSignal.crossBandSibling));
-    });
+    test(
+      'legitimate dual-band sibling (2.4 + 5 GHz, same vendor) dismissed',
+      () {
+        final target = net(channel: 36, frequency: 5180);
+        final peer = net(
+          bssid: 'AA:BB:CC:DD:EE:11',
+          channel: 6,
+          frequency: 2437,
+        );
+        final result = classifier.assess(target, peer);
+        expect(result.dismissedAsLegitimate, isTrue);
+        expect(result.confidence, 0);
+        expect(result.isCandidate, isFalse);
+        expect(result.mitigations, contains(EvilTwinSignal.crossBandSibling));
+      },
+    );
 
     test('Wi-Fi 7 multi-link (shared MLD MAC) dismissed', () {
       const mld = 'AB:CD:EF:00:11:22';
@@ -94,10 +95,7 @@ void main() {
       expect(result.isCandidate, isTrue);
       expect(result.confidence, greaterThanOrEqualTo(0.75));
       expect(result.suspicions, contains(EvilTwinSignal.ouiMismatch));
-      expect(
-        result.suspicions,
-        contains(EvilTwinSignal.securityDowngrade),
-      );
+      expect(result.suspicions, contains(EvilTwinSignal.securityDowngrade));
     });
 
     test('same band, far apart channel + width mismatch flagged', () {
@@ -124,8 +122,7 @@ void main() {
       );
     });
 
-    test('hidden vs visible alone (same OUI, same security) does not flag',
-        () {
+    test('hidden vs visible alone (same OUI, same security) does not flag', () {
       // Same OUI prefix → no ouiMismatch. Same security → no downgrade.
       // Same band, channels are 4 apart so channel-drift doesn't fire either.
       // Only the hiddenVsVisible signal (0.20) is below threshold (0.50).
@@ -143,10 +140,7 @@ void main() {
       );
       final result = classifier.assess(target, peer);
       expect(result.isCandidate, isFalse);
-      expect(
-        result.suspicions,
-        contains(EvilTwinSignal.hiddenVsVisible),
-      );
+      expect(result.suspicions, contains(EvilTwinSignal.hiddenVsVisible));
     });
   });
 
@@ -167,7 +161,10 @@ void main() {
       final result = classifier.assess(target, samePrefix);
       // OUI prefix matches (AA:BB:CC), so only securityDowngrade fires.
       // 0.4 < 0.5 threshold.
-      expect(result.confidence, lessThan(EvilTwinClassifier.candidateThreshold));
+      expect(
+        result.confidence,
+        lessThan(EvilTwinClassifier.candidateThreshold),
+      );
     });
 
     test('high confidence pair triggers candidate flag', () {
@@ -217,9 +214,7 @@ void main() {
 
     test('returns "none" when no same-SSID peer exists', () {
       final target = net();
-      final peers = [
-        net(ssid: 'OtherNet', bssid: '11:22:33:44:55:66'),
-      ];
+      final peers = [net(ssid: 'OtherNet', bssid: '11:22:33:44:55:66')];
       final result = classifier.assessAll(target, peers);
       expect(result.suspicions, isEmpty);
       expect(result.confidence, 0);

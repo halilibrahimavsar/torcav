@@ -91,28 +91,28 @@ class PrimaryCauseCard extends StatelessWidget {
   String _translateMetric(BuildContext context, DiagnosisEvidence ev) {
     final l10n = context.l10n;
     if (ev.metricKey == null) return ev.metricLabel;
-    
+
     final params = ev.metricParams;
     return switch (ev.metricKey) {
       'sdMetricRssi' => l10n.sdMetricRssi(params?['rssi'] ?? 0),
       'sdMetricChannel' => l10n.sdMetricChannel(
-          params?['channel'] ?? 0,
-          params?['score'] ?? '',
-        ),
+        params?['channel'] ?? 0,
+        params?['score'] ?? '',
+      ),
       'sdMetricBufferbloat' => l10n.sdMetricBufferbloat(
-          params?['induced'] ?? '',
-          params?['latency'] ?? '',
-          params?['loaded'] ?? '',
-        ),
+        params?['induced'] ?? '',
+        params?['latency'] ?? '',
+        params?['loaded'] ?? '',
+      ),
       'sdMetricIsp' => l10n.sdMetricIsp(
-          params?['download'] ?? '',
-          params?['phy'] ?? '',
-        ),
+        params?['download'] ?? '',
+        params?['phy'] ?? '',
+      ),
       'sdMetricIspNoPhy' => l10n.sdMetricIspNoPhy(params?['download'] ?? ''),
       'sdMetricDns' => l10n.sdMetricDns(
-          params?['name'] ?? '',
-          params?['latency'] ?? 0,
-        ),
+        params?['name'] ?? '',
+        params?['latency'] ?? 0,
+      ),
       _ => ev.metricLabel,
     };
   }

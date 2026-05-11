@@ -86,9 +86,10 @@ class _HoloSphereBackgroundState extends State<HoloSphereBackground>
               gradient: RadialGradient(
                 center: const Alignment(0, -0.2),
                 radius: 1.2,
-                colors: isLight
-                    ? const [Color(0xFFE8EEF5), Color(0xFFC7D3E3)]
-                    : const [Color(0xFF071224), Color(0xFF02050C)],
+                colors:
+                    isLight
+                        ? const [Color(0xFFE8EEF5), Color(0xFFC7D3E3)]
+                        : const [Color(0xFF071224), Color(0xFF02050C)],
               ),
             ),
           ),
@@ -98,7 +99,8 @@ class _HoloSphereBackgroundState extends State<HoloSphereBackground>
             child: AnimatedBuilder(
               animation: Listenable.merge([_controller, widget.scrollVelocity]),
               builder: (context, _) {
-                _smoothedVelocity = _smoothedVelocity * 0.88 +
+                _smoothedVelocity =
+                    _smoothedVelocity * 0.88 +
                     (widget.scrollVelocity.value / 4.0).clamp(0.0, 250.0) *
                         0.12;
                 widget.scrollVelocity.value *= 0.94;
@@ -125,8 +127,9 @@ class _HoloSphereBackgroundState extends State<HoloSphereBackground>
                   radius: 1.3,
                   colors: [
                     Colors.transparent,
-                    (isLight ? Colors.white : Colors.black)
-                        .withValues(alpha: isLight ? 0.18 : 0.6),
+                    (isLight ? Colors.white : Colors.black).withValues(
+                      alpha: isLight ? 0.18 : 0.6,
+                    ),
                   ],
                   stops: const [0.5, 1.0],
                 ),
@@ -219,15 +222,19 @@ class _HoloSpherePainter extends CustomPainter {
       paint.color = base.withValues(
         alpha: (0.15 + star.depth * 0.55) * tw * (isLight ? 0.5 : 1.0),
       );
-      canvas.drawCircle(Offset(x, y), star.size * (0.5 + star.depth * 0.7),
-          paint);
+      canvas.drawCircle(
+        Offset(x, y),
+        star.size * (0.5 + star.depth * 0.7),
+        paint,
+      );
     }
   }
 
   void _paintOrbitRings(Canvas canvas, Offset center, double r) {
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.6;
+    final paint =
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.6;
     for (int i = 1; i <= 4; i++) {
       final mult = 0.85 + i * 0.22;
       final alpha = (0.18 - i * 0.03) * (isLight ? 0.7 : 1.0);
@@ -249,19 +256,21 @@ class _HoloSpherePainter extends CustomPainter {
 
     final lineColor = (isLight ? AppColors.inkCyan : AppColors.neonCyan)
         .withValues(alpha: isLight ? 0.42 : 0.55);
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.9
-      ..color = lineColor;
+    final paint =
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.9
+          ..color = lineColor;
 
     // Soft inner glow disc
-    final glowPaint = Paint()
-      ..shader = RadialGradient(
-        colors: [
-          accent.withValues(alpha: isLight ? 0.08 : 0.14),
-          Colors.transparent,
-        ],
-      ).createShader(Rect.fromCircle(center: center, radius: r * 1.1));
+    final glowPaint =
+        Paint()
+          ..shader = RadialGradient(
+            colors: [
+              accent.withValues(alpha: isLight ? 0.08 : 0.14),
+              Colors.transparent,
+            ],
+          ).createShader(Rect.fromCircle(center: center, radius: r * 1.1));
     canvas.drawCircle(center, r * 1.1, glowPaint);
 
     // Latitudes (horizontal slices)
@@ -353,26 +362,28 @@ class _HoloSpherePainter extends CustomPainter {
           trailPath.lineTo(tp.dx, tp.dy);
         }
       }
-      final trailPaint = Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.4
-        ..strokeCap = StrokeCap.round
-        ..shader = LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [
-            color.withValues(alpha: isLight ? 0.7 : 0.9),
-            color.withValues(alpha: 0),
-          ],
-        ).createShader(
-          Rect.fromCenter(center: pos, width: r, height: r * 0.5),
-        );
+      final trailPaint =
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.4
+            ..strokeCap = StrokeCap.round
+            ..shader = LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [
+                color.withValues(alpha: isLight ? 0.7 : 0.9),
+                color.withValues(alpha: 0),
+              ],
+            ).createShader(
+              Rect.fromCenter(center: pos, width: r, height: r * 0.5),
+            );
       canvas.drawPath(trailPath, trailPaint);
 
       // Body + glow
-      final glowPaint = Paint()
-        ..color = color.withValues(alpha: isLight ? 0.6 : 0.85)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+      final glowPaint =
+          Paint()
+            ..color = color.withValues(alpha: isLight ? 0.6 : 0.85)
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
       canvas.drawCircle(pos, 3.2, glowPaint);
 
       final corePaint = Paint()..color = color.withValues(alpha: 1);
@@ -387,34 +398,33 @@ class _HoloSpherePainter extends CustomPainter {
     final x = center.dx + phase * r;
     final beamColor = accent.withValues(alpha: isLight ? 0.18 : 0.22);
 
-    final paint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          Colors.transparent,
-          beamColor,
-          beamColor,
-          Colors.transparent,
-        ],
-        stops: const [0.0, 0.3, 0.7, 1.0],
-      ).createShader(
-        Rect.fromLTWH(x - 6, center.dy - r, 12, r * 2),
-      );
+    final paint =
+        Paint()
+          ..shader = LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.transparent,
+              beamColor,
+              beamColor,
+              Colors.transparent,
+            ],
+            stops: const [0.0, 0.3, 0.7, 1.0],
+          ).createShader(Rect.fromLTWH(x - 6, center.dy - r, 12, r * 2));
     canvas.save();
-    canvas.clipPath(Path()..addOval(Rect.fromCircle(center: center, radius: r)));
-    canvas.drawRect(
-      Rect.fromLTWH(x - 6, center.dy - r, 12, r * 2),
-      paint,
+    canvas.clipPath(
+      Path()..addOval(Rect.fromCircle(center: center, radius: r)),
     );
+    canvas.drawRect(Rect.fromLTWH(x - 6, center.dy - r, 12, r * 2), paint);
     canvas.restore();
   }
 
   void _paintHudTicks(Canvas canvas, Size size) {
     final color = accent.withValues(alpha: isLight ? 0.35 : 0.45);
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1.0;
+    final paint =
+        Paint()
+          ..color = color
+          ..strokeWidth = 1.0;
 
     const corner = 18.0;
     const tick = 10.0;

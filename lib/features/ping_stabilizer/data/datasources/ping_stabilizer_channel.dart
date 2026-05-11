@@ -22,8 +22,7 @@ class PingStabilizerChannel {
   StreamSubscription? _eventSub;
   final StreamController<JitterSample> _samplesCtrl =
       StreamController.broadcast();
-  final StreamController<void> _stoppedCtrl =
-      StreamController.broadcast();
+  final StreamController<void> _stoppedCtrl = StreamController.broadcast();
 
   Future<bool> isPrepared() async {
     try {
@@ -87,9 +86,8 @@ class PingStabilizerChannel {
   Future<List<DnsCandidate>> benchmarkDns(List<DnsCandidate> candidates) async {
     try {
       final raw = await _method.invokeMethod<List<dynamic>>('benchmarkDns', {
-        'candidates': candidates
-            .map((c) => {'ip': c.ip, 'label': c.label})
-            .toList(),
+        'candidates':
+            candidates.map((c) => {'ip': c.ip, 'label': c.label}).toList(),
       });
       if (raw == null) return candidates;
       return raw.whereType<Map>().map((m) {
@@ -128,15 +126,17 @@ class PingStabilizerChannel {
           _stoppedCtrl.add(null);
           return;
         }
-        _samplesCtrl.add(JitterSample(
-          ts: DateTime.fromMillisecondsSinceEpoch(
-            (m['tsMs'] as num?)?.toInt() ??
-                DateTime.now().millisecondsSinceEpoch,
+        _samplesCtrl.add(
+          JitterSample(
+            ts: DateTime.fromMillisecondsSinceEpoch(
+              (m['tsMs'] as num?)?.toInt() ??
+                  DateTime.now().millisecondsSinceEpoch,
+            ),
+            latencyMs: (m['latencyMs'] as num?)?.toDouble() ?? 0,
+            jitterMs: (m['jitterMs'] as num?)?.toDouble() ?? 0,
+            lossPct: (m['lossPct'] as num?)?.toDouble() ?? 0,
           ),
-          latencyMs: (m['latencyMs'] as num?)?.toDouble() ?? 0,
-          jitterMs: (m['jitterMs'] as num?)?.toDouble() ?? 0,
-          lossPct: (m['lossPct'] as num?)?.toDouble() ?? 0,
-        ));
+        );
       },
       onError: (_) {
         // Swallow — UI keeps last known sample.

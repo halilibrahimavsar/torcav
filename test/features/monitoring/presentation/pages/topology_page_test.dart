@@ -31,7 +31,9 @@ void main() {
     await getIt.reset();
   });
 
-  testWidgets('tapping a mobile node opens the inspector', skip: true, (tester) async {
+  testWidgets('tapping a mobile node opens the inspector', skip: true, (
+    tester,
+  ) async {
     final networkInfo = MockNetworkInfo();
     final networkScanRepository = MockNetworkScanRepository();
 

@@ -20,7 +20,8 @@ class StabilizerToggleCard extends StatelessWidget {
     return BlocBuilder<PingStabilizerCubit, PingStabilizerState>(
       builder: (context, state) {
         final isActive = state.status == StabilizerStatus.active;
-        final isBusy = state.status == StabilizerStatus.starting ||
+        final isBusy =
+            state.status == StabilizerStatus.starting ||
             state.status == StabilizerStatus.requestingPermission ||
             state.status == StabilizerStatus.stopping;
 
@@ -29,8 +30,9 @@ class StabilizerToggleCard extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
             side: BorderSide(
-              color: (isActive ? scheme.primary : scheme.outline)
-                  .withValues(alpha: 0.3),
+              color: (isActive ? scheme.primary : scheme.outline).withValues(
+                alpha: 0.3,
+              ),
             ),
           ),
           child: InkWell(
@@ -41,9 +43,7 @@ class StabilizerToggleCard extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(
-                    isActive
-                        ? Icons.shield_rounded
-                        : Icons.shield_outlined,
+                    isActive ? Icons.shield_rounded : Icons.shield_outlined,
                     color: isActive ? scheme.primary : scheme.onSurfaceVariant,
                     size: 32,
                   ),

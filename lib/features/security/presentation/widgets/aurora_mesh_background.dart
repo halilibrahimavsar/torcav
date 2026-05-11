@@ -114,17 +114,18 @@ class _AuroraMeshBackgroundState extends State<AuroraMeshBackground>
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: isLight
-                    ? const [
-                        Color(0xFFEFF3F8),
-                        Color(0xFFDDE6F0),
-                        Color(0xFFC9D6E4),
-                      ]
-                    : const [
-                        Color(0xFF050912),
-                        Color(0xFF0A1428),
-                        Color(0xFF050912),
-                      ],
+                colors:
+                    isLight
+                        ? const [
+                          Color(0xFFEFF3F8),
+                          Color(0xFFDDE6F0),
+                          Color(0xFFC9D6E4),
+                        ]
+                        : const [
+                          Color(0xFF050912),
+                          Color(0xFF0A1428),
+                          Color(0xFF050912),
+                        ],
               ),
             ),
           ),
@@ -134,8 +135,10 @@ class _AuroraMeshBackgroundState extends State<AuroraMeshBackground>
             child: AnimatedBuilder(
               animation: Listenable.merge([_controller, widget.scrollVelocity]),
               builder: (context, _) {
-                _smoothedVelocity = _smoothedVelocity * 0.88 +
-                    (widget.scrollVelocity.value / 4.0).clamp(0.0, 250.0) * 0.12;
+                _smoothedVelocity =
+                    _smoothedVelocity * 0.88 +
+                    (widget.scrollVelocity.value / 4.0).clamp(0.0, 250.0) *
+                        0.12;
                 widget.scrollVelocity.value *= 0.94;
 
                 return CustomPaint(
@@ -162,8 +165,9 @@ class _AuroraMeshBackgroundState extends State<AuroraMeshBackground>
                   radius: 1.2,
                   colors: [
                     Colors.transparent,
-                    (isLight ? Colors.white : Colors.black)
-                        .withValues(alpha: isLight ? 0.18 : 0.55),
+                    (isLight ? Colors.white : Colors.black).withValues(
+                      alpha: isLight ? 0.18 : 0.55,
+                    ),
                   ],
                   stops: const [0.55, 1.0],
                 ),
@@ -257,14 +261,15 @@ class _AuroraMeshPainter extends CustomPainter {
     for (final blob in blobs) {
       final c = blob.center(size, progress);
       final r = blob.radius * size.shortestSide;
-      final paint = Paint()
-        ..shader = RadialGradient(
-          colors: [
-            blob.baseColor.withValues(alpha: blobAlpha),
-            blob.baseColor.withValues(alpha: 0),
-          ],
-        ).createShader(Rect.fromCircle(center: c, radius: r))
-        ..blendMode = BlendMode.plus;
+      final paint =
+          Paint()
+            ..shader = RadialGradient(
+              colors: [
+                blob.baseColor.withValues(alpha: blobAlpha),
+                blob.baseColor.withValues(alpha: 0),
+              ],
+            ).createShader(Rect.fromCircle(center: c, radius: r))
+            ..blendMode = BlendMode.plus;
       canvas.drawCircle(c, r, paint);
     }
     canvas.restore();
@@ -278,10 +283,11 @@ class _AuroraMeshPainter extends CustomPainter {
 
     final lineColor = (isLight ? AppColors.inkCyan : AppColors.neonCyan)
         .withValues(alpha: isLight ? 0.18 : 0.16);
-    final linePaint = Paint()
-      ..color = lineColor
-      ..strokeWidth = 0.8
-      ..style = PaintingStyle.stroke;
+    final linePaint =
+        Paint()
+          ..color = lineColor
+          ..strokeWidth = 0.8
+          ..style = PaintingStyle.stroke;
 
     final cols = (size.width / hexW).ceil() + 2;
     final rows = (size.height / hexH).ceil() + 2;
@@ -307,9 +313,12 @@ class _AuroraMeshPainter extends CustomPainter {
         // Pulsing node at vertex if wave is high
         if (wave > 0.78) {
           final nodeAlpha = ((wave - 0.78) / 0.22).clamp(0.0, 1.0);
-          final nodePaint = Paint()
-            ..color = accent.withValues(alpha: nodeAlpha * (isLight ? 0.7 : 0.9))
-            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.5);
+          final nodePaint =
+              Paint()
+                ..color = accent.withValues(
+                  alpha: nodeAlpha * (isLight ? 0.7 : 0.9),
+                )
+                ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.5);
           canvas.drawCircle(Offset(cx, cy), 2.2, nodePaint);
         }
       }
@@ -336,10 +345,13 @@ class _AuroraMeshPainter extends CustomPainter {
     }
     path.close();
 
-    final paint = Paint()
-      ..color = basePaint.color.withValues(alpha: basePaint.color.a * alphaMul)
-      ..strokeWidth = basePaint.strokeWidth
-      ..style = PaintingStyle.stroke;
+    final paint =
+        Paint()
+          ..color = basePaint.color.withValues(
+            alpha: basePaint.color.a * alphaMul,
+          )
+          ..strokeWidth = basePaint.strokeWidth
+          ..style = PaintingStyle.stroke;
     canvas.drawPath(path, paint);
   }
 
@@ -351,44 +363,48 @@ class _AuroraMeshPainter extends CustomPainter {
     final sweepAngle = (progress * math.pi * 2) % (math.pi * 2);
 
     // Base disc fade
-    final discPaint = Paint()
-      ..shader = RadialGradient(
-        colors: [
-          accent.withValues(alpha: isLight ? 0.06 : 0.08),
-          Colors.transparent,
-        ],
-      ).createShader(Rect.fromCircle(center: center, radius: radius));
+    final discPaint =
+        Paint()
+          ..shader = RadialGradient(
+            colors: [
+              accent.withValues(alpha: isLight ? 0.06 : 0.08),
+              Colors.transparent,
+            ],
+          ).createShader(Rect.fromCircle(center: center, radius: radius));
     canvas.drawCircle(center, radius, discPaint);
 
     // Sweep cone
     const sweepWidth = math.pi / 4;
     final rect = Rect.fromCircle(center: center, radius: radius);
-    final sweepPaint = Paint()
-      ..shader = SweepGradient(
-        center: Alignment.center,
-        startAngle: sweepAngle - sweepWidth,
-        endAngle: sweepAngle,
-        colors: [
-          Colors.transparent,
-          accent.withValues(alpha: isLight ? 0.12 : 0.18),
-        ],
-        transform: GradientRotation(0),
-      ).createShader(rect);
+    final sweepPaint =
+        Paint()
+          ..shader = SweepGradient(
+            center: Alignment.center,
+            startAngle: sweepAngle - sweepWidth,
+            endAngle: sweepAngle,
+            colors: [
+              Colors.transparent,
+              accent.withValues(alpha: isLight ? 0.12 : 0.18),
+            ],
+            transform: GradientRotation(0),
+          ).createShader(rect);
 
     canvas.save();
     final clip = Path()..addOval(rect);
     canvas.clipPath(clip);
-    final wedge = Path()
-      ..moveTo(center.dx, center.dy)
-      ..arcTo(rect, sweepAngle - sweepWidth, sweepWidth, false)
-      ..close();
+    final wedge =
+        Path()
+          ..moveTo(center.dx, center.dy)
+          ..arcTo(rect, sweepAngle - sweepWidth, sweepWidth, false)
+          ..close();
     canvas.drawPath(wedge, sweepPaint);
     canvas.restore();
 
     // Crosshair
-    final axisPaint = Paint()
-      ..color = accent.withValues(alpha: isLight ? 0.18 : 0.22)
-      ..strokeWidth = 0.8;
+    final axisPaint =
+        Paint()
+          ..color = accent.withValues(alpha: isLight ? 0.18 : 0.22)
+          ..strokeWidth = 0.8;
     for (int i = 0; i < 4; i++) {
       final a = math.pi / 2 * i;
       canvas.drawLine(
@@ -399,10 +415,11 @@ class _AuroraMeshPainter extends CustomPainter {
     }
 
     // Concentric guide rings
-    final guidePaint = Paint()
-      ..color = accent.withValues(alpha: isLight ? 0.1 : 0.13)
-      ..strokeWidth = 0.6
-      ..style = PaintingStyle.stroke;
+    final guidePaint =
+        Paint()
+          ..color = accent.withValues(alpha: isLight ? 0.1 : 0.13)
+          ..strokeWidth = 0.6
+          ..style = PaintingStyle.stroke;
     for (int i = 1; i <= 3; i++) {
       canvas.drawCircle(center, radius * (i / 3), guidePaint);
     }
@@ -418,10 +435,11 @@ class _AuroraMeshPainter extends CustomPainter {
       final r = maxR * t;
       final alpha = (1.0 - t) * (isLight ? 0.35 : 0.45);
 
-      final paint = Paint()
-        ..color = accent.withValues(alpha: alpha)
-        ..strokeWidth = 1.2
-        ..style = PaintingStyle.stroke;
+      final paint =
+          Paint()
+            ..color = accent.withValues(alpha: alpha)
+            ..strokeWidth = 1.2
+            ..style = PaintingStyle.stroke;
       canvas.drawCircle(center, r, paint);
     }
   }
@@ -443,28 +461,27 @@ class _AuroraMeshPainter extends CustomPainter {
       final freq = i / bars.length;
       final Color barColor;
       if (freq < 0.5) {
-        barColor = Color.lerp(
-          AppColors.neonCyan,
-          AppColors.neonGreen,
-          freq * 2,
-        )!;
+        barColor =
+            Color.lerp(AppColors.neonCyan, AppColors.neonGreen, freq * 2)!;
       } else {
-        barColor = Color.lerp(
-          AppColors.neonGreen,
-          AppColors.neonMagenta,
-          (freq - 0.5) * 2,
-        )!;
+        barColor =
+            Color.lerp(
+              AppColors.neonGreen,
+              AppColors.neonMagenta,
+              (freq - 0.5) * 2,
+            )!;
       }
 
-      final paint = Paint()
-        ..shader = LinearGradient(
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-          colors: [
-            barColor.withValues(alpha: isLight ? 0.55 : 0.75),
-            barColor.withValues(alpha: 0),
-          ],
-        ).createShader(rect);
+      final paint =
+          Paint()
+            ..shader = LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [
+                barColor.withValues(alpha: isLight ? 0.55 : 0.75),
+                barColor.withValues(alpha: 0),
+              ],
+            ).createShader(rect);
 
       canvas.drawRRect(
         RRect.fromRectAndRadius(rect, const Radius.circular(2)),
@@ -473,13 +490,11 @@ class _AuroraMeshPainter extends CustomPainter {
 
       // Peak cap
       if (amp > 0.55) {
-        final capPaint = Paint()
-          ..color = barColor.withValues(alpha: isLight ? 0.7 : 0.95)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.5);
-        canvas.drawRect(
-          Rect.fromLTWH(x, baseY - h, barW - gap, 2),
-          capPaint,
-        );
+        final capPaint =
+            Paint()
+              ..color = barColor.withValues(alpha: isLight ? 0.7 : 0.95)
+              ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.5);
+        canvas.drawRect(Rect.fromLTWH(x, baseY - h, barW - gap, 2), capPaint);
       }
     }
   }

@@ -179,5 +179,4 @@ class ChannelSpectralChart extends StatelessWidget {
       ),
     );
   }
-
 }

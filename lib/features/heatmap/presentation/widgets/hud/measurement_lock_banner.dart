@@ -33,7 +33,9 @@ class MeasurementLockBanner extends StatelessWidget {
             l10n.measurementLockedTitle,
             slice.targetBssid == null
                 ? l10n.measurementLockNoWifi
-                : l10n.measurementLockReconnect(compactBssid(slice.targetBssid!)),
+                : l10n.measurementLockReconnect(
+                  compactBssid(slice.targetBssid!),
+                ),
             isLight ? AppColors.inkRed : AppColors.neonRed,
             Icons.link_off_rounded,
           ),

@@ -9,8 +9,11 @@ import 'package:torcav/features/wifi_scan/domain/entities/scan_snapshot.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/scan_request.dart';
 
 class MockScanSnapshotBuilder extends Mock implements ScanSnapshotBuilder {}
+
 class MockAppSettingsStore extends Mock implements AppSettingsStore {}
+
 class MockWiFiScan extends Mock implements WiFiScan {}
+
 class MockWiFiAccessPoint extends Mock implements WiFiAccessPoint {}
 
 void main() {
@@ -22,9 +25,11 @@ void main() {
     mockBuilder = MockScanSnapshotBuilder();
     mockSettingsStore = MockAppSettingsStore();
     mockWiFiScan = MockWiFiScan();
-    
+
     // Default settings
-    when(() => mockSettingsStore.value).thenReturn(const AppSettings(strictSafetyMode: true));
+    when(
+      () => mockSettingsStore.value,
+    ).thenReturn(const AppSettings(strictSafetyMode: true));
   });
 
   group('AndroidWifiDataSource Safety Enforcement', () {
@@ -48,35 +53,51 @@ void main() {
       when(() => mockAp2.level).thenReturn(-60);
       when(() => mockAp2.frequency).thenReturn(2437);
 
-      when(() => mockWiFiScan.canStartScan()).thenAnswer((_) async => CanStartScan.yes);
+      when(
+        () => mockWiFiScan.canStartScan(),
+      ).thenAnswer((_) async => CanStartScan.yes);
       when(() => mockWiFiScan.startScan()).thenAnswer((_) async => true);
-      when(() => mockWiFiScan.canGetScannedResults()).thenAnswer((_) async => CanGetScannedResults.yes);
-      when(() => mockWiFiScan.getScannedResults()).thenAnswer((_) async => [mockAp1, mockAp2]);
-      
-      // Mock snapshot builder to just return a dummy
-      when(() => mockBuilder.build(
-        timestamp: any(named: 'timestamp'),
-        backendUsed: any(named: 'backendUsed'),
-        interfaceName: any(named: 'interfaceName'),
-        passes: any(named: 'passes'),
-        isFromCache: any(named: 'isFromCache'),
-      )).thenAnswer((_) async => ScanSnapshot(
-        timestamp: DateTime.now(), 
-        backendUsed: '', 
-        interfaceName: '', 
-        networks: const [], 
-        channelStats: const [], 
-        bandStats: const [],
-      ));
+      when(
+        () => mockWiFiScan.canGetScannedResults(),
+      ).thenAnswer((_) async => CanGetScannedResults.yes);
+      when(
+        () => mockWiFiScan.getScannedResults(),
+      ).thenAnswer((_) async => [mockAp1, mockAp2]);
 
-      final dataSource = AndroidWifiDataSource(mockBuilder, mockSettingsStore, mockWiFiScan);
-      
+      // Mock snapshot builder to just return a dummy
+      when(
+        () => mockBuilder.build(
+          timestamp: any(named: 'timestamp'),
+          backendUsed: any(named: 'backendUsed'),
+          interfaceName: any(named: 'interfaceName'),
+          passes: any(named: 'passes'),
+          isFromCache: any(named: 'isFromCache'),
+        ),
+      ).thenAnswer(
+        (_) async => ScanSnapshot(
+          timestamp: DateTime.now(),
+          backendUsed: '',
+          interfaceName: '',
+          networks: const [],
+          channelStats: const [],
+          bandStats: const [],
+        ),
+      );
+
+      final dataSource = AndroidWifiDataSource(
+        mockBuilder,
+        mockSettingsStore,
+        mockWiFiScan,
+      );
+
       // Note: This test will still fail on non-Android due to Platform.isAndroid check.
       // In a real project, we would use a Platform wrapper to mock the OS.
       try {
         await dataSource.scanSnapshot(const ScanRequest(includeHidden: true));
       } catch (e) {
-        if (e.toString().contains('Android scanner is only supported on Android')) {
+        if (e.toString().contains(
+          'Android scanner is only supported on Android',
+        )) {
           // Expected on non-android test runner
           return;
         }
@@ -85,4 +106,3 @@ void main() {
     });
   });
 }
-

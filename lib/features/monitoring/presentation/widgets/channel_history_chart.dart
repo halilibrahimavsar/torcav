@@ -786,9 +786,10 @@ class _BarView extends StatelessWidget {
                     }
                     // Stride so labels don't collide. Connected channel is
                     // always shown regardless of the stride.
-                    final stride = manyChannels
-                        ? math.max(1, (channels.length / 8).ceil())
-                        : 1;
+                    final stride =
+                        manyChannels
+                            ? math.max(1, (channels.length / 8).ceil())
+                            : 1;
                     final isConnected = connectedChannel == channels[idx];
                     if (idx % stride != 0 && !isConnected) {
                       return const SizedBox.shrink();
@@ -908,18 +909,17 @@ class _LineView extends StatelessWidget {
       if (s.isEmpty) {
         avgByChannel[ch] = 0;
       } else {
-        avgByChannel[ch] = s.map((x) => x.rating).reduce((a, b) => a + b) /
-            s.length;
+        avgByChannel[ch] =
+            s.map((x) => x.rating).reduce((a, b) => a + b) / s.length;
       }
     }
-    final topChannels = ([...channels]..sort(
-            (a, b) => avgByChannel[b]!.compareTo(avgByChannel[a]!)))
-        .take(3)
-        .toSet();
+    final topChannels =
+        ([...channels]..sort(
+          (a, b) => avgByChannel[b]!.compareTo(avgByChannel[a]!),
+        )).take(3).toSet();
 
     // Adaptive dot radius: visible at any session count, shrinks for crowd.
-    final dotRadius =
-        math.max(1.0, 4.0 - sessions.length / 15).clamp(1.0, 4.0);
+    final dotRadius = math.max(1.0, 4.0 - sessions.length / 15).clamp(1.0, 4.0);
 
     final lines =
         channels.asMap().entries.map((entry) {
@@ -928,7 +928,8 @@ class _LineView extends StatelessWidget {
           final color = colorForIndex(i, channels.length);
           final chSamples = byChannel[ch]!;
           final isHighlighted = highlighted.contains(ch);
-          final isConnected = connectedChannel != null && connectedChannel == ch;
+          final isConnected =
+              connectedChannel != null && connectedChannel == ch;
           final isTop = topChannels.contains(ch);
           final hasFocus = highlighted.isNotEmpty;
 
@@ -978,11 +979,12 @@ class _LineView extends StatelessWidget {
             barWidth: barWidth,
             dotData: FlDotData(
               show: isConnected || isHighlighted,
-              getDotPainter: (spot, _, __, ___) => FlDotCirclePainter(
-                radius: dotRadius,
-                color: color,
-                strokeWidth: 0,
-              ),
+              getDotPainter:
+                  (spot, _, __, ___) => FlDotCirclePainter(
+                    radius: dotRadius,
+                    color: color,
+                    strokeWidth: 0,
+                  ),
             ),
             belowBarData: BarAreaData(
               show: isHighlighted && highlighted.length == 1,
@@ -1183,7 +1185,8 @@ class _HeatmapView extends StatelessWidget {
                 ChannelRatingSample? best;
                 int bestDiff = 999999;
                 for (final s in samples) {
-                  final diff = s.timestamp.difference(sessionTs).inSeconds.abs();
+                  final diff =
+                      s.timestamp.difference(sessionTs).inSeconds.abs();
                   if (diff < bestDiff) {
                     bestDiff = diff;
                     best = s;
@@ -1210,10 +1213,7 @@ class _HeatmapView extends StatelessWidget {
           final cellW = available5 / buckets.length;
           // Vertical: shrink-to-fit but keep min for readability.
           final gridSpace = maxH - headerH - 32;
-          final cellH = (gridSpace / channels.length).clamp(
-            minCellH,
-            maxCellH,
-          );
+          final cellH = (gridSpace / channels.length).clamp(minCellH, maxCellH);
           final totalGridW = labelW + buckets.length * cellW;
           final totalGridH = channels.length * cellH;
           final needsHScroll = totalGridW > available + 0.5;
@@ -1381,9 +1381,7 @@ class _HeatmapPainter extends CustomPainter {
           );
           // ⋯ marker for cells aggregated from multiple sessions.
           if (buckets[bi].bucketed && cellW >= 14 && cellH >= 14) {
-            final dotPaint =
-                Paint()
-                  ..color = textColor.withValues(alpha: 0.55);
+            final dotPaint = Paint()..color = textColor.withValues(alpha: 0.55);
             final cy = y + cellH - 4;
             final cx = x + cellW / 2;
             canvas.drawCircle(Offset(cx - 3, cy), 0.8, dotPaint);

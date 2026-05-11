@@ -42,10 +42,7 @@ class StabilizerExplainer extends StatelessWidget {
           ),
           subtitle: Text(
             l10n.stabilizerExplainerSubtitle,
-            style: TextStyle(
-              fontSize: 11,
-              color: scheme.onSurfaceVariant,
-            ),
+            style: TextStyle(fontSize: 11, color: scheme.onSurfaceVariant),
           ),
           children: [
             _ExplainerSection(
@@ -125,9 +122,10 @@ class _ExplainerSection extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('• ',
-                    style:
-                        TextStyle(color: scheme.onSurfaceVariant, height: 1.4)),
+                Text(
+                  '• ',
+                  style: TextStyle(color: scheme.onSurfaceVariant, height: 1.4),
+                ),
                 Expanded(
                   child: Text(
                     b,

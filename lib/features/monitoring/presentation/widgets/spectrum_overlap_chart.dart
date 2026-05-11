@@ -146,8 +146,8 @@ class _SpectrumOverlapChartState extends State<SpectrumOverlapChart> {
     final h = size.height - _padTop - _padBottom;
     if (w <= 0 || h <= 0) return null;
 
-    final tapFreq = range.low +
-        ((tap.dx - _padLeft) / w) * (range.high - range.low);
+    final tapFreq =
+        range.low + ((tap.dx - _padLeft) / w) * (range.high - range.low);
     final tapY = tap.dy;
 
     WifiNetwork? best;
@@ -162,8 +162,8 @@ class _SpectrumOverlapChartState extends State<SpectrumOverlapChart> {
       // Y range of the bell at the tap frequency (linear taper to edges).
       final dyRatio =
           1.0 - (2 * (tapFreq - n.frequency).abs() / width).clamp(0.0, 1.0);
-      final topNorm =
-          ((n.signalStrength - _minDbm) / (_maxDbm - _minDbm)).clamp(0.0, 1.0);
+      final topNorm = ((n.signalStrength - _minDbm) / (_maxDbm - _minDbm))
+          .clamp(0.0, 1.0);
       final shapeTop = _padTop + (1 - topNorm) * h;
       // Linear taper means the shape rises from baseline at edges to topNorm
       // at centre; we mirror that by interpolating the y-top.
@@ -337,8 +337,9 @@ class _SpectrumPainter extends CustomPainter {
     canvas.drawRRect(
       RRect.fromRectAndRadius(bgRect, const Radius.circular(3)),
       Paint()
-        ..color = (isDark ? const Color(0xFF0F172A) : Colors.white)
-            .withValues(alpha: 0.85),
+        ..color = (isDark ? const Color(0xFF0F172A) : Colors.white).withValues(
+          alpha: 0.85,
+        ),
     );
     label.paint(canvas, Offset(x - label.width / 2, 1));
   }
@@ -385,10 +386,7 @@ class _SpectrumPainter extends CustomPainter {
         ),
       );
       tp.layout();
-      tp.paint(
-        canvas,
-        Offset(x - tp.width / 2, padTop + h + 6),
-      );
+      tp.paint(canvas, Offset(x - tp.width / 2, padTop + h + 6));
     }
   }
 
@@ -410,14 +408,14 @@ class _SpectrumPainter extends CustomPainter {
     final high = (n.frequency + width / 2).clamp(range.low, range.high);
 
     final xLow = padLeft + ((low - range.low) / (range.high - range.low)) * w;
-    final xHigh =
-        padLeft + ((high - range.low) / (range.high - range.low)) * w;
+    final xHigh = padLeft + ((high - range.low) / (range.high - range.low)) * w;
     final xCentre =
-        padLeft +
-        ((n.frequency - range.low) / (range.high - range.low)) * w;
+        padLeft + ((n.frequency - range.low) / (range.high - range.low)) * w;
 
-    final norm =
-        ((n.signalStrength - minDbm) / (maxDbm - minDbm)).clamp(0.0, 1.0);
+    final norm = ((n.signalStrength - minDbm) / (maxDbm - minDbm)).clamp(
+      0.0,
+      1.0,
+    );
     final yTop = padTop + (1 - norm) * h;
     final yBase = padTop + h;
 

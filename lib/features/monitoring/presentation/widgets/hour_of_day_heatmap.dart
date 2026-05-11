@@ -40,9 +40,7 @@ class HourOfDayHeatmap extends StatelessWidget {
 
     final hoursWithData =
         List.generate(24, (h) => h)
-            .where(
-              (h) => byChannelHour.values.any((row) => row[h].isNotEmpty),
-            )
+            .where((h) => byChannelHour.values.any((row) => row[h].isNotEmpty))
             .length;
     if (hoursWithData < _minHoursWithData) {
       return _empty(context, l10n.hourlyHeatmapInsufficient);
@@ -55,8 +53,7 @@ class HourOfDayHeatmap extends StatelessWidget {
         const labelW = 38.0;
         const minCellW = 14.0;
         final available = constraints.maxWidth - 8;
-        final cellW =
-            math.max(minCellW, (available - labelW) / 24);
+        final cellW = math.max(minCellW, (available - labelW) / 24);
         final cellH = math.min(22.0, math.max(14.0, cellW));
         final totalH = channels.length * cellH + 26;
         final totalW = labelW + 24 * cellW;
@@ -172,8 +169,10 @@ class _HourlyPainter extends CustomPainter {
           canvas.drawRRect(
             RRect.fromRectAndRadius(rect, const Radius.circular(2)),
             Paint()
-              ..color = ratingHeatmapColor(avg, isDark: isDark)
-                  .withValues(alpha: 0.85),
+              ..color = ratingHeatmapColor(
+                avg,
+                isDark: isDark,
+              ).withValues(alpha: 0.85),
           );
         }
       }

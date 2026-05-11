@@ -105,7 +105,11 @@ class _GroupRow extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Icon(Icons.wifi_tethering_rounded, size: 14, color: AppColors.neonPurple),
+            const Icon(
+              Icons.wifi_tethering_rounded,
+              size: 14,
+              color: AppColors.neonPurple,
+            ),
             const SizedBox(width: 6),
             Expanded(
               child: Text(
@@ -130,9 +134,10 @@ class _GroupRow extends StatelessWidget {
                 radio: group.radios[i],
                 rating: ratingFor(group.radios[i])[_bandKey(group.radios[i])],
                 isLast: i == group.radios.length - 1,
-                onTap: () => onJumpToBand(
-                  bandIndex(bandFromFrequency(group.radios[i].frequency)),
-                ),
+                onTap:
+                    () => onJumpToBand(
+                      bandIndex(bandFromFrequency(group.radios[i].frequency)),
+                    ),
               ),
           ],
         ),
@@ -140,12 +145,13 @@ class _GroupRow extends StatelessWidget {
     );
   }
 
-  static String _bandKey(WifiNetwork n) =>
-      switch (bandFromFrequency(n.frequency)) {
-        WifiBand.ghz24 => '2.4',
-        WifiBand.ghz5 => '5',
-        WifiBand.ghz6 => '6',
-      };
+  static String _bandKey(WifiNetwork n) => switch (bandFromFrequency(
+    n.frequency,
+  )) {
+    WifiBand.ghz24 => '2.4',
+    WifiBand.ghz5 => '5',
+    WifiBand.ghz6 => '6',
+  };
 }
 
 class _BandChip extends StatelessWidget {
@@ -190,5 +196,4 @@ class _BandChip extends StatelessWidget {
       ),
     );
   }
-
 }

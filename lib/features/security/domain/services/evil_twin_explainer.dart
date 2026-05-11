@@ -121,8 +121,7 @@ class EvilTwinExplainer {
   };
 
   String _headline(_Level lvl) => switch (lvl) {
-    _Level.high =>
-      'Strong evil-twin pattern — treat this network as untrusted',
+    _Level.high => 'Strong evil-twin pattern — treat this network as untrusted',
     _Level.medium => 'Suspicious twin pattern — verify before connecting',
     _Level.low => 'Weak twin signal — keep an eye on this',
   };
@@ -161,7 +160,7 @@ class EvilTwinExplainer {
       base.insert(
         0,
         'One of the two access points uses weaker encryption than the '
-            'other. Always pick the stronger one (WPA3 over WPA2 over Open).',
+        'other. Always pick the stronger one (WPA3 over WPA2 over Open).',
       );
     }
 
@@ -169,14 +168,14 @@ class EvilTwinExplainer {
       base.insert(
         0,
         'Disconnect from this Wi-Fi now and switch to mobile data until '
-            'you can verify which BSSID is the real one.',
+        'you can verify which BSSID is the real one.',
       );
     }
 
     if (a.suspicions.contains(EvilTwinSignal.ouiMismatch)) {
       base.add(
         'The two routers come from different hardware vendors — your '
-            'real router shouldn\'t suddenly change manufacturer.',
+        'real router shouldn\'t suddenly change manufacturer.',
       );
     }
 

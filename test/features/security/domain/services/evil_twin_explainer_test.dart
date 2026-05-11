@@ -34,10 +34,7 @@ void main() {
     );
     final exp = explainer.explain(a);
     expect(exp.confidenceLabel, 'High');
-    expect(
-      exp.recommendedActions.first.toLowerCase(),
-      contains('disconnect'),
-    );
+    expect(exp.recommendedActions.first.toLowerCase(), contains('disconnect'));
     expect(exp.observedSignals.length, 2);
   });
 

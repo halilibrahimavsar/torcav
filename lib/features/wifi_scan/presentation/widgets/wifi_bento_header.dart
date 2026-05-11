@@ -58,8 +58,7 @@ class WifiBentoHeader extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: BentoStatTile(
-                                  label:
-                                      context.l10n.networksLabel,
+                                  label: context.l10n.networksLabel,
                                   value: '${snapshot.networks.length}',
                                   icon: Icons.wifi_find_rounded,
                                   color: Theme.of(context).colorScheme.primary,
@@ -68,8 +67,7 @@ class WifiBentoHeader extends StatelessWidget {
                               const SizedBox(width: 8),
                               Expanded(
                                 child: BentoStatTile(
-                                  label:
-                                      context.l10n.securityLabel,
+                                  label: context.l10n.securityLabel,
                                   value:
                                       '${snapshot.networks.where((n) => n.security != SecurityType.open).length}',
                                   icon: Icons.security_rounded,
@@ -93,23 +91,20 @@ class WifiBentoHeader extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: BentoStatTile(
-                                  label:
-                                      context.l10n.avgSignalLabel,
+                                  label: context.l10n.avgSignalLabel,
                                   value:
                                       snapshot.networks.isEmpty
                                           ? context.l10n.notAvailable
                                           : '${(snapshot.networks.map((n) => n.avgSignalDbm).reduce((a, b) => a + b) / snapshot.networks.length).round()}',
                                   icon: Icons.signal_wifi_4_bar_rounded,
                                   color: AppColors.neonPurple,
-                                  subValue:
-                                      context.l10n.dbmCaps,
+                                  subValue: context.l10n.dbmCaps,
                                 ),
                               ),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: BentoStatTile(
-                                  label:
-                                      context.l10n.interfaceLabel,
+                                  label: context.l10n.interfaceLabel,
                                   value: snapshot.interfaceName.toUpperCase(),
                                   icon: Icons.lan_rounded,
                                   color: AppColors.neonOrange,

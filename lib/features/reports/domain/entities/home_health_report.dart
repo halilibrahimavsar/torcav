@@ -56,28 +56,28 @@ class HomeHealthReport extends Equatable {
       ((wifiScore + securityScore + internetScore + lanScore) / 4).round();
 
   Map<String, dynamic> toJson() => {
-        'generatedAt': generatedAt.toIso8601String(),
-        'connectedSsid': connectedSsid,
-        'overallScore': overallScore,
-        'wifiScore': wifiScore,
-        'securityScore': securityScore,
-        'internetScore': internetScore,
-        'lanScore': lanScore,
-        'headline': headline,
-        'topActions': topActions,
-        'stats': stats,
-      };
+    'generatedAt': generatedAt.toIso8601String(),
+    'connectedSsid': connectedSsid,
+    'overallScore': overallScore,
+    'wifiScore': wifiScore,
+    'securityScore': securityScore,
+    'internetScore': internetScore,
+    'lanScore': lanScore,
+    'headline': headline,
+    'topActions': topActions,
+    'stats': stats,
+  };
 
   @override
   List<Object?> get props => [
-        generatedAt,
-        connectedSsid,
-        wifiScore,
-        securityScore,
-        internetScore,
-        lanScore,
-        headline,
-        topActions,
-        stats,
-      ];
+    generatedAt,
+    connectedSsid,
+    wifiScore,
+    securityScore,
+    internetScore,
+    lanScore,
+    headline,
+    topActions,
+    stats,
+  ];
 }

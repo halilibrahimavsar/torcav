@@ -81,19 +81,16 @@ void main() {
   });
 
   test('flags weak signal when RSSI is severe', () {
-    final result = useCase(
-      build(connectedNetwork: connected(rssi: -82)),
-    );
+    final result = useCase(build(connectedNetwork: connected(rssi: -82)));
     expect(result.primaryCause, RootCauseCategory.weakSignal);
-    final ev = result.allEvidence
-        .firstWhere((e) => e.category == RootCauseCategory.weakSignal);
+    final ev = result.allEvidence.firstWhere(
+      (e) => e.category == RootCauseCategory.weakSignal,
+    );
     expect(ev.severity, greaterThanOrEqualTo(0.9));
   });
 
   test('flags bufferbloat when induced latency is high', () {
-    final result = useCase(
-      build(speedTest: speed(latency: 15, loaded: 250)),
-    );
+    final result = useCase(build(speedTest: speed(latency: 15, loaded: 250)));
     expect(result.primaryCause, RootCauseCategory.bufferbloat);
   });
 
@@ -143,8 +140,9 @@ void main() {
         context: NetworkContextType.unknown,
       ),
     );
-    final hasWeakSignal = result.allEvidence
-        .any((e) => e.category == RootCauseCategory.weakSignal);
+    final hasWeakSignal = result.allEvidence.any(
+      (e) => e.category == RootCauseCategory.weakSignal,
+    );
     expect(hasWeakSignal, isFalse);
   });
 }

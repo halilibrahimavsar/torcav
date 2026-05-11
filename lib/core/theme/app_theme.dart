@@ -290,7 +290,8 @@ class AppTheme {
       surfaceContainer: AppColors.lightSurfaceSecondary,
       surfaceContainerLow: AppColors.lightSurface,
       surfaceContainerHigh: AppColors.lightSurfaceTertiary,
-      primaryContainer: AppColors.lightSurfaceSecondary, // Muted Slate-200 for buttons
+      primaryContainer:
+          AppColors.lightSurfaceSecondary, // Muted Slate-200 for buttons
       onPrimaryContainer: AppColors.inkCyan,
     );
 

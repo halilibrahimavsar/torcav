@@ -165,7 +165,11 @@ class TopologyInfoSheet extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(context, l10n.legendAndNodes, Icons.legend_toggle_rounded),
+        _sectionHeader(
+          context,
+          l10n.legendAndNodes,
+          Icons.legend_toggle_rounded,
+        ),
         const SizedBox(height: 12),
         Wrap(
           spacing: 12,
@@ -264,7 +268,11 @@ class TopologyInfoSheet extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(context, l10n.connectionTypesHeader, Icons.linear_scale_rounded),
+        _sectionHeader(
+          context,
+          l10n.connectionTypesHeader,
+          Icons.linear_scale_rounded,
+        ),
         const SizedBox(height: 12),
         _connectionType(
           context,

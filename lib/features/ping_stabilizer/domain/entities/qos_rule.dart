@@ -27,12 +27,12 @@ class QosRule extends Equatable {
   }
 
   Map<String, Object?> toMap() => {
-        'protocol': protocol.name,
-        'portStart': portStart,
-        'portEnd': portEnd,
-        'queue': queue.name,
-        'dscp': dscp,
-      };
+    'protocol': protocol.name,
+    'portStart': portStart,
+    'portEnd': portEnd,
+    'queue': queue.name,
+    'dscp': dscp,
+  };
 
   @override
   List<Object?> get props => [protocol, portStart, portEnd, queue, dscp];

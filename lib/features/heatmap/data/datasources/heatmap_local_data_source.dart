@@ -29,26 +29,26 @@ class HeatmapLocalDataSource {
   }
 
   Future<void> saveSession(HeatmapSession session) async {
-    final ids = (_storage.get<List<dynamic>>(_indexKey) ?? []).cast<String>().toList();
+    final ids =
+        (_storage.get<List<dynamic>>(_indexKey) ?? []).cast<String>().toList();
     if (!ids.contains(session.id)) {
       ids.add(session.id);
       await _storage.save(_indexKey, ids);
     }
-    await _storage.save(
-      'heatmap_session_${session.id}',
-      _toJson(session),
-    );
+    await _storage.save('heatmap_session_${session.id}', _toJson(session));
   }
 
   Future<void> deleteSession(String sessionId) async {
-    final ids = (_storage.get<List<dynamic>>(_indexKey) ?? []).cast<String>().toList();
+    final ids =
+        (_storage.get<List<dynamic>>(_indexKey) ?? []).cast<String>().toList();
     ids.remove(sessionId);
     await _storage.save(_indexKey, ids);
     await _storage.delete('heatmap_session_$sessionId');
   }
 
   Future<void> deleteAll() async {
-    final ids = (_storage.get<List<dynamic>>(_indexKey) ?? []).cast<String>().toList();
+    final ids =
+        (_storage.get<List<dynamic>>(_indexKey) ?? []).cast<String>().toList();
     for (final id in ids) {
       await _storage.delete('heatmap_session_$id');
     }
@@ -107,4 +107,3 @@ class HeatmapLocalDataSource {
         }).toList(),
   );
 }
-

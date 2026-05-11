@@ -4,7 +4,8 @@ import 'package:torcav/features/ai/data/services/onnx_device_classifier_service.
 import 'package:torcav/features/ai/data/stores/device_label_override_store.dart';
 import 'package:torcav/features/network_scan/domain/entities/host_scan_result.dart';
 
-class MockDeviceLabelOverrideStore extends Mock implements DeviceLabelOverrideStore {}
+class MockDeviceLabelOverrideStore extends Mock
+    implements DeviceLabelOverrideStore {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -38,14 +39,17 @@ void main() {
       );
     }
 
-    test('classify falls back to vendor heuristic for Apple mobile devices', () async {
-      final host = createHost('Apple Inc.', 'iPhone-12');
-      final result = await service.classify(host);
+    test(
+      'classify falls back to vendor heuristic for Apple mobile devices',
+      () async {
+        final host = createHost('Apple Inc.', 'iPhone-12');
+        final result = await service.classify(host);
 
-      expect(result, isNotNull);
-      expect(result!.deviceType, 'Mobile Device');
-      expect(result.confidence, greaterThanOrEqualTo(0.6));
-    });
+        expect(result, isNotNull);
+        expect(result!.deviceType, 'Mobile Device');
+        expect(result.confidence, greaterThanOrEqualTo(0.6));
+      },
+    );
 
     test('classify falls back to vendor heuristic for known Routers', () async {
       final host = createHost('Cisco Systems', 'gateway');
@@ -56,13 +60,16 @@ void main() {
       expect(result.confidence, greaterThanOrEqualTo(0.65));
     });
 
-    test('classify falls back to vendor heuristic for known Printers', () async {
-      final host = createHost('Hewlett-Packard', 'HP-Print');
-      final result = await service.classify(host);
+    test(
+      'classify falls back to vendor heuristic for known Printers',
+      () async {
+        final host = createHost('Hewlett-Packard', 'HP-Print');
+        final result = await service.classify(host);
 
-      expect(result, isNotNull);
-      expect(result!.deviceType, 'Printer');
-    });
+        expect(result, isNotNull);
+        expect(result!.deviceType, 'Printer');
+      },
+    );
 
     test('classify falls back to vendor heuristic for Smart TVs', () async {
       final host = createHost('Sony Corporation', 'Bravia-TV');

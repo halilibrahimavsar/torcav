@@ -26,7 +26,6 @@ class AndroidWifiDataSource implements WifiDataSource {
     this._wifiScan,
   );
 
-
   @override
   Future<List<WifiNetwork>> scanNetworks({ScanRequest? request}) async {
     final snapshot = await scanSnapshot(request ?? const ScanRequest());
@@ -41,14 +40,15 @@ class AndroidWifiDataSource implements WifiDataSource {
 
     final hasPermission = await Permission.location.status.isGranted;
     if (!hasPermission) {
-      throw const PermissionFailure('Location permission required for Wi-Fi scanning');
+      throw const PermissionFailure(
+        'Location permission required for Wi-Fi scanning',
+      );
     }
 
     // ENFORCEMENT: If strictSafetyMode is ON, we disable hidden SSID scanning
     // regardless of the request parameter to prevent active probing.
-    final effectiveIncludeHidden = _settingsStore.value.strictSafetyMode
-        ? false
-        : request.includeHidden;
+    final effectiveIncludeHidden =
+        _settingsStore.value.strictSafetyMode ? false : request.includeHidden;
 
     final passCount = max(1, request.passes);
     final passResults = <List<WifiNetwork>>[];
@@ -138,8 +138,7 @@ class AndroidWifiDataSource implements WifiDataSource {
                 );
               })
               .where(
-                (network) =>
-                    effectiveIncludeHidden || network.ssid.isNotEmpty,
+                (network) => effectiveIncludeHidden || network.ssid.isNotEmpty,
               )
               .toList();
 

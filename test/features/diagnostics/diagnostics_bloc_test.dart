@@ -83,10 +83,11 @@ void main() {
   blocTest<DiagnosticsBloc, DiagnosticsState>(
     'reset returns the bloc to idle',
     build: () => DiagnosticsBloc(repo, diagnose, explainer),
-    seed: () => const DiagnosticsState(
-      status: DiagnosticsStatus.failure,
-      errorMessage: 'boom',
-    ),
+    seed:
+        () => const DiagnosticsState(
+          status: DiagnosticsStatus.failure,
+          errorMessage: 'boom',
+        ),
     act: (bloc) => bloc.add(const DiagnosticsReset()),
     expect: () => [const DiagnosticsState()],
   );

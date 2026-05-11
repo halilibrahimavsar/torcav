@@ -24,7 +24,9 @@ class CyberGridBackground extends StatefulWidget {
 }
 
 class _CyberGridBackgroundState extends State<CyberGridBackground> {
-  static final ValueNotifier<double> scrollVelocity = ValueNotifier<double>(0.0);
+  static final ValueNotifier<double> scrollVelocity = ValueNotifier<double>(
+    0.0,
+  );
   late final AppSettingsStore _settingsStore;
 
   @override
@@ -40,7 +42,7 @@ class _CyberGridBackgroundState extends State<CyberGridBackground> {
       initialData: _settingsStore.value,
       builder: (context, snapshot) {
         final settings = snapshot.data ?? const AppSettings();
-        
+
         // Removed Light Mode restriction as requested by user.
         // Backgrounds are now adapted for both theme modes.
 
@@ -84,4 +86,3 @@ class _CyberGridBackgroundState extends State<CyberGridBackground> {
     );
   }
 }
-

@@ -24,10 +24,12 @@ class HostTrustClassifier {
 
     // 1. Roll up the exposure findings.
     for (final finding in host.exposureFindings) {
-      reasons.add(HostTrustReason(
-        summary: finding.summary,
-        remediation: finding.remediation,
-      ));
+      reasons.add(
+        HostTrustReason(
+          summary: finding.summary,
+          remediation: finding.remediation,
+        ),
+      );
       switch (finding.risk) {
         case VulnerabilityRisk.critical:
         case VulnerabilityRisk.high:

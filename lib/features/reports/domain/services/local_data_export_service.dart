@@ -1,11 +1,7 @@
 import '../entities/user_data_category.dart';
 
 /// Output formats supported by the data export service.
-enum ExportFormat {
-  json,
-  csv,
-  html,
-}
+enum ExportFormat { json, csv, html }
 
 extension ExportFormatX on ExportFormat {
   String get fileExtension => switch (this) {

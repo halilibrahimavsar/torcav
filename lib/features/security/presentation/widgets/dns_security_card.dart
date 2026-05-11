@@ -125,7 +125,8 @@ class DnsSecurityCard extends StatelessWidget {
 
                 // Protocol & DNSSEC section (Always visible)
                 _DnsProtocolSection(
-                  protocol: dnsResult?.encryptedProtocol ?? l10n.notAvailableCaps,
+                  protocol:
+                      dnsResult?.encryptedProtocol ?? l10n.notAvailableCaps,
                   dnssec: dnsResult?.dnssecSupported ?? false,
                   color: dnsResult != null ? statusColor : scheme.outline,
                 ),

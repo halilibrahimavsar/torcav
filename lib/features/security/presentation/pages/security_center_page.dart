@@ -55,7 +55,7 @@ class _SecurityCenterView extends StatelessWidget {
               final isLoading =
                   state is SecurityLoading ||
                   (state is SecurityLoaded && state.isDnsLoading);
-                      return IconButton(
+              return IconButton(
                 icon:
                     isLoading
                         ? SizedBox(
@@ -79,19 +79,21 @@ class _SecurityCenterView extends StatelessWidget {
         ],
       ),
       body: BlocConsumer<SecurityBloc, SecurityState>(
-        listenWhen: (prev, curr) =>
-            curr is SecurityLoaded &&
-            curr.suppressedDeepScanContext != null &&
-            (prev is! SecurityLoaded ||
-                prev.suppressedDeepScanContext !=
-                    curr.suppressedDeepScanContext),
+        listenWhen:
+            (prev, curr) =>
+                curr is SecurityLoaded &&
+                curr.suppressedDeepScanContext != null &&
+                (prev is! SecurityLoaded ||
+                    prev.suppressedDeepScanContext !=
+                        curr.suppressedDeepScanContext),
         listener: (context, state) {
           if (state is! SecurityLoaded) return;
           final ctx = state.suppressedDeepScanContext;
           if (ctx == null) return;
-          final label = ctx == NetworkContextType.public
-              ? l10n.publicContextLabel
-              : l10n.guestContextLabel;
+          final label =
+              ctx == NetworkContextType.public
+                  ? l10n.publicContextLabel
+                  : l10n.guestContextLabel;
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
@@ -139,9 +141,10 @@ class _SecurityCenterView extends StatelessWidget {
                       state.connectedContext == NetworkContextType.guest) ...[
                     PublicWifiSafetyCard(
                       context: state.connectedContext!,
-                      onRunDnsTest: () => context
-                          .read<SecurityBloc>()
-                          .add(const SecurityDnsTestRequested()),
+                      onRunDnsTest:
+                          () => context.read<SecurityBloc>().add(
+                            const SecurityDnsTestRequested(),
+                          ),
                     ),
                     const SizedBox(height: 20),
                   ],
@@ -211,7 +214,9 @@ class _SecurityCenterView extends StatelessWidget {
                     child: Text(
                       state.message,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.rajdhani(color: scheme.onSurface.withValues(alpha: 0.7)),
+                      style: GoogleFonts.rajdhani(
+                        color: scheme.onSurface.withValues(alpha: 0.7),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 24),

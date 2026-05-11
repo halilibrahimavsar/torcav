@@ -85,8 +85,9 @@ class _SpectrumViewState extends State<_SpectrumView> {
     final scanState = context.read<WifiScanBloc>().state;
     if (scanState is! WifiScanLoaded) return;
     final networks = scanState.snapshot.networks;
-    final connectedIdx =
-        networks.indexWhere((n) => n.bssid.toUpperCase() == bssid);
+    final connectedIdx = networks.indexWhere(
+      (n) => n.bssid.toUpperCase() == bssid,
+    );
     if (connectedIdx < 0) return;
     final connected = networks[connectedIdx];
     ChannelRating? ratingForConnected;
@@ -107,10 +108,11 @@ class _SpectrumViewState extends State<_SpectrumView> {
 
     // Find the best alternative for the same band.
     final connectedBand = bandFromFrequency(ratingForConnected.frequency);
-    final sameBand = state.ratings
-        .where((r) => bandFromFrequency(r.frequency) == connectedBand)
-        .toList()
-      ..sort((a, b) => b.rating.compareTo(a.rating));
+    final sameBand =
+        state.ratings
+            .where((r) => bandFromFrequency(r.frequency) == connectedBand)
+            .toList()
+          ..sort((a, b) => b.rating.compareTo(a.rating));
     if (sameBand.isEmpty) return;
     final best = sameBand.first;
     if (best.channel == ratingForConnected.channel) return;
@@ -168,7 +170,8 @@ class _SpectrumViewState extends State<_SpectrumView> {
         ),
         BlocListener<MonitoringBloc, MonitoringState>(
           listenWhen:
-              (_, curr) => curr is ChannelAnalysisReady && _connectedBssid != null,
+              (_, curr) =>
+                  curr is ChannelAnalysisReady && _connectedBssid != null,
           listener: (context, state) {
             if (state is! ChannelAnalysisReady) return;
             _maybeAlertOnLowQuality(state);
@@ -223,29 +226,30 @@ class _SpectrumViewState extends State<_SpectrumView> {
                 icon: const Icon(Icons.public_rounded),
                 tooltip: l10n.countryAllowlistHeader,
                 onSelected: (r) => setState(() => _region = r),
-                itemBuilder: (ctx) => [
-                  for (final r in WifiRegion.values)
-                    PopupMenuItem(
-                      value: r,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (region == r)
-                            const Icon(Icons.check_rounded, size: 16)
-                          else
-                            const SizedBox(width: 16),
-                          const SizedBox(width: 8),
-                          Flexible(
-                            child: Text(
-                              _regionLabel(l10n, r),
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: false,
-                            ),
+                itemBuilder:
+                    (ctx) => [
+                      for (final r in WifiRegion.values)
+                        PopupMenuItem(
+                          value: r,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (region == r)
+                                const Icon(Icons.check_rounded, size: 16)
+                              else
+                                const SizedBox(width: 16),
+                              const SizedBox(width: 8),
+                              Flexible(
+                                child: Text(
+                                  _regionLabel(l10n, r),
+                                  overflow: TextOverflow.ellipsis,
+                                  softWrap: false,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                ],
+                        ),
+                    ],
               ),
             ],
             bottom: TabBar(
@@ -325,9 +329,7 @@ class _BandTab extends StatelessWidget {
               final s = context.read<WifiScanBloc>().state;
               if (s is WifiScanLoaded) {
                 final networks =
-                    s.snapshot.networks
-                        .map((n) => n.toWifiNetwork())
-                        .toList();
+                    s.snapshot.networks.map((n) => n.toWifiNetwork()).toList();
                 context.read<MonitoringBloc>().add(AnalyzeChannels(networks));
               }
             },
@@ -335,10 +337,11 @@ class _BandTab extends StatelessWidget {
         }
         if (state is ChannelAnalysisReady) {
           final tabBand = WifiBand.values[band];
-          final ratings = state.ratings
-              .where((r) => bandFromFrequency(r.frequency) == tabBand)
-              .toList()
-            ..sort((a, b) => b.rating.compareTo(a.rating));
+          final ratings =
+              state.ratings
+                  .where((r) => bandFromFrequency(r.frequency) == tabBand)
+                  .toList()
+                ..sort((a, b) => b.rating.compareTo(a.rating));
 
           final scanState = context.watch<WifiScanBloc>().state;
           final networks =
@@ -447,42 +450,43 @@ class _HistoryTabState extends State<_HistoryTab> {
     final l10n = context.l10n;
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: Theme.of(ctx).colorScheme.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        title: Text(
-          l10n.clearChannelHistoryTitle,
-          style: GoogleFonts.orbitron(
-            fontSize: 13,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: Text(
-          l10n.clearChannelHistoryConfirmBody,
-          style: GoogleFonts.rajdhani(fontSize: 14),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(
-              l10n.cancel.toUpperCase(),
-              style: GoogleFonts.orbitron(fontSize: 10),
+      builder:
+          (ctx) => AlertDialog(
+            backgroundColor: Theme.of(ctx).colorScheme.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
             ),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(
-              l10n.deleteAllLabel,
+            title: Text(
+              l10n.clearChannelHistoryTitle,
               style: GoogleFonts.orbitron(
-                fontSize: 10,
-                color: Theme.of(ctx).colorScheme.error,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
               ),
             ),
+            content: Text(
+              l10n.clearChannelHistoryConfirmBody,
+              style: GoogleFonts.rajdhani(fontSize: 14),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(
+                  l10n.cancel.toUpperCase(),
+                  style: GoogleFonts.orbitron(fontSize: 10),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(
+                  l10n.deleteAllLabel,
+                  style: GoogleFonts.orbitron(
+                    fontSize: 10,
+                    color: Theme.of(ctx).colorScheme.error,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
     );
     if (confirm == true) {
       await GetIt.I<ChannelRatingRepository>().clearHistory();
@@ -619,8 +623,9 @@ class _BandViewState extends State<_BandView> {
     final connectedBssid = widget.connectedBssid;
     if (connectedBssid == null) return null;
     final target = connectedBssid.toUpperCase();
-    final idx =
-        widget.networks.indexWhere((n) => n.bssid.toUpperCase() == target);
+    final idx = widget.networks.indexWhere(
+      (n) => n.bssid.toUpperCase() == target,
+    );
     if (idx < 0) return null;
     final connectedNet = widget.networks[idx];
 
@@ -693,13 +698,11 @@ class _BandViewState extends State<_BandView> {
     // Region allowlist controls (a) which channels we recommend and (b)
     // how individual channel tiles are styled.
     final allow = RegionAllowlist.forRegion(region);
-    final allowedRatings = ratings
-        .where((r) => allow.isAllowed(r.channel, r.frequency))
-        .toList();
+    final allowedRatings =
+        ratings.where((r) => allow.isAllowed(r.channel, r.frequency)).toList();
     // Recommend from allowed-only; if region disallows everything we have,
     // fall back to the global best to avoid an empty card.
-    final best =
-        (allowedRatings.isNotEmpty ? allowedRatings : ratings).first;
+    final best = (allowedRatings.isNotEmpty ? allowedRatings : ratings).first;
     final bandChannels = ratings.map((r) => r.channel).toSet();
     final historicalBest =
         historicalAverages.entries
@@ -732,15 +735,19 @@ class _BandViewState extends State<_BandView> {
 
     // Networks belonging to *this* band (filtered by frequency, mirroring
     // the band-split rule used for the rating list).
-    final bandNetworks = ratings.isEmpty
-        ? <WifiNetwork>[]
-        : () {
-            final tabBand = bandFromFrequency(ratings.first.frequency);
-            return networks
-                .where((n) =>
-                    n.frequency > 0 && bandFromFrequency(n.frequency) == tabBand)
-                .toList();
-          }();
+    final bandNetworks =
+        ratings.isEmpty
+            ? <WifiNetwork>[]
+            : () {
+              final tabBand = bandFromFrequency(ratings.first.frequency);
+              return networks
+                  .where(
+                    (n) =>
+                        n.frequency > 0 &&
+                        bandFromFrequency(n.frequency) == tabBand,
+                  )
+                  .toList();
+            }();
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -908,18 +915,18 @@ class _BandViewState extends State<_BandView> {
           ],
         ),
         const SizedBox(height: 8),
-        ...ratings.map(
-          (r) {
-            final isConnected = connectedRating != null &&
-                r.channel == connectedRating.channel &&
-                r.frequency == connectedRating.frequency;
-            return _ChannelTile(
-              key: isConnected ? _connectedTileKey : null,
-              rating: r,
-              accentColor: accentColor,
-              isConnected: isConnected,
-              isSibling: isConnected && isSiblingHit,
-              isAllowedInRegion: allow.isAllowed(r.channel, r.frequency),
+        ...ratings.map((r) {
+          final isConnected =
+              connectedRating != null &&
+              r.channel == connectedRating.channel &&
+              r.frequency == connectedRating.frequency;
+          return _ChannelTile(
+            key: isConnected ? _connectedTileKey : null,
+            rating: r,
+            accentColor: accentColor,
+            isConnected: isConnected,
+            isSibling: isConnected && isSiblingHit,
+            isAllowedInRegion: allow.isAllowed(r.channel, r.frequency),
             networksOnChannel:
                 bandNetworks
                     .where(
@@ -933,9 +940,8 @@ class _BandViewState extends State<_BandView> {
                   ),
             allNetworks: networks,
             allRatings: allRatings,
-            );
-          },
-        ),
+          );
+        }),
         _ChannelBondingSection(
           ratings: ratings,
           networks: networks,
@@ -1246,157 +1252,163 @@ class _ChannelTileState extends State<_ChannelTile> {
       child: Opacity(
         opacity: disallowed ? 0.55 : 1.0,
         child: Column(
-        children: [
-          InkWell(
-            onTap:
-                hasNetworks ? () => setState(() => _expanded = !_expanded) : null,
-            borderRadius: BorderRadius.circular(10),
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 38,
-                    child: Text(
-                      '${rating.channel}',
-                      style: GoogleFonts.orbitron(
-                        color: color,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+          children: [
+            InkWell(
+              onTap:
+                  hasNetworks
+                      ? () => setState(() => _expanded = !_expanded)
+                      : null,
+              borderRadius: BorderRadius.circular(10),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 14,
+                ),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 38,
+                      child: Text(
+                        '${rating.channel}',
+                        style: GoogleFonts.orbitron(
+                          color: color,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              '${rating.frequency} MHz',
-                              style: GoogleFonts.rajdhani(
-                                color: onSurface.withValues(alpha: 0.68),
-                                fontSize: 13,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                '${rating.frequency} MHz',
+                                style: GoogleFonts.rajdhani(
+                                  color: onSurface.withValues(alpha: 0.68),
+                                  fontSize: 13,
+                                ),
                               ),
-                            ),
-                            if (widget.isConnected) ...[
-                              const SizedBox(width: 8),
-                              _PulsingNowBadge(
-                                label: widget.isSibling
-                                    ? l10n.dualBandSiblingLabel
-                                    : l10n.currentChannelLabel,
-                              ),
-                            ],
-                            if (rating.isDfs) ...[
-                              const SizedBox(width: 8),
-                              _DfsBadge(),
-                            ],
-                            if (disallowed) ...[
-                              const SizedBox(width: 8),
-                              Tooltip(
-                                message: l10n.channelIllegalTooltip,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6,
-                                    vertical: 2,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color:
-                                        Colors.redAccent.withValues(alpha: 0.12),
-                                    borderRadius: BorderRadius.circular(4),
-                                    border: Border.all(
-                                      color:
-                                          Colors.redAccent.withValues(alpha: 0.5),
+                              if (widget.isConnected) ...[
+                                const SizedBox(width: 8),
+                                _PulsingNowBadge(
+                                  label:
+                                      widget.isSibling
+                                          ? l10n.dualBandSiblingLabel
+                                          : l10n.currentChannelLabel,
+                                ),
+                              ],
+                              if (rating.isDfs) ...[
+                                const SizedBox(width: 8),
+                                _DfsBadge(),
+                              ],
+                              if (disallowed) ...[
+                                const SizedBox(width: 8),
+                                Tooltip(
+                                  message: l10n.channelIllegalTooltip,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.redAccent.withValues(
+                                        alpha: 0.12,
+                                      ),
+                                      borderRadius: BorderRadius.circular(4),
+                                      border: Border.all(
+                                        color: Colors.redAccent.withValues(
+                                          alpha: 0.5,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      l10n.channelIllegalBadge,
+                                      style: GoogleFonts.orbitron(
+                                        fontSize: 8,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.redAccent,
+                                        letterSpacing: 0.5,
+                                      ),
                                     ),
                                   ),
+                                ),
+                              ],
+                              const Spacer(),
+                              if (hasNetworks)
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 6),
                                   child: Text(
-                                    l10n.channelIllegalBadge,
-                                    style: GoogleFonts.orbitron(
-                                      fontSize: 8,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.redAccent,
-                                      letterSpacing: 0.5,
+                                    '${widget.networksOnChannel.length}×',
+                                    style: GoogleFonts.rajdhani(
+                                      fontSize: 11,
+                                      color: onSurface.withValues(alpha: 0.55),
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                            const Spacer(),
-                            if (hasNetworks)
-                              Padding(
-                                padding: const EdgeInsets.only(right: 6),
-                                child: Text(
-                                  '${widget.networksOnChannel.length}×',
-                                  style: GoogleFonts.rajdhani(
-                                    fontSize: 11,
-                                    color: onSurface.withValues(alpha: 0.55),
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                              Text(
+                                _qualityString(l10n, rating.quality),
+                                style: GoogleFonts.rajdhani(
+                                  color: color,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
                                 ),
                               ),
-                            Text(
-                              _qualityString(l10n, rating.quality),
-                              style: GoogleFonts.rajdhani(
-                                color: color,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: LinearProgressIndicator(
-                            value: fraction,
-                            backgroundColor: color.withValues(alpha: 0.12),
-                            valueColor: AlwaysStoppedAnimation<Color>(color),
-                            minHeight: 6,
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  SizedBox(
-                    width: 46,
-                    child: Text(
-                      rating.rating.toStringAsFixed(1),
-                      textAlign: TextAlign.right,
-                      style: GoogleFonts.orbitron(
-                        color: color,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
+                          const SizedBox(height: 4),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: LinearProgressIndicator(
+                              value: fraction,
+                              backgroundColor: color.withValues(alpha: 0.12),
+                              valueColor: AlwaysStoppedAnimation<Color>(color),
+                              minHeight: 6,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  if (hasNetworks)
-                    Icon(
-                      _expanded
-                          ? Icons.keyboard_arrow_up_rounded
-                          : Icons.keyboard_arrow_down_rounded,
-                      size: 18,
-                      color: onSurface.withValues(alpha: 0.45),
+                    const SizedBox(width: 12),
+                    SizedBox(
+                      width: 46,
+                      child: Text(
+                        rating.rating.toStringAsFixed(1),
+                        textAlign: TextAlign.right,
+                        style: GoogleFonts.orbitron(
+                          color: color,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
                     ),
-                ],
+                    if (hasNetworks)
+                      Icon(
+                        _expanded
+                            ? Icons.keyboard_arrow_up_rounded
+                            : Icons.keyboard_arrow_down_rounded,
+                        size: 18,
+                        color: onSurface.withValues(alpha: 0.45),
+                      ),
+                  ],
+                ),
               ),
             ),
-          ),
-          if (_expanded && hasNetworks)
-            _ChannelDrilldown(
-              networks: widget.networksOnChannel,
-              accentColor: color,
-              allNetworks: widget.allNetworks,
-              allRatings: widget.allRatings,
-            ),
-        ],
-      ),
+            if (_expanded && hasNetworks)
+              _ChannelDrilldown(
+                networks: widget.networksOnChannel,
+                accentColor: color,
+                allNetworks: widget.allNetworks,
+                allRatings: widget.allRatings,
+              ),
+          ],
+        ),
       ),
     );
   }
-
 }
 
 class _ChannelDrilldown extends StatelessWidget {
@@ -1420,9 +1432,7 @@ class _ChannelDrilldown extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(14, 4, 14, 10),
       decoration: BoxDecoration(
         color: accentColor.withValues(alpha: 0.04),
-        borderRadius: const BorderRadius.vertical(
-          bottom: Radius.circular(10),
-        ),
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(10)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1504,19 +1514,24 @@ class _NetworkRow extends StatelessWidget {
                   style: GoogleFonts.rajdhani(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: network.isHidden || network.ssid.isEmpty
-                        ? onSurface.withValues(alpha: 0.55)
-                        : onSurface.withValues(alpha: 0.9),
-                    fontStyle: network.ssid.isEmpty
-                        ? FontStyle.italic
-                        : FontStyle.normal,
+                    color:
+                        network.isHidden || network.ssid.isEmpty
+                            ? onSurface.withValues(alpha: 0.55)
+                            : onSurface.withValues(alpha: 0.9),
+                    fontStyle:
+                        network.ssid.isEmpty
+                            ? FontStyle.italic
+                            : FontStyle.normal,
                   ),
                 ),
               ),
               const SizedBox(width: 6),
               _miniBadge('$width MHz', AppColors.neonCyan),
               const SizedBox(width: 4),
-              _miniBadge(_securityLabel(context, network.security), AppColors.neonPurple),
+              _miniBadge(
+                _securityLabel(context, network.security),
+                AppColors.neonPurple,
+              ),
               const SizedBox(width: 6),
               Text(
                 '${network.signalStrength} dBm',
@@ -1753,9 +1768,7 @@ class _DensityTrendChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            volatile
-                ? Icons.show_chart_rounded
-                : Icons.horizontal_rule_rounded,
+            volatile ? Icons.show_chart_rounded : Icons.horizontal_rule_rounded,
             size: 12,
             color: color,
           ),
@@ -1918,9 +1931,10 @@ class _CurrentChannelBanner extends StatelessWidget {
     final onSurface = Theme.of(context).colorScheme.onSurface;
     final delta = recommended.rating - current.rating;
     final isOptimal = current.channel == recommended.channel || delta < 0.5;
-    final color = isSibling
-        ? accentColor
-        : (isOptimal ? AppColors.neonGreen : AppColors.neonCyan);
+    final color =
+        isSibling
+            ? accentColor
+            : (isOptimal ? AppColors.neonGreen : AppColors.neonCyan);
 
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
@@ -1943,8 +1957,8 @@ class _CurrentChannelBanner extends StatelessWidget {
                 isSibling
                     ? Icons.swap_calls_rounded
                     : isOptimal
-                        ? Icons.check_circle_rounded
-                        : Icons.swap_horiz_rounded,
+                    ? Icons.check_circle_rounded
+                    : Icons.swap_horiz_rounded,
                 color: color,
                 size: 18,
               ),
@@ -1953,12 +1967,12 @@ class _CurrentChannelBanner extends StatelessWidget {
                 child: Text(
                   isSibling
                       ? l10n.dualBandSiblingBanner(
-                          bandLabel,
-                          'CH ${current.channel} · ${current.rating.toStringAsFixed(1)}/10',
-                        )
+                        bandLabel,
+                        'CH ${current.channel} · ${current.rating.toStringAsFixed(1)}/10',
+                      )
                       : l10n.currentChannelBannerYouAreOn(
-                          'CH ${current.channel} · ${current.rating.toStringAsFixed(1)}/10',
-                        ),
+                        'CH ${current.channel} · ${current.rating.toStringAsFixed(1)}/10',
+                      ),
                   style: GoogleFonts.orbitron(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
@@ -2028,8 +2042,7 @@ class _PulsingNowBadgeState extends State<_PulsingNowBadge>
           final glow = 4.0 + 10.0 * t;
           final glowAlpha = 0.25 + 0.45 * t;
           return Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
               color: AppColors.neonCyan.withValues(alpha: 0.18),
               borderRadius: BorderRadius.circular(4),
@@ -2075,18 +2088,21 @@ class _CrossBandSiblingHint extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final onSurface = Theme.of(context).colorScheme.onSurface;
-    final ratingIdx = allRatings.indexWhere((r) =>
-        r.channel == sibling.channel &&
-        (r.frequency - sibling.frequency).abs() <= 5);
-    final ratingText = ratingIdx < 0
-        ? '—'
-        : allRatings[ratingIdx].rating.toStringAsFixed(1);
+    final ratingIdx = allRatings.indexWhere(
+      (r) =>
+          r.channel == sibling.channel &&
+          (r.frequency - sibling.frequency).abs() <= 5,
+    );
+    final ratingText =
+        ratingIdx < 0 ? '—' : allRatings[ratingIdx].rating.toStringAsFixed(1);
     return Padding(
       padding: const EdgeInsets.fromLTRB(21, 2, 0, 0),
       child: InkWell(
         onTap: () {
           final controller = DefaultTabController.maybeOf(context);
-          controller?.animateTo(bandIndex(bandFromFrequency(sibling.frequency)));
+          controller?.animateTo(
+            bandIndex(bandFromFrequency(sibling.frequency)),
+          );
         },
         borderRadius: BorderRadius.circular(4),
         child: Padding(

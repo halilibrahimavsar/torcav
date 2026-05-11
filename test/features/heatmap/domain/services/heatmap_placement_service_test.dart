@@ -6,12 +6,8 @@ import 'package:torcav/features/heatmap/domain/services/heatmap_placement_servic
 void main() {
   const service = HeatmapPlacementService();
 
-  HeatmapPoint pt(double x, double y, int rssi) => HeatmapPoint(
-        floorX: x,
-        floorY: y,
-        rssi: rssi,
-        timestamp: DateTime(2025),
-      );
+  HeatmapPoint pt(double x, double y, int rssi) =>
+      HeatmapPoint(floorX: x, floorY: y, rssi: rssi, timestamp: DateTime(2025));
 
   test('empty survey returns guidance to walk around first', () {
     final result = service.analyze(const []);

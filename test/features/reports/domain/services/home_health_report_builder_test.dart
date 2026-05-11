@@ -78,18 +78,20 @@ void main() {
   });
 
   test('a risky LAN host pulls LAN score down meaningfully', () {
-    final risky = host(findings: [
-      LanExposureFinding(
-        ruleId: 'lan.test',
-        hostIp: '192.168.1.10',
-        hostMac: '00',
-        hostVendor: '',
-        summary: '',
-        risk: VulnerabilityRisk.high,
-        evidence: '',
-        remediation: '',
-      ),
-    ]);
+    final risky = host(
+      findings: [
+        LanExposureFinding(
+          ruleId: 'lan.test',
+          hostIp: '192.168.1.10',
+          hostMac: '00',
+          hostVendor: '',
+          summary: '',
+          risk: VulnerabilityRisk.high,
+          evidence: '',
+          remediation: '',
+        ),
+      ],
+    );
     final report = builder.build(
       connectedSsid: 'Home',
       lanHosts: [risky, host(), host()],

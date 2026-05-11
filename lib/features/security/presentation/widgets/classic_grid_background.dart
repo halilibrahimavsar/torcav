@@ -66,14 +66,13 @@ class _ClassicGridBackgroundState extends State<ClassicGridBackground>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isLight = theme.brightness == Brightness.light;
-    final bgColor = isLight ? theme.colorScheme.surfaceContainer : const Color(0xFF010204);
+    final bgColor =
+        isLight ? theme.colorScheme.surfaceContainer : const Color(0xFF010204);
 
     return Stack(
       children: [
         // Base Layer: Theme-aware background
-        Positioned.fill(
-          child: Container(color: bgColor),
-        ),
+        Positioned.fill(child: Container(color: bgColor)),
 
         // Animated Background Content (Grid + Particles + Stars)
         Positioned.fill(
@@ -82,7 +81,8 @@ class _ClassicGridBackgroundState extends State<ClassicGridBackground>
               animation: Listenable.merge([_controller, widget.scrollVelocity]),
               builder: (context, child) {
                 // Smooth the velocity for visual stability
-                _smoothedVelocity = _smoothedVelocity * 0.9 + 
+                _smoothedVelocity =
+                    _smoothedVelocity * 0.9 +
                     (widget.scrollVelocity.value / 2.0).clamp(0.0, 500.0) * 0.1;
 
                 // Decay the source velocity
@@ -106,7 +106,13 @@ class _ClassicGridBackgroundState extends State<ClassicGridBackground>
                         ..setFloat(0, rect.width)
                         ..setFloat(1, rect.height)
                         ..setFloat(2, _controller.value)
-                        ..setFloat(3, (widget.scrollVelocity.value / 1000.0).clamp(0.0, 1.0))
+                        ..setFloat(
+                          3,
+                          (widget.scrollVelocity.value / 1000.0).clamp(
+                            0.0,
+                            1.0,
+                          ),
+                        )
                         ..setFloat(4, isLight ? 1.0 : 0.0);
                       return _shader!;
                     },
@@ -133,7 +139,10 @@ class _ClassicGridBackgroundState extends State<ClassicGridBackground>
                     isLight ? theme.colorScheme.surfaceContainer : Colors.black,
                     Colors.transparent,
                     Colors.transparent,
-                    (isLight ? theme.colorScheme.surfaceContainer : Colors.black).withValues(alpha: 0.8),
+                    (isLight
+                            ? theme.colorScheme.surfaceContainer
+                            : Colors.black)
+                        .withValues(alpha: 0.8),
                   ],
                   stops: const [0.0, 0.35, 0.7, 1.0],
                 ),
@@ -187,17 +196,37 @@ class _PremiumGridPainter extends CustomPainter {
     required this.isLight,
   });
 
-  void _drawSplitLine(Canvas canvas, Offset p1, Offset p2, Paint basePaint, double aberration) {
+  void _drawSplitLine(
+    Canvas canvas,
+    Offset p1,
+    Offset p2,
+    Paint basePaint,
+    double aberration,
+  ) {
     if (aberration > 0.1) {
-      final cyanPaint = Paint()
-        ..color = const Color(0xFF00F5FF).withValues(alpha: basePaint.color.a * 0.6)
-        ..strokeWidth = basePaint.strokeWidth;
-      final magentaPaint = Paint()
-        ..color = const Color(0xFFFF00FF).withValues(alpha: basePaint.color.a * 0.6)
-        ..strokeWidth = basePaint.strokeWidth;
+      final cyanPaint =
+          Paint()
+            ..color = const Color(
+              0xFF00F5FF,
+            ).withValues(alpha: basePaint.color.a * 0.6)
+            ..strokeWidth = basePaint.strokeWidth;
+      final magentaPaint =
+          Paint()
+            ..color = const Color(
+              0xFFFF00FF,
+            ).withValues(alpha: basePaint.color.a * 0.6)
+            ..strokeWidth = basePaint.strokeWidth;
 
-      canvas.drawLine(p1 + Offset(-aberration, 0), p2 + Offset(-aberration, 0), cyanPaint);
-      canvas.drawLine(p1 + Offset(aberration, 0), p2 + Offset(aberration, 0), magentaPaint);
+      canvas.drawLine(
+        p1 + Offset(-aberration, 0),
+        p2 + Offset(-aberration, 0),
+        cyanPaint,
+      );
+      canvas.drawLine(
+        p1 + Offset(aberration, 0),
+        p2 + Offset(aberration, 0),
+        magentaPaint,
+      );
     }
     canvas.drawLine(p1, p2, basePaint);
   }
@@ -211,21 +240,28 @@ class _PremiumGridPainter extends CustomPainter {
     // Starfield
     final starPaint = Paint();
     for (final star in stars) {
-      final x = (star.x * size.width + (velocity * star.parallax * 0.1)) % size.width;
+      final x =
+          (star.x * size.width + (velocity * star.parallax * 0.1)) % size.width;
       final y = star.y * size.height * 0.45;
 
       final flicker = 0.8 + 0.2 * math.sin(progress * 25 + star.x * 100);
-      starPaint.color = (isLight ? color : AppColors.softWhite).withValues(alpha: star.brightness * flicker * (isLight ? 0.3 : 0.4));
+      starPaint.color = (isLight ? color : AppColors.softWhite).withValues(
+        alpha: star.brightness * flicker * (isLight ? 0.3 : 0.4),
+      );
 
       canvas.drawCircle(Offset(x, y), star.size, starPaint);
     }
 
     // Grid
-    final baseOpacity = isLight ? (0.3 + (velocity / 400)).clamp(0.0, 0.6) : (0.15 + (velocity / 600)).clamp(0.0, 0.4);
+    final baseOpacity =
+        isLight
+            ? (0.3 + (velocity / 400)).clamp(0.0, 0.6)
+            : (0.15 + (velocity / 600)).clamp(0.0, 0.4);
     final gridColor = color.withValues(alpha: baseOpacity);
-    final gridPaint = Paint()
-      ..color = gridColor
-      ..strokeWidth = 1.0;
+    final gridPaint =
+        Paint()
+          ..color = gridColor
+          ..strokeWidth = 1.0;
 
     // Horizontal Lines (Perspective)
     const int hLineCount = 20;
@@ -233,12 +269,19 @@ class _PremiumGridPainter extends CustomPainter {
 
     for (int i = 0; i < hLineCount; i++) {
       final lineProgress = (i + movingOffset) / hLineCount;
-      final y = horizonY + math.pow(lineProgress, 3.2) * (size.height - horizonY);
+      final y =
+          horizonY + math.pow(lineProgress, 3.2) * (size.height - horizonY);
 
       final opacity = math.pow(lineProgress, 2.0).toDouble();
       gridPaint.color = gridColor.withValues(alpha: gridColor.a * opacity);
 
-      _drawSplitLine(canvas, Offset(0, y), Offset(size.width, y), gridPaint, aberration);
+      _drawSplitLine(
+        canvas,
+        Offset(0, y),
+        Offset(size.width, y),
+        gridPaint,
+        aberration,
+      );
     }
 
     // Vertical Lines (Vanishing Points)
@@ -248,12 +291,21 @@ class _PremiumGridPainter extends CustomPainter {
       final bottomX = (size.width / 2) + (xOffset * size.width * 2.8);
 
       gridPaint.color = gridColor.withValues(alpha: gridColor.a * 0.3);
-      _drawSplitLine(canvas, vanishingPoint, Offset(bottomX, size.height), gridPaint, aberration * 0.5);
+      _drawSplitLine(
+        canvas,
+        vanishingPoint,
+        Offset(bottomX, size.height),
+        gridPaint,
+        aberration * 0.5,
+      );
     }
 
     // Neural Data Packets
     final packetPaint = Paint()..style = PaintingStyle.fill;
-    final trailPaint = Paint()..style = PaintingStyle.stroke..strokeCap = StrokeCap.round;
+    final trailPaint =
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
 
     for (final packet in packets) {
       packet.update(velocity);

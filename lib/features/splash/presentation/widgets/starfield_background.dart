@@ -26,14 +26,16 @@ class _StarfieldBackgroundState extends State<StarfieldBackground>
 
     // Initialize stars
     for (int i = 0; i < _starCount; i++) {
-      _stars.add(Star(
-        x: _random.nextDouble(),
-        y: _random.nextDouble(),
-        size: _random.nextDouble() * 2 + 0.5,
-        velocity: _random.nextDouble() * 0.05 + 0.01,
-        opacity: _random.nextDouble() * 0.7 + 0.3,
-        layer: _random.nextInt(3), // 0: far, 1: mid, 2: near
-      ));
+      _stars.add(
+        Star(
+          x: _random.nextDouble(),
+          y: _random.nextDouble(),
+          size: _random.nextDouble() * 2 + 0.5,
+          velocity: _random.nextDouble() * 0.05 + 0.01,
+          opacity: _random.nextDouble() * 0.7 + 0.3,
+          layer: _random.nextInt(3), // 0: far, 1: mid, 2: near
+        ),
+      );
     }
   }
 
@@ -49,10 +51,7 @@ class _StarfieldBackgroundState extends State<StarfieldBackground>
       animation: _controller,
       builder: (context, child) {
         return CustomPaint(
-          painter: StarfieldPainter(
-            stars: _stars,
-            progress: _controller.value,
-          ),
+          painter: StarfieldPainter(stars: _stars, progress: _controller.value),
           child: widget.child,
         );
       },
@@ -89,13 +88,14 @@ class StarfieldPainter extends CustomPainter {
     final paint = Paint()..color = Colors.white;
 
     // Draw a subtle nebula background glow
-    final nebulaPaint = Paint()
-      ..shader = RadialGradient(
-        colors: [
-          const Color(0xFF1A0B2E).withValues(alpha: 0.3), // Deep Purple
-          Colors.transparent,
-        ],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+    final nebulaPaint =
+        Paint()
+          ..shader = RadialGradient(
+            colors: [
+              const Color(0xFF1A0B2E).withValues(alpha: 0.3), // Deep Purple
+              Colors.transparent,
+            ],
+          ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
     canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), nebulaPaint);
 
     for (final star in stars) {
@@ -113,14 +113,15 @@ class StarfieldPainter extends CustomPainter {
 
       // Distant stars are smaller and dimmer
       final radius = star.size * (1 + star.layer * 0.5);
-      
+
       canvas.drawCircle(Offset(x, y), radius, paint);
-      
+
       // Add a tiny glow to near stars
       if (star.layer == 2 && star.opacity > 0.7) {
-        final glowPaint = Paint()
-          ..color = Colors.white.withValues(alpha: 0.2)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+        final glowPaint =
+            Paint()
+              ..color = Colors.white.withValues(alpha: 0.2)
+              ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
         canvas.drawCircle(Offset(x, y), radius * 2, glowPaint);
       }
     }

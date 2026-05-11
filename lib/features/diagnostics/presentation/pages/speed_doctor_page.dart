@@ -57,9 +57,10 @@ class _SpeedDoctorView extends StatelessWidget {
                 const SizedBox(height: 20),
                 if (state.status == DiagnosticsStatus.idle) ...[
                   _IdleBody(
-                    onStart: () => context
-                        .read<DiagnosticsBloc>()
-                        .add(const DiagnosticsStarted()),
+                    onStart:
+                        () => context.read<DiagnosticsBloc>().add(
+                          const DiagnosticsStarted(),
+                        ),
                   ),
                   const SizedBox(height: 22),
                   const _AboutSection(),
@@ -70,9 +71,10 @@ class _SpeedDoctorView extends StatelessWidget {
                     state.result != null)
                   _ResultBody(
                     state: state,
-                    onRerun: () => context
-                        .read<DiagnosticsBloc>()
-                        .add(const DiagnosticsStarted()),
+                    onRerun:
+                        () => context.read<DiagnosticsBloc>().add(
+                          const DiagnosticsStarted(),
+                        ),
                   ),
                 if (state.status == DiagnosticsStatus.ready) ...[
                   const SizedBox(height: 14),
@@ -81,9 +83,10 @@ class _SpeedDoctorView extends StatelessWidget {
                 if (state.status == DiagnosticsStatus.failure)
                   _FailureBody(
                     message: state.errorMessage ?? 'Unknown error',
-                    onRetry: () => context
-                        .read<DiagnosticsBloc>()
-                        .add(const DiagnosticsStarted()),
+                    onRetry:
+                        () => context.read<DiagnosticsBloc>().add(
+                          const DiagnosticsStarted(),
+                        ),
                   ),
               ],
             ),

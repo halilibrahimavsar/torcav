@@ -18,10 +18,15 @@ void main() {
   test('round-trips new heatmap point fields', () async {
     final Map<String, dynamic> data = {};
     when(() => mockStorage.save(any(), any())).thenAnswer((invocation) async {
-      data[invocation.positionalArguments[0] as String] = invocation.positionalArguments[1];
+      data[invocation.positionalArguments[0] as String] =
+          invocation.positionalArguments[1];
     });
-    when(() => mockStorage.get<List<dynamic>>(any())).thenAnswer((inv) => data[inv.positionalArguments[0]] as List<dynamic>?);
-    when(() => mockStorage.get<Map<dynamic, dynamic>>(any())).thenAnswer((inv) => data[inv.positionalArguments[0]] as Map<dynamic, dynamic>?);
+    when(
+      () => mockStorage.get<List<dynamic>>(any()),
+    ).thenAnswer((inv) => data[inv.positionalArguments[0]] as List<dynamic>?);
+    when(() => mockStorage.get<Map<dynamic, dynamic>>(any())).thenAnswer(
+      (inv) => data[inv.positionalArguments[0]] as Map<dynamic, dynamic>?,
+    );
 
     final source = HeatmapLocalDataSource(mockStorage);
 
@@ -77,8 +82,12 @@ void main() {
       },
     };
 
-    when(() => mockStorage.get<List<dynamic>>(any())).thenAnswer((inv) => data[inv.positionalArguments[0]] as List<dynamic>?);
-    when(() => mockStorage.get<Map<dynamic, dynamic>>(any())).thenAnswer((inv) => data[inv.positionalArguments[0]] as Map<dynamic, dynamic>?);
+    when(
+      () => mockStorage.get<List<dynamic>>(any()),
+    ).thenAnswer((inv) => data[inv.positionalArguments[0]] as List<dynamic>?);
+    when(() => mockStorage.get<Map<dynamic, dynamic>>(any())).thenAnswer(
+      (inv) => data[inv.positionalArguments[0]] as Map<dynamic, dynamic>?,
+    );
 
     final source = HeatmapLocalDataSource(mockStorage);
     final sessions = await source.getSessions();
@@ -90,4 +99,3 @@ void main() {
     expect(point.isFlagged, isFalse);
   });
 }
-

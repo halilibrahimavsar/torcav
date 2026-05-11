@@ -77,31 +77,32 @@ class ProminentDisclosureDialog extends StatelessWidget {
                   ),
                 ),
                 child: Column(
-                  children: privacyPoints.map((point) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.shield_outlined,
-                            size: 16,
-                            color: effectiveColor.withValues(alpha: 0.7),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              point,
-                              style: GoogleFonts.rajdhani(
-                                fontSize: 13,
-                                color: onSurface.withValues(alpha: 0.7),
+                  children:
+                      privacyPoints.map((point) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.shield_outlined,
+                                size: 16,
+                                color: effectiveColor.withValues(alpha: 0.7),
                               ),
-                            ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  point,
+                                  style: GoogleFonts.rajdhani(
+                                    fontSize: 13,
+                                    color: onSurface.withValues(alpha: 0.7),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                        );
+                      }).toList(),
                 ),
               ),
               const SizedBox(height: 32),
@@ -129,7 +130,8 @@ class ProminentDisclosureDialog extends StatelessWidget {
                       onPressed: onAccept,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: effectiveColor,
-                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onPrimary,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),

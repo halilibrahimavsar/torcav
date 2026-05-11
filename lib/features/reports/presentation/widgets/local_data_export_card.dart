@@ -42,21 +42,23 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
   Future<void> _export() async {
     if (_busy) return;
     setState(() => _busy = true);
-    
+
     final l10n = context.l10n;
-    final noDataMsg = _selected != null ? l10n.exportNoDataYet(_selected!.label) : '';
+    final noDataMsg =
+        _selected != null ? l10n.exportNoDataYet(_selected!.label) : '';
     final subjectMsg = l10n.exportSubject;
     final failPrefix = l10n.exportFailedError('');
 
     try {
       final service = getIt<LocalDataExportService>();
-      final document = _selected == null
-          ? await service.exportAll(format: _format, anonymize: _anonymize)
-          : await service.exportCategory(
-              _selected!,
-              format: _format,
-              anonymize: _anonymize,
-            );
+      final document =
+          _selected == null
+              ? await service.exportAll(format: _format, anonymize: _anonymize)
+              : await service.exportCategory(
+                _selected!,
+                format: _format,
+                anonymize: _anonymize,
+              );
 
       // Empty-category short-circuit (only meaningful for JSON wrapper —
       // CSV/HTML render natively as empty doc).
@@ -79,22 +81,21 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
       }
 
       final dir = await getTemporaryDirectory();
-      final timestamp = DateTime.now()
-          .toIso8601String()
-          .replaceAll(':', '-')
-          .split('.')
-          .first;
+      final timestamp =
+          DateTime.now()
+              .toIso8601String()
+              .replaceAll(':', '-')
+              .split('.')
+              .first;
       final ext = _format.fileExtension;
-      final fileName = _selected == null
-          ? 'torcav_all_$timestamp.$ext'
-          : 'torcav_${_selected!.jsonKey}_$timestamp.$ext';
+      final fileName =
+          _selected == null
+              ? 'torcav_all_$timestamp.$ext'
+              : 'torcav_${_selected!.jsonKey}_$timestamp.$ext';
       final file = File('${dir.path}/$fileName');
       await file.writeAsString(document);
       await SharePlus.instance.share(
-        ShareParams(
-          files: [XFile(file.path)],
-          subject: subjectMsg,
-        ),
+        ShareParams(files: [XFile(file.path)], subject: subjectMsg),
       );
     } catch (e) {
       if (!mounted) return;
@@ -212,17 +213,18 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
                   ),
                 ),
             ],
-            onChanged: _busy
-                ? null
-                : (value) {
-                    setState(() {
-                      _selected = value;
-                      // Snap CSV → JSON when switching to "All categories".
-                      if (value == null && _format == ExportFormat.csv) {
-                        _format = ExportFormat.json;
-                      }
-                    });
-                  },
+            onChanged:
+                _busy
+                    ? null
+                    : (value) {
+                      setState(() {
+                        _selected = value;
+                        // Snap CSV → JSON when switching to "All categories".
+                        if (value == null && _format == ExportFormat.csv) {
+                          _format = ExportFormat.json;
+                        }
+                      });
+                    },
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<ExportFormat>(
@@ -254,9 +256,10 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
                     Icon(
                       Icons.table_chart_rounded,
                       size: 16,
-                      color: _csvAvailable
-                          ? null
-                          : Theme.of(context).disabledColor,
+                      color:
+                          _csvAvailable
+                              ? null
+                              : Theme.of(context).disabledColor,
                     ),
                     const SizedBox(width: 10),
                     Text(
@@ -264,9 +267,10 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
                           ? l10n.csvExportLabel
                           : l10n.csvSingleCategoryOnlyLabel,
                       style: TextStyle(
-                        color: _csvAvailable
-                            ? null
-                            : Theme.of(context).disabledColor,
+                        color:
+                            _csvAvailable
+                                ? null
+                                : Theme.of(context).disabledColor,
                       ),
                     ),
                   ],
@@ -283,20 +287,22 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
                 ),
               ),
             ],
-            onChanged: _busy
-                ? null
-                : (value) {
-                    if (value == null) return;
-                    if (value == ExportFormat.csv && !_csvAvailable) return;
-                    setState(() => _format = value);
-                  },
+            onChanged:
+                _busy
+                    ? null
+                    : (value) {
+                      if (value == null) return;
+                      if (value == ExportFormat.csv && !_csvAvailable) return;
+                      setState(() => _format = value);
+                    },
           ),
           const SizedBox(height: 12),
           SwitchListTile(
             value: _anonymize,
-            onChanged: !_supportsAnonymise || _busy
-                ? null
-                : (v) => setState(() => _anonymize = v),
+            onChanged:
+                !_supportsAnonymise || _busy
+                    ? null
+                    : (v) => setState(() => _anonymize = v),
             contentPadding: EdgeInsets.zero,
             title: Text(
               l10n.anonymizeIdentifiersLabel,
@@ -320,20 +326,19 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: _busy ? null : _export,
-              icon: _busy
-                  ? SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: scheme.onPrimary,
-                      ),
-                    )
-                  : const Icon(Icons.share_rounded, size: 18),
+              icon:
+                  _busy
+                      ? SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: scheme.onPrimary,
+                        ),
+                      )
+                      : const Icon(Icons.share_rounded, size: 18),
               label: Text(
-                _busy
-                    ? l10n.exportingLabel
-                    : l10n.exportAsLabel(_format.label),
+                _busy ? l10n.exportingLabel : l10n.exportAsLabel(_format.label),
                 style: GoogleFonts.orbitron(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,

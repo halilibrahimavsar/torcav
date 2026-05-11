@@ -111,11 +111,12 @@ class _PerformanceViewState extends State<_PerformanceView> {
                             upload: progress.uploadMbps,
                             phase: progress.phase,
                             maxSpeed: _autoScale(progress),
-                            onTap: isRunning
-                                ? () => context
-                                    .read<PerformanceBloc>()
-                                    .add(StopSpeedTest())
-                                : _startTestWithWarning,
+                            onTap:
+                                isRunning
+                                    ? () => context.read<PerformanceBloc>().add(
+                                      StopSpeedTest(),
+                                    )
+                                    : _startTestWithWarning,
                           ),
                         ),
 
@@ -136,8 +137,7 @@ class _PerformanceViewState extends State<_PerformanceView> {
                         const SizedBox(height: 24),
 
                         // ── Disclaimer ──
-                        if (state is PerformanceSuccess)
-                          _DisclaimerCard(),
+                        if (state is PerformanceSuccess) _DisclaimerCard(),
 
                         const SizedBox(height: 32),
 
@@ -384,8 +384,16 @@ class _InterpretationSection extends StatelessWidget {
         _InterpretationCard(
           icon: Icons.speed_rounded,
           color: _loadedLatencyColor(result.loadedLatencyMs, result.latencyMs),
-          title: _loadedLatencyTitle(context, result.loadedLatencyMs, result.latencyMs),
-          body: _loadedLatencyBody(context, result.loadedLatencyMs, result.latencyMs),
+          title: _loadedLatencyTitle(
+            context,
+            result.loadedLatencyMs,
+            result.latencyMs,
+          ),
+          body: _loadedLatencyBody(
+            context,
+            result.loadedLatencyMs,
+            result.latencyMs,
+          ),
         ),
         _BufferbloatGradeCard(
           loadedLatencyMs: result.loadedLatencyMs,
@@ -507,7 +515,8 @@ class _InterpretationSection extends StatelessWidget {
   String _packetLossTitle(BuildContext context, double percent) {
     final l10n = context.l10n;
     if (percent == 0) return l10n.packetLossPerfectTitle;
-    if (percent <= 1) return l10n.packetLossMinimalTitle(percent.toStringAsFixed(1));
+    if (percent <= 1)
+      return l10n.packetLossMinimalTitle(percent.toStringAsFixed(1));
     return l10n.packetLossHighTitle(percent.toStringAsFixed(1));
   }
 

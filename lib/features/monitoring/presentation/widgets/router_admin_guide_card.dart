@@ -89,10 +89,8 @@ class _RouterAdminGuideCardState extends State<RouterAdminGuideCard> {
 
     final hasConnection = _ssid != null;
     final adminAddress =
-        _guide?.adminUrl ??
-        (_gatewayIp != null ? 'http://$_gatewayIp' : null);
-    final menuPath =
-        _guide?.menuPath.join(' → ') ?? l10n.guideGenericMenuPath;
+        _guide?.adminUrl ?? (_gatewayIp != null ? 'http://$_gatewayIp' : null);
+    final menuPath = _guide?.menuPath.join(' → ') ?? l10n.guideGenericMenuPath;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -275,7 +273,12 @@ class _DetectedHeader extends StatelessWidget {
         children: [
           _kv(context, Icons.wifi_rounded, l10n.guideConnectedTo, ssid),
           const SizedBox(height: 6),
-          _kv(context, Icons.memory_rounded, l10n.guideRouterVendor, vendorDisplay),
+          _kv(
+            context,
+            Icons.memory_rounded,
+            l10n.guideRouterVendor,
+            vendorDisplay,
+          ),
         ],
       ),
     );
@@ -346,10 +349,7 @@ class _StepBlock extends StatelessWidget {
             color: onSurface.withValues(alpha: 0.82),
           ),
         ),
-        if (trailing != null) ...[
-          const SizedBox(height: 8),
-          trailing!,
-        ],
+        if (trailing != null) ...[const SizedBox(height: 8), trailing!],
       ],
     );
   }
@@ -441,8 +441,7 @@ class _AdminAddressRow extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: color,
               foregroundColor: Colors.black,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               minimumSize: Size.zero,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               shape: RoundedRectangleBorder(
@@ -725,7 +724,12 @@ const _knownGuides = <_VendorGuide>[
     brand: 'D-Link',
     matchKeywords: ['D-LINK', 'DLINK'],
     adminUrl: 'http://192.168.0.1',
-    menuPath: ['Setup', 'Wireless Settings', 'Manual Wireless Setup', 'Channel'],
+    menuPath: [
+      'Setup',
+      'Wireless Settings',
+      'Manual Wireless Setup',
+      'Channel',
+    ],
   ),
   _VendorGuide(
     brand: 'Tenda',
@@ -761,7 +765,13 @@ const _knownGuides = <_VendorGuide>[
     brand: 'Ubiquiti',
     matchKeywords: ['UBIQUITI', 'UBNT'],
     adminUrl: 'http://unifi',
-    menuPath: ['Settings', 'Wi-Fi', 'Edit network', 'Wi-Fi Advanced', 'Channel'],
+    menuPath: [
+      'Settings',
+      'Wi-Fi',
+      'Edit network',
+      'Wi-Fi Advanced',
+      'Channel',
+    ],
   ),
   _VendorGuide(
     brand: 'Zyxel',

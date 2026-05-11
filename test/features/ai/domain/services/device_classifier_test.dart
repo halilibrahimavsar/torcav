@@ -38,7 +38,11 @@ void main() {
         services: [
           ServiceFingerprint(port: 80, protocol: 'tcp', serviceName: 'http'),
           ServiceFingerprint(port: 443, protocol: 'tcp', serviceName: 'https'),
-          ServiceFingerprint(port: 9999, protocol: 'tcp', serviceName: 'unknown'),
+          ServiceFingerprint(
+            port: 9999,
+            protocol: 'tcp',
+            serviceName: 'unknown',
+          ),
         ],
       );
 
@@ -46,7 +50,7 @@ void main() {
 
       expect(features[9], 1.0);
       expect(features[21], 1.0);
-      
+
       final portSum = features.sublist(0, 64).reduce((a, b) => a + b);
       expect(portSum, 2.0);
     });
@@ -85,13 +89,16 @@ void main() {
         expect(f1[i], f2[i]);
       }
     });
-    
-    test('decodeOutput correctly resolves logits to best category with confidence', () {
-      final logits = List.generate(15, (i) => i == 2 ? 10.0 : 0.0);
-      final classification = DeviceFeatureExtractor.decodeOutput(logits);
-      
-      expect(classification.deviceType, 'Desktop');
-      expect(classification.confidence, greaterThan(0.99));
-    });
+
+    test(
+      'decodeOutput correctly resolves logits to best category with confidence',
+      () {
+        final logits = List.generate(15, (i) => i == 2 ? 10.0 : 0.0);
+        final classification = DeviceFeatureExtractor.decodeOutput(logits);
+
+        expect(classification.deviceType, 'Desktop');
+        expect(classification.confidence, greaterThan(0.99));
+      },
+    );
   });
 }

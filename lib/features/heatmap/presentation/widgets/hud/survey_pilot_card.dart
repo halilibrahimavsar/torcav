@@ -100,9 +100,18 @@ class SurveyPilotCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _FeedDot(label: context.l10n.motShort, live: guidance.feeds.motionLive),
-                  _FeedDot(label: context.l10n.wifiShort, live: guidance.feeds.wifiLive),
-                  _FeedDot(label: context.l10n.camShort, live: guidance.feeds.cameraLive),
+                  _FeedDot(
+                    label: context.l10n.motShort,
+                    live: guidance.feeds.motionLive,
+                  ),
+                  _FeedDot(
+                    label: context.l10n.wifiShort,
+                    live: guidance.feeds.wifiLive,
+                  ),
+                  _FeedDot(
+                    label: context.l10n.camShort,
+                    live: guidance.feeds.cameraLive,
+                  ),
                 ],
               ),
             ],

@@ -7,8 +7,11 @@ class DnsCandidate extends Equatable {
 
   const DnsCandidate({required this.ip, required this.label, this.lastRttMs});
 
-  DnsCandidate copyWith({double? lastRttMs}) =>
-      DnsCandidate(ip: ip, label: label, lastRttMs: lastRttMs ?? this.lastRttMs);
+  DnsCandidate copyWith({double? lastRttMs}) => DnsCandidate(
+    ip: ip,
+    label: label,
+    lastRttMs: lastRttMs ?? this.lastRttMs,
+  );
 
   @override
   List<Object?> get props => [ip, label, lastRttMs];

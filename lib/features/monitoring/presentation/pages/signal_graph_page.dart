@@ -17,8 +17,8 @@ class SignalGraphPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          GetIt.I<MonitoringBloc>()..add(StartMonitoring(network.bssid)),
+      create:
+          (_) => GetIt.I<MonitoringBloc>()..add(StartMonitoring(network.bssid)),
       child: _SignalGraphContent(network: network),
     );
   }
@@ -65,18 +65,16 @@ class _SignalGraphContentState extends State<_SignalGraphContent>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text(
-          context.l10n.signalMonitoringTitle(widget.network.ssid),
-        ),
+        title: Text(context.l10n.signalMonitoringTitle(widget.network.ssid)),
         backgroundColor: Colors.transparent,
         actions: [
           IconButton(
             icon: const Icon(Icons.map_outlined),
             tooltip: context.l10n.heatmapTooltip,
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const HeatmapPage()),
-              );
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const HeatmapPage()));
             },
           ),
         ],

@@ -16,10 +16,7 @@ class LiveJitterChart extends StatelessWidget {
       return SizedBox(
         height: 140,
         child: Center(
-          child: Text(
-            '—',
-            style: TextStyle(color: scheme.onSurfaceVariant),
-          ),
+          child: Text('—', style: TextStyle(color: scheme.onSurfaceVariant)),
         ),
       );
     }
@@ -28,10 +25,8 @@ class LiveJitterChart extends StatelessWidget {
     for (var i = 0; i < samples.length; i++) {
       spots.add(FlSpot(i.toDouble(), samples[i].latencyMs));
     }
-    final maxY = samples
-            .map((s) => s.latencyMs)
-            .reduce((a, b) => a > b ? a : b) *
-        1.2;
+    final maxY =
+        samples.map((s) => s.latencyMs).reduce((a, b) => a > b ? a : b) * 1.2;
 
     return SizedBox(
       height: 140,

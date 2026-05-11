@@ -111,30 +111,38 @@ class TorcavApp extends StatelessWidget {
                   builder: (context, child) {
                     final theme = Theme.of(context);
                     final topPadding = MediaQuery.of(context).viewPadding.top;
-                    
+
                     return AnnotatedRegion<SystemUiOverlayStyle>(
                       value: const SystemUiOverlayStyle(
                         statusBarColor: Colors.transparent,
                         statusBarIconBrightness: Brightness.light,
-                        systemNavigationBarColor: Color(0xFF040506), // AppColors.deepBlack
+                        systemNavigationBarColor: Color(
+                          0xFF040506,
+                        ), // AppColors.deepBlack
                         systemNavigationBarIconBrightness: Brightness.light,
                       ),
                       child: CyberGridBackground(
-                        color: theme.colorScheme.primary, // Dynamic color from current theme
+                        color:
+                            theme
+                                .colorScheme
+                                .primary, // Dynamic color from current theme
                         child: Stack(
                           children: [
                             // 1. Main App Content (Respects SafeArea)
                             NotificationListener<ScrollNotification>(
                               onNotification: (notification) {
                                 if (notification is ScrollUpdateNotification) {
-                                  final velocity = notification.scrollDelta ?? 0;
-                                  CyberGridBackground.updateScrollVelocity(velocity);
+                                  final velocity =
+                                      notification.scrollDelta ?? 0;
+                                  CyberGridBackground.updateScrollVelocity(
+                                    velocity,
+                                  );
                                 }
                                 return false;
                               },
                               child: SafeArea(bottom: false, child: child!),
                             ),
-                            
+
                             // 2. Premium Status Bar Overlay (Frosted Glass + Fade)
                             if (topPadding > 0)
                               Positioned(
@@ -144,15 +152,22 @@ class TorcavApp extends StatelessWidget {
                                 height: topPadding,
                                 child: ClipRect(
                                   child: BackdropFilter(
-                                    filter: ImageFilter.blur(sigmaX: 12.0, sigmaY: 12.0),
+                                    filter: ImageFilter.blur(
+                                      sigmaX: 12.0,
+                                      sigmaY: 12.0,
+                                    ),
                                     child: Container(
                                       decoration: BoxDecoration(
                                         gradient: LinearGradient(
                                           begin: Alignment.topCenter,
                                           end: Alignment.bottomCenter,
                                           colors: [
-                                            const Color(0xFF040506).withValues(alpha: 0.85),
-                                            const Color(0xFF040506).withValues(alpha: 0.2),
+                                            const Color(
+                                              0xFF040506,
+                                            ).withValues(alpha: 0.85),
+                                            const Color(
+                                              0xFF040506,
+                                            ).withValues(alpha: 0.2),
                                           ],
                                         ),
                                       ),

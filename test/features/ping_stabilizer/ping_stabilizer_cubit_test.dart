@@ -45,11 +45,13 @@ class _FakeRepo extends Fake implements PingStabilizerRepository {
     if (!startSucceeds) {
       return const Left(ServerFailure('boom'));
     }
-    return Right(StabilizationSession(
-      id: 'sess-$startCount',
-      startedAt: DateTime.now(),
-      profile: profile,
-    ));
+    return Right(
+      StabilizationSession(
+        id: 'sess-$startCount',
+        startedAt: DateTime.now(),
+        profile: profile,
+      ),
+    );
   }
 
   @override
@@ -67,8 +69,7 @@ class _FakeRepo extends Fake implements PingStabilizerRepository {
   @override
   Future<Either<Failure, List<DnsCandidate>>> benchmarkDns(
     List<DnsCandidate> candidates,
-  ) async =>
-      Right(candidates.map((c) => c.copyWith(lastRttMs: 10)).toList());
+  ) async => Right(candidates.map((c) => c.copyWith(lastRttMs: 10)).toList());
 
   @override
   Future<Either<Failure, void>> setActiveDns(DnsCandidate c) async =>
@@ -153,9 +154,10 @@ void main() {
 
   group('PingStabilizerCubit', () {
     test('initial state mirrors persisted settings', () async {
-      final settings = _InMemorySettings()
-        .._autoDns = true
-        .._threshold = 55;
+      final settings =
+          _InMemorySettings()
+            .._autoDns = true
+            .._threshold = 55;
       final repo = _FakeRepo();
       final cubit = _build(repo, settings: settings);
       expect(cubit.state.autoSwitchDns, isTrue);
@@ -192,8 +194,11 @@ void main() {
 
         expect(cubit.state.status, StabilizerStatus.idle);
         expect(cubit.state.session, isNull);
-        expect(repo.stopCount, 0,
-            reason: 'native side already tore down — cubit must not double-stop');
+        expect(
+          repo.stopCount,
+          0,
+          reason: 'native side already tore down — cubit must not double-stop',
+        );
 
         await cubit.close();
         await repo.dispose();
@@ -240,8 +245,9 @@ void main() {
       final repo = _FakeRepo();
       final cubit = _build(repo, settings: settings);
       await cubit.bootstrap();
-      final cs2 = StabilizationProfile.builtIns()
-          .firstWhere((p) => p.id == 'cs2');
+      final cs2 = StabilizationProfile.builtIns().firstWhere(
+        (p) => p.id == 'cs2',
+      );
       cubit.selectProfile(cs2);
       await Future<void>.delayed(Duration.zero);
       expect(settings.selectedProfileId, 'cs2');

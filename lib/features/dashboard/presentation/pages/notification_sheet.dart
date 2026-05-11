@@ -92,73 +92,75 @@ class NotificationSheet extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-              Row(
-                children: [
-                  TextButton.icon(
-                    onPressed:
-                        () => context.read<NotificationBloc>().add(
-                          MarkAllNotificationsAsRead(),
+                  Row(
+                    children: [
+                      TextButton.icon(
+                        onPressed:
+                            () => context.read<NotificationBloc>().add(
+                              MarkAllNotificationsAsRead(),
+                            ),
+                        icon: Icon(
+                          Icons.done_all_rounded,
+                          size: 14,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
-                    icon: Icon(
-                      Icons.done_all_rounded,
-                      size: 14,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    label: Text(
-                      context.l10n.markAllRead,
-                      style: GoogleFonts.orbitron(
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
+                        label: Text(
+                          context.l10n.markAllRead,
+                          style: GoogleFonts.orbitron(
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
                       ),
-                    ),
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
+                      const SizedBox(width: 4),
+                      TextButton.icon(
+                        onPressed:
+                            () => context.read<NotificationBloc>().add(
+                              ClearAllNotifications(),
+                            ),
+                        icon: Icon(
+                          Icons.delete_sweep_rounded,
+                          size: 14,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                        label: Text(
+                          context.l10n.clearAll,
+                          style: GoogleFonts.orbitron(
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
                       ),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    context.l10n.eventsRetentionInfo,
+                    style: GoogleFonts.rajdhani(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                      fontSize: 11,
                     ),
                   ),
-                  const SizedBox(width: 4),
-                  TextButton.icon(
-                    onPressed:
-                        () => context.read<NotificationBloc>().add(
-                          ClearAllNotifications(),
-                        ),
-                    icon: Icon(
-                      Icons.delete_sweep_rounded,
-                      size: 14,
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                    label: Text(
-                      context.l10n.clearAll,
-                      style: GoogleFonts.orbitron(
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.error,
-                      ),
-                    ),
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 4),
-              Text(
-                context.l10n.eventsRetentionInfo,
-                style: GoogleFonts.rajdhani(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-                  fontSize: 11,
-                ),
-              ),
                 ],
               );
             },
@@ -217,14 +219,17 @@ class NotificationSheet extends StatelessWidget {
               return Dismissible(
                 key: Key('notif_${event.id}'),
                 direction: DismissDirection.endToStart,
-                onDismissed: (_) => context
-                    .read<NotificationBloc>()
-                    .add(DismissNotification(event.id!)),
+                onDismissed:
+                    (_) => context.read<NotificationBloc>().add(
+                      DismissNotification(event.id!),
+                    ),
                 background: Container(
                   alignment: Alignment.centerRight,
                   padding: const EdgeInsets.only(right: 20),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.error.withValues(alpha: 0.15),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.error.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Icon(

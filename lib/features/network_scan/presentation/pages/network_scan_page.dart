@@ -63,32 +63,39 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
   Future<void> _clearHistory(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(
-          context.l10n.clearScanHistoryTitle,
-          style: GoogleFonts.orbitron(fontSize: 13, fontWeight: FontWeight.bold),
-        ),
-        content: Text(
-          context.l10n.clearScanHistoryBody,
-          style: GoogleFonts.rajdhani(fontSize: 14),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(context.l10n.cancelLabel, style: GoogleFonts.orbitron(fontSize: 10)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(
-              context.l10n.deleteAllLabel,
+      builder:
+          (ctx) => AlertDialog(
+            title: Text(
+              context.l10n.clearScanHistoryTitle,
               style: GoogleFonts.orbitron(
-                fontSize: 10,
-                color: Theme.of(ctx).colorScheme.error,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
               ),
             ),
+            content: Text(
+              context.l10n.clearScanHistoryBody,
+              style: GoogleFonts.rajdhani(fontSize: 14),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(
+                  context.l10n.cancelLabel,
+                  style: GoogleFonts.orbitron(fontSize: 10),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(
+                  context.l10n.deleteAllLabel,
+                  style: GoogleFonts.orbitron(
+                    fontSize: 10,
+                    color: Theme.of(ctx).colorScheme.error,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
     );
     if (confirmed == true) {
       await getIt<LanScanHistoryLocalDataSource>().deleteAllSessions();
@@ -108,21 +115,22 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
             final accepted = await showDialog<bool>(
               context: context,
               barrierDismissible: false,
-              builder: (ctx) => ProminentDisclosureDialog(
-                title: context.l10n.networkAuditConsentTitle,
-                description: context.l10n.networkAuditConsentDesc,
-                icon: Icons.gavel_rounded,
-                privacyPoints: [
-                  context.l10n.consentScanNodes,
-                  context.l10n.consentFingerprint,
-                  context.l10n.consentIdentifyVulns,
-                  context.l10n.consentConfirmAuth,
-                ],
-                actionLabel: context.l10n.iUnderstand,
-                onAccept: () => Navigator.of(ctx).pop(true),
-                onCancel: () => Navigator.of(ctx).pop(false),
-                color: Theme.of(context).colorScheme.secondary,
-              ),
+              builder:
+                  (ctx) => ProminentDisclosureDialog(
+                    title: context.l10n.networkAuditConsentTitle,
+                    description: context.l10n.networkAuditConsentDesc,
+                    icon: Icons.gavel_rounded,
+                    privacyPoints: [
+                      context.l10n.consentScanNodes,
+                      context.l10n.consentFingerprint,
+                      context.l10n.consentIdentifyVulns,
+                      context.l10n.consentConfirmAuth,
+                    ],
+                    actionLabel: context.l10n.iUnderstand,
+                    onAccept: () => Navigator.of(ctx).pop(true),
+                    onCancel: () => Navigator.of(ctx).pop(false),
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
             );
             if (context.mounted) {
               context.read<NetworkScanBloc>().add(
@@ -207,8 +215,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
               ),
 
               // ── Full-screen radar (only when no results yet) ──
-              if (state is NetworkScanLoading)
-                const _ScanningIndicator(),
+              if (state is NetworkScanLoading) const _ScanningIndicator(),
 
               if (state case final NetworkScanLoaded loaded) ...[
                 const SizedBox(height: 16),
@@ -278,13 +285,16 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 const SizedBox(height: 12),
 
                 ...() {
-                  final hosts = loaded.hosts.where((h) {
+                  final hosts =
+                      loaded.hosts.where((h) {
                         if (_vulnOnly && h.vulnerabilities.isEmpty) {
                           return false;
                         }
                         if (_searchQuery.isNotEmpty) {
                           if (!h.ip.contains(_searchQuery) &&
-                              !h.hostName.toLowerCase().contains(_searchQuery) &&
+                              !h.hostName.toLowerCase().contains(
+                                _searchQuery,
+                              ) &&
                               !h.vendor.toLowerCase().contains(_searchQuery)) {
                             return false;
                           }
@@ -876,7 +886,6 @@ class _PulseRingState extends State<_PulseRing>
     );
   }
 }
-
 
 // ── LAN Search & Filter Bar ──────────────────────────────────────────
 

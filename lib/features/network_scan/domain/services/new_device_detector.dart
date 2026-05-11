@@ -15,7 +15,8 @@ class NewDeviceDetector {
   /// Returns the list of [HostScanResult]s whose MAC was not previously seen.
   /// Also adds all new MACs to the persisted set.
   List<HostScanResult> detectNew(List<HostScanResult> hosts) {
-    final known = (_storage.get<List<dynamic>>(_key) ?? []).cast<String>().toSet();
+    final known =
+        (_storage.get<List<dynamic>>(_key) ?? []).cast<String>().toSet();
     final newDevices = hosts.where((h) => !known.contains(h.mac)).toList();
     if (newDevices.isNotEmpty) {
       final updated = known..addAll(newDevices.map((h) => h.mac));
@@ -24,4 +25,3 @@ class NewDeviceDetector {
     return newDevices;
   }
 }
-

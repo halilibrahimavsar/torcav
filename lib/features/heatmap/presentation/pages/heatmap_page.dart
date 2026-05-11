@@ -198,7 +198,9 @@ class _HeatmapViewState extends State<_HeatmapView> {
                               Navigator.of(context).pop(true);
                             },
                             child: Text(
-                              isRecording ? l10n.discardAction : l10n.exitAction,
+                              isRecording
+                                  ? l10n.discardAction
+                                  : l10n.exitAction,
                               style: GoogleFonts.orbitron(
                                 color:
                                     isLight

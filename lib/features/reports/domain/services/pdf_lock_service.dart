@@ -35,9 +35,8 @@ class PdfLockService {
     );
     final keyBytes = utf8.encode(password);
     final ciphertext = _xorStream(payload, keyBytes, salt);
-    final hmac = Hmac(sha256, _macKey(keyBytes, salt))
-        .convert(ciphertext)
-        .bytes;
+    final hmac =
+        Hmac(sha256, _macKey(keyBytes, salt)).convert(ciphertext).bytes;
 
     final out = BytesBuilder();
     out.add(_magic);
@@ -49,10 +48,7 @@ class PdfLockService {
 
   /// Reverse [lock]. Returns null when the magic header is missing or the
   /// HMAC doesn't match (wrong password / tampered file).
-  Uint8List? unlock({
-    required Uint8List locked,
-    required String password,
-  }) {
+  Uint8List? unlock({required Uint8List locked, required String password}) {
     if (locked.length < 4 + 16 + 32) return null;
     for (var i = 0; i < 4; i++) {
       if (locked[i] != _magic[i]) return null;
@@ -62,9 +58,8 @@ class PdfLockService {
     final ciphertext = Uint8List.sublistView(locked, 52);
 
     final keyBytes = utf8.encode(password);
-    final expected = Hmac(sha256, _macKey(keyBytes, salt))
-        .convert(ciphertext)
-        .bytes;
+    final expected =
+        Hmac(sha256, _macKey(keyBytes, salt)).convert(ciphertext).bytes;
     if (!_constantTimeEquals(expected, hmacBytes)) return null;
 
     return _xorStream(ciphertext, keyBytes, salt);
@@ -75,30 +70,27 @@ class PdfLockService {
   /// Derive a 32-byte HMAC key independent of the encryption keystream.
   /// Domain-separated by a tag so a key/MAC reuse doesn't collapse.
   List<int> _macKey(List<int> password, List<int> salt) {
-    return sha256
-        .convert([...password, ...salt, ...utf8.encode('torcav-mac')])
-        .bytes;
+    return sha256.convert([
+      ...password,
+      ...salt,
+      ...utf8.encode('torcav-mac'),
+    ]).bytes;
   }
 
-  Uint8List _xorStream(
-    Uint8List input,
-    List<int> password,
-    List<int> salt,
-  ) {
+  Uint8List _xorStream(Uint8List input, List<int> password, List<int> salt) {
     final out = Uint8List(input.length);
     var counter = 0;
     var pos = 0;
     while (pos < input.length) {
-      final block = sha256
-          .convert([
+      final block =
+          sha256.convert([
             ...password,
             ...salt,
             (counter >> 24) & 0xff,
             (counter >> 16) & 0xff,
             (counter >> 8) & 0xff,
             counter & 0xff,
-          ])
-          .bytes;
+          ]).bytes;
       final remaining = input.length - pos;
       final take = remaining < block.length ? remaining : block.length;
       for (var i = 0; i < take; i++) {
@@ -123,14 +115,15 @@ class PdfLockService {
   /// — good enough for a 16-byte unique-per-file value. Override in tests.
   Iterable<int> _randomBytes(int n) {
     final seed = DateTime.now().microsecondsSinceEpoch;
-    final mixed = sha256.convert([
-      seed & 0xff,
-      (seed >> 8) & 0xff,
-      (seed >> 16) & 0xff,
-      (seed >> 24) & 0xff,
-      (seed >> 32) & 0xff,
-      (seed >> 40) & 0xff,
-    ]).bytes;
+    final mixed =
+        sha256.convert([
+          seed & 0xff,
+          (seed >> 8) & 0xff,
+          (seed >> 16) & 0xff,
+          (seed >> 24) & 0xff,
+          (seed >> 32) & 0xff,
+          (seed >> 40) & 0xff,
+        ]).bytes;
     return mixed.take(n);
   }
 }

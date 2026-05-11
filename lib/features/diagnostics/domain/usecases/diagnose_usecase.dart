@@ -208,8 +208,7 @@ class DiagnoseUseCase {
     final latency = dnsBenchmark.latencyMs;
     if (latency < 0) return null; // -1 marks a failed probe
     final span =
-        (DiagnosticThresholds.dnsSevereMs -
-                DiagnosticThresholds.dnsHealthyMs)
+        (DiagnosticThresholds.dnsSevereMs - DiagnosticThresholds.dnsHealthyMs)
             .toDouble();
     final raw = (latency - DiagnosticThresholds.dnsHealthyMs) / span;
     final severity = raw.clamp(0.0, 1.0).toDouble();
@@ -217,10 +216,7 @@ class DiagnoseUseCase {
       category: RootCauseCategory.slowDns,
       severity: severity,
       metricKey: 'sdMetricDns',
-      metricParams: {
-        'name': dnsBenchmark.name,
-        'latency': latency,
-      },
+      metricParams: {'name': dnsBenchmark.name, 'latency': latency},
       thresholdKey: 'sdThresholdDns',
       thresholdParams: {
         'healthy': DiagnosticThresholds.dnsHealthyMs,

@@ -25,20 +25,30 @@ class NetworkContextInferrer {
     if (trustedProfile != null) return NetworkContextType.home;
 
     if (network.security == SecurityType.open) return NetworkContextType.public;
-    if (_matchesPublicSsidPattern(network.ssid)) return NetworkContextType.public;
+    if (_matchesPublicSsidPattern(network.ssid))
+      return NetworkContextType.public;
 
     return NetworkContextType.unknown;
   }
 
   static const _publicSsidPatterns = [
-    'free wifi', 'free internet', 'free wi-fi',
-    'airport wifi', 'airport free',
-    'hotel wifi', 'hotel free',
-    'starbucks free', 'mcdonalds free',
-    'open wifi', 'open network',
-    'public wifi', 'public free',
-    'guest free', 'free hotspot',
-    'wifi free', 'internet free',
+    'free wifi',
+    'free internet',
+    'free wi-fi',
+    'airport wifi',
+    'airport free',
+    'hotel wifi',
+    'hotel free',
+    'starbucks free',
+    'mcdonalds free',
+    'open wifi',
+    'open network',
+    'public wifi',
+    'public free',
+    'guest free',
+    'free hotspot',
+    'wifi free',
+    'internet free',
     'xfinity wifi',
   ];
 

@@ -112,9 +112,10 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
       // deep scan + restrict guard are both ON and the connected network
       // resolves to public/guest, expose it so the UI can show a banner.
       final settings = _settingsStore.value;
-      final connectedCtx = _lastNetworks.isEmpty
-          ? null
-          : await _resolveConnectedContext(_lastNetworks);
+      final connectedCtx =
+          _lastNetworks.isEmpty
+              ? null
+              : await _resolveConnectedContext(_lastNetworks);
       NetworkContextType? suppressedFor;
       if (settings.isDeepScanEnabled &&
           settings.restrictDeepScanOnPublic &&
@@ -151,8 +152,7 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
     try {
       _lastNetworks = event.networks;
       final settings = _settingsStore.value;
-      final requestedDeepScan =
-          event.isDeepScan ?? settings.isDeepScanEnabled;
+      final requestedDeepScan = event.isDeepScan ?? settings.isDeepScanEnabled;
 
       // Resolve the connected network's context once for both the suppression
       // decision and the public-Wi-Fi safety card.
@@ -222,15 +222,16 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
       if (ssid.isEmpty) return null;
       final connected = networks.firstWhere(
         (n) => n.ssid == ssid,
-        orElse: () => const WifiNetwork(
-          ssid: '',
-          bssid: '',
-          signalStrength: 0,
-          channel: 0,
-          frequency: 0,
-          security: SecurityType.unknown,
-          vendor: '',
-        ),
+        orElse:
+            () => const WifiNetwork(
+              ssid: '',
+              bssid: '',
+              signalStrength: 0,
+              channel: 0,
+              frequency: 0,
+              security: SecurityType.unknown,
+              vendor: '',
+            ),
       );
       if (connected.bssid.isEmpty) return null;
       return _contextResolver.resolve(connected);

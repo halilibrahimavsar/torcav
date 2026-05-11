@@ -24,15 +24,18 @@ class ProfilePickerSection extends StatelessWidget {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: state.profiles.map((p) {
-                final isSelected = state.profile?.id == p.id;
-                return ChoiceChip(
-                  label: Text(_translateProfileName(context, p)),
-                  selected: isSelected,
-                  onSelected: (_) =>
-                      context.read<PingStabilizerCubit>().selectProfile(p),
-                );
-              }).toList(),
+              children:
+                  state.profiles.map((p) {
+                    final isSelected = state.profile?.id == p.id;
+                    return ChoiceChip(
+                      label: Text(_translateProfileName(context, p)),
+                      selected: isSelected,
+                      onSelected:
+                          (_) => context
+                              .read<PingStabilizerCubit>()
+                              .selectProfile(p),
+                    );
+                  }).toList(),
             ),
           ],
         );

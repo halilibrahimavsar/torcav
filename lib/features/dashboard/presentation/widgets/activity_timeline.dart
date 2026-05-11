@@ -62,9 +62,7 @@ class _ActivityTimelineState extends State<ActivityTimeline> {
     final l10n = AppLocalizations.of(context)!;
     final items = _buildItems(l10n);
     if (items.isEmpty) {
-      return _EmptyTimeline(
-        onScan: () => widget.onNavigate('wifi'),
-      );
+      return _EmptyTimeline(onScan: () => widget.onNavigate('wifi'));
     }
 
     return SizedBox(
@@ -217,13 +215,15 @@ class _TimelineCard extends StatelessWidget {
                               color: item.accent.withValues(alpha: 0.4),
                             ),
                           ),
-                          child: Icon(item.icon,
-                              color: item.accent, size: 14),
+                          child: Icon(item.icon, color: item.accent, size: 14),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            _formatRelative(item.when, AppLocalizations.of(context)!),
+                            _formatRelative(
+                              item.when,
+                              AppLocalizations.of(context)!,
+                            ),
                             style: GoogleFonts.orbitron(
                               color: item.accent.withValues(alpha: 0.9),
                               fontSize: 9,
@@ -290,8 +290,11 @@ class _EmptyTimeline extends StatelessWidget {
         borderColor: scheme.primary.withValues(alpha: 0.2),
         child: Row(
           children: [
-            Icon(Icons.history_rounded,
-                color: scheme.primary.withValues(alpha: 0.6), size: 28),
+            Icon(
+              Icons.history_rounded,
+              color: scheme.primary.withValues(alpha: 0.6),
+              size: 28,
+            ),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
@@ -317,8 +320,11 @@ class _EmptyTimeline extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios_rounded,
-                color: scheme.primary.withValues(alpha: 0.5), size: 14),
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: scheme.primary.withValues(alpha: 0.5),
+              size: 14,
+            ),
           ],
         ),
       ),

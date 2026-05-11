@@ -73,15 +73,17 @@ class NetworkSecurityCard extends StatelessWidget {
                   context.read<SecurityBloc>().add(SecurityStarted());
                 },
                 icon: const Icon(Icons.fingerprint_rounded),
-                label: Text(
-                  l10n.scanAllCaps,
-                ),
+                label: Text(l10n.scanAllCaps),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: scheme.primary.withValues(alpha: 0.1),
                   foregroundColor: scheme.primary,
-                  side: BorderSide(color: scheme.primary.withValues(alpha: 0.3)),
+                  side: BorderSide(
+                    color: scheme.primary.withValues(alpha: 0.3),
+                  ),
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
             ),
@@ -152,7 +154,9 @@ class NetworkCard extends StatelessWidget {
                       children: [
                         Flexible(
                           child: Text(
-                            context.l10n.bssidLabel(network.bssid.toUpperCase()),
+                            context.l10n.bssidLabel(
+                              network.bssid.toUpperCase(),
+                            ),
                             style: GoogleFonts.firaCode(
                               color: scheme.onSurfaceVariant.withValues(
                                 alpha: 0.7,
@@ -175,7 +179,8 @@ class NetworkCard extends StatelessWidget {
                         Flexible(
                           child: Text(
                             context.l10n.gatewayWithIpLabel(
-                              network.gateway?.toUpperCase() ?? l10n.notAvailableCaps,
+                              network.gateway?.toUpperCase() ??
+                                  l10n.notAvailableCaps,
                             ),
                             style: GoogleFonts.firaCode(
                               color: scheme.onSurfaceVariant.withValues(

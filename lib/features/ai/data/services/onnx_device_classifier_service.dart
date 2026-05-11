@@ -72,10 +72,10 @@ class OnnxDeviceClassifierService {
   ) async {
     final session = await _ensureSession();
     if (session != null) {
-      final inputOrt = OrtValueTensor.createTensorWithDataList(
-        features,
-        [1, DeviceFeatureExtractor.featureDim],
-      );
+      final inputOrt = OrtValueTensor.createTensorWithDataList(features, [
+        1,
+        DeviceFeatureExtractor.featureDim,
+      ]);
       final runOptions = OrtRunOptions();
       try {
         final outputs = session.run(runOptions, {'features': inputOrt});
@@ -126,33 +126,79 @@ class OnnxDeviceClassifierService {
         confidence: 0.6,
       );
     }
-    if (_matches(v, h, ['cisco', 'netgear', 'tp-link', 'tplink', 'asus', 'dlink', 'linksys', 'ubiquiti', 'mikrotik'])) {
+    if (_matches(v, h, [
+      'cisco',
+      'netgear',
+      'tp-link',
+      'tplink',
+      'asus',
+      'dlink',
+      'linksys',
+      'ubiquiti',
+      'mikrotik',
+    ])) {
       return const DeviceClassification(
         deviceType: 'Router/Gateway',
         confidence: 0.65,
       );
     }
-    if (_matches(v, h, ['hp ', 'hewlett', 'canon', 'epson', 'brother', 'lexmark', 'xerox', 'ricoh'])) {
+    if (_matches(v, h, [
+      'hp ',
+      'hewlett',
+      'canon',
+      'epson',
+      'brother',
+      'lexmark',
+      'xerox',
+      'ricoh',
+    ])) {
       return const DeviceClassification(
         deviceType: 'Printer',
         confidence: 0.65,
       );
     }
-    if (_matches(v, h, ['synology', 'qnap', 'drobo', 'western digital', 'wd ', 'seagate', 'nas'])) {
+    if (_matches(v, h, [
+      'synology',
+      'qnap',
+      'drobo',
+      'western digital',
+      'wd ',
+      'seagate',
+      'nas',
+    ])) {
       return const DeviceClassification(
         deviceType: 'NAS/Storage',
         confidence: 0.65,
       );
     }
-    if (_matches(v, h, ['sony', 'lg ', 'samsung', 'philips', 'panasonic', 'tv', 'bravia', 'vizio'])) {
-      if (h.contains('tv') || v.contains('tv') || h.contains('bravia') || h.contains('vizio')) {
+    if (_matches(v, h, [
+      'sony',
+      'lg ',
+      'samsung',
+      'philips',
+      'panasonic',
+      'tv',
+      'bravia',
+      'vizio',
+    ])) {
+      if (h.contains('tv') ||
+          v.contains('tv') ||
+          h.contains('bravia') ||
+          h.contains('vizio')) {
         return const DeviceClassification(
           deviceType: 'Smart TV',
           confidence: 0.6,
         );
       }
     }
-    if (_matches(v, h, ['hikvision', 'dahua', 'axis', 'camera', 'cam-', 'ipcam'])) {
+    if (_matches(v, h, [
+      'hikvision',
+      'dahua',
+      'axis',
+      'camera',
+      'cam-',
+      'ipcam',
+    ])) {
       return const DeviceClassification(
         deviceType: 'IP Camera',
         confidence: 0.65,
@@ -164,13 +210,29 @@ class OnnxDeviceClassifierService {
         confidence: 0.6,
       );
     }
-    if (_matches(v, h, ['raspberry', 'arduino', 'esp32', 'esp8266', 'sensor', 'iot'])) {
+    if (_matches(v, h, [
+      'raspberry',
+      'arduino',
+      'esp32',
+      'esp8266',
+      'sensor',
+      'iot',
+    ])) {
       return const DeviceClassification(
         deviceType: 'IoT Sensor',
         confidence: 0.55,
       );
     }
-    if (_matches(v, h, ['dell', 'lenovo', 'acer', 'asus', 'msi', 'laptop', 'desktop', 'pc'])) {
+    if (_matches(v, h, [
+      'dell',
+      'lenovo',
+      'acer',
+      'asus',
+      'msi',
+      'laptop',
+      'desktop',
+      'pc',
+    ])) {
       return const DeviceClassification(
         deviceType: 'Desktop',
         confidence: 0.55,

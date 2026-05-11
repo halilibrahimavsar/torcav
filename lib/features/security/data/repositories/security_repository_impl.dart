@@ -250,8 +250,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
       final dnsEvent = await _dnsSecurityUseCase.check();
 
       final allTrusted = await _localDataSource.getTrustedNetworkProfiles();
-      final trustedBssids =
-          allTrusted.map((p) => p.bssid).toSet();
+      final trustedBssids = allTrusted.map((p) => p.bssid).toSet();
 
       final context = await _contextResolver.resolve(
         network,
@@ -404,25 +403,27 @@ class SecurityRepositoryImpl implements SecurityRepository {
             await _localDataSource.getTrustedNetworkProfiles();
         final trustedNow = trustedProfilesNow.firstWhere(
           (p) => p.bssid.toLowerCase() == connectedBssid.toLowerCase(),
-          orElse: () => trustedProfilesNow.firstWhere(
-            (_) => false,
-            orElse: () => TrustedNetworkProfile(
-              ssid: '',
-              bssid: '',
-              fingerprint: const NetworkFingerprint(
-                ssid: '',
-                bssid: '',
-                security: '',
-                vendor: '',
-                isHidden: false,
-                channel: 0,
-                frequency: 0,
-                bandLabel: '',
+          orElse:
+              () => trustedProfilesNow.firstWhere(
+                (_) => false,
+                orElse:
+                    () => TrustedNetworkProfile(
+                      ssid: '',
+                      bssid: '',
+                      fingerprint: const NetworkFingerprint(
+                        ssid: '',
+                        bssid: '',
+                        security: '',
+                        vendor: '',
+                        isHidden: false,
+                        channel: 0,
+                        frequency: 0,
+                        bandLabel: '',
+                      ),
+                      trustedAt: DateTime.fromMillisecondsSinceEpoch(0),
+                      lastConfirmedAt: DateTime.fromMillisecondsSinceEpoch(0),
+                    ),
               ),
-              trustedAt: DateTime.fromMillisecondsSinceEpoch(0),
-              lastConfirmedAt: DateTime.fromMillisecondsSinceEpoch(0),
-            ),
-          ),
         );
         if (trustedNow.bssid.isNotEmpty) {
           final driftEvent = _gatewayDriftDetector.check(

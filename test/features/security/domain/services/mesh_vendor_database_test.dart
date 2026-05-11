@@ -16,10 +16,7 @@ void main() {
   });
 
   test('sameMeshFamily true when both BSSIDs hit the same vendor', () {
-    expect(
-      db.sameMeshFamily('40:B4:CD:11:22:33', '4C:CC:34:99:88:77'),
-      isTrue,
-    );
+    expect(db.sameMeshFamily('40:B4:CD:11:22:33', '4C:CC:34:99:88:77'), isTrue);
   });
 
   test('sameMeshFamily false across different mesh vendors', () {

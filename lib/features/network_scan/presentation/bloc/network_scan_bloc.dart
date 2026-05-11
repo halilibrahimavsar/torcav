@@ -165,7 +165,7 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
       );
       return;
     }
- 
+
     // ENFORCEMENT: If strictSafetyMode is ON, we block deep scans
     if (_settingsStore.value.strictSafetyMode && event.deepScan) {
       emit(
@@ -185,7 +185,11 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
     emit(NetworkScanLoading());
 
     _scanSubscription = _repository
-        .scanWithProfile(event.target, profile: event.profile, method: event.method)
+        .scanWithProfile(
+          event.target,
+          profile: event.profile,
+          method: event.method,
+        )
         .listen(
           (result) => result.fold(
             (failure) => add(_ScanFailed(failure.message)),

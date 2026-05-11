@@ -73,8 +73,8 @@ class _NeomorphicBackgroundState extends State<NeomorphicBackground>
                 _smoothedVelocity =
                     _smoothedVelocity * 0.9 +
                     (widget.scrollVelocity.value / 20.0).clamp(0.0, 1.0) * 0.1;
-                
-                // Note: We don't decay the velocity here because the parent (switcher) 
+
+                // Note: We don't decay the velocity here because the parent (switcher)
                 // or the global updater should handle it to avoid duplicate decay.
                 // However, the original code had scrollVelocity.value *= 0.95;
                 // Since this is now instance-specific via theSwitcher, we can keep it or move it.

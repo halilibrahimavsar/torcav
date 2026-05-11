@@ -25,7 +25,8 @@ class MonitoringRepositoryImpl implements MonitoringRepository {
       if (result.isLeft()) {
         consecutiveErrors++;
         final backoff = Duration(
-          milliseconds: (interval.inMilliseconds * (1 << consecutiveErrors.clamp(0, 6)))
+          milliseconds: (interval.inMilliseconds *
+                  (1 << consecutiveErrors.clamp(0, 6)))
               .clamp(interval.inMilliseconds, _maxBackoff.inMilliseconds),
         );
         yield result;
@@ -44,17 +45,14 @@ class MonitoringRepositoryImpl implements MonitoringRepository {
     Duration interval = const Duration(seconds: 5),
   }) async* {
     await for (final result in monitorNetworks(interval: interval)) {
-      yield result.fold(
-        (failure) => Left(failure),
-        (networks) {
-          final network = networks.where((n) => n.bssid == bssid).firstOrNull;
-          if (network != null) {
-            return Right(network);
-          } else {
-            return const Left(ScanFailure('Network not found'));
-          }
-        },
-      );
+      yield result.fold((failure) => Left(failure), (networks) {
+        final network = networks.where((n) => n.bssid == bssid).firstOrNull;
+        if (network != null) {
+          return Right(network);
+        } else {
+          return const Left(ScanFailure('Network not found'));
+        }
+      });
     }
   }
 }

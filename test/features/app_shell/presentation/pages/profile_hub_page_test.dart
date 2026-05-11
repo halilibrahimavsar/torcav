@@ -24,60 +24,66 @@ void main() {
     await getIt.reset();
   });
 
-  testWidgets('renders factual profile data without placeholder values', skip: true, (
-    tester,
-  ) async {
-    final networkInfo = MockNetworkInfo();
-    when(
-      () => networkInfo.getWifiName(),
-    ).thenAnswer((_) async => '"Test SSID"');
-    when(() => networkInfo.getWifiIP()).thenAnswer((_) async => '192.168.1.10');
-    when(
-      () => networkInfo.getWifiGatewayIP(),
-    ).thenAnswer((_) async => '192.168.1.1');
+  testWidgets(
+    'renders factual profile data without placeholder values',
+    skip: true,
+    (tester) async {
+      final networkInfo = MockNetworkInfo();
+      when(
+        () => networkInfo.getWifiName(),
+      ).thenAnswer((_) async => '"Test SSID"');
+      when(
+        () => networkInfo.getWifiIP(),
+      ).thenAnswer((_) async => '192.168.1.10');
+      when(
+        () => networkInfo.getWifiGatewayIP(),
+      ).thenAnswer((_) async => '192.168.1.1');
 
-    await _configureDependencies(networkInfo);
-    getIt<ScanSessionStore>().add(_snapshot());
+      await _configureDependencies(networkInfo);
+      getIt<ScanSessionStore>().add(_snapshot());
 
-    await tester.pumpWidget(_buildTestApp(const ProfileHubPage()));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
+      await tester.pumpWidget(_buildTestApp(const ProfileHubPage()));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
-    expect(find.text('Test SSID'), findsOneWidget);
-    expect(find.text('192.168.1.10'), findsOneWidget);
-    expect(find.text('192.168.1.1'), findsOneWidget);
-    expect(find.text('English'), findsOneWidget);
-    expect(find.text('System'), findsOneWidget);
-    expect(find.text('Networks (1)'), findsOneWidget);
-    expect(find.text('ANDROID'), findsOneWidget);
+      expect(find.text('Test SSID'), findsOneWidget);
+      expect(find.text('192.168.1.10'), findsOneWidget);
+      expect(find.text('192.168.1.1'), findsOneWidget);
+      expect(find.text('English'), findsOneWidget);
+      expect(find.text('System'), findsOneWidget);
+      expect(find.text('Networks (1)'), findsOneWidget);
+      expect(find.text('ANDROID'), findsOneWidget);
 
-    expect(find.text('OPERATOR_01'), findsNothing);
-    expect(find.text('TR-9982-CX'), findsNothing);
-    expect(find.text('ENTERPRISE_ELITE'), findsNothing);
-    expect(find.text('AES-256-GCM'), findsNothing);
-    expect(find.text('98.2%'), findsNothing);
-  });
+      expect(find.text('OPERATOR_01'), findsNothing);
+      expect(find.text('TR-9982-CX'), findsNothing);
+      expect(find.text('ENTERPRISE_ELITE'), findsNothing);
+      expect(find.text('AES-256-GCM'), findsNothing);
+      expect(find.text('98.2%'), findsNothing);
+    },
+  );
 
-  testWidgets('renders empty factual state when runtime data is unavailable', skip: true, (
-    tester,
-  ) async {
-    final networkInfo = MockNetworkInfo();
-    when(() => networkInfo.getWifiName()).thenAnswer((_) async => null);
-    when(() => networkInfo.getWifiIP()).thenAnswer((_) async => null);
-    when(() => networkInfo.getWifiGatewayIP()).thenAnswer((_) async => null);
+  testWidgets(
+    'renders empty factual state when runtime data is unavailable',
+    skip: true,
+    (tester) async {
+      final networkInfo = MockNetworkInfo();
+      when(() => networkInfo.getWifiName()).thenAnswer((_) async => null);
+      when(() => networkInfo.getWifiIP()).thenAnswer((_) async => null);
+      when(() => networkInfo.getWifiGatewayIP()).thenAnswer((_) async => null);
 
-    await _configureDependencies(networkInfo);
+      await _configureDependencies(networkInfo);
 
-    await tester.pumpWidget(_buildTestApp(const ProfileHubPage()));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
+      await tester.pumpWidget(_buildTestApp(const ProfileHubPage()));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
-    expect(
-      find.text('No scan snapshot is available yet. Run a Wi-Fi scan first.'),
-      findsOneWidget,
-    );
-    expect(find.text('—'), findsAtLeastNWidgets(3));
-  });
+      expect(
+        find.text('No scan snapshot is available yet. Run a Wi-Fi scan first.'),
+        findsOneWidget,
+      );
+      expect(find.text('—'), findsAtLeastNWidgets(3));
+    },
+  );
 }
 
 Future<void> _configureDependencies(NetworkInfo networkInfo) async {

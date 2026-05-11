@@ -108,7 +108,9 @@ class EvilTwinDetailCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      context.l10n.evilTwinPrefix(exp.confidenceLabel.toUpperCase()),
+                      context.l10n.evilTwinPrefix(
+                        exp.confidenceLabel.toUpperCase(),
+                      ),
                       style: GoogleFonts.orbitron(
                         color: palette,
                         fontSize: 11,
@@ -159,7 +161,10 @@ class EvilTwinDetailCard extends StatelessWidget {
               title: context.l10n.whatWeObservedTitle,
               titleColor: Colors.orangeAccent,
               icon: Icons.warning_amber_rounded,
-              items: assessment.suspicions.map((s) => _translateSignal(context, s)).toList(),
+              items:
+                  assessment.suspicions
+                      .map((s) => _translateSignal(context, s))
+                      .toList(),
             ),
           ],
           if (assessment.mitigations.isNotEmpty) ...[
@@ -168,7 +173,10 @@ class EvilTwinDetailCard extends StatelessWidget {
               title: context.l10n.whatLookedLegitimateTitle,
               titleColor: Colors.greenAccent,
               icon: Icons.verified_user_rounded,
-              items: assessment.mitigations.map((s) => _translateSignal(context, s)).toList(),
+              items:
+                  assessment.mitigations
+                      .map((s) => _translateSignal(context, s))
+                      .toList(),
             ),
           ],
           if (actions.isNotEmpty) ...[

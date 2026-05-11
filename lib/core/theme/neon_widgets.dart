@@ -802,16 +802,10 @@ class NeonSectionHeader extends StatelessWidget {
             letterSpacing: 2,
           ),
         ),
-        if (leading != null) ...[
-          const SizedBox(width: 8),
-          leading!,
-        ],
+        if (leading != null) ...[const SizedBox(width: 8), leading!],
         const SizedBox(width: 12),
         Expanded(child: NeonDivider(color: effectiveColor)),
-        if (trailing != null) ...[
-          const SizedBox(width: 12),
-          trailing!,
-        ],
+        if (trailing != null) ...[const SizedBox(width: 12), trailing!],
       ],
     );
   }
@@ -1349,7 +1343,9 @@ class _FoldableNeonSectionState extends State<FoldableNeonSection> {
             color: widget.color,
             leading: widget.infoBadge,
             trailing: Icon(
-              _isExpanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+              _isExpanded
+                  ? Icons.expand_less_rounded
+                  : Icons.expand_more_rounded,
               color: widget.color,
               size: 20,
             ),
@@ -1359,7 +1355,10 @@ class _FoldableNeonSectionState extends State<FoldableNeonSection> {
         AnimatedCrossFade(
           firstChild: const SizedBox(width: double.infinity, height: 0),
           secondChild: widget.child,
-          crossFadeState: _isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          crossFadeState:
+              _isExpanded
+                  ? CrossFadeState.showSecond
+                  : CrossFadeState.showFirst,
           duration: const Duration(milliseconds: 300),
           alignment: Alignment.topCenter,
         ),

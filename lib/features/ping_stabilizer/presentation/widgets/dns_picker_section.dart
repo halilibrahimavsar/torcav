@@ -25,8 +25,10 @@ class DnsPickerSection extends StatelessWidget {
                 ),
                 Switch(
                   value: state.autoSwitchDns,
-                  onChanged: (v) =>
-                      context.read<PingStabilizerCubit>().setAutoSwitchDns(v),
+                  onChanged:
+                      (v) => context
+                          .read<PingStabilizerCubit>()
+                          .setAutoSwitchDns(v),
                 ),
                 Text(context.l10n.autoLabel),
               ],
@@ -39,16 +41,17 @@ class DnsPickerSection extends StatelessWidget {
                 contentPadding: EdgeInsets.zero,
                 leading: Icon(
                   isActive ? Icons.check_circle : Icons.circle_outlined,
-                  color: isActive
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.onSurfaceVariant,
+                  color:
+                      isActive
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 title: Text('${c.label} · ${c.ip}'),
-                subtitle: c.lastRttMs != null
-                    ? Text('${c.lastRttMs!.toStringAsFixed(1)} ms')
-                    : const Text('—'),
-                onTap: () =>
-                    context.read<PingStabilizerCubit>().selectDns(c),
+                subtitle:
+                    c.lastRttMs != null
+                        ? Text('${c.lastRttMs!.toStringAsFixed(1)} ms')
+                        : const Text('—'),
+                onTap: () => context.read<PingStabilizerCubit>().selectDns(c),
               );
             }),
           ],

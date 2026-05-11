@@ -52,9 +52,10 @@ class HeatmapPlacementService {
     }
 
     final center = _centroid(deadZones);
-    final clusterCount = deadZones
-        .where((p) => _distance(p, center) <= _clusterRadiusMeters)
-        .length;
+    final clusterCount =
+        deadZones
+            .where((p) => _distance(p, center) <= _clusterRadiusMeters)
+            .length;
     final clusterDensity = clusterCount / deadZones.length;
 
     if (clusterDensity >= _clusterDensityThreshold) {

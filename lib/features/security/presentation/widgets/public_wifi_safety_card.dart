@@ -23,12 +23,14 @@ class PublicWifiSafetyCard extends StatelessWidget {
     final scheme = Theme.of(buildContext).colorScheme;
     final isPublic = context == NetworkContextType.public;
     final accent = isPublic ? scheme.error : scheme.tertiary;
-    final label = isPublic
-        ? buildContext.l10n.publicWifiLabel
-        : buildContext.l10n.guestNetworkLabel;
-    final subtitle = isPublic
-        ? buildContext.l10n.publicWifiDesc
-        : buildContext.l10n.guestNetworkDesc;
+    final label =
+        isPublic
+            ? buildContext.l10n.publicWifiLabel
+            : buildContext.l10n.guestNetworkLabel;
+    final subtitle =
+        isPublic
+            ? buildContext.l10n.publicWifiDesc
+            : buildContext.l10n.guestNetworkDesc;
 
     return Container(
       padding: const EdgeInsets.all(16),

@@ -71,13 +71,15 @@ class _NeuralPulseBackgroundState extends State<NeuralPulseBackground>
       for (int k = 0; k < 2; k++) {
         final j = distances[k].key;
         if (j > i) {
-          _synapses.add(_Synapse(
-            from: i,
-            to: j,
-            curveOffset: -0.15 + rng.nextDouble() * 0.3,
-            pulseSeed: rng.nextDouble(),
-            pulseSpeed: 0.4 + rng.nextDouble() * 0.6,
-          ));
+          _synapses.add(
+            _Synapse(
+              from: i,
+              to: j,
+              curveOffset: -0.15 + rng.nextDouble() * 0.3,
+              pulseSeed: rng.nextDouble(),
+              pulseSpeed: 0.4 + rng.nextDouble() * 0.6,
+            ),
+          );
         }
       }
     }
@@ -112,17 +114,18 @@ class _NeuralPulseBackgroundState extends State<NeuralPulseBackground>
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: isLight
-                    ? const [
-                        Color(0xFFF1EBFA),
-                        Color(0xFFE5DCEF),
-                        Color(0xFFCFC4DE),
-                      ]
-                    : const [
-                        Color(0xFF0A0618),
-                        Color(0xFF120A28),
-                        Color(0xFF06030E),
-                      ],
+                colors:
+                    isLight
+                        ? const [
+                          Color(0xFFF1EBFA),
+                          Color(0xFFE5DCEF),
+                          Color(0xFFCFC4DE),
+                        ]
+                        : const [
+                          Color(0xFF0A0618),
+                          Color(0xFF120A28),
+                          Color(0xFF06030E),
+                        ],
               ),
             ),
           ),
@@ -132,7 +135,8 @@ class _NeuralPulseBackgroundState extends State<NeuralPulseBackground>
             child: AnimatedBuilder(
               animation: Listenable.merge([_controller, widget.scrollVelocity]),
               builder: (context, _) {
-                _smoothedVelocity = _smoothedVelocity * 0.88 +
+                _smoothedVelocity =
+                    _smoothedVelocity * 0.88 +
                     (widget.scrollVelocity.value / 4.0).clamp(0.0, 250.0) *
                         0.12;
                 widget.scrollVelocity.value *= 0.94;
@@ -160,8 +164,9 @@ class _NeuralPulseBackgroundState extends State<NeuralPulseBackground>
                   radius: 1.25,
                   colors: [
                     Colors.transparent,
-                    (isLight ? Colors.white : Colors.black)
-                        .withValues(alpha: isLight ? 0.18 : 0.55),
+                    (isLight ? Colors.white : Colors.black).withValues(
+                      alpha: isLight ? 0.18 : 0.55,
+                    ),
                   ],
                   stops: const [0.55, 1.0],
                 ),
@@ -287,10 +292,11 @@ class _NeuralPainter extends CustomPainter {
     for (final d in dust) {
       final drift = velocity * d.drift * 0.4;
       final x = (d.x * size.width + drift) % size.width;
-      final y = (d.y * size.height +
-              math.sin(progress * math.pi * 2 + d.phase) * 8) %
+      final y =
+          (d.y * size.height + math.sin(progress * math.pi * 2 + d.phase) * 8) %
           size.height;
-      final alpha = (0.18 + 0.18 * math.sin(progress * 8 + d.phase)) *
+      final alpha =
+          (0.18 + 0.18 * math.sin(progress * 8 + d.phase)) *
           (isLight ? 0.4 : 0.7);
       paint.color = base.withValues(alpha: alpha);
       canvas.drawCircle(Offset(x, y), d.size, paint);
@@ -298,10 +304,11 @@ class _NeuralPainter extends CustomPainter {
   }
 
   void _paintSynapses(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.9
-      ..strokeCap = StrokeCap.round;
+    final paint =
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.9
+          ..strokeCap = StrokeCap.round;
     final lineColor = (isLight ? AppColors.inkCyan : AppColors.neonCyan)
         .withValues(alpha: isLight ? 0.28 : 0.28);
 
@@ -309,9 +316,10 @@ class _NeuralPainter extends CustomPainter {
       final a = _neuronPos(neurons[s.from], size);
       final b = _neuronPos(neurons[s.to], size);
       final c = _synapseControl(a, b, s.curveOffset);
-      final path = Path()
-        ..moveTo(a.dx, a.dy)
-        ..quadraticBezierTo(c.dx, c.dy, b.dx, b.dy);
+      final path =
+          Path()
+            ..moveTo(a.dx, a.dy)
+            ..quadraticBezierTo(c.dx, c.dy, b.dx, b.dy);
       paint.color = lineColor;
       canvas.drawPath(path, paint);
     }
@@ -332,9 +340,10 @@ class _NeuralPainter extends CustomPainter {
         final pos = _bezier(a, c, b, tt);
         final fade = 1.0 - i / trailLen;
         final col = hues[s.from % hues.length];
-        final paint = Paint()
-          ..color = col.withValues(alpha: fade * (isLight ? 0.7 : 0.95))
-          ..maskFilter = MaskFilter.blur(BlurStyle.normal, 1.6 * fade);
+        final paint =
+            Paint()
+              ..color = col.withValues(alpha: fade * (isLight ? 0.7 : 0.95))
+              ..maskFilter = MaskFilter.blur(BlurStyle.normal, 1.6 * fade);
         canvas.drawCircle(pos, 2.2 * fade + 0.6, paint);
       }
     }
@@ -347,28 +356,31 @@ class _NeuralPainter extends CustomPainter {
       final color = hues[n.hue % hues.length];
 
       // Outer aura
-      final aura = Paint()
-        ..shader = RadialGradient(
-          colors: [
-            color.withValues(alpha: (isLight ? 0.25 : 0.4) * pulse),
-            Colors.transparent,
-          ],
-        ).createShader(
-          Rect.fromCircle(center: pos, radius: n.baseRadius * 5),
-        );
+      final aura =
+          Paint()
+            ..shader = RadialGradient(
+              colors: [
+                color.withValues(alpha: (isLight ? 0.25 : 0.4) * pulse),
+                Colors.transparent,
+              ],
+            ).createShader(
+              Rect.fromCircle(center: pos, radius: n.baseRadius * 5),
+            );
       canvas.drawCircle(pos, n.baseRadius * 5, aura);
 
       // Glow ring
-      final ring = Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.0
-        ..color = color.withValues(alpha: (isLight ? 0.55 : 0.7) * pulse);
+      final ring =
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.0
+            ..color = color.withValues(alpha: (isLight ? 0.55 : 0.7) * pulse);
       canvas.drawCircle(pos, n.baseRadius * 1.8, ring);
 
       // Core
-      final core = Paint()
-        ..color = color.withValues(alpha: isLight ? 0.85 : 1.0)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.5);
+      final core =
+          Paint()
+            ..color = color.withValues(alpha: isLight ? 0.85 : 1.0)
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.5);
       canvas.drawCircle(pos, n.baseRadius * 0.85 * pulse, core);
 
       // Inner bright dot
@@ -382,11 +394,12 @@ class _NeuralPainter extends CustomPainter {
     final amp = 14.0 + (velocity / 6.0).clamp(0.0, 18.0);
     final color = (isLight ? AppColors.inkGreen : AppColors.neonGreen)
         .withValues(alpha: isLight ? 0.6 : 0.75);
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.4
-      ..strokeCap = StrokeCap.round
-      ..color = color;
+    final paint =
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.4
+          ..strokeCap = StrokeCap.round
+          ..color = color;
 
     final path = Path();
     const samples = 120;
@@ -411,11 +424,12 @@ class _NeuralPainter extends CustomPainter {
     canvas.drawPath(path, paint);
 
     // Glow under
-    final glow = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4
-      ..color = color.withValues(alpha: color.a * 0.35)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+    final glow =
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 4
+          ..color = color.withValues(alpha: color.a * 0.35)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
     canvas.drawPath(path, glow);
   }
 

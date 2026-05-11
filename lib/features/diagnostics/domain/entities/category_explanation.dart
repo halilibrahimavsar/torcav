@@ -39,14 +39,14 @@ class CategoryExplanation extends Equatable {
 
   @override
   List<Object?> get props => [
-        whatIs,
-        whyItMatters,
-        howToFix,
-        estimatedImprovement,
-        whatIsKey,
-        whyItMattersKey,
-        howToFixKeys,
-        estimatedImprovementKey,
-        estimatedImprovementParams,
-      ];
+    whatIs,
+    whyItMatters,
+    howToFix,
+    estimatedImprovement,
+    whatIsKey,
+    whyItMattersKey,
+    howToFixKeys,
+    estimatedImprovementKey,
+    estimatedImprovementParams,
+  ];
 }

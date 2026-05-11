@@ -46,9 +46,8 @@ class PingStabilizerState extends Equatable {
     this.notificationsBlocked = false,
   });
 
-  factory PingStabilizerState.initial() => PingStabilizerState(
-        stats: LiveStats.empty(),
-      );
+  factory PingStabilizerState.initial() =>
+      PingStabilizerState(stats: LiveStats.empty());
 
   PingStabilizerState copyWith({
     StabilizerStatus? status,
@@ -80,25 +79,24 @@ class PingStabilizerState extends Equatable {
       jitterThresholdMs: jitterThresholdMs ?? this.jitterThresholdMs,
       baselineLatencyMs: baselineLatencyMs ?? this.baselineLatencyMs,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
-      notificationsBlocked:
-          notificationsBlocked ?? this.notificationsBlocked,
+      notificationsBlocked: notificationsBlocked ?? this.notificationsBlocked,
     );
   }
 
   @override
   List<Object?> get props => [
-        status,
-        profile,
-        profiles,
-        session,
-        stats,
-        dnsCandidates,
-        activeDns,
-        recommendations,
-        autoSwitchDns,
-        jitterThresholdMs,
-        baselineLatencyMs,
-        errorMessage,
-        notificationsBlocked,
-      ];
+    status,
+    profile,
+    profiles,
+    session,
+    stats,
+    dnsCandidates,
+    activeDns,
+    recommendations,
+    autoSwitchDns,
+    jitterThresholdMs,
+    baselineLatencyMs,
+    errorMessage,
+    notificationsBlocked,
+  ];
 }

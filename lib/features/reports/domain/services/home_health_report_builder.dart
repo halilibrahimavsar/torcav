@@ -30,11 +30,11 @@ class HomeHealthReportBuilder {
 
     final stats = <String, int>{
       'lanDeviceCount': lanHosts.length,
-      'lanRiskyDevices': lanHosts
-          .where((h) => _trust.classify(h).level == HostTrustLevel.risky)
-          .length,
-      'connectedRssiDbm':
-          connectedNetwork?.signalStrength ?? -100,
+      'lanRiskyDevices':
+          lanHosts
+              .where((h) => _trust.classify(h).level == HostTrustLevel.risky)
+              .length,
+      'connectedRssiDbm': connectedNetwork?.signalStrength ?? -100,
       'downloadMbps': speedTest?.downloadMbps.round() ?? 0,
     };
 
@@ -44,8 +44,9 @@ class HomeHealthReportBuilder {
       'Internet': internetScore,
       'LAN exposure': lanScore,
     };
-    final worstEntry =
-        scores.entries.reduce((a, b) => a.value <= b.value ? a : b);
+    final worstEntry = scores.entries.reduce(
+      (a, b) => a.value <= b.value ? a : b,
+    );
 
     final actions = _topActions(
       worstName: worstEntry.key,
@@ -78,8 +79,7 @@ class HomeHealthReportBuilder {
     if (speed == null) return 50;
     // Bufferbloat penalty: induced latency above 30 ms costs up to 40 pts.
     final induced = speed.loadedLatencyMs - speed.latencyMs;
-    final bufferbloatPenalty =
-        ((induced - 30) / 200 * 40).clamp(0.0, 40.0);
+    final bufferbloatPenalty = ((induced - 30) / 200 * 40).clamp(0.0, 40.0);
 
     // Throughput vs PHY: at >= 50% of PHY → full marks. Below that,
     // proportional. Without a PHY estimate we score by absolute Mbps.
@@ -129,9 +129,7 @@ class HomeHealthReportBuilder {
     required List<HostScanResult> lanHosts,
   }) {
     if (worstScore >= 80) {
-      return const [
-        'Re-run this report monthly to make sure nothing drifts.',
-      ];
+      return const ['Re-run this report monthly to make sure nothing drifts.'];
     }
     final actions = <String>[];
     switch (worstName) {

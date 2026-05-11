@@ -61,10 +61,12 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
     this._notifications,
     this._repository,
     this._settings,
-  ) : super(PingStabilizerState.initial().copyWith(
+  ) : super(
+        PingStabilizerState.initial().copyWith(
           autoSwitchDns: _settings.autoSwitchDns,
           jitterThresholdMs: _settings.jitterThresholdMs,
-        )) {
+        ),
+      ) {
     // Always-on listener for native-driven teardown (notification "Stop"
     // action, system VPN revoke). The stream is broadcast and replays no
     // events, so this is safe to wire up immediately.
@@ -78,12 +80,14 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
     _statsSub?.cancel();
     _statsSub = null;
     _notifiedKeys.clear();
-    emit(state.copyWith(
-      status: StabilizerStatus.idle,
-      stats: LiveStats.empty(),
-      recommendations: const [],
-      clearSession: true,
-    ));
+    emit(
+      state.copyWith(
+        status: StabilizerStatus.idle,
+        stats: LiveStats.empty(),
+        recommendations: const [],
+        clearSession: true,
+      ),
+    );
   }
 
   /// Idempotent. Called from every UI surface that mounts a
@@ -100,12 +104,13 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
     );
     // Restore the last-selected profile from disk; falls back to first.
     final savedId = _settings.selectedProfileId;
-    final initialProfile = (savedId == null)
-        ? profiles.first
-        : profiles.firstWhere(
-            (p) => p.id == savedId,
-            orElse: () => profiles.first,
-          );
+    final initialProfile =
+        (savedId == null)
+            ? profiles.first
+            : profiles.firstWhere(
+              (p) => p.id == savedId,
+              orElse: () => profiles.first,
+            );
     emit(
       state.copyWith(
         profiles: profiles,
@@ -125,16 +130,15 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
     // Pre-bench candidate DNS resolvers.
     final benched = await _benchmarkDns();
     if (isClosed) return;
-    benched.fold(
-      (_) {},
-      (list) {
-        final ranked = BenchmarkDnsUseCase.rank(list);
-        emit(state.copyWith(
+    benched.fold((_) {}, (list) {
+      final ranked = BenchmarkDnsUseCase.rank(list);
+      emit(
+        state.copyWith(
           dnsCandidates: ranked,
           activeDns: ranked.isNotEmpty ? ranked.first : null,
-        ));
-      },
-    );
+        ),
+      );
+    });
   }
 
   Future<void> startStabilizer() async {
@@ -157,23 +161,25 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
       // MIUI sometimes reports `granted` while sub-toggles (lock-screen,
       // floating, banner) are off — we surface a banner regardless when
       // the user reports they cannot see the HUD.
-      emit(state.copyWith(
-        notificationsBlocked: !status.isGranted,
-      ));
+      emit(state.copyWith(notificationsBlocked: !status.isGranted));
     }
 
     final result = await _start(profile);
     result.fold(
-      (failure) => emit(state.copyWith(
-        status: StabilizerStatus.failure,
-        errorMessage: failure.message,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          status: StabilizerStatus.failure,
+          errorMessage: failure.message,
+        ),
+      ),
       (session) {
-        emit(state.copyWith(
-          status: StabilizerStatus.active,
-          session: session,
-          stats: LiveStats.empty(),
-        ));
+        emit(
+          state.copyWith(
+            status: StabilizerStatus.active,
+            session: session,
+            stats: LiveStats.empty(),
+          ),
+        );
         _statsSub?.cancel();
         _statsSub = _observe().listen(_onSample);
 
@@ -192,12 +198,14 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
     await _statsSub?.cancel();
     _statsSub = null;
     await _stop();
-    emit(state.copyWith(
-      status: StabilizerStatus.idle,
-      stats: LiveStats.empty(),
-      recommendations: const [],
-      clearSession: true,
-    ));
+    emit(
+      state.copyWith(
+        status: StabilizerStatus.idle,
+        stats: LiveStats.empty(),
+        recommendations: const [],
+        clearSession: true,
+      ),
+    );
   }
 
   /// Opens the OS notification settings page for this app. On MIUI this is
@@ -284,21 +292,20 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
     }
     // Clear keys whose recommendation has gone away so they can re-fire
     // next time the condition reappears.
-    _notifiedKeys.removeWhere(
-      (k) => !recs.any((r) => r.type.name == k),
-    );
+    _notifiedKeys.removeWhere((k) => !recs.any((r) => r.type.name == k));
 
     // Auto-apply DNS swap when user opted in.
     final auto = state.autoSwitchDns;
     if (auto) {
       final swap = recs.firstWhere(
         (r) => r.type == RecommendationType.switchDns,
-        orElse: () => StabilizerRecommendation(
-          type: RecommendationType.switchDns,
-          severity: RecommendationSeverity.info,
-          message: '',
-          payload: const {},
-        ),
+        orElse:
+            () => StabilizerRecommendation(
+              type: RecommendationType.switchDns,
+              severity: RecommendationSeverity.info,
+              message: '',
+              payload: const {},
+            ),
       );
       final ip = swap.payload['ip'] as String?;
       if (ip != null && ip.isNotEmpty) {
@@ -312,14 +319,16 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
     final recs = <StabilizerRecommendation>[];
 
     if (s.jitterBreached(state.jitterThresholdMs, _breachWindow)) {
-      recs.add(StabilizerRecommendation(
-        type: RecommendationType.reconnectTunnel,
-        severity: RecommendationSeverity.warning,
-        message: l10n.stabilizerJitterSpikeBody(
-          state.jitterThresholdMs.toStringAsFixed(0),
-          _breachWindow,
+      recs.add(
+        StabilizerRecommendation(
+          type: RecommendationType.reconnectTunnel,
+          severity: RecommendationSeverity.warning,
+          message: l10n.stabilizerJitterSpikeBody(
+            state.jitterThresholdMs.toStringAsFixed(0),
+            _breachWindow,
+          ),
         ),
-      ));
+      );
     }
 
     final active = s.activeDns;
@@ -329,21 +338,25 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
       final activeRtt = active.lastRttMs ?? double.infinity;
       final bestRtt = best.lastRttMs ?? double.infinity;
       if (best.ip != active.ip && bestRtt * 1.5 < activeRtt) {
-        recs.add(StabilizerRecommendation(
-          type: RecommendationType.switchDns,
-          severity: RecommendationSeverity.info,
-          message: l10n.stabilizerFasterDnsBody(best.label),
-          payload: {'ip': best.ip},
-        ));
+        recs.add(
+          StabilizerRecommendation(
+            type: RecommendationType.switchDns,
+            severity: RecommendationSeverity.info,
+            message: l10n.stabilizerFasterDnsBody(best.label),
+            payload: {'ip': best.ip},
+          ),
+        );
       }
     }
 
     if (s.lossPct > 1.0) {
-      recs.add(StabilizerRecommendation(
-        type: RecommendationType.suggestDual,
-        severity: RecommendationSeverity.info,
-        message: l10n.stabilizerPacketLossBody(s.lossPct.toStringAsFixed(1)),
-      ));
+      recs.add(
+        StabilizerRecommendation(
+          type: RecommendationType.suggestDual,
+          severity: RecommendationSeverity.info,
+          message: l10n.stabilizerPacketLossBody(s.lossPct.toStringAsFixed(1)),
+        ),
+      );
     }
     return recs;
   }

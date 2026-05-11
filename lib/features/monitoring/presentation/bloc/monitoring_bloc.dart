@@ -266,8 +266,10 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
           timestamp: timestamp,
         ),
     ];
-    final future =
-        _historyRepo.saveRatings(samples).then((_) {}).catchError((_) {});
+    final future = _historyRepo
+        .saveRatings(samples)
+        .then((_) {})
+        .catchError((_) {});
     if (awaitWrite) {
       await future;
     } else {

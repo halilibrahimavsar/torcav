@@ -65,51 +65,53 @@ class _SpeedometerArcState extends State<SpeedometerArc>
           tween: Tween<double>(begin: 0, end: widget.upload),
           builder: (context, ulValue, _) {
             final l10n = context.l10n;
-            final isRunning = widget.phase != SpeedTestPhase.idle &&
+            final isRunning =
+                widget.phase != SpeedTestPhase.idle &&
                 widget.phase != SpeedTestPhase.done;
-            final semanticLabel = widget.phase == SpeedTestPhase.idle
-                ? l10n.speedTestSemanticsIdle
-                : isRunning
+            final semanticLabel =
+                widget.phase == SpeedTestPhase.idle
+                    ? l10n.speedTestSemanticsIdle
+                    : isRunning
                     ? l10n.speedTestSemanticsRunning(
-                        widget.download.toStringAsFixed(1),
-                      )
+                      widget.download.toStringAsFixed(1),
+                    )
                     : l10n.speedTestSemanticsComplete(
-                        widget.download.toStringAsFixed(1),
-                        widget.upload.toStringAsFixed(1),
-                      );
+                      widget.download.toStringAsFixed(1),
+                      widget.upload.toStringAsFixed(1),
+                    );
             return Semantics(
               label: semanticLabel,
               button: widget.onTap != null,
               child: GestureDetector(
                 onTap: widget.onTap,
                 child: AspectRatio(
-              aspectRatio: 1,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  // ── Gauge Base ──
-                  AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, _) {
-                      return CustomPaint(
-                        size: Size.infinite,
-                        painter: _SpeedometerPainter(
-                          download: dlValue,
-                          upload: ulValue,
-                          maxSpeed: widget.maxSpeed,
-                          animationValue: _controller.value,
-                          phase: widget.phase,
-                          dlColor: dlColor,
-                          ulColor: ulColor,
-                        ),
-                      );
-                    },
-                  ),
+                  aspectRatio: 1,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // ── Gauge Base ──
+                      AnimatedBuilder(
+                        animation: _controller,
+                        builder: (context, _) {
+                          return CustomPaint(
+                            size: Size.infinite,
+                            painter: _SpeedometerPainter(
+                              download: dlValue,
+                              upload: ulValue,
+                              maxSpeed: widget.maxSpeed,
+                              animationValue: _controller.value,
+                              phase: widget.phase,
+                              dlColor: dlColor,
+                              ulColor: ulColor,
+                            ),
+                          );
+                        },
+                      ),
 
-                  // ── Metric Content ──
-                  _buildMetricContent(dlValue, ulValue, dlColor, ulColor),
-                ],
-              ),
+                      // ── Metric Content ──
+                      _buildMetricContent(dlValue, ulValue, dlColor, ulColor),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -131,9 +133,8 @@ class _SpeedometerArcState extends State<SpeedometerArc>
 
     final centerValue = isUpload ? ul : dl;
     final centerColor = isUpload ? ulColor : dlColor;
-    final centerLabel = isUpload
-        ? context.l10n.uploadLabel
-        : context.l10n.downloadLabel;
+    final centerLabel =
+        isUpload ? context.l10n.uploadLabel : context.l10n.downloadLabel;
 
     if (isIdle) {
       return Column(

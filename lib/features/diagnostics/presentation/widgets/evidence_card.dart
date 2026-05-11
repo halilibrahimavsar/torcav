@@ -69,7 +69,11 @@ class _EvidenceCardState extends State<EvidenceCard> {
           ),
           const SizedBox(height: 4),
           Text(
-            _translate(context, evidence.thresholdKey, evidence.thresholdParams) ??
+            _translate(
+                  context,
+                  evidence.thresholdKey,
+                  evidence.thresholdParams,
+                ) ??
                 evidence.thresholdLabel,
             style: GoogleFonts.rajdhani(
               color: theme.colorScheme.onSurfaceVariant,
@@ -156,13 +160,15 @@ class _ExplanationPanel extends StatelessWidget {
         children: [
           _Section(
             title: context.l10n.whatIsThisSection,
-            body: _translate(context, explanation.whatIsKey) ??
+            body:
+                _translate(context, explanation.whatIsKey) ??
                 explanation.whatIs,
           ),
           const SizedBox(height: 10),
           _Section(
             title: context.l10n.whyItMattersSection,
-            body: _translate(context, explanation.whyItMattersKey) ??
+            body:
+                _translate(context, explanation.whyItMattersKey) ??
                 explanation.whyItMatters,
           ),
           if ((explanation.howToFixKeys?.isNotEmpty ?? false) ||
@@ -188,7 +194,8 @@ class _ExplanationPanel extends StatelessWidget {
               explanation.estimatedImprovement != null) ...[
             const SizedBox(height: 10),
             _ImprovementBadge(
-              text: _translate(
+              text:
+                  _translate(
                     context,
                     explanation.estimatedImprovementKey,
                     explanation.estimatedImprovementParams,
@@ -282,23 +289,24 @@ class _ActionChip extends StatelessWidget {
     final theme = Theme.of(context);
     final hasDeepLink = action.deepLinkRoute != null;
     return InkWell(
-      onTap: hasDeepLink
-          ? () => _navigate(context, action.deepLinkRoute!)
-          : null,
+      onTap:
+          hasDeepLink ? () => _navigate(context, action.deepLinkRoute!) : null,
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: hasDeepLink
-              ? theme.colorScheme.primary.withValues(alpha: 0.12)
-              : theme.colorScheme.surfaceContainerHighest.withValues(
-                  alpha: 0.35,
-                ),
+          color:
+              hasDeepLink
+                  ? theme.colorScheme.primary.withValues(alpha: 0.12)
+                  : theme.colorScheme.surfaceContainerHighest.withValues(
+                    alpha: 0.35,
+                  ),
           border: Border.all(
-            color: hasDeepLink
-                ? theme.colorScheme.primary.withValues(alpha: 0.45)
-                : theme.colorScheme.outlineVariant.withValues(alpha: 0.4),
+            color:
+                hasDeepLink
+                    ? theme.colorScheme.primary.withValues(alpha: 0.45)
+                    : theme.colorScheme.outlineVariant.withValues(alpha: 0.4),
           ),
         ),
         child: Row(
@@ -366,40 +374,40 @@ String? _translate(
   return switch (key) {
     'sdMetricRssi' => l10n.sdMetricRssi(params?['rssi'] ?? 0),
     'sdThresholdRssi' => l10n.sdThresholdRssi(
-        params?['healthy'] ?? 0,
-        params?['severe'] ?? 0,
-      ),
+      params?['healthy'] ?? 0,
+      params?['severe'] ?? 0,
+    ),
     'sdMetricChannel' => l10n.sdMetricChannel(
-        params?['channel'] ?? 0,
-        params?['score'] ?? '',
-      ),
+      params?['channel'] ?? 0,
+      params?['score'] ?? '',
+    ),
     'sdThresholdChannel' => l10n.sdThresholdChannel(
-        params?['healthy'] ?? '',
-        params?['severe'] ?? '',
-      ),
+      params?['healthy'] ?? '',
+      params?['severe'] ?? '',
+    ),
     'sdMetricBufferbloat' => l10n.sdMetricBufferbloat(
-        params?['induced'] ?? '',
-        params?['latency'] ?? '',
-        params?['loaded'] ?? '',
-      ),
+      params?['induced'] ?? '',
+      params?['latency'] ?? '',
+      params?['loaded'] ?? '',
+    ),
     'sdThresholdBufferbloat' => l10n.sdThresholdBufferbloat(
-        params?['healthy'] ?? '',
-        params?['severe'] ?? '',
-      ),
+      params?['healthy'] ?? '',
+      params?['severe'] ?? '',
+    ),
     'sdMetricIsp' => l10n.sdMetricIsp(
-        params?['download'] ?? '',
-        params?['phy'] ?? '',
-      ),
+      params?['download'] ?? '',
+      params?['phy'] ?? '',
+    ),
     'sdMetricIspNoPhy' => l10n.sdMetricIspNoPhy(params?['download'] ?? ''),
     'sdThresholdIsp' => l10n.sdThresholdIsp(params?['healthy'] ?? ''),
     'sdMetricDns' => l10n.sdMetricDns(
-        params?['name'] ?? '',
-        params?['latency'] ?? 0,
-      ),
+      params?['name'] ?? '',
+      params?['latency'] ?? 0,
+    ),
     'sdThresholdDns' => l10n.sdThresholdDns(
-        params?['healthy'] ?? 0,
-        params?['severe'] ?? 0,
-      ),
+      params?['healthy'] ?? 0,
+      params?['severe'] ?? 0,
+    ),
     'sdWeakSignalWhatIs' => l10n.sdWeakSignalWhatIs,
     'sdWeakSignalWhyItMatters' => l10n.sdWeakSignalWhyItMatters,
     'sdWeakSignalHowToFix1' => l10n.sdWeakSignalHowToFix1,
@@ -413,16 +421,18 @@ String? _translate(
     'sdCrowdedChannelHowToFix2' => l10n.sdCrowdedChannelHowToFix2,
     'sdCrowdedChannelHowToFix3' => l10n.sdCrowdedChannelHowToFix3,
     'sdCrowdedChannelHowToFix4' => l10n.sdCrowdedChannelHowToFix4,
-    'sdCrowdedChannelEstimate' =>
-      l10n.sdCrowdedChannelEstimate(params?['gain'] ?? ''),
+    'sdCrowdedChannelEstimate' => l10n.sdCrowdedChannelEstimate(
+      params?['gain'] ?? '',
+    ),
     'sdBufferbloatWhatIs' => l10n.sdBufferbloatWhatIs,
     'sdBufferbloatWhyItMatters' => l10n.sdBufferbloatWhyItMatters,
     'sdBufferbloatHowToFix1' => l10n.sdBufferbloatHowToFix1,
     'sdBufferbloatHowToFix2' => l10n.sdBufferbloatHowToFix2,
     'sdBufferbloatHowToFix3' => l10n.sdBufferbloatHowToFix3,
     'sdBufferbloatHowToFix4' => l10n.sdBufferbloatHowToFix4,
-    'sdBufferbloatEstimate' =>
-      l10n.sdBufferbloatEstimate(params?['reduction'] ?? ''),
+    'sdBufferbloatEstimate' => l10n.sdBufferbloatEstimate(
+      params?['reduction'] ?? '',
+    ),
     'sdIspSlowWhatIs' => l10n.sdIspSlowWhatIs,
     'sdIspSlowWhyItMatters' => l10n.sdIspSlowWhyItMatters,
     'sdIspSlowHowToFix1' => l10n.sdIspSlowHowToFix1,
@@ -430,16 +440,15 @@ String? _translate(
     'sdIspSlowHowToFix3' => l10n.sdIspSlowHowToFix3,
     'sdIspSlowHowToFix4' => l10n.sdIspSlowHowToFix4,
     'sdIspSlowEstimate' => l10n.sdIspSlowEstimate(
-        params?['phy'] ?? '',
-        params?['download'] ?? '',
-      ),
+      params?['phy'] ?? '',
+      params?['download'] ?? '',
+    ),
     'sdSlowDnsWhatIs' => l10n.sdSlowDnsWhatIs,
     'sdSlowDnsWhyItMatters' => l10n.sdSlowDnsWhyItMatters,
     'sdSlowDnsHowToFix1' => l10n.sdSlowDnsHowToFix1,
     'sdSlowDnsHowToFix2' => l10n.sdSlowDnsHowToFix2,
     'sdSlowDnsHowToFix3' => l10n.sdSlowDnsHowToFix3,
-    'sdSlowDnsEstimate' =>
-      l10n.sdSlowDnsEstimate(params?['reduction'] ?? 0),
+    'sdSlowDnsEstimate' => l10n.sdSlowDnsEstimate(params?['reduction'] ?? 0),
     'sdHealthyWhatIs' => l10n.sdHealthyWhatIs,
     'sdHealthyWhyItMatters' => l10n.sdHealthyWhyItMatters,
     _ => null,
@@ -494,9 +503,7 @@ class _ImprovementBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.greenAccent.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: Colors.greenAccent.withValues(alpha: 0.45),
-        ),
+        border: Border.all(color: Colors.greenAccent.withValues(alpha: 0.45)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

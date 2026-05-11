@@ -177,9 +177,10 @@ class DiagnosisExplainer {
       ],
       estimatedImprovementKey:
           estimate != null ? 'sdBufferbloatEstimate' : null,
-      estimatedImprovementParams: finalReduction != null
-          ? {'reduction': finalReduction.toStringAsFixed(0)}
-          : null,
+      estimatedImprovementParams:
+          finalReduction != null
+              ? {'reduction': finalReduction.toStringAsFixed(0)}
+              : null,
       whatIs:
           'Bufferbloat is the latency that builds up inside your router\'s '
           'send buffers when the link is fully loaded — typical packets '
@@ -226,12 +227,13 @@ class DiagnosisExplainer {
         'sdIspSlowHowToFix4',
       ],
       estimatedImprovementKey: estimate != null ? 'sdIspSlowEstimate' : null,
-      estimatedImprovementParams: estimate != null
-          ? {
-            'phy': phy?.toStringAsFixed(0),
-            'download': download?.toStringAsFixed(1),
-          }
-          : null,
+      estimatedImprovementParams:
+          estimate != null
+              ? {
+                'phy': phy?.toStringAsFixed(0),
+                'download': download?.toStringAsFixed(1),
+              }
+              : null,
       whatIs:
           'Your Wi-Fi link is healthy and the radio could carry far more '
           'than what is actually flowing through it. The bottleneck sits '
@@ -255,10 +257,7 @@ class DiagnosisExplainer {
   }
 
   // ── Slow DNS ───────────────────────────────────────────────────────────
-  CategoryExplanation _slowDns(
-    DiagnosisEvidence ev,
-    DiagnosisInputs inputs,
-  ) {
+  CategoryExplanation _slowDns(DiagnosisEvidence ev, DiagnosisInputs inputs) {
     final benchmark = inputs.dnsBenchmark;
     String? estimate;
     num? finalReduction;

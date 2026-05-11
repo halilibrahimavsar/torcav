@@ -44,9 +44,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     // context resolver can fall back to it for unknown networks.
     try {
       final store = getIt<AppSettingsStore>();
-      store.update(
-        store.value.copyWith(defaultNetworkContext: _chosenContext),
-      );
+      store.update(store.value.copyWith(defaultNetworkContext: _chosenContext));
     } catch (_) {
       // Onboarding must never block on settings persistence.
     }
@@ -83,7 +81,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     selected: _chosenContext,
                     onSelected: (c) => setState(() => _chosenContext = c),
                   ),
-                  _DonePage(onAllAccepted: (v) => setState(() => _allAccepted = v)),
+                  _DonePage(
+                    onAllAccepted: (v) => setState(() => _allAccepted = v),
+                  ),
                 ],
               ),
             ),
@@ -112,7 +112,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   ),
                   const Spacer(),
                   FilledButton(
-                    onPressed: (_page == _totalPages - 1 && !_allAccepted) ? null : _next,
+                    onPressed:
+                        (_page == _totalPages - 1 && !_allAccepted)
+                            ? null
+                            : _next,
                     style: FilledButton.styleFrom(
                       backgroundColor: primary,
                       padding: const EdgeInsets.symmetric(
@@ -372,20 +375,25 @@ class _ContextChoice extends StatelessWidget {
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
-          color: isSelected
-              ? accent.withValues(alpha: 0.12)
-              : theme.colorScheme.surface.withValues(alpha: 0.4),
+          color:
+              isSelected
+                  ? accent.withValues(alpha: 0.12)
+                  : theme.colorScheme.surface.withValues(alpha: 0.4),
           border: Border.all(
-            color: isSelected
-                ? accent.withValues(alpha: 0.7)
-                : theme.colorScheme.outlineVariant.withValues(alpha: 0.4),
+            color:
+                isSelected
+                    ? accent.withValues(alpha: 0.7)
+                    : theme.colorScheme.outlineVariant.withValues(alpha: 0.4),
             width: isSelected ? 1.5 : 1,
           ),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, color: isSelected ? accent : theme.colorScheme.onSurfaceVariant),
+            Icon(
+              icon,
+              color: isSelected ? accent : theme.colorScheme.onSurfaceVariant,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -550,12 +558,13 @@ class _DonePageState extends State<_DonePage> {
                   WidgetSpan(
                     alignment: PlaceholderAlignment.middle,
                     child: InkWell(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const TermsOfServicePage(),
-                        ),
-                      ),
+                      onTap:
+                          () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const TermsOfServicePage(),
+                            ),
+                          ),
                       child: Text(
                         context.l10n.onboardingTosLink,
                         style: TextStyle(
@@ -569,12 +578,13 @@ class _DonePageState extends State<_DonePage> {
                   WidgetSpan(
                     alignment: PlaceholderAlignment.middle,
                     child: InkWell(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const PrivacyPolicyPage(),
-                        ),
-                      ),
+                      onTap:
+                          () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const PrivacyPolicyPage(),
+                            ),
+                          ),
                       child: Text(
                         context.l10n.onboardingPrivacyLink,
                         style: TextStyle(

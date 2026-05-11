@@ -61,7 +61,8 @@ class EvilTwinDetailPage extends StatelessWidget {
   Widget _buildAssessmentCard() {
     final scanStore = getIt<ScanSessionStore>();
     final classifier = getIt<EvilTwinClassifier>();
-    final visible = scanStore.latest?.toLegacyNetworks() ?? const <WifiNetwork>[];
+    final visible =
+        scanStore.latest?.toLegacyNetworks() ?? const <WifiNetwork>[];
 
     final candidates = visible.where(
       (n) => n.ssid.isNotEmpty && n.ssid == flaggedSsid,

@@ -78,8 +78,10 @@ class _PingStabilizerView extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.notifications_off_rounded,
-                                  color: Colors.orangeAccent),
+                              const Icon(
+                                Icons.notifications_off_rounded,
+                                color: Colors.orangeAccent,
+                              ),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
@@ -100,9 +102,11 @@ class _PingStabilizerView extends StatelessWidget {
                           Align(
                             alignment: Alignment.centerRight,
                             child: FilledButton.icon(
-                              onPressed: () => context
-                                  .read<PingStabilizerCubit>()
-                                  .openNotificationSettings(),
+                              onPressed:
+                                  () =>
+                                      context
+                                          .read<PingStabilizerCubit>()
+                                          .openNotificationSettings(),
                               icon: const Icon(Icons.settings_rounded),
                               label: Text(context.l10n.openSettingsLabel),
                             ),
@@ -190,9 +194,10 @@ class _PingStabilizerView extends StatelessWidget {
                           min: 5,
                           max: 100,
                           value: state.jitterThresholdMs,
-                          onChanged: (v) => context
-                              .read<PingStabilizerCubit>()
-                              .setJitterThreshold(v),
+                          onChanged:
+                              (v) => context
+                                  .read<PingStabilizerCubit>()
+                                  .setJitterThreshold(v),
                         ),
                       ],
                     ),

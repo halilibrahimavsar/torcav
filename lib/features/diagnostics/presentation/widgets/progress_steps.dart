@@ -36,13 +36,16 @@ class ProgressSteps extends StatelessWidget {
             child: Row(
               children: [
                 Icon(
-                  _isComplete(step) ? Icons.check_circle_rounded
-                      : _isCurrent(step) ? Icons.timelapse_rounded
+                  _isComplete(step)
+                      ? Icons.check_circle_rounded
+                      : _isCurrent(step)
+                      ? Icons.timelapse_rounded
                       : Icons.radio_button_unchecked_rounded,
                   size: 18,
-                  color: _isComplete(step)
-                      ? Colors.greenAccent
-                      : _isCurrent(step)
+                  color:
+                      _isComplete(step)
+                          ? Colors.greenAccent
+                          : _isCurrent(step)
                           ? theme.colorScheme.primary
                           : theme.colorScheme.onSurfaceVariant,
                 ),
@@ -50,13 +53,13 @@ class ProgressSteps extends StatelessWidget {
                 Text(
                   _label(context, step),
                   style: GoogleFonts.rajdhani(
-                    color: _isCurrent(step) || _isComplete(step)
-                        ? theme.colorScheme.onSurface
-                        : theme.colorScheme.onSurfaceVariant,
+                    color:
+                        _isCurrent(step) || _isComplete(step)
+                            ? theme.colorScheme.onSurface
+                            : theme.colorScheme.onSurfaceVariant,
                     fontSize: 14,
-                    fontWeight: _isCurrent(step)
-                        ? FontWeight.w700
-                        : FontWeight.w500,
+                    fontWeight:
+                        _isCurrent(step) ? FontWeight.w700 : FontWeight.w500,
                   ),
                 ),
               ],

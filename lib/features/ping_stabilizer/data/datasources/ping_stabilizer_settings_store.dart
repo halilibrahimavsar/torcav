@@ -24,7 +24,8 @@ class PingStabilizerSettingsStore {
 
   PingStabilizerSettingsStore(this._hive);
 
-  bool get autoSwitchDns => _hive.get<bool>(_kAutoDns, defaultValue: false) ?? false;
+  bool get autoSwitchDns =>
+      _hive.get<bool>(_kAutoDns, defaultValue: false) ?? false;
   Future<void> setAutoSwitchDns(bool v) => _hive.save(_kAutoDns, v);
 
   double get jitterThresholdMs =>
@@ -32,8 +33,7 @@ class PingStabilizerSettingsStore {
   Future<void> setJitterThresholdMs(double v) =>
       _hive.save(_kJitterThreshold, v);
 
-  String? get selectedProfileId =>
-      _hive.get<String>(_kSelectedProfileId);
+  String? get selectedProfileId => _hive.get<String>(_kSelectedProfileId);
   Future<void> setSelectedProfileId(String id) =>
       _hive.save(_kSelectedProfileId, id);
 
@@ -59,39 +59,45 @@ class PingStabilizerSettingsStore {
   // ── (de)serialisation ─────────────────────────────────────────────────
 
   Map<String, dynamic> _encodeProfile(StabilizationProfile p) => {
-        'id': p.id,
-        'displayName': p.displayName,
-        'gameKey': p.gameKey,
-        'dualInterface': p.dualInterface,
-        'qosRules': p.qosRules
-            .map((r) => {
-                  'protocol': r.protocol.name,
-                  'portStart': r.portStart,
-                  'portEnd': r.portEnd,
-                  'queue': r.queue.name,
-                  'dscp': r.dscp,
-                })
+    'id': p.id,
+    'displayName': p.displayName,
+    'gameKey': p.gameKey,
+    'dualInterface': p.dualInterface,
+    'qosRules':
+        p.qosRules
+            .map(
+              (r) => {
+                'protocol': r.protocol.name,
+                'portStart': r.portStart,
+                'portEnd': r.portEnd,
+                'queue': r.queue.name,
+                'dscp': r.dscp,
+              },
+            )
             .toList(),
-      };
+  };
 
   StabilizationProfile _decodeProfile(Map<String, dynamic> m) {
     final rulesRaw = (m['qosRules'] as List<dynamic>?) ?? const [];
-    final rules = rulesRaw
-        .whereType<Map<String, dynamic>>()
-        .map((r) => QosRule(
-              protocol: QosProtocol.values.firstWhere(
-                (p) => p.name == r['protocol'],
-                orElse: () => QosProtocol.udp,
+    final rules =
+        rulesRaw
+            .whereType<Map<String, dynamic>>()
+            .map(
+              (r) => QosRule(
+                protocol: QosProtocol.values.firstWhere(
+                  (p) => p.name == r['protocol'],
+                  orElse: () => QosProtocol.udp,
+                ),
+                portStart: (r['portStart'] as num?)?.toInt() ?? 1024,
+                portEnd: (r['portEnd'] as num?)?.toInt() ?? 65535,
+                queue: QosQueue.values.firstWhere(
+                  (q) => q.name == r['queue'],
+                  orElse: () => QosQueue.lowLatency,
+                ),
+                dscp: (r['dscp'] as num?)?.toInt() ?? 0,
               ),
-              portStart: (r['portStart'] as num?)?.toInt() ?? 1024,
-              portEnd: (r['portEnd'] as num?)?.toInt() ?? 65535,
-              queue: QosQueue.values.firstWhere(
-                (q) => q.name == r['queue'],
-                orElse: () => QosQueue.lowLatency,
-              ),
-              dscp: (r['dscp'] as num?)?.toInt() ?? 0,
-            ))
-        .toList();
+            )
+            .toList();
     return StabilizationProfile(
       id: m['id'] as String,
       displayName: m['displayName'] as String,

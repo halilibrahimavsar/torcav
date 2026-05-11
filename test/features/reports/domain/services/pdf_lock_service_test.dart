@@ -36,10 +36,7 @@ void main() {
 
   test('files smaller than the header are rejected', () {
     expect(
-      service.unlock(
-        locked: Uint8List.fromList([1, 2, 3]),
-        password: 'x',
-      ),
+      service.unlock(locked: Uint8List.fromList([1, 2, 3]), password: 'x'),
       isNull,
     );
   });

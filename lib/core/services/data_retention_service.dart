@@ -13,7 +13,7 @@ class DataRetentionService {
   /// Returns the total number of rows deleted across all tables.
   Future<int> enforceRetention() async {
     final settings = _settingsStore.value;
-    
+
     final now = DateTime.now();
     final db = await _database.database;
 
@@ -21,28 +21,84 @@ class DataRetentionService {
 
     // 1. Scan History Retention
     if (settings.scanHistoryRetentionDays > 0) {
-      final cutoff = now.subtract(Duration(days: settings.scanHistoryRetentionDays)).toIso8601String();
-      tasks.add(db.delete('scan_sessions', where: 'created_at < ?', whereArgs: [cutoff]));
-      tasks.add(db.delete('lan_scan_sessions', where: 'created_at < ?', whereArgs: [cutoff]));
-      tasks.add(db.delete('assessment_sessions', where: 'created_at < ?', whereArgs: [cutoff]));
-      tasks.add(db.delete('channel_rating_history', where: 'timestamp < ?', whereArgs: [cutoff]));
-      tasks.add(db.delete('heatmap_points', where: 'created_at < ?', whereArgs: [cutoff]));
+      final cutoff =
+          now
+              .subtract(Duration(days: settings.scanHistoryRetentionDays))
+              .toIso8601String();
+      tasks.add(
+        db.delete(
+          'scan_sessions',
+          where: 'created_at < ?',
+          whereArgs: [cutoff],
+        ),
+      );
+      tasks.add(
+        db.delete(
+          'lan_scan_sessions',
+          where: 'created_at < ?',
+          whereArgs: [cutoff],
+        ),
+      );
+      tasks.add(
+        db.delete(
+          'assessment_sessions',
+          where: 'created_at < ?',
+          whereArgs: [cutoff],
+        ),
+      );
+      tasks.add(
+        db.delete(
+          'channel_rating_history',
+          where: 'timestamp < ?',
+          whereArgs: [cutoff],
+        ),
+      );
+      tasks.add(
+        db.delete(
+          'heatmap_points',
+          where: 'created_at < ?',
+          whereArgs: [cutoff],
+        ),
+      );
     }
 
     // 2. Speed Test Retention
     if (settings.speedTestRetentionDays > 0) {
-      final cutoff = now.subtract(Duration(days: settings.speedTestRetentionDays)).toIso8601String();
-      tasks.add(db.delete('speed_test_results', where: 'recorded_at < ?', whereArgs: [cutoff]));
+      final cutoff =
+          now
+              .subtract(Duration(days: settings.speedTestRetentionDays))
+              .toIso8601String();
+      tasks.add(
+        db.delete(
+          'speed_test_results',
+          where: 'recorded_at < ?',
+          whereArgs: [cutoff],
+        ),
+      );
     }
 
     // 3. Security Event Retention
     if (settings.securityEventRetentionDays > 0) {
-      final cutoffDate = now.subtract(Duration(days: settings.securityEventRetentionDays));
+      final cutoffDate = now.subtract(
+        Duration(days: settings.securityEventRetentionDays),
+      );
       final cutoffIso = cutoffDate.toIso8601String();
       final cutoffMs = cutoffDate.millisecondsSinceEpoch;
-      
-      tasks.add(db.delete('security_events', where: 'created_at < ?', whereArgs: [cutoffIso]));
-      tasks.add(db.delete('security_score_history', where: 'recorded_at < ?', whereArgs: [cutoffMs]));
+
+      tasks.add(
+        db.delete(
+          'security_events',
+          where: 'created_at < ?',
+          whereArgs: [cutoffIso],
+        ),
+      );
+      tasks.add(
+        db.delete(
+          'security_score_history',
+          where: 'recorded_at < ?',
+          whereArgs: [cutoffMs],
+        ),
+      );
     }
 
     if (tasks.isEmpty) return 0;

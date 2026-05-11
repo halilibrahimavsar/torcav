@@ -48,37 +48,40 @@ class _ReportsViewState extends State<ReportsView> {
   /// Returns a copy of [snapshot] with the last 3 BSSID octets and SSID masked.
   ScanSnapshot _maybeAnonymize(ScanSnapshot snapshot) {
     if (!_anonymize) return snapshot;
-    final redacted = snapshot.networks.map((obs) {
-      final parts = obs.bssid.split(':');
-      final maskedBssid = parts.length == 6
-          ? '${parts[0]}:${parts[1]}:${parts[2]}:XX:XX:XX'
-          : obs.bssid;
-      final maskedSsid = obs.ssid.isEmpty
-          ? obs.ssid
-          : '${obs.ssid[0]}${'*' * (obs.ssid.length - 1).clamp(1, 12)}';
-      return WifiObservation(
-        ssid: maskedSsid,
-        bssid: maskedBssid,
-        signalDbmSamples: obs.signalDbmSamples,
-        avgSignalDbm: obs.avgSignalDbm,
-        signalStdDev: obs.signalStdDev,
-        channel: obs.channel,
-        frequency: obs.frequency,
-        security: obs.security,
-        vendor: obs.vendor,
-        isHidden: obs.isHidden,
-        seenCount: obs.seenCount,
-        channelWidthMhz: obs.channelWidthMhz,
-        wifiStandard: obs.wifiStandard,
-        hasWps: obs.hasWps,
-        hasPmf: obs.hasPmf,
-        rawCapabilities: obs.rawCapabilities,
-        apMldMac: obs.apMldMac,
-        estimatedMaxThroughputMbps: obs.estimatedMaxThroughputMbps,
-        spatialStreams: obs.spatialStreams,
-        isRandomizedBssid: obs.isRandomizedBssid,
-      );
-    }).toList();
+    final redacted =
+        snapshot.networks.map((obs) {
+          final parts = obs.bssid.split(':');
+          final maskedBssid =
+              parts.length == 6
+                  ? '${parts[0]}:${parts[1]}:${parts[2]}:XX:XX:XX'
+                  : obs.bssid;
+          final maskedSsid =
+              obs.ssid.isEmpty
+                  ? obs.ssid
+                  : '${obs.ssid[0]}${'*' * (obs.ssid.length - 1).clamp(1, 12)}';
+          return WifiObservation(
+            ssid: maskedSsid,
+            bssid: maskedBssid,
+            signalDbmSamples: obs.signalDbmSamples,
+            avgSignalDbm: obs.avgSignalDbm,
+            signalStdDev: obs.signalStdDev,
+            channel: obs.channel,
+            frequency: obs.frequency,
+            security: obs.security,
+            vendor: obs.vendor,
+            isHidden: obs.isHidden,
+            seenCount: obs.seenCount,
+            channelWidthMhz: obs.channelWidthMhz,
+            wifiStandard: obs.wifiStandard,
+            hasWps: obs.hasWps,
+            hasPmf: obs.hasPmf,
+            rawCapabilities: obs.rawCapabilities,
+            apMldMac: obs.apMldMac,
+            estimatedMaxThroughputMbps: obs.estimatedMaxThroughputMbps,
+            spatialStreams: obs.spatialStreams,
+            isRandomizedBssid: obs.isRandomizedBssid,
+          );
+        }).toList();
     return ScanSnapshot(
       timestamp: snapshot.timestamp,
       backendUsed: snapshot.backendUsed,
@@ -229,9 +232,10 @@ class _ReportsViewState extends State<ReportsView> {
                             Text(
                               context.l10n.reportsMacMaskDesc,
                               style: GoogleFonts.rajdhani(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -392,11 +396,7 @@ class _ReportsViewState extends State<ReportsView> {
         );
         name = 'torcav_scan_$timestamp.torcav-pdf';
       }
-      await _savePdfFile(
-        context: context,
-        suggestedName: name,
-        bytes: bytes,
-      );
+      await _savePdfFile(context: context, suggestedName: name, bytes: bytes);
     } else if (state.format == ReportFormat.csv) {
       await _saveTextFile(
         context: context,
@@ -784,8 +784,10 @@ class _PdfPasswordFieldState extends State<_PdfPasswordField> {
             onTap: () => setState(() => _expanded = !_expanded),
             child: Row(
               children: [
-                Icon(Icons.lock_outline_rounded,
-                    color: theme.colorScheme.primary),
+                Icon(
+                  Icons.lock_outline_rounded,
+                  color: theme.colorScheme.primary,
+                ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(

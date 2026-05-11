@@ -38,14 +38,14 @@ class DiagnosisEvidence extends Equatable {
 
   @override
   List<Object?> get props => [
-        category,
-        severity,
-        metricLabel,
-        thresholdLabel,
-        metricKey,
-        metricParams,
-        thresholdKey,
-        thresholdParams,
-        actions,
-      ];
+    category,
+    severity,
+    metricLabel,
+    thresholdLabel,
+    metricKey,
+    metricParams,
+    thresholdKey,
+    thresholdParams,
+    actions,
+  ];
 }

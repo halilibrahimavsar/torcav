@@ -13,7 +13,6 @@ import '../datasources/netbios_data_source.dart';
 import '../datasources/upnp_data_source.dart';
 import '../../../settings/domain/services/app_settings_store.dart';
 
-
 @LazySingleton(as: NetworkScanRepository)
 class NetworkScanRepositoryImpl implements NetworkScanRepository {
   final ArpDataSource _arpDataSource;
@@ -23,7 +22,6 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
   final OnnxDeviceClassifierService _deviceClassifier;
   final AppSettingsStore _appSettingsStore;
 
-
   NetworkScanRepositoryImpl(
     this._arpDataSource,
     this._mdnsDataSource,
@@ -32,7 +30,6 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
     this._deviceClassifier,
     this._appSettingsStore,
   );
-
 
   @override
   Stream<Either<Failure, List<NetworkDevice>>> scanNetwork(
@@ -122,7 +119,6 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
         }
 
         if (!isAiClassified && upnpMap.containsKey(host.ip)) {
-
           final upnpInfo = upnpMap[host.ip]!.toLowerCase();
           if (upnpInfo.contains('smart tv') ||
               upnpInfo.contains('tizen') ||
@@ -147,7 +143,6 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
             isAiClassified: isAiClassified,
           ),
         );
-
       }
     } catch (e) {
       yield Left(ScanFailure(e.toString()));

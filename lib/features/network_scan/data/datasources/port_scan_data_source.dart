@@ -53,17 +53,19 @@ class PortScanDataSource {
     List<int>? ports,
     Duration? timeout,
   }) async* {
-    final effectiveTimeout = timeout ??
+    final effectiveTimeout =
+        timeout ??
         Duration(milliseconds: _settingsStore.value.portScanTimeoutMs);
     final controller = StreamController<PortScanEvent>();
 
     // Prepare the list of (port, serviceName) pairs to scan
     final List<MapEntry<int, String>> targetEntries;
     if (ports != null) {
-      targetEntries = ports.map((p) {
-        final knownName = _targetPorts[p];
-        return MapEntry(p, knownName ?? 'unknown');
-      }).toList();
+      targetEntries =
+          ports.map((p) {
+            final knownName = _targetPorts[p];
+            return MapEntry(p, knownName ?? 'unknown');
+          }).toList();
     } else {
       targetEntries = _targetPorts.entries.toList();
     }
@@ -75,18 +77,15 @@ class PortScanDataSource {
 
     Future<void> runBatch() async {
       for (var i = 0; i < targetEntries.length; i += batchSize) {
-        final end = (i + batchSize < targetEntries.length)
-            ? i + batchSize
-            : targetEntries.length;
+        final end =
+            (i + batchSize < targetEntries.length)
+                ? i + batchSize
+                : targetEntries.length;
         final batch = targetEntries.sublist(i, end);
 
         final futures = batch.map(
-          (entry) => _probeAndGrabBanner(
-            ip,
-            entry.key,
-            entry.value,
-            effectiveTimeout,
-          ),
+          (entry) =>
+              _probeAndGrabBanner(ip, entry.key, entry.value, effectiveTimeout),
         );
 
         final results = await Future.wait(futures);
@@ -94,13 +93,15 @@ class PortScanDataSource {
           scannedCount++;
           final res = results[j];
           final entry = batch[j];
-          
-          controller.add(PortScanEvent(
-            totalCount: totalCount,
-            scannedCount: scannedCount,
-            currentPort: entry.key,
-            discovery: res,
-          ));
+
+          controller.add(
+            PortScanEvent(
+              totalCount: totalCount,
+              scannedCount: scannedCount,
+              currentPort: entry.key,
+              discovery: res,
+            ),
+          );
         }
 
         // If strict safety mode is on, add a delay between batches to be less aggressive.

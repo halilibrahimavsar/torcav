@@ -18,9 +18,7 @@ class DiagnosticsBloc extends Bloc<DiagnosticsEvent, DiagnosticsState> {
   DiagnosticsBloc(this._repository, this._diagnose, this._explainer)
     : super(const DiagnosticsState()) {
     on<DiagnosticsStarted>(_onStarted);
-    on<DiagnosticsReset>(
-      (event, emit) => emit(const DiagnosticsState()),
-    );
+    on<DiagnosticsReset>((event, emit) => emit(const DiagnosticsState()));
   }
 
   Future<void> _onStarted(

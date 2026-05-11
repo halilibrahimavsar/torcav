@@ -46,7 +46,8 @@ class NotificationService {
     debugPrint('Notification tapped: ${response.payload}');
   }
 
-  AppLocalizations get _l10n => lookupAppLocalizations(getIt<LocaleCubit>().state);
+  AppLocalizations get _l10n =>
+      lookupAppLocalizations(getIt<LocaleCubit>().state);
 
   Future<void> showSecurityAlert(SecurityEvent event) async {
     if (!_initialized) await initialize();
@@ -144,7 +145,8 @@ class NotificationService {
     };
 
     final channelName = switch (severity) {
-      SecurityEventSeverity.critical => _l10n.notificationChannelSecurityCritical,
+      SecurityEventSeverity.critical =>
+        _l10n.notificationChannelSecurityCritical,
       SecurityEventSeverity.high => _l10n.notificationChannelSecurityHigh,
       SecurityEventSeverity.medium => _l10n.notificationChannelSecurityMedium,
       SecurityEventSeverity.warning => _l10n.notificationChannelSecurityWarning,

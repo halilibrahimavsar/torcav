@@ -11,16 +11,15 @@ void main() {
   WifiNetwork wifi({
     String ssid = 'Home',
     SecurityType security = SecurityType.wpa2,
-  }) =>
-      WifiNetwork(
-        ssid: ssid,
-        bssid: '00:11:22:33:44:55',
-        signalStrength: -50,
-        channel: 1,
-        frequency: 2412,
-        security: security,
-        vendor: '',
-      );
+  }) => WifiNetwork(
+    ssid: ssid,
+    bssid: '00:11:22:33:44:55',
+    signalStrength: -50,
+    channel: 1,
+    frequency: 2412,
+    security: security,
+    vendor: '',
+  );
 
   test('trusted profile takes precedence — context is home', () {
     final trusted = TrustedNetworkProfile(

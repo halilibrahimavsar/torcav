@@ -81,21 +81,23 @@ class _NewSessionDialogState extends State<NewSessionDialog> {
           onPressed: () async {
             final name = _controller.text.trim();
             if (name.isNotEmpty) {
-              final shouldProceed = await showDialog<bool>(
+              final shouldProceed =
+                  await showDialog<bool>(
                     context: context,
-                    builder: (ctx) => ProminentDisclosureDialog(
-                      title: context.l10n.heatmapPermissionsTitle,
-                      description: context.l10n.newSessionPermissionsBody,
-                      icon: Icons.map_rounded,
-                      privacyPoints: [
-                        context.l10n.newSessionPermLocation,
-                        context.l10n.newSessionPermActivity,
-                        context.l10n.newSessionPermCamera,
-                      ],
-                      actionLabel: context.l10n.continueLabel,
-                      onAccept: () => Navigator.of(ctx).pop(true),
-                      onCancel: () => Navigator.of(ctx).pop(false),
-                    ),
+                    builder:
+                        (ctx) => ProminentDisclosureDialog(
+                          title: context.l10n.heatmapPermissionsTitle,
+                          description: context.l10n.newSessionPermissionsBody,
+                          icon: Icons.map_rounded,
+                          privacyPoints: [
+                            context.l10n.newSessionPermLocation,
+                            context.l10n.newSessionPermActivity,
+                            context.l10n.newSessionPermCamera,
+                          ],
+                          actionLabel: context.l10n.continueLabel,
+                          onAccept: () => Navigator.of(ctx).pop(true),
+                          onCancel: () => Navigator.of(ctx).pop(false),
+                        ),
                   ) ??
                   false;
 

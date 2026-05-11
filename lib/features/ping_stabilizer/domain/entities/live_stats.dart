@@ -34,14 +34,14 @@ class LiveStats extends Equatable {
   }) : samples = UnmodifiableListView(samples);
 
   factory LiveStats.empty() => LiveStats._(
-        samples: const [],
-        ewmaLatencyMs: 0,
-        ewmaJitterMs: 0,
-        lossPct: 0,
-        activeDns: null,
-        packetsAccepted: 0,
-        packetsDeprioritized: 0,
-      );
+    samples: const [],
+    ewmaLatencyMs: 0,
+    ewmaJitterMs: 0,
+    lossPct: 0,
+    activeDns: null,
+    packetsAccepted: 0,
+    packetsDeprioritized: 0,
+  );
 
   LiveStats add(
     JitterSample s, {
@@ -53,12 +53,14 @@ class LiveStats extends Equatable {
     if (next.length > windowSize) {
       next.removeRange(0, next.length - windowSize);
     }
-    final newEwmaLatency = samples.isEmpty
-        ? s.latencyMs
-        : alpha * s.latencyMs + (1 - alpha) * ewmaLatencyMs;
-    final newEwmaJitter = samples.isEmpty
-        ? s.jitterMs
-        : alpha * s.jitterMs + (1 - alpha) * ewmaJitterMs;
+    final newEwmaLatency =
+        samples.isEmpty
+            ? s.latencyMs
+            : alpha * s.latencyMs + (1 - alpha) * ewmaLatencyMs;
+    final newEwmaJitter =
+        samples.isEmpty
+            ? s.jitterMs
+            : alpha * s.jitterMs + (1 - alpha) * ewmaJitterMs;
     return LiveStats._(
       samples: next,
       ewmaLatencyMs: newEwmaLatency,
@@ -82,23 +84,23 @@ class LiveStats extends Equatable {
   /// Convenience adapter so existing perf-history widgets that consume
   /// [SpeedTestResult] can render a live snapshot without a new mapper.
   SpeedTestResult toSpeedTestSnapshot() => SpeedTestResult(
-        recordedAt: DateTime.now(),
-        latencyMs: ewmaLatencyMs,
-        jitterMs: ewmaJitterMs,
-        downloadMbps: 0,
-        uploadMbps: 0,
-        packetLoss: lossPct,
-        loadedLatencyMs: ewmaLatencyMs,
-      );
+    recordedAt: DateTime.now(),
+    latencyMs: ewmaLatencyMs,
+    jitterMs: ewmaJitterMs,
+    downloadMbps: 0,
+    uploadMbps: 0,
+    packetLoss: lossPct,
+    loadedLatencyMs: ewmaLatencyMs,
+  );
 
   @override
   List<Object?> get props => [
-        samples,
-        ewmaLatencyMs,
-        ewmaJitterMs,
-        lossPct,
-        activeDns,
-        packetsAccepted,
-        packetsDeprioritized,
-      ];
+    samples,
+    ewmaLatencyMs,
+    ewmaJitterMs,
+    lossPct,
+    activeDns,
+    packetsAccepted,
+    packetsDeprioritized,
+  ];
 }

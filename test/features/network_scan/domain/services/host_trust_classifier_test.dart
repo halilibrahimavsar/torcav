@@ -31,15 +31,15 @@ void main() {
   }
 
   LanExposureFinding finding(VulnerabilityRisk risk) => LanExposureFinding(
-        ruleId: 'lan.test',
-        hostIp: '192.168.1.10',
-        hostMac: 'AA:BB:CC:DD:EE:01',
-        hostVendor: 'Acme',
-        summary: 'Test ${risk.name}',
-        risk: risk,
-        evidence: '',
-        remediation: 'do something',
-      );
+    ruleId: 'lan.test',
+    hostIp: '192.168.1.10',
+    hostMac: 'AA:BB:CC:DD:EE:01',
+    hostVendor: 'Acme',
+    summary: 'Test ${risk.name}',
+    risk: risk,
+    evidence: '',
+    remediation: 'do something',
+  );
 
   test('clean host with no findings is safe', () {
     final result = classifier.classify(host());

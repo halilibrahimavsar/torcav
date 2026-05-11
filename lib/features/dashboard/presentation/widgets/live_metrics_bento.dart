@@ -215,23 +215,25 @@ class _SignalWaveform extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final pct = qualityPct;
 
-    final spots = rssiHistory.isEmpty
-        ? <FlSpot>[
-            const FlSpot(0, 50),
-            const FlSpot(1, 55),
-            const FlSpot(2, 52),
-            const FlSpot(3, 58),
-          ]
-        : rssiHistory.asMap().entries.map((e) {
-            // Map RSSI dBm (-100..-30) to 0..100 percentage
-            final rssi = e.value.toDouble();
-            final mapped = ((rssi + 100) / 70 * 100).clamp(0.0, 100.0);
-            return FlSpot(e.key.toDouble(), mapped);
-          }).toList();
+    final spots =
+        rssiHistory.isEmpty
+            ? <FlSpot>[
+              const FlSpot(0, 50),
+              const FlSpot(1, 55),
+              const FlSpot(2, 52),
+              const FlSpot(3, 58),
+            ]
+            : rssiHistory.asMap().entries.map((e) {
+              // Map RSSI dBm (-100..-30) to 0..100 percentage
+              final rssi = e.value.toDouble();
+              final mapped = ((rssi + 100) / 70 * 100).clamp(0.0, 100.0);
+              return FlSpot(e.key.toDouble(), mapped);
+            }).toList();
 
-    final color = (pct ?? 60) >= 60
-        ? AppColors.neonCyan
-        : (pct ?? 0) >= 40
+    final color =
+        (pct ?? 60) >= 60
+            ? AppColors.neonCyan
+            : (pct ?? 0) >= 40
             ? const Color(0xFFFFB300)
             : AppColors.neonRed;
 
@@ -314,7 +316,7 @@ class _ScoreSparkline extends StatelessWidget {
               ),
             ),
             Text(
-            context.l10n.waitingForHistory,
+              context.l10n.waitingForHistory,
               style: GoogleFonts.rajdhani(
                 color: scheme.onSurfaceVariant,
                 fontSize: 10,
@@ -325,11 +327,12 @@ class _ScoreSparkline extends StatelessWidget {
       );
     }
     final color = _colorFor(scores.last);
-    final spots = scores
-        .asMap()
-        .entries
-        .map((e) => FlSpot(e.key.toDouble(), e.value.toDouble()))
-        .toList();
+    final spots =
+        scores
+            .asMap()
+            .entries
+            .map((e) => FlSpot(e.key.toDouble(), e.value.toDouble()))
+            .toList();
     final delta = scores.last - scores.first;
     return Stack(
       children: [
@@ -350,11 +353,12 @@ class _ScoreSparkline extends StatelessWidget {
                   barWidth: 2,
                   dotData: FlDotData(
                     show: true,
-                    getDotPainter: (s, _, __, i) => FlDotCirclePainter(
-                      radius: i == spots.length - 1 ? 3 : 0,
-                      color: color,
-                      strokeWidth: 0,
-                    ),
+                    getDotPainter:
+                        (s, _, __, i) => FlDotCirclePainter(
+                          radius: i == spots.length - 1 ? 3 : 0,
+                          color: color,
+                          strokeWidth: 0,
+                        ),
                   ),
                 ),
               ],
@@ -414,12 +418,13 @@ class _ChannelBars extends StatelessWidget {
       );
     }
     // Pick top 6 channels by network count to show congestion.
-    final sorted = [...ratings]..sort(
-        (a, b) => b.networkCount.compareTo(a.networkCount),
-      );
+    final sorted = [...ratings]
+      ..sort((a, b) => b.networkCount.compareTo(a.networkCount));
     final top = sorted.take(6).toList();
-    final maxCount =
-        top.map((r) => r.networkCount).fold<int>(0, math.max).clamp(1, 999);
+    final maxCount = top
+        .map((r) => r.networkCount)
+        .fold<int>(0, math.max)
+        .clamp(1, 999);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -433,9 +438,10 @@ class _ChannelBars extends StatelessWidget {
                   duration: const Duration(milliseconds: 800),
                   curve: Curves.easeOutCubic,
                   builder: (context, v, _) {
-                    final color = r.rating >= 7
-                        ? AppColors.neonGreen
-                        : r.rating >= 4
+                    final color =
+                        r.rating >= 7
+                            ? AppColors.neonGreen
+                            : r.rating >= 4
                             ? AppColors.neonPurple
                             : AppColors.neonRed;
                     final h = constraints.maxHeight * 0.7 * v;
@@ -446,10 +452,7 @@ class _ChannelBars extends StatelessWidget {
                           height: h,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [
-                                color.withValues(alpha: 0.3),
-                                color,
-                              ],
+                              colors: [color.withValues(alpha: 0.3), color],
                               begin: Alignment.bottomCenter,
                               end: Alignment.topCenter,
                             ),
@@ -509,7 +512,9 @@ class _NewDeviceCounter extends StatelessWidget {
           ),
           const SizedBox(height: 2),
           Text(
-            count == 0 ? context.l10n.noChangeLabel : context.l10n.sinceLastScanLabel,
+            count == 0
+                ? context.l10n.noChangeLabel
+                : context.l10n.sinceLastScanLabel,
             style: GoogleFonts.rajdhani(
               color: scheme.onSurfaceVariant,
               fontSize: 10,
@@ -528,9 +533,10 @@ class _ThreatSeverity extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final critical = events
-        .where((e) => e.severity == SecurityEventSeverity.critical)
-        .length;
+    final critical =
+        events
+            .where((e) => e.severity == SecurityEventSeverity.critical)
+            .length;
     final high =
         events.where((e) => e.severity == SecurityEventSeverity.high).length;
     final medium =
@@ -538,10 +544,26 @@ class _ThreatSeverity extends StatelessWidget {
     final other = events.length - critical - high - medium;
 
     final entries = [
-      (label: context.l10n.severityCrit, count: critical, color: AppColors.neonRed),
-      (label: context.l10n.severityHighShort, count: high, color: AppColors.neonOrange),
-      (label: context.l10n.severityMedShort, count: medium, color: const Color(0xFFFFB300)),
-      (label: context.l10n.severityInfoShort, count: other, color: AppColors.neonCyan),
+      (
+        label: context.l10n.severityCrit,
+        count: critical,
+        color: AppColors.neonRed,
+      ),
+      (
+        label: context.l10n.severityHighShort,
+        count: high,
+        color: AppColors.neonOrange,
+      ),
+      (
+        label: context.l10n.severityMedShort,
+        count: medium,
+        color: const Color(0xFFFFB300),
+      ),
+      (
+        label: context.l10n.severityInfoShort,
+        count: other,
+        color: AppColors.neonCyan,
+      ),
     ];
 
     if (events.isEmpty) {
@@ -549,8 +571,11 @@ class _ThreatSeverity extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.verified_rounded,
-                color: AppColors.neonGreen.withValues(alpha: 0.8), size: 24),
+            Icon(
+              Icons.verified_rounded,
+              color: AppColors.neonGreen.withValues(alpha: 0.8),
+              size: 24,
+            ),
             const SizedBox(height: 4),
             Text(
               context.l10n.allClearLabel,
@@ -633,8 +658,11 @@ class _SpeedSnapshot extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.speed_rounded,
-                color: AppColors.neonBlue.withValues(alpha: 0.5), size: 22),
+            Icon(
+              Icons.speed_rounded,
+              color: AppColors.neonBlue.withValues(alpha: 0.5),
+              size: 22,
+            ),
             const SizedBox(height: 4),
             Text(
               context.l10n.tapToTestLabel,
@@ -655,8 +683,11 @@ class _SpeedSnapshot extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Icon(Icons.arrow_downward_rounded,
-                size: 12, color: AppColors.neonCyan),
+            Icon(
+              Icons.arrow_downward_rounded,
+              size: 12,
+              color: AppColors.neonCyan,
+            ),
             const SizedBox(width: 2),
             Text(
               downloadMbps!.toStringAsFixed(1),
@@ -683,8 +714,11 @@ class _SpeedSnapshot extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Icon(Icons.arrow_upward_rounded,
-                size: 12, color: AppColors.neonPurple),
+            Icon(
+              Icons.arrow_upward_rounded,
+              size: 12,
+              color: AppColors.neonPurple,
+            ),
             const SizedBox(width: 2),
             Text(
               (uploadMbps ?? 0).toStringAsFixed(1),

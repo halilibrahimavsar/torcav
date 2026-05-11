@@ -43,7 +43,8 @@ class DiagnosticsRepositoryImpl implements DiagnosticsRepository {
       progress: 0.05,
     );
 
-    final visible = _scanStore.latest?.toLegacyNetworks() ?? const <WifiNetwork>[];
+    final visible =
+        _scanStore.latest?.toLegacyNetworks() ?? const <WifiNetwork>[];
     final connectedSignal = await _connectedSignal.getConnectedSignal();
     final connected = _resolveConnectedNetwork(visible, connectedSignal);
 
@@ -92,10 +93,7 @@ class DiagnosticsRepositoryImpl implements DiagnosticsRepository {
       }
     }
 
-    yield const DiagnosticsProgress(
-      step: DiagnosticsStep.dns,
-      progress: 0.9,
-    );
+    yield const DiagnosticsProgress(step: DiagnosticsStep.dns, progress: 0.9);
 
     final dns = await dnsFuture;
     final context = await contextFuture;

@@ -24,9 +24,10 @@ class AboutSpectrumPanel extends StatelessWidget {
         border: Border.all(color: color.withValues(alpha: 0.28)),
       ),
       child: Theme(
-        data: Theme.of(
-          context,
-        ).copyWith(dividerColor: Colors.transparent, splashColor: Colors.transparent),
+        data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
+          splashColor: Colors.transparent,
+        ),
         child: ExpansionTile(
           tilePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
           childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),

@@ -222,9 +222,10 @@ class SecurityAnalyzer {
       trustedBssids: trustedBssids,
     );
     if (evilTwin.isCandidate) {
-      final severity = evilTwin.confidence >= 0.75
-          ? VulnerabilitySeverity.critical
-          : VulnerabilitySeverity.high;
+      final severity =
+          evilTwin.confidence >= 0.75
+              ? VulnerabilitySeverity.critical
+              : VulnerabilitySeverity.high;
       findings.add(
         SecurityFinding(
           ruleId: 'wifi.suspicious_sibling_ap',
@@ -250,9 +251,10 @@ class SecurityAnalyzer {
       );
       // Scale the score deduction with confidence: a low-confidence finding
       // costs ~15 points, a high-confidence one ~50.
-      final deduction = (15 + (evilTwin.confidence - 0.5) * 70)
-          .round()
-          .clamp(15, 50);
+      final deduction = (15 + (evilTwin.confidence - 0.5) * 70).round().clamp(
+        15,
+        50,
+      );
       score -= adjust(deduction, 'wifi.suspicious_sibling_ap');
     }
 
@@ -536,7 +538,9 @@ class SecurityAnalyzer {
       'Peer BSSID: ${a.peerBssid}',
     ];
     if (a.suspicions.isNotEmpty) {
-      parts.add('Suspicion signals: ${a.suspicions.map((s) => s.name).join(', ')}');
+      parts.add(
+        'Suspicion signals: ${a.suspicions.map((s) => s.name).join(', ')}',
+      );
     }
     if (a.mitigations.isNotEmpty) {
       parts.add(
@@ -545,5 +549,4 @@ class SecurityAnalyzer {
     }
     return parts.join(' · ');
   }
-
 }

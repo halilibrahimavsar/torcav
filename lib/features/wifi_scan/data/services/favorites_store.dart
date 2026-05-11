@@ -42,4 +42,3 @@ class FavoritesStore {
     return (storage.get<List<dynamic>>(_key) ?? []).cast<String>().toSet();
   }
 }
-

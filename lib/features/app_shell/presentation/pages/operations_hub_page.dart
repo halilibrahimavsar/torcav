@@ -144,11 +144,12 @@ class OperationsHubPage extends StatelessWidget {
                 subtitle: l10n.hardenRouterSubtitle,
                 icon: Icons.shield_moon_rounded,
                 color: Colors.greenAccent,
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const RouterHardeningWizardPage(),
-                  ),
-                ),
+                onTap:
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const RouterHardeningWizardPage(),
+                      ),
+                    ),
                 delay: 600,
               ),
               _OperationCard(
@@ -156,11 +157,12 @@ class OperationsHubPage extends StatelessWidget {
                 subtitle: l10n.speedDoctorOpsSubtitle,
                 icon: Icons.medical_services_rounded,
                 color: AppColors.neonPurple,
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const SpeedDoctorPage(),
-                  ),
-                ),
+                onTap:
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const SpeedDoctorPage(),
+                      ),
+                    ),
                 delay: 650,
               ),
               _OperationCard(
@@ -168,11 +170,12 @@ class OperationsHubPage extends StatelessWidget {
                 subtitle: l10n.pingStabilizerSubtitle,
                 icon: Icons.shield_rounded,
                 color: AppColors.neonPurple,
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const PingStabilizerPage(),
-                  ),
-                ),
+                onTap:
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const PingStabilizerPage(),
+                      ),
+                    ),
                 delay: 700,
               ),
             ],

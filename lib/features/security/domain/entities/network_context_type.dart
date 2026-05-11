@@ -20,9 +20,9 @@ enum NetworkContextType {
 
 extension NetworkContextTypeX on NetworkContextType {
   String get labelKey => switch (this) {
-        NetworkContextType.home => 'networkContextHomeLabel',
-        NetworkContextType.public => 'networkContextPublicLabel',
-        NetworkContextType.guest => 'networkContextGuestLabel',
-        NetworkContextType.unknown => 'networkContextUnknownLabel',
-      };
+    NetworkContextType.home => 'networkContextHomeLabel',
+    NetworkContextType.public => 'networkContextPublicLabel',
+    NetworkContextType.guest => 'networkContextGuestLabel',
+    NetworkContextType.unknown => 'networkContextUnknownLabel',
+  };
 }

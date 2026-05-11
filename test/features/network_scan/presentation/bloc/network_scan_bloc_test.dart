@@ -9,7 +9,9 @@ import 'package:torcav/features/settings/domain/entities/app_settings.dart';
 import 'package:torcav/features/network_scan/domain/entities/network_scan_profile.dart';
 
 class MockNetworkScanRepository extends Mock implements NetworkScanRepository {}
+
 class MockNewDeviceDetector extends Mock implements NewDeviceDetector {}
+
 class MockAppSettingsStore extends Mock implements AppSettingsStore {}
 
 void main() {
@@ -27,10 +29,12 @@ void main() {
     mockRepository = MockNetworkScanRepository();
     mockDetector = MockNewDeviceDetector();
     mockSettingsStore = MockAppSettingsStore();
-    
+
     // Default mock setup
-    when(() => mockSettingsStore.value).thenReturn(const AppSettings(strictSafetyMode: true));
-    
+    when(
+      () => mockSettingsStore.value,
+    ).thenReturn(const AppSettings(strictSafetyMode: true));
+
     bloc = NetworkScanBloc(mockRepository, mockDetector, mockSettingsStore);
   });
 
@@ -46,35 +50,46 @@ void main() {
         bloc.add(const AcknowledgeLegalRisk(true));
         return bloc;
       },
-      act: (bloc) => bloc.add(const StartNetworkScan(
-        target: '192.168.1.0/24',
-        deepScan: true,
-      )),
-      expect: () => [
-        NetworkScanInitial(),
-        const NetworkScanError('Deep scanning is disabled when Strict Safety Mode is active.'),
-      ],
+      act:
+          (bloc) => bloc.add(
+            const StartNetworkScan(target: '192.168.1.0/24', deepScan: true),
+          ),
+      expect:
+          () => [
+            NetworkScanInitial(),
+            const NetworkScanError(
+              'Deep scanning is disabled when Strict Safety Mode is active.',
+            ),
+          ],
     );
 
     blocTest<NetworkScanBloc, NetworkScanState>(
       'allows deepScan when strictSafetyMode is OFF',
       build: () {
-        when(() => mockSettingsStore.value).thenReturn(const AppSettings(strictSafetyMode: false));
-        when(() => mockRepository.scanWithProfile(any(), profile: any(named: 'profile'), method: any(named: 'method')))
-            .thenAnswer((_) => const Stream.empty());
-        
+        when(
+          () => mockSettingsStore.value,
+        ).thenReturn(const AppSettings(strictSafetyMode: false));
+        when(
+          () => mockRepository.scanWithProfile(
+            any(),
+            profile: any(named: 'profile'),
+            method: any(named: 'method'),
+          ),
+        ).thenAnswer((_) => const Stream.empty());
+
         bloc.add(const AcknowledgeLegalRisk(true));
         return bloc;
       },
-      act: (bloc) => bloc.add(const StartNetworkScan(
-        target: '192.168.1.0/24',
-        deepScan: true,
-      )),
-      expect: () => [
-        NetworkScanInitial(),
-        NetworkScanLoading(),
-        const NetworkScanLoaded(devices: [], hosts: [], isScanning: false),
-      ],
+      act:
+          (bloc) => bloc.add(
+            const StartNetworkScan(target: '192.168.1.0/24', deepScan: true),
+          ),
+      expect:
+          () => [
+            NetworkScanInitial(),
+            NetworkScanLoading(),
+            const NetworkScanLoaded(devices: [], hosts: [], isScanning: false),
+          ],
     );
   });
 }

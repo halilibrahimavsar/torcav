@@ -15,48 +15,51 @@ class RecommendationBanner extends StatelessWidget {
       builder: (context, state) {
         if (state.recommendations.isEmpty) return const SizedBox.shrink();
         return Column(
-          children: state.recommendations.map((r) {
-            final color = switch (r.severity) {
-              RecommendationSeverity.info => Colors.blueAccent,
-              RecommendationSeverity.warning => Colors.orangeAccent,
-              RecommendationSeverity.critical => Colors.redAccent,
-            };
-            return Card(
-              color: color.withValues(alpha: 0.1),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(color: color.withValues(alpha: 0.4)),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(r.message),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+          children:
+              state.recommendations.map((r) {
+                final color = switch (r.severity) {
+                  RecommendationSeverity.info => Colors.blueAccent,
+                  RecommendationSeverity.warning => Colors.orangeAccent,
+                  RecommendationSeverity.critical => Colors.redAccent,
+                };
+                return Card(
+                  color: color.withValues(alpha: 0.1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(color: color.withValues(alpha: 0.4)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        TextButton(
-                          onPressed: () => context
-                              .read<PingStabilizerCubit>()
-                              .dismissRecommendation(r),
-                          child: Text(context.l10n.dismissLabel),
-                        ),
-                        const SizedBox(width: 8),
-                        FilledButton(
-                          onPressed: () => context
-                              .read<PingStabilizerCubit>()
-                              .acceptRecommendation(r),
-                          child: Text(context.l10n.applyLabel),
+                        Text(r.message),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              onPressed:
+                                  () => context
+                                      .read<PingStabilizerCubit>()
+                                      .dismissRecommendation(r),
+                              child: Text(context.l10n.dismissLabel),
+                            ),
+                            const SizedBox(width: 8),
+                            FilledButton(
+                              onPressed:
+                                  () => context
+                                      .read<PingStabilizerCubit>()
+                                      .acceptRecommendation(r),
+                              child: Text(context.l10n.applyLabel),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-            );
-          }).toList(),
+                  ),
+                );
+              }).toList(),
         );
       },
     );

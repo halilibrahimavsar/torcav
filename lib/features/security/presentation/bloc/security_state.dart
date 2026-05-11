@@ -92,9 +92,10 @@ class SecurityLoaded extends SecurityState {
       isDeepScanEnabled: isDeepScanEnabled ?? this.isDeepScanEnabled,
       isDeepScanning: isDeepScanning ?? this.isDeepScanning,
       latestSession: latestSession ?? this.latestSession,
-      suppressedDeepScanContext: clearSuppressedDeepScan
-          ? null
-          : (suppressedDeepScanContext ?? this.suppressedDeepScanContext),
+      suppressedDeepScanContext:
+          clearSuppressedDeepScan
+              ? null
+              : (suppressedDeepScanContext ?? this.suppressedDeepScanContext),
       connectedContext: connectedContext ?? this.connectedContext,
     );
   }

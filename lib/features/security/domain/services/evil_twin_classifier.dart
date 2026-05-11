@@ -27,8 +27,9 @@ class EvilTwinClassifier {
 
   final MeshVendorDatabase _meshDb;
 
-  const EvilTwinClassifier({MeshVendorDatabase meshDb = const MeshVendorDatabase()})
-    : _meshDb = meshDb;
+  const EvilTwinClassifier({
+    MeshVendorDatabase meshDb = const MeshVendorDatabase(),
+  }) : _meshDb = meshDb;
 
   /// Walk every peer with the same SSID and return the highest-confidence
   /// assessment. If every same-SSID peer is dismissed as legitimate, the

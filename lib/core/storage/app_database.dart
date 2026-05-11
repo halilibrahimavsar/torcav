@@ -4,7 +4,8 @@ import 'dart:convert';
 import 'package:injectable/injectable.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart' hide openDatabase, Database, ConflictAlgorithm;
+import 'package:sqflite_common_ffi/sqflite_ffi.dart'
+    hide openDatabase, Database, ConflictAlgorithm;
 import 'package:sqflite_sqlcipher/sqflite.dart' hide databaseFactory;
 import 'secure_storage_service.dart';
 
@@ -39,7 +40,9 @@ class AppDatabase {
             await db.execute('PRAGMA foreign_keys = ON');
             // Apply encryption key via PRAGMA for FFI platforms.
             // Note: SQLCipher support on Desktop requires a compatible sqlite3 library.
-            await db.execute("PRAGMA key = '${password.replaceAll("'", "''")}'");
+            await db.execute(
+              "PRAGMA key = '${password.replaceAll("'", "''")}'",
+            );
           },
         ),
       );

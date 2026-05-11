@@ -237,7 +237,9 @@ class SecurityEventCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    context.l10n.targetLabel(event.ssid.isEmpty ? l10n.hiddenNetwork : event.ssid),
+                    context.l10n.targetLabel(
+                      event.ssid.isEmpty ? l10n.hiddenNetwork : event.ssid,
+                    ),
                     style: GoogleFonts.orbitron(
                       color: scheme.onSurface,
                       fontSize: 11,

@@ -92,9 +92,10 @@ class _RadialDashboardCoreState extends State<RadialDashboardCore>
 
     final secColor = _scoreColor(widget.securityScore, scheme);
     final sigColor = _signalColor(widget.signalQualityPct);
-    final threatColor = widget.threatCount > 0
-        ? scheme.error
-        : scheme.primary.withValues(alpha: 0.6);
+    final threatColor =
+        widget.threatCount > 0
+            ? scheme.error
+            : scheme.primary.withValues(alpha: 0.6);
     final deviceColor = AppColors.neonPurple;
 
     final gauges = <_GaugeSpec>[
@@ -112,9 +113,10 @@ class _RadialDashboardCoreState extends State<RadialDashboardCore>
         valuePct: (widget.signalQualityPct ?? 0) / 100,
         color: sigColor,
         icon: Icons.wifi_rounded,
-        label: widget.signalQualityPct != null
-            ? '${widget.signalQualityPct}'
-            : '—',
+        label:
+            widget.signalQualityPct != null
+                ? '${widget.signalQualityPct}'
+                : '—',
         unit: '%',
         onTap: widget.onTapSignal,
       ),
@@ -216,8 +218,9 @@ class _GaugeBadge extends StatelessWidget {
           tween: Tween(begin: 0.7, end: 1.0),
           duration: const Duration(milliseconds: 700),
           curve: Curves.elasticOut,
-          builder: (context, scale, child) =>
-              Transform.scale(scale: scale, child: child),
+          builder:
+              (context, scale, child) =>
+                  Transform.scale(scale: scale, child: child),
           child: Container(
             width: 36,
             height: 36,
@@ -277,10 +280,11 @@ class _OrbitPainter extends CustomPainter {
     final rect = Rect.fromCircle(center: center, radius: radius);
 
     // Background full track
-    final track = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2
-      ..color = trackColor;
+    final track =
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..color = trackColor;
     canvas.drawCircle(center, radius, track);
 
     // Each gauge: arc that sweeps centered on its anchor angle
@@ -291,29 +295,28 @@ class _OrbitPainter extends CustomPainter {
       final filled = fullSweep * g.valuePct.clamp(0.0, 1.0);
 
       // Faint background arc segment
-      final bg = Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 4
-        ..strokeCap = StrokeCap.round
-        ..color = g.color.withValues(alpha: 0.12);
+      final bg =
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 4
+            ..strokeCap = StrokeCap.round
+            ..color = g.color.withValues(alpha: 0.12);
       canvas.drawArc(rect, start, fullSweep, false, bg);
 
       // Filled value arc (animated via TweenAnimationBuilder externally would
       // be nicer, but keeping it deterministic for paint perf)
-      final fg = Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 4
-        ..strokeCap = StrokeCap.round
-        ..shader = SweepGradient(
-          startAngle: start,
-          endAngle: start + fullSweep,
-          colors: [
-            g.color.withValues(alpha: 0.4),
-            g.color,
-          ],
-          tileMode: TileMode.clamp,
-          transform: GradientRotation(start),
-        ).createShader(rect);
+      final fg =
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 4
+            ..strokeCap = StrokeCap.round
+            ..shader = SweepGradient(
+              startAngle: start,
+              endAngle: start + fullSweep,
+              colors: [g.color.withValues(alpha: 0.4), g.color],
+              tileMode: TileMode.clamp,
+              transform: GradientRotation(start),
+            ).createShader(rect);
       canvas.drawArc(rect, start, filled, false, fg);
 
       // Tracker dot orbiting along the arc (within its sweep)

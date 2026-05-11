@@ -66,7 +66,6 @@ class AppSettings extends Equatable {
     this.backgroundMonitoringEnabled = false,
   });
 
-
   AppSettings copyWith({
     int? scanIntervalSeconds,
     int? defaultScanPasses,
@@ -112,7 +111,6 @@ class AppSettings extends Equatable {
     );
   }
 
-
   @override
   List<Object?> get props => [
     scanIntervalSeconds,
@@ -133,7 +131,6 @@ class AppSettings extends Equatable {
     backgroundMonitoringEnabled,
   ];
 
-
   Map<String, dynamic> toJson() {
     return {
       'scanIntervalSeconds': scanIntervalSeconds,
@@ -153,7 +150,6 @@ class AppSettings extends Equatable {
       'defaultNetworkContext': defaultNetworkContext.name,
       'backgroundMonitoringEnabled': backgroundMonitoringEnabled,
     };
-
   }
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
@@ -164,18 +160,32 @@ class AppSettings extends Equatable {
       scanIntervalSeconds: _readInt(json['scanIntervalSeconds'], fallback: 30),
       defaultScanPasses: _readInt(json['defaultScanPasses'], fallback: 3),
       defaultBackendPreference: _parseBackendPreference(backendName),
-      includeHiddenSsids: _readBool(json['includeHiddenSsids'], fallback: false),
+      includeHiddenSsids: _readBool(
+        json['includeHiddenSsids'],
+        fallback: false,
+      ),
       strictSafetyMode: _readBool(json['strictSafetyMode'], fallback: true),
       autoScanEnabled: _readBool(json['autoScanEnabled'], fallback: false),
       isDeepScanEnabled: _readBool(json['isDeepScanEnabled'], fallback: false),
-      restrictDeepScanOnPublic:
-          _readBool(json['restrictDeepScanOnPublic'], fallback: true),
+      restrictDeepScanOnPublic: _readBool(
+        json['restrictDeepScanOnPublic'],
+        fallback: true,
+      ),
       portScanTimeoutMs: _readInt(json['portScanTimeoutMs'], fallback: 500),
       isAiEnabled: _readBool(json['isAiEnabled'], fallback: true),
       backgroundType: _parseBackgroundType(bgTypeName),
-      scanHistoryRetentionDays: _readInt(json['scanHistoryRetentionDays'], fallback: 30),
-      speedTestRetentionDays: _readInt(json['speedTestRetentionDays'], fallback: 30),
-      securityEventRetentionDays: _readInt(json['securityEventRetentionDays'], fallback: 30),
+      scanHistoryRetentionDays: _readInt(
+        json['scanHistoryRetentionDays'],
+        fallback: 30,
+      ),
+      speedTestRetentionDays: _readInt(
+        json['speedTestRetentionDays'],
+        fallback: 30,
+      ),
+      securityEventRetentionDays: _readInt(
+        json['securityEventRetentionDays'],
+        fallback: 30,
+      ),
       defaultNetworkContext: _parseNetworkContext(
         json['defaultNetworkContext'] as String?,
       ),
@@ -184,7 +194,6 @@ class AppSettings extends Equatable {
         fallback: false,
       ),
     );
-
   }
 
   static int _readInt(Object? raw, {required int fallback}) {

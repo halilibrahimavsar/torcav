@@ -33,10 +33,7 @@ class NetworkContextResolver {
   }) async {
     final override = await _overrideStore.get(network.bssid);
     if (override != null) return override;
-    final inferred = _inferrer.infer(
-      network,
-      trustedProfile: trustedProfile,
-    );
+    final inferred = _inferrer.infer(network, trustedProfile: trustedProfile);
     if (inferred != NetworkContextType.unknown) return inferred;
     // Inferrer couldn't classify → fall back to the user's onboarding choice.
     return _settingsStore.value.defaultNetworkContext;

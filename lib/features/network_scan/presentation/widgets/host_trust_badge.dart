@@ -87,112 +87,116 @@ class _HostTrustSheet extends StatelessWidget {
       minChildSize: 0.3,
       maxChildSize: 0.85,
       expand: false,
-      builder: (_, scroll) => Container(
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: ListView(
-          controller: scroll,
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.outlineVariant,
-                  borderRadius: BorderRadius.circular(2),
-                ),
+      builder:
+          (_, scroll) => Container(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
               ),
             ),
-            const SizedBox(height: 16),
-            Text(
-              context.l10n.whyIsThisLabel(_levelText(context, assessment.level)),
-              style: GoogleFonts.orbitron(
-                color: theme.colorScheme.primary,
-                fontSize: 13,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 1.2,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              assessment.headline,
-              style: GoogleFonts.rajdhani(
-                color: theme.colorScheme.onSurface,
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                height: 1.35,
-              ),
-            ),
-            const SizedBox(height: 16),
-            if (assessment.reasons.isEmpty)
-              Text(
-                context.l10n.noSpecificConcerns,
-                style: GoogleFonts.rajdhani(
-                  color: theme.colorScheme.onSurfaceVariant,
-                  fontSize: 13,
-                  height: 1.4,
-                ),
-              ),
-            for (final reason in assessment.reasons)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 14),
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerHighest.withValues(
-                      alpha: 0.4,
+            child: ListView(
+              controller: scroll,
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.outlineVariant,
+                      borderRadius: BorderRadius.circular(2),
                     ),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: theme.colorScheme.outlineVariant.withValues(
-                        alpha: 0.4,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  context.l10n.whyIsThisLabel(
+                    _levelText(context, assessment.level),
+                  ),
+                  style: GoogleFonts.orbitron(
+                    color: theme.colorScheme.primary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  assessment.headline,
+                  style: GoogleFonts.rajdhani(
+                    color: theme.colorScheme.onSurface,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    height: 1.35,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                if (assessment.reasons.isEmpty)
+                  Text(
+                    context.l10n.noSpecificConcerns,
+                    style: GoogleFonts.rajdhani(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontSize: 13,
+                      height: 1.4,
+                    ),
+                  ),
+                for (final reason in assessment.reasons)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 14),
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surfaceContainerHighest
+                            .withValues(alpha: 0.4),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: theme.colorScheme.outlineVariant.withValues(
+                            alpha: 0.4,
+                          ),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            reason.summary,
+                            style: GoogleFonts.rajdhani(
+                              color: theme.colorScheme.onSurface,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              height: 1.35,
+                            ),
+                          ),
+                          if (reason.remediation != null &&
+                              reason.remediation!.isNotEmpty) ...[
+                            const SizedBox(height: 6),
+                            Text(
+                              context.l10n.whatToDoLabel,
+                              style: GoogleFonts.orbitron(
+                                color: theme.colorScheme.primary,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 1,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              reason.remediation!,
+                              style: GoogleFonts.rajdhani(
+                                color: theme.colorScheme.onSurface,
+                                fontSize: 13,
+                                height: 1.4,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        reason.summary,
-                        style: GoogleFonts.rajdhani(
-                          color: theme.colorScheme.onSurface,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          height: 1.35,
-                        ),
-                      ),
-                      if (reason.remediation != null &&
-                          reason.remediation!.isNotEmpty) ...[
-                        const SizedBox(height: 6),
-                        Text(
-                          context.l10n.whatToDoLabel,
-                          style: GoogleFonts.orbitron(
-                            color: theme.colorScheme.primary,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          reason.remediation!,
-                          style: GoogleFonts.rajdhani(
-                            color: theme.colorScheme.onSurface,
-                            fontSize: 13,
-                            height: 1.4,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
+              ],
+            ),
+          ),
     );
   }
 

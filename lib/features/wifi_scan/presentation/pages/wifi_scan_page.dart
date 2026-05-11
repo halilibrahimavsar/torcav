@@ -67,9 +67,11 @@ class _WifiScanViewState extends State<_WifiScanView> {
     final store = getIt<AppSettingsStore>();
     _setupAutoScan(store.value);
     _settingsSub = store.changes.listen(_onSettingsChanged);
-    
+
     // Check permission on mount
-    WidgetsBinding.instance.addPostFrameCallback((_) => _checkPermissionAndStart());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _checkPermissionAndStart(),
+    );
   }
 
   Future<void> _checkPermissionAndStart() async {
@@ -79,22 +81,24 @@ class _WifiScanViewState extends State<_WifiScanView> {
     if (status.isGranted) return;
 
     if (mounted) {
-      final shouldProceed = await showDialog<bool>(
+      final shouldProceed =
+          await showDialog<bool>(
             context: context,
             barrierDismissible: false,
-            builder: (ctx) => ProminentDisclosureDialog(
-              title: context.l10n.wifiScanPermissionTitle,
-              description: context.l10n.wifiScanPermissionDesc,
-              icon: Icons.location_on_rounded,
-              privacyPoints: [
-                context.l10n.consentScanSsids,
-                context.l10n.consentAnalyzeSignal,
-                context.l10n.consentNoTracking,
-              ],
-              actionLabel: context.l10n.continueLabel,
-              onAccept: () => Navigator.of(ctx).pop(true),
-              onCancel: () => Navigator.of(ctx).pop(false),
-            ),
+            builder:
+                (ctx) => ProminentDisclosureDialog(
+                  title: context.l10n.wifiScanPermissionTitle,
+                  description: context.l10n.wifiScanPermissionDesc,
+                  icon: Icons.location_on_rounded,
+                  privacyPoints: [
+                    context.l10n.consentScanSsids,
+                    context.l10n.consentAnalyzeSignal,
+                    context.l10n.consentNoTracking,
+                  ],
+                  actionLabel: context.l10n.continueLabel,
+                  onAccept: () => Navigator.of(ctx).pop(true),
+                  onCancel: () => Navigator.of(ctx).pop(false),
+                ),
           ) ??
           false;
 
@@ -184,9 +188,9 @@ class _WifiScanViewState extends State<_WifiScanView> {
                           StaggeredEntry(
                             child: Column(
                               children: [
-                Text(
-                  context.l10n.initiatingSpectrumScan,
-                  style: GoogleFonts.orbitron(
+                                Text(
+                                  context.l10n.initiatingSpectrumScan,
+                                  style: GoogleFonts.orbitron(
                                     color:
                                         Theme.of(context).colorScheme.primary,
                                     fontSize: 14,
@@ -280,32 +284,39 @@ class _SnapshotViewState extends State<_SnapshotView> {
   Future<void> _clearScanHistory(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(
-          context.l10n.clearScanHistoryTitle,
-          style: GoogleFonts.orbitron(fontSize: 13, fontWeight: FontWeight.bold),
-        ),
-        content: Text(
-          context.l10n.clearWifiHistoryBody,
-          style: GoogleFonts.rajdhani(fontSize: 14),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(context.l10n.cancelLabel, style: GoogleFonts.orbitron(fontSize: 10)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(
-              context.l10n.deleteAllLabel,
+      builder:
+          (ctx) => AlertDialog(
+            title: Text(
+              context.l10n.clearScanHistoryTitle,
               style: GoogleFonts.orbitron(
-                fontSize: 10,
-                color: Theme.of(ctx).colorScheme.error,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
               ),
             ),
+            content: Text(
+              context.l10n.clearWifiHistoryBody,
+              style: GoogleFonts.rajdhani(fontSize: 14),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(
+                  context.l10n.cancelLabel,
+                  style: GoogleFonts.orbitron(fontSize: 10),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(
+                  context.l10n.deleteAllLabel,
+                  style: GoogleFonts.orbitron(
+                    fontSize: 10,
+                    color: Theme.of(ctx).colorScheme.error,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
     );
     if (confirmed == true) {
       getIt<ScanSessionStore>().clear();
@@ -471,25 +482,28 @@ class _SnapshotViewState extends State<_SnapshotView> {
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
-                icon: const Icon(Icons.compare_arrows_rounded, size: 16),
-                label: Text(
-                  context.l10n.compareWithPreviousScan,
-                  style: GoogleFonts.orbitron(fontSize: 11, letterSpacing: 1),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.primary,
-                  side: BorderSide(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.primary.withValues(alpha: 0.4),
-                  ),
-                ),
-                    onPressed:
-                        () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const ScanComparisonPage(),
-                          ),
+                      icon: const Icon(Icons.compare_arrows_rounded, size: 16),
+                      label: Text(
+                        context.l10n.compareWithPreviousScan,
+                        style: GoogleFonts.orbitron(
+                          fontSize: 11,
+                          letterSpacing: 1,
                         ),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Theme.of(context).colorScheme.primary,
+                        side: BorderSide(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.4),
+                        ),
+                      ),
+                      onPressed:
+                          () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const ScanComparisonPage(),
+                            ),
+                          ),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -541,7 +555,10 @@ class _SnapshotViewState extends State<_SnapshotView> {
                         ),
                         content: Text(
                           context.l10n.enableDeepScanBodyWifi,
-                          style: GoogleFonts.rajdhani(fontSize: 14, height: 1.4),
+                          style: GoogleFonts.rajdhani(
+                            fontSize: 14,
+                            height: 1.4,
+                          ),
                         ),
                         actions: [
                           TextButton(
@@ -571,21 +588,23 @@ class _SnapshotViewState extends State<_SnapshotView> {
               if (Platform.isAndroid) {
                 final status = await Permission.location.status;
                 if (!status.isGranted && context.mounted) {
-                  final shouldProceed = await showDialog<bool>(
+                  final shouldProceed =
+                      await showDialog<bool>(
                         context: context,
-                        builder: (ctx) => ProminentDisclosureDialog(
-                          title: context.l10n.wifiScanPermissionTitle,
-                          description: context.l10n.wifiScanPermissionDesc,
-                          icon: Icons.location_on_rounded,
-                          privacyPoints: [
-                            context.l10n.consentScanSsids,
-                            context.l10n.consentAnalyzeSignal,
-                            context.l10n.consentNoTracking,
-                          ],
-                          actionLabel: context.l10n.continueLabel,
-                          onAccept: () => Navigator.of(ctx).pop(true),
-                          onCancel: () => Navigator.of(ctx).pop(false),
-                        ),
+                        builder:
+                            (ctx) => ProminentDisclosureDialog(
+                              title: context.l10n.wifiScanPermissionTitle,
+                              description: context.l10n.wifiScanPermissionDesc,
+                              icon: Icons.location_on_rounded,
+                              privacyPoints: [
+                                context.l10n.consentScanSsids,
+                                context.l10n.consentAnalyzeSignal,
+                                context.l10n.consentNoTracking,
+                              ],
+                              actionLabel: context.l10n.continueLabel,
+                              onAccept: () => Navigator.of(ctx).pop(true),
+                              onCancel: () => Navigator.of(ctx).pop(false),
+                            ),
                       ) ??
                       false;
 
@@ -600,9 +619,8 @@ class _SnapshotViewState extends State<_SnapshotView> {
               store.update(store.value.copyWith(isDeepScanEnabled: !isQuick));
               final settings = store.value;
               final request = ScanRequest(
-                passes: settings.isDeepScanEnabled
-                    ? settings.defaultScanPasses
-                    : 1,
+                passes:
+                    settings.isDeepScanEnabled ? settings.defaultScanPasses : 1,
                 includeHidden: settings.includeHiddenSsids,
                 backendPreference: settings.defaultBackendPreference,
               );
@@ -621,12 +639,13 @@ class _SnapshotViewState extends State<_SnapshotView> {
 
           // ── Network Count Header ──
           NeonSectionHeader(
-            label: filtered.length == widget.snapshot.networks.length
-                ? context.l10n.networksCount(filtered.length)
-                : context.l10n.filteredNetworksCount(
-                    filtered.length,
-                    widget.snapshot.networks.length,
-                  ),
+            label:
+                filtered.length == widget.snapshot.networks.length
+                    ? context.l10n.networksCount(filtered.length)
+                    : context.l10n.filteredNetworksCount(
+                      filtered.length,
+                      widget.snapshot.networks.length,
+                    ),
             icon: Icons.wifi_rounded,
             color: Theme.of(context).colorScheme.primary,
           ),
@@ -680,7 +699,11 @@ class _IosPlatformBanner extends StatelessWidget {
       color: Colors.orange.withValues(alpha: 0.15),
       child: Row(
         children: [
-          const Icon(Icons.info_outline_rounded, color: Colors.orange, size: 16),
+          const Icon(
+            Icons.info_outline_rounded,
+            color: Colors.orange,
+            size: 16,
+          ),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
