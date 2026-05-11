@@ -39,7 +39,7 @@
     <application
         android:label="torcav"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/launcher_icon"
         android:enableOnBackInvokedCallback="true">
         <!-- ARCore availability: "optional" lets devices without ARCore install
              the app; Dart falls back to the Sobel wall detector. -->
