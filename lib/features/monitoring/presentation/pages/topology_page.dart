@@ -261,6 +261,7 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
   }
 
   Widget _buildSideControls() {
+    final l10n = context.l10n;
     return Column(
       children: [
         _controlButton(
@@ -287,10 +288,10 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
           },
           label:
               _flowSpeed == 1.0
-                  ? AppLocalizations.of(context)!.normalSpeed
+                  ? l10n.normalSpeed
                   : _flowSpeed == 2.5
-                  ? AppLocalizations.of(context)!.fastSpeed
-                  : AppLocalizations.of(context)!.overdriveSpeed,
+                  ? l10n.fastSpeed
+                  : l10n.overdriveSpeed,
         ),
       ],
     );
@@ -792,7 +793,7 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    node.label.toUpperCase(),
+                    context.translateTopologyLabel(node.label).toUpperCase(),
                     style: GoogleFonts.orbitron(
                       color: Theme.of(context).colorScheme.onSurface,
                       fontSize: 16,
@@ -1158,7 +1159,7 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                osHint,
+                context.translateOsHint(osHint),
                 style: GoogleFonts.shareTechMono(
                   color: Colors.tealAccent.withValues(alpha: 0.9),
                   fontSize: 12,
@@ -1236,7 +1237,7 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                         ),
                       ),
                       child: Text(
-                        'PORT $port',
+                        l10n.portLabel(port),
                         style: GoogleFonts.shareTechMono(
                           color: Theme.of(context).colorScheme.primary,
                           fontSize: 11,

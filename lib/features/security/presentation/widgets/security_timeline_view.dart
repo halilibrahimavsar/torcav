@@ -257,7 +257,7 @@ class SecurityEventCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    _translateEvidence(context, event.evidence),
+                    context.translateSecurityEvidence(event.evidence),
                     style: GoogleFonts.rajdhani(
                       color: scheme.onSurfaceVariant,
                       fontSize: 12,
@@ -271,42 +271,6 @@ class SecurityEventCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _translateEvidence(BuildContext context, String evidence) {
-    final l10n = context.l10n;
-    if (evidence.startsWith('Discovered: ')) {
-      final devices = evidence.replaceFirst('Discovered: ', '');
-      return l10n.lanDiscoveryEvidence(devices);
-    }
-    if (evidence.startsWith('Open Ports: ')) {
-      final ports = evidence.replaceFirst('Open Ports: ', '');
-      return l10n.gatewayPortsExposedEvidence(ports);
-    }
-    if (evidence.startsWith('Target: ') && evidence.contains(', Port: ')) {
-      // Target: 192.168.1.1, Port: 80, Service: http
-      final parts = evidence.split(', ');
-      final ip = parts[0].replaceFirst('Target: ', '');
-      final port = int.tryParse(parts[1].replaceFirst('Port: ', '')) ?? 0;
-      final service = parts[2].replaceFirst('Service: ', '');
-      return l10n.openServiceDetectedEvidence(ip, port, service);
-    }
-    if (evidence.startsWith('IP: ') && evidence.contains(', MAC: ')) {
-      // IP: 192.168.1.5, MAC: 00:11:22:33:44:55, Vendor: Apple
-      final parts = evidence.split(', ');
-      final ip = parts[0].replaceFirst('IP: ', '');
-      final mac = parts[1].replaceFirst('MAC: ', '');
-      final vendor = parts[2].replaceFirst('Vendor: ', '');
-      return l10n.lanDeviceDiscoveredEvidence(ip, mac, vendor);
-    }
-    if (evidence.startsWith('The access point advertises no encryption for ')) {
-      final network = evidence.replaceFirst(
-        'The access point advertises no encryption for ',
-        '',
-      );
-      return context.l10n.evidenceNoEncryption(network);
-    }
-    return evidence;
   }
 }
 

@@ -220,7 +220,7 @@ class _ChangedRow extends StatelessWidget {
     final primary = Theme.of(context).colorScheme.primary;
     final onSurface = Theme.of(context).colorScheme.onSurface;
     final delta = after.avgSignalDbm - before.avgSignalDbm;
-    final deltaStr = delta > 0 ? '+$delta dBm' : '$delta dBm';
+    final deltaStr = delta > 0 ? '+$delta ${context.l10n.dbmLabel}' : '$delta ${context.l10n.dbmLabel}';
     final deltaColor =
         delta > 0
             ? Theme.of(context).colorScheme.tertiary
@@ -251,7 +251,7 @@ class _ChangedRow extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${before.avgSignalDbm} dBm → ${after.avgSignalDbm} dBm',
+                  context.l10n.signalTransition(before.avgSignalDbm, after.avgSignalDbm),
                   style: GoogleFonts.rajdhani(
                     fontSize: 12,
                     color: onSurface.withValues(alpha: 0.6),

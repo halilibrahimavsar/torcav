@@ -515,8 +515,9 @@ class _InterpretationSection extends StatelessWidget {
   String _packetLossTitle(BuildContext context, double percent) {
     final l10n = context.l10n;
     if (percent == 0) return l10n.packetLossPerfectTitle;
-    if (percent <= 1)
+    if (percent <= 1) {
       return l10n.packetLossMinimalTitle(percent.toStringAsFixed(1));
+    }
     return l10n.packetLossHighTitle(percent.toStringAsFixed(1));
   }
 

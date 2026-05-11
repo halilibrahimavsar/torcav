@@ -34,7 +34,7 @@ class TopologyBuilder {
     nodes.add(
       TopologyNode(
         id: 'current',
-        label: 'This Device',
+        label: '__this_device__',
         type: TopologyNodeType.mobile,
         ip: currentIp,
         isCurrentDevice: true,
@@ -53,7 +53,7 @@ class TopologyBuilder {
     nodes.add(
       TopologyNode(
         id: gatewayIp,
-        label: 'Gateway',
+        label: '__gateway__',
         type: TopologyNodeType.router,
         ip: gatewayIp,
         isGateway: true,

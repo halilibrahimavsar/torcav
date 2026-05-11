@@ -22,11 +22,16 @@ class NetworkContextInferrer {
     WifiNetwork network, {
     TrustedNetworkProfile? trustedProfile,
   }) {
-    if (trustedProfile != null) return NetworkContextType.home;
+    if (trustedProfile != null) {
+      return NetworkContextType.home;
+    }
 
-    if (network.security == SecurityType.open) return NetworkContextType.public;
-    if (_matchesPublicSsidPattern(network.ssid))
+    if (network.security == SecurityType.open) {
       return NetworkContextType.public;
+    }
+    if (_matchesPublicSsidPattern(network.ssid)) {
+      return NetworkContextType.public;
+    }
 
     return NetworkContextType.unknown;
   }

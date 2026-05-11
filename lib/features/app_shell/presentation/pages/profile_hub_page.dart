@@ -118,7 +118,7 @@ class _ProfileHubPageState extends State<ProfileHubPage> {
                       ),
                       const SizedBox(height: 16),
                       NeonText(
-                        'TORCAV',
+                        l10n.appName,
                         style: GoogleFonts.orbitron(
                           color: Theme.of(context).colorScheme.primary,
                           fontSize: 20,

@@ -178,10 +178,10 @@ class TopologyRepositoryImpl implements TopologyRepository {
         ).firstMatch(output);
         if (ttlMatch != null) {
           final ttl = int.parse(ttlMatch.group(1)!);
-          if (ttl >= 240) return const Right('Network Device (TTL≈255)');
-          if (ttl >= 110) return const Right('Windows (TTL≈128)');
-          if (ttl >= 50) return const Right('Linux / macOS (TTL≈64)');
-          return const Right('Unknown OS');
+          if (ttl >= 240) return const Right('osNetworkDevice');
+          if (ttl >= 110) return const Right('osWindows');
+          if (ttl >= 50) return const Right('osLinuxMacOS');
+          return const Right('osUnknown');
         }
       }
       return const Left(ServerFailure('Could not determine OS'));

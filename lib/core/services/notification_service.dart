@@ -6,6 +6,7 @@ import 'package:injectable/injectable.dart';
 import '../../features/security/domain/entities/security_event.dart';
 import '../l10n/app_localizations.dart';
 import '../l10n/locale_cubit.dart';
+import '../l10n/security_localization_helper.dart';
 import '../di/injection.dart';
 
 @lazySingleton
@@ -25,11 +26,11 @@ class NotificationService {
       requestBadgePermission: true,
       requestSoundPermission: true,
     );
-    const linuxSettings = LinuxInitializationSettings(
-      defaultActionName: 'Open notification',
+    final linuxSettings = LinuxInitializationSettings(
+      defaultActionName: _l10n.notificationOpenAction,
     );
 
-    const initSettings = InitializationSettings(
+    final initSettings = InitializationSettings(
       android: androidSettings,
       iOS: iosSettings,
       linux: linuxSettings,
@@ -55,7 +56,7 @@ class NotificationService {
     final title = _getTitleForEvent(event.type);
     final body =
         event.evidence.isNotEmpty
-            ? event.evidence
+            ? SecurityLocalizationHelper.translateEvidence(_l10n, event.evidence)
             : '${event.ssid} (${event.bssid})';
 
     await _plugin.show(
@@ -127,7 +128,7 @@ class NotificationService {
     await _plugin.show(
       999999,
       _l10n.attackDetectedTitle(attackType),
-      details,
+      SecurityLocalizationHelper.translateEvidence(_l10n, details),
       _buildNotificationDetails(SecurityEventSeverity.critical),
     );
   }

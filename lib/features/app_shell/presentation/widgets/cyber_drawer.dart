@@ -194,7 +194,7 @@ class CyberDrawer extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    l10n.subscriptionLabel('Premium'),
+                    l10n.subscriptionLabel(l10n.subscriptionPremium),
                     style: GoogleFonts.rajdhani(
                       fontSize: 10,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,

@@ -1684,7 +1684,7 @@ class _ChannelBondingSectionState extends State<_ChannelBondingSection> {
               child: Row(
                 children: [
                   Text(
-                    'CH ${n.channel}',
+                    l10n.channelLabel(n.channel),
                     style: GoogleFonts.orbitron(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
@@ -1712,7 +1712,7 @@ class _ChannelBondingSectionState extends State<_ChannelBondingSection> {
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
-                      '$width MHz',
+                      l10n.bandwidthLabel(width),
                       style: GoogleFonts.orbitron(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
@@ -1967,12 +1967,18 @@ class _CurrentChannelBanner extends StatelessWidget {
                 child: Text(
                   isSibling
                       ? l10n.dualBandSiblingBanner(
-                        bandLabel,
-                        'CH ${current.channel} · ${current.rating.toStringAsFixed(1)}/10',
-                      )
+                          bandLabel,
+                          l10n.channelWithRating(
+                            current.channel,
+                            current.rating.toStringAsFixed(1),
+                          ),
+                        )
                       : l10n.currentChannelBannerYouAreOn(
-                        'CH ${current.channel} · ${current.rating.toStringAsFixed(1)}/10',
-                      ),
+                          l10n.channelWithRating(
+                            current.channel,
+                            current.rating.toStringAsFixed(1),
+                          ),
+                        ),
                   style: GoogleFonts.orbitron(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
@@ -1988,7 +1994,7 @@ class _CurrentChannelBanner extends StatelessWidget {
             isOptimal
                 ? l10n.currentChannelBannerOptimal
                 : l10n.currentChannelBannerSwitchTo(
-                  'CH ${recommended.channel}',
+                  l10n.channelLabel(recommended.channel),
                   delta.toStringAsFixed(1),
                 ),
             style: GoogleFonts.rajdhani(

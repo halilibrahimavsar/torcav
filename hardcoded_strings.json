@@ -1,0 +1,1430 @@
+[
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/core/services/notification_service.dart",
+    "line": 29,
+    "string": "Open notification",
+    "reason": "human-readable literal near `LinuxInitializationSettings`",
+    "context": "defaultActionName: 'Open notification',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ai/data/services/onnx_device_classifier_service.dart",
+    "line": 119,
+    "string": "Mobile Device",
+    "reason": "human-readable literal near `DeviceClassification`",
+    "context": "deviceType: 'Mobile Device',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ai/data/services/onnx_device_classifier_service.dart",
+    "line": 125,
+    "string": "Mobile Device",
+    "reason": "human-readable literal near `DeviceClassification`",
+    "context": "deviceType: 'Mobile Device',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ai/data/services/onnx_device_classifier_service.dart",
+    "line": 132,
+    "string": "tp-link",
+    "reason": "human-readable literal near `DeviceClassification`",
+    "context": "'tp-link',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ai/data/services/onnx_device_classifier_service.dart",
+    "line": 141,
+    "string": "Router/Gateway",
+    "reason": "human-readable literal near `DeviceClassification`",
+    "context": "deviceType: 'Router/Gateway',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ai/data/services/onnx_device_classifier_service.dart",
+    "line": 156,
+    "string": "Printer",
+    "reason": "human-readable literal near `DeviceClassification`",
+    "context": "deviceType: 'Printer',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ai/data/services/onnx_device_classifier_service.dart",
+    "line": 164,
+    "string": "western digital",
+    "reason": "human-readable literal near `DeviceClassification`",
+    "context": "'western digital',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ai/data/services/onnx_device_classifier_service.dart",
+    "line": 170,
+    "string": "NAS/Storage",
+    "reason": "human-readable literal near `DeviceClassification`",
+    "context": "deviceType: 'NAS/Storage',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ai/data/services/onnx_device_classifier_service.dart",
+    "line": 189,
+    "string": "Smart TV",
+    "reason": "human-readable literal near `DeviceClassification`",
+    "context": "deviceType: 'Smart TV',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ai/data/services/onnx_device_classifier_service.dart",
+    "line": 203,
+    "string": "IP Camera",
+    "reason": "human-readable literal near `DeviceClassification`",
+    "context": "deviceType: 'IP Camera',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ai/data/services/onnx_device_classifier_service.dart",
+    "line": 209,
+    "string": "Smart Speaker",
+    "reason": "human-readable literal near `DeviceClassification`",
+    "context": "deviceType: 'Smart Speaker',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ai/data/services/onnx_device_classifier_service.dart",
+    "line": 222,
+    "string": "IoT Sensor",
+    "reason": "human-readable literal near `DeviceClassification`",
+    "context": "deviceType: 'IoT Sensor',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ai/data/services/onnx_device_classifier_service.dart",
+    "line": 237,
+    "string": "Desktop",
+    "reason": "human-readable literal near `DeviceClassification`",
+    "context": "deviceType: 'Desktop',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ai/data/services/onnx_device_classifier_service.dart",
+    "line": 243,
+    "string": "Game Console",
+    "reason": "human-readable literal near `DeviceClassification`",
+    "context": "deviceType: 'Game Console',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ai/domain/services/device_classifier.dart",
+    "line": 203,
+    "string": "Unknown",
+    "reason": "human-readable literal near `DeviceClassification`",
+    "context": ": 'Unknown',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/app_shell/presentation/pages/profile_hub_page.dart",
+    "line": 121,
+    "string": "TORCAV",
+    "reason": "visible widget `NeonText`",
+    "context": "'TORCAV',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/app_shell/presentation/widgets/cyber_drawer.dart",
+    "line": 197,
+    "string": "Premium",
+    "reason": "visible widget `Text`",
+    "context": "l10n.subscriptionLabel('Premium'),"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/diagnostics/domain/services/diagnosis_explainer.dart",
+    "line": 194,
+    "string": "\"Adaptive QoS\") in your router admin page.",
+    "reason": "human-readable literal near `SQM`",
+    "context": "'\"Adaptive QoS\") in your router admin page.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/diagnostics/domain/services/diagnosis_explainer.dart",
+    "line": 295,
+    "string": "browser to also encrypt the lookups.",
+    "reason": "human-readable literal near `TLS`",
+    "context": "'browser to also encrypt the lookups.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/diagnostics/domain/services/diagnosis_explainer.dart",
+    "line": 296,
+    "string": "If your ISP's DNS is slow, set the resolver on the router so the",
+    "reason": "human-readable literal near `TLS`",
+    "context": "'If your ISP\\'s DNS is slow, set the resolver on the router so the '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/diagnostics/domain/services/diagnosis_explainer.dart",
+    "line": 297,
+    "string": "whole household benefits, not just one device.",
+    "reason": "human-readable literal near `TLS`",
+    "context": "'whole household benefits, not just one device.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/diagnostics/domain/services/diagnosis_explainer.dart",
+    "line": 308,
+    "string": "Speed Doctor checks five things: signal strength, channel",
+    "reason": "human-readable literal near `CategoryExplanation`",
+    "context": "'Speed Doctor checks five things: signal strength, channel '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/diagnostics/domain/usecases/diagnose_usecase.dart",
+    "line": 157,
+    "string": "router-hardening",
+    "reason": "human-readable literal near `DiagnosticAction`",
+    "context": "deepLinkRoute: 'router-hardening',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/heatmap/data/datasources/position_datasource.dart",
+    "line": 66,
+    "string": "Manual heading realign requested. Snapping fused heading to absolute compass.",
+    "reason": "human-readable literal near `PositionUpdate`",
+    "context": "'Manual heading realign requested. Snapping fused heading to absolute compass.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/heatmap/domain/services/heatmap_placement_service.dart",
+    "line": 34,
+    "string": "Walk around your space with the heatmap survey active so we",
+    "reason": "human-readable literal near `PlacementSuggestion`",
+    "context": "'Walk around your space with the heatmap survey active so we '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/heatmap/domain/services/heatmap_placement_service.dart",
+    "line": 46,
+    "string": "Coverage looks good — fewer than 5% of the area you walked",
+    "reason": "human-readable literal near `PlacementSuggestion`",
+    "context": "'Coverage looks good — fewer than 5% of the area you walked '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/heatmap/presentation/widgets/ar_hud_overlay.dart",
+    "line": 285,
+    "string": "0.5m",
+    "reason": "visible widget `Text`",
+    "context": "'0.5m',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/heatmap/presentation/widgets/ar_hud_overlay.dart",
+    "line": 296,
+    "string": "2.5m",
+    "reason": "visible widget `Text`",
+    "context": "'2.5m',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/heatmap/presentation/widgets/hud/live_signal_tag.dart",
+    "line": 88,
+    "string": "STD ${slice.stdDev.toStringAsFixed(1)} · ${slice.sampleCount} samp · ${ageSeconds ?? '-'}s",
+    "reason": "visible widget `Text`",
+    "context": "'STD ${slice.stdDev.toStringAsFixed(1)} · ${slice.sampleCount} samp · ${ageSeconds ?? '-'}s',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/heatmap/presentation/widgets/hud/live_signal_tag.dart",
+    "line": 149,
+    "string": "AR",
+    "reason": "visible widget `Text`",
+    "context": "'AR',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/heatmap/presentation/widgets/hud/ready_banner.dart",
+    "line": 77,
+    "string": "COVERAGE COMPLETE",
+    "reason": "visible widget `Text`",
+    "context": "'COVERAGE COMPLETE',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/heatmap/presentation/widgets/hud/recording_status.dart",
+    "line": 72,
+    "string": "REC",
+    "reason": "visible widget `Text`",
+    "context": "'REC',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/heatmap/presentation/widgets/hud/recording_status.dart",
+    "line": 99,
+    "string": "PTS",
+    "reason": "visible widget `Text`",
+    "context": "'PTS',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/heatmap/presentation/widgets/hud/sparse_region_arrow.dart",
+    "line": 65,
+    "string": "— SPARSE COVERAGE",
+    "reason": "visible widget `Text`",
+    "context": "'— SPARSE COVERAGE',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/data/repositories/monitoring_repository_impl.dart",
+    "line": 53,
+    "string": "Network not found",
+    "reason": "human-readable literal near `ScanFailure`",
+    "context": "return const Left(ScanFailure('Network not found'));"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/data/repositories/topology_repository_impl.dart",
+    "line": 117,
+    "string": "Host Unreachable",
+    "reason": "human-readable literal near `ServerFailure`",
+    "context": "return const Left(ServerFailure('Host Unreachable'));"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/data/repositories/topology_repository_impl.dart",
+    "line": 163,
+    "string": "Hostname not found",
+    "reason": "human-readable literal near `ServerFailure`",
+    "context": "return const Left(ServerFailure('Hostname not found'));"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/data/repositories/topology_repository_impl.dart",
+    "line": 181,
+    "string": "Network Device (TTL≈255)",
+    "reason": "human-readable literal near `Right`",
+    "context": "if (ttl >= 240) return const Right('Network Device (TTL≈255)');"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/data/repositories/topology_repository_impl.dart",
+    "line": 182,
+    "string": "Windows (TTL≈128)",
+    "reason": "human-readable literal near `Right`",
+    "context": "if (ttl >= 110) return const Right('Windows (TTL≈128)');"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/data/repositories/topology_repository_impl.dart",
+    "line": 183,
+    "string": "Linux / macOS (TTL≈64)",
+    "reason": "human-readable literal near `Right`",
+    "context": "if (ttl >= 50) return const Right('Linux / macOS (TTL≈64)');"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/data/repositories/topology_repository_impl.dart",
+    "line": 184,
+    "string": "Unknown OS",
+    "reason": "human-readable literal near `Right`",
+    "context": "return const Right('Unknown OS');"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/data/repositories/topology_repository_impl.dart",
+    "line": 187,
+    "string": "Could not determine OS",
+    "reason": "human-readable literal near `ServerFailure`",
+    "context": "return const Left(ServerFailure('Could not determine OS'));"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/domain/services/topology_builder.dart",
+    "line": 37,
+    "string": "This Device",
+    "reason": "visible parameter `label`",
+    "context": "label: 'This Device',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/domain/services/topology_builder.dart",
+    "line": 56,
+    "string": "Gateway",
+    "reason": "visible parameter `label`",
+    "context": "label: 'Gateway',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/presentation/pages/spectrum_optimization_page.dart",
+    "line": 1687,
+    "string": "CH ${n.channel}",
+    "reason": "visible widget `Text`",
+    "context": "'CH ${n.channel}',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/presentation/pages/spectrum_optimization_page.dart",
+    "line": 1971,
+    "string": "CH ${current.channel} · ${current.rating.toStringAsFixed(1)}/10",
+    "reason": "visible widget `Text`",
+    "context": "'CH ${current.channel} · ${current.rating.toStringAsFixed(1)}/10',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/presentation/pages/spectrum_optimization_page.dart",
+    "line": 1991,
+    "string": "CH ${recommended.channel}",
+    "reason": "visible widget `Text`",
+    "context": "'CH ${recommended.channel}',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/presentation/pages/topology_page.dart",
+    "line": 1239,
+    "string": "PORT $port",
+    "reason": "visible widget `Text`",
+    "context": "'PORT $port',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/presentation/widgets/channel_history_chart.dart",
+    "line": 673,
+    "string": "CH $ch",
+    "reason": "visible widget `Text`",
+    "context": "'CH $ch',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/presentation/widgets/channel_history_chart.dart",
+    "line": 799,
+    "string": "CH${channels[idx]}",
+    "reason": "interpolated human-readable string",
+    "context": "'CH${channels[idx]}',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/presentation/widgets/channel_history_chart.dart",
+    "line": 1350,
+    "string": "CH $ch",
+    "reason": "visible parameter `text`",
+    "context": "text: 'CH $ch',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/presentation/widgets/hour_of_day_heatmap.dart",
+    "line": 146,
+    "string": "CH$ch",
+    "reason": "interpolated human-readable string",
+    "context": "text: 'CH$ch',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/presentation/widgets/router_groups_card.dart",
+    "line": 188,
+    "string": "$label CH ${radio.channel}$ratingText",
+    "reason": "visible widget `Text`",
+    "context": "'$label CH ${radio.channel}$ratingText',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/presentation/widgets/spectrum_overlap_chart.dart",
+    "line": 382,
+    "string": "CH$ch",
+    "reason": "interpolated human-readable string",
+    "context": "text: 'CH$ch',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/presentation/widgets/spectrum_overlap_chart.dart",
+    "line": 556,
+    "string": "CH ${network.channel} · ${network.frequency} MHz ·",
+    "reason": "visible widget `Text`",
+    "context": "'CH ${network.channel} · ${network.frequency} MHz · '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/monitoring/presentation/widgets/spectrum_overlap_chart.dart",
+    "line": 557,
+    "string": "${width}MHz · ${network.signalStrength} dBm",
+    "reason": "visible widget `Text`",
+    "context": "'${width}MHz · ${network.signalStrength} dBm',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/data/datasources/arp_data_source.dart",
+    "line": 168,
+    "string": "Unknown",
+    "reason": "human-readable literal near `ArpEntry`",
+    "context": "vendor: canReadArp ? 'Unknown' : 'Unknown (Android Limited)',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/data/datasources/arp_data_source.dart",
+    "line": 168,
+    "string": "Unknown (Android Limited)",
+    "reason": "human-readable literal near `ArpEntry`",
+    "context": "vendor: canReadArp ? 'Unknown' : 'Unknown (Android Limited)',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/data/datasources/arp_data_source.dart",
+    "line": 207,
+    "string": "DONE",
+    "reason": "human-readable literal near `ScanFailure`",
+    "context": "sendPort.send('DONE');"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/data/datasources/arp_data_source.dart",
+    "line": 255,
+    "string": "/proc/net/arp",
+    "reason": "human-readable literal near `File`",
+    "context": "final file = File('/proc/net/arp');"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/data/datasources/arp_data_source.dart",
+    "line": 275,
+    "string": "Android Device (Restricted)",
+    "reason": "human-readable literal near `ArpEntry`",
+    "context": "? 'Android Device (Restricted)'"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/data/datasources/arp_data_source.dart",
+    "line": 276,
+    "string": "Unknown",
+    "reason": "human-readable literal near `Device`",
+    "context": ": 'Unknown',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/data/datasources/lan_scan_history_local_data_source.dart",
+    "line": 140,
+    "string": "Unknown",
+    "reason": "human-readable literal near `HostScanResult`",
+    "context": "vendor: json['vendor'] as String? ?? 'Unknown',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/data/datasources/mdns_data_source.dart",
+    "line": 31,
+    "string": "_ipp._tcp.local",
+    "reason": "human-readable literal near `Audio`",
+    "context": "'_ipp._tcp.local', // Printer (IPP)"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/data/datasources/mdns_data_source.dart",
+    "line": 32,
+    "string": "_printer._tcp.local",
+    "reason": "human-readable literal near `Printer`",
+    "context": "'_printer._tcp.local', // Printer (LPD)"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/data/datasources/mdns_data_source.dart",
+    "line": 33,
+    "string": "_pdl-datastream._tcp.local",
+    "reason": "human-readable literal near `Printer`",
+    "context": "'_pdl-datastream._tcp.local', // HP JetDirect"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/data/datasources/mdns_data_source.dart",
+    "line": 34,
+    "string": "_smb._tcp.local",
+    "reason": "human-readable literal near `Printer`",
+    "context": "'_smb._tcp.local', // Windows/Samba file sharing"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/data/datasources/mdns_data_source.dart",
+    "line": 35,
+    "string": "_afpovertcp._tcp.local",
+    "reason": "human-readable literal near `Printer`",
+    "context": "'_afpovertcp._tcp.local', // Apple File Protocol"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/data/repositories/network_scan_repository_impl.dart",
+    "line": 142,
+    "string": "Router/Gateway",
+    "reason": "human-readable literal near `Right`",
+    "context": "isGateway: host.isGateway || deviceType == 'Router/Gateway',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/domain/services/host_trust_classifier.dart",
+    "line": 54,
+    "string": "this device has multiple weak signals stacked together.",
+    "reason": "human-readable literal near `HostTrustReason`",
+    "context": "'this device has multiple weak signals stacked together.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/domain/services/host_trust_classifier.dart",
+    "line": 67,
+    "string": "Device looks unusual for this network — vendor or naming",
+    "reason": "human-readable literal near `HostTrustReason`",
+    "context": "'Device looks unusual for this network — vendor or naming '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/domain/services/host_trust_classifier.dart",
+    "line": 68,
+    "string": "doesn't match the rest of your home gear.",
+    "reason": "human-readable literal near `HostTrustReason`",
+    "context": "'doesn\\'t match the rest of your home gear.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/presentation/bloc/network_scan_bloc.dart",
+    "line": 145,
+    "string": "Legal acknowledgement required for LAN discovery.",
+    "reason": "human-readable literal near `NetworkScanError`",
+    "context": "'Legal acknowledgement required for LAN discovery.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/presentation/bloc/network_scan_bloc.dart",
+    "line": 163,
+    "string": "Scan target exceeds safety limits. Please restrict to /24 or smaller subnets.",
+    "reason": "human-readable literal near `NetworkScanError`",
+    "context": "'Scan target exceeds safety limits. Please restrict to /24 or smaller subnets.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/network_scan/presentation/bloc/network_scan_bloc.dart",
+    "line": 173,
+    "string": "Deep scanning is disabled when Strict Safety Mode is active.",
+    "reason": "human-readable literal near `NetworkScanError`",
+    "context": "'Deep scanning is disabled when Strict Safety Mode is active.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/performance/presentation/widgets/speedometer_arc.dart",
+    "line": 176,
+    "string": "MBPS $centerLabel",
+    "reason": "visible widget `Text`",
+    "context": "'MBPS $centerLabel',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/performance/presentation/widgets/speedometer_arc.dart",
+    "line": 205,
+    "string": "DL",
+    "reason": "human-readable literal near `Row`",
+    "context": "_miniStatItem('DL', dl.toStringAsFixed(1), dlColor),"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ping_stabilizer/data/repositories/ping_stabilizer_repository_impl.dart",
+    "line": 51,
+    "string": "Native VPN service refused to start.",
+    "reason": "human-readable literal near `ServerFailure`",
+    "context": "ServerFailure('Native VPN service refused to start.'),"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ping_stabilizer/domain/entities/dns_candidate.dart",
+    "line": 20,
+    "string": "Cloudflare",
+    "reason": "visible parameter `label`",
+    "context": "DnsCandidate(ip: '1.1.1.1', label: 'Cloudflare'),"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ping_stabilizer/domain/entities/dns_candidate.dart",
+    "line": 21,
+    "string": "Google",
+    "reason": "visible parameter `label`",
+    "context": "DnsCandidate(ip: '8.8.8.8', label: 'Google'),"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ping_stabilizer/domain/entities/stabilization_profile.dart",
+    "line": 46,
+    "string": "Generic UDP Game",
+    "reason": "human-readable literal near `StabilizationProfile`",
+    "context": "displayName: 'Generic UDP Game',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ping_stabilizer/domain/entities/stabilization_profile.dart",
+    "line": 59,
+    "string": "Valorant",
+    "reason": "human-readable literal near `StabilizationProfile`",
+    "context": "displayName: 'Valorant',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ping_stabilizer/domain/entities/stabilization_profile.dart",
+    "line": 73,
+    "string": "CS2 / Source",
+    "reason": "human-readable literal near `StabilizationProfile`",
+    "context": "displayName: 'CS2 / Source',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ping_stabilizer/domain/entities/stabilization_profile.dart",
+    "line": 87,
+    "string": "PUBG Mobile",
+    "reason": "human-readable literal near `StabilizationProfile`",
+    "context": "displayName: 'PUBG Mobile',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ping_stabilizer/domain/entities/stabilization_profile.dart",
+    "line": 101,
+    "string": "Mobile Legends",
+    "reason": "human-readable literal near `StabilizationProfile`",
+    "context": "displayName: 'Mobile Legends',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ping_stabilizer/domain/usecases/start_stabilization_usecase.dart",
+    "line": 24,
+    "string": "VPN permission denied.",
+    "reason": "human-readable literal near `PermissionFailure`",
+    "context": "return const Left(PermissionFailure('VPN permission denied.'));"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/ping_stabilizer/presentation/widgets/stabilizer_toggle_card.dart",
+    "line": 66,
+    "string": "${state.stats.ewmaLatencyMs.toStringAsFixed(0)} ms ·",
+    "reason": "visible widget `Text`",
+    "context": "? '${state.stats.ewmaLatencyMs.toStringAsFixed(0)} ms · '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/reports/data/repositories/report_export_repository_impl.dart",
+    "line": 145,
+    "string": "TORCAV — Wi-Fi Scan Report",
+    "reason": "visible widget `Text`",
+    "context": "'TORCAV — Wi-Fi Scan Report',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/reports/data/repositories/report_export_repository_impl.dart",
+    "line": 162,
+    "string": "Yasal Uyarı / Legal Disclaimer",
+    "reason": "visible widget `Text`",
+    "context": "'Yasal Uyarı / Legal Disclaimer',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/reports/data/repositories/report_export_repository_impl.dart",
+    "line": 170,
+    "string": "Bu rapor yalnızca kullanıcının yetkili olduğu ağ üzerinde yapılan",
+    "reason": "visible widget `Text`",
+    "context": "'Bu rapor yalnızca kullanıcının yetkili olduğu ağ üzerinde yapılan '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/reports/data/repositories/report_export_repository_impl.dart",
+    "line": 171,
+    "string": "gözlem ve keşif sonuçlarıdır. Üçüncü tarafların cihaz bilgileri",
+    "reason": "visible widget `Text`",
+    "context": "'gözlem ve keşif sonuçlarıdır. Üçüncü tarafların cihaz bilgileri '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/reports/data/repositories/report_export_repository_impl.dart",
+    "line": 178,
+    "string": "This report contains results from authorized observation and discovery of",
+    "reason": "visible widget `Text`",
+    "context": "'This report contains results from authorized observation and discovery of '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/reports/data/repositories/report_export_repository_impl.dart",
+    "line": 179,
+    "string": "networks the user is authorized to access. If third-party device information",
+    "reason": "visible widget `Text`",
+    "context": "'networks the user is authorized to access. If third-party device information '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/reports/data/repositories/report_export_repository_impl.dart",
+    "line": 189,
+    "string": "Generated: ${snapshot.timestamp.toIso8601String()}",
+    "reason": "visible widget `Text`",
+    "context": "'Generated: ${snapshot.timestamp.toIso8601String()}',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/reports/data/services/local_data_export_service_impl.dart",
+    "line": 104,
+    "string": "\"All categories\" cannot be exported as a single CSV.",
+    "reason": "human-readable literal near `FormatException`",
+    "context": "'\"All categories\" cannot be exported as a single CSV. '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/reports/data/services/local_data_export_service_impl.dart",
+    "line": 105,
+    "string": "Use JSON or HTML instead.",
+    "reason": "human-readable literal near `FormatException`",
+    "context": "'Use JSON or HTML instead.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/reports/presentation/pages/reports_page.dart",
+    "line": 224,
+    "string": "ANONYMIZE BSSID",
+    "reason": "visible widget `Text`",
+    "context": "'ANONYMIZE BSSID',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/data/datasources/dns_test_data_source.dart",
+    "line": 11,
+    "string": "Cloudflare",
+    "reason": "human-readable literal near `LazySingleton`",
+    "context": "'name': 'Cloudflare',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/data/datasources/dns_test_data_source.dart",
+    "line": 13,
+    "string": "Privacy First",
+    "reason": "human-readable literal near `LazySingleton`",
+    "context": "'features': ['Privacy First', 'Anti-Tracking'],"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/data/datasources/dns_test_data_source.dart",
+    "line": 128,
+    "string": "Unknown",
+    "reason": "human-readable literal near `DnsTestResult`",
+    "context": "currentDns: 'Unknown',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/data/datasources/dns_test_data_source.dart",
+    "line": 129,
+    "string": "Network Error",
+    "reason": "human-readable literal near `DnsTestResult`",
+    "context": "ispName: 'Network Error',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/data/datasources/dns_test_data_source.dart",
+    "line": 212,
+    "string": "DoH Enabled",
+    "reason": "human-readable literal near `SystemEncoding`",
+    "context": "return {'active': true, 'status': 'DoH Enabled'};"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/data/datasources/dns_test_data_source.dart",
+    "line": 350,
+    "string": "Private/ISP Resolver",
+    "reason": "human-readable literal near `DNS`",
+    "context": "isp = 'Private/ISP Resolver';"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/data/repositories/security_repository_impl.dart",
+    "line": 288,
+    "string": "LAN Devices Discovered",
+    "reason": "visible parameter `title`",
+    "context": "title: 'LAN Devices Discovered',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/data/repositories/security_repository_impl.dart",
+    "line": 290,
+    "string": "Active scanning identified ${devices.length} devices on this network.",
+    "reason": "visible parameter `description`",
+    "context": "'Active scanning identified ${devices.length} devices on this network.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/data/repositories/security_repository_impl.dart",
+    "line": 318,
+    "string": "Gateway Ports Exposed",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Gateway Ports Exposed',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/data/repositories/security_repository_impl.dart",
+    "line": 320,
+    "string": "Host ${host.ip} has open ports that may be vulnerable.",
+    "reason": "visible parameter `description`",
+    "context": "'Host ${host.ip} has open ports that may be vulnerable.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/data/repositories/security_repository_impl.dart",
+    "line": 341,
+    "string": "ARP Spoofing Detected",
+    "reason": "visible parameter `title`",
+    "context": "title: 'ARP Spoofing Detected',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/data/repositories/security_repository_impl.dart",
+    "line": 343,
+    "string": "A potential ARP spoofing attack was detected on this network.",
+    "reason": "visible parameter `description`",
+    "context": "'A potential ARP spoofing attack was detected on this network.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/data/repositories/security_repository_impl.dart",
+    "line": 359,
+    "string": "DNS Hijacking Suspected",
+    "reason": "visible parameter `title`",
+    "context": "title: 'DNS Hijacking Suspected',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/data/repositories/security_repository_impl.dart",
+    "line": 361,
+    "string": "Potential DNS hijacking or unusual DNS configuration detected.",
+    "reason": "visible parameter `description`",
+    "context": "'Potential DNS hijacking or unusual DNS configuration detected.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/data/repositories/security_repository_impl.dart",
+    "line": 522,
+    "string": "Open Service Detected",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Open Service Detected',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/data/repositories/security_repository_impl.dart",
+    "line": 524,
+    "string": "Host ${host.ip} is running ${service.serviceName} on port ${service.port}.",
+    "reason": "visible parameter `description`",
+    "context": "'Host ${host.ip} is running ${service.serviceName} on port ${service.port}.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/dns_test_result.dart",
+    "line": 38,
+    "string": "Unknown",
+    "reason": "human-readable literal near `DnsBenchmarkResult`",
+    "context": "name: json['name'] as String? ?? 'Unknown',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/dns_test_result.dart",
+    "line": 131,
+    "string": "Unknown",
+    "reason": "human-readable literal near `DnsTestResult`",
+    "context": "currentDns: json['currentDns'] as String? ?? 'Unknown',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/dns_test_result.dart",
+    "line": 132,
+    "string": "Unknown ISP",
+    "reason": "human-readable literal near `DnsTestResult`",
+    "context": "ispName: json['ispName'] as String? ?? 'Unknown ISP',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 53,
+    "string": "Change router admin password",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Change router admin password',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 56,
+    "string": "Default admin credentials (admin/admin, admin/password) are publicly",
+    "reason": "visible parameter `body`",
+    "context": "'Default admin credentials (admin/admin, admin/password) are publicly '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 89,
+    "string": "Use WPA3, fall back to WPA2-AES",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Use WPA3, fall back to WPA2-AES',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 92,
+    "string": "WPA3 is the modern Wi-Fi encryption standard. If your router is too",
+    "reason": "visible parameter `body`",
+    "context": "'WPA3 is the modern Wi-Fi encryption standard. If your router is too '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 109,
+    "string": "\"WPA-PSK\", \"TKIP\", \"WEP\" or \"Open\" — these are insecure.",
+    "reason": "human-readable literal near `Personal`",
+    "context": "'\"WPA-PSK\", \"TKIP\", \"WEP\" or \"Open\" — these are insecure.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 110,
+    "string": "If you set WPA3-Personal and an old device (smart bulb, printer,",
+    "reason": "human-readable literal near `Personal`",
+    "context": "'If you set WPA3-Personal and an old device (smart bulb, printer, '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 121,
+    "string": "Disable WPS",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Disable WPS',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 124,
+    "string": "WPS is the \"easy connect\" PIN feature. Even with a strong WPA2/WPA3",
+    "reason": "visible parameter `body`",
+    "context": "'WPS is the \"easy connect\" PIN feature. Even with a strong WPA2/WPA3 '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 146,
+    "string": "Enable PMF / 802.11w",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Enable PMF / 802.11w',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 148,
+    "string": "Protected Management Frames stop attackers from forging",
+    "reason": "visible parameter `body`",
+    "context": "'Protected Management Frames stop attackers from forging '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 149,
+    "string": "disconnect packets that knock your devices offline (used in evil",
+    "reason": "human-readable literal near `HardeningCheckMeta`",
+    "context": "'disconnect packets that knock your devices offline (used in evil '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 175,
+    "string": "Enable a guest network",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Enable a guest network',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 177,
+    "string": "A second SSID for visitors and IoT devices (cameras, smart bulbs,",
+    "reason": "visible parameter `body`",
+    "context": "'A second SSID for visitors and IoT devices (cameras, smart bulbs, '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 199,
+    "string": "Disable remote / WAN-side admin",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Disable remote / WAN-side admin',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 202,
+    "string": "If the admin panel is reachable from the internet, anyone in the",
+    "reason": "visible parameter `body`",
+    "context": "'If the admin panel is reachable from the internet, anyone in the '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 230,
+    "string": "Most home routers ship with known security holes that vendors patch",
+    "reason": "visible parameter `body`",
+    "context": "'Most home routers ship with known security holes that vendors patch '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 259,
+    "string": "Use a strong, unique Wi-Fi passphrase",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Use a strong, unique Wi-Fi passphrase',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 261,
+    "string": "The Wi-Fi password is the last line of defence if WPS or PMF fail.",
+    "reason": "visible parameter `body`",
+    "context": "'The Wi-Fi password is the last line of defence if WPS or PMF fail. '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 275,
+    "string": "Replace it with a NEW passphrase: at least 12 characters, with a",
+    "reason": "human-readable literal near `Key`",
+    "context": "'Replace it with a NEW passphrase: at least 12 characters, with a '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/entities/hardening_check.dart",
+    "line": 276,
+    "string": "mix of uppercase, lowercase, numbers and a symbol. Avoid",
+    "reason": "human-readable literal near `Key`",
+    "context": "'mix of uppercase, lowercase, numbers and a symbol. Avoid '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/services/evil_twin_explainer.dart",
+    "line": 41,
+    "string": "Looks like the same router on different bands",
+    "reason": "human-readable literal near `EvilTwinExplanation`",
+    "context": "headline: 'Looks like the same router on different bands',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/services/evil_twin_explainer.dart",
+    "line": 43,
+    "string": "Most home routers broadcast the same Wi-Fi name (SSID) over",
+    "reason": "human-readable literal near `EvilTwinExplanation`",
+    "context": "'Most home routers broadcast the same Wi-Fi name (SSID) over '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/services/evil_twin_explainer.dart",
+    "line": 65,
+    "string": "No evil-twin pattern detected",
+    "reason": "human-readable literal near `EvilTwinExplanation`",
+    "context": "headline: 'No evil-twin pattern detected',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/services/evil_twin_explainer.dart",
+    "line": 153,
+    "string": "your router and compare it with the BSSIDs shown for this",
+    "reason": "human-readable literal near `MAC`",
+    "context": "'your router and compare it with the BSSIDs shown for this '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/services/evil_twin_explainer.dart",
+    "line": 154,
+    "string": "network.",
+    "reason": "human-readable literal near `MAC`",
+    "context": "'network.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/services/evil_twin_explainer.dart",
+    "line": 155,
+    "string": "Forget the network in your phone's Wi-Fi settings and only",
+    "reason": "human-readable literal near `MAC`",
+    "context": "'Forget the network in your phone\\'s Wi-Fi settings and only '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/services/evil_twin_explainer.dart",
+    "line": 212,
+    "string": "but not the other.",
+    "reason": "human-readable literal near `Frames`",
+    "context": "'but not the other.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/services/evil_twin_explainer.dart",
+    "line": 214,
+    "string": "One access point is hidden, the other broadcasts its name openly.",
+    "reason": "human-readable literal near `Frames`",
+    "context": "'One access point is hidden, the other broadcasts its name openly.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/services/mesh_vendor_database.dart",
+    "line": 46,
+    "string": "04:d4:c4",
+    "reason": "human-readable literal near `AiMesh`",
+    "context": "'04:d4:c4': 'Asus AiMesh',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/services/mesh_vendor_database.dart",
+    "line": 46,
+    "string": "Asus AiMesh",
+    "reason": "human-readable literal near `AiMesh`",
+    "context": "'04:d4:c4': 'Asus AiMesh',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/services/mesh_vendor_database.dart",
+    "line": 47,
+    "string": "04:d9:f5",
+    "reason": "human-readable literal near `AiMesh`",
+    "context": "'04:d9:f5': 'Asus AiMesh',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/services/mesh_vendor_database.dart",
+    "line": 47,
+    "string": "Asus AiMesh",
+    "reason": "human-readable literal near `AiMesh`",
+    "context": "'04:d9:f5': 'Asus AiMesh',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/services/mesh_vendor_database.dart",
+    "line": 48,
+    "string": "50:46:5d",
+    "reason": "human-readable literal near `AiMesh`",
+    "context": "'50:46:5d': 'Asus AiMesh',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/services/mesh_vendor_database.dart",
+    "line": 48,
+    "string": "Asus AiMesh",
+    "reason": "human-readable literal near `AiMesh`",
+    "context": "'50:46:5d': 'Asus AiMesh',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/services/mesh_vendor_database.dart",
+    "line": 49,
+    "string": "Asus AiMesh",
+    "reason": "human-readable literal near `AiMesh`",
+    "context": "'ac:9e:17': 'Asus AiMesh',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/services/mesh_vendor_database.dart",
+    "line": 49,
+    "string": "ac:9e:17",
+    "reason": "human-readable literal near `AiMesh`",
+    "context": "'ac:9e:17': 'Asus AiMesh',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 42,
+    "string": "Active Probing Active",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Active Probing Active',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 44,
+    "string": "Deep scan is enabled, performing more intrusive network tests.",
+    "reason": "visible parameter `description`",
+    "context": "'Deep scan is enabled, performing more intrusive network tests.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 62,
+    "string": "Open Network",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Open Network',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 64,
+    "string": "No encryption detected. All traffic can be sniffed in plaintext.",
+    "reason": "visible parameter `description`",
+    "context": "'No encryption detected. All traffic can be sniffed in plaintext.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 83,
+    "string": "WEP Encryption",
+    "reason": "visible parameter `title`",
+    "context": "title: 'WEP Encryption',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 84,
+    "string": "WEP is deprecated and can be cracked quickly.",
+    "reason": "visible parameter `description`",
+    "context": "description: 'WEP is deprecated and can be cracked quickly.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 102,
+    "string": "Legacy WPA",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Legacy WPA',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 104,
+    "string": "WPA/TKIP is older and weaker against modern attack techniques.",
+    "reason": "visible parameter `description`",
+    "context": "'WPA/TKIP is older and weaker against modern attack techniques.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 128,
+    "string": "Hidden SSID",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Hidden SSID',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 130,
+    "string": "Hidden SSIDs are still discoverable and may hurt compatibility.",
+    "reason": "visible parameter `description`",
+    "context": "'Hidden SSIDs are still discoverable and may hurt compatibility.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 150,
+    "string": "Very Weak Signal",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Very Weak Signal',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 152,
+    "string": "Weak signal can indicate unstable links and spoofing susceptibility.",
+    "reason": "visible parameter `description`",
+    "context": "'Weak signal can indicate unstable links and spoofing susceptibility.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 171,
+    "string": "WPS Enabled",
+    "reason": "visible parameter `title`",
+    "context": "title: 'WPS Enabled',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 173,
+    "string": "Wi-Fi Protected Setup (WPS) is enabled. The WPS PIN mode",
+    "reason": "visible parameter `description`",
+    "context": "'Wi-Fi Protected Setup (WPS) is enabled. The WPS PIN mode '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 174,
+    "string": "can be brute-forced in hours using publicly available tools",
+    "reason": "human-readable literal near `Setup`",
+    "context": "'can be brute-forced in hours using publicly available tools '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 175,
+    "string": "(Pixie Dust attack), effectively bypassing any password.",
+    "reason": "human-readable literal near `Setup`",
+    "context": "'(Pixie Dust attack), effectively bypassing any password.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 199,
+    "string": "Management Frames Unprotected",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Management Frames Unprotected',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 201,
+    "string": "This access point does not enforce Protected Management Frames",
+    "reason": "visible parameter `description`",
+    "context": "'This access point does not enforce Protected Management Frames '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 233,
+    "string": "Potential Evil Twin",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Potential Evil Twin',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 235,
+    "string": "A nearby access point shares this SSID but its fingerprint",
+    "reason": "visible parameter `description`",
+    "context": "'A nearby access point shares this SSID but its fingerprint '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 266,
+    "string": "Suspicious Network Name",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Suspicious Network Name',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 268,
+    "string": "This SSID matches common honeypot/lure patterns used by",
+    "reason": "visible parameter `description`",
+    "context": "'This SSID matches common honeypot/lure patterns used by '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 297,
+    "string": "High Channel Congestion",
+    "reason": "visible parameter `title`",
+    "context": "title: 'High Channel Congestion',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 299,
+    "string": "${sameChannelCount + 1} networks are broadcasting on channel",
+    "reason": "visible parameter `description`",
+    "context": "'${sameChannelCount + 1} networks are broadcasting on channel '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 330,
+    "string": "2.4 GHz Only",
+    "reason": "visible parameter `title`",
+    "context": "title: '2.4 GHz Only',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 332,
+    "string": "This network only broadcasts on the 2.4 GHz band, which is",
+    "reason": "visible parameter `description`",
+    "context": "'This network only broadcasts on the 2.4 GHz band, which is '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 365,
+    "string": "Trusted Baseline Drift",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Trusted Baseline Drift',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 367,
+    "string": "This access point no longer matches the fingerprint you previously trusted.",
+    "reason": "visible parameter `description`",
+    "context": "'This access point no longer matches the fingerprint you previously trusted.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/domain/usecases/security_analyzer.dart",
+    "line": 393,
+    "string": "Vulnerable Hardware: ${vulnerable.model}",
+    "reason": "visible parameter `title`",
+    "context": "title: 'Vulnerable Hardware: ${vulnerable.model}',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/security/presentation/widgets/dns_security_card.dart",
+    "line": 610,
+    "string": "UDP",
+    "reason": "human-readable literal near `NeonChip`",
+    "context": "color: protocol == 'UDP' ? scheme.onSurfaceVariant : color,"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/splash/presentation/pages/splash_page.dart",
+    "line": 182,
+    "string": "BUILD",
+    "reason": "visible parameter `label`",
+    "context": "child: _Telemetry(label: 'BUILD', value: _buildVersion),"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/splash/presentation/pages/splash_page.dart",
+    "line": 190,
+    "string": "PLATFORM",
+    "reason": "visible parameter `label`",
+    "context": "label: 'PLATFORM',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/splash/presentation/pages/splash_page.dart",
+    "line": 218,
+    "string": "VAULT",
+    "reason": "visible parameter `label`",
+    "context": "label: 'VAULT',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/splash/presentation/pages/splash_page.dart",
+    "line": 224,
+    "string": "SESSION",
+    "reason": "visible parameter `label`",
+    "context": "label: 'SESSION',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/splash/presentation/pages/splash_page.dart",
+    "line": 233,
+    "string": "RETENTION",
+    "reason": "visible parameter `label`",
+    "context": "label: 'RETENTION',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/splash/presentation/pages/splash_page.dart",
+    "line": 249,
+    "string": "LAST SCAN",
+    "reason": "visible parameter `label`",
+    "context": "label: 'LAST SCAN',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/splash/presentation/pages/splash_page.dart",
+    "line": 259,
+    "string": "VAULT STATUS",
+    "reason": "visible parameter `label`",
+    "context": "label: 'VAULT STATUS',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/splash/presentation/pages/splash_page.dart",
+    "line": 260,
+    "string": "AES-256-GCM",
+    "reason": "human-readable literal near `Positioned`",
+    "context": "value: _vaultOnline ? 'AES-256-GCM' : 'OFFLINE',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/wifi_scan/data/datasources/android_wifi_data_source.dart",
+    "line": 38,
+    "string": "Android scanner is only supported on Android",
+    "reason": "human-readable literal near `ScanFailure`",
+    "context": "throw const ScanFailure('Android scanner is only supported on Android');"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/wifi_scan/data/datasources/android_wifi_data_source.dart",
+    "line": 44,
+    "string": "Location permission required for Wi-Fi scanning",
+    "reason": "human-readable literal near `PermissionFailure`",
+    "context": "'Location permission required for Wi-Fi scanning',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/wifi_scan/data/datasources/android_wifi_data_source.dart",
+    "line": 87,
+    "string": "Cannot retrieve Wi-Fi scan results.",
+    "reason": "human-readable literal near `ScanFailure`",
+    "context": "'Cannot retrieve Wi-Fi scan results. '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/wifi_scan/data/datasources/android_wifi_data_source.dart",
+    "line": 88,
+    "string": "Please ensure Location is enabled in system settings.",
+    "reason": "human-readable literal near `ScanFailure`",
+    "context": "'Please ensure Location is enabled in system settings.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/wifi_scan/data/datasources/android_wifi_data_source.dart",
+    "line": 96,
+    "string": "No Wi-Fi networks found.",
+    "reason": "human-readable literal near `ScanFailure`",
+    "context": "'No Wi-Fi networks found. '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/wifi_scan/data/datasources/android_wifi_data_source.dart",
+    "line": 97,
+    "string": "Ensure Wi-Fi and Location services are enabled.",
+    "reason": "human-readable literal near `ScanFailure`",
+    "context": "'Ensure Wi-Fi and Location services are enabled.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/wifi_scan/data/datasources/linux_wifi_data_source.dart",
+    "line": 63,
+    "string": "Wi-Fi scan failed. Ensure NetworkManager or wireless-tools is",
+    "reason": "human-readable literal near `ScanFailure`",
+    "context": "'Wi-Fi scan failed. Ensure NetworkManager or wireless-tools is '"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/wifi_scan/data/datasources/linux_wifi_data_source.dart",
+    "line": 81,
+    "string": "SSID,BSSID,SIGNAL,CHAN,FREQ,SECURITY,BARS",
+    "reason": "human-readable literal near `ProcessResult`",
+    "context": "'SSID,BSSID,SIGNAL,CHAN,FREQ,SECURITY,BARS',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/wifi_scan/data/datasources/linux_wifi_data_source.dart",
+    "line": 110,
+    "string": "No Wi-Fi networks found. Ensure Wi-Fi is enabled.",
+    "reason": "human-readable literal near `ScanFailure`",
+    "context": "'No Wi-Fi networks found. Ensure Wi-Fi is enabled.',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/wifi_scan/domain/entities/wifi_network.dart",
+    "line": 47,
+    "string": "Wi-Fi 4 (802.11n)",
+    "reason": "human-readable literal near `Fi`",
+    "context": "return 'Wi-Fi 4 (802.11n)';"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/wifi_scan/domain/entities/wifi_network.dart",
+    "line": 49,
+    "string": "Wi-Fi 5 (802.11ac)",
+    "reason": "human-readable literal near `Fi`",
+    "context": "return 'Wi-Fi 5 (802.11ac)';"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/wifi_scan/domain/entities/wifi_network.dart",
+    "line": 51,
+    "string": "Wi-Fi 6 (802.11ax)",
+    "reason": "human-readable literal near `Fi`",
+    "context": "return 'Wi-Fi 6 (802.11ax)';"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/wifi_scan/presentation/pages/scan_comparison_page.dart",
+    "line": 254,
+    "string": "${before.avgSignalDbm} dBm → ${after.avgSignalDbm} dBm",
+    "reason": "visible widget `Text`",
+    "context": "'${before.avgSignalDbm} dBm → ${after.avgSignalDbm} dBm',"
+  },
+  {
+    "file": "/home/garuda/Masaüstü/torcav/lib/features/wifi_scan/presentation/widgets/wifi_network_card.dart",
+    "line": 221,
+    "string": "${network.estimatedMaxThroughputMbps!.round()} Mbps",
+    "reason": "visible parameter `label`",
+    "context": "'${network.estimatedMaxThroughputMbps!.round()} Mbps',"
+  }
+]

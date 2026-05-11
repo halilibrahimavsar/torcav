@@ -82,7 +82,7 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
                 SimpleDialogOption(
                   onPressed: () => Navigator.pop(ctx, category),
                   child: Text(
-                    category,
+                    context.translateDeviceType(category),
                     style: GoogleFonts.rajdhani(
                       color:
                           category == (_customLabel ?? widget.host.deviceType)
@@ -211,17 +211,27 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
 
   IconData get _deviceIcon {
     final type = widget.host.deviceType.toLowerCase();
-    if (type.contains('router') || type.contains('gateway'))
+    if (type.contains('router') || type.contains('gateway')) {
       return Icons.router_rounded;
-    if (type.contains('smart tv')) return Icons.tv_rounded;
-    if (type.contains('audio') || type.contains('speaker'))
+    }
+    if (type.contains('smart tv')) {
+      return Icons.tv_rounded;
+    }
+    if (type.contains('audio') || type.contains('speaker')) {
       return Icons.speaker_group_rounded;
-    if (type.contains('printer')) return Icons.print_rounded;
-    if (type.contains('workstation')) return Icons.computer_rounded;
-    if (type.contains('mobile') || type.contains('phone'))
+    }
+    if (type.contains('printer')) {
+      return Icons.print_rounded;
+    }
+    if (type.contains('workstation')) {
+      return Icons.computer_rounded;
+    }
+    if (type.contains('mobile') || type.contains('phone')) {
       return Icons.smartphone_rounded;
-    if (type.contains('nas') || type.contains('storage'))
+    }
+    if (type.contains('nas') || type.contains('storage')) {
       return Icons.dns_rounded;
+    }
 
     final name = widget.host.hostName.toLowerCase();
     final vendor = widget.host.vendor.toLowerCase();
@@ -230,8 +240,9 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
         name.contains('iphone')) {
       return Icons.smartphone_rounded;
     }
-    if (name.contains('tablet') || name.contains('ipad'))
+    if (name.contains('tablet') || name.contains('ipad')) {
       return Icons.tablet_mac_rounded;
+    }
     if (name.contains('laptop') ||
         name.contains('macbook') ||
         vendor.contains('apple')) {
@@ -281,7 +292,7 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
                           Flexible(
                             child: Text(
                               widget.host.hostName.isEmpty
-                                  ? '${widget.host.ip} (${widget.host.deviceType.toUpperCase()})'
+                                  ? '${widget.host.ip} (${context.translateDeviceType(widget.host.deviceType).toUpperCase()})'
                                   : widget.host.hostName.toUpperCase(),
                               style: GoogleFonts.orbitron(
                                 color: scheme.onSurface,
@@ -332,7 +343,7 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
                               ),
                             ),
                             Text(
-                              (_customLabel ?? widget.host.deviceType)
+                              context.translateDeviceType(_customLabel ?? widget.host.deviceType)
                                   .toUpperCase(),
                               style: GoogleFonts.rajdhani(
                                 color:
@@ -384,7 +395,7 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: _TechDetail(
-                      label: widget.host.vendor.toUpperCase(),
+                      label: context.translateVendor(widget.host.vendor).toUpperCase(),
                       icon: Icons.factory_rounded,
                       color: scheme.secondary,
                     ),
@@ -829,38 +840,71 @@ class _ServiceChip extends StatelessWidget {
 
   Color _getServiceColor(BuildContext context, int port) {
     final scheme = Theme.of(context).colorScheme;
-    if (port == 80 || port == 443 || port == 8080 || port == 8443)
+    if (port == 80 || port == 443 || port == 8080 || port == 8443) {
       return scheme.tertiary;
-    if (port == 22 || port == 23) return scheme.error;
-    if (port == 21 || port == 445 || port == 139) return scheme.secondary;
-    if (port == 53) return Colors.cyanAccent;
-    if (port == 3306 || port == 5432 || port == 1433 || port == 27017)
+    }
+    if (port == 22 || port == 23) {
+      return scheme.error;
+    }
+    if (port == 21 || port == 445 || port == 139) {
+      return scheme.secondary;
+    }
+    if (port == 53) {
+      return Colors.cyanAccent;
+    }
+    if (port == 3306 || port == 5432 || port == 1433 || port == 27017) {
       return Colors.orangeAccent;
-    if (port == 3389 || port == 5900) return scheme.error;
-    if (port == 6379) return Colors.redAccent;
+    }
+    if (port == 3389 || port == 5900) {
+      return scheme.error;
+    }
+    if (port == 6379) {
+      return Colors.redAccent;
+    }
     return scheme.outline;
   }
 
   IconData _getServiceIcon(int port) {
-    if (port == 80 || port == 443 || port == 8080 || port == 8443)
+    if (port == 80 || port == 443 || port == 8080 || port == 8443) {
       return Icons.public_rounded;
-    if (port == 22) return Icons.terminal_rounded;
-    if (port == 23) return Icons.warning_rounded;
-    if (port == 21) return Icons.folder_shared_rounded;
-    if (port == 53) return Icons.dns_rounded;
-    if (port == 445 || port == 139) return Icons.storage_rounded;
-    if (port == 3389 || port == 5900) return Icons.desktop_windows_rounded;
-    if (port == 3306 || port == 5432 || port == 1433 || port == 27017)
+    }
+    if (port == 22) {
+      return Icons.terminal_rounded;
+    }
+    if (port == 23) {
+      return Icons.warning_rounded;
+    }
+    if (port == 21) {
+      return Icons.folder_shared_rounded;
+    }
+    if (port == 53) {
+      return Icons.dns_rounded;
+    }
+    if (port == 445 || port == 139) {
+      return Icons.storage_rounded;
+    }
+    if (port == 3389 || port == 5900) {
+      return Icons.desktop_windows_rounded;
+    }
+    if (port == 3306 || port == 5432 || port == 1433 || port == 27017) {
       return Icons.table_chart_rounded;
-    if (port == 6379) return Icons.memory_rounded;
+    }
+    if (port == 6379) {
+      return Icons.memory_rounded;
+    }
     return Icons.settings_ethernet_rounded;
   }
 
   String _getRiskLabel(int port) {
-    if (port == 23) return 'CRITICAL';
-    if (port == 22 || port == 3389 || port == 5900) return 'HIGH';
-    if (port == 445 || port == 139 || port == 6379 || port == 27017)
+    if (port == 23) {
+      return 'CRITICAL';
+    }
+    if (port == 22 || port == 3389 || port == 5900) {
       return 'HIGH';
+    }
+    if (port == 445 || port == 139 || port == 6379 || port == 27017) {
+      return 'HIGH';
+    }
     if (port == 21 || port == 25 || port == 111 || port == 514) return 'MEDIUM';
     return '';
   }

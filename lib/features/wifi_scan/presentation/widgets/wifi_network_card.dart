@@ -5,6 +5,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../domain/entities/wifi_network.dart';
 import '../../domain/entities/wifi_observation.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../../features/security/presentation/pages/wifi_details_page.dart';
 
 class WifiNetworkCard extends StatelessWidget {
@@ -183,7 +184,7 @@ class WifiNetworkCard extends StatelessWidget {
                       glowRadius: 6,
                     ),
                     Text(
-                      'dBm',
+                      l10n.dbmLabel,
                       style: GoogleFonts.rajdhani(
                         color: signalColor.withValues(alpha: 0.7),
                         fontSize: 10,
@@ -211,14 +212,16 @@ class WifiNetworkCard extends StatelessWidget {
                 ),
                 if (network.wifiStandard != null)
                   _MiniTechTag(
-                    label: wifiStandardLabel(network.wifiStandard!),
+                    label: context.translateWifiStandard(network.wifiStandard!),
                     icon: Icons.speed_rounded,
                     color: AppColors.neonCyan,
                   ),
                 if (network.estimatedMaxThroughputMbps != null)
                   _MiniTechTag(
                     label:
-                        '${network.estimatedMaxThroughputMbps!.round()} Mbps',
+                        l10n.throughputLabel(
+                          network.estimatedMaxThroughputMbps!.round(),
+                        ),
                     icon: Icons.bolt_rounded,
                     color: AppColors.neonGreen,
                   ),

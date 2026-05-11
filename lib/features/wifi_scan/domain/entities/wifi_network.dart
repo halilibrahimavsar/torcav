@@ -39,22 +39,6 @@ WifiStandard wifiStandardFromInt(int? value) {
   }
 }
 
-String wifiStandardLabel(WifiStandard std) {
-  switch (std) {
-    case WifiStandard.legacy:
-      return 'Wi-Fi (legacy)';
-    case WifiStandard.n:
-      return 'Wi-Fi 4 (802.11n)';
-    case WifiStandard.ac:
-      return 'Wi-Fi 5 (802.11ac)';
-    case WifiStandard.ax:
-      return 'Wi-Fi 6 (802.11ax)';
-    case WifiStandard.be:
-      return 'Wi-Fi 7 (802.11be)';
-    case WifiStandard.unknown:
-      return 'Unknown';
-  }
-}
 
 class WifiNetwork extends Equatable {
   final String ssid;
