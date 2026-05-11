@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/storage/hive_storage_service.dart';
 import 'package:torcav/core/di/injection.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../security/domain/entities/network_context_type.dart';
@@ -123,7 +124,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       ),
                     ),
                     child: Text(
-                      _page == _totalPages - 1 ? 'START SCANNING' : 'NEXT',
+                      _page == _totalPages - 1
+                          ? context.l10n.onboardingStartScanning
+                          : context.l10n.onboardingNext,
                       style: GoogleFonts.orbitron(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
@@ -199,10 +202,8 @@ class _WelcomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return _OnboardingSlide(
       icon: Icons.wifi_find_rounded,
-      title: 'WELCOME TO TORCAV',
-      body:
-          'A cyberpunk Wi-Fi analyzer that helps you understand your wireless '
-          'environment, find the best channel, and detect security threats.',
+      title: context.l10n.onboardingWelcomeTitle,
+      body: context.l10n.onboardingWelcomeBody,
       color: Theme.of(context).colorScheme.primary,
     );
   }
@@ -215,12 +216,8 @@ class _PermissionsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return _OnboardingSlide(
       icon: Icons.location_on_rounded,
-      title: 'LOCATION PERMISSION',
-      body:
-          'Android requires Location permission to scan for Wi-Fi networks. '
-          'To show signal heatmaps, we also use activity sensors. '
-          'All data stays on your device and is never uploaded. '
-          'Your location is only used to read nearby Wi-Fi signals.',
+      title: context.l10n.onboardingLocationTitle,
+      body: context.l10n.onboardingLocationBody,
       color: Theme.of(context).colorScheme.tertiary,
     );
   }
@@ -240,7 +237,7 @@ class _TourPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'THREE TABS',
+            context.l10n.onboardingTourTitle,
             style: GoogleFonts.orbitron(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -251,20 +248,20 @@ class _TourPage extends StatelessWidget {
           const SizedBox(height: 24),
           _TourItem(
             icon: Icons.grid_view_rounded,
-            label: 'Dashboard',
-            desc: 'Live overview of your network health',
+            label: context.l10n.onboardingTourDashboardLabel,
+            desc: context.l10n.onboardingTourDashboardDesc,
             color: primary,
           ),
           _TourItem(
             icon: Icons.radar_rounded,
-            label: 'Discovery',
-            desc: 'Scan Wi-Fi networks and LAN devices',
+            label: context.l10n.onboardingTourDiscoveryLabel,
+            desc: context.l10n.onboardingTourDiscoveryDesc,
             color: Theme.of(context).colorScheme.secondary,
           ),
           _TourItem(
             icon: Icons.hub_rounded,
-            label: 'Operations',
-            desc: 'Security analysis, speed tests, reports',
+            label: context.l10n.onboardingTourOperationsLabel,
+            desc: context.l10n.onboardingTourOperationsDesc,
             color: Theme.of(context).colorScheme.tertiary,
           ),
         ],
@@ -288,7 +285,7 @@ class _NetworkContextPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'WHERE WILL YOU USE TORCAV?',
+            context.l10n.onboardingContextTitle,
             style: GoogleFonts.orbitron(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -298,9 +295,7 @@ class _NetworkContextPage extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            'This shapes how strict the security score is when we can\'t '
-            'tell on our own. You can change it any time, and it can be '
-            'overridden per network later.',
+            context.l10n.onboardingContextBody,
             style: GoogleFonts.rajdhani(
               fontSize: 14,
               color: theme.colorScheme.onSurfaceVariant,
@@ -311,10 +306,8 @@ class _NetworkContextPage extends StatelessWidget {
           _ContextChoice(
             type: NetworkContextType.home,
             icon: Icons.home_rounded,
-            title: 'Mostly my own home / office',
-            body:
-                'Strict scoring. Any unexpected change in encryption or new '
-                'devices on the LAN gets flagged loudly.',
+            title: context.l10n.onboardingContextHomeTitle,
+            body: context.l10n.onboardingContextHomeBody,
             isSelected: selected == NetworkContextType.home,
             onTap: () => onSelected(NetworkContextType.home),
           ),
@@ -322,11 +315,8 @@ class _NetworkContextPage extends StatelessWidget {
           _ContextChoice(
             type: NetworkContextType.public,
             icon: Icons.coffee_rounded,
-            title: 'Mostly cafés / hotels / airports',
-            body:
-                'Relaxed scoring on encryption (these networks are often '
-                'open) but heightened sensitivity to lure SSIDs and evil-twin '
-                'patterns. Active LAN scanning is suppressed by default.',
+            title: context.l10n.onboardingContextPublicTitle,
+            body: context.l10n.onboardingContextPublicBody,
             isSelected: selected == NetworkContextType.public,
             onTap: () => onSelected(NetworkContextType.public),
           ),
@@ -334,10 +324,8 @@ class _NetworkContextPage extends StatelessWidget {
           _ContextChoice(
             type: NetworkContextType.guest,
             icon: Icons.group_rounded,
-            title: 'Mostly guest / shared networks',
-            body:
-                'Same Wi-Fi as friends, family, or coworkers. Drift is '
-                'expected; we don\'t alert on every new device.',
+            title: context.l10n.onboardingContextGuestTitle,
+            body: context.l10n.onboardingContextGuestBody,
             isSelected: selected == NetworkContextType.guest,
             onTap: () => onSelected(NetworkContextType.guest),
           ),
@@ -345,10 +333,8 @@ class _NetworkContextPage extends StatelessWidget {
           _ContextChoice(
             type: NetworkContextType.unknown,
             icon: Icons.help_outline_rounded,
-            title: 'Not sure yet',
-            body:
-                'No strong default. We\'ll guess from each network\'s '
-                'fingerprint and let you correct it.',
+            title: context.l10n.onboardingContextUnknownTitle,
+            body: context.l10n.onboardingContextUnknownBody,
             isSelected: selected == NetworkContextType.unknown,
             onTap: () => onSelected(NetworkContextType.unknown),
           ),
@@ -529,7 +515,7 @@ class _DonePageState extends State<_DonePage> {
           ),
           const SizedBox(height: 32),
           Text(
-            'ALL SET',
+            context.l10n.onboardingDoneTitle,
             textAlign: TextAlign.center,
             style: GoogleFonts.orbitron(
               fontSize: 20,
@@ -540,7 +526,7 @@ class _DonePageState extends State<_DonePage> {
           ),
           const SizedBox(height: 12),
           Text(
-            'Torcav is a privacy-first network assistant. It provides safe network diagnostics and hardening tools for networks you own or are authorized to assess. No data is collected or transmitted externally.',
+            context.l10n.onboardingDoneBody,
             textAlign: TextAlign.center,
             style: GoogleFonts.rajdhani(
               fontSize: 14,
@@ -560,7 +546,7 @@ class _DonePageState extends State<_DonePage> {
                   height: 1.4,
                 ),
                 children: [
-                  const TextSpan(text: 'I have read and accept the '),
+                  TextSpan(text: context.l10n.onboardingAcceptPrefix),
                   WidgetSpan(
                     alignment: PlaceholderAlignment.middle,
                     child: InkWell(
@@ -571,7 +557,7 @@ class _DonePageState extends State<_DonePage> {
                         ),
                       ),
                       child: Text(
-                        'Terms of Service',
+                        context.l10n.onboardingTosLink,
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           decoration: TextDecoration.underline,
@@ -579,7 +565,7 @@ class _DonePageState extends State<_DonePage> {
                       ),
                     ),
                   ),
-                  const TextSpan(text: ' and '),
+                  TextSpan(text: context.l10n.onboardingAcceptAnd),
                   WidgetSpan(
                     alignment: PlaceholderAlignment.middle,
                     child: InkWell(
@@ -590,7 +576,7 @@ class _DonePageState extends State<_DonePage> {
                         ),
                       ),
                       child: Text(
-                        'Privacy Policy',
+                        context.l10n.onboardingPrivacyLink,
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           decoration: TextDecoration.underline,
@@ -598,7 +584,7 @@ class _DonePageState extends State<_DonePage> {
                       ),
                     ),
                   ),
-                  const TextSpan(text: '.'),
+                  TextSpan(text: context.l10n.onboardingAcceptSuffix),
                 ],
               ),
             ),
@@ -608,7 +594,7 @@ class _DonePageState extends State<_DonePage> {
             value: _authorized,
             onChanged: (v) => _update(_tos, v, _age),
             content: Text(
-              'I confirm I have permission to scan the networks I will analyze.',
+              context.l10n.onboardingConfirmPermission,
               style: GoogleFonts.rajdhani(
                 fontSize: 13,
                 color: Theme.of(context).colorScheme.onSurface,
@@ -621,7 +607,7 @@ class _DonePageState extends State<_DonePage> {
             value: _age,
             onChanged: (v) => _update(_tos, _authorized, v),
             content: Text(
-              'I confirm I am 13 years of age or older.',
+              context.l10n.onboardingConfirmAge,
               style: GoogleFonts.rajdhani(
                 fontSize: 13,
                 color: Theme.of(context).colorScheme.onSurface,

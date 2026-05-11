@@ -65,22 +65,22 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(
-          'CLEAR SCAN HISTORY',
+          context.l10n.clearScanHistoryTitle,
           style: GoogleFonts.orbitron(fontSize: 13, fontWeight: FontWeight.bold),
         ),
         content: Text(
-          'Delete all LAN scan records? This cannot be undone.',
+          context.l10n.clearScanHistoryBody,
           style: GoogleFonts.rajdhani(fontSize: 14),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text('CANCEL', style: GoogleFonts.orbitron(fontSize: 10)),
+            child: Text(context.l10n.cancelLabel, style: GoogleFonts.orbitron(fontSize: 10)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(
-              'DELETE ALL',
+              context.l10n.deleteAllLabel,
               style: GoogleFonts.orbitron(
                 fontSize: 10,
                 color: Theme.of(ctx).colorScheme.error,
@@ -109,17 +109,16 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
               context: context,
               barrierDismissible: false,
               builder: (ctx) => ProminentDisclosureDialog(
-                title: 'NETWORK AUDIT CONSENT',
-                description:
-                    'Active network scanning generates traffic to identify devices and services. This may be flagged by network security systems.',
+                title: context.l10n.networkAuditConsentTitle,
+                description: context.l10n.networkAuditConsentDesc,
                 icon: Icons.gavel_rounded,
-                privacyPoints: const [
-                  'Scan local network for active nodes',
-                  'Fingerprint open services and OS',
-                  'Identify potential vulnerabilities',
-                  'Confirm you have authorization for this network',
+                privacyPoints: [
+                  context.l10n.consentScanNodes,
+                  context.l10n.consentFingerprint,
+                  context.l10n.consentIdentifyVulns,
+                  context.l10n.consentConfirmAuth,
                 ],
-                actionLabel: 'I UNDERSTAND',
+                actionLabel: context.l10n.iUnderstand,
                 onAccept: () => Navigator.of(ctx).pop(true),
                 onCancel: () => Navigator.of(ctx).pop(false),
                 color: Theme.of(context).colorScheme.secondary,
@@ -171,7 +170,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          'iOS: LAN discovery is limited. mDNS browsing and ARP table access may be restricted by the OS.',
+                          context.l10n.iosLanDiscoveryLimited,
                           style: GoogleFonts.rajdhani(
                             color: Colors.orange,
                             fontSize: 12,
@@ -253,7 +252,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                             size: 18,
                             color: Theme.of(context).colorScheme.error,
                           ),
-                          tooltip: 'Clear scan history',
+                          tooltip: context.l10n.clearScanHistoryTitle,
                           onPressed: () => _clearHistory(context),
                         ),
                     ],

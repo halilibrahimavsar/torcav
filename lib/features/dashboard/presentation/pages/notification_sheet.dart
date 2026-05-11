@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../security/domain/entities/security_event.dart';
@@ -63,7 +64,7 @@ class NotificationSheet extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  'SECURITY ALERTS',
+                  context.l10n.securityAlertsTitle,
                   style: GoogleFonts.orbitron(
                     color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 15,
@@ -104,7 +105,7 @@ class NotificationSheet extends StatelessWidget {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                     label: Text(
-                      'MARK ALL READ',
+                      context.l10n.markAllRead,
                       style: GoogleFonts.orbitron(
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
@@ -132,7 +133,7 @@ class NotificationSheet extends StatelessWidget {
                       color: Theme.of(context).colorScheme.error,
                     ),
                     label: Text(
-                      'CLEAR ALL',
+                      context.l10n.clearAll,
                       style: GoogleFonts.orbitron(
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
@@ -152,7 +153,7 @@ class NotificationSheet extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'Events are retained for 30 days. Swipe left to dismiss.',
+                context.l10n.eventsRetentionInfo,
                 style: GoogleFonts.rajdhani(
                   color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
                   fontSize: 11,
@@ -193,7 +194,7 @@ class NotificationSheet extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'All systems clear',
+                    context.l10n.allSystemsClear,
                     style: GoogleFonts.rajdhani(
                       color: Theme.of(
                         context,
@@ -279,7 +280,7 @@ class NotificationTile extends StatelessWidget {
                   _getTypeIcon(event.type, color),
                   const SizedBox(width: 10),
                   Text(
-                    _getTypeLabel(event.type),
+                    _getTypeLabel(context, event.type),
                     style: GoogleFonts.orbitron(
                       color: color,
                       fontSize: 10,
@@ -323,7 +324,7 @@ class NotificationTile extends StatelessWidget {
           if (_isHeuristicEvent(event.type)) ...[
             const SizedBox(height: 8),
             Text(
-              'Heuristic detection — not a confirmed attack. False positives may occur in congested environments.',
+              context.l10n.heuristicDetectionNote,
               style: GoogleFonts.outfit(
                 color: Theme.of(
                   context,
@@ -340,7 +341,7 @@ class NotificationTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  'MARK AS READ',
+                  context.l10n.markAsRead,
                   style: GoogleFonts.orbitron(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 10,
@@ -412,30 +413,30 @@ class NotificationTile extends StatelessWidget {
     return Icon(icon, color: color, size: 16);
   }
 
-  String _getTypeLabel(SecurityEventType type) {
+  String _getTypeLabel(BuildContext context, SecurityEventType type) {
     switch (type) {
       case SecurityEventType.rogueApSuspected:
-        return 'ROGUE AP';
+        return context.l10n.eventTypeRogueAp;
       case SecurityEventType.evilTwinDetected:
-        return 'EVIL TWIN';
+        return context.l10n.eventTypeEvilTwin;
       case SecurityEventType.deauthAttackSuspected:
-        return 'DEAUTH ATTACK';
+        return context.l10n.eventTypeDeauthAttack;
       case SecurityEventType.encryptionDowngraded:
-        return 'ENCRYPTION WEAKENED';
+        return context.l10n.eventTypeEncryptionWeakened;
       case SecurityEventType.deauthBurstDetected:
-        return 'DEAUTH BURST';
+        return context.l10n.eventTypeDeauthBurst;
       case SecurityEventType.handshakeCaptureStarted:
-        return 'HANDSHAKE ANALYSIS';
+        return context.l10n.eventTypeHandshakeAnalysis;
       case SecurityEventType.handshakeCaptureCompleted:
-        return 'HANDSHAKE SECURED';
+        return context.l10n.eventTypeHandshakeSecured;
       case SecurityEventType.captivePortalDetected:
-        return 'CAPTIVE PORTAL';
+        return context.l10n.eventTypeCaptivePortal;
       case SecurityEventType.unsupportedOperation:
-        return 'UNSUPPORTED';
+        return context.l10n.eventTypeUnsupported;
       case SecurityEventType.arpSpoofingDetected:
-        return 'ARP SPOOFING';
+        return context.l10n.eventTypeArpSpoofing;
       case SecurityEventType.dnsHijackingDetected:
-        return 'DNS HIJACKING';
+        return context.l10n.eventTypeDnsHijacking;
     }
   }
 }

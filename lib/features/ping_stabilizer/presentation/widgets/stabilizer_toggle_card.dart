@@ -64,7 +64,7 @@ class StabilizerToggleCard extends StatelessWidget {
                         Text(
                           isActive
                               ? '${state.stats.ewmaLatencyMs.toStringAsFixed(0)} ms · '
-                                  'jitter ${state.stats.ewmaJitterMs.toStringAsFixed(1)} ms'
+                                  '${l10n.jitterLabel.toLowerCase()} ${state.stats.ewmaJitterMs.toStringAsFixed(1)} ms'
                               : l10n.pingStabilizerToggleHint,
                           style: TextStyle(
                             fontSize: 12,

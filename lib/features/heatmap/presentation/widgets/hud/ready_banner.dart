@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:torcav/core/extensions/context_extensions.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
@@ -83,7 +84,7 @@ class ReadyBanner extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Tap to finish scan',
+                          context.l10n.readyBannerTapFinish,
                           style: GoogleFonts.outfit(
                             color:
                                 isLight

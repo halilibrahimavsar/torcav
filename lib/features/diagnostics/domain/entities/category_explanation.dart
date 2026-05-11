@@ -19,18 +19,34 @@ class CategoryExplanation extends Equatable {
   /// no input is reliable enough to project (e.g. unknown PHY rate).
   final String? estimatedImprovement;
 
+  final String? whatIsKey;
+  final String? whyItMattersKey;
+  final List<String>? howToFixKeys;
+  final String? estimatedImprovementKey;
+  final Map<String, dynamic>? estimatedImprovementParams;
+
   const CategoryExplanation({
-    required this.whatIs,
-    required this.whyItMatters,
-    required this.howToFix,
+    this.whatIs = '',
+    this.whyItMatters = '',
+    this.howToFix = const [],
     this.estimatedImprovement,
+    this.whatIsKey,
+    this.whyItMattersKey,
+    this.howToFixKeys,
+    this.estimatedImprovementKey,
+    this.estimatedImprovementParams,
   });
 
   @override
   List<Object?> get props => [
-    whatIs,
-    whyItMatters,
-    howToFix,
-    estimatedImprovement,
-  ];
+        whatIs,
+        whyItMatters,
+        howToFix,
+        estimatedImprovement,
+        whatIsKey,
+        whyItMattersKey,
+        howToFixKeys,
+        estimatedImprovementKey,
+        estimatedImprovementParams,
+      ];
 }

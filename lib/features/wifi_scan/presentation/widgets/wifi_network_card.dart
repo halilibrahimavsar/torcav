@@ -129,7 +129,7 @@ class WifiNetworkCard extends StatelessWidget {
                           if (network.isRandomizedBssid) ...[
                             const SizedBox(width: 4),
                             Tooltip(
-                              message: 'Randomized MAC Detected',
+                              message: l10n.randomizedMacDetectedLabel,
                               child: Icon(
                                 Icons.privacy_tip_outlined,
                                 color: AppColors.neonOrange,
@@ -260,7 +260,7 @@ class WifiNetworkCard extends StatelessWidget {
                 ],
                 const Spacer(),
                 Text(
-                  'σ ${network.signalStdDev.toStringAsFixed(1)}',
+                  l10n.signalStability(network.signalStdDev.toStringAsFixed(1)),
                   style: GoogleFonts.rajdhani(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 11,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../../domain/repositories/diagnostics_repository.dart';
+import '../../../../core/extensions/context_extensions.dart';
 
 class ProgressSteps extends StatelessWidget {
   const ProgressSteps({
@@ -48,7 +48,7 @@ class ProgressSteps extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  _label(step),
+                  _label(context, step),
                   style: GoogleFonts.rajdhani(
                     color: _isCurrent(step) || _isComplete(step)
                         ? theme.colorScheme.onSurface
@@ -73,11 +73,14 @@ class ProgressSteps extends StatelessWidget {
     return step.index < currentStep!.index;
   }
 
-  String _label(DiagnosticsStep step) => switch (step) {
-    DiagnosticsStep.signal => 'Reading signal',
-    DiagnosticsStep.channel => 'Analysing channels',
-    DiagnosticsStep.speedTest => 'Measuring speed',
-    DiagnosticsStep.dns => 'Benchmarking DNS',
-    DiagnosticsStep.finalize => 'Finalising diagnosis',
-  };
+  String _label(BuildContext context, DiagnosticsStep step) {
+    final l10n = context.l10n;
+    return switch (step) {
+      DiagnosticsStep.signal => l10n.diagStepReadingSignal,
+      DiagnosticsStep.channel => l10n.diagStepAnalysingChannels,
+      DiagnosticsStep.speedTest => l10n.diagStepMeasuringSpeed,
+      DiagnosticsStep.dns => l10n.diagStepBenchmarkingDns,
+      DiagnosticsStep.finalize => l10n.diagStepFinalizing,
+    };
+  }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../core/l10n/app_localizations.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../domain/entities/scan_snapshot.dart';
@@ -59,9 +59,7 @@ class WifiBentoHeader extends StatelessWidget {
                               Expanded(
                                 child: BentoStatTile(
                                   label:
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.networksLabel,
+                                      context.l10n.networksLabel,
                                   value: '${snapshot.networks.length}',
                                   icon: Icons.wifi_find_rounded,
                                   color: Theme.of(context).colorScheme.primary,
@@ -71,16 +69,12 @@ class WifiBentoHeader extends StatelessWidget {
                               Expanded(
                                 child: BentoStatTile(
                                   label:
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.securityLabel,
+                                      context.l10n.securityLabel,
                                   value:
                                       '${snapshot.networks.where((n) => n.security != SecurityType.open).length}',
                                   icon: Icons.security_rounded,
                                   color: AppColors.neonGreen,
-                                  subValue: AppLocalizations.of(
-                                    context,
-                                  )!.openCount(
+                                  subValue: context.l10n.openCount(
                                     snapshot.networks
                                         .where(
                                           (n) =>
@@ -100,28 +94,22 @@ class WifiBentoHeader extends StatelessWidget {
                               Expanded(
                                 child: BentoStatTile(
                                   label:
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.avgSignalLabel,
+                                      context.l10n.avgSignalLabel,
                                   value:
                                       snapshot.networks.isEmpty
-                                          ? AppLocalizations.of(
-                                            context,
-                                          )!.notAvailable
+                                          ? context.l10n.notAvailable
                                           : '${(snapshot.networks.map((n) => n.avgSignalDbm).reduce((a, b) => a + b) / snapshot.networks.length).round()}',
                                   icon: Icons.signal_wifi_4_bar_rounded,
                                   color: AppColors.neonPurple,
                                   subValue:
-                                      AppLocalizations.of(context)!.dbmCaps,
+                                      context.l10n.dbmCaps,
                                 ),
                               ),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: BentoStatTile(
                                   label:
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.interfaceLabel,
+                                      context.l10n.interfaceLabel,
                                   value: snapshot.interfaceName.toUpperCase(),
                                   icon: Icons.lan_rounded,
                                   color: AppColors.neonOrange,
@@ -169,9 +157,7 @@ class WifiBentoHeader extends StatelessWidget {
                               ),
                               const Spacer(),
                               Text(
-                                AppLocalizations.of(
-                                  context,
-                                )!.networksCount(band.networkCount),
+                                context.l10n.networksCount(band.networkCount),
                                 style: GoogleFonts.rajdhani(
                                   color:
                                       Theme.of(context).colorScheme.onSurface,

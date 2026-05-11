@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:torcav/core/extensions/context_extensions.dart';
 import 'app_theme.dart';
 
 // ── Info Icon Button ─────────────────────────────────────────────────
@@ -161,7 +162,7 @@ class NeonErrorCard extends StatelessWidget {
                     size: 18,
                   ),
                   label: Text(
-                    'RETRY',
+                    context.l10n.retry.toUpperCase(),
                     style: GoogleFonts.orbitron(
                       fontSize: 12,
                       color: errorColor,

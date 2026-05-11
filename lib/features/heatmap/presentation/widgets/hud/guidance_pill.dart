@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/hud/hud_models.dart';
 
@@ -43,7 +44,7 @@ class GuidancePill extends StatelessWidget {
           _buildStatusDot(color),
           const SizedBox(width: 10),
           Text(
-            (customInstruction ?? _getStageLabel(stage)).toUpperCase(),
+            (customInstruction ?? _getStageLabel(context, stage)).toUpperCase(),
             style: GoogleFonts.orbitron(
               color: color,
               fontSize: 10,
@@ -74,20 +75,21 @@ class GuidancePill extends StatelessWidget {
     );
   }
 
-  String _getStageLabel(SurveyStage stage) {
+  String _getStageLabel(BuildContext context, SurveyStage stage) {
+    final l10n = context.l10n;
     switch (stage) {
       case SurveyStage.idle:
-        return 'Idle';
+        return l10n.guidanceStageIdle;
       case SurveyStage.calibration:
-        return 'Initializing';
+        return l10n.guidanceStageInitializing;
       case SurveyStage.coverageSweep:
-        return 'Mapping Signal';
+        return l10n.guidanceStageMappingSignal;
       case SurveyStage.weakZoneReview:
-        return 'Scanning Weak Zones';
+        return l10n.guidanceStageScanningWeakZones;
       case SurveyStage.wrapUp:
-        return 'Ready to Finish';
+        return l10n.guidanceStageReadyToFinish;
       case SurveyStage.review:
-        return 'Reviewing';
+        return l10n.guidanceStageReviewing;
     }
   }
 }

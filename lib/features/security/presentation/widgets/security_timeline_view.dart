@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
 import '../../domain/entities/security_event.dart' as domain_event;
 
@@ -209,7 +210,7 @@ class SecurityEventCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        '${event.timestamp.hour.toString().padLeft(2, '0')}:${event.timestamp.minute.toString().padLeft(2, '0')}:${event.timestamp.second.toString().padLeft(2, '0')} • LOG_ID: ${event.id.hashCode.toRadixString(16).toUpperCase()}',
+                        '${event.timestamp.hour.toString().padLeft(2, '0')}:${event.timestamp.minute.toString().padLeft(2, '0')}:${event.timestamp.second.toString().padLeft(2, '0')} • ${context.l10n.logIdLabel(event.id.hashCode.toRadixString(16).toUpperCase())}',
                         style: GoogleFonts.firaCode(
                           color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
                           fontSize: 9,
@@ -236,16 +237,17 @@ class SecurityEventCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'TARGET: ${event.ssid.isEmpty ? l10n.hiddenNetwork : event.ssid}',
-                    style: GoogleFonts.rajdhani(
+                    context.l10n.targetLabel(event.ssid.isEmpty ? l10n.hiddenNetwork : event.ssid),
+                    style: GoogleFonts.orbitron(
                       color: scheme.onSurface,
+                      fontSize: 11,
                       fontWeight: FontWeight.w800,
-                      fontSize: 13,
-                      letterSpacing: 0.5,
+                      letterSpacing: 1,
                     ),
                   ),
+                  const SizedBox(height: 4),
                   Text(
-                    'BSSID: ${event.bssid}',
+                    context.l10n.bssidLabel(event.bssid),
                     style: GoogleFonts.firaCode(
                       color: scheme.onSurfaceVariant,
                       fontSize: 10,
@@ -253,12 +255,11 @@ class SecurityEventCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    event.evidence,
+                    _translateEvidence(context, event.evidence),
                     style: GoogleFonts.rajdhani(
-                      color: scheme.onSurface.withValues(alpha: 0.8),
+                      color: scheme.onSurfaceVariant,
                       fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      height: 1.3,
+                      height: 1.4,
                     ),
                   ),
                 ],
@@ -268,6 +269,42 @@ class SecurityEventCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _translateEvidence(BuildContext context, String evidence) {
+    final l10n = context.l10n;
+    if (evidence.startsWith('Discovered: ')) {
+      final devices = evidence.replaceFirst('Discovered: ', '');
+      return l10n.lanDiscoveryEvidence(devices);
+    }
+    if (evidence.startsWith('Open Ports: ')) {
+      final ports = evidence.replaceFirst('Open Ports: ', '');
+      return l10n.gatewayPortsExposedEvidence(ports);
+    }
+    if (evidence.startsWith('Target: ') && evidence.contains(', Port: ')) {
+      // Target: 192.168.1.1, Port: 80, Service: http
+      final parts = evidence.split(', ');
+      final ip = parts[0].replaceFirst('Target: ', '');
+      final port = int.tryParse(parts[1].replaceFirst('Port: ', '')) ?? 0;
+      final service = parts[2].replaceFirst('Service: ', '');
+      return l10n.openServiceDetectedEvidence(ip, port, service);
+    }
+    if (evidence.startsWith('IP: ') && evidence.contains(', MAC: ')) {
+      // IP: 192.168.1.5, MAC: 00:11:22:33:44:55, Vendor: Apple
+      final parts = evidence.split(', ');
+      final ip = parts[0].replaceFirst('IP: ', '');
+      final mac = parts[1].replaceFirst('MAC: ', '');
+      final vendor = parts[2].replaceFirst('Vendor: ', '');
+      return l10n.lanDeviceDiscoveredEvidence(ip, mac, vendor);
+    }
+    if (evidence.startsWith('The access point advertises no encryption for ')) {
+      final network = evidence.replaceFirst(
+        'The access point advertises no encryption for ',
+        '',
+      );
+      return context.l10n.evidenceNoEncryption(network);
+    }
+    return evidence;
   }
 }
 

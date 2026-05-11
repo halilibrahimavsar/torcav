@@ -1,5 +1,4 @@
 {
-    "@@locale": "tr",
     "wifiScanTitle": "WIFI TARAMA",
     "@wifiScanTitle": {
         "description": "Title for the wifi scan screen."
@@ -24,7 +23,7 @@
     "@deepScanExperimentalTitle": {
         "description": "Title for the experimental deep scan toggle in Security Center."
     },
-    "deepScanExperimentalSubtitle": "Actively probe LAN for devices and ports. Increased battery usage.",
+    "deepScanExperimentalSubtitle": "Cihazlar ve portlar için LAN'ı aktif olarak sorgulayın. Artan pil kullanımı.",
     "@deepScanExperimentalSubtitle": {
         "description": "Subtitle for the experimental deep scan toggle in Security Center."
     },
@@ -741,9 +740,9 @@
     "@noSecurityEvents": {
         "description": "No Security Events"
     },
-    "dnsSecurityTitle": "DNS INTEGRITY",
+    "dnsSecurityTitle": "DNS GÜVENLİĞİ",
     "@dnsSecurityTitle": {
-        "description": "Title for DNS Security card"
+        "description": "DNS security and integrity test title"
     },
     "dnsSecurityBody": "Verify that your DNS queries are not being hijacked or spoofed.",
     "@dnsSecurityBody": {
@@ -794,7 +793,51 @@
     "@authLocalSystem": {
         "description": "Auth Local System"
     },
-    "remoteNodeIdLabel": "UZAK_DÜĞÜM_İD: {id}",
+    "remoteNodeIdLabel": "UZAK_DÜĞÜM_KİMLİĞİ: {id}",
+    "logIdLabel": "GÜNLÜK_KİMLİĞİ: {id}",
+    "targetLabel": "HEDEF: {target}",
+    "dnsStatusPending": "BEKLENİYOR",
+    "dnsStatusNotAssessed": "DEĞERLENDİRİLMEDİ",
+    "dnsStatusInconsistent": "TUTARSIZ",
+    "dnsStatusEnabled": "ETKİN",
+    "dnsStatusDisabled": "DEVRE DIŞI",
+    "notAvailableCaps": "YOK",
+    "evilTwinSignalOuiMismatch": "İki erişim noktası farklı donanım üreticilerinden geliyor (MAC önekleri eşleşmiyor).",
+    "evilTwinSignalSecurityDowngrade": "Çift farklı şifreleme sunuyor — tipik bir sürüm düşürme saldırısı (örneğin gerçek ağ = WPA3, sahte = WPA2 veya Açık).",
+    "evilTwinSignalSameBandChannelDrift": "Her ikisi de aynı frekans bandında ancak çok farklı kanallarda yayın yapıyor — gerçek radyolar nadiren bu kadar uzağa sıçrar.",
+    "evilTwinSignalChannelWidthMismatch": "Farklı kanal genişlikleri kullanıyorlar (örneğin 80 MHz'e karşı 20 MHz). Ucuz sahte donanımlar genellikle kopyaladıkları cihazdan daha dar çalışır.",
+    "evilTwinSignalWpsToggleMismatch": "WPS bir erişim noktasında etkin, diğerinde değil.",
+    "evilTwinSignalPmfToggleMismatch": "Korumalı Yönetim Çerçeveleri (802.11w) bir tarafta etkin, diğerinde değil.",
+    "evilTwinSignalHiddenVsVisible": "Bir erişim noktası gizli, diğeri adını açıkça yayınlıyor.",
+    "evilTwinSignalSharedMldMac": "Her ikisi de aynı Wi-Fi 7 çoklu bağlantı MAC'ini paylaşıyor — bunlar kelimenin tam anlamıyla aynı fiziksel erişim noktasıdır.",
+    "evilTwinSignalBssidProximity": "MAC adresleri yalnızca son hanelerde farklılık gösteriyor — üreticiler bu kalıbı aynı yönlendiricideki radyolar için kullanır.",
+    "evilTwinSignalCrossBandSibling": "Farklı Wi-Fi bantlarında (2.4 / 5 / 6 GHz) bulunuyorlar ancak aynı üreticiyi ve güvenliği paylaşıyorlar — klasik çift bantlı yönlendirici kalıbı.",
+    "evilTwinSignalKnownMeshVendor": "Her iki MAC adresi de bilinen bir mesh yönlendirici ailesine aittir (Eero, Google Nest, Asus AiMesh, Netgear Orbi, TP-Link Deco veya Linksys Velop). Mesh düğümleri aynı Wi-Fi adını bilerek paylaşır.",
+    "evilTwinSafeHeadline": "Farklı bantlarda aynı yönlendirici gibi görünüyor",
+    "evilTwinSafeWhatIs": "Çoğu ev yönlendiricisi aynı Wi-Fi adını (SSID) 2.4 GHz, 5 GHz ve bazen 6 GHz üzerinden yayınlar. Telefonunuz bunları tek bir cihaz olsalar bile ayrı erişim noktaları olarak görür. Mesh sistemleri de aynı şekilde çalışır — her düğüm paylaşılan tek bir ad kullanır.",
+    "evilTwinSafeWhyItMatters": "Bu eşleşme normaldir ve beklenen bir durumdur — işlem yapılmasına gerek yoktur. Bunu burada yalnızca kontrol ettiğimizi ve elediğimizi bilmeniz için gösteriyoruz.",
+    "evilTwinSafeAction": "Yapılacak bir şey yok. Bu aynı yönlendirici veya mesh sisteminizin bir parçası.",
+    "evilTwinSafePhrase": "Bu çifti kontrol ettik ve normal bir çift bantlı yönlendirici veya mesh kalıbıyla eşleşiyor — bir saldırı değil.",
+    "evilTwinNoPatternHeadline": "Evil-twin kalıbı tespit edilmedi",
+    "evilTwinNoPatternAction": "Acil bir durum yok. Ortamınızda bir şeylerin değiştiğinden şüpheleniyorsanız taramayı tekrar çalıştırın.",
+    "evilTwinNoPatternPhrase": "Bu adı paylaşan erişim noktaları arasında bazı küçük farklılıklar var, ancak bir saldırı gibi görünecek kadar değil.",
+    "evilTwinWhatIs": "Bir \"evil twin\", gerçek bir ağın adını kopyalayan sahte bir Wi-Fi ağıdır — genellikle eviniz veya iş yerinizdeki ağ veya popüler bir kafe erişim noktasıdır. Amaç, telefonunuzun gerçek olan yerine saldırganın yönlendiricisine bağlanmasını sağlamaktır.",
+    "evilTwinWhyItMatters": "Cihazınız saldırganın Wi-Fi ağına bağlandığında, şifrelenmemiş trafiği okuyabilir veya kurcalayabilir, sahte giriş sayfaları sunabilir, sizi benzer görünümlü web sitelerine yönlendirebilir veya HTTPS'yi düzgün kullanmayan uygulamalara yazılan şifreleri ele geçirebilirler. Bankacılık, e-posta ve mesajlaşma olağan hedeflerdir.",
+    "evilTwinHighHeadline": "Güçlü evil-twin kalıbı — bu ağı güvenilmez olarak kabul edin",
+    "evilTwinMediumHeadline": "Şüpheli twin kalıbı — bağlanmadan önce doğrulayın",
+    "evilTwinLowHeadline": "Zayıf twin sinyali — buna dikkat edin",
+    "evilTwinHighPhrase": "Güven: %{pct}. Bu adı kullanan iki erişim noktası arasında birden fazla güçlü uyumsuzluk var. Bu, bir saldırganın bir Wi-Fi'yi taklit ederken oluşturduğu kalıptır.",
+    "evilTwinMediumPhrase": "Güven: %{pct}. Bu adı paylaşan erişim noktaları arasında birkaç ayrıntı örtüşmüyor. İyi niyetli olabilir, ancak güvenmeden önce doğrulayın.",
+    "evilTwinLowPhrase": "Güven: %{pct}. Birkaç küçük uyumsuzluk fark edildi. Büyük olasılıkla iyi niyetli — tekrar kontrol edebilmeniz için işaretlendi.",
+    "evilTwinActionPasswords": "Bu Wi-Fi'ye bağlıyken şifre, ödeme ayrıntıları veya iki faktörlü kodlar girmeyin.",
+    "evilTwinActionCheckMac": "Evdeyseniz, yönlendiricinizin altında yazan gerçek MAC'i (BSSID) kontrol edin ve bu ağ için gösterilen BSSID'lerle karşılaştırın.",
+    "evilTwinActionForgetNetwork": "Telefonunuzun Wi-Fi ayarlarından ağı unutun ve yalnızca doğruladığınız BSSID'ye manuel olarak tekrar bağlanın.",
+    "evilTwinActionSecurityDowngrade": "İki erişim noktasından biri diğerinden daha zayıf şifreleme kullanıyor. Her zaman daha güçlü olanı seçin (WPA3 > WPA2 > Açık).",
+    "evilTwinActionDisconnectNow": "Şimdi bu Wi-Fi bağlantısını kesin ve hangi BSSID'nin gerçek olduğunu doğrulayana kadar mobil veriye geçin.",
+    "evilTwinActionHardwareVendor": "İki yönlendirici farklı donanım üreticilerinden geliyor — gerçek yönlendiriciniz aniden üretici değiştirmemelidir.",
+    "evidenceDiscoveredDevices": "Keşfedilen: {devices}",
+    "evidenceVulnerablePorts": "{host} ana bilgisayarı savunmasız olabilecek açık bağlantı noktalarına sahip.",
+    "evidenceNoEncryption": "Erişim noktası {network} için şifreleme sunmuyor.",
     "@remoteNodeIdLabel": {
         "description": "Remote Node Id Label",
         "placeholders": {
@@ -803,7 +846,7 @@
             }
         }
     },
-    "ipAddrLabel": "IP_ADRESİ",
+    "ipAddrLabel": "IP_ADRESI",
     "@ipAddrLabel": {
         "description": "Ip Addr Label"
     },
@@ -815,6 +858,84 @@
     "@mnfrLabel": {
         "description": "Mnfr Label"
     },
+    "shieldIntegrityLabel": "KALKAN BÜTÜNLÜĞÜ",
+    "activeThreatsLabel": "AKTİF TEHDİTLER",
+    "shieldStatusOptimal": "OPTIMAL",
+    "shieldStatusWarning": "UYARI",
+    "shieldStatusCritical": "KRİTİK",
+    "securityScoreLabel": "GÜVENLİK PUANI",
+    "systemStatusLabel": "SİSTEM DURUMU",
+    "scanningAllCaps": "TARIYOR...",
+    "outOf100Label": "/ 100",
+    "evilTwinPrefix": "EVIL TWIN",
+    "whatIsEvilTwinTitle": "BU NEDİR?",
+    "whyItMattersTitle": "NEDEN ÖNEMLİ?",
+    "whatWeObservedTitle": "NELER GÖZLEMLEDİK?",
+    "whatLookedLegitimateTitle": "NELER MEŞRU GÖRÜNÜYOR?",
+    "whatYouShouldDoTitle": "NELER YAPMALISINIZ?",
+    "severity_critical": "KRİTİK",
+    "severity_high": "YÜKSEK",
+    "severity_medium": "ORTA",
+    "severity_low": "DÜŞÜK",
+    "severity_info": "BİLGİ",
+    "rule_wifi_open_network_title": "Açık Ağ Tespit Edildi",
+    "rule_wifi_open_network_desc": "Şifreleme tespit edilmedi. Tüm trafik açık metin olarak izlenebilir.",
+    "rule_wifi_open_network_rec": "Hassas aktivitelerden kaçının. Güvenilir bir VPN veya farklı bir ağ tercih edin.",
+    "rule_wifi_wep_title": "WEP Şifreleme Tespit Edildi",
+    "rule_wifi_wep_desc": "WEP artık güvenli değil ve kısa sürede kırılabilir.",
+    "rule_wifi_wep_rec": "Erişim noktasını derhal WPA2 veya WPA3 olarak yeniden yapılandırın.",
+    "rule_wifi_legacy_wpa_title": "Eski WPA Şifreleme",
+    "rule_wifi_legacy_wpa_desc": "WPA/TKIP eski bir teknolojidir ve modern saldırı tekniklerine karşı zayıftır.",
+    "rule_wifi_legacy_wpa_rec": "Erişim noktasını ve istemcileri WPA2/WPA3'e yükseltin.",
+    "rule_wifi_hidden_ssid_title": "Gizli SSID",
+    "rule_wifi_hidden_ssid_desc": "Gizli SSID'ler hala keşfedilebilir durumdadır ve uyumluluk sorunlarına yol açabilir.",
+    "rule_wifi_hidden_ssid_rec": "Gizli SSID tek başına bir koruma değildir. Güçlü şifrelemeye odaklanın.",
+    "rule_wifi_very_weak_signal_title": "Çok Zayıf Sinyal",
+    "rule_wifi_very_weak_signal_desc": "Zayıf sinyal kararsız bağlantılara ve sahte erişim noktası saldırılarına karşı duyarlılığa işaret edebilir.",
+    "rule_wifi_very_weak_signal_rec": "Erişim noktasına yaklaşın veya BSSID tutarlılığını doğrulayın.",
+    "rule_wifi_wps_enabled_title": "WPS Etkin",
+    "rule_wifi_wps_enabled_desc": "Wi-Fi Korumalı Kurulum (WPS) etkin. WPS PIN modu saatler içinde kaba kuvvetle kırılabilir.",
+    "rule_wifi_wps_enabled_rec": "Yönlendirici yönetim panelinden WPS'i devre dışı bırakın. Yalnızca WPA2/WPA3 parolası kullanın.",
+    "rule_wifi_pmf_not_enforced_title": "PMF Zorunlu Değil",
+    "rule_wifi_pmf_not_enforced_desc": "Bu erişim noktası Korumalı Yönetim Çerçevelerini (PMF / 802.11w) zorunlu kılmıyor, bu da bağlantı kesme saldırılarına izin verebilir.",
+    "rule_wifi_pmf_not_enforced_rec": "Yönlendirici ayarlarından PMF'yi etkinleştirin (genellikle '802.11w' veya 'Yönetim Çerçevesi Koruması' olarak adlandırılır).",
+    "rule_wifi_suspicious_sibling_ap_title": "Şüpheli Kardeş AP",
+    "rule_wifi_suspicious_sibling_ap_desc": "Yakındaki bir erişim noktası bu SSID'yi paylaşıyor ancak parmak izi uyuşmuyor; bu, bir saldırganın gerçek bir Wi-Fi'yi taklit etmek için kullandığı bir yöntemdir.",
+    "rule_wifi_suspicious_sibling_ap_rec": "Yönlendiricinizin arkasındaki BSSID'yi doğrulamadan bu ağa şifre girmeyin.",
+    "rule_wifi_suspicious_ssid_title": "Şüpheli SSID",
+    "rule_wifi_suspicious_ssid_desc": "Bu SSID, saldırganlar tarafından kullanıcıları kandırmak için kullanılan yaygın 'bal küpü' (honeypot) desenleriyle eşleşiyor (örn. 'Free WiFi').",
+    "rule_wifi_suspicious_ssid_rec": "Bağlanmadan önce ağın doğruluğunu işletme yetkilisiyle teyit edin. Bağlanmanız gerekiyorsa mutlaka VPN kullanın.",
+    "rule_wifi_high_channel_congestion_title": "Yüksek Kanal Yoğunluğu",
+    "rule_wifi_high_channel_congestion_desc": "Bu kanaldaki aşırı yoğunluk performansı ve bağlantı güvenilirliğini düşürür.",
+    "rule_wifi_high_channel_congestion_rec": "Ağ yöneticisinden daha az yoğun bir kanala geçmesini isteyin.",
+    "rule_wifi_only_24ghz_title": "Yalnızca 2.4 GHz",
+    "rule_wifi_only_24ghz_desc": "Bu ağ yalnızca kalabalık 2.4 GHz bandında yayın yapıyor. 5 GHz daha iyi performans sunar.",
+    "rule_wifi_only_24ghz_rec": "Daha iyi performans için yönlendiricinizde 5 GHz bandını etkinleştirin.",
+    "rule_trusted_baseline_drift_title": "Güvenilir Temel Hat Sapması",
+    "rule_trusted_baseline_drift_desc": "Bu erişim noktası artık daha önce güvendiğiniz parmak iziyle eşleşmiyor.",
+    "rule_trusted_baseline_drift_rec": "Yönlendirici yapılandırmasını yeniden doğrulayın ve değişikliğin kasıtlı olduğundan eminseniz yeniden güvenin.",
+    "rule_hardware_vulnerability_title": "Donanım Zafiyeti",
+    "rule_hardware_vulnerability_desc": "BSSID öneki bilinen zayıf bir donanım profiliyle eşleşyor.",
+    "rule_hardware_vulnerability_rec": "Bu model için bilinen güvenlik açıklarını (CVE) gideren üretici aygıt yazılımı güncellemelerini kontrol edin.",
+    "rule_scan_deep_scan_active_title": "Derin Tarama Etkin",
+    "rule_scan_deep_scan_active_desc": "Derin tarama etkinleştirildi, daha kapsamlı ağ testleri yapılıyor.",
+    "rule_scan_deep_scan_active_rec": "Yalnızca sahibi olduğunuz veya tarama izniniz olan ağlarda kullanın.",
+    "identifiedBadge": "TANIMLANDI",
+    "trustedBadge": "GÜVENİLİR",
+    "authEstablishedLabel": "YETKİLİ BAĞLANTI",
+    "gatewayWithIpLabel": "AĞ GEÇİDİ: {gateway}",
+    "bssidLabel": "BSSID: {bssid}",
+    "apsLabel": "Erişim Noktaları",
+    "openLabel": "Açık",
+    "wpsLabel": "WPS",
+    "wepLabel": "WEP",
+    "publicWifiLabel": "Halka Açık Wi-Fi",
+    "guestNetworkLabel": "Misafir Ağı",
+    "networkContextTitle": "AĞ BAĞLAMI",
+    "networkContextHomeDesc": "Eviniz, ofisiniz veya bildiğiniz yönlendirici. Sıkı standartlar uygulanır.",
+    "networkContextPublicDesc": "Kafe, otel, havaalanı veya açık bağlantı noktası. VPN/HTTPS şiddetle tavsiye edilir.",
+    "networkContextGuestDesc": "Bilinen bir ağın misafir segmenti. Doğal sapmalar beklenebilir.",
+    "networkContextUnknownDesc": "Torcav'ın bağlamı pasif sinyallerden çıkarmasına izin verin.",
     "hiddenNetwork": "Gizli Ağ",
     "@hiddenNetwork": {
         "description": "Hidden Network"
@@ -1330,6 +1451,30 @@
             }
         }
     },
+    "riskFactorFingerprintDrift": "SSID parmak izi kayması tespit edildi",
+    "@riskFactorFingerprintDrift": {
+        "description": "Risk Factor Fingerprint Drift"
+    },
+    "riskFactorHoneypotPattern": "SSID bilinen tuzak (honeypot) desenleriyle eşleşiyor",
+    "@riskFactorHoneypotPattern": {
+        "description": "Tuzak deseni için risk faktörü"
+    },
+    "riskFactorNo5Ghz": "5 GHz bandı tespit edilemedi",
+    "@riskFactorNo5Ghz": {
+        "description": "Eksik 5 GHz bandı için risk faktörü"
+    },
+    "riskFactorKnownVulnerability": "Bilinen donanım güvenlik açığı",
+    "@riskFactorKnownVulnerability": {
+        "description": "Bilinen donanım açığı için risk faktörü"
+    },
+    "riskFactorEvilTwinCandidate": "Bu SSID'yi paylaşan Evil Twin adayı",
+    "@riskFactorEvilTwinCandidate": {
+        "description": "Evil Twin adayı için risk faktörü"
+    },
+    "riskFactorChannelCongested": "Kanalda yoğun sıkışıklık var",
+    "@riskFactorChannelCongested": {
+        "description": "Kanal yoğunluğu için risk faktörü"
+    },
     "noHeatmapPointsYet": "{bssid} için henüz ısı haritası noktası yok",
     "@noHeatmapPointsYet": {
         "description": "No Heatmap Points Yet",
@@ -1367,10 +1512,6 @@
                 "type": "int"
             }
         }
-    },
-    "riskFactorFingerprintDrift": "SSID parmak izi kayması tespit edildi",
-    "@riskFactorFingerprintDrift": {
-        "description": "Risk Factor Fingerprint Drift"
     },
     "historyCaps": "GEÇMİŞ",
     "@historyCaps": {
@@ -1831,31 +1972,31 @@
     "@networkScoreLabel": {
         "description": "Security score label on dashboard"
     },
-    "vulnLabTitle": "VULNERABILITY LAB",
+    "vulnLabTitle": "GÜVENLİK LABORATUVARI",
     "@vulnLabTitle": {
         "description": "Vulnerability Lab screen title"
     },
-    "vulnLabSubtitle": "Run security tests against your connected network",
+    "vulnLabSubtitle": "Bağlı ağınızda güvenlik testleri yapın",
     "@vulnLabSubtitle": {
         "description": "Vulnerability Lab subtitle"
     },
-    "vulnLabRunAll": "RUN ALL TESTS",
+    "vulnLabRunAll": "TÜM TESTLERİ ÇALIŞTIR",
     "@vulnLabRunAll": {
         "description": "Button to run all vulnerability tests"
     },
-    "vulnLabRunning": "SCANNING...",
+    "vulnLabRunning": "TARANIYOR...",
     "@vulnLabRunning": {
         "description": "Shown while vulnerability tests are running"
     },
-    "vulnLabNoNetwork": "Not connected to a Wi-Fi network. Connect first to run tests.",
+    "vulnLabNoNetwork": "Bir Wi-Fi ağına bağlı değil. Testleri çalıştırmak için önce bağlanın.",
     "@vulnLabNoNetwork": {
         "description": "Shown when no network is connected"
     },
-    "vulnLabAllClear": "All tests passed. No vulnerabilities found on this network.",
+    "vulnLabAllClear": "Tüm testler geçti. Bu ağda herhangi bir zafiyet bulunmadı.",
     "@vulnLabAllClear": {
         "description": "Shown when no vulnerabilities are found"
     },
-    "vulnLabFoundCount": "{count} issue(s) found",
+    "vulnLabFoundCount": "{count} sorun bulundu",
     "@vulnLabFoundCount": {
         "description": "Count of vulnerabilities found",
         "placeholders": {
@@ -1896,7 +2037,7 @@
     "@experimentalFeature": {
         "description": "Badge for experimental features"
     },
-    "deepScanDescription": "Active port scanning and LAN discovery (May trigger network alerts)",
+    "deepScanDescription": "Aktif port tarama ve LAN keşfi (Ağ uyarılarını tetikleyebilir)",
     "@deepScanDescription": {
         "description": "Description for deep scan toggle"
     },
@@ -2177,21 +2318,46 @@
         "description": "Shown when no Wi-Fi is connected"
     },
     "currentChannelLabel": "ŞİMDİ",
-    "@currentChannelLabel": {"description": "Current channel badge"},
+    "@currentChannelLabel": {
+        "description": "Current channel badge"
+    },
     "currentChannelBannerYouAreOn": "Şu an {channel} üzerindesin",
-    "@currentChannelBannerYouAreOn": {"placeholders": {"channel": {"type": "String"}}},
+    "@currentChannelBannerYouAreOn": {
+        "placeholders": {
+            "channel": {
+                "type": "String"
+            }
+        }
+    },
     "currentChannelBannerSwitchTo": "{channel} kanalına geçersen +{delta} puan kazanırsın",
-    "@currentChannelBannerSwitchTo": {"placeholders": {"channel": {"type": "String"}, "delta": {"type": "String"}}},
+    "@currentChannelBannerSwitchTo": {
+        "placeholders": {
+            "channel": {
+                "type": "String"
+            },
+            "delta": {
+                "type": "String"
+            }
+        }
+    },
     "currentChannelBannerOptimal": "Zaten önerilen kanaldasın",
     "@currentChannelBannerOptimal": {},
     "spectrumOverlapTitle": "Ağ Çakışması",
-    "@spectrumOverlapTitle": {"description": "Header for spectrum analyzer overlap chart"},
+    "@spectrumOverlapTitle": {
+        "description": "Header for spectrum analyzer overlap chart"
+    },
     "spectrumOverlapInfoTitle": "Ağ Çakışması",
-    "@spectrumOverlapInfoTitle": {"description": "Info sheet title"},
+    "@spectrumOverlapInfoTitle": {
+        "description": "Info sheet title"
+    },
     "spectrumOverlapInfoBody": "Her renkli şekil bir Wi-Fi ağıdır. X eksenindeki konumu merkez frekansını, genişliği kanal genişliğini (20/40/80/160 MHz), yüksekliği ise sinyal gücünü temsil eder (üst = güçlü, alt = zayıf). Şekillerin üst üste bindiği yerlerde, o ağlar aynı yayın süresini paylaşır ve birbirini yavaşlatır. Dikey bir dilim ki içinde hiç şekil olmasın (veya sadece zayıf olanlar altta kalsın) — orası sessiz bir kanaldır. Bir şekle dokunarak hangi ağ olduğunu görebilirsin.",
-    "@spectrumOverlapInfoBody": {"description": "Info body"},
+    "@spectrumOverlapInfoBody": {
+        "description": "Info body"
+    },
     "spectrumOverlapEmptyHint": "Bu bandda görünür ağ yok",
-    "@spectrumOverlapEmptyHint": {"description": "Empty hint"},
+    "@spectrumOverlapEmptyHint": {
+        "description": "Empty hint"
+    },
     "channelDrilldownHeader": "Bu kanaldaki ağlar",
     "@channelDrilldownHeader": {},
     "channelDrilldownEmpty": "Burada yayın yapan ağ yok",
@@ -2199,9 +2365,21 @@
     "hiddenSsidPlaceholder": "<gizli ağ>",
     "@hiddenSsidPlaceholder": {},
     "scanComparisonImproved": "Son taramaya göre {delta} puan iyileşti",
-    "@scanComparisonImproved": {"placeholders": {"delta": {"type": "String"}}},
+    "@scanComparisonImproved": {
+        "placeholders": {
+            "delta": {
+                "type": "String"
+            }
+        }
+    },
     "scanComparisonWorsened": "Son taramaya göre {delta} puan kötüleşti",
-    "@scanComparisonWorsened": {"placeholders": {"delta": {"type": "String"}}},
+    "@scanComparisonWorsened": {
+        "placeholders": {
+            "delta": {
+                "type": "String"
+            }
+        }
+    },
     "scanComparisonStable": "Son taramadan beri sabit",
     "@scanComparisonStable": {},
     "countryAllowlistHeader": "Bölge",
@@ -2247,13 +2425,31 @@
     "densityTrendStable": "Yoğunluk sabit",
     "@densityTrendStable": {},
     "densityTrendVolatile": "Değişken bölge · son 1 saatte yoğunluk {delta} ağ kadar dalgalandı",
-    "@densityTrendVolatile": {"placeholders": {"delta": {"type": "String"}}},
+    "@densityTrendVolatile": {
+        "placeholders": {
+            "delta": {
+                "type": "String"
+            }
+        }
+    },
     "routerGroupsHeader": "Yakındaki Router'lar (çift band)",
     "@routerGroupsHeader": {},
     "routerGroupsInfoBody": "Aynı router'ın aynı SSID'i birden fazla bandda yayınladığı (ör. 2.4 GHz CH 6 ve 5 GHz CH 36) durumlarda iki radyoyu yan yana karşılaştırabilmen için burada gruplayıp listeleriz. Bir band chip'ine dokunarak o sekmeye geç.",
     "@routerGroupsInfoBody": {},
     "crossBandSiblingHint": "Aynı router {band} CH {channel}'de · {rating}/10",
-    "@crossBandSiblingHint": {"placeholders": {"band": {"type": "String"}, "channel": {"type": "String"}, "rating": {"type": "String"}}},
+    "@crossBandSiblingHint": {
+        "placeholders": {
+            "band": {
+                "type": "String"
+            },
+            "channel": {
+                "type": "String"
+            },
+            "rating": {
+                "type": "String"
+            }
+        }
+    },
     "connectedChannelGuideLabel": "SİZ",
     "@connectedChannelGuideLabel": {},
     "unstableChannelLabel": "DENGESİZ",
@@ -2269,19 +2465,1610 @@
         "description": "Title of the heatmap info sheet"
     },
     "historyHeatmapInfoBody": "Her satır bir kanal, her sütun ise bir tarama yaptığınız andır. Hücre rengi o anda kanalın aldığı puanı gösterir: kırmızı (kötü) → sarı (orta) → yeşil (mükemmel). Boş hücreler, o taramada kanalın görünmediği anlamına gelir. Tamamen yeşil satırları kollayın — bunlar zamanla temiz kalan kanallardır.",
+    "@historyHeatmapInfoBody": {
+        "description": "Body of the heatmap info sheet"
+    },
     "clearChannelHistoryTitle": "KANAL GEÇMİŞİNİ TEMİZLE",
+    "@clearChannelHistoryTitle": {
+        "description": "Title of the confirmation dialog when clearing channel rating history"
+    },
     "clearChannelHistoryConfirmBody": "Tüm kanal puanı kayıtları silinsin mi? Bu işlem geri alınamaz.",
+    "@clearChannelHistoryConfirmBody": {
+        "description": "Body of the confirmation dialog when clearing channel rating history"
+    },
     "deleteAllLabel": "TÜMÜNÜ SİL",
+    "@deleteAllLabel": {
+        "description": "Label for the destructive confirm button when clearing channel rating history"
+    },
     "dualBandSiblingLabel": "AYNI ROUTER",
+    "@dualBandSiblingLabel": {
+        "description": "Badge shown on a channel tile when the user's connected router exposes another radio on this band (the user is not actually using this radio right now)"
+    },
     "dualBandSiblingBanner": "Router'ınızın {band} radyosu: {channel}",
+    "@dualBandSiblingBanner": {
+        "description": "Banner copy on a band tab when the user is connected to a different band of the same router. {band} is e.g. '2.4 GHz', {channel} is e.g. 'CH 6 · 8.2/10'.",
+        "placeholders": {
+            "band": {
+                "type": "String"
+            },
+            "channel": {
+                "type": "String"
+            }
+        }
+    },
     "acknowledgedLabel": "ANLAŞILDI",
-    "speedDoctorTitle": "HIZ DOKTORU",
+    "@acknowledgedLabel": {
+        "description": "Confirmation button label that closes an info bottom sheet (Topology legend)"
+    },
+    "speedDoctorTitle": "SPEED DOCTOR",
+    "@speedDoctorTitle": {
+        "description": "Speed Doctor app-bar title"
+    },
     "speedDoctorTagline": "İnternet neden yavaş?",
+    "@speedDoctorTagline": {
+        "description": "Speed Doctor subtitle"
+    },
     "speedDoctorOpsTile": "HIZ DOKTORU",
+    "@speedDoctorOpsTile": {
+        "description": "Operations Hub tile for Speed Doctor"
+    },
     "speedDoctorOpsSubtitle": "Niye yavaş?",
+    "@speedDoctorOpsSubtitle": {
+        "description": "Operations Hub tile subtitle for Speed Doctor"
+    },
     "evilTwinDetailTitle": "EVIL TWIN DETAYI",
+    "@evilTwinDetailTitle": {
+        "description": "Evil-twin detail page title"
+    },
     "pingStabilizerTitle": "PING STABİLİZATÖR",
+    "@pingStabilizerTitle": {
+        "description": "Ping Stabilizer feature title"
+    },
     "pingStabilizerSubtitle": "Cihaz üstü gecikme tüneli",
+    "@pingStabilizerSubtitle": {
+        "description": "Operations Hub subtitle for Ping Stabilizer"
+    },
     "pingStabilizerToggleHint": "Stabilize etmek için dokun",
-    "pingStabilizerDrawerLabel": "Ping Stabilizatör"
+    "@pingStabilizerToggleHint": {
+        "description": "Hint shown on the inactive Ping Stabilizer toggle card"
+    },
+    "pingStabilizerDrawerLabel": "Ping Stabilizatör",
+    "@pingStabilizerDrawerLabel": {
+        "description": "Drawer entry label for Ping Stabilizer"
+    },
+    "onboardingStartScanning": "TARAMAYA BAŞLA",
+    "@onboardingStartScanning": {
+        "description": "Button label to finish onboarding."
+    },
+    "onboardingNext": "İLERİ",
+    "@onboardingNext": {
+        "description": "Button label for next slide."
+    },
+    "onboardingWelcomeTitle": "TORCAV'A HOŞ GELDİNİZ",
+    "@onboardingWelcomeTitle": {
+        "description": "Welcome title."
+    },
+    "onboardingWelcomeBody": "Kablosuz çevrenizi anlamanıza, en iyi kanalı bulmanıza ve güvenlik tehditlerini tespit etmenize yardımcı olan siberpunk Wi-Fi analizörü.",
+    "@onboardingWelcomeBody": {
+        "description": "Welcome body text."
+    },
+    "onboardingLocationTitle": "KONUM İZNİ",
+    "@onboardingLocationTitle": {
+        "description": "Location permission title."
+    },
+    "onboardingLocationBody": "Android, Wi-Fi ağlarını taramak için Konum izni gerektirir. Sinyal ısı haritalarını göstermek için aktivite sensörlerini de kullanıyoruz. Tüm veriler cihazınızda kalır ve asla yüklenmez. Konumunuz yalnızca yakındaki Wi-Fi sinyallerini okumak için kullanılır.",
+    "@onboardingLocationBody": {
+        "description": "Location permission explanation."
+    },
+    "onboardingTourTitle": "ÜÇ SEKME",
+    "@onboardingTourTitle": {
+        "description": "Tour section title."
+    },
+    "onboardingTourDashboardLabel": "Panel",
+    "@onboardingTourDashboardLabel": {
+        "description": "Dashboard label in tour."
+    },
+    "onboardingTourDashboardDesc": "Ağ durumunuzun canlı özeti",
+    "@onboardingTourDashboardDesc": {
+        "description": "Dashboard description in tour."
+    },
+    "onboardingTourDiscoveryLabel": "Keşif",
+    "@onboardingTourDiscoveryLabel": {
+        "description": "Discovery label in tour."
+    },
+    "onboardingTourDiscoveryDesc": "Wi-Fi ağlarını ve LAN cihazlarını tara",
+    "@onboardingTourDiscoveryDesc": {
+        "description": "Discovery description in tour."
+    },
+    "onboardingTourOperationsLabel": "İşlemler",
+    "@onboardingTourOperationsLabel": {
+        "description": "Operations label in tour."
+    },
+    "onboardingTourOperationsDesc": "Güvenlik analizi, hız testleri, raporlar",
+    "@onboardingTourOperationsDesc": {
+        "description": "Operations description in tour."
+    },
+    "onboardingContextTitle": "TORCAV'I NEREDE KULLANACAKSINIZ?",
+    "@onboardingContextTitle": {
+        "description": "Network context question."
+    },
+    "onboardingContextBody": "Bu, kendi başımıza anlayamadığımızda güvenlik puanının ne kadar katı olacağını belirler. İstediğiniz zaman değiştirebilirsiniz ve daha sonra her ağ için geçersiz kılınabilir.",
+    "@onboardingContextBody": {
+        "description": "Context explanation."
+    },
+    "onboardingContextHomeTitle": "Çoğunlukla evim / ofisim",
+    "@onboardingContextHomeTitle": {
+        "description": "Home context title."
+    },
+    "onboardingContextHomeBody": "Katı puanlama. Şifrelemedeki beklenmedik değişiklikler veya LAN'daki yeni cihazlar yüksek sesle işaretlenir.",
+    "@onboardingContextHomeBody": {
+        "description": "Home context description."
+    },
+    "onboardingContextPublicTitle": "Çoğunlukla kafeler / oteller / havaalanları",
+    "@onboardingContextPublicTitle": {
+        "description": "Public context title."
+    },
+    "onboardingContextPublicBody": "Şifreleme konusunda esnek puanlama (bu ağlar genellikle açıktır), ancak sahte SSID'lere ve 'evil-twin' kalıplarına karşı yüksek hassasiyet. Aktif LAN taraması varsayılan olarak durdurulur.",
+    "@onboardingContextPublicBody": {
+        "description": "Public context description."
+    },
+    "onboardingContextGuestTitle": "Çoğunlukla misafir / ortak ağlar",
+    "@onboardingContextGuestTitle": {
+        "description": "Guest context title."
+    },
+    "onboardingContextGuestBody": "Arkadaşlar, aile veya iş arkadaşlarıyla aynı Wi-Fi. Değişiklik beklenir; her yeni cihazda uyarı vermeyiz.",
+    "@onboardingContextGuestBody": {
+        "description": "Guest context description."
+    },
+    "onboardingContextUnknownTitle": "Henüz emin değilim",
+    "@onboardingContextUnknownTitle": {
+        "description": "Unknown context title."
+    },
+    "onboardingContextUnknownBody": "Güçlü bir varsayılan yok. Her ağın parmak izinden tahmin yürüteceğiz ve düzeltmenize izin vereceğiz.",
+    "@onboardingContextUnknownBody": {
+        "description": "Unknown context description."
+    },
+    "onboardingDoneTitle": "HER ŞEY HAZIR",
+    "@onboardingDoneTitle": {
+        "description": "Completion title."
+    },
+    "onboardingDoneBody": "Torcav gizlilik odaklı bir ağ asistanıdır. Sahibi olduğunuz veya değerlendirme yetkiniz olan ağlar için güvenli ağ teşhisi ve güçlendirme araçları sağlar. Harici olarak hiçbir veri toplanmaz veya iletilmez.",
+    "@onboardingDoneBody": {
+        "description": "Completion body text."
+    },
+    "onboardingAcceptPrefix": "Okudum ve kabul ediyorum: ",
+    "@onboardingAcceptPrefix": {
+        "description": "Acceptance prefix."
+    },
+    "onboardingTosLink": "Kullanım Koşulları",
+    "@onboardingTosLink": {
+        "description": "TOS link text."
+    },
+    "onboardingAcceptAnd": " ve ",
+    "@onboardingAcceptAnd": {
+        "description": "Acceptance separator."
+    },
+    "onboardingPrivacyLink": "Gizlilik Politikası",
+    "@onboardingPrivacyLink": {
+        "description": "Privacy link text."
+    },
+    "onboardingAcceptSuffix": ".",
+    "@onboardingAcceptSuffix": {
+        "description": "Acceptance suffix."
+    },
+    "onboardingConfirmPermission": "Analiz edeceğim ağları tarama yetkim olduğunu onaylıyorum.",
+    "@onboardingConfirmPermission": {
+        "description": "Permission confirmation checkbox."
+    },
+    "onboardingConfirmAge": "13 yaşında veya daha büyük olduğumu onaylıyorum.",
+    "@onboardingConfirmAge": {
+        "description": "Age confirmation checkbox."
+    },
+    "appTitle": "TORCAV",
+    "@appTitle": {
+        "description": "The application name."
+    },
+    "ssidLabel": "SSID",
+    "@ssidLabel": {
+        "description": "SSID label."
+    },
+    "noSecurityFindings": "No security findings detected.",
+    "@noSecurityFindings": {
+        "description": "Empty state for security findings."
+    },
+    "resetToInferred": "Reset to inferred",
+    "@resetToInferred": {
+        "description": "Button to reset network context."
+    },
+    "internetSlowQuestion": "İNTERNET YAVAŞ MI?",
+    "@internetSlowQuestion": {
+        "description": "Question on the speed doctor tile."
+    },
+    "runSpeedDoctorDesc": "Speed Doctor'ı çalıştır — 30 saniyelik kök neden teşhisi.",
+    "@runSpeedDoctorDesc": {
+        "description": "Description on the speed doctor tile."
+    },
+    "securityAlertsTitle": "SECURITY ALERTS",
+    "@securityAlertsTitle": {
+        "description": "Title for the security alerts sheet."
+    },
+    "markAllRead": "MARK ALL READ",
+    "@markAllRead": {
+        "description": "Button to mark all alerts as read."
+    },
+    "clearAll": "CLEAR ALL",
+    "@clearAll": {
+        "description": "Button to clear all alerts."
+    },
+    "eventsRetentionInfo": "Events are retained for 30 days. Swipe left to dismiss.",
+    "@eventsRetentionInfo": {
+        "description": "Information about event retention."
+    },
+    "allSystemsClear": "All systems clear",
+    "@allSystemsClear": {
+        "description": "Text shown when there are no alerts."
+    },
+    "heuristicDetectionNote": "Heuristic detection — not a confirmed attack. False positives may occur in congested environments.",
+    "@heuristicDetectionNote": {
+        "description": "Note about heuristic detection accuracy."
+    },
+    "markAsRead": "MARK AS READ",
+    "@markAsRead": {
+        "description": "Button to mark a single alert as read."
+    },
+    "eventTypeRogueAp": "ROGUE AP",
+    "@eventTypeRogueAp": {
+        "description": "Security event type: Rogue AP."
+    },
+    "eventTypeEvilTwin": "EVIL TWIN",
+    "@eventTypeEvilTwin": {
+        "description": "Security event type: Evil Twin."
+    },
+    "eventTypeDeauthAttack": "DEAUTH ATTACK",
+    "@eventTypeDeauthAttack": {
+        "description": "Security event type: Deauth Attack."
+    },
+    "eventTypeEncryptionWeakened": "ENCRYPTION WEAKENED",
+    "@eventTypeEncryptionWeakened": {
+        "description": "Security event type: Encryption Weakened."
+    },
+    "eventTypeDeauthBurst": "DEAUTH BURST",
+    "@eventTypeDeauthBurst": {
+        "description": "Security event type: Deauth Burst."
+    },
+    "eventTypeHandshakeAnalysis": "HANDSHAKE ANALYSIS",
+    "@eventTypeHandshakeAnalysis": {
+        "description": "Security event type: Handshake Analysis."
+    },
+    "eventTypeHandshakeSecured": "HANDSHAKE SECURED",
+    "@eventTypeHandshakeSecured": {
+        "description": "Security event type: Handshake Secured."
+    },
+    "eventTypeCaptivePortal": "CAPTIVE PORTAL",
+    "@eventTypeCaptivePortal": {
+        "description": "Security event type: Captive Portal."
+    },
+    "eventTypeUnsupported": "UNSUPPORTED",
+    "@eventTypeUnsupported": {
+        "description": "Security event type: Unsupported."
+    },
+    "eventTypeArpSpoofing": "ARP SPOOFING",
+    "@eventTypeArpSpoofing": {
+        "description": "Security event type: Arp Spoofing."
+    },
+    "eventTypeDnsHijacking": "DNS HIJACKING",
+    "@eventTypeDnsHijacking": {
+        "description": "Security event type: Dns Hijacking."
+    },
+    "agentId": "AGENT-01",
+    "@agentId": {
+        "description": "Default agent ID."
+    },
+    "cyberneticId": "CYBERNETIC_ID: {id}",
+    "@cyberneticId": {
+        "description": "Cybernetic ID label.",
+        "placeholders": {
+            "id": {
+                "type": "String"
+            }
+        }
+    },
+    "subscriptionLabel": "Sub: {type}",
+    "@subscriptionLabel": {
+        "description": "Subscription status label.",
+        "placeholders": {
+            "type": {
+                "type": "String"
+            }
+        }
+    },
+    "deepScanSuppressed": "Deep scan suppressed — connected to a {context} network. Disable the safety guard in Settings to override.",
+    "@deepScanSuppressed": {
+        "description": "Message shown when deep scan is skipped for safety.",
+        "placeholders": {
+            "context": {
+                "type": "String"
+            }
+        }
+    },
+    "securityAssessmentFailed": "SECURITY ASSESSMENT FAILED",
+    "@securityAssessmentFailed": {
+        "description": "Error message when security scan fails."
+    },
+    "retryAnalytics": "RETRY ANALYTICS",
+    "@retryAnalytics": {
+        "description": "Button to retry security scan."
+    },
+    "publicContextLabel": "public",
+    "@publicContextLabel": {
+        "description": "Label for public network context."
+    },
+    "guestContextLabel": "guest",
+    "@guestContextLabel": {
+        "description": "Label for guest network context."
+    },
+    "clearScanHistoryTitle": "CLEAR SCAN HISTORY",
+    "@clearScanHistoryTitle": {
+        "description": "Title for clear scan history dialog."
+    },
+    "clearScanHistoryBody": "Delete all LAN scan records? This cannot be undone.",
+    "@clearScanHistoryBody": {
+        "description": "Body for clear scan history dialog."
+    },
+    "cancelLabel": "CANCEL",
+    "@cancelLabel": {
+        "description": "Cancel button label."
+    },
+    "networkAuditConsentTitle": "NETWORK AUDIT CONSENT",
+    "@networkAuditConsentTitle": {
+        "description": "Title for network audit consent dialog."
+    },
+    "networkAuditConsentDesc": "Active network scanning generates traffic to identify devices and services. This may be flagged by network security systems.",
+    "@networkAuditConsentDesc": {
+        "description": "Description for network audit consent dialog."
+    },
+    "consentScanNodes": "Scan local network for active nodes",
+    "@consentScanNodes": {
+        "description": "Consent point: scan nodes."
+    },
+    "consentFingerprint": "Fingerprint open services and OS",
+    "@consentFingerprint": {
+        "description": "Consent point: fingerprint."
+    },
+    "consentIdentifyVulns": "Identify potential vulnerabilities",
+    "@consentIdentifyVulns": {
+        "description": "Consent point: identify vulnerabilities."
+    },
+    "consentConfirmAuth": "Confirm you have authorization for this network",
+    "@consentConfirmAuth": {
+        "description": "Consent point: confirm authorization."
+    },
+    "iUnderstand": "I UNDERSTAND",
+    "@iUnderstand": {
+        "description": "Action label for consent dialog."
+    },
+    "iosLanDiscoveryLimited": "iOS: LAN discovery is limited. mDNS browsing and ARP table access may be restricted by the OS.",
+    "@iosLanDiscoveryLimited": {
+        "description": "Warning for iOS users about LAN scan limitations."
+    },
+    "speedDoctorLongDesc": "~30 saniye içinde sinyal, kanal, hız ve DNS sorguları yaparak zincirdeki hangi halkanın darboğaz olduğunu söyler.",
+    "@speedDoctorLongDesc": {
+        "description": "Long description for Speed Doctor."
+    },
+    "startDiagnosis": "TEŞHİSİ BAŞLAT",
+    "@startDiagnosis": {
+        "description": "Button to start speed doctor."
+    },
+    "speedDoctorQuotaWarning": "Dikkat: Gerçek bir hız testi ~300-500 MB indirir. Mobil kotanızı bitirmemek için Wi-Fi veya sınırsız bir bağlantı kullanın.",
+    "@speedDoctorQuotaWarning": {
+        "description": "Warning about data usage during speed test."
+    },
+    "evidenceLabel": "KANITLAR",
+    "@evidenceLabel": {
+        "description": "Evidence section header."
+    },
+    "runAgain": "TEKRAR ÇALIŞTIR",
+    "@runAgain": {
+        "description": "Button to rerun diagnosis."
+    },
+    "aboutSpeedDoctorTitle": "SPEED DOCTOR HAKKINDA",
+    "@aboutSpeedDoctorTitle": {
+        "description": "About section title."
+    },
+    "sdAboutWhatTitle": "Nedir?",
+    "@sdAboutWhatTitle": {},
+    "sdAboutWhatBody": "Ayrı ekranlardaki rakamları karşılaştırmanıza gerek kalmadan, sizinle internet arasındaki olası darboğazı bulan tek dokunuşluk bir teşhistir.",
+    "@sdAboutWhatBody": {},
+    "sdAboutHowTitle": "Nasıl çalışır?",
+    "@sdAboutHowTitle": {},
+    "sdAboutHowBody": "Beş kısa sorgu uçtan uca çalıştırılır ve sonuçlar yayınlanmış eşik değerlerle karşılaştırılır:",
+    "@sdAboutHowBody": {},
+    "sdAboutHowBullet1": "Sinyal — bağlı erişim noktasından RSSI değerini okur.",
+    "@sdAboutHowBullet1": {},
+    "sdAboutHowBullet2": "Kanal — kanalınızı komşu erişim noktalarına göre puanlar.",
+    "@sdAboutHowBullet2": {},
+    "sdAboutHowBullet3": "Hız — Cloudflare'a karşı gerçek bir indirme/yükleme testi yapar.",
+    "@sdAboutHowBullet3": {},
+    "sdAboutHowBullet4": "Bufferbloat — yük altında gecikmeyi ölçer (Waveform A–F).",
+    "@sdAboutHowBullet4": {},
+    "sdAboutHowBullet5": "DNS — genel çözücüleri mevcut olanla karşılaştırır.",
+    "@sdAboutHowBullet5": {},
+    "sdAboutCategoriesTitle": "Kategoriler ne anlama geliyor?",
+    "@sdAboutCategoriesTitle": {},
+    "sdAboutCategoriesBullet1": "Zayıf Sinyal — Wi-Fi bağlantısı mesafe/duvarlar nedeniyle daha yavaş modlara zorlanıyor.",
+    "@sdAboutCategoriesBullet1": {},
+    "sdAboutCategoriesBullet2": "Kalabalık Kanal — aynı kanaldaki komşu ağlar bant genişliğinizi tüketiyor.",
+    "@sdAboutCategoriesBullet2": {},
+    "sdAboutCategoriesBullet3": "Bufferbloat — bağlantı tam yüklendiğinde gecikme artar; aramalar ve oyunlar etkilenir.",
+    "@sdAboutCategoriesBullet3": {},
+    "sdAboutCategoriesBullet4": "Yavaş ISP — Wi-Fi iyi ancak paketiniz / üst yapınız sınırda.",
+    "@sdAboutCategoriesBullet4": {},
+    "sdAboutCategoriesBullet5": "Yavaş DNS — isim sorgulamaları çok uzun sürdüğü için sayfa yüklemeleri yavaş hissettiriyor.",
+    "@sdAboutCategoriesBullet5": {},
+    "sdAboutEstimateTitle": "Hızlanma tahmini hakkında",
+    "@sdAboutEstimateTitle": {},
+    "sdAboutEstimateBody": "Her bulgu muhafazakar bir öngörülen kazanç gösterir — düzeltmeyi uyguladıktan sonra gerçekçi olarak bekleyebileceğiniz kazanç. Bu bir garanti değil, alt sınırdır ve test koşullarına bağlıdır.",
+    "@sdAboutEstimateBody": {},
+    "diagnosisFailed": "Teşhis başarısız oldu",
+    "@diagnosisFailed": {
+        "description": "Error message when diagnosis fails."
+    },
+    "retryLabel": "YENİDEN DENE",
+    "@retryLabel": {
+        "description": "Retry button label."
+    },
+    "settingsIncludeHiddenDesc": "Gizli SSID'leri aktif olarak sorgular. Varsayılan olarak kapalıdır — yalnızca sahibi olduğunuz ağlarda etkinleştirin.",
+    "@settingsIncludeHiddenDesc": {},
+    "autoScanLabel": "Otomatik Tarama",
+    "@autoScanLabel": {},
+    "autoScanDesc": "Taramayı her {seconds} saniyede bir otomatik olarak tekrarla",
+    "@autoScanDesc": {
+        "placeholders": {
+            "seconds": {
+                "type": "int"
+            }
+        }
+    },
+    "deepScanLabel": "Derin Tarama",
+    "@deepScanLabel": {},
+    "deepScanDesc": "Banner yakalama + zafiyet analizi. Sadece test etme yetkiniz olan ağlarda etkinleştirin.",
+    "@deepScanDesc": {},
+    "restrictDeepScanPublicLabel": "Halka Açık Wi-Fi'da Derin Taramayı Kısıtla",
+    "@restrictDeepScanPublicLabel": {},
+    "restrictDeepScanPublicDesc": "Halka açık veya misafir ağlara bağlıyken aktif sorgulamayı durdurur. Önerilir — sahibi olmadığınız ağlarda yapılan aktif taramalar temel yasal risk oluşturur.",
+    "@restrictDeepScanPublicDesc": {},
+    "backgroundMonitoringLabel": "Arka Plan İzleme",
+    "@backgroundMonitoringLabel": {},
+    "backgroundMonitoringDesc": "Uygulama kapalıyken her 30 dakikada bir sessiz bir Wi-Fi kontrolü yapar. Yeni bir cihaz belirdiğinde, bağlı ağ değiştiğinde veya şifreleme değiştiğinde bildirim alırsınız. Pil etkisi minimumdur.",
+    "@backgroundMonitoringDesc": {},
+    "portScanTimeoutLabel": "Port Tarama Zaman Aşımı",
+    "@portScanTimeoutLabel": {},
+    "privacyAndDataLabel": "GİZLİLİK VE VERİ",
+    "@privacyAndDataLabel": {},
+    "dataRetentionLabel": "VERİ SAKLAMA",
+    "@dataRetentionLabel": {},
+    "scanHistoryRetentionLabel": "Tarama Geçmişi",
+    "@scanHistoryRetentionLabel": {},
+    "speedTestsRetentionLabel": "Hız Testleri",
+    "@speedTestsRetentionLabel": {},
+    "securityEventsRetentionLabel": "Güvenlik Olayları",
+    "@securityEventsRetentionLabel": {},
+    "replayOnboardingLabel": "Tanıtımı Tekrar Oynat",
+    "@replayOnboardingLabel": {},
+    "replayOnboardingDesc": "Hoş geldin turunu tekrar görüntüleyin.",
+    "@replayOnboardingDesc": {},
+    "wipeAllDataLabel": "Tüm Yerel Verileri Temizle",
+    "@wipeAllDataLabel": {},
+    "wipeAllDataDesc": "Bu cihazdaki tüm tarama geçmişini, hız testlerini, güvenlik olaylarını ve kanal derecelendirmelerini siler.",
+    "@wipeAllDataDesc": {},
+    "aboutLabel": "HAKKINDA",
+    "@aboutLabel": {},
+    "legalDisclaimerTitle": "Yasal Uyarı",
+    "@legalDisclaimerTitle": {},
+    "legalDisclaimerBody": "Bu uygulama ağ gözlemi ve yetkili LAN keşfi gerçekleştirir. Aktif sorgulama yalnızca servis tanımlama ve güvenlik değerlendirmesi ile sınırlıdır. Brute-force kimlik doğrulama, paket enjeksiyonu, ARP zehirlemesi veya kimlik bilgisi toplama işlemleri yapılmaz.\n\nBu uygulamanın sahibi olmadığınız veya test etme yetkiniz olmayan ağlarda kullanılması yürürlükteki yasaları (TCK 243/244, AB Direktifi 2013/40, CFAA) ihlal edebilir. Yasal kullanımın sağlanmasından tamamen kullanıcı sorumludur.",
+    "@legalDisclaimerBody": {},
+    "enableDeepScanTitle": "ENABLE DEEP SCAN?",
+    "@enableDeepScanTitle": {},
+    "enableDeepScanBody": "Derin tarama, banner yakalama ve servis zafiyet analizi gerçekleştirir. Bu mod sadece sahibi olduğunuz veya açıkça yetkilendirildiğiniz ağlarda kullanılmalıdır.\n\nYetkisiz ağlarda devam etmek yürürlükteki yasaları ihlal edebilir.",
+    "@enableDeepScanBody": {},
+    "wifiScanPermissionTitle": "WIFI SCAN PERMISSION",
+    "@wifiScanPermissionTitle": {},
+    "wifiScanPermissionDesc": "To discover nearby Wi-Fi networks and analyze signal strength, Torcav requires Location access. This is an Android system requirement for Wi-Fi scanning.",
+    "@wifiScanPermissionDesc": {},
+    "consentScanSsids": "Scan nearby Wi-Fi SSIDs",
+    "@consentScanSsids": {},
+    "consentAnalyzeSignal": "Analyze signal quality and interference",
+    "@consentAnalyzeSignal": {},
+    "consentNoTracking": "Torcav never tracks or shares your location",
+    "@consentNoTracking": {},
+    "continueLabel": "CONTINUE",
+    "@continueLabel": {},
+    "clearWifiHistoryBody": "Delete all saved Wi-Fi scan sessions? This cannot be undone.",
+    "@clearWifiHistoryBody": {},
+    "transparentSignalAnalysisTitle": "TRANSPARENT SIGNAL ANALYSIS",
+    "@transparentSignalAnalysisTitle": {},
+    "transparentSignalAnalysisDesc": "Advanced spectrum analysis for security auditing. Local processing only.",
+    "@transparentSignalAnalysisDesc": {},
+    "cachedResultsWarning": "Showing cached results — Android limits scan frequency. Wait ~30 s and refresh for live data.",
+    "@cachedResultsWarning": {},
+    "enableDeepScanBodyWifi": "Derin Tarama, banner yakalama ve zafiyet analizi gerçekleştirir. Sadece tarama yetkiniz olan ağlarda kullanın. Yetkisiz kullanım TCK 243/244 ve benzeri yasaları ihlal edebilir.",
+    "@enableDeepScanBodyWifi": {},
+    "iAmAuthorized": "YETKİLİYİM",
+    "@iAmAuthorized": {},
+    "iosWifiScanLimited": "iOS: Wi-Fi scan results are limited by Apple APIs. Active scan trigger and some network details are unavailable.",
+    "@iosWifiScanLimited": {},
+    "allCategoriesLabel": "All categories (single bundle)",
+    "@allCategoriesLabel": {},
+    "jsonFormatLabel": "JSON — full, machine-readable",
+    "@jsonFormatLabel": {},
+    "htmlFormatLabel": "HTML — viewable in browser",
+    "@htmlFormatLabel": {},
+    "autoLabel": "Auto",
+    "@autoLabel": {},
+    "lightLabel": "Light",
+    "@lightLabel": {},
+    "darkLabel": "Dark",
+    "@darkLabel": {},
+    "dismissLabel": "Dismiss",
+    "@dismissLabel": {},
+    "applyLabel": "Apply",
+    "@applyLabel": {},
+    "openSettingsLabel": "Open settings",
+    "@openSettingsLabel": {},
+    "privacyPolicyTitle": "Gizlilik Politikası",
+    "@privacyPolicyTitle": {},
+    "noConnectedNetwork": "No connected network",
+    "@noConnectedNetwork": {},
+    "ssidNotAvailable": "SSID not available",
+    "@ssidNotAvailable": {},
+    "@@locale": "tr",
+    "howToFixSection": "NASIL DÜZELTİLİR",
+    "endSurveyDialogTitle": "Anketi Bitir?",
+    "endSurveyDialogBody": "Anketi iptal ederseniz mevcut verileriniz kaybolacak. Kaydet veya İptal Et?",
+    "endSurveyReviewBody": "Oturum incelemesinden çıkılsın mı?",
+    "discardAction": "İPTAL ET",
+    "exitAction": "ÇIKIŞ",
+    "continueAction": "DEVAM",
+    "discardSurveyDialogTitle": "ANKETİ İPTAL ET?",
+    "discardSurveyDialogBody": "Bu oturum için kaydedilen tüm veriler kalıcı olarak silinecek.",
+    "autoSamplingDistance": "Otomatik Örnekleme Mesafesi",
+    "appearanceLabel": "Görünüm",
+    "clearHistoryAction": "GEÇMİŞİ TEMİZLE",
+    "dataUsageWarningTitle": "VERİ KULLANIMI UYARISI",
+    "dataUsageWarningBody": "Bu hız testi ~300–500 MB veri indirir. Mobil/ölçümlü bir bağlantıdaysanız ücret oluşabilir veya veri limitiniz tükenebilir.",
+    "latencyExcellentTitle": "Gecikme: {ms} ms — Mükemmel",
+    "latencyGoodTitle": "Gecikme: {ms} ms — İyi",
+    "latencyAcceptableTitle": "Gecikme: {ms} ms — Kabul Edilebilir",
+    "latencyHighTitle": "Gecikme: {ms} ms — Yüksek",
+    "latencyExcellentBody": "Neredeyse anlık yanıt. Oyun, video görüşme ve gerçek zamanlı uygulamalar için ideal.",
+    "latencyGoodBody": "Video görüşme ve akış için iyi. Çoğu uygulama duyarlı hissettiri.",
+    "latencyAcceptableBody": "Tarama ve akış için uygun, ancak video görüşmelerinde hafif gecikmeler olabilir.",
+    "latencyHighBody": "Belirgin gecikme. Video görüşmeler ve oyunlar yavaş hissedebilir. Routerınıza daha yakın olmayı deneyin.",
+    "jitterStableTitle": "Titreşim: {ms} ms — Kararlı",
+    "jitterGoodTitle": "Titreşim: {ms} ms — İyi",
+    "jitterModerateTitle": "Titreşim: {ms} ms — Orta",
+    "jitterUnstableTitle": "Titreşim: {ms} ms — Kararsız",
+    "jitterStableBody": "Çok tutarlı bağlantı. Paketleriniz minimum zamanlama farkıyla ulaşıyor.",
+    "jitterGoodBody": "Görüşme ve akış için yeterince kararlı. Wi-Fi'da küçük dalgalanma normaldir.",
+    "jitterModerateBody": "Bazı tutarsızlıklar tespit edildi. Anlık artışlarda sesli görüşmeler bozulabilir.",
+    "jitterUnstableBody": "Yüksek dalgalanma — ses ve video görüşmeleri muhtemelen kopacak. Bunun nedeni parazit veya kalabalık kanal olabilir.",
+    "downloadFastTitle": "İndirme: {mbps} Mbps — Hızlı",
+    "downloadGoodTitle": "İndirme: {mbps} Mbps — İyi",
+    "downloadModerateTitle": "İndirme: {mbps} Mbps — Orta",
+    "downloadSlowTitle": "İndirme: {mbps} Mbps — Yavaş",
+    "downloadFastBody": "Kolayca {streams}+ eş zamanlı HD akışı kaldırır. Büyük haneler için harika.",
+    "downloadGoodBody": "{streams} eş zamanlı HD akışı destekler. Çoğu hane için iyi.",
+    "downloadModerateBody": "Gezinti ve bir veya iki SD akış için yeterli. Büyük indirmeler yavaş olacak.",
+    "downloadSlowBody": "Çok sınırlı. Routerınıza yaklaşmayı veya parazit kontrolü yapmayı düşünün.",
+    "uploadFastTitle": "Yükleme: {mbps} Mbps — Hızlı",
+    "uploadGoodTitle": "Yükleme: {mbps} Mbps — İyi",
+    "uploadLimitedTitle": "Yükleme: {mbps} Mbps — Sınırlı",
+    "uploadSlowTitle": "Yükleme: {mbps} Mbps — Yavaş",
+    "uploadFastBody": "Video konferans, bulut yedeklemesi ve canlı yayın için mükemmel.",
+    "uploadGoodBody": "Video görüşmeler ve dosya paylaşımı için iyi. Bulut yüklemeleri makul hızda olacak.",
+    "uploadLimitedBody": "Temel video görüşmeler için yeterli. Büyük dosya yüklemeleri zaman alacak.",
+    "uploadSlowBody": "Çok yavaş yükleme. Canlı video ve bulut eşitleme güçlük çekecek.",
+    "packetLossPerfectTitle": "Paket Kaybı: %0 — Mükemmel",
+    "packetLossMinimalTitle": "Paket Kaybı: %{pct} — Minimal",
+    "packetLossHighTitle": "Paket Kaybı: %{pct} — Yüksek",
+    "packetLossPerfectBody": "Sağlam bağlantı. Değerlendirme sırasında hiçbir veri paketi kaybolmadı.",
+    "packetLossMinimalBody": "Çok az kayıp. Çoğu aktivite için muhtemelen fark edilmez.",
+    "packetLossHighBody": "Veriler düşüyor. Bu, görüşme ve oyunlarda takılmalara neden olur. Wi-Fi paraziti kontrol edin.",
+    "loadedLatencyExcellentTitle": "Yüklü Gecikme: {ms} ms — Mükemmel",
+    "loadedLatencyGoodTitle": "Yüklü Gecikme: {ms} ms — İyi",
+    "loadedLatencyFairTitle": "Yüklü Gecikme: {ms} ms — Orta",
+    "loadedLatencyPoorTitle": "Yüklü Gecikme: {ms} ms — Kötü",
+    "loadedLatencyExcellentBody": "İndirme sırasında bile ağınız duyarlı kalıyor. Mükemmel router kalitesi.",
+    "loadedLatencyGoodBody": "Yanıt süresi yük altında hafifçe artıyor ama çok kullanılabilir.",
+    "loadedLatencyFairBody": "Başkaları ağı kullanırken belirgin gecikme. İndirirken oyun oynamak etkilenebilir.",
+    "loadedLatencyPoorBody": "Yüksek Bufferbloat. Büyük indirmeler sırasında bağlantı yanıt veremiyor. Router'ınızda QoS etkinleştirmeyi düşünün.",
+    "bufferbloatGradeLabel": "BUFFERBLOAT DERECESİ",
+    "bufferbloatGradeA": "Mükemmel bufferbloat kontrolü. Router'ınız ağır yük altında bile gecikmeyi düşük tutuyor.",
+    "bufferbloatGradeB": "İyi bufferbloat. Yük altında küçük gecikme artışı — çoğu kullanıcı fark etmez.",
+    "bufferbloatGradeC": "Orta bufferbloat. Başkaları indirirken oyun ve video görüşmeleri gecikebilir.",
+    "bufferbloatGradeD": "Zayıf bufferbloat. Yük altında bağlantı yavaşlıyor. Router'ınızda QoS etkinleştirin.",
+    "bufferbloatGradeE": "Şiddetli bufferbloat. Eş zamanlı indirmeler sırasında gerçek zamanlı uygulamalar başarısız olur.",
+    "bufferbloatGradeF": "Kritik bufferbloat. Router'ınız kuyruk derinliğini kontrol etmiyor. Ürün yazılımını veya donanımı yükseltin.",
+    "speedTestDisclaimer": "Sonuçlar Cloudflare'ın en yakın sunucusuna hızı yansıtır ve Wi-Fi, cihaz donanımı ve PoP mesafesinden etkilenir. ISP sözleşme hızınızın doğrudan bir ölçümü değildir.",
+    "clearAllHistoryAction": "TÜM GEÇMİŞİ TEMİZLE",
+    "deleteAllHistoryConfirm": "Tüm hız testi kayıtları silinsin mi? Bu işlem geri alınamaz.",
+    "deleteAllAction": "TÜMÜNÜ SİL",
+    "whyIsThisLabel": "BU NEDEN {level}?",
+    "noSpecificConcerns": "Bu cihaz için belirli bir endişe kaydedilmedi. Rozet toplu bir puanı yansıtır.",
+    "whatToDoLabel": "NE YAPILMALI",
+    "trustLevelSafe": "GÜVENLİ",
+    "trustLevelCaution": "DİKKAT",
+    "trustLevelRisky": "RİSKLİ",
+    "cveDatabaseLabel": "CVE VERİTABANI — {freshness}",
+    "howToUpdateLabel": "NASIL GÜNCELLENİR",
+    "vulnDbFreshLabel": "GÜNCEL",
+    "vulnDbAgingLabel": "ESKİYOR",
+    "vulnDbStaleLabel": "ESKİ",
+    "vulnDbFreshMessage": "Bu veritabanına karşı güvenlik açığı aramaları güncel.",
+    "vulnDbAgingMessage": "Yerel güvenlik açığı veritabanı bir aydan eski. Temiz bir taramanın değeri var ama yakında yenilemeyi düşünün.",
+    "vulnDbStaleMessage": "Bu veritabanı 90 günden eski. \"Bulgu yok\" sonucu artık ağın güvenli olduğu anlamına gelmiyor — burada henüz temsil edilmeyen çok sayıda yeni CVE olabilir.",
+    "vulnDbEntriesInfo": "v{version} · {count} giriş · {days} gün önce",
+    "wipeAllDialogTitle": "TÜM VERİYİ SİL",
+    "wipeAllDialogBody": "Tüm yerel tarama geçmişi, hız testi kayıtları, güvenlik olayları, kanal derecelendirmeleri ve bellek içi anlık görüntüler kalıcı olarak silinecek. Bu işlem geri alınamaz.",
+    "wipeAllAction": "TÜMÜNÜ SİL",
+    "allDataWiped": "Tüm yerel veriler silindi.",
+    "systemDefault": "Sistem Varsayılanı",
+    "portScanTimeoutMs": "{ms} ms",
+    "endSurveyDiscardBody": "Anketi iptal ederseniz mevcut verileriniz kaybolacak. Kaydet veya İptal Et?",
+    "legendAndNodes": "EFSANE & DÜĞÜMLER",
+    "legendGateway": "AĞ GEÇİDİ",
+    "legendGatewayDesc": "Merkezi ağ giriş noktası",
+    "legendAccessPoint": "ERİŞİM NOKTASI",
+    "legendAccessPointDesc": "Wi-Fi sinyal dağıtıcı",
+    "legendMobile": "MOBİL",
+    "legendMobileDesc": "Kişisel taşınabilir cihazlar",
+    "legendIot": "IOT",
+    "legendIotDesc": "Akıllı ev ve sensörler",
+    "legendDevice": "CİHAZ",
+    "legendDeviceDesc": "Bilgisayarlar, TV'ler vb.",
+    "surveyStageStandby": "BEKLEME",
+    "surveyStageInitializing": "BAŞLATILIYOR",
+    "surveyStageSweepRooms": "ODA TARAMASI",
+    "surveyStageWeakZone": "ZAYIF BÖLGE",
+    "surveyStageWrapUp": "TAMAMLANIYOR",
+    "surveyStageReview": "İNCELEME",
+    "connectionTypesHeader": "BAĞLANTI TÜRLERİ",
+    "connTypeSolidLineLabel": "Düz Çizgi (Mavi)",
+    "connTypeSolidLineDesc": "Yüksek hızlı kablolu Ethernet bağlantısı",
+    "connTypeGradientLabel": "Parlayan Gradyan (Camgöbeği)",
+    "connTypeGradientDesc": "Kablosuz Wi-Fi bağlantısı",
+    "connTypePulsingLabel": "Nabız Atan Veri Noktası",
+    "connTypePulsingDesc": "Bağlantıda aktif trafik tespit edildi",
+    "uploadLabel": "YÜKLEME",
+    "downloadLabel": "İNDİRME",
+    "speedTestSemanticsIdle": "Hız testi göstergesi. Başlatmak için dokun.",
+    "speedTestSemanticsRunning": "Hız testi çalışıyor — {mbps} Mbps indirme. Durdurmak için dokun.",
+    "speedTestSemanticsComplete": "Hız testi tamamlandı — {dl} Mbps indirme, {ul} Mbps yükleme.",
+    "measurementLockedTitle": "ÖLÇÜM KİLİTLENDİ",
+    "measurementLockNoWifi": "Anket hedefini kilitlemek için bir Wi-Fi ağına bağlanın.",
+    "measurementLockReconnect": "Örneklemeye devam etmek için {bssid} ile yeniden bağlanın.",
+    "waitingForSignalTitle": "TAZE SİNYAL BEKLENİYOR",
+    "waitingForSignalBody": "RSSI 3 saniyeden eski. Yeni tarama için kısa süre yürüyün veya pozisyonu koruyun.",
+    "signalDroppedTitle": "SİNYAL DÜŞTÜ",
+    "signalDroppedBody": "Wi-Fi sinyali -85dBm'nin altında. Erişim noktasına yaklaşın.",
+    "compassDriftTitle": "PUSULA KAYMASI TESPİT EDİLDİ",
+    "measurementLockMagnetic": "Manyetik parazit bulundu. Sekiz çizin veya Hizala'ya dokunun.",
+    "placeSurveyOriginTitle": "ANKET KÖKENİNİ YERLEŞTİRİN",
+    "measurementLockAnchor": "Noktaları kaydetmeden önce AR anketini sabitlemek için algılanan bir düzleme dokunun.",
+    "trackingLostTitle": "İZLEME KAYBOLDU",
+    "measurementLockTracking": "Hareket takibi kullanılamıyor. İzleme geri gelene kadar yavaşça hareket edin.",
+    "readyBannerTapFinish": "Taramayı bitirmek için dokun",
+    "ssidChipLock": "KİLİT",
+    "ssidChipHold": "BEKLE",
+    "guidanceStageIdle": "Bekleme",
+    "guidanceStageInitializing": "Başlatılıyor",
+    "guidanceStageMappingSignal": "Sinyal Haritalanıyor",
+    "guidanceStageScanningWeakZones": "Zayıf Bölgeler Taranıyor",
+    "guidanceStageReadyToFinish": "Bitirmeye Hazır",
+    "guidanceStageReviewing": "İnceleniyor",
+    "signalProbeHint": "Yakalanan bir sinyal noktasına daha yakın dokunmayı deneyin.",
+    "wifiSecurityOpen": "AÇIK",
+    "newSessionPermissionsBody": "Doğru ısı haritaları oluşturmak ve ağ kapsamınızı haritalamak için Torcav belirli cihaz özelliklerine erişim gerektirir:",
+    "newSessionPermLocation": "Konum (sinyali koordinatlara eşlemek için)",
+    "newSessionPermActivity": "Aktivite Tanıma (adımları ve hareketi izlemek için)",
+    "newSessionPermCamera": "Kamera (isteğe bağlı, görsel haritalama özellikleri için)",
+    "reportsMacMaskDesc": "Dışa aktarmadan önce son 3 sekizliyi maskeler (XX:XX:XX)",
+    "reportsShareSubject": "Torcav Tarama Raporu",
+    "exportNoDataYet": "\"{label}\" için henüz veri yok.",
+    "exportSubject": "Torcav yerel veri dışa aktarma",
+    "exportFailedError": "Dışa aktarma başarısız: {error}",
+    "tapToStart": "BAŞLATMAK İÇİN DOKUN",
+    "tapToStop": "DURDURMAK İÇİN DOKUN",
+    "liveWifi": "CANLI WI-FI",
+    "signalProbeTitle": "SİNYAL SONDASI",
+    "statusOptimal": "EN UYGUN",
+    "statusFair": "ORTA",
+    "statusCritical": "KRİTİK",
+    "daysCount": "{count} g",
+    "secondsCount": "{count} sn",
+    "millisecondsCount": "{count} ms",
+    "languageEnglish": "İngilizce 🇺🇸",
+    "languageTurkish": "Türkçe 🇹🇷",
+    "languageKurdish": "Kürtçe ☀️",
+    "languageGerman": "Almanca 🇩🇪",
+    "privacyTitle": "GİZLİLİK POLİTİKASI",
+    "privacyIntro": "Torcav \"Varsayılan Olarak Gizlilik\" ilkesi üzerine inşa edilmiştir. Neredeyse her bayt cihazınızda kalır — hesap yok, bulut senkronizasyonu yok, analiz yok, reklam yok. Birkaç özellik genel teknik uç noktalara (Cloudflare, Google'ın captive-portal sorgusu, genel DNS çözücüleri) bağlanır — bunlar yalnızca IP'nizi görür, asla herhangi bir Torcav dahili kimliğini görmez. Kaydedilen her kaydı tek bir dokunuşla silebilirsiniz.",
+    "privacyViewFullGithub": "TÜM POLİTİKAYI GITHUB'DA GÖRÜNTÜLE",
+    "privacyFullPolicyDesc": "Aşağıdaki kart listesi bir özettir. Kanonik, KVKK + GDPR formatındaki politika github.io adresinde barındırılmaktadır.",
+    "privacyResponsibleTitle": "KİM SORUMLU",
+    "privacyIndividualDev": "Bireysel Geliştirici",
+    "privacyDevBody": "Torcav, kayıtlı bir şirket değil, bireysel bir geliştirici (Halil İbrahim Avşar) tarafından işletilmektedir. Veri sorumlusuna doğrudan {email} adresinden ulaşabilirsiniz.",
+    "privacyDataCollectionTitle": "VERİ TOPLAMA VE KULLANIM",
+    "privacyWifiAnalysisTitle": "Wi-Fi ve Ağ Analizi",
+    "privacyWifiAnalysisBody": "Yakındaki SSID/BSSID/RSSI meta verileri ve güvenlik bayrakları (WPA2/WPA3/WPS/PMF) işletim sistemi tarama API'sinden okunur. Bu veriler yerel bir SQLite veritabanında şifrelenmiş olarak saklanır. Asla sunucuya yüklenmez.",
+    "privacyLanInventoryTitle": "LAN Cihaz Envanteri",
+    "privacyLanInventoryBody": "Bir LAN taraması çalıştırdığınızda uygulama, aynı ağdaki cihazlar için IP/MAC/ana bilgisayar adı/üretici/açık portları toplar. Bu, üçüncü taraf cihazları içerebilir — dışa aktarmalar için anonimleştirme varsayılan olarak açıktır.",
+    "privacyLocationTitle": "Konum İzni (Yalnızca Wi-Fi)",
+    "privacyLocationBody": "Android, Wi-Fi taramasını etkinleştirmek için konum izni gerektirir. Torcav bunu kesinlikle bunun için kullanır — GPS koordinatlarını okumayız ve hareketi izlemeyiz.",
+    "privacySensorsTitle": "Sensörler ve Isı Haritası",
+    "privacySensorsBody": "Isı haritası anketleri sırasında sinyal gücünü göreli yolunuza (başlangıç = tarama başlangıcı) eşlemek için etkinlik tanıma + IMU/barometer kullanılır. GPS kullanılmaz.",
+    "privacyAiTitle": "AI / Yerel Sınıflandırma",
+    "privacyAiBody": "Cihaz tipi tanımlama, yerel bir ONNX modeli kullanır. Hiçbir tescilli veya satıcı verisi cihazdan ayrılmaz.",
+    "privacyExternalEndpointsTitle": "DIŞ UÇ NOKTALAR",
+    "privacyCloudflareTitle": "Cloudflare Hız Testi",
+    "privacyCloudflareBody": "Speed Doctor ve hız testi sayfası speed.cloudflare.com'a karşı ~300-500 MB indirme/yükleme yapar. Cloudflare IP'nizi görür — hiçbir Torcav kimliği veya telemetrisi eklenmez.",
+    "privacyDnsProbesTitle": "Genel DNS Sorguları",
+    "privacyDnsProbesBody": "DNS karşılaştırması ve sızıntı tespiti için 1.1.1.1, 8.8.8.8, 9.9.9.9, OpenDNS ve AdGuard sorgulanır. Standart DNS sorgularını görürler (kullanıcı kimliği yok).",
+    "privacyCaptivePortalTitle": "Captive Portal Sorgusu",
+    "privacyCaptivePortalBody": "connectivitycheck.gstatic.com, captive portal'ları tespit etmek için düz bir HEAD isteği alır. Bu, Android'in kendisinin çalıştırdığı sorgunun aynısıdır.",
+    "privacyNoTrackersTitle": "Analiz Yok, İzleyici Yok, Reklam Yok",
+    "privacyNoTrackersBody": "v1.0'da sıfır analiz SDK'sı, sıfır reklam kimliği, sıfır kilitlenme raporlama hizmeti vardır. Uygulama başlangıcında merkeze bildirim yapmayız.",
+    "privacyRetentionTitle": "SAKLAMA VE SİLME",
+    "privacyConfigRetentionTitle": "Yapılandırılabilir Saklama",
+    "privacyConfigRetentionBody": "Ayarlar → Gizlilik, tarama geçmişi, hız testleri ve güvenlik olayları için saklama pencereleri (7-365 gün) ayarlamanıza olanak tanır. Varsayılan değer 30 gündür. Eski kayıtlar otomatik olarak budanır.",
+    "privacyWipeLocalDataTitle": "Tüm Yerel Verileri Temizle",
+    "privacyWipeLocalDataBody": "Ayarlar → Gizlilik'te tek bir dokunuşla tüm kayıtlı verileri temizler: taramalar, cihazlar, güvenlik olayları, ısı haritası oturumları, LAN geçmişi, dışa aktarmalar. Geri alınamaz.",
+    "privacyRightsTitle": "HAKLARINIZ",
+    "privacyKvkkGdprTitle": "KVKK (Türkiye) + GDPR (AB/AEA)",
+    "privacyRightsBody": "Verilerinize erişim, düzeltme, silme veya taşınabilirlik talebinde bulunabilirsiniz. Silme işlemi için uygulama içi Tümünü Sil düğmesi en hızlı yoldur. Diğer talepler için {email} adresine e-posta gönderin — 30 gün içinde yanıt veririz.",
+    "privacyChildrenTitle": "Çocukların Gizliliği",
+    "privacyChildrenBody": "Torcav 13 yaşın altındaki kullanıcılara yönelik değildir ve kullanıcının taranan ağın sorumluluğunu alacak kadar büyük olduğunu varsayar.",
+    "privacyAuthorisedUseTitle": "Yalnızca Yetkili Kullanım",
+    "privacyAuthorisedUseBody": "Torcav'ı sahibi olduğunuz veya açıkça tarama yetkiniz olan ağlarda kullanın. Sahibi olmadığınız ağlarda aktif LAN keşfi ve port tarama yapmak Türk, AB ve ABD yasalarını ihlal edebilir.",
+    "privacyContactLabel": "İLETİŞİM",
+    "privacyEffectiveDate": "Yürürlük Tarihi: 08.05.2026 • Versiyon 1.0",
+    "sdWeakSignalWhatIs": "Sinyal gücü (RSSI), cihazınızın yönlendiriciyi ne kadar yüksek sesle duyduğunu ölçer. Yaklaşık −70 dBm'nin altında, Wi-Fi'ın güvenilir kalması için daha yavaş, daha yedekli kodlamalara geçmesi gerekir.",
+    "@sdWeakSignalWhatIs": {},
+    "sdWeakSignalWhyItMatters": "Zayıf bir sinyal, radyoyu düşük hız modlarına zorlar. İnternet paketiniz hızlı olsa bile, Wi-Fi bağlantısının kendisi tavan haline gelir — indirmeler durur, görüntülü aramalar kesilir ve sayfaların yüklenmesi daha uzun sürer.",
+    "@sdWeakSignalWhyItMatters": {},
+    "sdWeakSignalHowToFix1": "Yönlendiriciye daha yakın bir yere veya daha az engelli bir noktaya geçin.",
+    "@sdWeakSignalHowToFix1": {},
+    "sdWeakSignalHowToFix2": "Bu bölgeye bir mesh düğümü / Wi-Fi genişletici ekleyin.",
+    "@sdWeakSignalHowToFix2": {},
+    "sdWeakSignalHowToFix3": "Yönlendiriciniz bu SSID'de 5 GHz veya 6 GHz'i destekliyorsa, yönlendiriciyi görüş alanınızdayken bu bandı kullanın.",
+    "@sdWeakSignalHowToFix3": {},
+    "sdWeakSignalHowToFix4": "Yönlendiricinin bir kabinin içine, TV'nin arkasına veya bir mikrodalga fırının yanına gömülmediğinden emin olun.",
+    "@sdWeakSignalHowToFix4": {},
+    "sdWeakSignalEstimate": "Tahmini kazanç: Cihazı yönlendiriciye yaklaştırabilirseniz indirme hızında +{gain} Mbps'ye kadar artış.",
+    "@sdWeakSignalEstimate": {
+        "placeholders": {
+            "gain": {
+                "type": "String"
+            }
+        }
+    },
+    "sdCrowdedChannelWhatIs": "Wi-Fi kanalları paylaşılan bir spektrumdur. Yakındaki birkaç erişim noktası aynı kanalda iletim yaptığında, sırayla hareket etmeleri gerekir — hava süresi sizinki de dahil olmak üzere hepsi arasında bölünür.",
+    "@sdCrowdedChannelWhatIs": {},
+    "sdCrowdedChannelWhyItMatters": "Kalabalık bir kanalda, evinizde kimse ağı kullanmasa bile veri akış hızınız düşer. Radyo donanımı sağlıklıdır ancak konuşmak için sırasını beklemek zorundadır.",
+    "@sdCrowdedChannelWhyItMatters": {},
+    "sdCrowdedChannelHowToFix1": "Yönlendirici yönetici sayfasını açın ve Wi-Fi kanalını manuel olarak değiştirin (Uygulamadaki Kanal Puanlaması en temiz kanalı önerir).",
+    "@sdCrowdedChannelHowToFix1": {},
+    "sdCrowdedChannelHowToFix2": "2.4 GHz'de, 1 / 6 / 11 numaralı kanalları tercih edin — bunlar birbiriyle çakışmaz.",
+    "@sdCrowdedChannelHowToFix2": {},
+    "sdCrowdedChannelHowToFix3": "Yönlendiriciniz 5 GHz veya 6 GHz'i destekliyorsa cihazı o banda taşıyın: Orada çok daha fazla temiz kanal mevcuttur.",
+    "@sdCrowdedChannelHowToFix3": {},
+    "sdCrowdedChannelHowToFix4": "Çift bantlı yönlendiriciler için her banda kendi SSID'sini verin, böylece cihazlar kalabalık bir 2.4 GHz kanalına geri dönmeyi bırakır.",
+    "@sdCrowdedChannelHowToFix4": {},
+    "sdCrowdedChannelEstimate": "Tahmini kazanç: Daha sessiz bir kanala geçtikten sonra indirme hızında +{gain} Mbps'ye kadar artış.",
+    "@sdCrowdedChannelEstimate": {
+        "placeholders": {
+            "gain": {
+                "type": "String"
+            }
+        }
+    },
+    "sdBufferbloatWhatIs": "Bufferbloat, bağlantı tam yüklendiğinde yönlendiricinizin gönderim tamponlarında biriken gecikmedir — tipik paketler yığın trafiğin arkasında kuyruğa girmek zorunda kalır.",
+    "@sdBufferbloatWhatIs": {},
+    "sdBufferbloatWhyItMatters": "Bir dosya indirilirken indirme hızınız harika görünebilir, ancak sesli aramalar titrer, video konferanslar donar ve oyunlar gecikir — zamana duyarlı her şey kuyruğun arkasında bekletilir.",
+    "@sdBufferbloatWhyItMatters": {},
+    "sdBufferbloatHowToFix1": "Yönlendirici yönetici sayfanızda QoS / SQM'yi (bazen \"Akıllı Kuyruk Yönetimi\" veya \"Uyarlanabilir QoS\" olarak adlandırılır) etkinleştirin.",
+    "@sdBufferbloatHowToFix1": {},
+    "sdBufferbloatHowToFix2": "Yönlendirici yazılımını güncelleyin — modern yazılımlar varsayılan olarak daha iyi kuyruk disiplini ile gelir.",
+    "@sdBufferbloatHowToFix2": {},
+    "sdBufferbloatHowToFix3": "Yönlendirici çok eskiyse ve SQM özelliği yoksa, onu yeni bir modelle değiştirmek genellikle tek gerçek çözümdür.",
+    "@sdBufferbloatHowToFix3": {},
+    "sdBufferbloatHowToFix4": "Yönlendiricideki yükleme bant genişliğini gerçek paketinizin biraz altında (örneğin %90) sınırlayın, böylece kuyruk ISP'de değil yönlendiricide oluşur.",
+    "@sdBufferbloatHowToFix4": {},
+    "sdBufferbloatEstimate": "Tahmini kazanç: Yaklaşık −{reduction} ms yüklü gecikme. Aramalar ve oyunlar büyük indirmeler sırasında bile akıcı hissettirecek.",
+    "@sdBufferbloatEstimate": {
+        "placeholders": {
+            "reduction": {
+                "type": "String"
+            }
+        }
+    },
+    "sdIspSlowWhatIs": "Wi-Fi bağlantınız sağlıklı ve radyo, şu anda içinden akandan çok daha fazlasını taşıyabilir. Darboğaz yönlendiricinin üst akışındadır (servis sağlayıcı tarafında).",
+    "@sdIspSlowWhatIs": {},
+    "sdIspSlowWhyItMatters": "Hiçbir yönlendirici veya Wi-Fi ayarı yardımcı olmayacaktır — ISP'nizden yönlendiriciye gelen bağlantı tavan noktasıdır. Bunu bir Wi-Fi sorunu olarak değil, paket yükseltme veya destek çağrısı verisi olarak değerlendirin.",
+    "@sdIspSlowWhyItMatters": {},
+    "sdIspSlowHowToFix1": "Radyonun hatalı olmadığını doğrulamak için testi kablolu bir Ethernet kablosuyla yeniden çalıştırın.",
+    "@sdIspSlowHowToFix1": {},
+    "sdIspSlowHowToFix2": "Ödediğiniz ISP paketini kontrol edin — test sonucu iyi bir günde paketinizin yaklaşık %80'i ile eşleşmelidir.",
+    "@sdIspSlowHowToFix2": {},
+    "sdIspSlowHowToFix3": "Günün farklı saatlerinde deneyin. Sadece akşamları yavaşsa, ISP segmenti yoğun olabilir.",
+    "@sdIspSlowHowToFix3": {},
+    "sdIspSlowHowToFix4": "Sonuç sürekli olarak paketinizin çok altındaysa, hız testi çıktısıyla birlikte ISP ile iletişime geçin.",
+    "@sdIspSlowHowToFix4": {},
+    "sdIspSlowEstimate": "Wi-Fi'ınız ~{phy} Mbps'ye kadar taşıyabilir; şu anda {download} Mbps alıyorsunuz. Boşluk yönlendiricinin üst akışındadır.",
+    "@sdIspSlowEstimate": {
+        "placeholders": {
+            "phy": {
+                "type": "String"
+            },
+            "download": {
+                "type": "String"
+            }
+        }
+    },
+    "sdSlowDnsWhatIs": "DNS, example.com gibi isimleri cihazınızın gerçekte bağlandığı IP adreslerine dönüştürür. Her sayfa yüklemesi, herhangi bir veri akışından önce bir avuç bu sorgulardan başlatır.",
+    "@sdSlowDnsWhatIs": {},
+    "sdSlowDnsWhyItMatters": "Yavaş DNS indirme hızınızı düşürmez — her bağlantının başında bir gecikme ekler. Hız testleri iyi görünse bile web \"yavaş\" hissettirir.",
+    "@sdSlowDnsWhyItMatters": {},
+    "sdSlowDnsHowToFix1": "Cihazınızın veya yönlendiricinizin DNS'ini hızlı bir genel çözücüye geçirin — 1.1.1.1 (Cloudflare), 8.8.8.8 (Google) veya 9.9.9.9 (Quad9).",
+    "@sdSlowDnsHowToFix1": {},
+    "sdSlowDnsHowToFix2": "Sorguları şifrelemek için işletim sisteminizde veya tarayıcınızda HTTPS üzerinden DNS (DoH) veya TLS üzerinden DNS (DoT) özelliğini etkinleştirin.",
+    "@sdSlowDnsHowToFix2": {},
+    "sdSlowDnsHowToFix3": "ISP'nizin DNS'i yavaşsa, çözücüyü yönlendirici üzerinde ayarlayın, böylece sadece bir cihaz değil tüm ev faydalansın.",
+    "@sdSlowDnsHowToFix3": {},
+    "sdSlowDnsEstimate": "Tahmini kazanç: İsim sorgusu başına yaklaşık −{reduction} ms. Her sayfa bir düzine sorgu başlattığı için sayfa yüklemeleri genellikle %5–20 daha hızlı hissettirir.",
+    "@sdSlowDnsEstimate": {
+        "placeholders": {
+            "reduction": {
+                "type": "int"
+            }
+        }
+    },
+    "sdHealthyWhatIs": "Speed Doctor beş şeyi kontrol eder: sinyal gücü, kanal yoğunluğu, yük altında hız (bufferbloat), Wi-Fi kapasitesine karşı indirme hızı ve DNS çözümleme süresi.",
+    "@sdHealthyWhatIs": {},
+    "sdHealthyWhyItMatters": "Bu çalışma sırasında bunlardan hiçbiri bir uyarı eşiğini geçmedi. Bağlantınız şu anda iyi durumda — herhangi bir sorun fark etmeye başlarsanız bir şeylerin değişip değişmediğini görmek için testi yeniden çalıştırın.",
+    "@sdHealthyWhyItMatters": {},
+    "sdMetricRssi": "RSSI: {rssi} dBm",
+    "@sdMetricRssi": {
+        "placeholders": {
+            "rssi": {
+                "type": "int"
+            }
+        }
+    },
+    "sdThresholdRssi": "Sağlıklı ≥ {healthy} dBm · Kritik ≤ {severe} dBm",
+    "@sdThresholdRssi": {
+        "placeholders": {
+            "healthy": {
+                "type": "int"
+            },
+            "severe": {
+                "type": "int"
+            }
+        }
+    },
+    "sdMetricChannel": "Kanal {channel} · puan {score}/10",
+    "@sdMetricChannel": {
+        "placeholders": {
+            "channel": {
+                "type": "int"
+            },
+            "score": {
+                "type": "String"
+            }
+        }
+    },
+    "sdThresholdChannel": "Sağlıklı ≥ {healthy} · Kritik ≤ {severe}",
+    "@sdThresholdChannel": {
+        "placeholders": {
+            "healthy": {
+                "type": "String"
+            },
+            "severe": {
+                "type": "String"
+            }
+        }
+    },
+    "sdMetricBufferbloat": "Yüklü gecikme Δ: {induced} ms ({latency} → {loaded})",
+    "@sdMetricBufferbloat": {
+        "placeholders": {
+            "induced": {
+                "type": "String"
+            },
+            "latency": {
+                "type": "String"
+            },
+            "loaded": {
+                "type": "String"
+            }
+        }
+    },
+    "sdThresholdBufferbloat": "Sağlıklı ≤ {healthy} ms · Kritik ≥ {severe} ms",
+    "@sdThresholdBufferbloat": {
+        "placeholders": {
+            "healthy": {
+                "type": "String"
+            },
+            "severe": {
+                "type": "String"
+            }
+        }
+    },
+    "sdMetricIsp": "İndirme: {download} Mbps · PHY: {phy} Mbps",
+    "@sdMetricIsp": {
+        "placeholders": {
+            "download": {
+                "type": "String"
+            },
+            "phy": {
+                "type": "String"
+            }
+        }
+    },
+    "sdMetricIspNoPhy": "İndirme: {download} Mbps",
+    "@sdMetricIspNoPhy": {
+        "placeholders": {
+            "download": {
+                "type": "String"
+            }
+        }
+    },
+    "sdThresholdIsp": "Radyo yoğunluğu yokken sağlıklı ≥ {healthy} Mbps",
+    "@sdThresholdIsp": {
+        "placeholders": {
+            "healthy": {
+                "type": "String"
+            }
+        }
+    },
+    "sdMetricDns": "En iyi çözücü: {name} · {latency} ms",
+    "@sdMetricDns": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "latency": {
+                "type": "int"
+            }
+        }
+    },
+    "sdThresholdDns": "Sağlıklı ≤ {healthy} ms · Kritik ≥ {severe} ms",
+    "@sdThresholdDns": {
+        "placeholders": {
+            "healthy": {
+                "type": "int"
+            },
+            "severe": {
+                "type": "int"
+            }
+        }
+    },
+    "speedDoctorActionMoveCloser": "Daha yakına taşı",
+    "@speedDoctorActionMoveCloser": {},
+    "speedDoctorActionAddMesh": "Mesh düğümü ekle",
+    "@speedDoctorActionAddMesh": {},
+    "speedDoctorActionSwitchTo5Ghz": "5 GHz'e geç",
+    "@speedDoctorActionSwitchTo5Ghz": {},
+    "speedDoctorActionChangeChannel": "Kanalı değiştir",
+    "@speedDoctorActionChangeChannel": {},
+    "speedDoctorActionMoveTo5Ghz": "5 GHz'e taşı",
+    "@speedDoctorActionMoveTo5Ghz": {},
+    "speedDoctorActionEnableQos": "QoS / SQM etkinleştir",
+    "@speedDoctorActionEnableQos": {},
+    "speedDoctorActionUpdateFirmware": "Yazılımı güncelle",
+    "@speedDoctorActionUpdateFirmware": {},
+    "speedDoctorActionCallIsp": "Servis sağlayıcıyı ara",
+    "@speedDoctorActionCallIsp": {},
+    "speedDoctorActionRunWiredTest": "Kablolu test yap",
+    "@speedDoctorActionRunWiredTest": {},
+    "speedDoctorActionChangeDns": "DNS değiştir",
+    "@speedDoctorActionChangeDns": {},
+    "speedDoctorActionEnableDoh": "DoH etkinleştir",
+    "@speedDoctorActionEnableDoh": {},
+    "networkContextHomeLabel": "Ev",
+    "@networkContextHomeLabel": {},
+    "networkContextPublicLabel": "Halka Açık",
+    "@networkContextPublicLabel": {},
+    "networkContextGuestLabel": "Misafir",
+    "@networkContextGuestLabel": {},
+    "networkContextUnknownLabel": "Bilinmiyor",
+    "@networkContextUnknownLabel": {},
+    "noChangeLabel": "değişim yok",
+    "@noChangeLabel": {},
+    "sinceLastScanLabel": "son taramadan beri",
+    "@sinceLastScanLabel": {},
+    "allClearLabel": "her şey yolunda",
+    "@allClearLabel": {},
+    "tapToTestLabel": "test et",
+    "@tapToTestLabel": {},
+    "categorySignal": "Sinyal",
+    "@categorySignal": {},
+    "categoryChannel": "Kanal",
+    "@categoryChannel": {},
+    "categoryBufferbloat": "Bufferbloat",
+    "@categoryBufferbloat": {},
+    "categoryIsp": "ISS Bant Genişliği",
+    "@categoryIsp": {},
+    "categoryDns": "DNS",
+    "@categoryDns": {},
+    "categoryHealthy": "Sağlıklı",
+    "@categoryHealthy": {},
+    "primaryCauseWeakSignalTitle": "ZAYIF SİNYAL",
+    "@primaryCauseWeakSignalTitle": {},
+    "primaryCauseWeakSignalDesc": "Cihazınız yönlendiriciden çok uzakta veya arada çok fazla duvar var. Daha yakına taşıyın veya bu alana bir mesh düğümü ekleyin.",
+    "@primaryCauseWeakSignalDesc": {},
+    "primaryCauseCrowdedChannelTitle": "KALABALIK KANAL",
+    "@primaryCauseCrowdedChannelTitle": {},
+    "primaryCauseCrowdedChannelDesc": "Çevredeki birkaç erişim noktası kanalınızı paylaşıyor. Daha az kalabalık bir kanala veya 5/6 GHz'e geçmek yardımcı olacaktır.",
+    "@primaryCauseCrowdedChannelDesc": {},
+    "primaryCauseBufferbloatTitle": "BUFFERBLOAT",
+    "@primaryCauseBufferbloatTitle": {},
+    "primaryCauseBufferbloatDesc": "Bağlantı meşgul olduğunda gecikme artıyor. Trafik dalgalanmalarını yönetmek için yönlendiricinizde QoS / SQM özelliğini etkinleştirin.",
+    "@primaryCauseBufferbloatDesc": {},
+    "primaryCauseIspSlowTitle": "ISS HIZ SINIRI",
+    "@primaryCauseIspSlowTitle": {},
+    "primaryCauseIspSlowDesc": "Wi-Fi bağlantınız sağlıklı ancak indirme hızı düşük. Darboğaz büyük olasılıkla internet planınızdan veya servis sağlayıcınızdan kaynaklanıyor.",
+    "@primaryCauseIspSlowDesc": {},
+    "primaryCauseSlowDnsTitle": "YAVAŞ DNS",
+    "@primaryCauseSlowDnsTitle": {},
+    "primaryCauseSlowDnsDesc": "İsimlerin çözümlenmesi çok uzun sürüyor. DNS sağlayıcısını değiştirmek veya DoH/DoT özelliğini etkinleştirmek genellikle gecikmeyi ortadan kaldırır.",
+    "@primaryCauseSlowDnsDesc": {},
+    "primaryCauseHealthyTitle": "AĞ SAĞLIKLI",
+    "@primaryCauseHealthyTitle": {},
+    "primaryCauseHealthyDesc": "Hiçbir darboğaz uyarı eşiğine ulaşmadı. Bağlantınız şu an iyi görünüyor.",
+    "@primaryCauseHealthyDesc": {},
+    "whatIsThisSection": "Bu nedir?",
+    "@whatIsThisSection": {},
+    "whyItMattersSection": "Neden önemli?",
+    "@whyItMattersSection": {},
+    "hideDetails": "Detayları gizle",
+    "@hideDetails": {},
+    "whatIsThisHowToFix": "Bu nedir? · Nasıl düzeltilir",
+    "@whatIsThisHowToFix": {},
+    "howPingStabilizerWorksTitle": "Ping Sabitleyici Nasıl Çalışır",
+    "@howPingStabilizerWorksTitle": {},
+    "stabilizerExplainerSubtitle": "Cihaz üzerinde, uzak sunucu yok, ücretsiz.",
+    "@stabilizerExplainerSubtitle": {},
+    "whatItDoesTitle": "Ne Yapar",
+    "@whatItDoesTitle": {},
+    "whatItDoesBullet1": "Cihazınızda yerel bir VPN tüneli kurar — hiçbir trafik üçüncü taraf bir sunucudan geçmez.",
+    "@whatItDoesBullet1": {},
+    "whatItDoesBullet2": "DNS sorgularını canlı olarak ölçülen en hızlı çözücüye (1.1.1.1, 8.8.8.8, 9.9.9.9, …) yönlendirir.",
+    "@whatItDoesBullet2": {},
+    "whatItDoesBullet3": "Gecikme ve jitter değerlerini saniye saniye izler; ani bir artış olduğunda sizi uyarır veya kötüleşen yolu düzeltmek için tüneli yenileyebilir.",
+    "@whatItDoesBullet3": {},
+    "whatItDoesBullet4": "Gerçek performans kaybını ayırt etmek için EWMA filtresi kullanır, böylece anlık paket gürültülerine değil gerçek sorunlara tepki verir.",
+    "@whatItDoesBullet4": {},
+    "whatItDoesNotTitle": "Ne Yapmaz",
+    "@whatItDoesNotTitle": {},
+    "whatItDoesNotBullet1": "Servis sağlayıcınızın (ISP) oyun sunucusuna olan fiziksel yolunu kısaltamaz — hiçbir uygulama bunu yapamaz.",
+    "@whatItDoesNotBullet1": {},
+    "whatItDoesNotBullet2": "ExitLag veya WTFast gibi ücretli VPN/relay servislerinin yerini tutmaz (onlar kendi sunucuları üzerinden yönlendirme yapar; bu ise yereldir).",
+    "@whatItDoesNotBullet2": {},
+    "whatItDoesNotBullet3": "Wi-Fi + Mobil veri üzerinden eşzamanlı gönderim (Phase 2) geliştirme aşamasındadır ve şu an devre dışıdır.",
+    "@whatItDoesNotBullet3": {},
+    "risksAndThingsToKnowTitle": "Riskler ve Bilinmesi Gerekenler",
+    "@risksAndThingsToKnowTitle": {},
+    "risksBullet1": "Tünel aktifken Android'de anahtar simgesi görünür — bu normaldir ve sistem gereksinimidir.",
+    "@risksBullet1": {},
+    "risksBullet2": "Aynı anda sadece bir VPN çalışabilir. Başka bir VPN bağlıysa, bu özellik başlamayı reddedecektir.",
+    "@risksBullet2": {},
+    "risksBullet3": "Tünel çalışırken bildirim panelinde kalıcı bir bildirim (güncel ping + Durdur / Yenile butonları) kalır — bu sizin oyun içi panelinizdir; kapatmayın.",
+    "@risksBullet3": {},
+    "risksBullet4": "Xiaomi/MIUI, OnePlus/OxygenOS ve benzeri arayüzlerde, Torcav'ı Ayarlar → Bildirimler ve Ayarlar → Pil → Kısıtlama yok altında izin vermeniz gerekebilir; aksi takdirde sistem bildirimi gizleyebilir.",
+    "@risksBullet4": {},
+    "risksBullet5": "DNS otomatik geçişi, tünel açıkken sorgularınızı cevaplayan çözücüyü değiştirir. Sabitleyici durduğunda bu değişiklik geri alınır.",
+    "@risksBullet5": {},
+    "risksBullet6": "Pil kullanımı düşüktür (testlerimizde ~%3-5/saat) ancak sıfır değildir — oyununuz bittiğinde kapatmayı unutmayın.",
+    "@risksBullet6": {},
+    "gameProfileLabel": "Oyun profili",
+    "@gameProfileLabel": {},
+    "profileGeneric": "Genel UDP Oyun",
+    "@profileGeneric": {},
+    "metricSignal": "SİNYAL",
+    "@metricSignal": {},
+    "metricScoreTrend": "PUAN TRENDİ",
+    "@metricScoreTrend": {},
+    "metricChannels": "KANALLAR",
+    "@metricChannels": {},
+    "metricNewDevices": "YENİ CİHAZLAR",
+    "@metricNewDevices": {},
+    "metricThreats": "TEHDİTLER",
+    "@metricThreats": {},
+    "metricSpeed": "HIZ",
+    "@metricSpeed": {},
+    "waitingForHistory": "Geçmiş veriler bekleniyor",
+    "@waitingForHistory": {},
+    "noScanData": "Tarama verisi yok",
+    "@noScanData": {},
+    "justNow": "az önce",
+    "@justNow": {},
+    "minutesAgo": "{count} dk önce",
+    "@minutesAgo": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "hoursAgo": "{count} sa önce",
+    "@hoursAgo": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "daysAgo": "{count} gün önce",
+    "@daysAgo": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "mbps": "Mbps",
+    "@mbps": {},
+    "notificationChannelSecurityCritical": "Kritik Uyarılar",
+    "@notificationChannelSecurityCritical": {},
+    "notificationChannelSecurityHigh": "Yüksek Öncelikli",
+    "@notificationChannelSecurityHigh": {},
+    "notificationChannelSecurityMedium": "Orta Öncelikli",
+    "@notificationChannelSecurityMedium": {},
+    "notificationChannelSecurityWarning": "Uyarılar",
+    "@notificationChannelSecurityWarning": {},
+    "notificationChannelSecurityLow": "Düşük Öncelikli",
+    "@notificationChannelSecurityLow": {},
+    "notificationChannelSecurityInfo": "Bilgilendirme",
+    "@notificationChannelSecurityInfo": {},
+    "notificationChannelSecurityDescription": "Güvenlik uyarısı bildirimleri",
+    "@notificationChannelSecurityDescription": {},
+    "scanCompleteTitle": "Tarama Tamamlandı",
+    "@scanCompleteTitle": {},
+    "scanCompleteBody": "{seconds} saniyede {count} ağ bulundu",
+    "@scanCompleteBody": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "seconds": {
+                "type": "int"
+            }
+        }
+    },
+    "wifiChannelQualityDroppedTitle": "📶 Wi-Fi kanal kalitesi düştü",
+    "@wifiChannelQualityDroppedTitle": {},
+    "wifiChannelQualityDroppedBody": "Kanal {channel} şu an {rating}/10. Kanal {recommendedChannel} {recommendedRating}/10 seviyesinde — geçiş yapmayı düşünün.",
+    "@wifiChannelQualityDroppedBody": {
+        "placeholders": {
+            "channel": {
+                "type": "int"
+            },
+            "rating": {
+                "type": "String"
+            },
+            "recommendedChannel": {
+                "type": "int"
+            },
+            "recommendedRating": {
+                "type": "String"
+            }
+        }
+    },
+    "attackDetectedTitle": "⚠️ Saldırı Tespit Edildi: {attackType}",
+    "@attackDetectedTitle": {
+        "placeholders": {
+            "attackType": {
+                "type": "String"
+            }
+        }
+    },
+    "stabilizerJitterSpikeTitle": "Jitter sıçraması tespit edildi",
+    "@stabilizerJitterSpikeTitle": {},
+    "stabilizerFasterDnsTitle": "Daha hızlı DNS mevcut",
+    "@stabilizerFasterDnsTitle": {},
+    "stabilizerPacketLossTitle": "Sürekli paket kaybı",
+    "@stabilizerPacketLossTitle": {},
+    "stabilizerJitterSpikeBody": "Jitter {window} örnek için {threshold} ms'yi aştı. Tüneli yenilemek sorunlu yolu düzeltebilir.",
+    "@stabilizerJitterSpikeBody": {
+        "placeholders": {
+            "threshold": {
+                "type": "String"
+            },
+            "window": {
+                "type": "int"
+            }
+        }
+    },
+    "stabilizerFasterDnsBody": "Daha hızlı bir DNS ({label}) mevcut.",
+    "@stabilizerFasterDnsBody": {
+        "placeholders": {
+            "label": {
+                "type": "String"
+            }
+        }
+    },
+    "stabilizerPacketLossBody": "Paket kaybı %{loss}. Çift arayüz gönderimi (Wi-Fi + hücresel) geçici düşüşleri maskeleyebilir.",
+    "@stabilizerPacketLossBody": {
+        "placeholders": {
+            "loss": {
+                "type": "String"
+            }
+        }
+    },
+    "lanDiscoveryTitle": "LAN Cihazları Tespit Edildi",
+    "@lanDiscoveryTitle": {},
+    "lanDiscoveryDesc": "Aktif tarama bu ağda {count} cihaz belirledi.",
+    "@lanDiscoveryDesc": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "lanDiscoveryEvidence": "Tespit edilen: {devices}",
+    "@lanDiscoveryEvidence": {
+        "placeholders": {
+            "devices": {
+                "type": "String"
+            }
+        }
+    },
+    "lanDiscoveryRecommendation": "Yerel ağınızdaki tüm cihazları tanıdığınızdan emin olun.",
+    "@lanDiscoveryRecommendation": {},
+    "gatewayPortsExposedTitle": "Ağ Geçidi Portları Açık",
+    "@gatewayPortsExposedTitle": {},
+    "gatewayPortsExposedDesc": "Host {ip}, savunmasız olabilecek açık portlara sahip.",
+    "@gatewayPortsExposedDesc": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            }
+        }
+    },
+    "gatewayPortsExposedEvidence": "Açık Portlar: {ports}",
+    "@gatewayPortsExposedEvidence": {
+        "placeholders": {
+            "ports": {
+                "type": "String"
+            }
+        }
+    },
+    "gatewayPortsExposedRecommendation": "Ağ geçidi yönlendiricisindeki gereksiz servisleri devre dışı bırakın ve güçlü şifreler kullandığınızdan emin olun.",
+    "@gatewayPortsExposedRecommendation": {},
+    "openServiceDetectedTitle": "Açık Servis Tespit Edildi",
+    "@openServiceDetectedTitle": {},
+    "openServiceDetectedDesc": "Host {ip}, {port} portunda {service} çalıştırıyor.",
+    "@openServiceDetectedDesc": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            },
+            "service": {
+                "type": "String"
+            },
+            "port": {
+                "type": "int"
+            }
+        }
+    },
+    "openServiceDetectedEvidence": "Hedef: {ip}, Port: {port}, Servis: {service}",
+    "@openServiceDetectedEvidence": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            },
+            "port": {
+                "type": "int"
+            },
+            "service": {
+                "type": "String"
+            }
+        }
+    },
+    "openServiceDetectedRecommendation": "Bu servisin erişilebilir olmasının amaçlandığından emin olun.",
+    "@openServiceDetectedRecommendation": {},
+    "lanDeviceDiscoveredTitle": "LAN Cihazı: {name}",
+    "@lanDeviceDiscoveredTitle": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "lanDeviceDiscoveredEvidence": "IP: {ip}, MAC: {mac}, Satıcı: {vendor}",
+    "@lanDeviceDiscoveredEvidence": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            },
+            "mac": {
+                "type": "String"
+            },
+            "vendor": {
+                "type": "String"
+            }
+        }
+    },
+    "lanDeviceDiscoveredRecommendation": "Bu cihazın size ait olduğunu doğrulayın. Kötü niyetli cihazlar genellikle LAN içinde gizlenir.",
+    "@lanDeviceDiscoveredRecommendation": {},
+    "encryptionAndConfigTitle": "ŞİFRELEME VE YAPILANDIRMA",
+    "@encryptionAndConfigTitle": {},
+    "environmentScanTitle": "ORTAM TARAMASI",
+    "@environmentScanTitle": {},
+    "dnsTestFailedTitle": "DNS Testi Başarısız",
+    "@dnsTestFailedTitle": {},
+    "dnsTestFailedDesc": "DNS test sunucularına ulaşılamadı. Bağlantınızı kontrol edin.",
+    "@dnsTestFailedDesc": {},
+    "dnsLeakDetectedTitle": "DNS Sızıntısı Tespit Edildi",
+    "@dnsLeakDetectedTitle": {},
+    "dnsLeakDetectedDesc": "DNS sorgularınız beklenen çözücünün dışına sızıyor, bu durum internet aktivitenizi servis sağlayıcınıza veya üçüncü taraflara ifşa edebilir.",
+    "@dnsLeakDetectedDesc": {},
+    "dnsHijackingDetectedTitle": "DNS Ele Geçirme Tespit Edildi",
+    "@dnsHijackingDetectedTitle": {},
+    "dnsHijackingDetectedDesc": "DNS yanıtları beklenmedik bir sunucuya yönlendiriliyor. Bu durum aradaki adam (man-in-the-middle) saldırısına veya servis sağlayıcı müdahalesine işaret edebilir.",
+    "@dnsHijackingDetectedDesc": {},
+    "dnsConfigWarningTitle": "DNS Yapılandırma Uyarısı",
+    "@dnsConfigWarningTitle": {},
+    "dnsConfigWarningDesc": "DNS yapılandırmasında gizliliği veya güvenliği etkileyebilecek potansiyel sorunlar var.",
+    "@dnsConfigWarningDesc": {},
+    "noIssuesDetected": "Sorun tespit edilmedi",
+    "@noIssuesDetected": {},
+    "retryInternetConnection": "İnternete bağlandığınızda tekrar deneyin.",
+    "@retryInternetConnection": {},
+    "dnsLeakRecommendation": "Güvenilir bir DNS çözücü (örn. 1.1.1.1 veya 9.9.9.9) yapılandırın ve HTTPS üzerinden DNS (DoH) veya TLS üzerinden DNS (DoT) özelliğini etkinleştirin.",
+    "@dnsLeakRecommendation": {},
+    "dnsHijackingRecommendation": "Derhal bir VPN kullanmaya başlayın. DNS sorgularınıza müdahale ediliyor.",
+    "@dnsHijackingRecommendation": {},
+    "dnsConfigRecommendation": "DNS ayarlarınızı gözden geçirin ve gizlilik odaklı bir DNS sağlayıcısına geçmeyi düşünün.",
+    "@dnsConfigRecommendation": {},
+    "openNetworksNearbyTitle": "Yakında {count} Açık Ağ Var",
+    "@openNetworksNearbyTitle": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "openNetworksNearbyDesc": "Menzilde {count} şifrelenmemiş ağ tespit edildi. Açık ağlar kolayca dinlenebilir.",
+    "@openNetworksNearbyDesc": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "vpnRecommendation": "Bilinmeyen veya güvenilmeyen ağlara bağlanırken güvenilir bir VPN kullanın.",
+    "@vpnRecommendation": {},
+    "wpsEnabledNearbyTitle": "Yakında WPS Etkin {count} Ağ Var",
+    "@wpsEnabledNearbyTitle": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "wpsEnabledNearbyDesc": "Yakındaki {count} ağda WPS etkin. WPS PINi kaba kuvvetle (brute-force) ele geçirilebilir ve Wi-Fi şifresi tamamen devre dışı bırakılabilir.",
+    "@wpsEnabledNearbyDesc": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "wpsRecommendation": "Yönlendiricinizde WPSi devre dışı bırakın. Eğer bunlar sizin ağınız değilse, yakındaki erişim noktalarının daha az güvenli olabileceğini unutmayın.",
+    "@wpsRecommendation": {},
+    "rule_arp_spoofing_title": "ARP Spoofing Tespit Edildi",
+    "@rule_arp_spoofing_title": {},
+    "rule_arp_spoofing_desc": "Birden fazla MAC adresi aynı IP adresini sahipleniyor. Bir saldırgan trafiğinizi kesiyor olabilir.",
+    "@rule_arp_spoofing_desc": {},
+    "rule_arp_spoofing_rec": "Derhal farklı bir ağa geçin veya bir VPN kullanın.",
+    "@rule_arp_spoofing_rec": {},
+    "rule_dns_hijacking_title": "DNS Ele Geçirme Tespit Edildi",
+    "@rule_dns_hijacking_title": {},
+    "rule_dns_hijacking_desc": "DNS sorgularınız beklenmedik bir sunucuya yönlendiriliyor. Bu, bir saldırganın hangi web sitelerini ziyaret ettiğinizi kontrol etmesine olanak tanır.",
+    "@rule_dns_hijacking_desc": {},
+    "rule_dns_hijacking_rec": "Derhal bir VPNe geçin. DNS sorgularınıza müdahale ediliyor.",
+    "@rule_dns_hijacking_rec": {},
+    "hardeningTitle": "YÖNLENDİRİCİ GÜÇLENDİRME",
+    "@hardeningTitle": {},
+    "hardeningSubtitle": "AĞ GEÇİDİNİZİ GÜVENLİ HALE GETİRİN",
+    "@hardeningSubtitle": {},
+    "hardeningMarkDone": "TAMAMLANDI İŞARETLE",
+    "@hardeningMarkDone": {},
+    "hardeningOpenAdmin": "YÖNETİCİ PANELİNİ AÇ",
+    "@hardeningOpenAdmin": {},
+    "hardeningStepsTitle": "İŞLEM ADIMLARI",
+    "@hardeningStepsTitle": {},
+    "hardeningMenuHintsTitle": "YAYGIN MENÜ İSİMLERİ",
+    "@hardeningMenuHintsTitle": {},
+    "hardeningCriticalBadge": "KRİTİK",
+    "@hardeningCriticalBadge": {},
+    "hardeningChangeAdminPasswordTitle": "Yönlendirici yönetici şifresini değiştirin",
+    "@hardeningChangeAdminPasswordTitle": {},
+    "hardeningChangeAdminPasswordBody": "Varsayılan yönetici kimlik bilgileri (admin/admin, admin/password) herkese açık olarak belgelenmiştir. Wi-Fi ağınızdaki herhangi biri yönetici panelini açabilir ve ayarları değiştirebilir — DNS'i ele geçirebilir, trafiği yönlendirebilir, sizi dışarıda bırakabilir.",
+    "@hardeningChangeAdminPasswordBody": {},
+    "hardeningChangeAdminPasswordStep1": "Bu sayfanın üst kısmındaki büyük YÖNETİCİ PANELİNİ AÇ düğmesine dokunun. Tarayıcınız yönlendirici giriş sayfasını açacaktır.",
+    "@hardeningChangeAdminPasswordStep1": {},
+    "hardeningChangeAdminPasswordStep2": "Giriş yapın. Değiştirmediyseniz kullanıcı adı olarak \"admin\" ve şifre olarak \"admin\" veya \"password\" deneyin.",
+    "@hardeningChangeAdminPasswordStep2": {},
+    "hardeningChangeAdminPasswordStep3": "\"Administration\", \"System\", \"Maintenance\" veya \"Account\" adında bir menü bulun.",
+    "@hardeningChangeAdminPasswordStep3": {},
+    "hardeningChangeAdminPasswordStep4": "Bu menünün içinde \"Login password\", \"Admin password\" veya \"Change password\" arayın.",
+    "@hardeningChangeAdminPasswordStep4": {},
+    "hardeningChangeAdminPasswordStep5": "YENİ bir şifre seçin — en az 12 karakter, büyük harf, küçük harf, rakam ve sembol karıştırın.",
+    "@hardeningChangeAdminPasswordStep5": {},
+    "hardeningChangeAdminPasswordStep6": "Kaydet / Uygula. Yönlendirici yaklaşık 30 saniyeliğine yeniden başlayabilir.",
+    "@hardeningChangeAdminPasswordStep6": {},
+    "hardeningChangeAdminPasswordStep7": "Yeni şifreyi güvenli bir yere not edin.",
+    "@hardeningChangeAdminPasswordStep7": {},
+    "hardeningChangeAdminPasswordStep8": "Kaydedildikten sonra, buraya geri dönün ve TAMAMLANDI İŞARETLE'ye dokunun.",
+    "@hardeningChangeAdminPasswordStep8": {},
+    "hardeningUseWpa3OrWpa2AesTitle": "WPA3 kullanın, WPA2-AES'e geri dönün",
+    "@hardeningUseWpa3OrWpa2AesTitle": {},
+    "hardeningUseWpa3OrWpa2AesBody": "WPA3 modern Wi-Fi şifreleme standardıdır. WPA/TKIP ve WEP dakikalar içinde kırılabilir.",
+    "@hardeningUseWpa3OrWpa2AesBody": {},
+    "hardeningDisableWpsTitle": "WPS'i devre dışı bırakın",
+    "@hardeningDisableWpsTitle": {},
+    "hardeningDisableWpsBody": "WPS, saldırganların saatler içinde Wi-Fi şifrenizi atlamasını sağlar. Kapatın.",
+    "@hardeningDisableWpsBody": {},
+    "hardeningEnablePmfTitle": "PMF / 802.11w'yi etkinleştirin",
+    "@hardeningEnablePmfTitle": {},
+    "hardeningEnablePmfBody": "Korumalı Yönetim Çerçeveleri (PMF), saldırganların cihazlarınızı çevrimdışı bırakmasını engeller.",
+    "@hardeningEnablePmfBody": {},
+    "hardeningEnableGuestNetworkTitle": "Bir misafir ağı etkinleştirin",
+    "@hardeningEnableGuestNetworkTitle": {},
+    "hardeningEnableGuestNetworkBody": "Ziyaretçiler ve IoT cihazları için ikinci bir SSID, özel ağınızı güvende tutar.",
+    "@hardeningEnableGuestNetworkBody": {},
+    "hardeningDisableRemoteAdminTitle": "Uzaktan / WAN tarafı yönetimi devre dışı bırakın",
+    "@hardeningDisableRemoteAdminTitle": {},
+    "hardeningDisableRemoteAdminBody": "Yönetici paneline internetten ulaşılabiliyorsa, herkes varsayılan şifreleri deneyebilir.",
+    "@hardeningDisableRemoteAdminBody": {},
+    "hardeningUpdateFirmwareTitle": "Aygıt yazılımını (Firmware) güncelleyin",
+    "@hardeningUpdateFirmwareTitle": {},
+    "hardeningUpdateFirmwareBody": "Çoğu ev yönlendiricisinin, üreticilerin sessizce yamaladığı bilinen güvenlik açıkları vardır.",
+    "@hardeningUpdateFirmwareBody": {},
+    "hardeningStrongPassphraseTitle": "Güçlü bir Wi-Fi parolası kullanın",
+    "@hardeningStrongPassphraseTitle": {},
+    "hardeningStrongPassphraseBody": "12+ karakter, büyük/küçük harf karışık, başka bir servisten asla tekrar kullanılmamış.",
+    "@hardeningStrongPassphraseBody": {},
+    "gatewayCopyError": "Tarayıcı otomatik olarak açılamadı. Ağ geçidi IP'si {ip} kopyalandı — tarayıcınızın adres çubuğuna yapıştırın.",
+    "@gatewayCopyError": {},
+    "hardeningConnectWifiHint": "İlerlemeyi yönlendirici bazında takip etmek için ev Wi-Fi ağınıza bağlanın. Kontrol listesi bağlantı olmadan da çalışır.",
+    "@hardeningConnectWifiHint": {},
+    "progressLabel": "İLERLEME",
+    "@progressLabel": {},
+    "tapToCopy": "kopyalamak için dokunun",
+    "@tapToCopy": {},
+    "hardeningOpenAdminDesc": "Tarayıcıda yönlendirici giriş sayfanızı açın",
+    "@hardeningOpenAdminDesc": {},
+    "hardeningConnectWifiRequired": "Önce Wi-Fi'ye bağlanın",
+    "@hardeningConnectWifiRequired": {},
+    "hardeningGatewayHintDisconnected": "Bağlandıktan sonra ağ geçidi IP'si yukarıda görünür ve düğme tarayıcınızı başlatır.",
+    "@hardeningGatewayHintDisconnected": {},
+    "hardeningGatewayHintConnected": "Açılmıyor mu? Kopyalamak için yukarıdaki ağ geçidi IP'sine dokunun, ardından tarayıcınızın adres çubuğuna (Chrome, Firefox vb.) yapıştırın.",
+    "@hardeningGatewayHintConnected": {},
+    "whyThisMattersLabel": "BU NEDEN ÖNEMLİ",
+    "@whyThisMattersLabel": {},
+    "markAsTodoLabel": "YAPILACAK OLARAK İŞARETLE",
+    "@markAsTodoLabel": {},
+    "hardeningUseWpa3OrWpa2AesStep1": "Üstteki düğmeyi kullanarak yönetici panelini açın.",
+    "@hardeningUseWpa3OrWpa2AesStep1": {},
+    "hardeningUseWpa3OrWpa2AesStep2": "Kablosuz (Wireless) bölümünü bulun: \"Wireless\", \"Wi-Fi\" veya \"WLAN\".",
+    "@hardeningUseWpa3OrWpa2AesStep2": {},
+    "hardeningUseWpa3OrWpa2AesStep3": "Bir güvenlik veya şifreleme ayarı arayın — genellikle \"Security mode\", \"Authentication\" veya \"Encryption\" olarak adlandırılır.",
+    "@hardeningUseWpa3OrWpa2AesStep3": {},
+    "hardeningUseWpa3OrWpa2AesStep4": "Şu sırayla en güçlü seçeneği belirleyin: WPA3-Personal > WPA2/WPA3 mixed > WPA2-Personal (AES). \"WPA-PSK\", \"TKIP\", \"WEP\" veya \"Open\" etiketli olanlardan kaçının — bunlar güvensizdir.",
+    "@hardeningUseWpa3OrWpa2AesStep4": {},
+    "hardeningUseWpa3OrWpa2AesStep5": "WPA3-Personal ayarlarsanız ve eski bir cihaz (akıllı ampul, yazıcı, eski telefon) çalışmayı durdurursa, \"WPA2/WPA3 mixed\" seçeneğine geçin — bu, eski donanımların bağlanmasına izin verirken yeni cihazların hala WPA3 kullanmasını sağlar.",
+    "@hardeningUseWpa3OrWpa2AesStep5": {},
+    "hardeningUseWpa3OrWpa2AesStep6": "Ayrı 2.4 GHz ve 5 GHz ayarlarınız varsa, HER İKİ bandı da değiştirin.",
+    "@hardeningUseWpa3OrWpa2AesStep6": {},
+    "hardeningUseWpa3OrWpa2AesStep7": "Kaydet / Uygula. Cihazlarınızın bağlantısı kısa bir süreliğine kesilebilir — birkaç saniye içinde yeniden bağlanacaklardır.",
+    "@hardeningUseWpa3OrWpa2AesStep7": {},
+    "hardeningUseWpa3OrWpa2AesStep8": "Buraya geri dönün ve TAMAMLANDI İŞARETLE'ye dokunun.",
+    "@hardeningUseWpa3OrWpa2AesStep8": {},
+    "hardeningDisableWpsStep1": "Yönetici panelini açın.",
+    "@hardeningDisableWpsStep1": {},
+    "hardeningDisableWpsStep2": "Kablosuz (Wireless) veya Wi-Fi bölümünü bulun.",
+    "@hardeningDisableWpsStep2": {},
+    "hardeningDisableWpsStep3": "\"WPS\", \"Easy Setup\", \"Quick Connect\" adında bir alt menü veya Kablosuz Ayarlarında WPS etiketli bir sekme arayın.",
+    "@hardeningDisableWpsStep3": {},
+    "hardeningDisableWpsStep4": "WPS anahtarını OFF / Disabled (Kapalı) konumuna getirin.",
+    "@hardeningDisableWpsStep4": {},
+    "hardeningDisableWpsStep5": "Bazı yönlendiricilerin üzerinde fiziksel bir WPS düğmesi de bulunur — bu da çalışmayı durduracaktır ki amaç da budur.",
+    "@hardeningDisableWpsStep5": {},
+    "hardeningDisableWpsStep6": "Kaydet / Uygula.",
+    "@hardeningDisableWpsStep6": {},
+    "hardeningDisableWpsStep7": "Şu andan itibaren, yeni bir cihaz bağladığınızda sadece normal şekilde Wi-Fi şifresini yazın. Ekstra 10 saniye sürer, ciddi bir saldırı yolunu ortadan kaldırır.",
+    "@hardeningDisableWpsStep7": {},
+    "hardeningDisableWpsStep8": "Buraya geri dönün ve TAMAMLANDI İŞARETLE'ye dokunun.",
+    "@hardeningDisableWpsStep8": {},
+    "hardeningEnablePmfStep1": "Yönetici panelini açın.",
+    "@hardeningEnablePmfStep1": {},
+    "hardeningEnablePmfStep2": "Kablosuz (Wireless) / Wi-Fi bölümüne gidin.",
+    "@hardeningEnablePmfStep2": {},
+    "hardeningEnablePmfStep3": "\"Advanced\" veya \"Wireless Security\" altında \"PMF\", \"802.11w\" veya \"Management Frame Protection\" adlı bir ayar arayın.",
+    "@hardeningEnablePmfStep3": {},
+    "hardeningEnablePmfStep4": "Tüm cihazlarınız yeni ise (son ~5 yıl) \"Required\" (Gerekli) olarak ayarlayın. Eski cihazlar ağı görmemeye başlarsa, bunu \"Optional / Capable\" (İsteğe Bağlı) olarak değiştirin — bu yine de yardımcı olur, sadece daha az kısıtlayıcıdır.",
+    "@hardeningEnablePmfStep4": {},
+    "hardeningEnablePmfStep5": "Bu ayarı hiçbir yerde bulamıyorsanız, yönlendiriciniz bunu WPA3 moduna entegre etmiş olabilir (bu nedenle yukarıdaki 2. adımı tamamlamak zaten kapsar). Bu durumda, buradaki TAMAMLANDI İŞARETLE'ye de dokunun.",
+    "@hardeningEnablePmfStep5": {},
+    "hardeningEnablePmfStep6": "Kaydet / Uygula.",
+    "@hardeningEnablePmfStep6": {},
+    "hardeningEnablePmfStep7": "Buraya geri dönün ve TAMAMLANDI İŞARETLE'ye dokunun.",
+    "@hardeningEnablePmfStep7": {},
+    "hardeningEnableGuestNetworkStep1": "Yönetici panelini açın.",
+    "@hardeningEnableGuestNetworkStep1": {},
+    "hardeningEnableGuestNetworkStep2": "\"Guest Network\", \"Guest Wi-Fi\" veya \"Multi-SSID\" adında bir menü bulun.",
+    "@hardeningEnableGuestNetworkStep2": {},
+    "hardeningEnableGuestNetworkStep3": "Etkinleştirin. Ana Wi-Fi ağınızdan farklı bir isim verin — örneğin, ana ağınız \"Ev\" ise misafir ağına \"Ev-Misafir\" deyin.",
+    "@hardeningEnableGuestNetworkStep3": {},
+    "hardeningEnableGuestNetworkStep4": "Bir şifre belirleyin. Ana şifrenizden daha basit olabilir (misafirler yazacaktır), ancak yine de 10+ karakter olmalıdır.",
+    "@hardeningEnableGuestNetworkStep4": {},
+    "hardeningEnableGuestNetworkStep5": "\"Client Isolation\", \"AP Isolation\" veya \"Guest network isolation\" adında bir ayar arayın. Açık (ON) duruma getirin. Bu, misafir cihazların birbirleriyle veya özel ağınızla konuşmasını engeller.",
+    "@hardeningEnableGuestNetworkStep5": {},
+    "hardeningEnableGuestNetworkStep6": "IoT cihazlarınızı (akıllı prizler, kameralar, robot süpürge, akıllı TV vb.) misafir ağına taşıyın — onları yeni şifreyle bağlayın.",
+    "@hardeningEnableGuestNetworkStep6": {},
+    "hardeningEnableGuestNetworkStep7": "Kaydet / Uygula.",
+    "@hardeningEnableGuestNetworkStep7": {},
+    "hardeningEnableGuestNetworkStep8": "Buraya geri dönün ve TAMAMLANDI İŞARETLE'ye dokunun.",
+    "@hardeningEnableGuestNetworkStep8": {},
+    "hardeningDisableRemoteAdminStep1": "Yönetici panelini açın.",
+    "@hardeningDisableRemoteAdminStep1": {},
+    "hardeningDisableRemoteAdminStep2": "\"Administration\", \"System Tools\" veya \"Security\" bölümüne gidin.",
+    "@hardeningDisableRemoteAdminStep2": {},
+    "hardeningDisableRemoteAdminStep3": "\"Remote Management\", \"Web Access from WAN\" veya \"Remote admin\" adlı bir ayar bulun.",
+    "@hardeningDisableRemoteAdminStep3": {},
+    "hardeningDisableRemoteAdminStep4": "Bunu OFF / Disabled (Kapalı) konumuna getirin.",
+    "@hardeningDisableRemoteAdminStep4": {},
+    "hardeningDisableRemoteAdminStep5": "Buradayken, \"Cloud / Remote App access\" ayarını da kontrol edin (bazı markalarda bu vardır — TP-Link Tether, Asus Router app, Mi Wi-Fi). Bu uygulamayı aktif olarak kullanmıyorsanız, onu da kapatın.",
+    "@hardeningDisableRemoteAdminStep5": {},
+    "hardeningDisableRemoteAdminStep6": "Kaydet / Uygula.",
+    "@hardeningDisableRemoteAdminStep6": {},
+    "hardeningDisableRemoteAdminStep7": "Yönlendiricinizi hala evinizin içinden yönetebilirsiniz — sadece uzaktan / genel internet yolu kapatılmıştır.",
+    "@hardeningDisableRemoteAdminStep7": {},
+    "hardeningDisableRemoteAdminStep8": "Buraya geri dönün ve TAMAMLANDI İŞARETLE'ye dokunun.",
+    "@hardeningDisableRemoteAdminStep8": {},
+    "hardeningUpdateFirmwareStep1": "Yönetici panelini açın.",
+    "@hardeningUpdateFirmwareStep1": {},
+    "hardeningUpdateFirmwareStep2": "\"Firmware Update\", \"System Update\", \"Online Upgrade\" veya \"Maintenance\" adında bir menü bulun.",
+    "@hardeningUpdateFirmwareStep2": {},
+    "hardeningUpdateFirmwareStep3": "\"Check for update\" veya \"Online check\" seçeneğine dokunun. Yönlendirici üretici sunucusunda daha yeni bir sürüm arayacaktır.",
+    "@hardeningUpdateFirmwareStep3": {},
+    "hardeningUpdateFirmwareStep4": "Bir güncelleme teklif edilirse kurun. Yönlendirici 2-5 dakika boyunca yeniden başlayacaktır — güncelleme sırasında cihazın FİŞİNİ ÇEKMEYİN, aksi takdirde cihaz kullanılamaz hale gelebilir.",
+    "@hardeningUpdateFirmwareStep4": {},
+    "hardeningUpdateFirmwareStep5": "Cihaz geri geldikten sonra aynı menüye gidin ve \"Auto update\" veya \"Automatic upgrade\" arayın. Varsa ON (Açık) konumuna getirin.",
+    "@hardeningUpdateFirmwareStep5": {},
+    "hardeningUpdateFirmwareStep6": "Bazı eski yönlendiricilerde çevrimiçi güncelleme bulunmaz. Bu durumda cihaz etiketinden yönlendirici modelini not edin, üretici web sitesinde arayın, en son aygıt yazılımı dosyasını indirin ve aynı menüdeki \"Manual upload\" seçeneğini kullanın.",
+    "@hardeningUpdateFirmwareStep6": {},
+    "hardeningUpdateFirmwareStep7": "Buraya geri dönün ve TAMAMLANDI İŞARETLE'ye dokunun.",
+    "@hardeningUpdateFirmwareStep7": {},
+    "hardeningStrongPassphraseStep1": "Yönetici panelini açın.",
+    "@hardeningStrongPassphraseStep1": {},
+    "hardeningStrongPassphraseStep2": "\"Wireless\", \"Wi-Fi\" veya \"WLAN\" bölümüne gidin.",
+    "@hardeningStrongPassphraseStep2": {},
+    "hardeningStrongPassphraseStep3": "Şifre alanını bulun — \"Wireless password\", \"Pre-Shared Key (PSK)\", \"Wireless Key\" veya sadece \"Password\" olarak etiketlenmiştir.",
+    "@hardeningStrongPassphraseStep3": {},
+    "hardeningStrongPassphraseStep4": "YENİ bir parola ile değiştirin: en az 12 karakter; büyük harf, küçük harf, rakam ve sembol karışımı olmalıdır. Sözlük kelimelerinden ve kişisel bilgilerden (doğum günleri, evcil hayvan adları) kaçının.",
+    "@hardeningStrongPassphraseStep4": {},
+    "hardeningStrongPassphraseStep5": "İyi bir taktik: birbiriyle ilgisiz üç kelime artı bir sayı seçin, örn. \"dogru-at-batarya-9\". Uzun parolaları kırmak, kısa ama karmaşık olanları kırmaktan daha zordur.",
+    "@hardeningStrongPassphraseStep5": {},
+    "hardeningStrongPassphraseStep6": "Ayrı 2.4 GHz ve 5 GHz ağlarınız varsa, HER İKİSİNİ de değiştirin.",
+    "@hardeningStrongPassphraseStep6": {},
+    "hardeningStrongPassphraseStep7": "Kaydet / Uygula. Her cihazın bağlantısı kesilecektir — her birine yeni şifreyi tekrar girin.",
+    "@hardeningStrongPassphraseStep7": {},
+    "hardeningStrongPassphraseStep8": "Şifreyi bir yere not edin (şifre yöneticisi, ziyaretçiler için buzdolabı notu, vb. hangisi size uyuyorsa).",
+    "@hardeningStrongPassphraseStep8": {},
+    "hardeningStrongPassphraseStep9": "Buraya geri dönün ve TAMAMLANDI İŞARETLE'ye dokunun.",
+    "@hardeningStrongPassphraseStep9": {}
 }

@@ -1,3 +1,4 @@
+import 'package:torcav/core/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -15,6 +16,8 @@ class StabilizerExplainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
+
     return Card(
       color: scheme.surfaceContainerHighest.withValues(alpha: 0.4),
       shape: RoundedRectangleBorder(
@@ -29,7 +32,7 @@ class StabilizerExplainer extends StatelessWidget {
           childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           leading: Icon(Icons.info_outline_rounded, color: scheme.primary),
           title: Text(
-            'How Ping Stabilizer works',
+            l10n.howPingStabilizerWorksTitle,
             style: GoogleFonts.orbitron(
               fontSize: 13,
               fontWeight: FontWeight.bold,
@@ -38,62 +41,44 @@ class StabilizerExplainer extends StatelessWidget {
             ),
           ),
           subtitle: Text(
-            'On-device, no remote servers, free.',
+            l10n.stabilizerExplainerSubtitle,
             style: TextStyle(
               fontSize: 11,
               color: scheme.onSurfaceVariant,
             ),
           ),
-          children: const [
+          children: [
             _ExplainerSection(
               icon: Icons.bolt_rounded,
-              title: 'What it does',
+              title: l10n.whatItDoesTitle,
               bullets: [
-                'Establishes a local VPN tunnel on your device — no traffic '
-                    'leaves through any third-party server.',
-                'Routes DNS queries to the fastest resolver (1.1.1.1, 8.8.8.8, '
-                    '9.9.9.9, …) measured live.',
-                'Watches latency / jitter every second and warns you when a '
-                    'spike persists, optionally cycling the tunnel to break a '
-                    'sticky bad path.',
-                'Uses an EWMA filter (recent samples weighted heavier) so it '
-                    'reacts to real degradation, not single-packet noise.',
+                l10n.whatItDoesBullet1,
+                l10n.whatItDoesBullet2,
+                l10n.whatItDoesBullet3,
+                l10n.whatItDoesBullet4,
               ],
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             _ExplainerSection(
               icon: Icons.warning_amber_rounded,
-              title: 'What it does NOT do',
+              title: l10n.whatItDoesNotTitle,
               bullets: [
-                'It cannot make your ISP\'s route to the game server '
-                    'physically shorter — no on-device app can.',
-                'It does not replace a paid VPN/relay service like ExitLag or '
-                    'WTFast (those route via their own servers; this is local-only).',
-                'Multi-path "first-wins" send across Wi-Fi + cellular is on the '
-                    'roadmap (Phase 2) and currently disabled.',
+                l10n.whatItDoesNotBullet1,
+                l10n.whatItDoesNotBullet2,
+                l10n.whatItDoesNotBullet3,
               ],
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             _ExplainerSection(
               icon: Icons.shield_outlined,
-              title: 'Risks & things to know',
+              title: l10n.risksAndThingsToKnowTitle,
               bullets: [
-                'Android shows a key icon while the tunnel is active — that is '
-                    'normal and required by the system.',
-                'Only one VPN can run at a time. If you have another VPN app '
-                    'connected, this will refuse to start.',
-                'A persistent live notification (current ping + Stop / Cycle '
-                    'buttons) stays in the shade while the tunnel runs — that '
-                    'is your in-game HUD; do not swipe it away.',
-                'On Xiaomi/MIUI, OnePlus/OxygenOS and similar skins, you may '
-                    'need to allow Torcav under Settings → Notifications and '
-                    'Settings → Battery → No restrictions, or the OS will '
-                    'silently hide the notification.',
-                'DNS auto-switch will change which resolver answers your '
-                    'queries while the tunnel is on. That switch reverts when '
-                    'you stop the stabilizer.',
-                'Battery use is small (~3-5%/hr in our tests) but non-zero — '
-                    'turn it off when you\'re done playing.',
+                l10n.risksBullet1,
+                l10n.risksBullet2,
+                l10n.risksBullet3,
+                l10n.risksBullet4,
+                l10n.risksBullet5,
+                l10n.risksBullet6,
               ],
             ),
           ],

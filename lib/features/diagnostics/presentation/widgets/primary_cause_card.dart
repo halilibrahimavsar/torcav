@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/extensions/context_extensions.dart';
+import '../../domain/entities/diagnosis_evidence.dart';
 import '../../domain/entities/diagnosis_result.dart';
 import '../../domain/entities/root_cause_category.dart';
 
@@ -15,8 +17,8 @@ class PrimaryCauseCard extends StatelessWidget {
     final category = result.primaryCause;
     final palette = _palette(category);
     final theme = Theme.of(context);
-    final headline = _headline(category);
-    final detail = _detail(category);
+    final headline = _headline(context, category);
+    final detail = _detail(context, category);
 
     return Container(
       width: double.infinity,
@@ -73,7 +75,7 @@ class PrimaryCauseCard extends StatelessWidget {
           if (result.allEvidence.isNotEmpty) ...[
             const SizedBox(height: 14),
             Text(
-              result.allEvidence.first.metricLabel,
+              _translateMetric(context, result.allEvidence.first),
               style: GoogleFonts.shareTechMono(
                 color: palette,
                 fontSize: 13,
@@ -84,6 +86,35 @@ class PrimaryCauseCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _translateMetric(BuildContext context, DiagnosisEvidence ev) {
+    final l10n = context.l10n;
+    if (ev.metricKey == null) return ev.metricLabel;
+    
+    final params = ev.metricParams;
+    return switch (ev.metricKey) {
+      'sdMetricRssi' => l10n.sdMetricRssi(params?['rssi'] ?? 0),
+      'sdMetricChannel' => l10n.sdMetricChannel(
+          params?['channel'] ?? 0,
+          params?['score'] ?? '',
+        ),
+      'sdMetricBufferbloat' => l10n.sdMetricBufferbloat(
+          params?['induced'] ?? '',
+          params?['latency'] ?? '',
+          params?['loaded'] ?? '',
+        ),
+      'sdMetricIsp' => l10n.sdMetricIsp(
+          params?['download'] ?? '',
+          params?['phy'] ?? '',
+        ),
+      'sdMetricIspNoPhy' => l10n.sdMetricIspNoPhy(params?['download'] ?? ''),
+      'sdMetricDns' => l10n.sdMetricDns(
+          params?['name'] ?? '',
+          params?['latency'] ?? 0,
+        ),
+      _ => ev.metricLabel,
+    };
   }
 
   IconData _icon(RootCauseCategory c) => switch (c) {
@@ -104,32 +135,27 @@ class PrimaryCauseCard extends StatelessWidget {
     RootCauseCategory.healthy => Colors.greenAccent,
   };
 
-  String _headline(RootCauseCategory c) => switch (c) {
-    RootCauseCategory.weakSignal => 'WEAK SIGNAL',
-    RootCauseCategory.crowdedChannel => 'CROWDED CHANNEL',
-    RootCauseCategory.bufferbloat => 'BUFFERBLOAT',
-    RootCauseCategory.ispSlow => 'ISP IS SLOW',
-    RootCauseCategory.slowDns => 'SLOW DNS',
-    RootCauseCategory.healthy => 'NETWORK HEALTHY',
-  };
+  String _headline(BuildContext context, RootCauseCategory c) {
+    final l10n = context.l10n;
+    return switch (c) {
+      RootCauseCategory.weakSignal => l10n.primaryCauseWeakSignalTitle,
+      RootCauseCategory.crowdedChannel => l10n.primaryCauseCrowdedChannelTitle,
+      RootCauseCategory.bufferbloat => l10n.primaryCauseBufferbloatTitle,
+      RootCauseCategory.ispSlow => l10n.primaryCauseIspSlowTitle,
+      RootCauseCategory.slowDns => l10n.primaryCauseSlowDnsTitle,
+      RootCauseCategory.healthy => l10n.primaryCauseHealthyTitle,
+    };
+  }
 
-  String _detail(RootCauseCategory c) => switch (c) {
-    RootCauseCategory.weakSignal =>
-      'Your device is far from the router or has too many walls in the way. '
-          'Move closer or add a mesh node in this area.',
-    RootCauseCategory.crowdedChannel =>
-      'Several neighbouring access points are sharing your channel. '
-          'Switching to a less crowded channel — or to 5/6 GHz — should help.',
-    RootCauseCategory.bufferbloat =>
-      'Latency spikes when the link is busy. Enable QoS / SQM on your router '
-          'or update its firmware so video calls and games stay responsive.',
-    RootCauseCategory.ispSlow =>
-      'Your Wi-Fi link is healthy but the download speed is low. '
-          'The bottleneck is most likely your internet plan or upstream provider.',
-    RootCauseCategory.slowDns =>
-      'Names take too long to resolve. Switching DNS provider or enabling '
-          'DoH/DoT typically removes the delay.',
-    RootCauseCategory.healthy =>
-      'No bottleneck reached an alert threshold. Your link looks fine right now.',
-  };
+  String _detail(BuildContext context, RootCauseCategory c) {
+    final l10n = context.l10n;
+    return switch (c) {
+      RootCauseCategory.weakSignal => l10n.primaryCauseWeakSignalDesc,
+      RootCauseCategory.crowdedChannel => l10n.primaryCauseCrowdedChannelDesc,
+      RootCauseCategory.bufferbloat => l10n.primaryCauseBufferbloatDesc,
+      RootCauseCategory.ispSlow => l10n.primaryCauseIspSlowDesc,
+      RootCauseCategory.slowDns => l10n.primaryCauseSlowDnsDesc,
+      RootCauseCategory.healthy => l10n.primaryCauseHealthyDesc,
+    };
+  }
 }

@@ -4,6 +4,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../features/security/domain/entities/security_event.dart';
+import '../l10n/app_localizations.dart';
+import '../l10n/locale_cubit.dart';
+import '../di/injection.dart';
 
 @lazySingleton
 class NotificationService {
@@ -43,6 +46,8 @@ class NotificationService {
     debugPrint('Notification tapped: ${response.payload}');
   }
 
+  AppLocalizations get _l10n => lookupAppLocalizations(getIt<LocaleCubit>().state);
+
   Future<void> showSecurityAlert(SecurityEvent event) async {
     if (!_initialized) await initialize();
 
@@ -66,8 +71,8 @@ class NotificationService {
 
     await _plugin.show(
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      'Scan Complete',
-      'Found $networkCount networks in ${duration.inSeconds}s',
+      _l10n.scanCompleteTitle,
+      _l10n.scanCompleteBody(networkCount, duration.inSeconds),
       _buildNotificationDetails(SecurityEventSeverity.info),
     );
   }
@@ -83,10 +88,13 @@ class NotificationService {
     if (!_initialized) await initialize();
     await _plugin.show(
       888888 + channel,
-      '📶 Wi-Fi channel quality dropped',
-      'Channel $channel is now ${rating.toStringAsFixed(1)}/10. '
-          'Channel $recommendedChannel is at '
-          '${recommendedRating.toStringAsFixed(1)}/10 — consider switching.',
+      _l10n.wifiChannelQualityDroppedTitle,
+      _l10n.wifiChannelQualityDroppedBody(
+        channel,
+        rating.toStringAsFixed(1),
+        recommendedChannel,
+        recommendedRating.toStringAsFixed(1),
+      ),
       _buildNotificationDetails(SecurityEventSeverity.warning),
       payload: 'spectrum|$channel',
     );
@@ -117,7 +125,7 @@ class NotificationService {
 
     await _plugin.show(
       999999,
-      '⚠️ Attack Detected: $attackType',
+      _l10n.attackDetectedTitle(attackType),
       details,
       _buildNotificationDetails(SecurityEventSeverity.critical),
     );
@@ -136,12 +144,12 @@ class NotificationService {
     };
 
     final channelName = switch (severity) {
-      SecurityEventSeverity.critical => 'Critical Alerts',
-      SecurityEventSeverity.high => 'High Priority',
-      SecurityEventSeverity.medium => 'Medium Priority',
-      SecurityEventSeverity.warning => 'Warnings',
-      SecurityEventSeverity.low => 'Low Priority',
-      SecurityEventSeverity.info => 'Information',
+      SecurityEventSeverity.critical => _l10n.notificationChannelSecurityCritical,
+      SecurityEventSeverity.high => _l10n.notificationChannelSecurityHigh,
+      SecurityEventSeverity.medium => _l10n.notificationChannelSecurityMedium,
+      SecurityEventSeverity.warning => _l10n.notificationChannelSecurityWarning,
+      SecurityEventSeverity.low => _l10n.notificationChannelSecurityLow,
+      SecurityEventSeverity.info => _l10n.notificationChannelSecurityInfo,
     };
 
     final importance = switch (severity) {
@@ -175,7 +183,7 @@ class NotificationService {
       android: AndroidNotificationDetails(
         channelId,
         channelName,
-        channelDescription: 'Security alert notifications',
+        channelDescription: _l10n.notificationChannelSecurityDescription,
         importance: importance,
         priority: priority,
         color: color,
@@ -207,20 +215,7 @@ class NotificationService {
   }
 
   String _getTitleForEvent(SecurityEventType type) {
-    return switch (type) {
-      SecurityEventType.rogueApSuspected => '🚨 Rogue AP Detected',
-      SecurityEventType.evilTwinDetected => '👯 Evil Twin Detected',
-      SecurityEventType.deauthAttackSuspected => '📡 Deauth Attack Detected',
-      SecurityEventType.encryptionDowngraded => '🔓 Encryption Downgraded',
-      SecurityEventType.deauthBurstDetected => '⚡ Deauth Burst Detected',
-      SecurityEventType.handshakeCaptureStarted =>
-        '🔐 Handshake Protocol Analysis',
-      SecurityEventType.handshakeCaptureCompleted => '✅ Handshake Secured',
-      SecurityEventType.captivePortalDetected => '🌐 Captive Portal Detected',
-      SecurityEventType.unsupportedOperation => '⚠️ Operation Not Supported',
-      SecurityEventType.arpSpoofingDetected => '🛡️ ARP Spoofing Detected',
-      SecurityEventType.dnsHijackingDetected => '🕵️ DNS Hijacking Detected',
-    };
+    return _l10n.securityEventType(type.name);
   }
 
   Future<void> cancelAll() async {

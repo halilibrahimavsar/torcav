@@ -1,4 +1,5 @@
 {
+    "@@locale": "en",
     "wifiScanTitle": "WIFI SCAN",
     "@wifiScanTitle": {
         "description": "Title for the wifi scan screen."
@@ -47,9 +48,8 @@
     "@compareWithPreviousScan": {
         "description": "Comparison button label."
     },
-    "networksCount": "{count} NETWORKS",
+    "networksCount": "{count, plural, =0{no networks} =1{1 network} other{{count} networks}}",
     "@networksCount": {
-        "description": "Count of networks found.",
         "placeholders": {
             "count": {
                 "type": "int"
@@ -116,10 +116,8 @@
     "@latestSnapshotTitle": {
         "description": "Snapshot section title."
     },
-    "noSnapshotAvailable": "No snapshot data available...",
-    "@noSnapshotAvailable": {
-        "description": "No snapshot found."
-    },
+    "noSnapshotAvailable": "No scan snapshot is available yet. Run a Wi-Fi scan first.",
+    "@noSnapshotAvailable": {},
     "strictSafetyEnabled": "Strict safety protocols enabled",
     "@strictSafetyEnabled": {
         "description": "Safety mode text."
@@ -572,10 +570,8 @@
     "@pingFailure": {
         "description": "Ping failure message"
     },
-    "settingsTitle": "SETTINGS",
-    "@settingsTitle": {
-        "description": "Settings Title"
-    },
+    "settingsTitle": "Settings",
+    "@settingsTitle": {},
     "appearance": "Appearance",
     "@appearance": {
         "description": "Appearance"
@@ -798,6 +794,156 @@
         "description": "Remote Node Id Label",
         "placeholders": {
             "id": {
+                "type": "String"
+            }
+        }
+    },
+    "logIdLabel": "LOG_ID: {id}",
+    "@logIdLabel": {
+        "description": "Label for the log ID in security timeline.",
+        "placeholders": {
+            "id": {
+                "type": "String"
+            }
+        }
+    },
+    "targetLabel": "TARGET: {target}",
+    "@targetLabel": {
+        "description": "Label for the target SSID in security timeline.",
+        "placeholders": {
+            "target": {
+                "type": "String"
+            }
+        }
+    },
+    "dnsStatusPending": "PENDING",
+    "@dnsStatusPending": {
+        "description": "Label for pending DNS status."
+    },
+    "dnsStatusNotAssessed": "NOT ASSESSED",
+    "@dnsStatusNotAssessed": {
+        "description": "Label for not assessed DNS status."
+    },
+    "dnsStatusInconsistent": "INCONSISTENT",
+    "@dnsStatusInconsistent": {
+        "description": "Label for inconsistent DNS status."
+    },
+    "dnsStatusEnabled": "ENABLED",
+    "@dnsStatusEnabled": {
+        "description": "Label for enabled status."
+    },
+    "dnsStatusDisabled": "DISABLED",
+    "@dnsStatusDisabled": {
+        "description": "Label for disabled status."
+    },
+    "notAvailableCaps": "N/A",
+    "@notAvailableCaps": {
+        "description": "N/A in capital letters."
+    },
+    "evilTwinSignalOuiMismatch": "The two access points come from different hardware vendors (MAC prefixes don't match).",
+    "@evilTwinSignalOuiMismatch": {},
+    "evilTwinSignalSecurityDowngrade": "The pair advertises different encryption — typical of a downgrade attack (e.g. real network = WPA3, fake = WPA2 or Open).",
+    "@evilTwinSignalSecurityDowngrade": {},
+    "evilTwinSignalSameBandChannelDrift": "Both broadcast on the same frequency band but on very different channels — real radios rarely jump that far.",
+    "@evilTwinSignalSameBandChannelDrift": {},
+    "evilTwinSignalChannelWidthMismatch": "They use different channel widths (e.g. 80 MHz vs 20 MHz). Cheap rogue hardware often runs narrower than the device it's copying.",
+    "@evilTwinSignalChannelWidthMismatch": {},
+    "evilTwinSignalWpsToggleMismatch": "WPS is enabled on one access point but not the other.",
+    "@evilTwinSignalWpsToggleMismatch": {},
+    "evilTwinSignalPmfToggleMismatch": "Protected Management Frames (802.11w) are enabled on one side but not the other.",
+    "@evilTwinSignalPmfToggleMismatch": {},
+    "evilTwinSignalHiddenVsVisible": "One access point is hidden, the other broadcasts its name openly.",
+    "@evilTwinSignalHiddenVsVisible": {},
+    "evilTwinSignalSharedMldMac": "Both share the same Wi-Fi 7 multi-link MAC — they are literally the same physical access point.",
+    "@evilTwinSignalSharedMldMac": {},
+    "evilTwinSignalBssidProximity": "Their MAC addresses differ only in the last digits — manufacturers use that pattern for radios on the same router.",
+    "@evilTwinSignalBssidProximity": {},
+    "evilTwinSignalCrossBandSibling": "They sit on different Wi-Fi bands (2.4 / 5 / 6 GHz) but share the same vendor and security — classic dual-band router pattern.",
+    "@evilTwinSignalCrossBandSibling": {},
+    "evilTwinSignalKnownMeshVendor": "Both MAC addresses belong to a known mesh-router family (Eero, Google Nest, Asus AiMesh, Netgear Orbi, TP-Link Deco, or Linksys Velop). Mesh nodes share the same Wi-Fi name on purpose.",
+    "@evilTwinSignalKnownMeshVendor": {},
+    "evilTwinSafeHeadline": "Looks like the same router on different bands",
+    "@evilTwinSafeHeadline": {},
+    "evilTwinSafeWhatIs": "Most home routers broadcast the same Wi-Fi name (SSID) over 2.4 GHz, 5 GHz and sometimes 6 GHz. Your phone sees them as separate access points even though they're one device. Mesh systems work the same way — every node uses one shared name.",
+    "@evilTwinSafeWhatIs": {},
+    "evilTwinSafeWhyItMatters": "This pairing is normal and expected — no action needed. We show this here only so you know we checked and ruled it out.",
+    "@evilTwinSafeWhyItMatters": {},
+    "evilTwinSafeAction": "Nothing to do. This is the same router or part of your mesh.",
+    "@evilTwinSafeAction": {},
+    "evilTwinSafePhrase": "We checked this pair and it matches the pattern of a normal dual-band router or mesh — not an attack.",
+    "@evilTwinSafePhrase": {},
+    "evilTwinNoPatternHeadline": "No evil-twin pattern detected",
+    "@evilTwinNoPatternHeadline": {},
+    "evilTwinNoPatternAction": "Nothing urgent. Re-run a scan if you suspect something has changed in your environment.",
+    "@evilTwinNoPatternAction": {},
+    "evilTwinNoPatternPhrase": "Some minor differences exist between the access points sharing this name, but not enough to look like an attack.",
+    "@evilTwinNoPatternPhrase": {},
+    "evilTwinWhatIs": "An \"evil twin\" is a fake Wi-Fi network that copies the name of a real one — usually your home or workplace network, or a popular café hotspot. The goal is to make your phone connect to the attacker's router instead of the real one.",
+    "@evilTwinWhatIs": {},
+    "evilTwinWhyItMatters": "Once your device is on the attacker's Wi-Fi, they can read or tamper with traffic that isn't encrypted, push fake login pages, redirect you to look-alike websites, or capture passwords typed into apps that don't use HTTPS properly. Banking, email and messaging are the usual targets.",
+    "@evilTwinWhyItMatters": {},
+    "evilTwinHighHeadline": "Strong evil-twin pattern — treat this network as untrusted",
+    "@evilTwinHighHeadline": {},
+    "evilTwinMediumHeadline": "Suspicious twin pattern — verify before connecting",
+    "@evilTwinMediumHeadline": {},
+    "evilTwinLowHeadline": "Weak twin signal — keep an eye on this",
+    "@evilTwinLowHeadline": {},
+    "evilTwinHighPhrase": "Confidence: {pct}%. Multiple strong mismatches between the two access points using this name. This is the pattern an attacker creates when impersonating a Wi-Fi.",
+    "@evilTwinHighPhrase": {
+        "placeholders": {
+            "pct": {
+                "type": "int"
+            }
+        }
+    },
+    "evilTwinMediumPhrase": "Confidence: {pct}%. Several details don't line up between the access points sharing this name. It might be benign, but verify before trusting it.",
+    "@evilTwinMediumPhrase": {
+        "placeholders": {
+            "pct": {
+                "type": "int"
+            }
+        }
+    },
+    "evilTwinLowPhrase": "Confidence: {pct}%. A couple of small mismatches noticed. Most likely benign — flagged so you can double-check.",
+    "@evilTwinLowPhrase": {
+        "placeholders": {
+            "pct": {
+                "type": "int"
+            }
+        }
+    },
+    "evilTwinActionPasswords": "Don't enter passwords, payment details, or two-factor codes while connected to this Wi-Fi.",
+    "@evilTwinActionPasswords": {},
+    "evilTwinActionCheckMac": "If you're at home, check the actual MAC (BSSID) printed under your router and compare it with the BSSIDs shown for this network.",
+    "@evilTwinActionCheckMac": {},
+    "evilTwinActionForgetNetwork": "Forget the network in your phone's Wi-Fi settings and only reconnect by hand to the BSSID you've verified.",
+    "@evilTwinActionForgetNetwork": {},
+    "evilTwinActionSecurityDowngrade": "One of the two access points uses weaker encryption than the other. Always pick the stronger one (WPA3 over WPA2 over Open).",
+    "@evilTwinActionSecurityDowngrade": {},
+    "evilTwinActionDisconnectNow": "Disconnect from this Wi-Fi now and switch to mobile data until you can verify which BSSID is the real one.",
+    "@evilTwinActionDisconnectNow": {},
+    "evilTwinActionHardwareVendor": "The two routers come from different hardware vendors — your real router shouldn't suddenly change manufacturer.",
+    "@evilTwinActionHardwareVendor": {},
+    "evidenceDiscoveredDevices": "Discovered: {devices}",
+    "@evidenceDiscoveredDevices": {
+        "placeholders": {
+            "devices": {
+                "type": "String"
+            }
+        }
+    },
+    "evidenceVulnerablePorts": "Host {host} has open ports that may be vulnerable.",
+    "@evidenceVulnerablePorts": {
+        "placeholders": {
+            "host": {
+                "type": "String"
+            }
+        }
+    },
+    "evidenceNoEncryption": "The access point advertises no encryption for {network}.",
+    "@evidenceNoEncryption": {
+        "placeholders": {
+            "network": {
                 "type": "String"
             }
         }
@@ -1258,10 +1404,8 @@
     "@addZonePoint": {
         "description": "Title for adding a zone point."
     },
-    "cancel": "Cancel",
-    "@cancel": {
-        "description": "Label for cancel button."
-    },
+    "cancel": "CANCEL",
+    "@cancel": {},
     "save": "Save",
     "@save": {
         "description": "Label for save button."
@@ -1369,7 +1513,27 @@
     },
     "riskFactorFingerprintDrift": "SSID fingerprint drift detected",
     "@riskFactorFingerprintDrift": {
-        "description": "Risk Factor Fingerprint Drift"
+        "description": "Risk factor for fingerprint drift"
+    },
+    "riskFactorHoneypotPattern": "SSID matches known honeypot pattern",
+    "@riskFactorHoneypotPattern": {
+        "description": "Risk factor for honeypot pattern"
+    },
+    "riskFactorNo5Ghz": "No 5 GHz band detected",
+    "@riskFactorNo5Ghz": {
+        "description": "Risk factor for missing 5 GHz band"
+    },
+    "riskFactorKnownVulnerability": "Known hardware vulnerability",
+    "@riskFactorKnownVulnerability": {
+        "description": "Risk factor for known hardware vulnerability"
+    },
+    "riskFactorEvilTwinCandidate": "Evil twin candidate sharing this SSID",
+    "@riskFactorEvilTwinCandidate": {
+        "description": "Risk factor for evil twin candidate"
+    },
+    "riskFactorChannelCongested": "Channel is heavily congested",
+    "@riskFactorChannelCongested": {
+        "description": "Risk factor for channel congestion"
     },
     "historyCaps": "HISTORY",
     "@historyCaps": {
@@ -1741,9 +1905,7 @@
         "description": "Retry speed test button"
     },
     "latencyLabel": "LATENCY",
-    "@latencyLabel": {
-        "description": "Latency stat label"
-    },
+    "@latencyLabel": {},
     "jitterLabel": "JITTER",
     "@jitterLabel": {
         "description": "Jitter stat label"
@@ -1794,26 +1956,16 @@
             }
         }
     },
-    "heatmapTutorialTitle": "HOW TO USE THE HEATMAP",
-    "@heatmapTutorialTitle": {
-        "description": "Heatmap tutorial title"
-    },
-    "heatmapTutorialStep1": "Tap START RECORDING to begin a new survey session.",
-    "@heatmapTutorialStep1": {
-        "description": "Heatmap tutorial step 1"
-    },
-    "heatmapTutorialStep2": "Walk to each area of your space. Tap the canvas at your current position to record the signal strength at that spot.",
-    "@heatmapTutorialStep2": {
-        "description": "Heatmap tutorial step 2"
-    },
-    "heatmapTutorialStep3": "Red = weak signal. Green = strong signal. Find dead zones and move your router to fix them.",
-    "@heatmapTutorialStep3": {
-        "description": "Heatmap tutorial step 3"
-    },
-    "heatmapTutorialStep4": "Tap STOP & SAVE when done. View past sessions with the history button.",
-    "@heatmapTutorialStep4": {
-        "description": "Heatmap tutorial step 4"
-    },
+    "heatmapTutorialTitle": "HOW TO READ THE HEATMAP",
+    "@heatmapTutorialTitle": {},
+    "heatmapTutorialStep1": "Start a new survey. The app collects signal samples automatically as you walk.",
+    "@heatmapTutorialStep1": {},
+    "heatmapTutorialStep2": "Walk each room and pass through corridor and corner transitions. That builds the survey trail.",
+    "@heatmapTutorialStep2": {},
+    "heatmapTutorialStep3": "If the outline is weak, switch to AR and face the walls. That pass is used to build the home plan.",
+    "@heatmapTutorialStep3": {},
+    "heatmapTutorialStep4": "Finish and open the result. The screen will then show the plan, signal, and weak zones together.",
+    "@heatmapTutorialStep4": {},
     "gotIt": "GOT IT",
     "@gotIt": {
         "description": "Dismiss tutorial button"
@@ -2182,12 +2334,23 @@
     "currentChannelBannerYouAreOn": "Currently on {channel}",
     "@currentChannelBannerYouAreOn": {
         "description": "Banner text — current channel",
-        "placeholders": {"channel": {"type": "String"}}
+        "placeholders": {
+            "channel": {
+                "type": "String"
+            }
+        }
     },
     "currentChannelBannerSwitchTo": "Switch to {channel} for +{delta} points",
     "@currentChannelBannerSwitchTo": {
         "description": "Banner suggestion when current and recommended differ",
-        "placeholders": {"channel": {"type": "String"}, "delta": {"type": "String"}}
+        "placeholders": {
+            "channel": {
+                "type": "String"
+            },
+            "delta": {
+                "type": "String"
+            }
+        }
     },
     "currentChannelBannerOptimal": "You're already on the recommended channel",
     "@currentChannelBannerOptimal": {
@@ -2210,25 +2373,51 @@
         "description": "Shown when no networks to draw"
     },
     "channelDrilldownHeader": "Networks on this channel",
-    "@channelDrilldownHeader": {"description": "Header when expanding a channel tile"},
+    "@channelDrilldownHeader": {
+        "description": "Header when expanding a channel tile"
+    },
     "channelDrilldownEmpty": "No networks broadcasting here",
-    "@channelDrilldownEmpty": {"description": "Empty drill-down"},
+    "@channelDrilldownEmpty": {
+        "description": "Empty drill-down"
+    },
     "hiddenSsidPlaceholder": "<hidden network>",
-    "@hiddenSsidPlaceholder": {"description": "Placeholder for empty SSID"},
+    "@hiddenSsidPlaceholder": {
+        "description": "Placeholder for empty SSID"
+    },
     "scanComparisonImproved": "{delta} pts vs last scan (improved)",
-    "@scanComparisonImproved": {"placeholders": {"delta": {"type": "String"}}},
+    "@scanComparisonImproved": {
+        "placeholders": {
+            "delta": {
+                "type": "String"
+            }
+        }
+    },
     "scanComparisonWorsened": "{delta} pts vs last scan (worsened)",
-    "@scanComparisonWorsened": {"placeholders": {"delta": {"type": "String"}}},
+    "@scanComparisonWorsened": {
+        "placeholders": {
+            "delta": {
+                "type": "String"
+            }
+        }
+    },
     "scanComparisonStable": "Stable since last scan",
     "@scanComparisonStable": {},
     "countryAllowlistHeader": "Region",
-    "@countryAllowlistHeader": {"description": "Country selector header"},
+    "@countryAllowlistHeader": {
+        "description": "Country selector header"
+    },
     "countryAllowlistInfoBody": "Wi-Fi channels are regulated differently per country. Channels disallowed in your region are dimmed and can't be used by your router. Switch the region if you're abroad — but the recommendation will only show legal channels for the selected region.",
-    "@countryAllowlistInfoBody": {"description": "Region selector info"},
+    "@countryAllowlistInfoBody": {
+        "description": "Region selector info"
+    },
     "channelIllegalBadge": "NOT ALLOWED",
-    "@channelIllegalBadge": {"description": "Badge for region-illegal channels"},
+    "@channelIllegalBadge": {
+        "description": "Badge for region-illegal channels"
+    },
     "channelIllegalTooltip": "This channel is not legal for Wi-Fi use in the selected region.",
-    "@channelIllegalTooltip": {"description": "Tooltip for illegal channel"},
+    "@channelIllegalTooltip": {
+        "description": "Tooltip for illegal channel"
+    },
     "regionUS": "United States",
     "@regionUS": {},
     "regionEU": "Europe / Türkiye",
@@ -2238,11 +2427,17 @@
     "regionWorld": "World (most permissive)",
     "@regionWorld": {},
     "hourlyHeatmapTitle": "Best channel by hour of day",
-    "@hourlyHeatmapTitle": {"description": "Hour-of-day heatmap title"},
+    "@hourlyHeatmapTitle": {
+        "description": "Hour-of-day heatmap title"
+    },
     "hourlyHeatmapInsufficient": "Need more history. Open this screen at different times of day to build the pattern.",
-    "@hourlyHeatmapInsufficient": {"description": "Insufficient hour-of-day data"},
+    "@hourlyHeatmapInsufficient": {
+        "description": "Insufficient hour-of-day data"
+    },
     "afcInfoTitle": "6 GHz Power Classes (AFC)",
-    "@afcInfoTitle": {"description": "AFC info sheet"},
+    "@afcInfoTitle": {
+        "description": "AFC info sheet"
+    },
     "afcInfoBody": "6 GHz Wi-Fi is divided into three power classes:\n\n• LPI (Low Power Indoor) — Default for home routers. Up to 30 dBm EIRP, only legal indoors. No location coordination needed.\n\n• Standard Power (SP) — Outdoor + high-power indoor. Up to 36 dBm. Requires AFC (Automated Frequency Coordination): the router contacts an FCC/regulator database, supplies its GPS location, and is told which channels are free of incumbent users (satellite uplinks, fixed microwave links).\n\n• VLP (Very Low Power) — Mobile/portable use, up to 14 dBm. No coordination needed but very short range; mainly for AR/VR headsets and laptops.\n\nMost home networks see only LPI; if you spot a 6 GHz AP outdoors with strong signal, it likely runs SP and was AFC-coordinated.",
     "@afcInfoBody": {},
     "advancedTopicsHeader": "Advanced topics",
@@ -2260,19 +2455,45 @@
     "advancedWmmBody": "WMM (Wi-Fi Multimedia) prioritises traffic into 4 categories: voice, video, best-effort, background. It's required for Wi-Fi 4+ certification and should always stay enabled. Disabling it caps your throughput at 802.11g speeds (~54 Mbps). The Channel choice doesn't affect WMM, but a clean channel improves all 4 categories simultaneously.",
     "@advancedWmmBody": {},
     "dfsCacWarning": "⚠ DFS channel: when your router moves here it must listen silently for 60 seconds before broadcasting (Channel Availability Check). Wi-Fi will be temporarily unavailable during that window.",
-    "@dfsCacWarning": {"description": "Shown next to recommended-channel banner when channel is DFS"},
+    "@dfsCacWarning": {
+        "description": "Shown next to recommended-channel banner when channel is DFS"
+    },
     "densityTrendStable": "Stable density",
     "@densityTrendStable": {},
     "densityTrendVolatile": "Volatile area · density swings {delta} APs in last hour",
-    "@densityTrendVolatile": {"placeholders": {"delta": {"type": "String"}}},
+    "@densityTrendVolatile": {
+        "placeholders": {
+            "delta": {
+                "type": "String"
+            }
+        }
+    },
     "routerGroupsHeader": "Nearby routers (dual-band)",
-    "@routerGroupsHeader": {"description": "Header above the cross-band router cards"},
+    "@routerGroupsHeader": {
+        "description": "Header above the cross-band router cards"
+    },
     "routerGroupsInfoBody": "When the same router broadcasts the same SSID on more than one band (e.g. 2.4 GHz CH 6 and 5 GHz CH 36), we group them here so you can compare both radios side by side. Tap a band chip to jump to it.",
-    "@routerGroupsInfoBody": {"description": "Info body for the router groups section"},
+    "@routerGroupsInfoBody": {
+        "description": "Info body for the router groups section"
+    },
     "crossBandSiblingHint": "Same router on {band} CH {channel} · {rating}/10",
-    "@crossBandSiblingHint": {"placeholders": {"band": {"type": "String"}, "channel": {"type": "String"}, "rating": {"type": "String"}}},
+    "@crossBandSiblingHint": {
+        "placeholders": {
+            "band": {
+                "type": "String"
+            },
+            "channel": {
+                "type": "String"
+            },
+            "rating": {
+                "type": "String"
+            }
+        }
+    },
     "connectedChannelGuideLabel": "YOU",
-    "@connectedChannelGuideLabel": {"description": "Tag for the vertical guide line in the spectrum analyzer pointing at the user's own router"},
+    "@connectedChannelGuideLabel": {
+        "description": "Tag for the vertical guide line in the spectrum analyzer pointing at the user's own router"
+    },
     "unstableChannelLabel": "UNSTABLE",
     "@unstableChannelLabel": {
         "description": "Badge for channels that fluctuate heavily across history"
@@ -2309,8 +2530,12 @@
     "@dualBandSiblingBanner": {
         "description": "Banner copy on a band tab when the user is connected to a different band of the same router. {band} is e.g. '2.4 GHz', {channel} is e.g. 'CH 6 · 8.2/10'.",
         "placeholders": {
-            "band": {"type": "String"},
-            "channel": {"type": "String"}
+            "band": {
+                "type": "String"
+            },
+            "channel": {
+                "type": "String"
+            }
         }
     },
     "acknowledgedLabel": "ACKNOWLEDGED",
@@ -2318,22 +2543,3181 @@
         "description": "Confirmation button label that closes an info bottom sheet (Topology legend)"
     },
     "speedDoctorTitle": "SPEED DOCTOR",
-    "@speedDoctorTitle": {"description": "Speed Doctor app-bar title"},
+    "@speedDoctorTitle": {},
     "speedDoctorTagline": "Why is the internet slow?",
-    "@speedDoctorTagline": {"description": "Speed Doctor subtitle"},
+    "@speedDoctorTagline": {
+        "description": "Speed Doctor subtitle"
+    },
     "speedDoctorOpsTile": "SPEED DOCTOR",
-    "@speedDoctorOpsTile": {"description": "Operations Hub tile for Speed Doctor"},
+    "@speedDoctorOpsTile": {
+        "description": "Operations Hub tile for Speed Doctor"
+    },
     "speedDoctorOpsSubtitle": "Why is it slow?",
-    "@speedDoctorOpsSubtitle": {"description": "Operations Hub tile subtitle for Speed Doctor"},
+    "@speedDoctorOpsSubtitle": {
+        "description": "Operations Hub tile subtitle for Speed Doctor"
+    },
     "evilTwinDetailTitle": "EVIL TWIN DETAIL",
-    "@evilTwinDetailTitle": {"description": "Evil-twin detail page title"},
+    "@evilTwinDetailTitle": {
+        "description": "Evil-twin detail page title"
+    },
     "pingStabilizerTitle": "PING STABILIZER",
-    "@pingStabilizerTitle": {"description": "Ping Stabilizer feature title"},
+    "@pingStabilizerTitle": {
+        "description": "Ping Stabilizer feature title"
+    },
     "pingStabilizerSubtitle": "On-device latency tunnel",
-    "@pingStabilizerSubtitle": {"description": "Operations Hub subtitle for Ping Stabilizer"},
+    "@pingStabilizerSubtitle": {
+        "description": "Operations Hub subtitle for Ping Stabilizer"
+    },
     "pingStabilizerToggleHint": "Tap to stabilize",
-    "@pingStabilizerToggleHint": {"description": "Hint shown on the inactive Ping Stabilizer toggle card"},
+    "@pingStabilizerToggleHint": {
+        "description": "Hint shown on the inactive Ping Stabilizer toggle card"
+    },
     "pingStabilizerDrawerLabel": "Ping Stabilizer",
-    "@pingStabilizerDrawerLabel": {"description": "Drawer entry label for Ping Stabilizer"},
-    "@@locale": "en"
+    "@pingStabilizerDrawerLabel": {
+        "description": "Drawer entry label for Ping Stabilizer"
+    },
+    "onboardingStartScanning": "START SCANNING",
+    "@onboardingStartScanning": {
+        "description": "Button label to finish onboarding."
+    },
+    "onboardingNext": "NEXT",
+    "@onboardingNext": {
+        "description": "Button label for next slide."
+    },
+    "onboardingWelcomeTitle": "WELCOME TO TORCAV",
+    "@onboardingWelcomeTitle": {
+        "description": "Welcome title."
+    },
+    "onboardingWelcomeBody": "A cyberpunk Wi-Fi analyzer that helps you understand your wireless environment, find the best channel, and detect security threats.",
+    "@onboardingWelcomeBody": {
+        "description": "Welcome body text."
+    },
+    "onboardingLocationTitle": "LOCATION PERMISSION",
+    "@onboardingLocationTitle": {
+        "description": "Location permission title."
+    },
+    "onboardingLocationBody": "Android requires Location permission to scan for Wi-Fi networks. To show signal heatmaps, we also use activity sensors. All data stays on your device and is never uploaded. Your location is only used to read nearby Wi-Fi signals.",
+    "@onboardingLocationBody": {
+        "description": "Location permission explanation."
+    },
+    "onboardingTourTitle": "THREE TABS",
+    "@onboardingTourTitle": {
+        "description": "Tour section title."
+    },
+    "onboardingTourDashboardLabel": "Dashboard",
+    "@onboardingTourDashboardLabel": {
+        "description": "Dashboard label in tour."
+    },
+    "onboardingTourDashboardDesc": "Live overview of your network health",
+    "@onboardingTourDashboardDesc": {
+        "description": "Dashboard description in tour."
+    },
+    "onboardingTourDiscoveryLabel": "Discovery",
+    "@onboardingTourDiscoveryLabel": {
+        "description": "Discovery label in tour."
+    },
+    "onboardingTourDiscoveryDesc": "Scan Wi-Fi networks and LAN devices",
+    "@onboardingTourDiscoveryDesc": {
+        "description": "Discovery description in tour."
+    },
+    "onboardingTourOperationsLabel": "Operations",
+    "@onboardingTourOperationsLabel": {
+        "description": "Operations label in tour."
+    },
+    "onboardingTourOperationsDesc": "Security analysis, speed tests, reports",
+    "@onboardingTourOperationsDesc": {
+        "description": "Operations description in tour."
+    },
+    "onboardingContextTitle": "WHERE WILL YOU USE TORCAV?",
+    "@onboardingContextTitle": {
+        "description": "Network context question."
+    },
+    "onboardingContextBody": "This shapes how strict the security score is when we can't tell on our own. You can change it any time, and it can be overridden per network later.",
+    "@onboardingContextBody": {
+        "description": "Context explanation."
+    },
+    "onboardingContextHomeTitle": "Mostly my own home / office",
+    "@onboardingContextHomeTitle": {
+        "description": "Home context title."
+    },
+    "onboardingContextHomeBody": "Strict scoring. Any unexpected change in encryption or new devices on the LAN gets flagged loudly.",
+    "@onboardingContextHomeBody": {
+        "description": "Home context description."
+    },
+    "onboardingContextPublicTitle": "Mostly cafés / hotels / airports",
+    "@onboardingContextPublicTitle": {
+        "description": "Public context title."
+    },
+    "onboardingContextPublicBody": "Relaxed scoring on encryption (these networks are often open) but heightened sensitivity to lure SSIDs and evil-twin patterns. Active LAN scanning is suppressed by default.",
+    "@onboardingContextPublicBody": {
+        "description": "Public context description."
+    },
+    "onboardingContextGuestTitle": "Mostly guest / shared networks",
+    "@onboardingContextGuestTitle": {
+        "description": "Guest context title."
+    },
+    "onboardingContextGuestBody": "Same Wi-Fi as friends, family, or coworkers. Drift is expected; we don't alert on every new device.",
+    "@onboardingContextGuestBody": {
+        "description": "Guest context description."
+    },
+    "onboardingContextUnknownTitle": "Not sure yet",
+    "@onboardingContextUnknownTitle": {
+        "description": "Unknown context title."
+    },
+    "onboardingContextUnknownBody": "No strong default. We'll guess from each network's fingerprint and let you correct it.",
+    "@onboardingContextUnknownBody": {
+        "description": "Unknown context description."
+    },
+    "onboardingDoneTitle": "ALL SET",
+    "@onboardingDoneTitle": {
+        "description": "Completion title."
+    },
+    "onboardingDoneBody": "Torcav is a privacy-first network assistant. It provides safe network diagnostics and hardening tools for networks you own or are authorized to assess. No data is collected or transmitted externally.",
+    "@onboardingDoneBody": {
+        "description": "Completion body text."
+    },
+    "onboardingAcceptPrefix": "I have read and accept the ",
+    "@onboardingAcceptPrefix": {
+        "description": "Acceptance prefix."
+    },
+    "onboardingTosLink": "Terms of Service",
+    "@onboardingTosLink": {
+        "description": "TOS link text."
+    },
+    "onboardingAcceptAnd": " and ",
+    "@onboardingAcceptAnd": {
+        "description": "Acceptance separator."
+    },
+    "onboardingPrivacyLink": "Privacy Policy",
+    "@onboardingPrivacyLink": {
+        "description": "Privacy link text."
+    },
+    "onboardingAcceptSuffix": ".",
+    "@onboardingAcceptSuffix": {
+        "description": "Acceptance suffix."
+    },
+    "onboardingConfirmPermission": "I confirm I have permission to scan the networks I will analyze.",
+    "@onboardingConfirmPermission": {
+        "description": "Permission confirmation checkbox."
+    },
+    "onboardingConfirmAge": "I confirm I am 13 years of age or older.",
+    "@onboardingConfirmAge": {
+        "description": "Age confirmation checkbox."
+    },
+    "appTitle": "TORCAV",
+    "@appTitle": {
+        "description": "The application name."
+    },
+    "ssidLabel": "SSID",
+    "@ssidLabel": {
+        "description": "SSID label."
+    },
+    "noSecurityFindings": "No security findings detected.",
+    "@noSecurityFindings": {
+        "description": "Empty state for security findings."
+    },
+    "resetToInferred": "Reset to inferred",
+    "@resetToInferred": {
+        "description": "Button to reset network context."
+    },
+    "internetSlowQuestion": "IS INTERNET SLOW?",
+    "@internetSlowQuestion": {
+        "description": "Question on the speed doctor tile."
+    },
+    "runSpeedDoctorDesc": "Run Speed Doctor — 30-second root-cause diagnostic.",
+    "@runSpeedDoctorDesc": {
+        "description": "Description on the speed doctor tile."
+    },
+    "securityAlertsTitle": "SECURITY ALERTS",
+    "@securityAlertsTitle": {
+        "description": "Title for the security alerts sheet."
+    },
+    "markAllRead": "MARK ALL READ",
+    "@markAllRead": {
+        "description": "Button to mark all alerts as read."
+    },
+    "clearAll": "CLEAR ALL",
+    "@clearAll": {
+        "description": "Button to clear all alerts."
+    },
+    "eventsRetentionInfo": "Events are retained for 30 days. Swipe left to dismiss.",
+    "@eventsRetentionInfo": {
+        "description": "Information about event retention."
+    },
+    "allSystemsClear": "All systems clear",
+    "@allSystemsClear": {
+        "description": "Text shown when there are no alerts."
+    },
+    "heuristicDetectionNote": "Heuristic detection — not a confirmed attack. False positives may occur in congested environments.",
+    "@heuristicDetectionNote": {
+        "description": "Note about heuristic detection accuracy."
+    },
+    "markAsRead": "MARK AS READ",
+    "@markAsRead": {
+        "description": "Button to mark a single alert as read."
+    },
+    "eventTypeRogueAp": "ROGUE AP",
+    "@eventTypeRogueAp": {
+        "description": "Security event type: Rogue AP."
+    },
+    "eventTypeEvilTwin": "EVIL TWIN",
+    "@eventTypeEvilTwin": {
+        "description": "Security event type: Evil Twin."
+    },
+    "eventTypeDeauthAttack": "DEAUTH ATTACK",
+    "@eventTypeDeauthAttack": {
+        "description": "Security event type: Deauth Attack."
+    },
+    "eventTypeEncryptionWeakened": "ENCRYPTION WEAKENED",
+    "@eventTypeEncryptionWeakened": {
+        "description": "Security event type: Encryption Weakened."
+    },
+    "eventTypeDeauthBurst": "DEAUTH BURST",
+    "@eventTypeDeauthBurst": {
+        "description": "Security event type: Deauth Burst."
+    },
+    "eventTypeHandshakeAnalysis": "HANDSHAKE ANALYSIS",
+    "@eventTypeHandshakeAnalysis": {
+        "description": "Security event type: Handshake Analysis."
+    },
+    "eventTypeHandshakeSecured": "HANDSHAKE SECURED",
+    "@eventTypeHandshakeSecured": {
+        "description": "Security event type: Handshake Secured."
+    },
+    "eventTypeCaptivePortal": "CAPTIVE PORTAL",
+    "@eventTypeCaptivePortal": {
+        "description": "Security event type: Captive Portal."
+    },
+    "eventTypeUnsupported": "UNSUPPORTED",
+    "@eventTypeUnsupported": {
+        "description": "Security event type: Unsupported."
+    },
+    "eventTypeArpSpoofing": "ARP SPOOFING",
+    "@eventTypeArpSpoofing": {
+        "description": "Security event type: Arp Spoofing."
+    },
+    "eventTypeDnsHijacking": "DNS HIJACKING",
+    "@eventTypeDnsHijacking": {
+        "description": "Security event type: Dns Hijacking."
+    },
+    "agentId": "AGENT-01",
+    "@agentId": {
+        "description": "Default agent ID."
+    },
+    "cyberneticId": "CYBERNETIC_ID: {id}",
+    "@cyberneticId": {
+        "description": "Cybernetic ID label.",
+        "placeholders": {
+            "id": {
+                "type": "String"
+            }
+        }
+    },
+    "subscriptionLabel": "Sub: {type}",
+    "@subscriptionLabel": {
+        "description": "Subscription status label.",
+        "placeholders": {
+            "type": {
+                "type": "String"
+            }
+        }
+    },
+    "deepScanSuppressed": "Deep scan suppressed — connected to a {context} network. Disable the safety guard in Settings to override.",
+    "@deepScanSuppressed": {
+        "description": "Message shown when deep scan is skipped for safety.",
+        "placeholders": {
+            "context": {
+                "type": "String"
+            }
+        }
+    },
+    "securityAssessmentFailed": "SECURITY ASSESSMENT FAILED",
+    "@securityAssessmentFailed": {
+        "description": "Error message when security scan fails."
+    },
+    "retryAnalytics": "RETRY ANALYTICS",
+    "@retryAnalytics": {
+        "description": "Button to retry security scan."
+    },
+    "publicContextLabel": "public",
+    "@publicContextLabel": {
+        "description": "Label for public network context."
+    },
+    "guestContextLabel": "guest",
+    "@guestContextLabel": {
+        "description": "Label for guest network context."
+    },
+    "clearScanHistoryTitle": "CLEAR SCAN HISTORY",
+    "@clearScanHistoryTitle": {
+        "description": "Title for clear scan history dialog."
+    },
+    "clearScanHistoryBody": "Delete all LAN scan records? This cannot be undone.",
+    "@clearScanHistoryBody": {
+        "description": "Body for clear scan history dialog."
+    },
+    "cancelLabel": "CANCEL",
+    "@cancelLabel": {
+        "description": "Cancel button label."
+    },
+    "networkAuditConsentTitle": "NETWORK AUDIT CONSENT",
+    "@networkAuditConsentTitle": {
+        "description": "Title for network audit consent dialog."
+    },
+    "networkAuditConsentDesc": "Active network scanning generates traffic to identify devices and services. This may be flagged by network security systems.",
+    "@networkAuditConsentDesc": {
+        "description": "Description for network audit consent dialog."
+    },
+    "consentScanNodes": "Scan local network for active nodes",
+    "@consentScanNodes": {
+        "description": "Consent point: scan nodes."
+    },
+    "consentFingerprint": "Fingerprint open services and OS",
+    "@consentFingerprint": {
+        "description": "Consent point: fingerprint."
+    },
+    "consentIdentifyVulns": "Identify potential vulnerabilities",
+    "@consentIdentifyVulns": {
+        "description": "Consent point: identify vulnerabilities."
+    },
+    "consentConfirmAuth": "Confirm you have authorization for this network",
+    "@consentConfirmAuth": {
+        "description": "Consent point: confirm authorization."
+    },
+    "iUnderstand": "I UNDERSTAND",
+    "@iUnderstand": {
+        "description": "Action label for consent dialog."
+    },
+    "iosLanDiscoveryLimited": "iOS: LAN discovery is limited. mDNS browsing and ARP table access may be restricted by the OS.",
+    "@iosLanDiscoveryLimited": {
+        "description": "Warning for iOS users about LAN scan limitations."
+    },
+    "speedDoctorLongDesc": "Runs signal, channel, speed and DNS probes in ~30 seconds and tells you which link in the chain is the bottleneck.",
+    "@speedDoctorLongDesc": {
+        "description": "Long description for Speed Doctor."
+    },
+    "startDiagnosis": "START DIAGNOSIS",
+    "@startDiagnosis": {
+        "description": "Button to start speed doctor."
+    },
+    "speedDoctorQuotaWarning": "Heads up: a real speed test downloads ~300–500 MB. Use Wi-Fi or an unmetered connection to avoid burning your mobile quota.",
+    "@speedDoctorQuotaWarning": {
+        "description": "Warning about data usage during speed test."
+    },
+    "evidenceLabel": "EVIDENCE",
+    "@evidenceLabel": {
+        "description": "Evidence section header."
+    },
+    "runAgain": "RUN AGAIN",
+    "@runAgain": {
+        "description": "Button to rerun diagnosis."
+    },
+    "aboutSpeedDoctorTitle": "ABOUT SPEED DOCTOR",
+    "@aboutSpeedDoctorTitle": {
+        "description": "About section title."
+    },
+    "sdAboutWhatTitle": "What is it?",
+    "@sdAboutWhatTitle": {},
+    "sdAboutWhatBody": "A one-tap diagnostic that finds the likely bottleneck between you and the internet — without you having to compare numbers across separate screens.",
+    "@sdAboutWhatBody": {},
+    "sdAboutHowTitle": "How does it work?",
+    "@sdAboutHowTitle": {},
+    "sdAboutHowBody": "Five short probes run end-to-end and the results are compared against published thresholds:",
+    "@sdAboutHowBody": {},
+    "sdAboutHowBullet1": "Signal — reads RSSI from the connected access point.",
+    "@sdAboutHowBullet1": {},
+    "sdAboutHowBullet2": "Channel — scores your channel against neighbouring APs.",
+    "@sdAboutHowBullet2": {},
+    "sdAboutHowBullet3": "Speed — runs a real download/upload test against Cloudflare.",
+    "@sdAboutHowBullet3": {},
+    "sdAboutHowBullet4": "Bufferbloat — measures latency under load (Waveform A–F).",
+    "@sdAboutHowBullet4": {},
+    "sdAboutHowBullet5": "DNS — benchmarks public resolvers vs. your current one.",
+    "@sdAboutHowBullet5": {},
+    "sdAboutCategoriesTitle": "What do the categories mean?",
+    "@sdAboutCategoriesTitle": {},
+    "sdAboutCategoriesBullet1": "Weak Signal — Wi-Fi link forced into slower modes by distance / walls.",
+    "@sdAboutCategoriesBullet1": {},
+    "sdAboutCategoriesBullet2": "Crowded Channel — neighbouring APs on the same channel eat your air-time.",
+    "@sdAboutCategoriesBullet2": {},
+    "sdAboutCategoriesBullet3": "Bufferbloat — latency balloons when the link is fully loaded; calls and games suffer.",
+    "@sdAboutCategoriesBullet3": {},
+    "sdAboutCategoriesBullet4": "ISP Slow — Wi-Fi is fine but your plan / upstream is the ceiling.",
+    "@sdAboutCategoriesBullet4": {},
+    "sdAboutCategoriesBullet5": "Slow DNS — page loads feel laggy because name lookups take too long.",
+    "@sdAboutCategoriesBullet5": {},
+    "sdAboutEstimateTitle": "About the speed-up estimate",
+    "@sdAboutEstimateTitle": {},
+    "sdAboutEstimateBody": "Each finding shows a conservative projected gain — what you can realistically expect after applying the fix. It is a lower bound, not a guarantee, and it depends on the test conditions.",
+    "@sdAboutEstimateBody": {},
+    "diagnosisFailed": "Diagnosis failed",
+    "@diagnosisFailed": {
+        "description": "Error message when diagnosis fails."
+    },
+    "retryLabel": "RETRY",
+    "@retryLabel": {
+        "description": "Retry button label."
+    },
+    "settingsIncludeHiddenDesc": "Actively probes for hidden SSIDs. Off by default — only enable on networks you own.",
+    "@settingsIncludeHiddenDesc": {},
+    "autoScanLabel": "Auto-Scan",
+    "@autoScanLabel": {},
+    "autoScanDesc": "Repeat scan every {seconds}s automatically",
+    "@autoScanDesc": {
+        "placeholders": {
+            "seconds": {
+                "type": "int"
+            }
+        }
+    },
+    "deepScanLabel": "Deep Scan",
+    "@deepScanLabel": {},
+    "deepScanDesc": "Banner grab + exposure analysis. Only enable on networks you are authorized to test.",
+    "@deepScanDesc": {},
+    "restrictDeepScanPublicLabel": "Restrict Deep Scan on Public Wi-Fi",
+    "@restrictDeepScanPublicLabel": {},
+    "restrictDeepScanPublicDesc": "Suppress active probing when connected to a public or guest network. Recommended — active scans on networks you do not own are the dominant legal risk.",
+    "@restrictDeepScanPublicDesc": {},
+    "backgroundMonitoringLabel": "Background Monitoring",
+    "@backgroundMonitoringLabel": {},
+    "backgroundMonitoringDesc": "Run a quiet Wi-Fi check every 30 minutes while the app is closed. You'll get a notification if a new device appears, the connected network swaps, or encryption changes. Battery impact is minimal. iOS support is limited (system-controlled refresh).",
+    "@backgroundMonitoringDesc": {},
+    "portScanTimeoutLabel": "Port Scan Timeout",
+    "@portScanTimeoutLabel": {},
+    "privacyAndDataLabel": "PRIVACY & DATA",
+    "@privacyAndDataLabel": {},
+    "dataRetentionLabel": "DATA RETENTION",
+    "@dataRetentionLabel": {},
+    "scanHistoryRetentionLabel": "Scan History",
+    "@scanHistoryRetentionLabel": {},
+    "speedTestsRetentionLabel": "Speed Tests",
+    "@speedTestsRetentionLabel": {},
+    "securityEventsRetentionLabel": "Security Events",
+    "@securityEventsRetentionLabel": {},
+    "replayOnboardingLabel": "Replay Onboarding",
+    "@replayOnboardingLabel": {},
+    "replayOnboardingDesc": "View the welcome tour again.",
+    "@replayOnboardingDesc": {},
+    "wipeAllDataLabel": "Wipe All Local Data",
+    "@wipeAllDataLabel": {},
+    "wipeAllDataDesc": "Deletes all scan history, speed tests, security events and channel ratings from this device.",
+    "@wipeAllDataDesc": {},
+    "aboutLabel": "ABOUT",
+    "@aboutLabel": {},
+    "legalDisclaimerTitle": "Legal Disclaimer",
+    "@legalDisclaimerTitle": {},
+    "legalDisclaimerBody": "This application performs network observation and authorized LAN discovery. Active probing is strictly limited to service identification and security assessment. No brute-force authentication, frame injection, deauthentication packets, ARP poisoning, or credential harvesting are performed.\n\nUse of this application on networks you do not own or are not authorized to test may violate applicable laws (TCK 243/244, EU Directive 2013/40, CFAA). The user is solely responsible for ensuring lawful use.",
+    "@legalDisclaimerBody": {},
+    "enableDeepScanTitle": "ENABLE DEEP SCAN?",
+    "@enableDeepScanTitle": {},
+    "enableDeepScanBody": "Deep scan performs banner grabbing and service exposure analysis. This mode must only be used on networks you own or are explicitly authorized to test.\n\nProceeding on unauthorized networks may violate applicable laws.",
+    "@enableDeepScanBody": {},
+    "wifiScanPermissionTitle": "WIFI SCAN PERMISSION",
+    "@wifiScanPermissionTitle": {},
+    "wifiScanPermissionDesc": "To discover nearby Wi-Fi networks and analyze signal strength, Torcav requires Location access. This is an Android system requirement for Wi-Fi scanning.",
+    "@wifiScanPermissionDesc": {},
+    "consentScanSsids": "Scan nearby Wi-Fi SSIDs",
+    "@consentScanSsids": {},
+    "consentAnalyzeSignal": "Analyze signal quality and interference",
+    "@consentAnalyzeSignal": {},
+    "consentNoTracking": "Torcav never tracks or shares your location",
+    "@consentNoTracking": {},
+    "continueLabel": "CONTINUE",
+    "@continueLabel": {},
+    "clearWifiHistoryBody": "Delete all saved Wi-Fi scan sessions? This cannot be undone.",
+    "@clearWifiHistoryBody": {},
+    "transparentSignalAnalysisTitle": "TRANSPARENT SIGNAL ANALYSIS",
+    "@transparentSignalAnalysisTitle": {},
+    "transparentSignalAnalysisDesc": "Advanced spectrum analysis for security auditing. Local processing only.",
+    "@transparentSignalAnalysisDesc": {},
+    "cachedResultsWarning": "Showing cached results — Android limits scan frequency. Wait ~30 s and refresh for live data.",
+    "@cachedResultsWarning": {},
+    "enableDeepScanBodyWifi": "Deep Scan performs banner grabbing and exposure analysis. Use only on networks you are authorized to scan. Unauthorized use may violate TCK 243/244 and similar laws.",
+    "@enableDeepScanBodyWifi": {},
+    "iAmAuthorized": "I AM AUTHORIZED",
+    "@iAmAuthorized": {},
+    "iosWifiScanLimited": "iOS: Wi-Fi scan results are limited by Apple APIs. Active scan trigger and some network details are unavailable.",
+    "@iosWifiScanLimited": {},
+    "allCategoriesLabel": "All categories (single bundle)",
+    "@allCategoriesLabel": {},
+    "jsonFormatLabel": "JSON — full, machine-readable",
+    "@jsonFormatLabel": {},
+    "htmlFormatLabel": "HTML — viewable in browser",
+    "@htmlFormatLabel": {},
+    "autoLabel": "Auto",
+    "@autoLabel": {},
+    "lightLabel": "Light",
+    "@lightLabel": {},
+    "darkLabel": "Dark",
+    "@darkLabel": {},
+    "dismissLabel": "Dismiss",
+    "@dismissLabel": {},
+    "applyLabel": "Apply",
+    "@applyLabel": {},
+    "openSettingsLabel": "Open settings",
+    "@openSettingsLabel": {},
+    "privacyPolicyTitle": "Privacy Policy",
+    "@privacyPolicyTitle": {},
+    "noConnectedNetwork": "No connected network",
+    "@noConnectedNetwork": {},
+    "ssidNotAvailable": "SSID not available",
+    "@ssidNotAvailable": {},
+    "encryptionAndConfigTitle": "ENCRYPTION & CONFIG",
+    "@encryptionAndConfigTitle": {},
+    "environmentScanTitle": "ENVIRONMENT SCAN",
+    "@environmentScanTitle": {},
+    "dnsTestFailedTitle": "DNS Test Failed",
+    "@dnsTestFailedTitle": {},
+    "dnsTestFailedDesc": "Could not reach DNS test servers. Check your connection.",
+    "@dnsTestFailedDesc": {},
+    "dnsLeakDetectedTitle": "DNS Leak Detected",
+    "@dnsLeakDetectedTitle": {},
+    "dnsLeakDetectedDesc": "Your DNS queries are leaking outside the expected resolver, potentially exposing your browsing activity to your ISP or third parties.",
+    "@dnsLeakDetectedDesc": {},
+    "dnsHijackingDetectedTitle": "DNS Hijacking Detected",
+    "@dnsHijackingDetectedTitle": {},
+    "dnsHijackingDetectedDesc": "DNS responses are being redirected to an unexpected server. This could indicate a man-in-the-middle attack or ISP interception.",
+    "@dnsHijackingDetectedDesc": {},
+    "dnsConfigWarningTitle": "DNS Configuration Warning",
+    "@dnsConfigWarningTitle": {},
+    "dnsConfigWarningDesc": "DNS configuration has potential issues that could affect privacy or security.",
+    "@dnsConfigWarningDesc": {},
+    "noIssuesDetected": "No issues detected",
+    "@noIssuesDetected": {},
+    "retryInternetConnection": "Retry when connected to the internet.",
+    "@retryInternetConnection": {},
+    "dnsLeakRecommendation": "Configure a trusted DNS resolver (e.g. 1.1.1.1 or 9.9.9.9) and enable DNS-over-HTTPS (DoH) or DNS-over-TLS (DoT).",
+    "@dnsLeakRecommendation": {},
+    "dnsHijackingRecommendation": "Switch to a VPN immediately. Your DNS queries are being tampered with.",
+    "@dnsHijackingRecommendation": {},
+    "dnsConfigRecommendation": "Review your DNS settings and consider switching to a privacy-focused DNS provider.",
+    "@dnsConfigRecommendation": {},
+    "openNetworksNearbyTitle": "{count} Open Network(s) Nearby",
+    "@openNetworksNearbyTitle": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "openNetworksNearbyDesc": "Detected {count} unencrypted network(s) in range. Open networks are trivially sniffable.",
+    "@openNetworksNearbyDesc": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "wpsEnabledNearbyTitle": "{count} Network(s) with WPS Enabled",
+    "@wpsEnabledNearbyTitle": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "wpsEnabledNearbyDesc": "WPS is enabled on {count} nearby network(s). WPS PIN can be brute-forced, bypassing the Wi-Fi password entirely.",
+    "@wpsEnabledNearbyDesc": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "wpsRecommendation": "Disable WPS on your router. If these are not your networks, be aware that nearby APs may be less secure.",
+    "@wpsRecommendation": {},
+    "renderingErrorTitle": "RENDERING ERROR",
+    "@renderingErrorTitle": {},
+    "appTitleLong": "Torcav Wi-Fi Analyzer",
+    "@appTitleLong": {},
+    "tosTitle": "TERMS OF SERVICE",
+    "@tosTitle": {},
+    "tosAcceptanceTitle": "1. ACCEPTANCE",
+    "@tosAcceptanceTitle": {},
+    "tosAcceptanceBody": "By accessing or using Torcav, you agree to be bound by these Terms. If you do not agree, you must immediately cease use of the App.",
+    "@tosAcceptanceBody": {},
+    "tosAuthorizedTestingTitle": "2. AUTHORIZED TESTING ONLY",
+    "@tosAuthorizedTestingTitle": {},
+    "tosAuthorizedTestingBody": "You represent and warrant that you will only use the App to analyze networks and devices that you own or for which you have received explicit, written authorization to test. Unauthorized access to networks is strictly prohibited and may be illegal in your jurisdiction.",
+    "@tosAuthorizedTestingBody": {},
+    "tosDisclaimerTitle": "3. DISCLAIMER OF WARRANTIES",
+    "@tosDisclaimerTitle": {},
+    "tosDisclaimerBody": "The App is provided \"as is\" and \"as available\". We do not guarantee that the App will identify all security vulnerabilities or that its results are 100% accurate. Use at your own risk.",
+    "@tosDisclaimerBody": {},
+    "tosLiabilityTitle": "4. LIMITATION OF LIABILITY",
+    "@tosLiabilityTitle": {},
+    "tosLiabilityBody": "In no event shall the developers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the App.",
+    "@tosLiabilityBody": {},
+    "tosModificationsTitle": "5. MODIFICATIONS",
+    "@tosModificationsTitle": {},
+    "tosModificationsBody": "We reserve the right to modify these terms at any time. Continued use of the App following any changes constitutes acceptance of the new terms.",
+    "@tosModificationsBody": {},
+    "tosLastUpdated": "Last Updated: April 2026",
+    "@tosLastUpdated": {},
+    "legalNoticeTitle": "LEGAL NOTICE",
+    "@legalNoticeTitle": {},
+    "legalNoticeBody": "This application is a security auditing tool. Misuse of this software to access or monitor networks without permission is strictly prohibited.",
+    "@legalNoticeBody": {},
+    "privacyTitle": "PRIVACY POLICY",
+    "@privacyTitle": {},
+    "privacyIntro": "Torcav is built on the principle of \"Privacy by Default\". Almost every byte stays on your device — no accounts, no cloud sync, no analytics, no advertising. A handful of features connect to public technical endpoints (Cloudflare, Google's captive-portal probe, public DNS resolvers) — those see only your IP, never any Torcav-internal identifier. You can wipe every persisted record with one tap.",
+    "@privacyIntro": {},
+    "privacyViewFullGithub": "VIEW FULL POLICY ON GITHUB",
+    "@privacyViewFullGithub": {},
+    "privacyFullPolicyDesc": "The card list below is a summary. The canonical, KVKK + GDPR-formatted policy is hosted at github.io.",
+    "@privacyFullPolicyDesc": {},
+    "privacyResponsibleTitle": "WHO IS RESPONSIBLE",
+    "@privacyResponsibleTitle": {},
+    "privacyIndividualDev": "Individual Developer",
+    "@privacyIndividualDev": {},
+    "privacyDevBody": "Torcav is operated by an individual developer (Halil İbrahim Avşar), not a registered company. You can reach the data controller directly at {email}.",
+    "@privacyDevBody": {
+        "placeholders": {
+            "email": {
+                "type": "String"
+            }
+        }
+    },
+    "privacyDataCollectionTitle": "DATA COLLECTION & USAGE",
+    "@privacyDataCollectionTitle": {},
+    "privacyWifiAnalysisTitle": "Wi-Fi & Network Analysis",
+    "@privacyWifiAnalysisTitle": {},
+    "privacyWifiAnalysisBody": "Nearby SSID/BSSID/RSSI metadata and security flags (WPA2/WPA3/WPS/PMF) are read from the OS scan API. This data stays in a local SQLite database encrypted at rest. It is never uploaded.",
+    "@privacyWifiAnalysisBody": {},
+    "privacyLanInventoryTitle": "LAN Device Inventory",
+    "@privacyLanInventoryTitle": {},
+    "privacyLanInventoryBody": "When you run a LAN scan, the app collects IP/MAC/hostname/vendor/open ports for devices on the same network. This may include third-party devices — anonymisation is on by default for exports.",
+    "@privacyLanInventoryBody": {},
+    "privacyLocationTitle": "Location Permission (Wi-Fi only)",
+    "@privacyLocationTitle": {},
+    "privacyLocationBody": "Android requires the location permission to enable Wi-Fi scanning. Torcav uses it strictly for that — we do not read GPS coordinates and we do not track movement.",
+    "@privacyLocationBody": {},
+    "privacySensorsTitle": "Sensors & Heatmap",
+    "@privacySensorsTitle": {},
+    "privacySensorsBody": "Activity recognition + IMU/barometer are used during heatmap surveys to map signal strength to your relative path (origin = scan start). GPS is not used.",
+    "@privacySensorsBody": {},
+    "privacyAiTitle": "AI / Local Classification",
+    "@privacyAiTitle": {},
+    "privacyAiBody": "Device-type identification uses a local ONNX model. No proprietary or vendor data leaves the device.",
+    "@privacyAiBody": {},
+    "privacyExternalEndpointsTitle": "EXTERNAL ENDPOINTS",
+    "@privacyExternalEndpointsTitle": {},
+    "privacyCloudflareTitle": "Cloudflare Speed Test",
+    "@privacyCloudflareTitle": {},
+    "privacyCloudflareBody": "Speed Doctor and the speed-test page download/upload ~300-500 MB against speed.cloudflare.com. Cloudflare sees your IP — no Torcav identifier or telemetry is attached.",
+    "@privacyCloudflareBody": {},
+    "privacyDnsProbesTitle": "Public DNS Probes",
+    "@privacyDnsProbesTitle": {},
+    "privacyDnsProbesBody": "1.1.1.1, 8.8.8.8, 9.9.9.9, OpenDNS and AdGuard are queried for DNS benchmark and leak detection. They see standard DNS queries (no user identifiers).",
+    "@privacyDnsProbesBody": {},
+    "privacyCaptivePortalTitle": "Captive Portal Probe",
+    "@privacyCaptivePortalTitle": {},
+    "privacyCaptivePortalBody": "connectivitycheck.gstatic.com receives a plain HEAD request to detect captive portals. This is the same probe Android itself runs.",
+    "@privacyCaptivePortalBody": {},
+    "privacyNoTrackersTitle": "No Analytics, No Trackers, No Ads",
+    "@privacyNoTrackersTitle": {},
+    "privacyNoTrackersBody": "There are zero analytics SDKs, zero advertising IDs, zero crash-reporting services in v1.0. We do not phone home on app start.",
+    "@privacyNoTrackersBody": {},
+    "privacyRetentionTitle": "RETENTION & DELETION",
+    "@privacyRetentionTitle": {},
+    "privacyConfigRetentionTitle": "Configurable Retention",
+    "@privacyConfigRetentionTitle": {},
+    "privacyConfigRetentionBody": "Settings → Privacy lets you set retention windows (7-365 days) for scan history, speed tests, and security events. Default is 30 days. Old records prune automatically.",
+    "@privacyConfigRetentionBody": {},
+    "privacyWipeLocalDataTitle": "Wipe All Local Data",
+    "@privacyWipeLocalDataTitle": {},
+    "privacyWipeLocalDataBody": "A single tap in Settings → Privacy clears every persisted record: scans, devices, security events, heatmap sessions, LAN history, exports. Irreversible.",
+    "@privacyWipeLocalDataBody": {},
+    "privacyRightsTitle": "YOUR RIGHTS",
+    "@privacyRightsTitle": {},
+    "privacyKvkkGdprTitle": "KVKK (Turkey) + GDPR (EU/EEA)",
+    "@privacyKvkkGdprTitle": {},
+    "privacyRightsBody": "You can request access, correction, deletion, or portability of your data. For deletion, the in-app Wipe All button is the fastest path. For other requests, email {email} — we respond within 30 days.",
+    "@privacyRightsBody": {
+        "placeholders": {
+            "email": {
+                "type": "String"
+            }
+        }
+    },
+    "privacyChildrenTitle": "Children's Privacy",
+    "@privacyChildrenTitle": {},
+    "privacyChildrenBody": "Torcav is not directed at users under 13 and presumes the user is old enough to take responsibility for the network being scanned.",
+    "@privacyChildrenBody": {},
+    "privacyAuthorisedUseTitle": "Authorised Use Only",
+    "@privacyAuthorisedUseTitle": {},
+    "privacyAuthorisedUseBody": "Use Torcav on networks you own or are explicitly authorised to scan. Active LAN discovery and port scanning on networks you do not own may violate Turkish, EU, and US laws.",
+    "@privacyAuthorisedUseBody": {},
+    "privacyContactLabel": "CONTACT",
+    "@privacyContactLabel": {},
+    "privacyEffectiveDate": "Effective 2026-05-08 • Version 1.0",
+    "@privacyEffectiveDate": {},
+    "hardeningTitle": "ROUTER HARDENING",
+    "@hardeningTitle": {},
+    "hardeningSubtitle": "SECURE YOUR GATEWAY",
+    "@hardeningSubtitle": {},
+    "hardeningMarkDone": "MARK DONE",
+    "@hardeningMarkDone": {},
+    "hardeningOpenAdmin": "OPEN ADMIN PANEL",
+    "@hardeningOpenAdmin": {},
+    "hardeningStepsTitle": "ACTION STEPS",
+    "@hardeningStepsTitle": {},
+    "hardeningMenuHintsTitle": "COMMON MENU NAMES",
+    "@hardeningMenuHintsTitle": {},
+    "hardeningCriticalBadge": "CRITICAL",
+    "@hardeningCriticalBadge": {},
+    "hardeningChangeAdminPasswordTitle": "Change router admin password",
+    "@hardeningChangeAdminPasswordTitle": {},
+    "hardeningChangeAdminPasswordBody": "Default admin credentials (admin/admin, admin/password) are publicly documented. Anyone on your Wi-Fi can open the admin panel and rewrite settings — DNS hijack, redirect traffic, lock you out.",
+    "@hardeningChangeAdminPasswordBody": {},
+    "hardeningChangeAdminPasswordStep1": "Tap the big OPEN ADMIN PANEL button at the top of this page. Your browser will open the router login page.",
+    "@hardeningChangeAdminPasswordStep1": {},
+    "hardeningChangeAdminPasswordStep2": "Log in. Try \"admin\" as username and \"admin\" or \"password\" as password if you haven't changed it.",
+    "@hardeningChangeAdminPasswordStep2": {},
+    "hardeningChangeAdminPasswordStep3": "Find a menu named \"Administration\", \"System\", \"Maintenance\" or \"Account\".",
+    "@hardeningChangeAdminPasswordStep3": {},
+    "hardeningChangeAdminPasswordStep4": "Inside that menu look for \"Login password\", \"Admin password\" or \"Change password\".",
+    "@hardeningChangeAdminPasswordStep4": {},
+    "hardeningChangeAdminPasswordStep5": "Pick a NEW password — at least 12 characters, mix uppercase, lowercase, numbers and a symbol.",
+    "@hardeningChangeAdminPasswordStep5": {},
+    "hardeningChangeAdminPasswordStep6": "Save / Apply. The router may reboot for ~30 seconds.",
+    "@hardeningChangeAdminPasswordStep6": {},
+    "hardeningChangeAdminPasswordStep7": "Write the new password down somewhere safe.",
+    "@hardeningChangeAdminPasswordStep7": {},
+    "hardeningChangeAdminPasswordStep8": "Once saved, come back here and tap MARK DONE.",
+    "@hardeningChangeAdminPasswordStep8": {},
+    "hardeningUseWpa3OrWpa2AesTitle": "Use WPA3, fall back to WPA2-AES",
+    "@hardeningUseWpa3OrWpa2AesTitle": {},
+    "hardeningUseWpa3OrWpa2AesBody": "WPA3 is the modern Wi-Fi encryption standard. WPA/TKIP and WEP can be cracked in minutes.",
+    "@hardeningUseWpa3OrWpa2AesBody": {},
+    "hardeningDisableWpsTitle": "Disable WPS",
+    "@hardeningDisableWpsTitle": {},
+    "hardeningDisableWpsBody": "WPS lets attackers bypass your Wi-Fi password in hours. Turn it off.",
+    "@hardeningDisableWpsBody": {},
+    "hardeningEnablePmfTitle": "Enable PMF / 802.11w",
+    "@hardeningEnablePmfTitle": {},
+    "hardeningEnablePmfBody": "Protected Management Frames stop attackers from knocking your devices offline.",
+    "@hardeningEnablePmfBody": {},
+    "hardeningEnableGuestNetworkTitle": "Enable a guest network",
+    "@hardeningEnableGuestNetworkTitle": {},
+    "hardeningEnableGuestNetworkBody": "A second SSID for visitors and IoT devices keeps your private network safe.",
+    "@hardeningEnableGuestNetworkBody": {},
+    "hardeningDisableRemoteAdminTitle": "Disable remote / WAN-side admin",
+    "@hardeningDisableRemoteAdminTitle": {},
+    "hardeningDisableRemoteAdminBody": "If the admin panel is reachable from the internet, anyone can try default passwords.",
+    "@hardeningDisableRemoteAdminBody": {},
+    "hardeningUpdateFirmwareTitle": "Update firmware",
+    "@hardeningUpdateFirmwareTitle": {},
+    "hardeningUpdateFirmwareBody": "Most home routers have known security holes that vendors patch quietly.",
+    "@hardeningUpdateFirmwareBody": {},
+    "hardeningStrongPassphraseTitle": "Use a strong Wi-Fi passphrase",
+    "@hardeningStrongPassphraseTitle": {},
+    "hardeningStrongPassphraseBody": "12+ characters, mixed case, never reused from another service.",
+    "@hardeningStrongPassphraseBody": {},
+    "gatewayCopyError": "Could not open the browser automatically. Gateway IP {ip} has been copied — paste it into your browser's address bar.",
+    "@gatewayCopyError": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            }
+        }
+    },
+    "gatewayCopied": "Gateway IP {ip} copied to clipboard.",
+    "@gatewayCopied": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            }
+        }
+    },
+    "hardeningConnectWifiHint": "Connect to your home Wi-Fi to track progress per router. The checklist still works without a connection.",
+    "@hardeningConnectWifiHint": {},
+    "progressLabel": "PROGRESS",
+    "@progressLabel": {},
+    "tapToCopy": "tap to copy",
+    "@tapToCopy": {},
+    "hardeningOpenAdminDesc": "Launch your router login page in the browser",
+    "@hardeningOpenAdminDesc": {},
+    "hardeningConnectWifiRequired": "Connect to Wi-Fi first",
+    "@hardeningConnectWifiRequired": {},
+    "hardeningGatewayHintDisconnected": "Once connected, the gateway IP appears above and the button will launch your browser.",
+    "@hardeningGatewayHintDisconnected": {},
+    "hardeningGatewayHintConnected": "Doesn't open? Tap the gateway IP above to copy it, then paste it into your browser's address bar (Chrome, Firefox, etc.).",
+    "@hardeningGatewayHintConnected": {},
+    "whyThisMattersLabel": "WHY THIS MATTERS",
+    "@whyThisMattersLabel": {},
+    "markAsTodoLabel": "MARK AS todo",
+    "@markAsTodoLabel": {},
+    "vpnRecommendation": "Use a trusted VPN when connecting to unknown or untrusted networks.",
+    "@vpnRecommendation": {},
+    "exportLocalDataTitle": "EXPORT LOCAL DATA",
+    "@exportLocalDataTitle": {},
+    "exportLocalDataDesc": "Your data on this device, in your hands. Pick a category and share or save it as JSON.",
+    "@exportLocalDataDesc": {},
+    "exportCategoryLabel": "Category",
+    "@exportCategoryLabel": {},
+    "exportFormatLabel": "Format",
+    "@exportFormatLabel": {},
+    "jsonExportLabel": "JSON — full, machine-readable",
+    "@jsonExportLabel": {},
+    "csvExportLabel": "CSV — opens in Excel/Sheets",
+    "@csvExportLabel": {},
+    "csvSingleCategoryOnlyLabel": "CSV — single category only",
+    "@csvSingleCategoryOnlyLabel": {},
+    "htmlExportLabel": "HTML — viewable in browser",
+    "@htmlExportLabel": {},
+    "anonymizeIdentifiersLabel": "Anonymize identifiers",
+    "@anonymizeIdentifiersLabel": {},
+    "anonymizeIdentifiersDesc": "Mask BSSID/MAC last 3 octets, redact SSID and hostname.",
+    "@anonymizeIdentifiersDesc": {},
+    "noIdentifiersToMaskDesc": "This category has no identifiers to mask.",
+    "@noIdentifiersToMaskDesc": {},
+    "exportingLabel": "EXPORTING…",
+    "@exportingLabel": {},
+    "exportAsLabel": "EXPORT AS {format}",
+    "@exportAsLabel": {
+        "placeholders": {
+            "format": {
+                "type": "String"
+            }
+        }
+    },
+    "exportPrivacyNote": "Stays on your device until you share it. Nothing is sent to any server.",
+    "@exportPrivacyNote": {},
+    "exportFailedMessage": "Export failed: {error}",
+    "@exportFailedMessage": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "noDataInCategoryMessage": "No data in \"{category}\" yet.",
+    "@noDataInCategoryMessage": {
+        "placeholders": {
+            "category": {
+                "type": "String"
+            }
+        }
+    },
+    "categoryWifiScanHistory": "Wi-Fi scan history",
+    "@categoryWifiScanHistory": {},
+    "categorySpeedTestResults": "Speed test results",
+    "@categorySpeedTestResults": {},
+    "categorySecurityEvents": "Security events",
+    "@categorySecurityEvents": {},
+    "categoryKnownAndTrustedNetworks": "Known + trusted networks",
+    "@categoryKnownAndTrustedNetworks": {},
+    "categoryChannelRatingsHistory": "Channel ratings history",
+    "@categoryChannelRatingsHistory": {},
+    "categoryHeatmapSessions": "Heatmap sessions",
+    "@categoryHeatmapSessions": {},
+    "categoryLanScanLatest": "LAN scan (latest)",
+    "@categoryLanScanLatest": {},
+    "categoryDeviceLabelOverrides": "Device label overrides",
+    "@categoryDeviceLabelOverrides": {},
+    "categoryPinnedNetworks": "Pinned networks",
+    "@categoryPinnedNetworks": {},
+    "categoryScoreHistory": "Security score history",
+    "@categoryScoreHistory": {},
+    "categoryNetworkContextOverrides": "Network context overrides",
+    "@categoryNetworkContextOverrides": {},
+    "categoryRouterHardeningProgress": "Router hardening progress",
+    "@categoryRouterHardeningProgress": {},
+    "macRandomizedLabel": "MAC Randomized",
+    "@macRandomizedLabel": {},
+    "notificationsBlockedTitle": "Notifications are blocked",
+    "@notificationsBlockedTitle": {},
+    "notificationsBlockedDesc": "The live ping HUD lives in the notification shade. Without notifications you cannot see ping while gaming. On MIUI/Xiaomi, also enable \"Show on Lock screen\" and \"Floating notifications\".",
+    "@notificationsBlockedDesc": {},
+    "liveLatencyLabel": "Live latency",
+    "@liveLatencyLabel": {},
+    "latencyStatLabel": "Latency",
+    "@latencyStatLabel": {},
+    "jitterStatLabel": "Jitter",
+    "@jitterStatLabel": {},
+    "lossStatLabel": "Loss",
+    "@lossStatLabel": {},
+    "baselineLatencyLabel": "Baseline (pre-tunnel): {ms} ms",
+    "@baselineLatencyLabel": {
+        "placeholders": {
+            "ms": {
+                "type": "String"
+            }
+        }
+    },
+    "jitterThresholdLabel": "Jitter alarm threshold: {ms} ms",
+    "@jitterThresholdLabel": {
+        "placeholders": {
+            "ms": {
+                "type": "String"
+            }
+        }
+    },
+    "heatmapSettingsTitle": "Heatmap Settings",
+    "@heatmapSettingsTitle": {},
+    "dnsLabel": "DNS",
+    "@dnsLabel": {},
+    "notNowLabel": "NOT NOW",
+    "@notNowLabel": {},
+    "newNetworkLabel": "+ NEW",
+    "@newNetworkLabel": {},
+    "goneNetworkLabel": "GONE",
+    "@goneNetworkLabel": {},
+    "hiddenNetworkLabel": "[Hidden]",
+    "@hiddenNetworkLabel": {},
+    "randomizedMacDetectedLabel": "Randomized MAC Detected",
+    "@randomizedMacDetectedLabel": {},
+    "howPingStabilizerWorksTitle": "How Ping Stabilizer works",
+    "@howPingStabilizerWorksTitle": {},
+    "stabilizerExplainerSubtitle": "On-device, no remote servers, free.",
+    "@stabilizerExplainerSubtitle": {},
+    "whatItDoesTitle": "What it does",
+    "@whatItDoesTitle": {},
+    "whatItDoesBullet1": "Establishes a local VPN tunnel on your device — no traffic leaves through any third-party server.",
+    "@whatItDoesBullet1": {},
+    "whatItDoesBullet2": "Routes DNS queries to the fastest resolver (1.1.1.1, 8.8.8.8, 9.9.9.9, …) measured live.",
+    "@whatItDoesBullet2": {},
+    "whatItDoesBullet3": "Watches latency / jitter every second and warns you when a spike persists, optionally cycling the tunnel to break a sticky bad path.",
+    "@whatItDoesBullet3": {},
+    "whatItDoesBullet4": "Uses an EWMA filter (recent samples weighted heavier) so it reacts to real degradation, not single-packet noise.",
+    "@whatItDoesBullet4": {},
+    "whatItDoesNotTitle": "What it does NOT do",
+    "@whatItDoesNotTitle": {},
+    "whatItDoesNotBullet1": "It cannot make your ISP's route to the game server physically shorter — no on-device app can.",
+    "@whatItDoesNotBullet1": {},
+    "whatItDoesNotBullet2": "It does not replace a paid VPN/relay service like ExitLag or WTFast (those route via their own servers; this is local-only).",
+    "@whatItDoesNotBullet2": {},
+    "whatItDoesNotBullet3": "Multi-path \"first-wins\" send across Wi-Fi + cellular is on the roadmap (Phase 2) and currently disabled.",
+    "@whatItDoesNotBullet3": {},
+    "risksAndThingsToKnowTitle": "Risks & things to know",
+    "@risksAndThingsToKnowTitle": {},
+    "risksBullet1": "Android shows a key icon while the tunnel is active — that is normal and required by the system.",
+    "@risksBullet1": {},
+    "risksBullet2": "Only one VPN can run at a time. If you have another VPN app connected, this will refuse to start.",
+    "@risksBullet2": {},
+    "risksBullet3": "A persistent live notification (current ping + Stop / Cycle buttons) stays in the shade while the tunnel runs — that is your in-game HUD; do not swipe it away.",
+    "@risksBullet3": {},
+    "risksBullet4": "On Xiaomi/MIUI, OnePlus/OxygenOS and similar skins, you may need to allow Torcav under Settings → Notifications and Settings → Battery → No restrictions, or the OS will silently hide the notification.",
+    "@risksBullet4": {},
+    "risksBullet5": "DNS auto-switch will change which resolver answers your queries while the tunnel is on. That switch reverts when you stop the stabilizer.",
+    "@risksBullet5": {},
+    "risksBullet6": "Battery use is small (~3-5%/hr in our tests) but non-zero — turn it off when you're done playing.",
+    "@risksBullet6": {},
+    "shieldIntegrityLabel": "SHIELD INTEGRITY",
+    "@shieldIntegrityLabel": {},
+    "activeThreatsLabel": "ACTIVE THREATS",
+    "@activeThreatsLabel": {},
+    "shieldStatusOptimal": "OPTIMAL",
+    "@shieldStatusOptimal": {},
+    "shieldStatusWarning": "WARNING",
+    "@shieldStatusWarning": {},
+    "shieldStatusCritical": "CRITICAL",
+    "@shieldStatusCritical": {},
+    "securityScoreLabel": "SECURITY SCORE",
+    "@securityScoreLabel": {},
+    "systemStatusLabel": "SYSTEM STATUS",
+    "@systemStatusLabel": {},
+    "scanningAllCaps": "SCANNING",
+    "@scanningAllCaps": {},
+    "bssidLabel": "BSSID: {bssid}",
+    "@bssidLabel": {
+        "placeholders": {
+            "bssid": {
+                "type": "String"
+            }
+        }
+    },
+    "gatewayWithIpLabel": "GATEWAY: {gateway}",
+    "@gatewayWithIpLabel": {
+        "placeholders": {
+            "gateway": {
+                "type": "String"
+            }
+        }
+    },
+    "trustedBadge": "TRUSTED",
+    "@trustedBadge": {},
+    "identifiedBadge": "IDENTIFIED",
+    "@identifiedBadge": {},
+    "authEstablishedLabel": "AUTH: ESTABLISHED {date}",
+    "@authEstablishedLabel": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "revokeTrustTooltip": "REVOKE TRUST",
+    "@revokeTrustTooltip": {},
+    "apsLabel": "APs",
+    "@apsLabel": {},
+    "openLabel": "OPEN",
+    "@openLabel": {},
+    "wpsLabel": "WPS",
+    "@wpsLabel": {},
+    "wepLabel": "WEP",
+    "@wepLabel": {},
+    "publicWifiLabel": "PUBLIC WI-FI",
+    "@publicWifiLabel": {},
+    "guestNetworkLabel": "GUEST NETWORK",
+    "@guestNetworkLabel": {},
+    "publicWifiDesc": "Open or untrusted network — assume traffic can be observed.",
+    "@publicWifiDesc": {},
+    "guestNetworkDesc": "You are on a guest segment. Treat as untrusted by default.",
+    "@guestNetworkDesc": {},
+    "tipVpnTitle": "Use a VPN",
+    "@tipVpnTitle": {},
+    "tipVpnBody": "Tunnel traffic through a trusted VPN before sending anything sensitive. Built-in OS VPN is fine for most users.",
+    "@tipVpnBody": {},
+    "tipHttpsTitle": "Verify HTTPS",
+    "@tipHttpsTitle": {},
+    "tipHttpsBody": "Only enter credentials on sites with a locked padlock. Reject certificate warnings — they are how attackers strip TLS.",
+    "@tipHttpsBody": {},
+    "tipSensitiveTitle": "Defer sensitive actions",
+    "@tipSensitiveTitle": {},
+    "tipSensitiveBody": "Avoid banking, payments, password resets and account logins until you are back on a trusted network.",
+    "@tipSensitiveBody": {},
+    "tipDnsTitle": "Check DNS health",
+    "@tipDnsTitle": {},
+    "tipDnsBody": "Public hotspots can hijack DNS. Run a DNS test from this screen to confirm responses are not being rewritten.",
+    "@tipDnsBody": {},
+    "evilTwinPrefix": "EVIL TWIN · {confidence}",
+    "@evilTwinPrefix": {
+        "placeholders": {
+            "confidence": {
+                "type": "String"
+            }
+        }
+    },
+    "whatIsEvilTwinTitle": "What is an evil-twin?",
+    "@whatIsEvilTwinTitle": {},
+    "whyItMattersTitle": "Why does it matter?",
+    "@whyItMattersTitle": {},
+    "whatWeObservedTitle": "What we observed",
+    "@whatWeObservedTitle": {},
+    "whatLookedLegitimateTitle": "What looked legitimate",
+    "@whatLookedLegitimateTitle": {},
+    "whatYouShouldDoTitle": "What you should do",
+    "@whatYouShouldDoTitle": {},
+    "hardeningUseWpa3OrWpa2AesStep1": "Open the admin panel using the button at the top.",
+    "@hardeningUseWpa3OrWpa2AesStep1": {},
+    "hardeningUseWpa3OrWpa2AesStep2": "Find the wireless section: \"Wireless\", \"Wi-Fi\" or \"WLAN\".",
+    "@hardeningUseWpa3OrWpa2AesStep2": {},
+    "hardeningUseWpa3OrWpa2AesStep3": "Look for a security or encryption setting — usually called \"Security mode\", \"Authentication\" or \"Encryption\".",
+    "@hardeningUseWpa3OrWpa2AesStep3": {},
+    "hardeningUseWpa3OrWpa2AesStep4": "Choose the strongest option in this order: WPA3-Personal > WPA2/WPA3 mixed > WPA2-Personal (AES). Avoid anything labelled \"WPA-PSK\", \"TKIP\", \"WEP\" or \"Open\" — these are insecure.",
+    "@hardeningUseWpa3OrWpa2AesStep4": {},
+    "hardeningUseWpa3OrWpa2AesStep5": "If you set WPA3-Personal and an old device (smart bulb, printer, older phone) stops working, switch to \"WPA2/WPA3 mixed\" — that lets old gear connect while new devices still use WPA3.",
+    "@hardeningUseWpa3OrWpa2AesStep5": {},
+    "hardeningUseWpa3OrWpa2AesStep6": "If you have separate 2.4 GHz and 5 GHz settings, change BOTH bands.",
+    "@hardeningUseWpa3OrWpa2AesStep6": {},
+    "hardeningUseWpa3OrWpa2AesStep7": "Save / Apply. Your devices may briefly disconnect — they will rejoin in a few seconds.",
+    "@hardeningUseWpa3OrWpa2AesStep7": {},
+    "hardeningUseWpa3OrWpa2AesStep8": "Come back here and tap MARK DONE.",
+    "@hardeningUseWpa3OrWpa2AesStep8": {},
+    "hardeningDisableWpsStep1": "Open the admin panel.",
+    "@hardeningDisableWpsStep1": {},
+    "hardeningDisableWpsStep2": "Find the Wireless or Wi-Fi section.",
+    "@hardeningDisableWpsStep2": {},
+    "hardeningDisableWpsStep3": "Look for a sub-menu called \"WPS\", \"Easy Setup\", \"Quick Connect\" or a tab inside Wireless Settings labelled WPS.",
+    "@hardeningDisableWpsStep3": {},
+    "hardeningDisableWpsStep4": "Switch the WPS toggle to OFF / Disabled.",
+    "@hardeningDisableWpsStep4": {},
+    "hardeningDisableWpsStep5": "Some routers also have a physical WPS button on the device — that will stop working too, which is the goal.",
+    "@hardeningDisableWpsStep5": {},
+    "hardeningDisableWpsStep6": "Save / Apply.",
+    "@hardeningDisableWpsStep6": {},
+    "hardeningDisableWpsStep7": "From now on, when you connect a new device just type the Wi-Fi password normally. Takes 10 extra seconds, removes a serious attack path.",
+    "@hardeningDisableWpsStep7": {},
+    "hardeningDisableWpsStep8": "Come back here and tap MARK DONE.",
+    "@hardeningDisableWpsStep8": {},
+    "hardeningEnablePmfStep1": "Open the admin panel.",
+    "@hardeningEnablePmfStep1": {},
+    "hardeningEnablePmfStep2": "Go to the Wireless / Wi-Fi section.",
+    "@hardeningEnablePmfStep2": {},
+    "hardeningEnablePmfStep3": "Look in \"Advanced\" or \"Wireless Security\" for a setting called \"PMF\", \"802.11w\" or \"Management Frame Protection\".",
+    "@hardeningEnablePmfStep3": {},
+    "hardeningEnablePmfStep4": "Set it to \"Required\" if all your devices are recent (last ~5 years). If older devices stop seeing the network, change it to \"Optional / Capable\" — that still helps, just less strictly.",
+    "@hardeningEnablePmfStep4": {},
+    "hardeningEnablePmfStep5": "If you cannot find this setting at all, your router may have it baked into WPA3 mode (so completing item 2 above already covers it). In that case, tap MARK DONE here too.",
+    "@hardeningEnablePmfStep5": {},
+    "hardeningEnablePmfStep6": "Save / Apply.",
+    "@hardeningEnablePmfStep6": {},
+    "hardeningEnablePmfStep7": "Come back here and tap MARK DONE.",
+    "@hardeningEnablePmfStep7": {},
+    "hardeningEnableGuestNetworkStep1": "Open the admin panel.",
+    "@hardeningEnableGuestNetworkStep1": {},
+    "hardeningEnableGuestNetworkStep2": "Find a menu called \"Guest Network\", \"Guest Wi-Fi\" or \"Multi-SSID\".",
+    "@hardeningEnableGuestNetworkStep2": {},
+    "hardeningEnableGuestNetworkStep3": "Enable it. Give it a different name from your main Wi-Fi — for example, if your main is \"Home\", call the guest one \"Home-Guest\".",
+    "@hardeningEnableGuestNetworkStep3": {},
+    "hardeningEnableGuestNetworkStep4": "Set a password. It can be simpler than your main one (guests will type it), but still 10+ characters.",
+    "@hardeningEnableGuestNetworkStep4": {},
+    "hardeningEnableGuestNetworkStep5": "Look for a setting called \"Client Isolation\", \"AP Isolation\" or \"Guest network isolation\". Turn it ON. This stops guest devices from talking to each other or to your private network.",
+    "@hardeningEnableGuestNetworkStep5": {},
+    "hardeningEnableGuestNetworkStep6": "Move your IoT devices (smart plugs, cameras, robot vacuum, smart TV) over to the guest network — connect them with the new password.",
+    "@hardeningEnableGuestNetworkStep6": {},
+    "hardeningEnableGuestNetworkStep7": "Save / Apply.",
+    "@hardeningEnableGuestNetworkStep7": {},
+    "hardeningEnableGuestNetworkStep8": "Come back here and tap MARK DONE.",
+    "@hardeningEnableGuestNetworkStep8": {},
+    "hardeningDisableRemoteAdminStep1": "Open the admin panel.",
+    "@hardeningDisableRemoteAdminStep1": {},
+    "hardeningDisableRemoteAdminStep2": "Go to \"Administration\", \"System Tools\" or \"Security\".",
+    "@hardeningDisableRemoteAdminStep2": {},
+    "hardeningDisableRemoteAdminStep3": "Find a setting called \"Remote Management\", \"Web Access from WAN\" or \"Remote admin\".",
+    "@hardeningDisableRemoteAdminStep3": {},
+    "hardeningDisableRemoteAdminStep4": "Switch it OFF / Disabled.",
+    "@hardeningDisableRemoteAdminStep4": {},
+    "hardeningDisableRemoteAdminStep5": "While here, also check for \"Cloud / Remote App access\" (some brands have this — TP-Link Tether, Asus Router app, Mi Wi-Fi). If you do not actively use that app, turn it off too.",
+    "@hardeningDisableRemoteAdminStep5": {},
+    "hardeningDisableRemoteAdminStep6": "Save / Apply.",
+    "@hardeningDisableRemoteAdminStep6": {},
+    "hardeningDisableRemoteAdminStep7": "You can still manage your router from inside your home — only the remote / public-internet path is closed.",
+    "@hardeningDisableRemoteAdminStep7": {},
+    "hardeningDisableRemoteAdminStep8": "Come back here and tap MARK DONE.",
+    "@hardeningDisableRemoteAdminStep8": {},
+    "hardeningUpdateFirmwareStep1": "Open the admin panel.",
+    "@hardeningUpdateFirmwareStep1": {},
+    "hardeningUpdateFirmwareStep2": "Find a menu called \"Firmware Update\", \"System Update\", \"Online Upgrade\" or \"Maintenance\".",
+    "@hardeningUpdateFirmwareStep2": {},
+    "hardeningUpdateFirmwareStep3": "Tap \"Check for update\" or \"Online check\". The router will look for a newer version on the vendor server.",
+    "@hardeningUpdateFirmwareStep3": {},
+    "hardeningUpdateFirmwareStep4": "If an update is offered, install it. The router will reboot for 2-5 minutes — do NOT unplug it during the update or it can become a paperweight.",
+    "@hardeningUpdateFirmwareStep4": {},
+    "hardeningUpdateFirmwareStep5": "After it comes back, go to the same menu and look for \"Auto update\" or \"Automatic upgrade\". Turn it ON if available.",
+    "@hardeningUpdateFirmwareStep5": {},
+    "hardeningUpdateFirmwareStep6": "Some older routers do not have online updates. In that case, note the router model from the device sticker, search the vendor website, download the latest firmware file, and use the \"Manual upload\" option in the same menu.",
+    "@hardeningUpdateFirmwareStep6": {},
+    "hardeningUpdateFirmwareStep7": "Come back here and tap MARK DONE.",
+    "@hardeningUpdateFirmwareStep7": {},
+    "hardeningStrongPassphraseStep1": "Open the admin panel.",
+    "@hardeningStrongPassphraseStep1": {},
+    "hardeningStrongPassphraseStep2": "Go to \"Wireless\", \"Wi-Fi\" or \"WLAN\".",
+    "@hardeningStrongPassphraseStep2": {},
+    "hardeningStrongPassphraseStep3": "Find the password field — labelled \"Wireless password\", \"Pre-Shared Key (PSK)\", \"Wireless Key\" or simply \"Password\".",
+    "@hardeningStrongPassphraseStep3": {},
+    "hardeningStrongPassphraseStep4": "Replace it with a NEW passphrase: at least 12 characters, with a mix of uppercase, lowercase, numbers and a symbol. Avoid dictionary words and personal info (birthdays, pet names).",
+    "@hardeningStrongPassphraseStep4": {},
+    "hardeningStrongPassphraseStep5": "A good trick: pick three unrelated words plus a number, e.g. \"correct-horse-battery-9\". Long passphrases are harder to crack than short complex ones.",
+    "@hardeningStrongPassphraseStep5": {},
+    "hardeningStrongPassphraseStep6": "If you have separate 2.4 GHz and 5 GHz networks, change BOTH.",
+    "@hardeningStrongPassphraseStep6": {},
+    "hardeningStrongPassphraseStep7": "Save / Apply. Every device will disconnect — re-enter the new password on each one.",
+    "@hardeningStrongPassphraseStep7": {},
+    "hardeningStrongPassphraseStep8": "Write the password down (password manager, fridge note for visitors, whatever works for you).",
+    "@hardeningStrongPassphraseStep8": {},
+    "hardeningStrongPassphraseStep9": "Come back here and tap MARK DONE.",
+    "@hardeningStrongPassphraseStep9": {},
+    "severity_critical": "CRITICAL",
+    "@severity_critical": {},
+    "severity_high": "HIGH",
+    "@severity_high": {},
+    "severity_medium": "MEDIUM",
+    "@severity_medium": {},
+    "severity_low": "LOW",
+    "@severity_low": {},
+    "severity_info": "INFO",
+    "@severity_info": {},
+    "rule_scan_deep_scan_active_title": "Active Probing Active",
+    "@rule_scan_deep_scan_active_title": {},
+    "rule_scan_deep_scan_active_desc": "Deep scan is enabled, performing more intrusive network tests.",
+    "@rule_scan_deep_scan_active_desc": {},
+    "rule_scan_deep_scan_active_rec": "Use only on networks you own or have permission to scan.",
+    "@rule_scan_deep_scan_active_rec": {},
+    "rule_wifi_open_network_title": "Open Network",
+    "@rule_wifi_open_network_title": {},
+    "rule_wifi_open_network_desc": "No encryption detected. All traffic can be sniffed in plaintext.",
+    "@rule_wifi_open_network_desc": {},
+    "rule_wifi_open_network_rec": "Avoid sensitive activity. Prefer trusted VPN or different network.",
+    "@rule_wifi_open_network_rec": {},
+    "rule_wifi_wep_title": "WEP Encryption",
+    "@rule_wifi_wep_title": {},
+    "rule_wifi_wep_desc": "WEP is deprecated and can be cracked quickly.",
+    "@rule_wifi_wep_desc": {},
+    "rule_wifi_wep_rec": "Reconfigure AP to WPA2 or WPA3 immediately.",
+    "@rule_wifi_wep_rec": {},
+    "rule_wifi_legacy_wpa_title": "Legacy WPA",
+    "@rule_wifi_legacy_wpa_title": {},
+    "rule_wifi_legacy_wpa_desc": "WPA/TKIP is older and weaker against modern attack techniques.",
+    "@rule_wifi_legacy_wpa_desc": {},
+    "rule_wifi_legacy_wpa_rec": "Upgrade AP and clients to WPA2/WPA3.",
+    "@rule_wifi_legacy_wpa_rec": {},
+    "rule_wifi_hidden_ssid_title": "Hidden SSID",
+    "@rule_wifi_hidden_ssid_title": {},
+    "rule_wifi_hidden_ssid_desc": "Hidden SSIDs are still discoverable and may hurt compatibility.",
+    "@rule_wifi_hidden_ssid_desc": {},
+    "rule_wifi_hidden_ssid_rec": "Hidden SSID alone is not protection. Focus on strong encryption.",
+    "@rule_wifi_hidden_ssid_rec": {},
+    "rule_wifi_very_weak_signal_title": "Very Weak Signal",
+    "@rule_wifi_very_weak_signal_title": {},
+    "rule_wifi_very_weak_signal_desc": "Weak signal can indicate unstable links and spoofing susceptibility.",
+    "@rule_wifi_very_weak_signal_desc": {},
+    "rule_wifi_very_weak_signal_rec": "Move closer to AP or validate BSSID consistency.",
+    "@rule_wifi_very_weak_signal_rec": {},
+    "rule_wifi_wps_enabled_title": "WPS Enabled",
+    "@rule_wifi_wps_enabled_title": {},
+    "rule_wifi_wps_enabled_desc": "Wi-Fi Protected Setup (WPS) is enabled. The WPS PIN mode can be brute-forced in hours, bypassing any password.",
+    "@rule_wifi_wps_enabled_desc": {},
+    "rule_wifi_wps_enabled_rec": "Disable WPS in your router admin panel. Use WPA2/WPA3 passphrase only.",
+    "@rule_wifi_wps_enabled_rec": {},
+    "rule_wifi_pmf_not_enforced_title": "Management Frames Unprotected",
+    "@rule_wifi_pmf_not_enforced_title": {},
+    "rule_wifi_pmf_not_enforced_desc": "This access point does not enforce Protected Management Frames (PMF / 802.11w), allowing deauthentication attacks.",
+    "@rule_wifi_pmf_not_enforced_desc": {},
+    "rule_wifi_pmf_not_enforced_rec": "Enable PMF in your router settings (often labelled \"802.11w\" or \"Management Frame Protection\").",
+    "@rule_wifi_pmf_not_enforced_rec": {},
+    "rule_wifi_suspicious_sibling_ap_title": "Potential Evil Twin",
+    "@rule_wifi_suspicious_sibling_ap_title": {},
+    "rule_wifi_suspicious_sibling_ap_desc": "A nearby access point shares this SSID but its fingerprint doesn't match — that's the pattern an attacker uses to impersonate a real Wi-Fi.",
+    "@rule_wifi_suspicious_sibling_ap_desc": {},
+    "rule_wifi_suspicious_sibling_ap_rec": "Don't enter passwords on this network until you've verified the BSSID on the back of your router.",
+    "@rule_wifi_suspicious_sibling_ap_rec": {},
+    "rule_wifi_suspicious_ssid_title": "Suspicious Network Name",
+    "@rule_wifi_suspicious_ssid_title": {},
+    "rule_wifi_suspicious_ssid_desc": "This SSID matches common honeypot/lure patterns (e.g. \"Free WiFi\") used by attackers to trick users.",
+    "@rule_wifi_suspicious_ssid_desc": {},
+    "rule_wifi_suspicious_ssid_rec": "Verify this network with the venue operator before connecting. Use a VPN if you must connect.",
+    "@rule_wifi_suspicious_ssid_rec": {},
+    "rule_wifi_high_channel_congestion_title": "High Channel Congestion",
+    "@rule_wifi_high_channel_congestion_title": {},
+    "rule_wifi_high_channel_congestion_desc": "Heavy congestion on this channel degrades performance and connection reliability.",
+    "@rule_wifi_high_channel_congestion_desc": {},
+    "rule_wifi_high_channel_congestion_rec": "Ask the network admin to switch to a less congested channel.",
+    "@rule_wifi_high_channel_congestion_rec": {},
+    "rule_wifi_only_24ghz_title": "2.4 GHz Only",
+    "@rule_wifi_only_24ghz_title": {},
+    "rule_wifi_only_24ghz_desc": "This network only broadcasts on the crowded 2.4 GHz band. 5 GHz offers better performance.",
+    "@rule_wifi_only_24ghz_desc": {},
+    "rule_wifi_only_24ghz_rec": "Enable 5 GHz band on your router for better performance.",
+    "@rule_wifi_only_24ghz_rec": {},
+    "rule_trusted_baseline_drift_title": "Trusted Baseline Drift",
+    "@rule_trusted_baseline_drift_title": {},
+    "rule_trusted_baseline_drift_desc": "This access point no longer matches the fingerprint you previously trusted.",
+    "@rule_trusted_baseline_drift_desc": {},
+    "rule_trusted_baseline_drift_rec": "Re-validate the router configuration and only re-trust if the change was intentional.",
+    "@rule_trusted_baseline_drift_rec": {},
+    "rule_hardware_vulnerability_title": "Vulnerable Hardware",
+    "@rule_hardware_vulnerability_title": {},
+    "rule_hardware_vulnerability_desc": "BSSID prefix matches a known vulnerable hardware profile.",
+    "@rule_hardware_vulnerability_desc": {},
+    "rule_hardware_vulnerability_rec": "Check for manufacturer firmware updates addressing known CVEs for this model.",
+    "@rule_hardware_vulnerability_rec": {},
+    "noLiveScanAvailable": "NO LIVE SCAN AVAILABLE",
+    "@noLiveScanAvailable": {},
+    "noLiveScanDesc": "We don't have a fresh Wi-Fi scan that includes \"{ssid}\" right now, so the live signal breakdown isn't available. Run a new Wi-Fi scan from the Discovery tab and reopen this alert to see the full evidence.",
+    "@noLiveScanDesc": {
+        "placeholders": {
+            "ssid": {
+                "type": "String"
+            }
+        }
+    },
+    "outOf100Label": "/100",
+    "@outOf100Label": {},
+    "networkLabel": "Network",
+    "@networkLabel": {},
+    "noActivityYet": "NO ACTIVITY YET",
+    "@noActivityYet": {},
+    "runFirstScanDesc": "Run your first scan to populate the timeline.",
+    "@runFirstScanDesc": {},
+    "networkContextTitle": "NETWORK CONTEXT",
+    "@networkContextTitle": {},
+    "networkContextHomeDesc": "Your home, office, or known router. Strict standards apply.",
+    "@networkContextHomeDesc": {},
+    "networkContextPublicDesc": "Café, hotel, airport, or open hotspot. VPN/HTTPS strongly advised.",
+    "@networkContextPublicDesc": {},
+    "networkContextGuestDesc": "Guest segment of a known network. Natural drift expected.",
+    "@networkContextGuestDesc": {},
+    "networkContextUnknownDesc": "Let Torcav infer the context from passive signals.",
+    "@networkContextUnknownDesc": {},
+    "scanVia": "Scan via {backend}",
+    "@scanVia": {
+        "placeholders": {
+            "backend": {
+                "type": "String"
+            }
+        }
+    },
+    "justNow": "just now",
+    "@justNow": {},
+    "minutesAgo": "{count}m ago",
+    "@minutesAgo": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "hoursAgo": "{count}h ago",
+    "@hoursAgo": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "daysAgo": "{count}d ago",
+    "@daysAgo": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "rogueApSuspected": "Rogue AP suspected",
+    "@rogueApSuspected": {},
+    "deauthActivity": "Deauth activity",
+    "@deauthActivity": {},
+    "handshakeCaptureStarted": "Handshake capture started",
+    "@handshakeCaptureStarted": {},
+    "handshakeCaptured": "Handshake captured",
+    "@handshakeCaptured": {},
+    "captivePortal": "Captive portal",
+    "@captivePortal": {},
+    "evilTwinDetected": "Evil twin detected",
+    "@evilTwinDetected": {},
+    "encryptionDowngrade": "Encryption downgrade",
+    "@encryptionDowngrade": {},
+    "unsupportedOp": "Unsupported op",
+    "@unsupportedOp": {},
+    "arpSpoofing": "ARP spoofing",
+    "@arpSpoofing": {},
+    "dnsHijacking": "DNS hijacking",
+    "@dnsHijacking": {},
+    "speedDoctorDesc": "Resolve latency and throughput issues.",
+    "@speedDoctorDesc": {},
+    "bestChannelTitle": "BEST CHANNEL",
+    "@bestChannelTitle": {},
+    "bestChannelDesc": "Switching to channel {channel} could improve quality.",
+    "@bestChannelDesc": {
+        "placeholders": {
+            "channel": {
+                "type": "int"
+            }
+        }
+    },
+    "networksWithCount": "Networks ({count})",
+    "@networksWithCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "throughputMbps": "{count} Mbps",
+    "@throughputMbps": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "signalStability": "Stability {stability}",
+    "@signalStability": {
+        "placeholders": {
+            "stability": {
+                "type": "String"
+            }
+        }
+    },
+    "metricSignal": "SIGNAL",
+    "@metricSignal": {},
+    "metricScoreTrend": "SCORE TREND",
+    "@metricScoreTrend": {},
+    "metricChannels": "CHANNELS",
+    "@metricChannels": {},
+    "metricNewDevices": "NEW DEVICES",
+    "@metricNewDevices": {},
+    "metricThreats": "THREATS",
+    "@metricThreats": {},
+    "metricSpeed": "SPEED",
+    "@metricSpeed": {},
+    "severityCrit": "CRIT",
+    "@severityCrit": {},
+    "severityHighShort": "HIGH",
+    "@severityHighShort": {},
+    "severityMedShort": "MED",
+    "@severityMedShort": {},
+    "severityInfoShort": "INFO",
+    "@severityInfoShort": {},
+    "hardenRouterTitle": "HARDEN ROUTER",
+    "@hardenRouterTitle": {},
+    "hardenRouterSubtitle": "Security checklist",
+    "@hardenRouterSubtitle": {},
+    "packetLossLabel": "PACKET LOSS",
+    "@packetLossLabel": {},
+    "loadedLatencyLabel": "LOADED LATENCY",
+    "@loadedLatencyLabel": {},
+    "clearHistoryTooltip": "Clear all history",
+    "@clearHistoryTooltip": {},
+    "whatIsThisSection": "What is this?",
+    "@whatIsThisSection": {},
+    "whyItMattersSection": "Why it matters",
+    "@whyItMattersSection": {},
+    "covShort": "COV",
+    "@covShort": {},
+    "sigShort": "SIG",
+    "@sigShort": {},
+    "motShort": "MOT",
+    "@motShort": {},
+    "wifiShort": "WIFI",
+    "@wifiShort": {},
+    "camShort": "CAM",
+    "@camShort": {},
+    "discardSurveyTooltip": "Discard Survey",
+    "@discardSurveyTooltip": {},
+    "finishReviewTooltip": "Finish & Review",
+    "@finishReviewTooltip": {},
+    "noDataAtLocation": "NO DATA AT THIS LOCATION",
+    "@noDataAtLocation": {},
+    "rssiLabel": "RSSI",
+    "@rssiLabel": {},
+    "statusLabel": "STATUS",
+    "@statusLabel": {},
+    "floorLabel": "FLOOR",
+    "@floorLabel": {},
+    "positionLabel": "POSITION",
+    "@positionLabel": {},
+    "samplesLabel": "SAMPLES",
+    "@samplesLabel": {},
+    "capturedLabel": "CAPTURED",
+    "@capturedLabel": {},
+    "heatmapPermissionsTitle": "HEATMAP PERMISSIONS",
+    "@heatmapPermissionsTitle": {},
+    "realignCompassTooltip": "Realign Compass",
+    "@realignCompassTooltip": {},
+    "osDetectLabel": "OS DETECT",
+    "@osDetectLabel": {},
+    "exportCsvLabel": "Export CSV",
+    "@exportCsvLabel": {},
+    "thisDeviceLabel": "This Device",
+    "@thisDeviceLabel": {},
+    "setDeviceType": "Set Device Type",
+    "@setDeviceType": {},
+    "resetToAiLabel": "Reset to AI label",
+    "@resetToAiLabel": {},
+    "gatewayCaps": "GATEWAY",
+    "@gatewayCaps": {},
+    "identifiedCaps": "IDENTIFIED",
+    "@identifiedCaps": {},
+    "unknownMacRestricted": "UNKNOWN MAC (RESTRICTED)",
+    "@unknownMacRestricted": {},
+    "scanPortsCaps": "SCAN PORTS",
+    "@scanPortsCaps": {},
+    "noOpenPortsFound": "No open ports found",
+    "@noOpenPortsFound": {},
+    "criticalCaps": "CRITICAL",
+    "@criticalCaps": {},
+    "wpsActiveCaps": "WPS ACTIVE",
+    "@wpsActiveCaps": {},
+    "osDetectAction": "OS DETECT",
+    "@osDetectAction": {},
+    "osDetectedLabel": "OS DETECTED",
+    "@osDetectedLabel": {},
+    "filterAll": "ALL",
+    "@filterAll": {},
+    "filterCore": "CORE",
+    "@filterCore": {},
+    "filterMobile": "MOBILE",
+    "@filterMobile": {},
+    "filterIot": "IOT",
+    "@filterIot": {},
+    "filterOther": "OTHER",
+    "@filterOther": {},
+    "protectPdfTitle": "PROTECT PDF WITH A PASSWORD",
+    "@protectPdfTitle": {},
+    "pdfLockedHint": "Optional. Locked file: .torcav-pdf — open it again from Reports.",
+    "@pdfLockedHint": {},
+    "pdfLockedLabel": "Locked file: .torcav-pdf — open it again from Reports.",
+    "@pdfLockedLabel": {},
+    "pdfPasswordHint": "Password (leave empty for plain PDF)",
+    "@pdfPasswordHint": {},
+    "pdfPasswordWarning": "Heads up: this is lightweight obfuscation, not bank-grade encryption. It protects the file against casual leaks (cloud thumbnails, mailbox cache) but a determined attacker who has the file could still attempt to brute-force a weak password. Use a long, unique passphrase.",
+    "@pdfPasswordWarning": {},
+    "understandEnable": "I UNDERSTAND — ENABLE",
+    "@understandEnable": {},
+    "categorySignal": "Signal",
+    "@categorySignal": {},
+    "categoryChannel": "Channel",
+    "@categoryChannel": {},
+    "categoryBufferbloat": "Bufferbloat",
+    "@categoryBufferbloat": {},
+    "categoryIsp": "ISP throughput",
+    "@categoryIsp": {},
+    "categoryDns": "DNS",
+    "@categoryDns": {},
+    "categoryHealthy": "Healthy",
+    "@categoryHealthy": {},
+    "severityHigh": "HIGH",
+    "@severityHigh": {},
+    "severityMed": "MED",
+    "@severityMed": {},
+    "severityLow": "LOW",
+    "@severityLow": {},
+    "speedDoctorActionMoveCloser": "Move closer to router",
+    "@speedDoctorActionMoveCloser": {},
+    "speedDoctorActionAddMesh": "Add a mesh node",
+    "@speedDoctorActionAddMesh": {},
+    "speedDoctorActionSwitchTo5Ghz": "Switch to 5 GHz",
+    "@speedDoctorActionSwitchTo5Ghz": {},
+    "speedDoctorActionChangeChannel": "Change Wi-Fi channel",
+    "@speedDoctorActionChangeChannel": {},
+    "speedDoctorActionMoveTo5Ghz": "Move to 5/6 GHz band",
+    "@speedDoctorActionMoveTo5Ghz": {},
+    "speedDoctorActionEnableQos": "Enable router QoS",
+    "@speedDoctorActionEnableQos": {},
+    "speedDoctorActionUpdateFirmware": "Update router firmware",
+    "@speedDoctorActionUpdateFirmware": {},
+    "speedDoctorActionCallIsp": "Contact your ISP",
+    "@speedDoctorActionCallIsp": {},
+    "speedDoctorActionRunWiredTest": "Re-test with cable",
+    "@speedDoctorActionRunWiredTest": {},
+    "speedDoctorActionChangeDns": "Change DNS provider",
+    "@speedDoctorActionChangeDns": {},
+    "speedDoctorActionEnableDoh": "Enable DoH / DoT",
+    "@speedDoctorActionEnableDoh": {},
+    "waitingForHistory": "Waiting for history",
+    "@waitingForHistory": {},
+    "noScanData": "No scan data",
+    "@noScanData": {},
+    "mbps": "Mbps",
+    "@mbps": {},
+    "primaryCauseWeakSignalTitle": "WEAK SIGNAL",
+    "@primaryCauseWeakSignalTitle": {},
+    "primaryCauseWeakSignalDesc": "Your device is far from the router or has too many walls in the way. Move closer or add a mesh node in this area.",
+    "@primaryCauseWeakSignalDesc": {},
+    "primaryCauseCrowdedChannelTitle": "CROWDED CHANNEL",
+    "@primaryCauseCrowdedChannelTitle": {},
+    "primaryCauseCrowdedChannelDesc": "Several neighbouring access points are sharing your channel. Switching to a less crowded channel — or to 5/6 GHz — should help.",
+    "@primaryCauseCrowdedChannelDesc": {},
+    "primaryCauseBufferbloatTitle": "BUFFERBLOAT",
+    "@primaryCauseBufferbloatTitle": {},
+    "primaryCauseBufferbloatDesc": "Latency spikes when the link is busy. Enable QoS / SQM on your router to manage traffic spikes.",
+    "@primaryCauseBufferbloatDesc": {},
+    "primaryCauseIspSlowTitle": "ISP THROUGHPUT LIMIT",
+    "@primaryCauseIspSlowTitle": {},
+    "primaryCauseIspSlowDesc": "Your Wi-Fi link is healthy but the download speed is low. The bottleneck is most likely your internet plan or upstream provider.",
+    "@primaryCauseIspSlowDesc": {},
+    "primaryCauseSlowDnsTitle": "SLOW DNS",
+    "@primaryCauseSlowDnsTitle": {},
+    "primaryCauseSlowDnsDesc": "Names take too long to resolve. Switching DNS provider or enabling DoH/DoT typically removes the delay.",
+    "@primaryCauseSlowDnsDesc": {},
+    "primaryCauseHealthyTitle": "NETWORK HEALTHY",
+    "@primaryCauseHealthyTitle": {},
+    "primaryCauseHealthyDesc": "No bottleneck reached an alert threshold. Your link looks fine right now.",
+    "@primaryCauseHealthyDesc": {},
+    "diagStepReadingSignal": "Reading signal",
+    "@diagStepReadingSignal": {},
+    "diagStepAnalysingChannels": "Analysing channels",
+    "@diagStepAnalysingChannels": {},
+    "diagStepMeasuringSpeed": "Measuring speed",
+    "@diagStepMeasuringSpeed": {},
+    "diagStepBenchmarkingDns": "Benchmarking DNS",
+    "@diagStepBenchmarkingDns": {},
+    "hideDetails": "Hide details",
+    "@hideDetails": {},
+    "whatIsThisHowToFix": "What is this? · How to fix",
+    "@whatIsThisHowToFix": {},
+    "homePlanWifiHeatmap": "HOME PLAN + WIFI HEATMAP",
+    "@homePlanWifiHeatmap": {},
+    "homePlanWifiHeatmapDesc": "Outline, coverage, and weak zones",
+    "@homePlanWifiHeatmapDesc": {},
+    "openSavedSurveys": "Open saved surveys",
+    "@openSavedSurveys": {},
+    "toggleViewBlueprintNeon": "Toggle view (Blueprint / Neon)",
+    "@toggleViewBlueprintNeon": {},
+    "preview": "Preview",
+    "@preview": {},
+    "recording": "RECORDING",
+    "@recording": {},
+    "reviewing": "REVIEW",
+    "@reviewing": {},
+    "idle": "IDLE",
+    "@idle": {},
+    "surveyComplete": "SURVEY COMPLETE",
+    "@surveyComplete": {},
+    "surveyCompleteDesc": "The survey has been successfully recorded. Plan and signal data are synthesized.",
+    "@surveyCompleteDesc": {},
+    "coverage": "COVERAGE",
+    "@coverage": {},
+    "blindSpots": "BLIND SPOTS",
+    "@blindSpots": {},
+    "saveAndFinish": "SAVE & FINISH",
+    "@saveAndFinish": {},
+    "diagStepFinalizing": "Finalising diagnosis",
+    "@diagStepFinalizing": {},
+    "heatmapPageTitle": "HOME PLAN + WIFI HEATMAP",
+    "@heatmapPageTitle": {},
+    "heatmapPageSubtitle": "Outline, coverage, and weak zones",
+    "@heatmapPageSubtitle": {},
+    "heatmapHistoryTooltip": "Open saved surveys",
+    "@heatmapHistoryTooltip": {},
+    "heatmapThemeToggleTooltip": "Toggle view (Blueprint / Neon)",
+    "@heatmapThemeToggleTooltip": {},
+    "heatmapSamplesShort": "samples",
+    "@heatmapSamplesShort": {},
+    "heatmapWallsShort": "walls",
+    "@heatmapWallsShort": {},
+    "heatmapRestartSurvey": "RESTART SURVEY",
+    "@heatmapRestartSurvey": {},
+    "heatmapRenameSurvey": "RENAME SURVEY",
+    "@heatmapRenameSurvey": {},
+    "heatmapShareHeatmap": "SHARE HEATMAP",
+    "@heatmapShareHeatmap": {},
+    "heatmapRenameDialogTitle": "RENAME SURVEY",
+    "@heatmapRenameDialogTitle": {},
+    "heatmapSave": "Save",
+    "@heatmapSave": {},
+    "heatmapShareSubject": "Torcav WiFi Heatmap",
+    "@heatmapShareSubject": {},
+    "heatmapShareText": "Sharing my WiFi heatmap result.",
+    "@heatmapShareText": {},
+    "heatmapIssueTitle": "Issue",
+    "@heatmapIssueTitle": {},
+    "heatmapGenericIssueBody": "The survey could not finish. Check permissions and device sensors.",
+    "@heatmapGenericIssueBody": {},
+    "heatmapGoalTitle": "What This Feature Does",
+    "@heatmapGoalTitle": {},
+    "heatmapGoalBody": "It samples Wi-Fi as you walk, captures wall lines in AR, and then shows the home outline together with signal density.",
+    "@heatmapGoalBody": {},
+    "heatmapWaitingForDataTitle": "Waiting For Data",
+    "@heatmapWaitingForDataTitle": {},
+    "heatmapWaitingForDataBody": "No signal sample has landed yet. Check motion and location permissions, then walk a few steps.",
+    "@heatmapWaitingForDataBody": {},
+    "heatmapArCaptureTitle": "AR Mode Active",
+    "@heatmapArCaptureTitle": {},
+    "heatmapArCaptureBody": "Point the phone at room edges and door openings. The camera searches for wall lines while signal points are added automatically as you move.",
+    "@heatmapArCaptureBody": {},
+    "heatmapMapCaptureTitle": "2D Map Active",
+    "@heatmapMapCaptureTitle": {},
+    "heatmapMapCaptureBody": "You are in the clearer 2D view. Samples keep arriving as you walk; if the outline stays weak, switch to AR mode.",
+    "@heatmapMapCaptureBody": {},
+    "heatmapReviewTitle": "Survey Summary",
+    "@heatmapReviewTitle": {},
+    "heatmapReviewBodyNoSamples": "There is a saved survey, but it still lacks meaningful signal samples.",
+    "@heatmapReviewBodyNoSamples": {},
+    "heatmapReviewBodyReady": "Coverage is readable. Use the summary below to inspect weak zones.",
+    "@heatmapReviewBodyReady": {},
+    "heatmapSamplesLabel": "SAMPLES",
+    "@heatmapSamplesLabel": {},
+    "heatmapWallsLabel": "WALLS",
+    "@heatmapWallsLabel": {},
+    "heatmapCurrentSignalLabel": "LIVE SIGNAL",
+    "@heatmapCurrentSignalLabel": {},
+    "heatmapAvgSignalLabel": "AVG SIGNAL",
+    "@heatmapAvgSignalLabel": {},
+    "heatmapWeakZonesLabel": "WEAK ZONES",
+    "@heatmapWeakZonesLabel": {},
+    "heatmapPlanSizeLabel": "PLAN SIZE",
+    "@heatmapPlanSizeLabel": {},
+    "heatmapNotAvailable": "Not ready",
+    "@heatmapNotAvailable": {},
+    "heatmapNoSamplesHelper": "Fills in as you start walking",
+    "@heatmapNoSamplesHelper": {},
+    "heatmapSamplesHelper": "{count} signal samples collected",
+    "@heatmapSamplesHelper": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "heatmapNoWallsHelper": "AR pass may be needed for the outline",
+    "@heatmapNoWallsHelper": {},
+    "heatmapWallsHelper": "{count} wall segments retained",
+    "@heatmapWallsHelper": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "heatmapSignalUnavailableHelper": "Wi-Fi reading has not arrived yet",
+    "@heatmapSignalUnavailableHelper": {},
+    "heatmapSignalStrongHelper": "Strong coverage",
+    "@heatmapSignalStrongHelper": {},
+    "heatmapSignalFairHelper": "Borderline but usable",
+    "@heatmapSignalFairHelper": {},
+    "heatmapSignalWeakHelper": "Weak or problematic zone",
+    "@heatmapSignalWeakHelper": {},
+    "heatmapWeakZoneHelperNone": "No obvious dead zones",
+    "@heatmapWeakZoneHelperNone": {},
+    "heatmapWeakZoneHelperOne": "One problematic area",
+    "@heatmapWeakZoneHelperOne": {},
+    "heatmapWeakZoneHelperMany": "{count} weak areas detected",
+    "@heatmapWeakZoneHelperMany": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "heatmapPlanSizeHelper": "Estimated span from captured trace",
+    "@heatmapPlanSizeHelper": {},
+    "heatmapNoSurveyYetTitle": "Start A Survey",
+    "@heatmapNoSurveyYetTitle": {},
+    "heatmapNoSurveyYetBody": "Start a walkthrough first. The result view will then show the outline and heatmap together.",
+    "@heatmapNoSurveyYetBody": {},
+    "heatmapWalkToBeginTitle": "Start Walking",
+    "@heatmapWalkToBeginTitle": {},
+    "heatmapWalkToBeginBody": "The trail and signal points appear as you take a few steps in each room.",
+    "@heatmapWalkToBeginBody": {},
+    "heatmapMapViewLabel": "2D HARITA",
+    "@heatmapMapViewLabel": {},
+    "heatmapResultViewLabel": "SONUC GORUNUMU",
+    "@heatmapResultViewLabel": {},
+    "heatmapFindingsTitle": "NE ANLATIYOR?",
+    "@heatmapFindingsTitle": {},
+    "heatmapInsightReady": "The survey is now dense enough. One last room transition is enough before saving the result.",
+    "@heatmapInsightReady": {},
+    "heatmapInsightTooEarly": "It is still too early. After 4-5 samples across a few rooms, the result becomes readable.",
+    "@heatmapInsightTooEarly": {},
+    "heatmapInsightNoWalls": "Signal is arriving but the outline is missing. Switch to AR and face the walls during another pass to improve the plan.",
+    "@heatmapInsightNoWalls": {},
+    "heatmapInsightLive": "The live result is starting to read well. With {count} samples, weak areas are becoming visible.",
+    "@heatmapInsightLive": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "heatmapReviewInsightNoSamples": "This survey has no signal samples. If location or motion permissions are off, the app cannot build the heatmap.",
+    "@heatmapReviewInsightNoSamples": {},
+    "heatmapReviewInsightNoPlan": "The heatmap is present but the outline is weak. On the next run, use AR and face room boundaries while walking.",
+    "@heatmapReviewInsightNoPlan": {},
+    "heatmapReviewInsightStrong": "Coverage looks strong overall. No clear dead zones are visible, and the outline agrees with the signal trace.",
+    "@heatmapReviewInsightStrong": {},
+    "heatmapReviewInsightWeak": "{count} weak zones are visible. Moving the router more centrally or adding another access point may help.",
+    "@heatmapReviewInsightWeak": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "heatmapReviewInsightBalanced": "Coverage is reasonably balanced, but it dips in {count} spots. These are often corners, corridor ends, or heavy wall transitions.",
+    "@heatmapReviewInsightBalanced": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "heatmapCloseReview": "CLOSE REVIEW",
+    "@heatmapCloseReview": {},
+    "heatmapNewSurvey": "NEW SURVEY",
+    "@heatmapNewSurvey": {},
+    "heatmapFinishAndReview": "FINISH & REVIEW",
+    "@heatmapFinishAndReview": {},
+    "heatmapStartSurvey": "START SURVEY",
+    "@heatmapStartSurvey": {},
+    "heatmapNewSurveyDialogTitle": "NEW SURVEY",
+    "@heatmapNewSurveyDialogTitle": {},
+    "heatmapDefaultSessionName": "Survey {time}",
+    "@heatmapDefaultSessionName": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "heatmapSessionNameField": "Survey name",
+    "@heatmapSessionNameField": {},
+    "heatmapNewSurveyHint": "Once the survey starts, signal samples are added automatically as you move. Switch to AR if you want a stronger room outline.",
+    "@heatmapNewSurveyHint": {},
+    "heatmapSavedSurveysTitle": "SAVED SURVEYS",
+    "@heatmapSavedSurveysTitle": {},
+    "heatmapNoSavedSurveys": "No saved surveys yet.",
+    "@heatmapNoSavedSurveys": {},
+    "heatmapSavedSurveySubtitle": "{samples} samples · {weak} weak zones · {timestamp}",
+    "@heatmapSavedSurveySubtitle": {
+        "placeholders": {
+            "samples": {
+                "type": "int"
+            },
+            "weak": {
+                "type": "int"
+            },
+            "timestamp": {
+                "type": "String"
+            }
+        }
+    },
+    "heatmapDeleteSurveyTooltip": "Delete survey",
+    "@heatmapDeleteSurveyTooltip": {},
+    "heatmapLegendTitle": "COLOR GUIDE",
+    "@heatmapLegendTitle": {},
+    "heatmapLegendStrong": "Strong",
+    "@heatmapLegendStrong": {},
+    "heatmapLegendFair": "Fair",
+    "@heatmapLegendFair": {},
+    "heatmapLegendWeak": "Weak",
+    "@heatmapLegendWeak": {},
+    "heatmapCameraViewLabel": "LIVE CAMERA",
+    "@heatmapCameraViewLabel": {},
+    "heatmapInfoSheetTitle": "LIVE SURVEY DATA",
+    "@heatmapInfoSheetTitle": {},
+    "heatmapFeedStatus": "{label}: {status}",
+    "@heatmapFeedStatus": {
+        "placeholders": {
+            "label": {
+                "type": "String"
+            },
+            "status": {
+                "type": "String"
+            }
+        }
+    },
+    "heatmapActive": "active",
+    "@heatmapActive": {},
+    "heatmapInactive": "inactive",
+    "@heatmapInactive": {},
+    "heatmapArViewLabel": "AR VIEW",
+    "@heatmapArViewLabel": {},
+    "heatmapSwitchToMapHint": "Return to the clearer 2D map",
+    "@heatmapSwitchToMapHint": {},
+    "heatmapSwitchToArHint": "Use AR to strengthen the outline",
+    "@heatmapSwitchToArHint": {},
+    "heatmapRouteLabel": "NEXT STEP",
+    "@heatmapRouteLabel": {},
+    "heatmapPlanConfidenceLabel": "PLAN CONFIDENCE",
+    "@heatmapPlanConfidenceLabel": {},
+    "heatmapCoverageConfidenceLabel": "COVERAGE CONFIDENCE",
+    "@heatmapCoverageConfidenceLabel": {},
+    "heatmapSignalConfidenceLabel": "SIGNAL CONFIDENCE",
+    "@heatmapSignalConfidenceLabel": {},
+    "heatmapMotionFeedLabel": "Motion",
+    "@heatmapMotionFeedLabel": {},
+    "heatmapCameraFeedLabel": "Camera",
+    "@heatmapCameraFeedLabel": {},
+    "heatmapPlanFeedLabel": "Plan",
+    "@heatmapPlanFeedLabel": {},
+    "heatmapGuidanceIdleTitle": "Survey Setup",
+    "@heatmapGuidanceIdleTitle": {},
+    "heatmapGuidanceCalibrationTitle": "Starting Route",
+    "@heatmapGuidanceCalibrationTitle": {},
+    "heatmapGuidanceSweepTitle": "Filling Coverage",
+    "@heatmapGuidanceSweepTitle": {},
+    "heatmapGuidanceWeakCheckTitle": "Weak Zone Check",
+    "@heatmapGuidanceWeakCheckTitle": {},
+    "heatmapGuidanceWrapUpTitle": "Ready To Save",
+    "@heatmapGuidanceWrapUpTitle": {},
+    "heatmapGuidanceReviewTitle": "Survey Quality",
+    "@heatmapGuidanceReviewTitle": {},
+    "heatmapGuidanceIdleBody": "Start a new survey. The app will combine motion, camera, and Wi-Fi traces into a cleaner floor plan.",
+    "@heatmapGuidanceIdleBody": {},
+    "heatmapGuidanceCalibrationBody": "Walk straight for 5-8 steps to establish the first trace. Doorways and corner turns help anchor the layout faster.",
+    "@heatmapGuidanceCalibrationBody": {},
+    "heatmapGuidanceSweepBody": "The {region} side of the map is still sparse. Move there and collect 3-4 more samples.",
+    "@heatmapGuidanceSweepBody": {
+        "placeholders": {
+            "region": {
+                "type": "String"
+            }
+        }
+    },
+    "heatmapGuidanceWeakCheckBody": "You are currently in a weak-signal area. Sweep this zone a bit more to confirm whether it is a real dead spot.",
+    "@heatmapGuidanceWeakCheckBody": {},
+    "heatmapGuidanceWrapUpBody": "Outline, coverage, and signal density are now strong enough. Save the result and read the plan/heatmap in review.",
+    "@heatmapGuidanceWrapUpBody": {},
+    "heatmapGuidanceReviewBody": "This survey is {progress}% complete. With {count} samples, the result is readable.",
+    "@heatmapGuidanceReviewBody": {
+        "placeholders": {
+            "progress": {
+                "type": "int"
+            },
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "heatmapRouteFinish": "Finish survey",
+    "@heatmapRouteFinish": {},
+    "heatmapRouteStart": "Start survey",
+    "@heatmapRouteStart": {},
+    "heatmapRouteWalkForward": "Walk forward",
+    "@heatmapRouteWalkForward": {},
+    "heatmapRouteSweepWeak": "Sweep weak zone",
+    "@heatmapRouteSweepWeak": {},
+    "heatmapRouteWrapUp": "Wrap up run",
+    "@heatmapRouteWrapUp": {},
+    "heatmapRouteReview": "Review result",
+    "@heatmapRouteReview": {},
+    "heatmapRegionLeft": "left wing",
+    "@heatmapRegionLeft": {},
+    "heatmapRegionRight": "right wing",
+    "@heatmapRegionRight": {},
+    "heatmapRegionUpper": "upper area",
+    "@heatmapRegionUpper": {},
+    "heatmapRegionLower": "lower area",
+    "@heatmapRegionLower": {},
+    "heatmapRegionKeep": "keep sweeping",
+    "@heatmapRegionKeep": {},
+    "channelShort": "CH {channel}",
+    "@channelShort": {
+        "placeholders": {
+            "channel": {
+                "type": "int"
+            }
+        }
+    },
+    "langEnglish": "English",
+    "@langEnglish": {},
+    "langTurkish": "Türkçe",
+    "@langTurkish": {},
+    "langKurdish": "Kurdî",
+    "@langKurdish": {},
+    "langGerman": "Deutsch",
+    "@langGerman": {},
+    "startNowCaps": "START",
+    "@startNowCaps": {},
+    "howToFixSection": "HOW TO FIX",
+    "@howToFixSection": {
+        "description": "Section title for fix instructions in evidence card"
+    },
+    "endSurveyDialogTitle": "End Survey?",
+    "@endSurveyDialogTitle": {
+        "description": "Title of dialog when user tries to exit an active survey"
+    },
+    "endSurveyDialogBody": "Your current survey data will be lost if you discard it. Save or Discard?",
+    "@endSurveyDialogBody": {
+        "description": "Body of end survey dialog when recording"
+    },
+    "endSurveyReviewBody": "Exit session review?",
+    "@endSurveyReviewBody": {
+        "description": "Body of end survey dialog when reviewing"
+    },
+    "discardAction": "DISCARD",
+    "@discardAction": {
+        "description": "Button label to discard a survey"
+    },
+    "exitAction": "EXIT",
+    "@exitAction": {
+        "description": "Button label to exit review"
+    },
+    "continueAction": "CONTINUE",
+    "@continueAction": {
+        "description": "Button label to continue with an action"
+    },
+    "discardSurveyDialogTitle": "DISCARD SURVEY?",
+    "@discardSurveyDialogTitle": {
+        "description": "Title of confirm discard dialog in HUD"
+    },
+    "discardSurveyDialogBody": "All recorded data for this session will be permanently deleted.",
+    "@discardSurveyDialogBody": {
+        "description": "Body text of discard survey confirmation dialog"
+    },
+    "autoSamplingDistance": "Auto-sampling Distance",
+    "@autoSamplingDistance": {
+        "description": "Label for the auto-sampling distance slider in heatmap settings"
+    },
+    "appearanceLabel": "Appearance",
+    "@appearanceLabel": {
+        "description": "Label for the appearance section in heatmap settings"
+    },
+    "clearHistoryAction": "CLEAR HISTORY",
+    "@clearHistoryAction": {
+        "description": "Button label to clear channel scan history"
+    },
+    "dataUsageWarningTitle": "DATA USAGE WARNING",
+    "@dataUsageWarningTitle": {
+        "description": "Title of data usage warning dialog before speed test"
+    },
+    "dataUsageWarningBody": "This speed test downloads ~300–500 MB of data. If you are on a mobile/metered connection this may incur charges or consume your data allowance.",
+    "@dataUsageWarningBody": {
+        "description": "Body of data usage warning dialog"
+    },
+    "latencyExcellentTitle": "Latency: {ms} ms — Excellent",
+    "@latencyExcellentTitle": {
+        "description": "Interpretation card title for excellent latency",
+        "placeholders": {
+            "ms": {
+                "type": "String"
+            }
+        }
+    },
+    "latencyGoodTitle": "Latency: {ms} ms — Good",
+    "@latencyGoodTitle": {
+        "description": "Interpretation card title for good latency",
+        "placeholders": {
+            "ms": {
+                "type": "String"
+            }
+        }
+    },
+    "latencyAcceptableTitle": "Latency: {ms} ms — Acceptable",
+    "@latencyAcceptableTitle": {
+        "description": "Interpretation card title for acceptable latency",
+        "placeholders": {
+            "ms": {
+                "type": "String"
+            }
+        }
+    },
+    "latencyHighTitle": "Latency: {ms} ms — High",
+    "@latencyHighTitle": {
+        "description": "Interpretation card title for high latency",
+        "placeholders": {
+            "ms": {
+                "type": "String"
+            }
+        }
+    },
+    "latencyExcellentBody": "Near-instant response. Ideal for gaming, video calls, and real-time apps.",
+    "@latencyExcellentBody": {
+        "description": "Interpretation body for excellent latency"
+    },
+    "latencyGoodBody": "Good for video calls and streaming. Most apps will feel responsive.",
+    "@latencyGoodBody": {
+        "description": "Interpretation body for good latency"
+    },
+    "latencyAcceptableBody": "Fine for browsing and streaming, but video calls may have slight delays.",
+    "@latencyAcceptableBody": {
+        "description": "Interpretation body for acceptable latency"
+    },
+    "latencyHighBody": "Noticeable lag. Video calls and gaming may feel sluggish. Try moving closer to your router.",
+    "@latencyHighBody": {
+        "description": "Interpretation body for high latency"
+    },
+    "jitterStableTitle": "Jitter: {ms} ms — Stable",
+    "@jitterStableTitle": {
+        "description": "Interpretation card title for stable jitter",
+        "placeholders": {
+            "ms": {
+                "type": "String"
+            }
+        }
+    },
+    "jitterGoodTitle": "Jitter: {ms} ms — Good",
+    "@jitterGoodTitle": {
+        "description": "Interpretation card title for good jitter",
+        "placeholders": {
+            "ms": {
+                "type": "String"
+            }
+        }
+    },
+    "jitterModerateTitle": "Jitter: {ms} ms — Moderate",
+    "@jitterModerateTitle": {
+        "description": "Interpretation card title for moderate jitter",
+        "placeholders": {
+            "ms": {
+                "type": "String"
+            }
+        }
+    },
+    "jitterUnstableTitle": "Jitter: {ms} ms — Unstable",
+    "@jitterUnstableTitle": {
+        "description": "Interpretation card title for unstable jitter",
+        "placeholders": {
+            "ms": {
+                "type": "String"
+            }
+        }
+    },
+    "jitterStableBody": "Very consistent connection. Your packets arrive with minimal timing variation.",
+    "@jitterStableBody": {
+        "description": "Interpretation body for stable jitter"
+    },
+    "jitterGoodBody": "Stable enough for calls and streaming. Minor variation is normal on Wi-Fi.",
+    "@jitterGoodBody": {
+        "description": "Interpretation body for good jitter"
+    },
+    "jitterModerateBody": "Some inconsistency detected. Voice calls may sound choppy during spikes.",
+    "@jitterModerateBody": {
+        "description": "Interpretation body for moderate jitter"
+    },
+    "jitterUnstableBody": "High variation — audio and video calls will likely break up. This can be caused by interference or a congested channel.",
+    "@jitterUnstableBody": {
+        "description": "Interpretation body for unstable jitter"
+    },
+    "downloadFastTitle": "Download: {mbps} Mbps — Fast",
+    "@downloadFastTitle": {
+        "description": "Interpretation card title for fast download",
+        "placeholders": {
+            "mbps": {
+                "type": "String"
+            }
+        }
+    },
+    "downloadGoodTitle": "Download: {mbps} Mbps — Good",
+    "@downloadGoodTitle": {
+        "description": "Interpretation card title for good download",
+        "placeholders": {
+            "mbps": {
+                "type": "String"
+            }
+        }
+    },
+    "downloadModerateTitle": "Download: {mbps} Mbps — Moderate",
+    "@downloadModerateTitle": {
+        "description": "Interpretation card title for moderate download",
+        "placeholders": {
+            "mbps": {
+                "type": "String"
+            }
+        }
+    },
+    "downloadSlowTitle": "Download: {mbps} Mbps — Slow",
+    "@downloadSlowTitle": {
+        "description": "Interpretation card title for slow download",
+        "placeholders": {
+            "mbps": {
+                "type": "String"
+            }
+        }
+    },
+    "downloadFastBody": "Handles {streams}+ simultaneous HD streams with ease. Great for large households.",
+    "@downloadFastBody": {
+        "description": "Interpretation body for fast download",
+        "placeholders": {
+            "streams": {
+                "type": "int"
+            }
+        }
+    },
+    "downloadGoodBody": "Supports {streams} simultaneous HD streams. Good for most households.",
+    "@downloadGoodBody": {
+        "description": "Interpretation body for good download",
+        "placeholders": {
+            "streams": {
+                "type": "int"
+            }
+        }
+    },
+    "downloadModerateBody": "Enough for browsing and one or two SD streams. Large downloads will be slow.",
+    "@downloadModerateBody": {
+        "description": "Interpretation body for moderate download"
+    },
+    "downloadSlowBody": "Very limited. Consider moving closer to your router or checking for interference.",
+    "@downloadSlowBody": {
+        "description": "Interpretation body for slow download"
+    },
+    "uploadFastTitle": "Upload: {mbps} Mbps — Fast",
+    "@uploadFastTitle": {
+        "description": "Interpretation card title for fast upload",
+        "placeholders": {
+            "mbps": {
+                "type": "String"
+            }
+        }
+    },
+    "uploadGoodTitle": "Upload: {mbps} Mbps — Good",
+    "@uploadGoodTitle": {
+        "description": "Interpretation card title for good upload",
+        "placeholders": {
+            "mbps": {
+                "type": "String"
+            }
+        }
+    },
+    "uploadLimitedTitle": "Upload: {mbps} Mbps — Limited",
+    "@uploadLimitedTitle": {
+        "description": "Interpretation card title for limited upload",
+        "placeholders": {
+            "mbps": {
+                "type": "String"
+            }
+        }
+    },
+    "uploadSlowTitle": "Upload: {mbps} Mbps — Slow",
+    "@uploadSlowTitle": {
+        "description": "Interpretation card title for slow upload",
+        "placeholders": {
+            "mbps": {
+                "type": "String"
+            }
+        }
+    },
+    "uploadFastBody": "Excellent for video conferencing, cloud backups, and live streaming.",
+    "@uploadFastBody": {
+        "description": "Interpretation body for fast upload"
+    },
+    "uploadGoodBody": "Good for video calls and sharing files. Cloud uploads will be reasonable.",
+    "@uploadGoodBody": {
+        "description": "Interpretation body for good upload"
+    },
+    "uploadLimitedBody": "Enough for basic video calls. Large file uploads will take a while.",
+    "@uploadLimitedBody": {
+        "description": "Interpretation body for limited upload"
+    },
+    "uploadSlowBody": "Very slow upload. Live video and cloud sync will struggle.",
+    "@uploadSlowBody": {
+        "description": "Interpretation body for slow upload"
+    },
+    "packetLossPerfectTitle": "Packet Loss: 0% — Perfect",
+    "@packetLossPerfectTitle": {
+        "description": "Interpretation card title for zero packet loss"
+    },
+    "packetLossMinimalTitle": "Packet Loss: {pct}% — Minimal",
+    "@packetLossMinimalTitle": {
+        "description": "Interpretation card title for minimal packet loss",
+        "placeholders": {
+            "pct": {
+                "type": "String"
+            }
+        }
+    },
+    "packetLossHighTitle": "Packet Loss: {pct}% — High",
+    "@packetLossHighTitle": {
+        "description": "Interpretation card title for high packet loss",
+        "placeholders": {
+            "pct": {
+                "type": "String"
+            }
+        }
+    },
+    "packetLossPerfectBody": "Solid connection. No data packets were lost during the assessment.",
+    "@packetLossPerfectBody": {
+        "description": "Interpretation body for zero packet loss"
+    },
+    "packetLossMinimalBody": "Very minor loss. Likely unnoticeable for most activities.",
+    "@packetLossMinimalBody": {
+        "description": "Interpretation body for minimal packet loss"
+    },
+    "packetLossHighBody": "Data is being dropped. This causes stuttering in calls and gaming. Check for Wi-Fi interference.",
+    "@packetLossHighBody": {
+        "description": "Interpretation body for high packet loss"
+    },
+    "loadedLatencyExcellentTitle": "Loaded Latency: {ms} ms — Excellent",
+    "@loadedLatencyExcellentTitle": {
+        "description": "Loaded latency title for excellent grade",
+        "placeholders": {
+            "ms": {
+                "type": "String"
+            }
+        }
+    },
+    "loadedLatencyGoodTitle": "Loaded Latency: {ms} ms — Good",
+    "@loadedLatencyGoodTitle": {
+        "description": "Loaded latency title for good grade",
+        "placeholders": {
+            "ms": {
+                "type": "String"
+            }
+        }
+    },
+    "loadedLatencyFairTitle": "Loaded Latency: {ms} ms — Fair",
+    "@loadedLatencyFairTitle": {
+        "description": "Loaded latency title for fair grade",
+        "placeholders": {
+            "ms": {
+                "type": "String"
+            }
+        }
+    },
+    "loadedLatencyPoorTitle": "Loaded Latency: {ms} ms — Poor",
+    "@loadedLatencyPoorTitle": {
+        "description": "Loaded latency title for poor grade",
+        "placeholders": {
+            "ms": {
+                "type": "String"
+            }
+        }
+    },
+    "loadedLatencyExcellentBody": "Your network stays responsive even when downloading. Excellent router quality.",
+    "@loadedLatencyExcellentBody": {
+        "description": "Loaded latency body for excellent grade"
+    },
+    "loadedLatencyGoodBody": "Response time increases slightly under load, but stays very usable.",
+    "@loadedLatencyGoodBody": {
+        "description": "Loaded latency body for good grade"
+    },
+    "loadedLatencyFairBody": "Noticeable delay when others are using the network. Gaming while downloading may suffer.",
+    "@loadedLatencyFairBody": {
+        "description": "Loaded latency body for fair grade"
+    },
+    "loadedLatencyPoorBody": "High Bufferbloat. Connection becomes unresponsive during large downloads. Consider enabling QoS on your router.",
+    "@loadedLatencyPoorBody": {
+        "description": "Loaded latency body for poor grade"
+    },
+    "bufferbloatGradeLabel": "BUFFERBLOAT GRADE",
+    "@bufferbloatGradeLabel": {
+        "description": "Label for the bufferbloat grade card"
+    },
+    "bufferbloatGradeA": "Excellent bufferbloat control. Your router keeps latency low even under heavy load.",
+    "@bufferbloatGradeA": {
+        "description": "Description for bufferbloat grade A"
+    },
+    "bufferbloatGradeB": "Good bufferbloat. Minor latency increase under load — most users won't notice.",
+    "@bufferbloatGradeB": {
+        "description": "Description for bufferbloat grade B"
+    },
+    "bufferbloatGradeC": "Moderate bufferbloat. Gaming and video calls may lag when others are downloading.",
+    "@bufferbloatGradeC": {
+        "description": "Description for bufferbloat grade C"
+    },
+    "bufferbloatGradeD": "Poor bufferbloat. Connection becomes sluggish under load. Enable QoS on your router.",
+    "@bufferbloatGradeD": {
+        "description": "Description for bufferbloat grade D"
+    },
+    "bufferbloatGradeE": "Severe bufferbloat. Real-time apps will fail during concurrent downloads.",
+    "@bufferbloatGradeE": {
+        "description": "Description for bufferbloat grade E"
+    },
+    "bufferbloatGradeF": "Critical bufferbloat. Your router does not control queue depth. Upgrade firmware or hardware.",
+    "@bufferbloatGradeF": {
+        "description": "Description for bufferbloat grade F"
+    },
+    "speedTestDisclaimer": "Results reflect speed to Cloudflare's nearest server and are affected by Wi-Fi, device hardware, and PoP distance. They are not a direct measure of your ISP contract speed.",
+    "@speedTestDisclaimer": {
+        "description": "Disclaimer shown after speed test results"
+    },
+    "clearAllHistoryAction": "CLEAR ALL HISTORY",
+    "@clearAllHistoryAction": {
+        "description": "Button label to clear all speed test history"
+    },
+    "deleteAllHistoryConfirm": "Delete all speed test records? This cannot be undone.",
+    "@deleteAllHistoryConfirm": {
+        "description": "Confirmation body for deleting all speed test history"
+    },
+    "deleteAllAction": "DELETE ALL",
+    "@deleteAllAction": {
+        "description": "Confirm button label to delete all items"
+    },
+    "whyIsThisLabel": "WHY IS THIS {level}?",
+    "@whyIsThisLabel": {
+        "description": "Question shown in trust badge sheet explaining why a device has a trust level",
+        "placeholders": {
+            "level": {
+                "type": "String"
+            }
+        }
+    },
+    "noSpecificConcerns": "No specific concerns logged for this device. The badge reflects an aggregate score.",
+    "@noSpecificConcerns": {
+        "description": "Shown when a device has no specific trust concerns logged"
+    },
+    "whatToDoLabel": "WHAT TO DO",
+    "@whatToDoLabel": {
+        "description": "Section label for remediation steps in host trust sheet"
+    },
+    "trustLevelSafe": "SAFE",
+    "@trustLevelSafe": {
+        "description": "Trust level label for safe hosts"
+    },
+    "trustLevelCaution": "CAUTION",
+    "@trustLevelCaution": {
+        "description": "Trust level label for hosts that need caution"
+    },
+    "trustLevelRisky": "RISKY",
+    "@trustLevelRisky": {
+        "description": "Trust level label for risky hosts"
+    },
+    "cveDatabaseLabel": "CVE DATABASE — {freshness}",
+    "@cveDatabaseLabel": {
+        "description": "Label for CVE database freshness card",
+        "placeholders": {
+            "freshness": {
+                "type": "String"
+            }
+        }
+    },
+    "howToUpdateLabel": "HOW TO UPDATE",
+    "@howToUpdateLabel": {
+        "description": "Section title for CVE database update instructions"
+    },
+    "vulnDbFreshLabel": "FRESH",
+    "@vulnDbFreshLabel": {
+        "description": "Label for fresh vulnerability database"
+    },
+    "vulnDbAgingLabel": "AGING",
+    "@vulnDbAgingLabel": {
+        "description": "Label for aging vulnerability database"
+    },
+    "vulnDbStaleLabel": "STALE",
+    "@vulnDbStaleLabel": {
+        "description": "Label for stale vulnerability database"
+    },
+    "vulnDbFreshMessage": "Vulnerability lookups against this database are up to date.",
+    "@vulnDbFreshMessage": {
+        "description": "Message when vulnerability database is fresh"
+    },
+    "vulnDbAgingMessage": "The local vulnerability database is over a month old. A clean scan still has value but consider refreshing soon.",
+    "@vulnDbAgingMessage": {
+        "description": "Message when vulnerability database is aging"
+    },
+    "vulnDbStaleMessage": "This database is more than 90 days old. A \"no findings\" result no longer means the network is safe — many newer CVEs may not be represented here yet.",
+    "@vulnDbStaleMessage": {
+        "description": "Message when vulnerability database is stale"
+    },
+    "vulnDbEntriesInfo": "v{version} · {count} entries · {days} days old",
+    "@vulnDbEntriesInfo": {
+        "description": "Info line showing CVE database version and age",
+        "placeholders": {
+            "version": {
+                "type": "String"
+            },
+            "count": {
+                "type": "int"
+            },
+            "days": {
+                "type": "int"
+            }
+        }
+    },
+    "wipeAllDialogTitle": "WIPE ALL DATA",
+    "@wipeAllDialogTitle": {
+        "description": "Title of wipe all data confirmation dialog"
+    },
+    "wipeAllDialogBody": "This will permanently delete all local scan history, speed test records, security events, channel ratings and in-memory snapshots. This action cannot be undone.",
+    "@wipeAllDialogBody": {
+        "description": "Body of wipe all data confirmation dialog"
+    },
+    "wipeAllAction": "WIPE ALL",
+    "@wipeAllAction": {
+        "description": "Confirm button label for wipe all data dialog"
+    },
+    "allDataWiped": "All local data wiped.",
+    "@allDataWiped": {
+        "description": "Snackbar message shown after all data is wiped"
+    },
+    "systemDefault": "System Default",
+    "@systemDefault": {
+        "description": "Label for system default language option in settings"
+    },
+    "portScanTimeoutMs": "{ms} ms",
+    "@portScanTimeoutMs": {
+        "description": "Display value for port scan timeout slider",
+        "placeholders": {
+            "ms": {
+                "type": "int"
+            }
+        }
+    },
+    "endSurveyDiscardBody": "Your current survey data will be lost if you discard it. Save or Discard?",
+    "@endSurveyDiscardBody": {
+        "description": "Dialog body when recording and user tries to exit"
+    },
+    "legendAndNodes": "LEGEND & NODES",
+    "@legendAndNodes": {
+        "description": "Section header for the legend panel in topology info sheet"
+    },
+    "legendGateway": "GATEWAY",
+    "@legendGateway": {
+        "description": "Legend tile label for gateway/router node"
+    },
+    "legendGatewayDesc": "Central network entry point",
+    "@legendGatewayDesc": {
+        "description": "Legend tile description for gateway node"
+    },
+    "legendAccessPoint": "ACCESS POINT",
+    "@legendAccessPoint": {
+        "description": "Legend tile label for access point node"
+    },
+    "legendAccessPointDesc": "WiFi signal distributor",
+    "@legendAccessPointDesc": {
+        "description": "Legend tile description for access point node"
+    },
+    "legendMobile": "MOBILE",
+    "@legendMobile": {
+        "description": "Legend tile label for mobile device node"
+    },
+    "legendMobileDesc": "Personal handheld devices",
+    "@legendMobileDesc": {
+        "description": "Legend tile description for mobile device node"
+    },
+    "legendIot": "IOT",
+    "@legendIot": {
+        "description": "Legend tile label for IoT device node"
+    },
+    "legendIotDesc": "Smart home & sensors",
+    "@legendIotDesc": {
+        "description": "Legend tile description for IoT device node"
+    },
+    "legendDevice": "DEVICE",
+    "@legendDevice": {
+        "description": "Legend tile label for generic device node"
+    },
+    "legendDeviceDesc": "Computers, TVs, etc.",
+    "@legendDeviceDesc": {
+        "description": "Legend tile description for generic device node"
+    },
+    "surveyStageStandby": "STANDBY",
+    "@surveyStageStandby": {
+        "description": "Survey pilot card label for idle stage"
+    },
+    "surveyStageInitializing": "INITIALIZING",
+    "@surveyStageInitializing": {
+        "description": "Survey pilot card label for calibration stage"
+    },
+    "surveyStageSweepRooms": "SWEEP ROOMS",
+    "@surveyStageSweepRooms": {
+        "description": "Survey pilot card label for coverage sweep stage"
+    },
+    "surveyStageWeakZone": "WEAK ZONE",
+    "@surveyStageWeakZone": {
+        "description": "Survey pilot card label for weak zone review stage"
+    },
+    "surveyStageWrapUp": "WRAP UP",
+    "@surveyStageWrapUp": {
+        "description": "Survey pilot card label for wrap up stage"
+    },
+    "surveyStageReview": "REVIEW",
+    "@surveyStageReview": {
+        "description": "Survey pilot card label for review stage"
+    },
+    "connectionTypesHeader": "CONNECTION TYPES",
+    "@connectionTypesHeader": {
+        "description": "Section header for connection types in topology info sheet"
+    },
+    "connTypeSolidLineLabel": "Solid Line (Blue)",
+    "@connTypeSolidLineLabel": {
+        "description": "Connection type label for solid blue line"
+    },
+    "connTypeSolidLineDesc": "High-speed wired Ethernet connection",
+    "@connTypeSolidLineDesc": {
+        "description": "Connection type description for solid blue line"
+    },
+    "connTypeGradientLabel": "Glowing Gradient (Cyan)",
+    "@connTypeGradientLabel": {
+        "description": "Connection type label for glowing gradient"
+    },
+    "connTypeGradientDesc": "Wireless WiFi connection",
+    "@connTypeGradientDesc": {
+        "description": "Connection type description for glowing gradient"
+    },
+    "connTypePulsingLabel": "Pulsing Data Point",
+    "@connTypePulsingLabel": {
+        "description": "Connection type label for pulsing data point"
+    },
+    "connTypePulsingDesc": "Active traffic detected on the link",
+    "@connTypePulsingDesc": {
+        "description": "Connection type description for pulsing data point"
+    },
+    "uploadLabel": "UPLOAD",
+    "@uploadLabel": {
+        "description": "Center label on speedometer arc during upload phase"
+    },
+    "downloadLabel": "DOWNLOAD",
+    "@downloadLabel": {
+        "description": "Center label on speedometer arc during download phase"
+    },
+    "speedTestSemanticsIdle": "Speed test gauge. Tap to start.",
+    "@speedTestSemanticsIdle": {
+        "description": "Semantics label for speedometer when idle"
+    },
+    "speedTestSemanticsRunning": "Speed test running — {mbps} Mbps download. Tap to stop.",
+    "@speedTestSemanticsRunning": {
+        "description": "Semantics label for speedometer while running",
+        "placeholders": {
+            "mbps": {
+                "type": "String"
+            }
+        }
+    },
+    "speedTestSemanticsComplete": "Speed test complete — {dl} Mbps download, {ul} Mbps upload.",
+    "@speedTestSemanticsComplete": {
+        "description": "Semantics label for speedometer after completion",
+        "placeholders": {
+            "dl": {
+                "type": "String"
+            },
+            "ul": {
+                "type": "String"
+            }
+        }
+    },
+    "measurementLockedTitle": "MEASUREMENT LOCKED",
+    "@measurementLockedTitle": {
+        "description": "Banner title when measurement is locked due to no Wi-Fi"
+    },
+    "measurementLockNoWifi": "Connect to a Wi-Fi network to lock the survey target.",
+    "@measurementLockNoWifi": {
+        "description": "Banner body when no Wi-Fi is connected"
+    },
+    "measurementLockReconnect": "Reconnect to {bssid} to resume sampling.",
+    "@measurementLockReconnect": {
+        "description": "Banner body when disconnected from survey BSSID",
+        "placeholders": {
+            "bssid": {
+                "type": "String"
+            }
+        }
+    },
+    "waitingForSignalTitle": "WAITING FOR FRESH SIGNAL",
+    "@waitingForSignalTitle": {
+        "description": "Banner title when RSSI signal is stale"
+    },
+    "waitingForSignalBody": "RSSI is older than 3 seconds. Walk briefly or hold position for a new scan.",
+    "@waitingForSignalBody": {
+        "description": "Banner body when RSSI signal is stale"
+    },
+    "signalDroppedTitle": "SIGNAL DROPPED",
+    "@signalDroppedTitle": {
+        "description": "Banner title when signal is below threshold"
+    },
+    "signalDroppedBody": "Wi-Fi signal is below -85dBm. Move closer to the Access Point.",
+    "@signalDroppedBody": {
+        "description": "Banner body when signal is below threshold"
+    },
+    "compassDriftTitle": "COMPASS DRIFT DETECTED",
+    "@compassDriftTitle": {
+        "description": "Banner title when compass drift is detected"
+    },
+    "measurementLockMagnetic": "Magnetic interference found. Walk in a figure-8 or tap Realign.",
+    "@measurementLockMagnetic": {
+        "description": "Banner body for magnetic interference / compass drift"
+    },
+    "placeSurveyOriginTitle": "PLACE SURVEY ORIGIN",
+    "@placeSurveyOriginTitle": {
+        "description": "Banner title when AR origin not yet placed"
+    },
+    "measurementLockAnchor": "Tap a detected plane to anchor the AR survey before recording points.",
+    "@measurementLockAnchor": {
+        "description": "Banner body when AR origin not placed"
+    },
+    "trackingLostTitle": "TRACKING LOST",
+    "@trackingLostTitle": {
+        "description": "Banner title when motion tracking is lost"
+    },
+    "measurementLockTracking": "Motion tracking is unavailable. Move slowly until tracking returns.",
+    "@measurementLockTracking": {
+        "description": "Banner body when motion tracking is lost"
+    },
+    "readyBannerTapFinish": "Tap to finish scan",
+    "@readyBannerTapFinish": {
+        "description": "Label shown on the ready banner to finish the scan"
+    },
+    "ssidChipLock": "LOCK",
+    "@ssidChipLock": {
+        "description": "SSID chip lock state label"
+    },
+    "ssidChipHold": "HOLD",
+    "@ssidChipHold": {
+        "description": "SSID chip hold state label"
+    },
+    "guidanceStageIdle": "Idle",
+    "@guidanceStageIdle": {
+        "description": "Guidance pill stage label for idle"
+    },
+    "guidanceStageInitializing": "Initializing",
+    "@guidanceStageInitializing": {
+        "description": "Guidance pill stage label for initializing"
+    },
+    "guidanceStageMappingSignal": "Mapping Signal",
+    "@guidanceStageMappingSignal": {
+        "description": "Guidance pill stage label for coverage sweep"
+    },
+    "guidanceStageScanningWeakZones": "Scanning Weak Zones",
+    "@guidanceStageScanningWeakZones": {
+        "description": "Guidance pill stage label for weak zone review"
+    },
+    "guidanceStageReadyToFinish": "Ready to Finish",
+    "@guidanceStageReadyToFinish": {
+        "description": "Guidance pill stage label for wrap up"
+    },
+    "guidanceStageReviewing": "Reviewing",
+    "@guidanceStageReviewing": {
+        "description": "Guidance pill stage label for review"
+    },
+    "signalProbeHint": "Try tapping closer to a captured signal point.",
+    "@signalProbeHint": {
+        "description": "Hint shown when user taps empty area in signal probe overlay"
+    },
+    "wifiSecurityOpen": "OPEN",
+    "@wifiSecurityOpen": {
+        "description": "Security type label for open (unencrypted) Wi-Fi networks"
+    },
+    "newSessionPermissionsBody": "To generate accurate heatmaps and map your network coverage, Torcav requires access to certain device features:",
+    "@newSessionPermissionsBody": {
+        "description": "Body text explaining permissions needed for new heatmap session"
+    },
+    "newSessionPermLocation": "Location (to map signal to coordinates)",
+    "@newSessionPermLocation": {
+        "description": "Permission item: location access for heatmap"
+    },
+    "newSessionPermActivity": "Activity Recognition (to track steps and movement)",
+    "@newSessionPermActivity": {
+        "description": "Permission item: activity recognition for heatmap"
+    },
+    "newSessionPermCamera": "Camera (optional, for visual mapping features)",
+    "@newSessionPermCamera": {
+        "description": "Permission item: camera for heatmap"
+    },
+    "reportsMacMaskDesc": "Masks last 3 octets (XX:XX:XX) before export",
+    "@reportsMacMaskDesc": {
+        "description": "Description for MAC address masking toggle in reports page"
+    },
+    "reportsShareSubject": "Torcav Scan Report",
+    "@reportsShareSubject": {
+        "description": "Subject/name used when sharing a scan report"
+    },
+    "exportNoDataYet": "No data in \"{label}\" yet.",
+    "@exportNoDataYet": {
+        "description": "Message shown when selected export category has no data",
+        "placeholders": {
+            "label": {
+                "type": "String"
+            }
+        }
+    },
+    "exportSubject": "Torcav local data export",
+    "@exportSubject": {
+        "description": "Email/share subject for local data export"
+    },
+    "exportFailedError": "Export failed: {error}",
+    "@exportFailedError": {
+        "description": "Error message when export fails",
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "tapToStart": "TAP TO START",
+    "@tapToStart": {
+        "description": "Speedometer idle state label prompting to start test"
+    },
+    "tapToStop": "TAP TO STOP",
+    "@tapToStop": {
+        "description": "Speedometer running state label prompting to stop test"
+    },
+    "liveWifi": "LIVE WI-FI",
+    "@liveWifi": {
+        "description": "SSID chip fallback label when no SSID is known"
+    },
+    "signalProbeTitle": "SIGNAL PROBE",
+    "@signalProbeTitle": {
+        "description": "Title for the signal probe overlay"
+    },
+    "statusOptimal": "OPTIMAL",
+    "@statusOptimal": {
+        "description": "Signal status: optimal"
+    },
+    "statusFair": "FAIR",
+    "@statusFair": {
+        "description": "Signal status: fair"
+    },
+    "statusCritical": "CRITICAL",
+    "@statusCritical": {
+        "description": "Signal status: critical"
+    },
+    "daysCount": "{count}d",
+    "@daysCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "secondsCount": "{count}s",
+    "@secondsCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "millisecondsCount": "{count} ms",
+    "@millisecondsCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "languageEnglish": "English 🇺🇸",
+    "@languageEnglish": {
+        "description": "English language"
+    },
+    "languageTurkish": "Türkçe 🇹🇷",
+    "@languageTurkish": {
+        "description": "Turkish language"
+    },
+    "languageKurdish": "Kurdî ☀️",
+    "@languageKurdish": {
+        "description": "Kurdish language"
+    },
+    "languageGerman": "Deutsch 🇩🇪",
+    "@languageGerman": {
+        "description": "German language"
+    },
+    "sdWeakSignalWhatIs": "Signal strength (RSSI) measures how loudly your device hears the router. Below about −70 dBm, Wi-Fi has to drop to slower, more redundant encodings to stay reliable.",
+    "@sdWeakSignalWhatIs": {},
+    "sdWeakSignalWhyItMatters": "A weak signal forces the radio into low-rate modes. Even if your internet plan is fast, the Wi-Fi link itself becomes the ceiling — downloads stall, video calls drop, and pages take longer.",
+    "@sdWeakSignalWhyItMatters": {},
+    "sdWeakSignalHowToFix1": "Move closer to the router or to a less obstructed spot.",
+    "@sdWeakSignalHowToFix1": {},
+    "sdWeakSignalHowToFix2": "Add a mesh node / Wi-Fi extender in this area.",
+    "@sdWeakSignalHowToFix2": {},
+    "sdWeakSignalHowToFix3": "If your router supports 5 GHz or 6 GHz on this SSID, use that band when you are in line-of-sight of it.",
+    "@sdWeakSignalHowToFix3": {},
+    "sdWeakSignalHowToFix4": "Check that the router is not buried inside a cabinet, behind a TV, or next to a microwave.",
+    "@sdWeakSignalHowToFix4": {},
+    "sdWeakSignalEstimate": "Estimated gain: up to +{gain} Mbps download if you can pull the device closer to the router.",
+    "@sdWeakSignalEstimate": {
+        "placeholders": {
+            "gain": {
+                "type": "String"
+            }
+        }
+    },
+    "sdCrowdedChannelWhatIs": "Wi-Fi channels are shared spectrum. When several nearby access points transmit on the same channel, they have to take turns — air-time is split between all of them, including yours.",
+    "@sdCrowdedChannelWhatIs": {},
+    "sdCrowdedChannelWhyItMatters": "On a crowded channel your throughput drops even when no one in your home is using the network. The radio is healthy, but it has to wait for its turn to talk.",
+    "@sdCrowdedChannelWhyItMatters": {},
+    "sdCrowdedChannelHowToFix1": "Open the router admin page and switch the Wi-Fi channel manually (Channel Rating in the app suggests the cleanest one).",
+    "@sdCrowdedChannelHowToFix1": {},
+    "sdCrowdedChannelHowToFix2": "On 2.4 GHz, prefer channels 1 / 6 / 11 — they do not overlap.",
+    "@sdCrowdedChannelHowToFix2": {},
+    "sdCrowdedChannelHowToFix3": "If your router supports 5 GHz or 6 GHz, move the device to that band: there are far more clean channels available.",
+    "@sdCrowdedChannelHowToFix3": {},
+    "sdCrowdedChannelHowToFix4": "For dual-band routers, give each band its own SSID so devices stop flipping back to a crowded 2.4 GHz channel.",
+    "@sdCrowdedChannelHowToFix4": {},
+    "sdCrowdedChannelEstimate": "Estimated gain: up to +{gain} Mbps download after switching to a quieter channel.",
+    "@sdCrowdedChannelEstimate": {
+        "placeholders": {
+            "gain": {
+                "type": "String"
+            }
+        }
+    },
+    "sdBufferbloatWhatIs": "Bufferbloat is the latency that builds up inside your router's send buffers when the link is fully loaded — typical packets have to queue behind a backlog of bulk traffic.",
+    "@sdBufferbloatWhatIs": {},
+    "sdBufferbloatWhyItMatters": "Your download speed can look great while a file is in flight, but voice calls jitter, video conferences freeze, and games lag — anything time-sensitive is held up behind the queue.",
+    "@sdBufferbloatWhyItMatters": {},
+    "sdBufferbloatHowToFix1": "Enable QoS / SQM (sometimes called \"Smart Queue Management\" or \"Adaptive QoS\") in your router admin page.",
+    "@sdBufferbloatHowToFix1": {},
+    "sdBufferbloatHowToFix2": "Update the router firmware — modern firmware ships better queue discipline by default.",
+    "@sdBufferbloatHowToFix2": {},
+    "sdBufferbloatHowToFix3": "If the router is many years old and lacks SQM, replacing it with a recent model is often the only real fix.",
+    "@sdBufferbloatHowToFix3": {},
+    "sdBufferbloatHowToFix4": "Cap upload bandwidth in the router slightly below your real plan (e.g. 90%) so the queue lives on the router, not at the ISP.",
+    "@sdBufferbloatHowToFix4": {},
+    "sdBufferbloatEstimate": "Estimated gain: about −{reduction} ms loaded latency. Calls and gaming will feel responsive even during large downloads.",
+    "@sdBufferbloatEstimate": {
+        "placeholders": {
+            "reduction": {
+                "type": "String"
+            }
+        }
+    },
+    "sdIspSlowWhatIs": "Your Wi-Fi link is healthy and the radio could carry far more than what is actually flowing through it. The bottleneck sits upstream of the router.",
+    "@sdIspSlowWhatIs": {},
+    "sdIspSlowWhyItMatters": "No amount of router or Wi-Fi tuning will help — the link from your ISP to the router is the ceiling. Treat this as data for a plan-upgrade or support call, not as a Wi-Fi problem.",
+    "@sdIspSlowWhyItMatters": {},
+    "sdIspSlowHowToFix1": "Re-run the test with a wired Ethernet cable to confirm the radio is not at fault.",
+    "@sdIspSlowHowToFix1": {},
+    "sdIspSlowHowToFix2": "Check the ISP plan you are paying for — the test result should match it within ~80% on a good day.",
+    "@sdIspSlowHowToFix2": {},
+    "sdIspSlowHowToFix3": "Try at different times of day. If only evenings are slow, the ISP segment may be congested.",
+    "@sdIspSlowHowToFix3": {},
+    "sdIspSlowHowToFix4": "If the result is consistently far below your plan, contact the ISP with the speed test output.",
+    "@sdIspSlowHowToFix4": {},
+    "sdIspSlowEstimate": "Your Wi-Fi can carry up to ~{phy} Mbps; you are currently getting {download} Mbps. The gap is upstream of the router.",
+    "@sdIspSlowEstimate": {
+        "placeholders": {
+            "phy": {
+                "type": "String"
+            },
+            "download": {
+                "type": "String"
+            }
+        }
+    },
+    "sdSlowDnsWhatIs": "DNS turns names like example.com into the IP addresses your device actually connects to. Every page load fires off a handful of these lookups before any data flows.",
+    "@sdSlowDnsWhatIs": {},
+    "sdSlowDnsWhyItMatters": "Slow DNS does not lower your download speed — it adds a delay at the start of every connection. The web feels \"laggy\" even when speed tests look fine.",
+    "@sdSlowDnsWhyItMatters": {},
+    "sdSlowDnsHowToFix1": "Switch your device or router DNS to a fast public resolver — 1.1.1.1 (Cloudflare), 8.8.8.8 (Google), or 9.9.9.9 (Quad9).",
+    "@sdSlowDnsHowToFix1": {},
+    "sdSlowDnsHowToFix2": "Enable DNS-over-HTTPS (DoH) or DNS-over-TLS (DoT) in your OS or browser to also encrypt the lookups.",
+    "@sdSlowDnsHowToFix2": {},
+    "sdSlowDnsHowToFix3": "If your ISP's DNS is slow, set the resolver on the router so the whole household benefits, not just one device.",
+    "@sdSlowDnsHowToFix3": {},
+    "sdSlowDnsEstimate": "Estimated gain: about −{reduction} ms per name lookup. Page loads usually feel 5–20% snappier because each page kicks off a dozen lookups.",
+    "@sdSlowDnsEstimate": {
+        "placeholders": {
+            "reduction": {
+                "type": "int"
+            }
+        }
+    },
+    "sdHealthyWhatIs": "Speed Doctor checks five things: signal strength, channel congestion, speed-under-load (bufferbloat), download throughput vs Wi-Fi capacity, and DNS resolution time.",
+    "@sdHealthyWhatIs": {},
+    "sdHealthyWhyItMatters": "None of those crossed an alert threshold this run. Your link is in good shape right now — re-run the test if you start noticing a problem to see whether anything shifted.",
+    "@sdHealthyWhyItMatters": {},
+    "sdMetricRssi": "RSSI: {rssi} dBm",
+    "@sdMetricRssi": {
+        "placeholders": {
+            "rssi": {
+                "type": "int"
+            }
+        }
+    },
+    "sdThresholdRssi": "Healthy ≥ {healthy} dBm · Severe ≤ {severe} dBm",
+    "@sdThresholdRssi": {
+        "placeholders": {
+            "healthy": {
+                "type": "int"
+            },
+            "severe": {
+                "type": "int"
+            }
+        }
+    },
+    "sdMetricChannel": "Channel {channel} · score {score}/10",
+    "@sdMetricChannel": {
+        "placeholders": {
+            "channel": {
+                "type": "int"
+            },
+            "score": {
+                "type": "String"
+            }
+        }
+    },
+    "sdThresholdChannel": "Healthy ≥ {healthy} · Severe ≤ {severe}",
+    "@sdThresholdChannel": {
+        "placeholders": {
+            "healthy": {
+                "type": "String"
+            },
+            "severe": {
+                "type": "String"
+            }
+        }
+    },
+    "sdMetricBufferbloat": "Loaded latency Δ: {induced} ms ({latency} → {loaded})",
+    "@sdMetricBufferbloat": {
+        "placeholders": {
+            "induced": {
+                "type": "String"
+            },
+            "latency": {
+                "type": "String"
+            },
+            "loaded": {
+                "type": "String"
+            }
+        }
+    },
+    "sdThresholdBufferbloat": "Healthy ≤ {healthy} ms · Severe ≥ {severe} ms",
+    "@sdThresholdBufferbloat": {
+        "placeholders": {
+            "healthy": {
+                "type": "String"
+            },
+            "severe": {
+                "type": "String"
+            }
+        }
+    },
+    "sdMetricIsp": "Download: {download} Mbps · PHY: {phy} Mbps",
+    "@sdMetricIsp": {
+        "placeholders": {
+            "download": {
+                "type": "String"
+            },
+            "phy": {
+                "type": "String"
+            }
+        }
+    },
+    "sdMetricIspNoPhy": "Download: {download} Mbps",
+    "@sdMetricIspNoPhy": {
+        "placeholders": {
+            "download": {
+                "type": "String"
+            }
+        }
+    },
+    "sdThresholdIsp": "Healthy ≥ {healthy} Mbps when radio is uncongested",
+    "@sdThresholdIsp": {
+        "placeholders": {
+            "healthy": {
+                "type": "String"
+            }
+        }
+    },
+    "sdMetricDns": "Best resolver: {name} · {latency} ms",
+    "@sdMetricDns": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "latency": {
+                "type": "int"
+            }
+        }
+    },
+    "sdThresholdDns": "Healthy ≤ {healthy} ms · Severe ≥ {severe} ms",
+    "@sdThresholdDns": {
+        "placeholders": {
+            "healthy": {
+                "type": "int"
+            },
+            "severe": {
+                "type": "int"
+            }
+        }
+    },
+    "networkContextHomeLabel": "Home",
+    "@networkContextHomeLabel": {},
+    "networkContextPublicLabel": "Public",
+    "@networkContextPublicLabel": {},
+    "networkContextGuestLabel": "Guest",
+    "@networkContextGuestLabel": {},
+    "networkContextUnknownLabel": "Unknown",
+    "@networkContextUnknownLabel": {},
+    "noChangeLabel": "no change",
+    "@noChangeLabel": {},
+    "sinceLastScanLabel": "since last scan",
+    "@sinceLastScanLabel": {},
+    "allClearLabel": "all clear",
+    "@allClearLabel": {},
+    "tapToTestLabel": "tap to test",
+    "@tapToTestLabel": {},
+    "gameProfileLabel": "Game profile",
+    "@gameProfileLabel": {},
+    "profileGeneric": "Generic UDP Game",
+    "@profileGeneric": {},
+    "notificationChannelSecurityCritical": "Critical Alerts",
+    "@notificationChannelSecurityCritical": {},
+    "notificationChannelSecurityHigh": "High Priority",
+    "@notificationChannelSecurityHigh": {},
+    "notificationChannelSecurityMedium": "Medium Priority",
+    "@notificationChannelSecurityMedium": {},
+    "notificationChannelSecurityWarning": "Warnings",
+    "@notificationChannelSecurityWarning": {},
+    "notificationChannelSecurityLow": "Low Priority",
+    "@notificationChannelSecurityLow": {},
+    "notificationChannelSecurityInfo": "Information",
+    "@notificationChannelSecurityInfo": {},
+    "notificationChannelSecurityDescription": "Security alert notifications",
+    "@notificationChannelSecurityDescription": {},
+    "scanCompleteTitle": "Scan Complete",
+    "@scanCompleteTitle": {},
+    "scanCompleteBody": "Found {count} networks in {seconds}s",
+    "@scanCompleteBody": {
+        "placeholders": {
+            "count": { "type": "int" },
+            "seconds": { "type": "int" }
+        }
+    },
+    "wifiChannelQualityDroppedTitle": "📶 Wi-Fi channel quality dropped",
+    "@wifiChannelQualityDroppedTitle": {},
+    "wifiChannelQualityDroppedBody": "Channel {channel} is now {rating}/10. Channel {recommendedChannel} is at {recommendedRating}/10 — consider switching.",
+    "@wifiChannelQualityDroppedBody": {
+        "placeholders": {
+            "channel": { "type": "int" },
+            "rating": { "type": "String" },
+            "recommendedChannel": { "type": "int" },
+            "recommendedRating": { "type": "String" }
+        }
+    },
+    "attackDetectedTitle": "⚠️ Attack Detected: {attackType}",
+    "@attackDetectedTitle": {
+        "placeholders": {
+            "attackType": { "type": "String" }
+        }
+    },
+    "stabilizerJitterSpikeTitle": "Jitter spike detected",
+    "@stabilizerJitterSpikeTitle": {},
+    "stabilizerFasterDnsTitle": "Faster DNS available",
+    "@stabilizerFasterDnsTitle": {},
+    "stabilizerPacketLossTitle": "Persistent packet loss",
+    "@stabilizerPacketLossTitle": {},
+    "stabilizerJitterSpikeBody": "Jitter exceeded {threshold} ms for {window} samples. Cycling the tunnel may break a sticky bad path.",
+    "@stabilizerJitterSpikeBody": {
+        "placeholders": {
+            "threshold": { "type": "String" },
+            "window": { "type": "int" }
+        }
+    },
+    "stabilizerFasterDnsBody": "A faster DNS ({label}) is available.",
+    "@stabilizerFasterDnsBody": {
+        "placeholders": {
+            "label": { "type": "String" }
+        }
+    },
+    "stabilizerPacketLossBody": "Packet loss is {loss}%. Dual-interface send (Wi-Fi + cellular) can mask transient drops.",
+    "@stabilizerPacketLossBody": {
+        "placeholders": {
+            "loss": { "type": "String" }
+        }
+    },
+    "lanDiscoveryTitle": "LAN Devices Discovered",
+    "@lanDiscoveryTitle": {},
+    "lanDiscoveryDesc": "Active scanning identified {count} devices on this network.",
+    "@lanDiscoveryDesc": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "lanDiscoveryEvidence": "Discovered: {devices}",
+    "@lanDiscoveryEvidence": {
+        "placeholders": {
+            "devices": { "type": "String" }
+        }
+    },
+    "lanDiscoveryRecommendation": "Ensure you recognize all devices on your local network.",
+    "@lanDiscoveryRecommendation": {},
+    "gatewayPortsExposedTitle": "Gateway Ports Exposed",
+    "@gatewayPortsExposedTitle": {},
+    "gatewayPortsExposedDesc": "Host {ip} has open ports that may be vulnerable.",
+    "@gatewayPortsExposedDesc": {
+        "placeholders": {
+            "ip": { "type": "String" }
+        }
+    },
+    "gatewayPortsExposedEvidence": "Open Ports: {ports}",
+    "@gatewayPortsExposedEvidence": {
+        "placeholders": {
+            "ports": { "type": "String" }
+        }
+    },
+    "gatewayPortsExposedRecommendation": "Disable unnecessary services on the gateway router and ensure strong passwords.",
+    "@gatewayPortsExposedRecommendation": {},
+    "openServiceDetectedTitle": "Open Service Detected",
+    "@openServiceDetectedTitle": {},
+    "openServiceDetectedDesc": "Host {ip} is running {service} on port {port}.",
+    "@openServiceDetectedDesc": {
+        "placeholders": {
+            "ip": { "type": "String" },
+            "service": { "type": "String" },
+            "port": { "type": "int" }
+        }
+    },
+    "openServiceDetectedEvidence": "Target: {ip}, Port: {port}, Service: {service}",
+    "@openServiceDetectedEvidence": {
+        "placeholders": {
+            "ip": { "type": "String" },
+            "port": { "type": "int" },
+            "service": { "type": "String" }
+        }
+    },
+    "openServiceDetectedRecommendation": "Ensure this service is intended to be accessible.",
+    "@openServiceDetectedRecommendation": {},
+    "lanDeviceDiscoveredTitle": "LAN Device: {name}",
+    "@lanDeviceDiscoveredTitle": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "lanDeviceDiscoveredEvidence": "IP: {ip}, MAC: {mac}, Vendor: {vendor}",
+    "@lanDeviceDiscoveredEvidence": {
+        "placeholders": {
+            "ip": { "type": "String" },
+            "mac": { "type": "String" },
+            "vendor": { "type": "String" }
+        }
+    },
+    "lanDeviceDiscoveredRecommendation": "Verify this device is yours. Malicious devices often hide in the LAN.",
+    "@lanDeviceDiscoveredRecommendation": {},
+    "rule_arp_spoofing_title": "ARP Spoofing Detected",
+    "@rule_arp_spoofing_title": {},
+    "rule_arp_spoofing_desc": "Multiple MAC addresses are claiming the same IP address. An attacker may be intercepting your traffic.",
+    "@rule_arp_spoofing_desc": {},
+    "rule_arp_spoofing_rec": "Switch to a different network or use a VPN immediately.",
+    "@rule_arp_spoofing_rec": {},
+    "rule_dns_hijacking_title": "DNS Hijacking Detected",
+    "@rule_dns_hijacking_title": {},
+    "rule_dns_hijacking_desc": "Your DNS queries are being redirected to an unexpected server. This allows an attacker to control which websites you visit.",
+    "@rule_dns_hijacking_desc": {},
+    "rule_dns_hijacking_rec": "Switch to a VPN immediately. Your DNS queries are being tampered with.",
+    "@rule_dns_hijacking_rec": {}
 }

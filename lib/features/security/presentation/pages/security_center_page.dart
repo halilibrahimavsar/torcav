@@ -89,7 +89,9 @@ class _SecurityCenterView extends StatelessWidget {
           if (state is! SecurityLoaded) return;
           final ctx = state.suppressedDeepScanContext;
           if (ctx == null) return;
-          final label = ctx == NetworkContextType.public ? 'public' : 'guest';
+          final label = ctx == NetworkContextType.public
+              ? l10n.publicContextLabel
+              : l10n.guestContextLabel;
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
@@ -97,8 +99,7 @@ class _SecurityCenterView extends StatelessWidget {
                 duration: const Duration(seconds: 5),
                 backgroundColor: scheme.error.withValues(alpha: 0.92),
                 content: Text(
-                  'Deep scan suppressed — connected to a $label network. '
-                  'Disable the safety guard in Settings to override.',
+                  l10n.deepScanSuppressed(label),
                   style: GoogleFonts.rajdhani(
                     color: scheme.onError,
                     fontSize: 13,
@@ -198,7 +199,7 @@ class _SecurityCenterView extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'SECURITY ASSESSMENT FAILED',
+                    l10n.securityAssessmentFailed,
                     style: GoogleFonts.orbitron(
                       color: Colors.redAccent,
                       fontWeight: FontWeight.bold,
@@ -219,7 +220,7 @@ class _SecurityCenterView extends StatelessWidget {
                         () =>
                             context.read<SecurityBloc>().add(SecurityStarted()),
                     icon: const Icon(Icons.refresh_rounded),
-                    label: const Text('RETRY ANALYTICS'),
+                    label: Text(l10n.retryAnalytics),
                   ),
                 ],
               ),

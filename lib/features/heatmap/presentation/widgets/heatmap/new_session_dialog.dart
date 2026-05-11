@@ -6,6 +6,7 @@ import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart';
 import 'package:torcav/core/theme/prominent_disclosure_dialog.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 
 class NewSessionDialog extends StatefulWidget {
   const NewSessionDialog({super.key, required this.bloc, required this.copy});
@@ -83,16 +84,15 @@ class _NewSessionDialogState extends State<NewSessionDialog> {
               final shouldProceed = await showDialog<bool>(
                     context: context,
                     builder: (ctx) => ProminentDisclosureDialog(
-                      title: 'HEATMAP PERMISSIONS',
-                      description:
-                          'To generate accurate heatmaps and map your network coverage, Torcav requires access to certain device features:',
+                      title: context.l10n.heatmapPermissionsTitle,
+                      description: context.l10n.newSessionPermissionsBody,
                       icon: Icons.map_rounded,
-                      privacyPoints: const [
-                        'Location (to map signal to coordinates)',
-                        'Activity Recognition (to track steps and movement)',
-                        'Camera (optional, for visual mapping features)',
+                      privacyPoints: [
+                        context.l10n.newSessionPermLocation,
+                        context.l10n.newSessionPermActivity,
+                        context.l10n.newSessionPermCamera,
                       ],
-                      actionLabel: 'CONTINUE',
+                      actionLabel: context.l10n.continueLabel,
                       onAccept: () => Navigator.of(ctx).pop(true),
                       onCancel: () => Navigator.of(ctx).pop(false),
                     ),

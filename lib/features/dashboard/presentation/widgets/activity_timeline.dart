@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../security/domain/entities/security_event.dart';
@@ -44,13 +45,13 @@ class _ActivityTimelineState extends State<ActivityTimeline> {
     super.dispose();
   }
 
-  List<_TimelineItem> _buildItems() {
+  List<_TimelineItem> _buildItems(AppLocalizations l10n) {
     final items = <_TimelineItem>[];
     for (final s in widget.snapshots.take(6)) {
-      items.add(_TimelineItem.scan(s));
+      items.add(_TimelineItem.scan(s, l10n));
     }
     for (final e in widget.events.take(8)) {
-      items.add(_TimelineItem.event(e));
+      items.add(_TimelineItem.event(e, l10n));
     }
     items.sort((a, b) => b.when.compareTo(a.when));
     return items.take(10).toList();
@@ -58,7 +59,8 @@ class _ActivityTimelineState extends State<ActivityTimeline> {
 
   @override
   Widget build(BuildContext context) {
-    final items = _buildItems();
+    final l10n = AppLocalizations.of(context)!;
+    final items = _buildItems(l10n);
     if (items.isEmpty) {
       return _EmptyTimeline(
         onScan: () => widget.onNavigate('wifi'),
@@ -109,18 +111,18 @@ class _TimelineItem {
     required this.destination,
   });
 
-  factory _TimelineItem.scan(ScanSnapshot s) {
+  factory _TimelineItem.scan(ScanSnapshot s, AppLocalizations l10n) {
     return _TimelineItem(
       when: s.timestamp,
       icon: Icons.radar_rounded,
       accent: AppColors.neonCyan,
-      headline: '${s.networks.length} networks',
-      subline: 'Scan via ${s.backendUsed}',
+      headline: l10n.networksCount(s.networks.length),
+      subline: l10n.scanVia(s.backendUsed),
       destination: 'wifi',
     );
   }
 
-  factory _TimelineItem.event(SecurityEvent e) {
+  factory _TimelineItem.event(SecurityEvent e, AppLocalizations l10n) {
     final color = switch (e.severity) {
       SecurityEventSeverity.critical => AppColors.neonRed,
       SecurityEventSeverity.high => AppColors.neonOrange,
@@ -133,35 +135,35 @@ class _TimelineItem {
       when: e.timestamp,
       icon: Icons.warning_amber_rounded,
       accent: color,
-      headline: _eventTitle(e.type),
+      headline: _eventTitle(e.type, l10n),
       subline: e.ssid.isNotEmpty ? e.ssid : e.bssid,
       destination: 'security',
     );
   }
 
-  static String _eventTitle(SecurityEventType t) {
+  static String _eventTitle(SecurityEventType t, AppLocalizations l10n) {
     switch (t) {
       case SecurityEventType.rogueApSuspected:
-        return 'Rogue AP suspected';
+        return l10n.rogueApSuspected;
       case SecurityEventType.deauthBurstDetected:
       case SecurityEventType.deauthAttackSuspected:
-        return 'Deauth activity';
+        return l10n.deauthActivity;
       case SecurityEventType.handshakeCaptureStarted:
-        return 'Handshake capture started';
+        return l10n.handshakeCaptureStarted;
       case SecurityEventType.handshakeCaptureCompleted:
-        return 'Handshake captured';
+        return l10n.handshakeCaptured;
       case SecurityEventType.captivePortalDetected:
-        return 'Captive portal';
+        return l10n.captivePortal;
       case SecurityEventType.evilTwinDetected:
-        return 'Evil twin detected';
+        return l10n.evilTwinDetected;
       case SecurityEventType.encryptionDowngraded:
-        return 'Encryption downgrade';
+        return l10n.encryptionDowngrade;
       case SecurityEventType.unsupportedOperation:
-        return 'Unsupported op';
+        return l10n.unsupportedOp;
       case SecurityEventType.arpSpoofingDetected:
-        return 'ARP spoofing';
+        return l10n.arpSpoofing;
       case SecurityEventType.dnsHijackingDetected:
-        return 'DNS hijacking';
+        return l10n.dnsHijacking;
     }
   }
 }
@@ -221,7 +223,7 @@ class _TimelineCard extends StatelessWidget {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            _formatRelative(item.when),
+                            _formatRelative(item.when, AppLocalizations.of(context)!),
                             style: GoogleFonts.orbitron(
                               color: item.accent.withValues(alpha: 0.9),
                               fontSize: 9,
@@ -263,13 +265,13 @@ class _TimelineCard extends StatelessWidget {
     );
   }
 
-  String _formatRelative(DateTime t) {
+  String _formatRelative(DateTime t, AppLocalizations l10n) {
     final diff = DateTime.now().difference(t);
-    if (diff.isNegative) return 'just now';
-    if (diff.inMinutes < 1) return 'just now';
-    if (diff.inHours < 1) return '${diff.inMinutes}m ago';
-    if (diff.inDays < 1) return '${diff.inHours}h ago';
-    return '${diff.inDays}d ago';
+    if (diff.isNegative) return l10n.justNow;
+    if (diff.inMinutes < 1) return l10n.justNow;
+    if (diff.inHours < 1) return l10n.minutesAgo(diff.inMinutes);
+    if (diff.inDays < 1) return l10n.hoursAgo(diff.inHours);
+    return l10n.daysAgo(diff.inDays);
   }
 }
 
@@ -280,6 +282,7 @@ class _EmptyTimeline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: onScan,
       child: GlassmorphicContainer(
@@ -295,7 +298,7 @@ class _EmptyTimeline extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'NO ACTIVITY YET',
+                    l10n.noActivityYet,
                     style: GoogleFonts.orbitron(
                       color: scheme.primary.withValues(alpha: 0.7),
                       fontSize: 10,
@@ -305,7 +308,7 @@ class _EmptyTimeline extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Run your first scan to populate the timeline.',
+                    l10n.runFirstScanDesc,
                     style: GoogleFonts.rajdhani(
                       color: scheme.onSurfaceVariant,
                       fontSize: 12,

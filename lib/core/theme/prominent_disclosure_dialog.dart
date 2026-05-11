@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../core/extensions/context_extensions.dart';
 import 'neon_widgets.dart';
 
 class ProminentDisclosureDialog extends StatelessWidget {
@@ -113,7 +114,7 @@ class ProminentDisclosureDialog extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                       child: Text(
-                        'NOT NOW',
+                        context.l10n.notNowLabel,
                         style: GoogleFonts.orbitron(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,

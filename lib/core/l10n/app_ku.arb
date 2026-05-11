@@ -1,5 +1,4 @@
 {
-    "@@locale": "ku",
     "wifiScanTitle": "TARANA WI-FI",
     "@wifiScanTitle": {
         "description": "Title for the wifi scan screen."
@@ -2077,71 +2076,146 @@
         "description": "Body of the DFS info sheet"
     },
     "howToChangeChannelTitle": "Kanalê Wi-Fi çawa biguherînim?",
-    "@howToChangeChannelTitle": {"description": "Title of the router admin guide section"},
+    "@howToChangeChannelTitle": {
+        "description": "Title of the router admin guide section"
+    },
     "howToChangeChannelSubtitle": "Rêbera gav-bi-gav ji bo routera te",
-    "@howToChangeChannelSubtitle": {"description": "Subtitle"},
+    "@howToChangeChannelSubtitle": {
+        "description": "Subtitle"
+    },
     "guideConnectedTo": "Tora girêdayî",
-    "@guideConnectedTo": {"description": "Connected SSID label"},
+    "@guideConnectedTo": {
+        "description": "Connected SSID label"
+    },
     "guideRouterVendor": "Marka routerê",
-    "@guideRouterVendor": {"description": "Vendor label"},
+    "@guideRouterVendor": {
+        "description": "Vendor label"
+    },
     "guideRouterUnknown": "Nenas — rêbera giştî tê nîşandan",
-    "@guideRouterUnknown": {"description": "Unknown vendor"},
+    "@guideRouterUnknown": {
+        "description": "Unknown vendor"
+    },
     "guideStep1": "Gav 1 · Panela rêveberiyê veke",
-    "@guideStep1": {"description": "Step 1"},
+    "@guideStep1": {
+        "description": "Step 1"
+    },
     "guideStep1Body": "Bişkoja VEKE ya jêr bitikîne — gerokê te yê standard di rûpela rêveberiya routerê de vedibe. (An jî navnîşanê kopî bike û destî bispêre.) Ji bo navnîşan bixebite, divê li vê Wi-Fi ve girêdayî bî; tenê bi daneya mobîl nagihîje.",
-    "@guideStep1Body": {"description": "Step 1 body"},
+    "@guideStep1Body": {
+        "description": "Step 1 body"
+    },
     "guideOpenInBrowser": "Veke",
-    "@guideOpenInBrowser": {"description": "Open URL"},
+    "@guideOpenInBrowser": {
+        "description": "Open URL"
+    },
     "guideOpenFailedMessage": "Gerokê bixweber venebû — navnîşanê kopî bike û destî bispêre.",
-    "@guideOpenFailedMessage": {"description": "Open failed"},
+    "@guideOpenFailedMessage": {
+        "description": "Open failed"
+    },
     "guideCredentialsHeader": "Navê bikarhêner û şîfre",
-    "@guideCredentialsHeader": {"description": "Credentials header"},
+    "@guideCredentialsHeader": {
+        "description": "Credentials header"
+    },
     "guideCredentialsBody": "Gava rûpela rêveberiyê ji te têketinê dixwaze:\n\n1. Li binî an pişta routerê binêre — bi gelemperî li wir etîketek heye ku şîfreya Wi-Fi û her wiha agahiyên têketina REVEBERIYÊ jî dinivîse. Têketina rêveberiyê wek \"Admin password\", \"Web password\", \"Modem password\" an \"Şîfreya Rêveberiyê\" tê nîşandan. Ev bi şîfreya Wi-Fi NEYAN E.\n\n2. Heke etîket tune be, van standardên fabrîkayê biceribîne:\n   • admin / admin\n   • admin / password\n   • admin / 1234\n   • root / admin\n   • Navê bikarhêner vala / şîfre admin\n\n3. Heke router ji aliyê pêşkêşkarê înternetê hatibe sazkirin, şîfreya rêveberiyê bi gelemperî 6-8 karakterên dawî yên seriya cihazê ye, ku ew jî li ser etîketê dinivîse. Gelek pêşkêşkar şîfreyek taybet a cihazî çap dikin.\n\n4. Heke tu yek nexebite, kesek berê şîfre guherandî ye. Dikarî bişkoja RESET ya li pişta routerê 10-15 çirkeyan bigirî da ku rewşa fabrîkayê vegere — lê ev navê Wi-Fi û şîfreya wê jî paqij dike, divê ji nû ve saz bikî.\n\n5. Hin routerên nû panela web bi sepanê telefonê re diguherînin (mînak TP-Link Tether, ASUS Router, Mi WiFi, Huawei AI Life). Heke rûpela web te ber bi sazkirina sepanê ve dişîne, sepanê saz bike û ji wir berdewam bike.",
-    "@guideCredentialsBody": {"description": "Credentials body"},
+    "@guideCredentialsBody": {
+        "description": "Credentials body"
+    },
     "guideAddressLabel": "Navnîşana rêveberiyê",
-    "@guideAddressLabel": {"description": "URL label"},
+    "@guideAddressLabel": {
+        "description": "URL label"
+    },
     "guideCopyAddress": "Kopî bike",
-    "@guideCopyAddress": {"description": "Copy button"},
+    "@guideCopyAddress": {
+        "description": "Copy button"
+    },
     "guideAddressCopied": "Navnîşan hate kopîkirin — di gerokê de veke",
-    "@guideAddressCopied": {"description": "Copied snack"},
+    "@guideAddressCopied": {
+        "description": "Copied snack"
+    },
     "guideStep2": "Gav 2 · Menûya Wi-Fi / Wireless bibîne",
-    "@guideStep2": {"description": "Step 2"},
+    "@guideStep2": {
+        "description": "Step 2"
+    },
     "guideStep2Body": "Piştî têketinê li menûyek bi navê Wi-Fi, Wireless an Mîhengên Torê bigere. Marka cuda navên cuda dikin — rêya jêrîn ji bo marka te ye:",
-    "@guideStep2Body": {"description": "Step 2 body"},
+    "@guideStep2Body": {
+        "description": "Step 2 body"
+    },
     "guideStep3": "Gav 3 · Kanalê saz bike û bisepîne",
-    "@guideStep3": {"description": "Step 3"},
+    "@guideStep3": {
+        "description": "Step 3"
+    },
     "guideStep3Body": "Bijareya Channel/Kanal bibîne. Auto-yê biguhêre bo kanala pêşniyazkirî di ekrana berê de. Heke routerê te ji bo 2.4 GHz û 5 GHz cuda nîşan dide, ji bo her bandê kanala xwe ya pêşniyazkirî saz bike. Tê tomarkirin/sepandinê bitikîne. Wi-Fi dê demek kurt ji nû ve dest pê bike.",
-    "@guideStep3Body": {"description": "Step 3 body"},
+    "@guideStep3Body": {
+        "description": "Step 3 body"
+    },
     "guideMenuPathLabel": "Riya menûyê",
-    "@guideMenuPathLabel": {"description": "Menu path header"},
+    "@guideMenuPathLabel": {
+        "description": "Menu path header"
+    },
     "guideGenericMenuPath": "Wireless / Wi-Fi → Bingehîn / Pêşkeftî Mîheng → Kanal",
-    "@guideGenericMenuPath": {"description": "Fallback menu path"},
+    "@guideGenericMenuPath": {
+        "description": "Fallback menu path"
+    },
     "channelWidthHeader": "Pehnatiya kanalê — 20 / 40 / 80 / 160 MHz",
-    "@channelWidthHeader": {"description": "Header"},
+    "@channelWidthHeader": {
+        "description": "Header"
+    },
     "channelWidthBody": "Pehnatiya kanalê wek hejmara şiritan a otoyolê ye:\n• 20 MHz = 1 şirit. Hêdî lê li hember trafîkê bi hêz. Ji bo 2.4 GHz a tijî baştirîn.\n• 40 MHz = 2 şirit. Du qatî leza daneyan, lê bi cîranan re zêdetir li hev radikeve.\n• 80 MHz = 4 şirit. Lez — tenê di 5 GHz/6 GHz de.\n• 160 MHz = 8 şirit. Lezê herî bilind, lê nîvê bandê 5 GHz digire; tenê heke cîran tune be watedar e.\n\nQayîdeya giştî: di 2.4 GHz de 20 MHz; di 5 GHz de 80 MHz; di 6 GHz de heke berdest be 160 MHz.",
-    "@channelWidthBody": {"description": "Body"},
+    "@channelWidthBody": {
+        "description": "Body"
+    },
     "guideRisksHeader": "Guhertina kanalê ewle ye?",
-    "@guideRisksHeader": {"description": "Risks header"},
+    "@guideRisksHeader": {
+        "description": "Risks header"
+    },
     "guideRisksBody": "Erê — bi tevahî ewle ye. Guhertina kanalê ji bilî qutbûnek 5-10 çirkeyî ya ku dema router radio ji nû ve dest pê dike çêdibe, hîç bandorek ewlehiyê an performansê tune. Navê torê (SSID), şîfre, qaîdeyên port-yönlendirmeyê, kontrolên dêûbavî û her mîhengek din çawa hebû dimîne. Cihazên girêdayî bixweber ji nû ve têne girêdan. Heke paşê tişt xerabtir xuya bike, dikarî ji heman menûyê vegerî ser Auto û router bi xwe kanalek hilbijêre.",
-    "@guideRisksBody": {"description": "Body"},
+    "@guideRisksBody": {
+        "description": "Body"
+    },
     "guideNoConnection": "Bi tora Wi-Fi ve ne girêdayî yî — ji bo dîtina navnîşana rêveberiyê û rêbera taybet a markeyê pêşî girê bide.",
-    "@guideNoConnection": {"description": "No connection"},
+    "@guideNoConnection": {
+        "description": "No connection"
+    },
     "currentChannelLabel": "NIHA",
-    "@currentChannelLabel": {"description": "Current channel badge"},
+    "@currentChannelLabel": {
+        "description": "Current channel badge"
+    },
     "currentChannelBannerYouAreOn": "Niha li ser {channel} yî",
-    "@currentChannelBannerYouAreOn": {"placeholders": {"channel": {"type": "String"}}},
+    "@currentChannelBannerYouAreOn": {
+        "placeholders": {
+            "channel": {
+                "type": "String"
+            }
+        }
+    },
     "currentChannelBannerSwitchTo": "Ji bo +{delta} puan biçe ser {channel}",
-    "@currentChannelBannerSwitchTo": {"placeholders": {"channel": {"type": "String"}, "delta": {"type": "String"}}},
+    "@currentChannelBannerSwitchTo": {
+        "placeholders": {
+            "channel": {
+                "type": "String"
+            },
+            "delta": {
+                "type": "String"
+            }
+        }
+    },
     "currentChannelBannerOptimal": "Tu jixwe li ser kanala pêşniyazkirî yî",
     "@currentChannelBannerOptimal": {},
     "spectrumOverlapTitle": "Li-ser-hev-ketina Toran",
-    "@spectrumOverlapTitle": {"description": "Header"},
+    "@spectrumOverlapTitle": {
+        "description": "Header"
+    },
     "spectrumOverlapInfoTitle": "Li-ser-hev-ketina Toran",
-    "@spectrumOverlapInfoTitle": {"description": "Info title"},
+    "@spectrumOverlapInfoTitle": {
+        "description": "Info title"
+    },
     "spectrumOverlapInfoBody": "Her şeklê rengîn yek tora Wi-Fi ye. Cihê wê li ser axa X frekansa navendê nîşan dide, fireh̥iya wê pehnatiya kanalê (20/40/80/160 MHz), bilindahî jî hêza sînyalê (jor = xurt, jêr = qels). Cihên ku şekl li ser hev radikevin, ew tor heman dema weşanê parve dikin û hev hêdî dikin. Li firehîyek dîkî ku tê de tu şekil tune (an jî tenê yên qels li jêr) bigere — ew kanaleke bêdeng e. Li şeklekê bide ku tora wê bibînî.",
-    "@spectrumOverlapInfoBody": {"description": "Body"},
+    "@spectrumOverlapInfoBody": {
+        "description": "Body"
+    },
     "spectrumOverlapEmptyHint": "Li ser vî bandî tor xuya nake",
-    "@spectrumOverlapEmptyHint": {"description": "Empty"},
+    "@spectrumOverlapEmptyHint": {
+        "description": "Empty"
+    },
     "channelDrilldownHeader": "Torên li ser vê kanalê",
     "@channelDrilldownHeader": {},
     "channelDrilldownEmpty": "Li vir tor weşanê nake",
@@ -2149,9 +2223,21 @@
     "hiddenSsidPlaceholder": "<tora veşartî>",
     "@hiddenSsidPlaceholder": {},
     "scanComparisonImproved": "Li gor şopandina dawî {delta} puan baştir bûye",
-    "@scanComparisonImproved": {"placeholders": {"delta": {"type": "String"}}},
+    "@scanComparisonImproved": {
+        "placeholders": {
+            "delta": {
+                "type": "String"
+            }
+        }
+    },
     "scanComparisonWorsened": "Li gor şopandina dawî {delta} puan xirabtir bûye",
-    "@scanComparisonWorsened": {"placeholders": {"delta": {"type": "String"}}},
+    "@scanComparisonWorsened": {
+        "placeholders": {
+            "delta": {
+                "type": "String"
+            }
+        }
+    },
     "scanComparisonStable": "Ji şopandina dawî vir ve aram",
     "@scanComparisonStable": {},
     "countryAllowlistHeader": "Herêm",
@@ -2197,13 +2283,31 @@
     "densityTrendStable": "Pestoya aram",
     "@densityTrendStable": {},
     "densityTrendVolatile": "Herêma guherbar · di saeta dawî de pestoy {delta} tor heng kir",
-    "@densityTrendVolatile": {"placeholders": {"delta": {"type": "String"}}},
+    "@densityTrendVolatile": {
+        "placeholders": {
+            "delta": {
+                "type": "String"
+            }
+        }
+    },
     "routerGroupsHeader": "Routerên nêzîk (du-band)",
     "@routerGroupsHeader": {},
     "routerGroupsInfoBody": "Gava heman router heman SSID li ser ji yek bandê zêdetir weşan dike (mînak 2.4 GHz CH 6 û 5 GHz CH 36), em wan li vir kom dikin da ku tu her du radyoyan bera ya hev bidî. Bişkokek bandê bide ku biçî wê tabê.",
     "@routerGroupsInfoBody": {},
     "crossBandSiblingHint": "Heman router li ser {band} CH {channel} · {rating}/10",
-    "@crossBandSiblingHint": {"placeholders": {"band": {"type": "String"}, "channel": {"type": "String"}, "rating": {"type": "String"}}},
+    "@crossBandSiblingHint": {
+        "placeholders": {
+            "band": {
+                "type": "String"
+            },
+            "channel": {
+                "type": "String"
+            },
+            "rating": {
+                "type": "String"
+            }
+        }
+    },
     "connectedChannelGuideLabel": "TU",
     "@connectedChannelGuideLabel": {},
     "unstableChannelLabel": "NEARAM",
@@ -2219,19 +2323,730 @@
         "description": "Title of the heatmap info sheet"
     },
     "historyHeatmapInfoBody": "Her rêz kanalek e û her stûn demek e ku te şopandin kir. Rengê hucreyê puanê wê demê nîşan dide: sor (xirab) → zer (orte) → kesk (zehf baş). Hucreyên vala wateya wê ye ku kanal di wê şopandinê de nediyar bû. Li rêzên temamî kesk bigere — ev ew kanal in ku bi demê re paqij dimînin.",
+    "@historyHeatmapInfoBody": {
+        "description": "Body of the heatmap info sheet"
+    },
     "clearChannelHistoryTitle": "DÎROKA KANALÊ PAQIJ BIKE",
+    "@clearChannelHistoryTitle": {
+        "description": "Title of the confirmation dialog when clearing channel rating history"
+    },
     "clearChannelHistoryConfirmBody": "Hemû tomarên puanê kanalê werin jêbirin? Ev nayê vegerandin.",
+    "@clearChannelHistoryConfirmBody": {
+        "description": "Body of the confirmation dialog when clearing channel rating history"
+    },
     "deleteAllLabel": "HEMÛ JÊBIBE",
+    "@deleteAllLabel": {
+        "description": "Label for the destructive confirm button when clearing channel rating history"
+    },
     "dualBandSiblingLabel": "DU-BAND",
+    "@dualBandSiblingLabel": {
+        "description": "Badge shown on a channel tile when the user's connected router exposes another radio on this band (the user is not actually using this radio right now)"
+    },
     "dualBandSiblingBanner": "Radyoya {band} ya routera te: {channel}",
+    "@dualBandSiblingBanner": {
+        "description": "Banner copy on a band tab when the user is connected to a different band of the same router. {band} is e.g. '2.4 GHz', {channel} is e.g. 'CH 6 · 8.2/10'.",
+        "placeholders": {
+            "band": {
+                "type": "String"
+            },
+            "channel": {
+                "type": "String"
+            }
+        }
+    },
     "acknowledgedLabel": "TÊGEHIŞTÎ",
+    "@acknowledgedLabel": {
+        "description": "Confirmation button label that closes an info bottom sheet (Topology legend)"
+    },
     "speedDoctorTitle": "DOKTORÊ LEZ",
+    "@speedDoctorTitle": {
+        "description": "Speed Doctor app-bar title"
+    },
     "speedDoctorTagline": "Çima înternet hêdî ye?",
+    "@speedDoctorTagline": {
+        "description": "Speed Doctor subtitle"
+    },
     "speedDoctorOpsTile": "DOKTORÊ LEZ",
+    "@speedDoctorOpsTile": {
+        "description": "Operations Hub tile for Speed Doctor"
+    },
     "speedDoctorOpsSubtitle": "Çima hêdî ye?",
+    "@speedDoctorOpsSubtitle": {
+        "description": "Operations Hub tile subtitle for Speed Doctor"
+    },
     "evilTwinDetailTitle": "BÊTIRA EVIL TWIN",
+    "@evilTwinDetailTitle": {
+        "description": "Evil-twin detail page title"
+    },
     "pingStabilizerTitle": "STABÎLÎZATORÊ PING",
+    "@pingStabilizerTitle": {
+        "description": "Ping Stabilizer feature title"
+    },
     "pingStabilizerSubtitle": "Tunela derengmayînê ya li ser cîhazê",
+    "@pingStabilizerSubtitle": {
+        "description": "Operations Hub subtitle for Ping Stabilizer"
+    },
     "pingStabilizerToggleHint": "Bide bo stabîlîzekirinê",
-    "pingStabilizerDrawerLabel": "Stabîlîzatorê Ping"
+    "@pingStabilizerToggleHint": {
+        "description": "Hint shown on the inactive Ping Stabilizer toggle card"
+    },
+    "pingStabilizerDrawerLabel": "Stabîlîzatorê Ping",
+    "@pingStabilizerDrawerLabel": {
+        "description": "Drawer entry label for Ping Stabilizer"
+    },
+    "onboardingStartScanning": "START SCANNING",
+    "@onboardingStartScanning": {
+        "description": "Button label to finish onboarding."
+    },
+    "onboardingNext": "NEXT",
+    "@onboardingNext": {
+        "description": "Button label for next slide."
+    },
+    "onboardingWelcomeTitle": "WELCOME TO TORCAV",
+    "@onboardingWelcomeTitle": {
+        "description": "Welcome title."
+    },
+    "onboardingWelcomeBody": "A cyberpunk Wi-Fi analyzer that helps you understand your wireless environment, find the best channel, and detect security threats.",
+    "@onboardingWelcomeBody": {
+        "description": "Welcome body text."
+    },
+    "onboardingLocationTitle": "LOCATION PERMISSION",
+    "@onboardingLocationTitle": {
+        "description": "Location permission title."
+    },
+    "onboardingLocationBody": "Android requires Location permission to scan for Wi-Fi networks. To show signal heatmaps, we also use activity sensors. All data stays on your device and is never uploaded. Your location is only used to read nearby Wi-Fi signals.",
+    "@onboardingLocationBody": {
+        "description": "Location permission explanation."
+    },
+    "onboardingTourTitle": "THREE TABS",
+    "@onboardingTourTitle": {
+        "description": "Tour section title."
+    },
+    "onboardingTourDashboardLabel": "Dashboard",
+    "@onboardingTourDashboardLabel": {
+        "description": "Dashboard label in tour."
+    },
+    "onboardingTourDashboardDesc": "Live overview of your network health",
+    "@onboardingTourDashboardDesc": {
+        "description": "Dashboard description in tour."
+    },
+    "onboardingTourDiscoveryLabel": "Discovery",
+    "@onboardingTourDiscoveryLabel": {
+        "description": "Discovery label in tour."
+    },
+    "onboardingTourDiscoveryDesc": "Scan Wi-Fi networks and LAN devices",
+    "@onboardingTourDiscoveryDesc": {
+        "description": "Discovery description in tour."
+    },
+    "onboardingTourOperationsLabel": "Operations",
+    "@onboardingTourOperationsLabel": {
+        "description": "Operations label in tour."
+    },
+    "onboardingTourOperationsDesc": "Security analysis, speed tests, reports",
+    "@onboardingTourOperationsDesc": {
+        "description": "Operations description in tour."
+    },
+    "onboardingContextTitle": "WHERE WILL YOU USE TORCAV?",
+    "@onboardingContextTitle": {
+        "description": "Network context question."
+    },
+    "onboardingContextBody": "This shapes how strict the security score is when we can't tell on our own. You can change it any time, and it can be overridden per network later.",
+    "@onboardingContextBody": {
+        "description": "Context explanation."
+    },
+    "onboardingContextHomeTitle": "Mostly my own home / office",
+    "@onboardingContextHomeTitle": {
+        "description": "Home context title."
+    },
+    "onboardingContextHomeBody": "Strict scoring. Any unexpected change in encryption or new devices on the LAN gets flagged loudly.",
+    "@onboardingContextHomeBody": {
+        "description": "Home context description."
+    },
+    "onboardingContextPublicTitle": "Mostly cafés / hotels / airports",
+    "@onboardingContextPublicTitle": {
+        "description": "Public context title."
+    },
+    "onboardingContextPublicBody": "Relaxed scoring on encryption (these networks are often open) but heightened sensitivity to lure SSIDs and evil-twin patterns. Active LAN scanning is suppressed by default.",
+    "@onboardingContextPublicBody": {
+        "description": "Public context description."
+    },
+    "onboardingContextGuestTitle": "Mostly guest / shared networks",
+    "@onboardingContextGuestTitle": {
+        "description": "Guest context title."
+    },
+    "onboardingContextGuestBody": "Same Wi-Fi as friends, family, or coworkers. Drift is expected; we don't alert on every new device.",
+    "@onboardingContextGuestBody": {
+        "description": "Guest context description."
+    },
+    "onboardingContextUnknownTitle": "Not sure yet",
+    "@onboardingContextUnknownTitle": {
+        "description": "Unknown context title."
+    },
+    "onboardingContextUnknownBody": "No strong default. We'll guess from each network's fingerprint and let you correct it.",
+    "@onboardingContextUnknownBody": {
+        "description": "Unknown context description."
+    },
+    "onboardingDoneTitle": "ALL SET",
+    "@onboardingDoneTitle": {
+        "description": "Completion title."
+    },
+    "onboardingDoneBody": "Torcav is a privacy-first network assistant. It provides safe network diagnostics and hardening tools for networks you own or are authorized to assess. No data is collected or transmitted externally.",
+    "@onboardingDoneBody": {
+        "description": "Completion body text."
+    },
+    "onboardingAcceptPrefix": "I have read and accept the ",
+    "@onboardingAcceptPrefix": {
+        "description": "Acceptance prefix."
+    },
+    "onboardingTosLink": "Terms of Service",
+    "@onboardingTosLink": {
+        "description": "TOS link text."
+    },
+    "onboardingAcceptAnd": " and ",
+    "@onboardingAcceptAnd": {
+        "description": "Acceptance separator."
+    },
+    "onboardingPrivacyLink": "Privacy Policy",
+    "@onboardingPrivacyLink": {
+        "description": "Privacy link text."
+    },
+    "onboardingAcceptSuffix": ".",
+    "@onboardingAcceptSuffix": {
+        "description": "Acceptance suffix."
+    },
+    "onboardingConfirmPermission": "I confirm I have permission to scan the networks I will analyze.",
+    "@onboardingConfirmPermission": {
+        "description": "Permission confirmation checkbox."
+    },
+    "onboardingConfirmAge": "I confirm I am 13 years of age or older.",
+    "@onboardingConfirmAge": {
+        "description": "Age confirmation checkbox."
+    },
+    "appTitle": "TORCAV",
+    "@appTitle": {
+        "description": "The application name."
+    },
+    "ssidLabel": "SSID",
+    "@ssidLabel": {
+        "description": "SSID label."
+    },
+    "noSecurityFindings": "No security findings detected.",
+    "@noSecurityFindings": {
+        "description": "Empty state for security findings."
+    },
+    "resetToInferred": "Reset to inferred",
+    "@resetToInferred": {
+        "description": "Button to reset network context."
+    },
+    "internetSlowQuestion": "IS INTERNET SLOW?",
+    "@internetSlowQuestion": {
+        "description": "Question on the speed doctor tile."
+    },
+    "runSpeedDoctorDesc": "Run Speed Doctor — 30-second root-cause diagnostic.",
+    "@runSpeedDoctorDesc": {
+        "description": "Description on the speed doctor tile."
+    },
+    "securityAlertsTitle": "SECURITY ALERTS",
+    "@securityAlertsTitle": {
+        "description": "Title for the security alerts sheet."
+    },
+    "markAllRead": "MARK ALL READ",
+    "@markAllRead": {
+        "description": "Button to mark all alerts as read."
+    },
+    "clearAll": "CLEAR ALL",
+    "@clearAll": {
+        "description": "Button to clear all alerts."
+    },
+    "eventsRetentionInfo": "Events are retained for 30 days. Swipe left to dismiss.",
+    "@eventsRetentionInfo": {
+        "description": "Information about event retention."
+    },
+    "allSystemsClear": "All systems clear",
+    "@allSystemsClear": {
+        "description": "Text shown when there are no alerts."
+    },
+    "heuristicDetectionNote": "Heuristic detection — not a confirmed attack. False positives may occur in congested environments.",
+    "@heuristicDetectionNote": {
+        "description": "Note about heuristic detection accuracy."
+    },
+    "markAsRead": "MARK AS READ",
+    "@markAsRead": {
+        "description": "Button to mark a single alert as read."
+    },
+    "eventTypeRogueAp": "ROGUE AP",
+    "@eventTypeRogueAp": {
+        "description": "Security event type: Rogue AP."
+    },
+    "eventTypeEvilTwin": "EVIL TWIN",
+    "@eventTypeEvilTwin": {
+        "description": "Security event type: Evil Twin."
+    },
+    "eventTypeDeauthAttack": "DEAUTH ATTACK",
+    "@eventTypeDeauthAttack": {
+        "description": "Security event type: Deauth Attack."
+    },
+    "eventTypeEncryptionWeakened": "ENCRYPTION WEAKENED",
+    "@eventTypeEncryptionWeakened": {
+        "description": "Security event type: Encryption Weakened."
+    },
+    "eventTypeDeauthBurst": "DEAUTH BURST",
+    "@eventTypeDeauthBurst": {
+        "description": "Security event type: Deauth Burst."
+    },
+    "eventTypeHandshakeAnalysis": "HANDSHAKE ANALYSIS",
+    "@eventTypeHandshakeAnalysis": {
+        "description": "Security event type: Handshake Analysis."
+    },
+    "eventTypeHandshakeSecured": "HANDSHAKE SECURED",
+    "@eventTypeHandshakeSecured": {
+        "description": "Security event type: Handshake Secured."
+    },
+    "eventTypeCaptivePortal": "CAPTIVE PORTAL",
+    "@eventTypeCaptivePortal": {
+        "description": "Security event type: Captive Portal."
+    },
+    "eventTypeUnsupported": "UNSUPPORTED",
+    "@eventTypeUnsupported": {
+        "description": "Security event type: Unsupported."
+    },
+    "eventTypeArpSpoofing": "ARP SPOOFING",
+    "@eventTypeArpSpoofing": {
+        "description": "Security event type: Arp Spoofing."
+    },
+    "eventTypeDnsHijacking": "DNS HIJACKING",
+    "@eventTypeDnsHijacking": {
+        "description": "Security event type: Dns Hijacking."
+    },
+    "agentId": "AGENT-01",
+    "@agentId": {
+        "description": "Default agent ID."
+    },
+    "cyberneticId": "CYBERNETIC_ID: {id}",
+    "@cyberneticId": {
+        "description": "Cybernetic ID label.",
+        "placeholders": {
+            "id": {
+                "type": "String"
+            }
+        }
+    },
+    "subscriptionLabel": "Sub: {type}",
+    "@subscriptionLabel": {
+        "description": "Subscription status label.",
+        "placeholders": {
+            "type": {
+                "type": "String"
+            }
+        }
+    },
+    "deepScanSuppressed": "Deep scan suppressed — connected to a {context} network. Disable the safety guard in Settings to override.",
+    "@deepScanSuppressed": {
+        "description": "Message shown when deep scan is skipped for safety.",
+        "placeholders": {
+            "context": {
+                "type": "String"
+            }
+        }
+    },
+    "securityAssessmentFailed": "SECURITY ASSESSMENT FAILED",
+    "@securityAssessmentFailed": {
+        "description": "Error message when security scan fails."
+    },
+    "retryAnalytics": "RETRY ANALYTICS",
+    "@retryAnalytics": {
+        "description": "Button to retry security scan."
+    },
+    "publicContextLabel": "public",
+    "@publicContextLabel": {
+        "description": "Label for public network context."
+    },
+    "guestContextLabel": "guest",
+    "@guestContextLabel": {
+        "description": "Label for guest network context."
+    },
+    "clearScanHistoryTitle": "CLEAR SCAN HISTORY",
+    "@clearScanHistoryTitle": {
+        "description": "Title for clear scan history dialog."
+    },
+    "clearScanHistoryBody": "Delete all LAN scan records? This cannot be undone.",
+    "@clearScanHistoryBody": {
+        "description": "Body for clear scan history dialog."
+    },
+    "cancelLabel": "CANCEL",
+    "@cancelLabel": {
+        "description": "Cancel button label."
+    },
+    "networkAuditConsentTitle": "NETWORK AUDIT CONSENT",
+    "@networkAuditConsentTitle": {
+        "description": "Title for network audit consent dialog."
+    },
+    "networkAuditConsentDesc": "Active network scanning generates traffic to identify devices and services. This may be flagged by network security systems.",
+    "@networkAuditConsentDesc": {
+        "description": "Description for network audit consent dialog."
+    },
+    "consentScanNodes": "Scan local network for active nodes",
+    "@consentScanNodes": {
+        "description": "Consent point: scan nodes."
+    },
+    "consentFingerprint": "Fingerprint open services and OS",
+    "@consentFingerprint": {
+        "description": "Consent point: fingerprint."
+    },
+    "consentIdentifyVulns": "Identify potential vulnerabilities",
+    "@consentIdentifyVulns": {
+        "description": "Consent point: identify vulnerabilities."
+    },
+    "consentConfirmAuth": "Confirm you have authorization for this network",
+    "@consentConfirmAuth": {
+        "description": "Consent point: confirm authorization."
+    },
+    "iUnderstand": "I UNDERSTAND",
+    "@iUnderstand": {
+        "description": "Action label for consent dialog."
+    },
+    "iosLanDiscoveryLimited": "iOS: LAN discovery is limited. mDNS browsing and ARP table access may be restricted by the OS.",
+    "@iosLanDiscoveryLimited": {
+        "description": "Warning for iOS users about LAN scan limitations."
+    },
+    "speedDoctorLongDesc": "Runs signal, channel, speed and DNS probes in ~30 seconds and tells you which link in the chain is the bottleneck.",
+    "@speedDoctorLongDesc": {
+        "description": "Long description for Speed Doctor."
+    },
+    "startDiagnosis": "START DIAGNOSIS",
+    "@startDiagnosis": {
+        "description": "Button to start speed doctor."
+    },
+    "speedDoctorQuotaWarning": "Heads up: a real speed test downloads ~300–500 MB. Use Wi-Fi or an unmetered connection to avoid burning your mobile quota.",
+    "@speedDoctorQuotaWarning": {
+        "description": "Warning about data usage during speed test."
+    },
+    "evidenceLabel": "EVIDENCE",
+    "@evidenceLabel": {
+        "description": "Evidence section header."
+    },
+    "runAgain": "RUN AGAIN",
+    "@runAgain": {
+        "description": "Button to rerun diagnosis."
+    },
+    "aboutSpeedDoctorTitle": "ABOUT SPEED DOCTOR",
+    "@aboutSpeedDoctorTitle": {
+        "description": "About section title."
+    },
+    "sdAboutWhatTitle": "What is it?",
+    "@sdAboutWhatTitle": {},
+    "sdAboutWhatBody": "A one-tap diagnostic that finds the likely bottleneck between you and the internet — without you having to compare numbers across separate screens.",
+    "@sdAboutWhatBody": {},
+    "sdAboutHowTitle": "How does it work?",
+    "@sdAboutHowTitle": {},
+    "sdAboutHowBody": "Five short probes run end-to-end and the results are compared against published thresholds:",
+    "@sdAboutHowBody": {},
+    "sdAboutHowBullet1": "Signal — reads RSSI from the connected access point.",
+    "@sdAboutHowBullet1": {},
+    "sdAboutHowBullet2": "Channel — scores your channel against neighbouring APs.",
+    "@sdAboutHowBullet2": {},
+    "sdAboutHowBullet3": "Speed — runs a real download/upload test against Cloudflare.",
+    "@sdAboutHowBullet3": {},
+    "sdAboutHowBullet4": "Bufferbloat — measures latency under load (Waveform A–F).",
+    "@sdAboutHowBullet4": {},
+    "sdAboutHowBullet5": "DNS — benchmarks public resolvers vs. your current one.",
+    "@sdAboutHowBullet5": {},
+    "sdAboutCategoriesTitle": "What do the categories mean?",
+    "@sdAboutCategoriesTitle": {},
+    "sdAboutCategoriesBullet1": "Weak Signal — Wi-Fi link forced into slower modes by distance / walls.",
+    "@sdAboutCategoriesBullet1": {},
+    "sdAboutCategoriesBullet2": "Crowded Channel — neighbouring APs on the same channel eat your air-time.",
+    "@sdAboutCategoriesBullet2": {},
+    "sdAboutCategoriesBullet3": "Bufferbloat — latency balloons when the link is fully loaded; calls and games suffer.",
+    "@sdAboutCategoriesBullet3": {},
+    "sdAboutCategoriesBullet4": "ISP Slow — Wi-Fi is fine but your plan / upstream is the ceiling.",
+    "@sdAboutCategoriesBullet4": {},
+    "sdAboutCategoriesBullet5": "Slow DNS — page loads feel laggy because name lookups take too long.",
+    "@sdAboutCategoriesBullet5": {},
+    "sdAboutEstimateTitle": "About the speed-up estimate",
+    "@sdAboutEstimateTitle": {},
+    "sdAboutEstimateBody": "Each finding shows a conservative projected gain — what you can realistically expect after applying the fix. It is a lower bound, not a guarantee, and it depends on the test conditions.",
+    "@sdAboutEstimateBody": {},
+    "diagnosisFailed": "Diagnosis failed",
+    "@diagnosisFailed": {
+        "description": "Error message when diagnosis fails."
+    },
+    "retryLabel": "RETRY",
+    "@retryLabel": {
+        "description": "Retry button label."
+    },
+    "settingsIncludeHiddenDesc": "Actively probes for hidden SSIDs. Off by default — only enable on networks you own.",
+    "@settingsIncludeHiddenDesc": {},
+    "autoScanLabel": "Auto-Scan",
+    "@autoScanLabel": {},
+    "autoScanDesc": "Repeat scan every {seconds}s automatically",
+    "@autoScanDesc": {
+        "placeholders": {
+            "seconds": {
+                "type": "int"
+            }
+        }
+    },
+    "deepScanLabel": "Deep Scan",
+    "@deepScanLabel": {},
+    "deepScanDesc": "Banner grab + exposure analysis. Only enable on networks you are authorized to test.",
+    "@deepScanDesc": {},
+    "restrictDeepScanPublicLabel": "Restrict Deep Scan on Public Wi-Fi",
+    "@restrictDeepScanPublicLabel": {},
+    "restrictDeepScanPublicDesc": "Suppress active probing when connected to a public or guest network. Recommended — active scans on networks you do not own are the dominant legal risk.",
+    "@restrictDeepScanPublicDesc": {},
+    "backgroundMonitoringLabel": "Background Monitoring",
+    "@backgroundMonitoringLabel": {},
+    "backgroundMonitoringDesc": "Run a quiet Wi-Fi check every 30 minutes while the app is closed. You'll get a notification if a new device appears, the connected network swaps, or encryption changes. Battery impact is minimal. iOS support is limited (system-controlled refresh).",
+    "@backgroundMonitoringDesc": {},
+    "portScanTimeoutLabel": "Port Scan Timeout",
+    "@portScanTimeoutLabel": {},
+    "privacyAndDataLabel": "PRIVACY & DATA",
+    "@privacyAndDataLabel": {},
+    "dataRetentionLabel": "DATA RETENTION",
+    "@dataRetentionLabel": {},
+    "scanHistoryRetentionLabel": "Scan History",
+    "@scanHistoryRetentionLabel": {},
+    "speedTestsRetentionLabel": "Speed Tests",
+    "@speedTestsRetentionLabel": {},
+    "securityEventsRetentionLabel": "Security Events",
+    "@securityEventsRetentionLabel": {},
+    "replayOnboardingLabel": "Replay Onboarding",
+    "@replayOnboardingLabel": {},
+    "replayOnboardingDesc": "View the welcome tour again.",
+    "@replayOnboardingDesc": {},
+    "wipeAllDataLabel": "Wipe All Local Data",
+    "@wipeAllDataLabel": {},
+    "wipeAllDataDesc": "Deletes all scan history, speed tests, security events and channel ratings from this device.",
+    "@wipeAllDataDesc": {},
+    "aboutLabel": "ABOUT",
+    "@aboutLabel": {},
+    "legalDisclaimerTitle": "Legal Disclaimer",
+    "@legalDisclaimerTitle": {},
+    "legalDisclaimerBody": "This application performs network observation and authorized LAN discovery. Active probing is strictly limited to service identification and security assessment. No brute-force authentication, frame injection, deauthentication packets, ARP poisoning, or credential harvesting are performed.\n\nUse of this application on networks you do not own or are not authorized to test may violate applicable laws (TCK 243/244, EU Directive 2013/40, CFAA). The user is solely responsible for ensuring lawful use.\n\nBu uygulama ağ gözlemi ve yetkili LAN keşfi gerçekleştirir. Aktif sorgulama yalnızca servis tanımlama ve güvenlik değerlendirmesi ile sınırlıdır. Yetkisiz ağlarda kullanım TCK 243/244 kapsamında suç teşkil edebilir.",
+    "@legalDisclaimerBody": {},
+    "enableDeepScanTitle": "ENABLE DEEP SCAN?",
+    "@enableDeepScanTitle": {},
+    "enableDeepScanBody": "Deep scan performs banner grabbing and service exposure analysis. This mode must only be used on networks you own or are explicitly authorized to test.\n\nProceeding on unauthorized networks may violate applicable laws.",
+    "@enableDeepScanBody": {},
+    "wifiScanPermissionTitle": "WIFI SCAN PERMISSION",
+    "@wifiScanPermissionTitle": {},
+    "wifiScanPermissionDesc": "To discover nearby Wi-Fi networks and analyze signal strength, Torcav requires Location access. This is an Android system requirement for Wi-Fi scanning.",
+    "@wifiScanPermissionDesc": {},
+    "consentScanSsids": "Scan nearby Wi-Fi SSIDs",
+    "@consentScanSsids": {},
+    "consentAnalyzeSignal": "Analyze signal quality and interference",
+    "@consentAnalyzeSignal": {},
+    "consentNoTracking": "Torcav never tracks or shares your location",
+    "@consentNoTracking": {},
+    "continueLabel": "CONTINUE",
+    "@continueLabel": {},
+    "clearWifiHistoryBody": "Delete all saved Wi-Fi scan sessions? This cannot be undone.",
+    "@clearWifiHistoryBody": {},
+    "transparentSignalAnalysisTitle": "TRANSPARENT SIGNAL ANALYSIS",
+    "@transparentSignalAnalysisTitle": {},
+    "transparentSignalAnalysisDesc": "Advanced spectrum analysis for security auditing. Local processing only.",
+    "@transparentSignalAnalysisDesc": {},
+    "cachedResultsWarning": "Showing cached results — Android limits scan frequency. Wait ~30 s and refresh for live data.",
+    "@cachedResultsWarning": {},
+    "enableDeepScanBodyWifi": "Deep Scan performs banner grabbing and exposure analysis. Use only on networks you are authorized to scan. Unauthorized use may violate TCK 243/244 and similar laws.",
+    "@enableDeepScanBodyWifi": {},
+    "iAmAuthorized": "I AM AUTHORIZED",
+    "@iAmAuthorized": {},
+    "iosWifiScanLimited": "iOS: Wi-Fi scan results are limited by Apple APIs. Active scan trigger and some network details are unavailable.",
+    "@iosWifiScanLimited": {},
+    "allCategoriesLabel": "All categories (single bundle)",
+    "@allCategoriesLabel": {},
+    "jsonFormatLabel": "JSON — full, machine-readable",
+    "@jsonFormatLabel": {},
+    "htmlFormatLabel": "HTML — viewable in browser",
+    "@htmlFormatLabel": {},
+    "autoLabel": "Auto",
+    "@autoLabel": {},
+    "lightLabel": "Light",
+    "@lightLabel": {},
+    "darkLabel": "Dark",
+    "@darkLabel": {},
+    "dismissLabel": "Dismiss",
+    "@dismissLabel": {},
+    "applyLabel": "Apply",
+    "@applyLabel": {},
+    "openSettingsLabel": "Open settings",
+    "@openSettingsLabel": {},
+    "privacyPolicyTitle": "Privacy Policy",
+    "@privacyPolicyTitle": {},
+    "noConnectedNetwork": "No connected network",
+    "@noConnectedNetwork": {},
+    "ssidNotAvailable": "SSID not available",
+    "@ssidNotAvailable": {},
+    "@@locale": "ku"
+,
+  "discardSurveyDialogBody": "All recorded data for this session will be permanently deleted.",
+  "howToFixSection": "HOW TO FIX",
+  "downloadSlowTitle": "Download: {mbps} Mbps — Slow",
+  "latencyHighTitle": "Latency: {ms} ms — High",
+  "autoSamplingDistance": "Auto-sampling Distance",
+  "dataUsageWarningBody": "This speed test downloads ~300–500 MB of data. If you are on a mobile/metered connection this may incur charges or consume your data allowance.",
+  "uploadLimitedTitle": "Upload: {mbps} Mbps — Limited",
+  "downloadSlowBody": "Very limited. Consider moving closer to your router or checking for interference.",
+  "bufferbloatGradeLabel": "BUFFERBLOAT GRADE",
+  "discardSurveyDialogTitle": "DISCARD SURVEY?",
+  "howToUpdateLabel": "HOW TO UPDATE",
+  "jitterGoodTitle": "Jitter: {ms} ms — Good",
+  "speedTestDisclaimer": "Results reflect speed to Cloudflare's nearest server and are affected by Wi-Fi, device hardware, and PoP distance. They are not a direct measure of your ISP contract speed.",
+  "packetLossHighBody": "Data is being dropped. This causes stuttering in calls and gaming. Check for Wi-Fi interference.",
+  "loadedLatencyExcellentTitle": "Loaded Latency: {ms} ms — Excellent",
+  "jitterModerateTitle": "Jitter: {ms} ms — Moderate",
+  "downloadModerateTitle": "Download: {mbps} Mbps — Moderate",
+  "endSurveyDialogBody": "Your current survey data will be lost if you discard it. Save or Discard?",
+  "clearHistoryAction": "CLEAR HISTORY",
+  "packetLossMinimalTitle": "Packet Loss: {pct}% — Minimal",
+  "vulnDbStaleLabel": "STALE",
+  "vulnDbFreshMessage": "Vulnerability lookups against this database are up to date.",
+  "jitterStableTitle": "Jitter: {ms} ms — Stable",
+  "bufferbloatGradeA": "Excellent bufferbloat control. Your router keeps latency low even under heavy load.",
+  "downloadFastBody": "Handles {streams}+ simultaneous HD streams with ease. Great for large households.",
+  "clearAllHistoryAction": "CLEAR ALL HISTORY",
+  "dataUsageWarningTitle": "DATA USAGE WARNING",
+  "trustLevelCaution": "CAUTION",
+  "vulnDbAgingMessage": "The local vulnerability database is over a month old. A clean scan still has value but consider refreshing soon.",
+  "deleteAllHistoryConfirm": "Delete all speed test records? This cannot be undone.",
+  "uploadSlowTitle": "Upload: {mbps} Mbps — Slow",
+  "uploadGoodTitle": "Upload: {mbps} Mbps — Good",
+  "exitAction": "EXIT",
+  "discardAction": "DISCARD",
+  "endSurveyReviewBody": "Exit session review?",
+  "loadedLatencyFairBody": "Noticeable delay when others are using the network. Gaming while downloading may suffer.",
+  "downloadGoodBody": "Supports {streams} simultaneous HD streams. Good for most households.",
+  "noSpecificConcerns": "No specific concerns logged for this device. The badge reflects an aggregate score.",
+  "endSurveyDiscardBody": "Your current survey data will be lost if you discard it. Save or Discard?",
+  "downloadModerateBody": "Enough for browsing and one or two SD streams. Large downloads will be slow.",
+  "vulnDbAgingLabel": "AGING",
+  "uploadFastBody": "Excellent for video conferencing, cloud backups, and live streaming.",
+  "jitterUnstableTitle": "Jitter: {ms} ms — Unstable",
+  "trustLevelRisky": "RISKY",
+  "bufferbloatGradeB": "Good bufferbloat. Minor latency increase under load — most users won't notice.",
+  "wipeAllDialogBody": "This will permanently delete all local scan history, speed test records, security events, channel ratings and in-memory snapshots. This action cannot be undone.",
+  "packetLossPerfectTitle": "Packet Loss: 0% — Perfect",
+  "vulnDbStaleMessage": "This database is more than 90 days old. A \"no findings\" result no longer means the network is safe — many newer CVEs may not be represented here yet.",
+  "portScanTimeoutMs": "{ms} ms",
+  "downloadFastTitle": "Download: {mbps} Mbps — Fast",
+  "packetLossMinimalBody": "Very minor loss. Likely unnoticeable for most activities.",
+  "endSurveyDialogTitle": "End Survey?",
+  "cveDatabaseLabel": "CVE DATABASE — {freshness}",
+  "systemDefault": "System Default",
+  "whyIsThisLabel": "WHY IS THIS {level}?",
+  "jitterUnstableBody": "High variation — audio and video calls will likely break up. This can be caused by interference or a congested channel.",
+  "loadedLatencyFairTitle": "Loaded Latency: {ms} ms — Fair",
+  "bufferbloatGradeD": "Poor bufferbloat. Connection becomes sluggish under load. Enable QoS on your router.",
+  "vulnDbEntriesInfo": "v{version} · {count} entries · {days} days old",
+  "whatToDoLabel": "WHAT TO DO",
+  "uploadFastTitle": "Upload: {mbps} Mbps — Fast",
+  "latencyAcceptableTitle": "Latency: {ms} ms — Acceptable",
+  "bufferbloatGradeC": "Moderate bufferbloat. Gaming and video calls may lag when others are downloading.",
+  "uploadLimitedBody": "Enough for basic video calls. Large file uploads will take a while.",
+  "latencyHighBody": "Noticeable lag. Video calls and gaming may feel sluggish. Try moving closer to your router.",
+  "latencyAcceptableBody": "Fine for browsing and streaming, but video calls may have slight delays.",
+  "bufferbloatGradeE": "Severe bufferbloat. Real-time apps will fail during concurrent downloads.",
+  "trustLevelSafe": "SAFE",
+  "latencyExcellentTitle": "Latency: {ms} ms — Excellent",
+  "latencyExcellentBody": "Near-instant response. Ideal for gaming, video calls, and real-time apps.",
+  "jitterGoodBody": "Stable enough for calls and streaming. Minor variation is normal on Wi-Fi.",
+  "loadedLatencyGoodTitle": "Loaded Latency: {ms} ms — Good",
+  "allDataWiped": "All local data wiped.",
+  "deleteAllAction": "DELETE ALL",
+  "packetLossHighTitle": "Packet Loss: {pct}% — High",
+  "loadedLatencyPoorBody": "High Bufferbloat. Connection becomes unresponsive during large downloads. Consider enabling QoS on your router.",
+  "latencyGoodBody": "Good for video calls and streaming. Most apps will feel responsive.",
+  "loadedLatencyPoorTitle": "Loaded Latency: {ms} ms — Poor",
+  "wipeAllDialogTitle": "WIPE ALL DATA",
+  "bufferbloatGradeF": "Critical bufferbloat. Your router does not control queue depth. Upgrade firmware or hardware.",
+  "loadedLatencyExcellentBody": "Your network stays responsive even when downloading. Excellent router quality.",
+  "appearanceLabel": "Appearance",
+  "vulnDbFreshLabel": "FRESH",
+  "jitterStableBody": "Very consistent connection. Your packets arrive with minimal timing variation.",
+  "packetLossPerfectBody": "Solid connection. No data packets were lost during the assessment.",
+  "uploadGoodBody": "Good for video calls and sharing files. Cloud uploads will be reasonable.",
+  "continueAction": "CONTINUE",
+  "latencyGoodTitle": "Latency: {ms} ms — Good",
+  "uploadSlowBody": "Very slow upload. Live video and cloud sync will struggle.",
+  "wipeAllAction": "WIPE ALL",
+  "jitterModerateBody": "Some inconsistency detected. Voice calls may sound choppy during spikes.",
+  "loadedLatencyGoodBody": "Response time increases slightly under load, but stays very usable.",
+  "downloadGoodTitle": "Download: {mbps} Mbps — Good"
+,
+  "legendAndNodes": "LEGEND & NODES",
+  "legendGateway": "GATEWAY",
+  "legendGatewayDesc": "Central network entry point",
+  "legendAccessPoint": "ACCESS POINT",
+  "legendAccessPointDesc": "WiFi signal distributor",
+  "legendMobile": "MOBILE",
+  "legendMobileDesc": "Personal handheld devices",
+  "legendIot": "IOT",
+  "legendIotDesc": "Smart home & sensors",
+  "legendDevice": "DEVICE",
+  "legendDeviceDesc": "Computers, TVs, etc.",
+  "surveyStageStandby": "STANDBY",
+  "surveyStageInitializing": "INITIALIZING",
+  "surveyStageSweepRooms": "SWEEP ROOMS",
+  "surveyStageWeakZone": "WEAK ZONE",
+  "surveyStageWrapUp": "WRAP UP",
+  "surveyStageReview": "REVIEW"
+,
+  "connectionTypesHeader": "CONNECTION TYPES",
+  "connTypeSolidLineLabel": "Solid Line (Blue)",
+  "connTypeSolidLineDesc": "High-speed wired Ethernet connection",
+  "connTypeGradientLabel": "Glowing Gradient (Cyan)",
+  "connTypeGradientDesc": "Wireless WiFi connection",
+  "connTypePulsingLabel": "Pulsing Data Point",
+  "connTypePulsingDesc": "Active traffic detected on the link"
+,
+  "uploadLabel": "UPLOAD",
+  "downloadLabel": "DOWNLOAD",
+  "speedTestSemanticsIdle": "Speed test gauge. Tap to start.",
+  "speedTestSemanticsRunning": "Speed test running — {mbps} Mbps download. Tap to stop.",
+  "speedTestSemanticsComplete": "Speed test complete — {dl} Mbps download, {ul} Mbps upload.",
+  "measurementLockedTitle": "MEASUREMENT LOCKED",
+  "measurementLockNoWifi": "Connect to a Wi-Fi network to lock the survey target.",
+  "measurementLockReconnect": "Reconnect to {bssid} to resume sampling.",
+  "waitingForSignalTitle": "WAITING FOR FRESH SIGNAL",
+  "waitingForSignalBody": "RSSI is older than 3 seconds. Walk briefly or hold position for a new scan.",
+  "signalDroppedTitle": "SIGNAL DROPPED",
+  "signalDroppedBody": "Wi-Fi signal is below -85dBm. Move closer to the Access Point.",
+  "compassDriftTitle": "COMPASS DRIFT DETECTED",
+  "measurementLockMagnetic": "Magnetic interference found. Walk in a figure-8 or tap Realign.",
+  "placeSurveyOriginTitle": "PLACE SURVEY ORIGIN",
+  "measurementLockAnchor": "Tap a detected plane to anchor the AR survey before recording points.",
+  "trackingLostTitle": "TRACKING LOST",
+  "measurementLockTracking": "Motion tracking is unavailable. Move slowly until tracking returns.",
+  "readyBannerTapFinish": "Tap to finish scan",
+  "ssidChipLock": "LOCK",
+  "ssidChipHold": "HOLD",
+  "guidanceStageIdle": "Idle",
+  "guidanceStageInitializing": "Initializing",
+  "guidanceStageMappingSignal": "Mapping Signal",
+  "guidanceStageScanningWeakZones": "Scanning Weak Zones",
+  "guidanceStageReadyToFinish": "Ready to Finish",
+  "guidanceStageReviewing": "Reviewing",
+  "signalProbeHint": "Try tapping closer to a captured signal point.",
+  "wifiSecurityOpen": "OPEN",
+  "newSessionPermissionsBody": "To generate accurate heatmaps and map your network coverage, Torcav requires access to certain device features:",
+  "newSessionPermLocation": "Location (to map signal to coordinates)",
+  "newSessionPermActivity": "Activity Recognition (to track steps and movement)",
+  "newSessionPermCamera": "Camera (optional, for visual mapping features)",
+  "reportsMacMaskDesc": "Masks last 3 octets (XX:XX:XX) before export",
+  "reportsShareSubject": "Torcav Scan Report",
+  "exportNoDataYet": "No data in \"{label}\" yet.",
+  "exportSubject": "Torcav local data export",
+  "exportFailedError": "Export failed: {error}"
+,
+  "tapToStart": "TAP TO START",
+  "tapToStop": "TAP TO STOP"
+,
+  "liveWifi": "LIVE WI-FI"
+,
+  "signalProbeTitle": "SIGNAL PROBE",
+  "statusOptimal": "OPTIMAL",
+  "statusFair": "FAIR",
+  "statusCritical": "CRITICAL"
 }

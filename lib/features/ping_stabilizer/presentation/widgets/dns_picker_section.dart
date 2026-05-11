@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/extensions/context_extensions.dart';
 import '../bloc/ping_stabilizer_cubit.dart';
 import '../bloc/ping_stabilizer_state.dart';
 
@@ -16,10 +17,10 @@ class DnsPickerSection extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'DNS',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    context.l10n.dnsLabel,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
                 Switch(
@@ -27,7 +28,7 @@ class DnsPickerSection extends StatelessWidget {
                   onChanged: (v) =>
                       context.read<PingStabilizerCubit>().setAutoSwitchDns(v),
                 ),
-                const Text('Auto'),
+                Text(context.l10n.autoLabel),
               ],
             ),
             const SizedBox(height: 8),

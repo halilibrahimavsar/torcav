@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 import 'package:torcav/features/security/domain/entities/security_event.dart'
     as domain_event;
 import '../bloc/security_bloc.dart';
@@ -75,8 +76,8 @@ class SecurityCenterBentoHeader extends StatelessWidget {
                                 children: [
                                   Text(
                                     state is SecurityLoading
-                                        ? 'SCANNING'
-                                        : 'SYSTEM STATUS',
+                                        ? context.l10n.scanningAllCaps
+                                        : context.l10n.systemStatusLabel,
                                     style: GoogleFonts.firaCode(
                                       fontSize: 9,
                                       fontWeight: FontWeight.w900,
@@ -106,7 +107,7 @@ class SecurityCenterBentoHeader extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  'SECURITY SCORE',
+                                  context.l10n.securityScoreLabel,
                                   style: GoogleFonts.rajdhani(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w800,
@@ -125,7 +126,7 @@ class SecurityCenterBentoHeader extends StatelessWidget {
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
-                                      '/100',
+                                      context.l10n.outOf100Label,
                                       style: GoogleFonts.orbitron(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -187,11 +188,13 @@ class SecurityCenterBentoHeader extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             _BottomStat(
-                              label: 'SHIELD INTEGRITY',
+                              label: context.l10n.shieldIntegrityLabel,
                               value:
                                   hasCritical
-                                      ? 'CRITICAL'
-                                      : (hasHigh ? 'WARNING' : 'OPTIMAL'),
+                                      ? context.l10n.shieldStatusCritical
+                                      : (hasHigh
+                                          ? context.l10n.shieldStatusWarning
+                                          : context.l10n.shieldStatusOptimal),
                               color:
                                   hasCritical
                                       ? scheme.error
@@ -201,7 +204,7 @@ class SecurityCenterBentoHeader extends StatelessWidget {
                               opacity: 0.7,
                             ),
                             _BottomStat(
-                              label: 'ACTIVE THREATS',
+                              label: context.l10n.activeThreatsLabel,
                               value: '${loaded?.recentEvents.length ?? 0}',
                               color:
                                   hasCritical ? scheme.error : scheme.primary,

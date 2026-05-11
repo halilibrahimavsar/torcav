@@ -7,9 +7,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../domain/entities/user_data_category.dart';
 import '../../domain/services/local_data_export_service.dart';
+import '../extensions/user_data_category_extension.dart';
 
 /// "Export Local Data" section on the Reports page.
 ///
@@ -40,6 +42,12 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
   Future<void> _export() async {
     if (_busy) return;
     setState(() => _busy = true);
+    
+    final l10n = context.l10n;
+    final noDataMsg = _selected != null ? l10n.exportNoDataYet(_selected!.label) : '';
+    final subjectMsg = l10n.exportSubject;
+    final failPrefix = l10n.exportFailedError('');
+
     try {
       final service = getIt<LocalDataExportService>();
       final document = _selected == null
@@ -62,7 +70,7 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
             SnackBar(
               duration: const Duration(seconds: 4),
               content: Text(
-                'No data in "${_selected!.label}" yet.',
+                noDataMsg,
                 style: GoogleFonts.rajdhani(fontSize: 13),
               ),
             ),
@@ -85,7 +93,7 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
       await SharePlus.instance.share(
         ShareParams(
           files: [XFile(file.path)],
-          subject: 'Torcav local data export',
+          subject: subjectMsg,
         ),
       );
     } catch (e) {
@@ -96,7 +104,7 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
           SnackBar(
             duration: const Duration(seconds: 4),
             content: Text(
-              'Export failed: $e',
+              '$failPrefix$e',
               style: GoogleFonts.rajdhani(fontSize: 13),
             ),
           ),
@@ -123,6 +131,8 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -142,7 +152,7 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
               ),
               const SizedBox(width: 10),
               NeonText(
-                'EXPORT LOCAL DATA',
+                l10n.exportLocalDataTitle,
                 style: GoogleFonts.orbitron(
                   color: scheme.primary,
                   fontSize: 12,
@@ -156,8 +166,7 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
           ),
           const SizedBox(height: 6),
           Text(
-            'Your data on this device, in your hands. Pick a category and '
-            'share or save it as JSON.',
+            l10n.exportLocalDataDesc,
             style: GoogleFonts.rajdhani(
               color: scheme.onSurfaceVariant,
               fontSize: 12,
@@ -169,20 +178,20 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
             value: _selected,
             isExpanded: true,
             decoration: InputDecoration(
-              labelText: 'Category',
+              labelText: l10n.exportCategoryLabel,
               labelStyle: GoogleFonts.rajdhani(fontSize: 13),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
             items: [
-              const DropdownMenuItem<UserDataCategory?>(
+              DropdownMenuItem<UserDataCategory?>(
                 value: null,
                 child: Row(
                   children: [
-                    Icon(Icons.all_inclusive_rounded, size: 16),
-                    SizedBox(width: 10),
-                    Text('All categories (single bundle)'),
+                    const Icon(Icons.all_inclusive_rounded, size: 16),
+                    const SizedBox(width: 10),
+                    Text(l10n.allCategoriesLabel),
                   ],
                 ),
               ),
@@ -195,7 +204,7 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          cat.label,
+                          cat.localizedLabel(context),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -220,7 +229,7 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
             value: _format,
             isExpanded: true,
             decoration: InputDecoration(
-              labelText: 'Format',
+              labelText: l10n.exportFormatLabel,
               labelStyle: GoogleFonts.rajdhani(fontSize: 13),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -229,11 +238,11 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
             items: [
               DropdownMenuItem(
                 value: ExportFormat.json,
-                child: const Row(
+                child: Row(
                   children: [
-                    Icon(Icons.data_object_rounded, size: 16),
-                    SizedBox(width: 10),
-                    Text('JSON — full, machine-readable'),
+                    const Icon(Icons.data_object_rounded, size: 16),
+                    const SizedBox(width: 10),
+                    Text(l10n.jsonExportLabel),
                   ],
                 ),
               ),
@@ -252,8 +261,8 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
                     const SizedBox(width: 10),
                     Text(
                       _csvAvailable
-                          ? 'CSV — opens in Excel/Sheets'
-                          : 'CSV — single category only',
+                          ? l10n.csvExportLabel
+                          : l10n.csvSingleCategoryOnlyLabel,
                       style: TextStyle(
                         color: _csvAvailable
                             ? null
@@ -265,11 +274,11 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
               ),
               DropdownMenuItem(
                 value: ExportFormat.html,
-                child: const Row(
+                child: Row(
                   children: [
-                    Icon(Icons.html_rounded, size: 16),
-                    SizedBox(width: 10),
-                    Text('HTML — viewable in browser'),
+                    const Icon(Icons.html_rounded, size: 16),
+                    const SizedBox(width: 10),
+                    Text(l10n.htmlExportLabel),
                   ],
                 ),
               ),
@@ -290,7 +299,7 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
                 : (v) => setState(() => _anonymize = v),
             contentPadding: EdgeInsets.zero,
             title: Text(
-              'Anonymize identifiers',
+              l10n.anonymizeIdentifiersLabel,
               style: GoogleFonts.rajdhani(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -298,8 +307,8 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
             ),
             subtitle: Text(
               _supportsAnonymise
-                  ? 'Mask BSSID/MAC last 3 octets, redact SSID and hostname.'
-                  : 'This category has no identifiers to mask.',
+                  ? l10n.anonymizeIdentifiersDesc
+                  : l10n.noIdentifiersToMaskDesc,
               style: GoogleFonts.rajdhani(
                 fontSize: 11,
                 color: scheme.onSurfaceVariant,
@@ -322,7 +331,9 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
                     )
                   : const Icon(Icons.share_rounded, size: 18),
               label: Text(
-                _busy ? 'EXPORTING…' : 'EXPORT AS ${_format.label}',
+                _busy
+                    ? l10n.exportingLabel
+                    : l10n.exportAsLabel(_format.label),
                 style: GoogleFonts.orbitron(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -349,8 +360,7 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
-                  'Stays on your device until you share it. Nothing is sent '
-                  'to any server.',
+                  l10n.exportPrivacyNote,
                   style: GoogleFonts.rajdhani(
                     color: scheme.onSurfaceVariant,
                     fontSize: 11,

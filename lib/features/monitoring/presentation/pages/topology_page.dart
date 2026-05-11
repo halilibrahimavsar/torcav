@@ -185,16 +185,17 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
   }
 
   Widget _buildFilterChips() {
+    final l10n = context.l10n;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(),
       child: Row(
         children: [
-          _filterChip(null, 'ALL'),
-          _filterChip(TopologyNodeVisualKind.router, 'CORE'),
-          _filterChip(TopologyNodeVisualKind.mobile, 'MOBILE'),
-          _filterChip(TopologyNodeVisualKind.iot, 'IOT'),
-          _filterChip(TopologyNodeVisualKind.device, 'OTHER'),
+          _filterChip(null, l10n.filterAll),
+          _filterChip(TopologyNodeVisualKind.router, l10n.filterCore),
+          _filterChip(TopologyNodeVisualKind.mobile, l10n.filterMobile),
+          _filterChip(TopologyNodeVisualKind.iot, l10n.filterIot),
+          _filterChip(TopologyNodeVisualKind.device, l10n.filterOther),
         ],
       ),
     );
@@ -447,7 +448,7 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
           fontWeight: FontWeight.w600,
         ),
         decoration: InputDecoration(
-          hintText: AppLocalizations.of(context)!.searchSsidBssidVendor,
+          hintText: context.l10n.searchSsidBssidVendor,
           hintStyle: GoogleFonts.rajdhani(
             color: colorScheme.onSurface.withValues(alpha: 0.4),
             fontSize: 13,
@@ -848,7 +849,7 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                     padding: const EdgeInsets.only(left: 4, bottom: 4),
                     child: Chip(
                       avatar: const Icon(Icons.shuffle_rounded, size: 14),
-                      label: const Text('MAC Randomized'),
+                      label: Text(l10n.macRandomizedLabel),
                       labelStyle: const TextStyle(fontSize: 11),
                       visualDensity: VisualDensity.compact,
                       backgroundColor: Colors.orange.withValues(alpha: 0.15),
@@ -940,7 +941,7 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
             const SizedBox(width: 8),
             Expanded(
               child: _NodeActionButton(
-                label: 'OS DETECT',
+                label: l10n.osDetectAction,
                 icon: Icons.computer_rounded,
                 color: Colors.tealAccent,
                 isLoading:
@@ -1035,7 +1036,7 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'LATENCY',
+                    l10n.latencyLabel,
                     style: GoogleFonts.orbitron(
                       color: Theme.of(
                         context,
@@ -1095,7 +1096,7 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'OS DETECTED',
+                l10n.osDetectedLabel,
                 style: GoogleFonts.orbitron(
                   color: Theme.of(
                     context,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 
 import 'package:torcav/core/di/injection.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
@@ -42,7 +43,7 @@ class EvilTwinDetailPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              flaggedSsid.isEmpty ? 'Network' : flaggedSsid,
+              flaggedSsid.isEmpty ? context.l10n.networkLabel : flaggedSsid,
               style: GoogleFonts.orbitron(
                 color: theme.colorScheme.primary,
                 fontSize: 18,
@@ -105,7 +106,7 @@ class _NoDataPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'NO LIVE SCAN AVAILABLE',
+            context.l10n.noLiveScanAvailable,
             style: GoogleFonts.orbitron(
               color: theme.colorScheme.primary,
               fontSize: 12,
@@ -115,10 +116,7 @@ class _NoDataPanel extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'We don\'t have a fresh Wi-Fi scan that includes "$ssid" right '
-            'now, so the live signal breakdown isn\'t available. Run a new '
-            'Wi-Fi scan from the Discovery tab and reopen this alert to see '
-            'the full evidence.',
+            context.l10n.noLiveScanDesc(ssid),
             style: GoogleFonts.rajdhani(
               color: theme.colorScheme.onSurface,
               fontSize: 13,

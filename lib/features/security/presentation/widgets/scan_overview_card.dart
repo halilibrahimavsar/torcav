@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 import '../bloc/security_bloc.dart';
 
 class ScanOverviewCard extends StatelessWidget {
@@ -16,21 +17,21 @@ class ScanOverviewCard extends StatelessWidget {
       child: Row(
         children: [
           _MiniStatChip(
-            label: 'APs',
+            label: context.l10n.apsLabel,
             value: '${summary.totalNetworks}',
             color: scheme.primary,
             index: 0,
           ),
           const SizedBox(width: 8),
           _MiniStatChip(
-            label: 'OPEN',
+            label: context.l10n.openLabel,
             value: '${summary.openCount}',
             color: summary.openCount > 0 ? scheme.error : scheme.tertiary,
             index: 1,
           ),
           const SizedBox(width: 8),
           _MiniStatChip(
-            label: 'WPS',
+            label: context.l10n.wpsLabel,
             value: '${summary.wpsCount}',
             color:
                 summary.wpsCount > 0
@@ -40,7 +41,7 @@ class ScanOverviewCard extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           _MiniStatChip(
-            label: 'WEP',
+            label: context.l10n.wepLabel,
             value: '${summary.wepCount}',
             color: summary.wepCount > 0 ? scheme.error : scheme.tertiary,
             index: 3,

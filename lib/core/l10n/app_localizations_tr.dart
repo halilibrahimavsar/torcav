@@ -27,7 +27,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get deepScanExperimentalTitle => 'Deep Scan (Experimental)';
 
   @override
-  String get deepScanExperimentalSubtitle => 'Actively probe LAN for devices and ports. Increased battery usage.';
+  String get deepScanExperimentalSubtitle => 'Cihazlar ve portlar için LAN\'ı aktif olarak sorgulayın. Artan pil kullanımı.';
 
   @override
   String get scanModesTitle => 'Tarama Modları';
@@ -534,7 +534,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get noSecurityEvents => 'Kayıtlı güvenlik olayı yok';
 
   @override
-  String get dnsSecurityTitle => 'DNS INTEGRITY';
+  String get dnsSecurityTitle => 'DNS GÜVENLİĞİ';
 
   @override
   String get dnsSecurityBody => 'Verify that your DNS queries are not being hijacked or spoofed.';
@@ -573,11 +573,159 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String remoteNodeIdLabel(String id) {
-    return 'UZAK_DÜĞÜM_İD: $id';
+    return 'UZAK_DÜĞÜM_KİMLİĞİ: $id';
   }
 
   @override
-  String get ipAddrLabel => 'IP_ADRESİ';
+  String logIdLabel(String id) {
+    return 'GÜNLÜK_KİMLİĞİ: $id';
+  }
+
+  @override
+  String targetLabel(String target) {
+    return 'HEDEF: $target';
+  }
+
+  @override
+  String get dnsStatusPending => 'BEKLENİYOR';
+
+  @override
+  String get dnsStatusNotAssessed => 'DEĞERLENDİRİLMEDİ';
+
+  @override
+  String get dnsStatusInconsistent => 'TUTARSIZ';
+
+  @override
+  String get dnsStatusEnabled => 'ETKİN';
+
+  @override
+  String get dnsStatusDisabled => 'DEVRE DIŞI';
+
+  @override
+  String get notAvailableCaps => 'YOK';
+
+  @override
+  String get evilTwinSignalOuiMismatch => 'İki erişim noktası farklı donanım üreticilerinden geliyor (MAC önekleri eşleşmiyor).';
+
+  @override
+  String get evilTwinSignalSecurityDowngrade => 'Çift farklı şifreleme sunuyor — tipik bir sürüm düşürme saldırısı (örneğin gerçek ağ = WPA3, sahte = WPA2 veya Açık).';
+
+  @override
+  String get evilTwinSignalSameBandChannelDrift => 'Her ikisi de aynı frekans bandında ancak çok farklı kanallarda yayın yapıyor — gerçek radyolar nadiren bu kadar uzağa sıçrar.';
+
+  @override
+  String get evilTwinSignalChannelWidthMismatch => 'Farklı kanal genişlikleri kullanıyorlar (örneğin 80 MHz\'e karşı 20 MHz). Ucuz sahte donanımlar genellikle kopyaladıkları cihazdan daha dar çalışır.';
+
+  @override
+  String get evilTwinSignalWpsToggleMismatch => 'WPS bir erişim noktasında etkin, diğerinde değil.';
+
+  @override
+  String get evilTwinSignalPmfToggleMismatch => 'Korumalı Yönetim Çerçeveleri (802.11w) bir tarafta etkin, diğerinde değil.';
+
+  @override
+  String get evilTwinSignalHiddenVsVisible => 'Bir erişim noktası gizli, diğeri adını açıkça yayınlıyor.';
+
+  @override
+  String get evilTwinSignalSharedMldMac => 'Her ikisi de aynı Wi-Fi 7 çoklu bağlantı MAC\'ini paylaşıyor — bunlar kelimenin tam anlamıyla aynı fiziksel erişim noktasıdır.';
+
+  @override
+  String get evilTwinSignalBssidProximity => 'MAC adresleri yalnızca son hanelerde farklılık gösteriyor — üreticiler bu kalıbı aynı yönlendiricideki radyolar için kullanır.';
+
+  @override
+  String get evilTwinSignalCrossBandSibling => 'Farklı Wi-Fi bantlarında (2.4 / 5 / 6 GHz) bulunuyorlar ancak aynı üreticiyi ve güvenliği paylaşıyorlar — klasik çift bantlı yönlendirici kalıbı.';
+
+  @override
+  String get evilTwinSignalKnownMeshVendor => 'Her iki MAC adresi de bilinen bir mesh yönlendirici ailesine aittir (Eero, Google Nest, Asus AiMesh, Netgear Orbi, TP-Link Deco veya Linksys Velop). Mesh düğümleri aynı Wi-Fi adını bilerek paylaşır.';
+
+  @override
+  String get evilTwinSafeHeadline => 'Farklı bantlarda aynı yönlendirici gibi görünüyor';
+
+  @override
+  String get evilTwinSafeWhatIs => 'Çoğu ev yönlendiricisi aynı Wi-Fi adını (SSID) 2.4 GHz, 5 GHz ve bazen 6 GHz üzerinden yayınlar. Telefonunuz bunları tek bir cihaz olsalar bile ayrı erişim noktaları olarak görür. Mesh sistemleri de aynı şekilde çalışır — her düğüm paylaşılan tek bir ad kullanır.';
+
+  @override
+  String get evilTwinSafeWhyItMatters => 'Bu eşleşme normaldir ve beklenen bir durumdur — işlem yapılmasına gerek yoktur. Bunu burada yalnızca kontrol ettiğimizi ve elediğimizi bilmeniz için gösteriyoruz.';
+
+  @override
+  String get evilTwinSafeAction => 'Yapılacak bir şey yok. Bu aynı yönlendirici veya mesh sisteminizin bir parçası.';
+
+  @override
+  String get evilTwinSafePhrase => 'Bu çifti kontrol ettik ve normal bir çift bantlı yönlendirici veya mesh kalıbıyla eşleşiyor — bir saldırı değil.';
+
+  @override
+  String get evilTwinNoPatternHeadline => 'Evil-twin kalıbı tespit edilmedi';
+
+  @override
+  String get evilTwinNoPatternAction => 'Acil bir durum yok. Ortamınızda bir şeylerin değiştiğinden şüpheleniyorsanız taramayı tekrar çalıştırın.';
+
+  @override
+  String get evilTwinNoPatternPhrase => 'Bu adı paylaşan erişim noktaları arasında bazı küçük farklılıklar var, ancak bir saldırı gibi görünecek kadar değil.';
+
+  @override
+  String get evilTwinWhatIs => 'Bir \"evil twin\", gerçek bir ağın adını kopyalayan sahte bir Wi-Fi ağıdır — genellikle eviniz veya iş yerinizdeki ağ veya popüler bir kafe erişim noktasıdır. Amaç, telefonunuzun gerçek olan yerine saldırganın yönlendiricisine bağlanmasını sağlamaktır.';
+
+  @override
+  String get evilTwinWhyItMatters => 'Cihazınız saldırganın Wi-Fi ağına bağlandığında, şifrelenmemiş trafiği okuyabilir veya kurcalayabilir, sahte giriş sayfaları sunabilir, sizi benzer görünümlü web sitelerine yönlendirebilir veya HTTPS\'yi düzgün kullanmayan uygulamalara yazılan şifreleri ele geçirebilirler. Bankacılık, e-posta ve mesajlaşma olağan hedeflerdir.';
+
+  @override
+  String get evilTwinHighHeadline => 'Güçlü evil-twin kalıbı — bu ağı güvenilmez olarak kabul edin';
+
+  @override
+  String get evilTwinMediumHeadline => 'Şüpheli twin kalıbı — bağlanmadan önce doğrulayın';
+
+  @override
+  String get evilTwinLowHeadline => 'Zayıf twin sinyali — buna dikkat edin';
+
+  @override
+  String evilTwinHighPhrase(int pct) {
+    return 'Güven: %$pct. Bu adı kullanan iki erişim noktası arasında birden fazla güçlü uyumsuzluk var. Bu, bir saldırganın bir Wi-Fi\'yi taklit ederken oluşturduğu kalıptır.';
+  }
+
+  @override
+  String evilTwinMediumPhrase(int pct) {
+    return 'Güven: %$pct. Bu adı paylaşan erişim noktaları arasında birkaç ayrıntı örtüşmüyor. İyi niyetli olabilir, ancak güvenmeden önce doğrulayın.';
+  }
+
+  @override
+  String evilTwinLowPhrase(int pct) {
+    return 'Güven: %$pct. Birkaç küçük uyumsuzluk fark edildi. Büyük olasılıkla iyi niyetli — tekrar kontrol edebilmeniz için işaretlendi.';
+  }
+
+  @override
+  String get evilTwinActionPasswords => 'Bu Wi-Fi\'ye bağlıyken şifre, ödeme ayrıntıları veya iki faktörlü kodlar girmeyin.';
+
+  @override
+  String get evilTwinActionCheckMac => 'Evdeyseniz, yönlendiricinizin altında yazan gerçek MAC\'i (BSSID) kontrol edin ve bu ağ için gösterilen BSSID\'lerle karşılaştırın.';
+
+  @override
+  String get evilTwinActionForgetNetwork => 'Telefonunuzun Wi-Fi ayarlarından ağı unutun ve yalnızca doğruladığınız BSSID\'ye manuel olarak tekrar bağlanın.';
+
+  @override
+  String get evilTwinActionSecurityDowngrade => 'İki erişim noktasından biri diğerinden daha zayıf şifreleme kullanıyor. Her zaman daha güçlü olanı seçin (WPA3 > WPA2 > Açık).';
+
+  @override
+  String get evilTwinActionDisconnectNow => 'Şimdi bu Wi-Fi bağlantısını kesin ve hangi BSSID\'nin gerçek olduğunu doğrulayana kadar mobil veriye geçin.';
+
+  @override
+  String get evilTwinActionHardwareVendor => 'İki yönlendirici farklı donanım üreticilerinden geliyor — gerçek yönlendiriciniz aniden üretici değiştirmemelidir.';
+
+  @override
+  String evidenceDiscoveredDevices(String devices) {
+    return 'Keşfedilen: $devices';
+  }
+
+  @override
+  String evidenceVulnerablePorts(String host) {
+    return '$host ana bilgisayarı savunmasız olabilecek açık bağlantı noktalarına sahip.';
+  }
+
+  @override
+  String evidenceNoEncryption(String network) {
+    return 'Erişim noktası $network için şifreleme sunmuyor.';
+  }
+
+  @override
+  String get ipAddrLabel => 'IP_ADRESI';
 
   @override
   String get macValLabel => 'MAC_DEĞERİ';
@@ -984,6 +1132,21 @@ class AppLocalizationsTr extends AppLocalizations {
   String get riskFactorFingerprintDrift => 'SSID parmak izi kayması tespit edildi';
 
   @override
+  String get riskFactorHoneypotPattern => 'SSID bilinen tuzak (honeypot) desenleriyle eşleşiyor';
+
+  @override
+  String get riskFactorNo5Ghz => '5 GHz bandı tespit edilemedi';
+
+  @override
+  String get riskFactorKnownVulnerability => 'Bilinen donanım güvenlik açığı';
+
+  @override
+  String get riskFactorEvilTwinCandidate => 'Bu SSID\'yi paylaşan Evil Twin adayı';
+
+  @override
+  String get riskFactorChannelCongested => 'Kanalda yoğun sıkışıklık var';
+
+  @override
   String get historyCaps => 'GEÇMİŞ';
 
   @override
@@ -1331,26 +1494,26 @@ class AppLocalizationsTr extends AppLocalizations {
   String get networkScoreLabel => 'AĞ PUANI';
 
   @override
-  String get vulnLabTitle => 'VULNERABILITY LAB';
+  String get vulnLabTitle => 'GÜVENLİK LABORATUVARI';
 
   @override
-  String get vulnLabSubtitle => 'Run security tests against your connected network';
+  String get vulnLabSubtitle => 'Bağlı ağınızda güvenlik testleri yapın';
 
   @override
-  String get vulnLabRunAll => 'RUN ALL TESTS';
+  String get vulnLabRunAll => 'TÜM TESTLERİ ÇALIŞTIR';
 
   @override
-  String get vulnLabRunning => 'SCANNING...';
+  String get vulnLabRunning => 'TARANIYOR...';
 
   @override
-  String get vulnLabNoNetwork => 'Not connected to a Wi-Fi network. Connect first to run tests.';
+  String get vulnLabNoNetwork => 'Bir Wi-Fi ağına bağlı değil. Testleri çalıştırmak için önce bağlanın.';
 
   @override
-  String get vulnLabAllClear => 'All tests passed. No vulnerabilities found on this network.';
+  String get vulnLabAllClear => 'Tüm testler geçti. Bu ağda herhangi bir zafiyet bulunmadı.';
 
   @override
   String vulnLabFoundCount(int count) {
-    return '$count issue(s) found';
+    return '$count sorun bulundu';
   }
 
   @override
@@ -1378,7 +1541,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get experimentalFeature => 'EXPERIMENTAL';
 
   @override
-  String get deepScanDescription => 'Active port scanning and LAN discovery (May trigger network alerts)';
+  String get deepScanDescription => 'Aktif port tarama ve LAN keşfi (Ağ uyarılarını tetikleyebilir)';
 
   @override
   String get dnsProtocol => 'PROTOKOL';
@@ -1752,7 +1915,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get acknowledgedLabel => 'ANLAŞILDI';
 
   @override
-  String get speedDoctorTitle => 'HIZ DOKTORU';
+  String get speedDoctorTitle => 'SPEED DOCTOR';
 
   @override
   String get speedDoctorTagline => 'İnternet neden yavaş?';
@@ -1777,4 +1940,3220 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get pingStabilizerDrawerLabel => 'Ping Stabilizatör';
+
+  @override
+  String get onboardingStartScanning => 'TARAMAYA BAŞLA';
+
+  @override
+  String get onboardingNext => 'İLERİ';
+
+  @override
+  String get onboardingWelcomeTitle => 'TORCAV\'A HOŞ GELDİNİZ';
+
+  @override
+  String get onboardingWelcomeBody => 'Kablosuz çevrenizi anlamanıza, en iyi kanalı bulmanıza ve güvenlik tehditlerini tespit etmenize yardımcı olan siberpunk Wi-Fi analizörü.';
+
+  @override
+  String get onboardingLocationTitle => 'KONUM İZNİ';
+
+  @override
+  String get onboardingLocationBody => 'Android, Wi-Fi ağlarını taramak için Konum izni gerektirir. Sinyal ısı haritalarını göstermek için aktivite sensörlerini de kullanıyoruz. Tüm veriler cihazınızda kalır ve asla yüklenmez. Konumunuz yalnızca yakındaki Wi-Fi sinyallerini okumak için kullanılır.';
+
+  @override
+  String get onboardingTourTitle => 'ÜÇ SEKME';
+
+  @override
+  String get onboardingTourDashboardLabel => 'Panel';
+
+  @override
+  String get onboardingTourDashboardDesc => 'Ağ durumunuzun canlı özeti';
+
+  @override
+  String get onboardingTourDiscoveryLabel => 'Keşif';
+
+  @override
+  String get onboardingTourDiscoveryDesc => 'Wi-Fi ağlarını ve LAN cihazlarını tara';
+
+  @override
+  String get onboardingTourOperationsLabel => 'İşlemler';
+
+  @override
+  String get onboardingTourOperationsDesc => 'Güvenlik analizi, hız testleri, raporlar';
+
+  @override
+  String get onboardingContextTitle => 'TORCAV\'I NEREDE KULLANACAKSINIZ?';
+
+  @override
+  String get onboardingContextBody => 'Bu, kendi başımıza anlayamadığımızda güvenlik puanının ne kadar katı olacağını belirler. İstediğiniz zaman değiştirebilirsiniz ve daha sonra her ağ için geçersiz kılınabilir.';
+
+  @override
+  String get onboardingContextHomeTitle => 'Çoğunlukla evim / ofisim';
+
+  @override
+  String get onboardingContextHomeBody => 'Katı puanlama. Şifrelemedeki beklenmedik değişiklikler veya LAN\'daki yeni cihazlar yüksek sesle işaretlenir.';
+
+  @override
+  String get onboardingContextPublicTitle => 'Çoğunlukla kafeler / oteller / havaalanları';
+
+  @override
+  String get onboardingContextPublicBody => 'Şifreleme konusunda esnek puanlama (bu ağlar genellikle açıktır), ancak sahte SSID\'lere ve \'evil-twin\' kalıplarına karşı yüksek hassasiyet. Aktif LAN taraması varsayılan olarak durdurulur.';
+
+  @override
+  String get onboardingContextGuestTitle => 'Çoğunlukla misafir / ortak ağlar';
+
+  @override
+  String get onboardingContextGuestBody => 'Arkadaşlar, aile veya iş arkadaşlarıyla aynı Wi-Fi. Değişiklik beklenir; her yeni cihazda uyarı vermeyiz.';
+
+  @override
+  String get onboardingContextUnknownTitle => 'Henüz emin değilim';
+
+  @override
+  String get onboardingContextUnknownBody => 'Güçlü bir varsayılan yok. Her ağın parmak izinden tahmin yürüteceğiz ve düzeltmenize izin vereceğiz.';
+
+  @override
+  String get onboardingDoneTitle => 'HER ŞEY HAZIR';
+
+  @override
+  String get onboardingDoneBody => 'Torcav gizlilik odaklı bir ağ asistanıdır. Sahibi olduğunuz veya değerlendirme yetkiniz olan ağlar için güvenli ağ teşhisi ve güçlendirme araçları sağlar. Harici olarak hiçbir veri toplanmaz veya iletilmez.';
+
+  @override
+  String get onboardingAcceptPrefix => 'Okudum ve kabul ediyorum: ';
+
+  @override
+  String get onboardingTosLink => 'Kullanım Koşulları';
+
+  @override
+  String get onboardingAcceptAnd => ' ve ';
+
+  @override
+  String get onboardingPrivacyLink => 'Gizlilik Politikası';
+
+  @override
+  String get onboardingAcceptSuffix => '.';
+
+  @override
+  String get onboardingConfirmPermission => 'Analiz edeceğim ağları tarama yetkim olduğunu onaylıyorum.';
+
+  @override
+  String get onboardingConfirmAge => '13 yaşında veya daha büyük olduğumu onaylıyorum.';
+
+  @override
+  String get appTitle => 'TORCAV';
+
+  @override
+  String get ssidLabel => 'SSID';
+
+  @override
+  String get noSecurityFindings => 'No security findings detected.';
+
+  @override
+  String get resetToInferred => 'Reset to inferred';
+
+  @override
+  String get internetSlowQuestion => 'İNTERNET YAVAŞ MI?';
+
+  @override
+  String get runSpeedDoctorDesc => 'Speed Doctor\'ı çalıştır — 30 saniyelik kök neden teşhisi.';
+
+  @override
+  String get securityAlertsTitle => 'SECURITY ALERTS';
+
+  @override
+  String get markAllRead => 'MARK ALL READ';
+
+  @override
+  String get clearAll => 'CLEAR ALL';
+
+  @override
+  String get eventsRetentionInfo => 'Events are retained for 30 days. Swipe left to dismiss.';
+
+  @override
+  String get allSystemsClear => 'All systems clear';
+
+  @override
+  String get heuristicDetectionNote => 'Heuristic detection — not a confirmed attack. False positives may occur in congested environments.';
+
+  @override
+  String get markAsRead => 'MARK AS READ';
+
+  @override
+  String get eventTypeRogueAp => 'ROGUE AP';
+
+  @override
+  String get eventTypeEvilTwin => 'EVIL TWIN';
+
+  @override
+  String get eventTypeDeauthAttack => 'DEAUTH ATTACK';
+
+  @override
+  String get eventTypeEncryptionWeakened => 'ENCRYPTION WEAKENED';
+
+  @override
+  String get eventTypeDeauthBurst => 'DEAUTH BURST';
+
+  @override
+  String get eventTypeHandshakeAnalysis => 'HANDSHAKE ANALYSIS';
+
+  @override
+  String get eventTypeHandshakeSecured => 'HANDSHAKE SECURED';
+
+  @override
+  String get eventTypeCaptivePortal => 'CAPTIVE PORTAL';
+
+  @override
+  String get eventTypeUnsupported => 'UNSUPPORTED';
+
+  @override
+  String get eventTypeArpSpoofing => 'ARP SPOOFING';
+
+  @override
+  String get eventTypeDnsHijacking => 'DNS HIJACKING';
+
+  @override
+  String get agentId => 'AGENT-01';
+
+  @override
+  String cyberneticId(String id) {
+    return 'CYBERNETIC_ID: $id';
+  }
+
+  @override
+  String subscriptionLabel(String type) {
+    return 'Sub: $type';
+  }
+
+  @override
+  String deepScanSuppressed(String context) {
+    return 'Deep scan suppressed — connected to a $context network. Disable the safety guard in Settings to override.';
+  }
+
+  @override
+  String get securityAssessmentFailed => 'SECURITY ASSESSMENT FAILED';
+
+  @override
+  String get retryAnalytics => 'RETRY ANALYTICS';
+
+  @override
+  String get publicContextLabel => 'public';
+
+  @override
+  String get guestContextLabel => 'guest';
+
+  @override
+  String get clearScanHistoryTitle => 'CLEAR SCAN HISTORY';
+
+  @override
+  String get clearScanHistoryBody => 'Delete all LAN scan records? This cannot be undone.';
+
+  @override
+  String get cancelLabel => 'CANCEL';
+
+  @override
+  String get networkAuditConsentTitle => 'NETWORK AUDIT CONSENT';
+
+  @override
+  String get networkAuditConsentDesc => 'Active network scanning generates traffic to identify devices and services. This may be flagged by network security systems.';
+
+  @override
+  String get consentScanNodes => 'Scan local network for active nodes';
+
+  @override
+  String get consentFingerprint => 'Fingerprint open services and OS';
+
+  @override
+  String get consentIdentifyVulns => 'Identify potential vulnerabilities';
+
+  @override
+  String get consentConfirmAuth => 'Confirm you have authorization for this network';
+
+  @override
+  String get iUnderstand => 'I UNDERSTAND';
+
+  @override
+  String get iosLanDiscoveryLimited => 'iOS: LAN discovery is limited. mDNS browsing and ARP table access may be restricted by the OS.';
+
+  @override
+  String get speedDoctorLongDesc => '~30 saniye içinde sinyal, kanal, hız ve DNS sorguları yaparak zincirdeki hangi halkanın darboğaz olduğunu söyler.';
+
+  @override
+  String get startDiagnosis => 'TEŞHİSİ BAŞLAT';
+
+  @override
+  String get speedDoctorQuotaWarning => 'Dikkat: Gerçek bir hız testi ~300-500 MB indirir. Mobil kotanızı bitirmemek için Wi-Fi veya sınırsız bir bağlantı kullanın.';
+
+  @override
+  String get evidenceLabel => 'KANITLAR';
+
+  @override
+  String get runAgain => 'TEKRAR ÇALIŞTIR';
+
+  @override
+  String get aboutSpeedDoctorTitle => 'SPEED DOCTOR HAKKINDA';
+
+  @override
+  String get sdAboutWhatTitle => 'Nedir?';
+
+  @override
+  String get sdAboutWhatBody => 'Ayrı ekranlardaki rakamları karşılaştırmanıza gerek kalmadan, sizinle internet arasındaki olası darboğazı bulan tek dokunuşluk bir teşhistir.';
+
+  @override
+  String get sdAboutHowTitle => 'Nasıl çalışır?';
+
+  @override
+  String get sdAboutHowBody => 'Beş kısa sorgu uçtan uca çalıştırılır ve sonuçlar yayınlanmış eşik değerlerle karşılaştırılır:';
+
+  @override
+  String get sdAboutHowBullet1 => 'Sinyal — bağlı erişim noktasından RSSI değerini okur.';
+
+  @override
+  String get sdAboutHowBullet2 => 'Kanal — kanalınızı komşu erişim noktalarına göre puanlar.';
+
+  @override
+  String get sdAboutHowBullet3 => 'Hız — Cloudflare\'a karşı gerçek bir indirme/yükleme testi yapar.';
+
+  @override
+  String get sdAboutHowBullet4 => 'Bufferbloat — yük altında gecikmeyi ölçer (Waveform A–F).';
+
+  @override
+  String get sdAboutHowBullet5 => 'DNS — genel çözücüleri mevcut olanla karşılaştırır.';
+
+  @override
+  String get sdAboutCategoriesTitle => 'Kategoriler ne anlama geliyor?';
+
+  @override
+  String get sdAboutCategoriesBullet1 => 'Zayıf Sinyal — Wi-Fi bağlantısı mesafe/duvarlar nedeniyle daha yavaş modlara zorlanıyor.';
+
+  @override
+  String get sdAboutCategoriesBullet2 => 'Kalabalık Kanal — aynı kanaldaki komşu ağlar bant genişliğinizi tüketiyor.';
+
+  @override
+  String get sdAboutCategoriesBullet3 => 'Bufferbloat — bağlantı tam yüklendiğinde gecikme artar; aramalar ve oyunlar etkilenir.';
+
+  @override
+  String get sdAboutCategoriesBullet4 => 'Yavaş ISP — Wi-Fi iyi ancak paketiniz / üst yapınız sınırda.';
+
+  @override
+  String get sdAboutCategoriesBullet5 => 'Yavaş DNS — isim sorgulamaları çok uzun sürdüğü için sayfa yüklemeleri yavaş hissettiriyor.';
+
+  @override
+  String get sdAboutEstimateTitle => 'Hızlanma tahmini hakkında';
+
+  @override
+  String get sdAboutEstimateBody => 'Her bulgu muhafazakar bir öngörülen kazanç gösterir — düzeltmeyi uyguladıktan sonra gerçekçi olarak bekleyebileceğiniz kazanç. Bu bir garanti değil, alt sınırdır ve test koşullarına bağlıdır.';
+
+  @override
+  String get diagnosisFailed => 'Teşhis başarısız oldu';
+
+  @override
+  String get retryLabel => 'YENİDEN DENE';
+
+  @override
+  String get settingsIncludeHiddenDesc => 'Gizli SSID\'leri aktif olarak sorgular. Varsayılan olarak kapalıdır — yalnızca sahibi olduğunuz ağlarda etkinleştirin.';
+
+  @override
+  String get autoScanLabel => 'Otomatik Tarama';
+
+  @override
+  String autoScanDesc(int seconds) {
+    return 'Taramayı her $seconds saniyede bir otomatik olarak tekrarla';
+  }
+
+  @override
+  String get deepScanLabel => 'Derin Tarama';
+
+  @override
+  String get deepScanDesc => 'Banner yakalama + zafiyet analizi. Sadece test etme yetkiniz olan ağlarda etkinleştirin.';
+
+  @override
+  String get restrictDeepScanPublicLabel => 'Halka Açık Wi-Fi\'da Derin Taramayı Kısıtla';
+
+  @override
+  String get restrictDeepScanPublicDesc => 'Halka açık veya misafir ağlara bağlıyken aktif sorgulamayı durdurur. Önerilir — sahibi olmadığınız ağlarda yapılan aktif taramalar temel yasal risk oluşturur.';
+
+  @override
+  String get backgroundMonitoringLabel => 'Arka Plan İzleme';
+
+  @override
+  String get backgroundMonitoringDesc => 'Uygulama kapalıyken her 30 dakikada bir sessiz bir Wi-Fi kontrolü yapar. Yeni bir cihaz belirdiğinde, bağlı ağ değiştiğinde veya şifreleme değiştiğinde bildirim alırsınız. Pil etkisi minimumdur.';
+
+  @override
+  String get portScanTimeoutLabel => 'Port Tarama Zaman Aşımı';
+
+  @override
+  String get privacyAndDataLabel => 'GİZLİLİK VE VERİ';
+
+  @override
+  String get dataRetentionLabel => 'VERİ SAKLAMA';
+
+  @override
+  String get scanHistoryRetentionLabel => 'Tarama Geçmişi';
+
+  @override
+  String get speedTestsRetentionLabel => 'Hız Testleri';
+
+  @override
+  String get securityEventsRetentionLabel => 'Güvenlik Olayları';
+
+  @override
+  String get replayOnboardingLabel => 'Tanıtımı Tekrar Oynat';
+
+  @override
+  String get replayOnboardingDesc => 'Hoş geldin turunu tekrar görüntüleyin.';
+
+  @override
+  String get wipeAllDataLabel => 'Tüm Yerel Verileri Temizle';
+
+  @override
+  String get wipeAllDataDesc => 'Bu cihazdaki tüm tarama geçmişini, hız testlerini, güvenlik olaylarını ve kanal derecelendirmelerini siler.';
+
+  @override
+  String get aboutLabel => 'HAKKINDA';
+
+  @override
+  String get legalDisclaimerTitle => 'Yasal Uyarı';
+
+  @override
+  String get legalDisclaimerBody => 'Bu uygulama ağ gözlemi ve yetkili LAN keşfi gerçekleştirir. Aktif sorgulama yalnızca servis tanımlama ve güvenlik değerlendirmesi ile sınırlıdır. Brute-force kimlik doğrulama, paket enjeksiyonu, ARP zehirlemesi veya kimlik bilgisi toplama işlemleri yapılmaz.\n\nBu uygulamanın sahibi olmadığınız veya test etme yetkiniz olmayan ağlarda kullanılması yürürlükteki yasaları (TCK 243/244, AB Direktifi 2013/40, CFAA) ihlal edebilir. Yasal kullanımın sağlanmasından tamamen kullanıcı sorumludur.';
+
+  @override
+  String get enableDeepScanTitle => 'ENABLE DEEP SCAN?';
+
+  @override
+  String get enableDeepScanBody => 'Derin tarama, banner yakalama ve servis zafiyet analizi gerçekleştirir. Bu mod sadece sahibi olduğunuz veya açıkça yetkilendirildiğiniz ağlarda kullanılmalıdır.\n\nYetkisiz ağlarda devam etmek yürürlükteki yasaları ihlal edebilir.';
+
+  @override
+  String get wifiScanPermissionTitle => 'WIFI SCAN PERMISSION';
+
+  @override
+  String get wifiScanPermissionDesc => 'To discover nearby Wi-Fi networks and analyze signal strength, Torcav requires Location access. This is an Android system requirement for Wi-Fi scanning.';
+
+  @override
+  String get consentScanSsids => 'Scan nearby Wi-Fi SSIDs';
+
+  @override
+  String get consentAnalyzeSignal => 'Analyze signal quality and interference';
+
+  @override
+  String get consentNoTracking => 'Torcav never tracks or shares your location';
+
+  @override
+  String get continueLabel => 'CONTINUE';
+
+  @override
+  String get clearWifiHistoryBody => 'Delete all saved Wi-Fi scan sessions? This cannot be undone.';
+
+  @override
+  String get transparentSignalAnalysisTitle => 'TRANSPARENT SIGNAL ANALYSIS';
+
+  @override
+  String get transparentSignalAnalysisDesc => 'Advanced spectrum analysis for security auditing. Local processing only.';
+
+  @override
+  String get cachedResultsWarning => 'Showing cached results — Android limits scan frequency. Wait ~30 s and refresh for live data.';
+
+  @override
+  String get enableDeepScanBodyWifi => 'Derin Tarama, banner yakalama ve zafiyet analizi gerçekleştirir. Sadece tarama yetkiniz olan ağlarda kullanın. Yetkisiz kullanım TCK 243/244 ve benzeri yasaları ihlal edebilir.';
+
+  @override
+  String get iAmAuthorized => 'YETKİLİYİM';
+
+  @override
+  String get iosWifiScanLimited => 'iOS: Wi-Fi scan results are limited by Apple APIs. Active scan trigger and some network details are unavailable.';
+
+  @override
+  String get allCategoriesLabel => 'All categories (single bundle)';
+
+  @override
+  String get jsonFormatLabel => 'JSON — full, machine-readable';
+
+  @override
+  String get htmlFormatLabel => 'HTML — viewable in browser';
+
+  @override
+  String get autoLabel => 'Auto';
+
+  @override
+  String get lightLabel => 'Light';
+
+  @override
+  String get darkLabel => 'Dark';
+
+  @override
+  String get dismissLabel => 'Dismiss';
+
+  @override
+  String get applyLabel => 'Apply';
+
+  @override
+  String get openSettingsLabel => 'Open settings';
+
+  @override
+  String get privacyPolicyTitle => 'Gizlilik Politikası';
+
+  @override
+  String get noConnectedNetwork => 'No connected network';
+
+  @override
+  String get ssidNotAvailable => 'SSID not available';
+
+  @override
+  String get encryptionAndConfigTitle => 'ŞİFRELEME VE YAPILANDIRMA';
+
+  @override
+  String get environmentScanTitle => 'ORTAM TARAMASI';
+
+  @override
+  String get dnsTestFailedTitle => 'DNS Testi Başarısız';
+
+  @override
+  String get dnsTestFailedDesc => 'DNS test sunucularına ulaşılamadı. Bağlantınızı kontrol edin.';
+
+  @override
+  String get dnsLeakDetectedTitle => 'DNS Sızıntısı Tespit Edildi';
+
+  @override
+  String get dnsLeakDetectedDesc => 'DNS sorgularınız beklenen çözücünün dışına sızıyor, bu durum internet aktivitenizi servis sağlayıcınıza veya üçüncü taraflara ifşa edebilir.';
+
+  @override
+  String get dnsHijackingDetectedTitle => 'DNS Ele Geçirme Tespit Edildi';
+
+  @override
+  String get dnsHijackingDetectedDesc => 'DNS yanıtları beklenmedik bir sunucuya yönlendiriliyor. Bu durum aradaki adam (man-in-the-middle) saldırısına veya servis sağlayıcı müdahalesine işaret edebilir.';
+
+  @override
+  String get dnsConfigWarningTitle => 'DNS Yapılandırma Uyarısı';
+
+  @override
+  String get dnsConfigWarningDesc => 'DNS yapılandırmasında gizliliği veya güvenliği etkileyebilecek potansiyel sorunlar var.';
+
+  @override
+  String get noIssuesDetected => 'Sorun tespit edilmedi';
+
+  @override
+  String get retryInternetConnection => 'İnternete bağlandığınızda tekrar deneyin.';
+
+  @override
+  String get dnsLeakRecommendation => 'Güvenilir bir DNS çözücü (örn. 1.1.1.1 veya 9.9.9.9) yapılandırın ve HTTPS üzerinden DNS (DoH) veya TLS üzerinden DNS (DoT) özelliğini etkinleştirin.';
+
+  @override
+  String get dnsHijackingRecommendation => 'Derhal bir VPN kullanmaya başlayın. DNS sorgularınıza müdahale ediliyor.';
+
+  @override
+  String get dnsConfigRecommendation => 'DNS ayarlarınızı gözden geçirin ve gizlilik odaklı bir DNS sağlayıcısına geçmeyi düşünün.';
+
+  @override
+  String openNetworksNearbyTitle(int count) {
+    return 'Yakında $count Açık Ağ Var';
+  }
+
+  @override
+  String openNetworksNearbyDesc(int count) {
+    return 'Menzilde $count şifrelenmemiş ağ tespit edildi. Açık ağlar kolayca dinlenebilir.';
+  }
+
+  @override
+  String wpsEnabledNearbyTitle(int count) {
+    return 'Yakında WPS Etkin $count Ağ Var';
+  }
+
+  @override
+  String wpsEnabledNearbyDesc(int count) {
+    return 'Yakındaki $count ağda WPS etkin. WPS PINi kaba kuvvetle (brute-force) ele geçirilebilir ve Wi-Fi şifresi tamamen devre dışı bırakılabilir.';
+  }
+
+  @override
+  String get wpsRecommendation => 'Yönlendiricinizde WPSi devre dışı bırakın. Eğer bunlar sizin ağınız değilse, yakındaki erişim noktalarının daha az güvenli olabileceğini unutmayın.';
+
+  @override
+  String get renderingErrorTitle => 'RENDERING ERROR';
+
+  @override
+  String get appTitleLong => 'Torcav Wi-Fi Analyzer';
+
+  @override
+  String get tosTitle => 'TERMS OF SERVICE';
+
+  @override
+  String get tosAcceptanceTitle => '1. ACCEPTANCE';
+
+  @override
+  String get tosAcceptanceBody => 'By accessing or using Torcav, you agree to be bound by these Terms. If you do not agree, you must immediately cease use of the App.';
+
+  @override
+  String get tosAuthorizedTestingTitle => '2. AUTHORIZED TESTING ONLY';
+
+  @override
+  String get tosAuthorizedTestingBody => 'You represent and warrant that you will only use the App to analyze networks and devices that you own or for which you have received explicit, written authorization to test. Unauthorized access to networks is strictly prohibited and may be illegal in your jurisdiction.';
+
+  @override
+  String get tosDisclaimerTitle => '3. DISCLAIMER OF WARRANTIES';
+
+  @override
+  String get tosDisclaimerBody => 'The App is provided \"as is\" and \"as available\". We do not guarantee that the App will identify all security vulnerabilities or that its results are 100% accurate. Use at your own risk.';
+
+  @override
+  String get tosLiabilityTitle => '4. LIMITATION OF LIABILITY';
+
+  @override
+  String get tosLiabilityBody => 'In no event shall the developers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the App.';
+
+  @override
+  String get tosModificationsTitle => '5. MODIFICATIONS';
+
+  @override
+  String get tosModificationsBody => 'We reserve the right to modify these terms at any time. Continued use of the App following any changes constitutes acceptance of the new terms.';
+
+  @override
+  String get tosLastUpdated => 'Last Updated: April 2026';
+
+  @override
+  String get legalNoticeTitle => 'LEGAL NOTICE';
+
+  @override
+  String get legalNoticeBody => 'This application is a security auditing tool. Misuse of this software to access or monitor networks without permission is strictly prohibited.';
+
+  @override
+  String get privacyTitle => 'GİZLİLİK POLİTİKASI';
+
+  @override
+  String get privacyIntro => 'Torcav \"Varsayılan Olarak Gizlilik\" ilkesi üzerine inşa edilmiştir. Neredeyse her bayt cihazınızda kalır — hesap yok, bulut senkronizasyonu yok, analiz yok, reklam yok. Birkaç özellik genel teknik uç noktalara (Cloudflare, Google\'ın captive-portal sorgusu, genel DNS çözücüleri) bağlanır — bunlar yalnızca IP\'nizi görür, asla herhangi bir Torcav dahili kimliğini görmez. Kaydedilen her kaydı tek bir dokunuşla silebilirsiniz.';
+
+  @override
+  String get privacyViewFullGithub => 'TÜM POLİTİKAYI GITHUB\'DA GÖRÜNTÜLE';
+
+  @override
+  String get privacyFullPolicyDesc => 'Aşağıdaki kart listesi bir özettir. Kanonik, KVKK + GDPR formatındaki politika github.io adresinde barındırılmaktadır.';
+
+  @override
+  String get privacyResponsibleTitle => 'KİM SORUMLU';
+
+  @override
+  String get privacyIndividualDev => 'Bireysel Geliştirici';
+
+  @override
+  String privacyDevBody(String email) {
+    return 'Torcav, kayıtlı bir şirket değil, bireysel bir geliştirici (Halil İbrahim Avşar) tarafından işletilmektedir. Veri sorumlusuna doğrudan $email adresinden ulaşabilirsiniz.';
+  }
+
+  @override
+  String get privacyDataCollectionTitle => 'VERİ TOPLAMA VE KULLANIM';
+
+  @override
+  String get privacyWifiAnalysisTitle => 'Wi-Fi ve Ağ Analizi';
+
+  @override
+  String get privacyWifiAnalysisBody => 'Yakındaki SSID/BSSID/RSSI meta verileri ve güvenlik bayrakları (WPA2/WPA3/WPS/PMF) işletim sistemi tarama API\'sinden okunur. Bu veriler yerel bir SQLite veritabanında şifrelenmiş olarak saklanır. Asla sunucuya yüklenmez.';
+
+  @override
+  String get privacyLanInventoryTitle => 'LAN Cihaz Envanteri';
+
+  @override
+  String get privacyLanInventoryBody => 'Bir LAN taraması çalıştırdığınızda uygulama, aynı ağdaki cihazlar için IP/MAC/ana bilgisayar adı/üretici/açık portları toplar. Bu, üçüncü taraf cihazları içerebilir — dışa aktarmalar için anonimleştirme varsayılan olarak açıktır.';
+
+  @override
+  String get privacyLocationTitle => 'Konum İzni (Yalnızca Wi-Fi)';
+
+  @override
+  String get privacyLocationBody => 'Android, Wi-Fi taramasını etkinleştirmek için konum izni gerektirir. Torcav bunu kesinlikle bunun için kullanır — GPS koordinatlarını okumayız ve hareketi izlemeyiz.';
+
+  @override
+  String get privacySensorsTitle => 'Sensörler ve Isı Haritası';
+
+  @override
+  String get privacySensorsBody => 'Isı haritası anketleri sırasında sinyal gücünü göreli yolunuza (başlangıç = tarama başlangıcı) eşlemek için etkinlik tanıma + IMU/barometer kullanılır. GPS kullanılmaz.';
+
+  @override
+  String get privacyAiTitle => 'AI / Yerel Sınıflandırma';
+
+  @override
+  String get privacyAiBody => 'Cihaz tipi tanımlama, yerel bir ONNX modeli kullanır. Hiçbir tescilli veya satıcı verisi cihazdan ayrılmaz.';
+
+  @override
+  String get privacyExternalEndpointsTitle => 'DIŞ UÇ NOKTALAR';
+
+  @override
+  String get privacyCloudflareTitle => 'Cloudflare Hız Testi';
+
+  @override
+  String get privacyCloudflareBody => 'Speed Doctor ve hız testi sayfası speed.cloudflare.com\'a karşı ~300-500 MB indirme/yükleme yapar. Cloudflare IP\'nizi görür — hiçbir Torcav kimliği veya telemetrisi eklenmez.';
+
+  @override
+  String get privacyDnsProbesTitle => 'Genel DNS Sorguları';
+
+  @override
+  String get privacyDnsProbesBody => 'DNS karşılaştırması ve sızıntı tespiti için 1.1.1.1, 8.8.8.8, 9.9.9.9, OpenDNS ve AdGuard sorgulanır. Standart DNS sorgularını görürler (kullanıcı kimliği yok).';
+
+  @override
+  String get privacyCaptivePortalTitle => 'Captive Portal Sorgusu';
+
+  @override
+  String get privacyCaptivePortalBody => 'connectivitycheck.gstatic.com, captive portal\'ları tespit etmek için düz bir HEAD isteği alır. Bu, Android\'in kendisinin çalıştırdığı sorgunun aynısıdır.';
+
+  @override
+  String get privacyNoTrackersTitle => 'Analiz Yok, İzleyici Yok, Reklam Yok';
+
+  @override
+  String get privacyNoTrackersBody => 'v1.0\'da sıfır analiz SDK\'sı, sıfır reklam kimliği, sıfır kilitlenme raporlama hizmeti vardır. Uygulama başlangıcında merkeze bildirim yapmayız.';
+
+  @override
+  String get privacyRetentionTitle => 'SAKLAMA VE SİLME';
+
+  @override
+  String get privacyConfigRetentionTitle => 'Yapılandırılabilir Saklama';
+
+  @override
+  String get privacyConfigRetentionBody => 'Ayarlar → Gizlilik, tarama geçmişi, hız testleri ve güvenlik olayları için saklama pencereleri (7-365 gün) ayarlamanıza olanak tanır. Varsayılan değer 30 gündür. Eski kayıtlar otomatik olarak budanır.';
+
+  @override
+  String get privacyWipeLocalDataTitle => 'Tüm Yerel Verileri Temizle';
+
+  @override
+  String get privacyWipeLocalDataBody => 'Ayarlar → Gizlilik\'te tek bir dokunuşla tüm kayıtlı verileri temizler: taramalar, cihazlar, güvenlik olayları, ısı haritası oturumları, LAN geçmişi, dışa aktarmalar. Geri alınamaz.';
+
+  @override
+  String get privacyRightsTitle => 'HAKLARINIZ';
+
+  @override
+  String get privacyKvkkGdprTitle => 'KVKK (Türkiye) + GDPR (AB/AEA)';
+
+  @override
+  String privacyRightsBody(String email) {
+    return 'Verilerinize erişim, düzeltme, silme veya taşınabilirlik talebinde bulunabilirsiniz. Silme işlemi için uygulama içi Tümünü Sil düğmesi en hızlı yoldur. Diğer talepler için $email adresine e-posta gönderin — 30 gün içinde yanıt veririz.';
+  }
+
+  @override
+  String get privacyChildrenTitle => 'Çocukların Gizliliği';
+
+  @override
+  String get privacyChildrenBody => 'Torcav 13 yaşın altındaki kullanıcılara yönelik değildir ve kullanıcının taranan ağın sorumluluğunu alacak kadar büyük olduğunu varsayar.';
+
+  @override
+  String get privacyAuthorisedUseTitle => 'Yalnızca Yetkili Kullanım';
+
+  @override
+  String get privacyAuthorisedUseBody => 'Torcav\'ı sahibi olduğunuz veya açıkça tarama yetkiniz olan ağlarda kullanın. Sahibi olmadığınız ağlarda aktif LAN keşfi ve port tarama yapmak Türk, AB ve ABD yasalarını ihlal edebilir.';
+
+  @override
+  String get privacyContactLabel => 'İLETİŞİM';
+
+  @override
+  String get privacyEffectiveDate => 'Yürürlük Tarihi: 08.05.2026 • Versiyon 1.0';
+
+  @override
+  String get hardeningTitle => 'YÖNLENDİRİCİ GÜÇLENDİRME';
+
+  @override
+  String get hardeningSubtitle => 'AĞ GEÇİDİNİZİ GÜVENLİ HALE GETİRİN';
+
+  @override
+  String get hardeningMarkDone => 'TAMAMLANDI İŞARETLE';
+
+  @override
+  String get hardeningOpenAdmin => 'YÖNETİCİ PANELİNİ AÇ';
+
+  @override
+  String get hardeningStepsTitle => 'İŞLEM ADIMLARI';
+
+  @override
+  String get hardeningMenuHintsTitle => 'YAYGIN MENÜ İSİMLERİ';
+
+  @override
+  String get hardeningCriticalBadge => 'KRİTİK';
+
+  @override
+  String get hardeningChangeAdminPasswordTitle => 'Yönlendirici yönetici şifresini değiştirin';
+
+  @override
+  String get hardeningChangeAdminPasswordBody => 'Varsayılan yönetici kimlik bilgileri (admin/admin, admin/password) herkese açık olarak belgelenmiştir. Wi-Fi ağınızdaki herhangi biri yönetici panelini açabilir ve ayarları değiştirebilir — DNS\'i ele geçirebilir, trafiği yönlendirebilir, sizi dışarıda bırakabilir.';
+
+  @override
+  String get hardeningChangeAdminPasswordStep1 => 'Bu sayfanın üst kısmındaki büyük YÖNETİCİ PANELİNİ AÇ düğmesine dokunun. Tarayıcınız yönlendirici giriş sayfasını açacaktır.';
+
+  @override
+  String get hardeningChangeAdminPasswordStep2 => 'Giriş yapın. Değiştirmediyseniz kullanıcı adı olarak \"admin\" ve şifre olarak \"admin\" veya \"password\" deneyin.';
+
+  @override
+  String get hardeningChangeAdminPasswordStep3 => '\"Administration\", \"System\", \"Maintenance\" veya \"Account\" adında bir menü bulun.';
+
+  @override
+  String get hardeningChangeAdminPasswordStep4 => 'Bu menünün içinde \"Login password\", \"Admin password\" veya \"Change password\" arayın.';
+
+  @override
+  String get hardeningChangeAdminPasswordStep5 => 'YENİ bir şifre seçin — en az 12 karakter, büyük harf, küçük harf, rakam ve sembol karıştırın.';
+
+  @override
+  String get hardeningChangeAdminPasswordStep6 => 'Kaydet / Uygula. Yönlendirici yaklaşık 30 saniyeliğine yeniden başlayabilir.';
+
+  @override
+  String get hardeningChangeAdminPasswordStep7 => 'Yeni şifreyi güvenli bir yere not edin.';
+
+  @override
+  String get hardeningChangeAdminPasswordStep8 => 'Kaydedildikten sonra, buraya geri dönün ve TAMAMLANDI İŞARETLE\'ye dokunun.';
+
+  @override
+  String get hardeningUseWpa3OrWpa2AesTitle => 'WPA3 kullanın, WPA2-AES\'e geri dönün';
+
+  @override
+  String get hardeningUseWpa3OrWpa2AesBody => 'WPA3 modern Wi-Fi şifreleme standardıdır. WPA/TKIP ve WEP dakikalar içinde kırılabilir.';
+
+  @override
+  String get hardeningDisableWpsTitle => 'WPS\'i devre dışı bırakın';
+
+  @override
+  String get hardeningDisableWpsBody => 'WPS, saldırganların saatler içinde Wi-Fi şifrenizi atlamasını sağlar. Kapatın.';
+
+  @override
+  String get hardeningEnablePmfTitle => 'PMF / 802.11w\'yi etkinleştirin';
+
+  @override
+  String get hardeningEnablePmfBody => 'Korumalı Yönetim Çerçeveleri (PMF), saldırganların cihazlarınızı çevrimdışı bırakmasını engeller.';
+
+  @override
+  String get hardeningEnableGuestNetworkTitle => 'Bir misafir ağı etkinleştirin';
+
+  @override
+  String get hardeningEnableGuestNetworkBody => 'Ziyaretçiler ve IoT cihazları için ikinci bir SSID, özel ağınızı güvende tutar.';
+
+  @override
+  String get hardeningDisableRemoteAdminTitle => 'Uzaktan / WAN tarafı yönetimi devre dışı bırakın';
+
+  @override
+  String get hardeningDisableRemoteAdminBody => 'Yönetici paneline internetten ulaşılabiliyorsa, herkes varsayılan şifreleri deneyebilir.';
+
+  @override
+  String get hardeningUpdateFirmwareTitle => 'Aygıt yazılımını (Firmware) güncelleyin';
+
+  @override
+  String get hardeningUpdateFirmwareBody => 'Çoğu ev yönlendiricisinin, üreticilerin sessizce yamaladığı bilinen güvenlik açıkları vardır.';
+
+  @override
+  String get hardeningStrongPassphraseTitle => 'Güçlü bir Wi-Fi parolası kullanın';
+
+  @override
+  String get hardeningStrongPassphraseBody => '12+ karakter, büyük/küçük harf karışık, başka bir servisten asla tekrar kullanılmamış.';
+
+  @override
+  String gatewayCopyError(String ip) {
+    return 'Tarayıcı otomatik olarak açılamadı. Ağ geçidi IP\'si $ip kopyalandı — tarayıcınızın adres çubuğuna yapıştırın.';
+  }
+
+  @override
+  String gatewayCopied(String ip) {
+    return 'Gateway IP $ip copied to clipboard.';
+  }
+
+  @override
+  String get hardeningConnectWifiHint => 'İlerlemeyi yönlendirici bazında takip etmek için ev Wi-Fi ağınıza bağlanın. Kontrol listesi bağlantı olmadan da çalışır.';
+
+  @override
+  String get progressLabel => 'İLERLEME';
+
+  @override
+  String get tapToCopy => 'kopyalamak için dokunun';
+
+  @override
+  String get hardeningOpenAdminDesc => 'Tarayıcıda yönlendirici giriş sayfanızı açın';
+
+  @override
+  String get hardeningConnectWifiRequired => 'Önce Wi-Fi\'ye bağlanın';
+
+  @override
+  String get hardeningGatewayHintDisconnected => 'Bağlandıktan sonra ağ geçidi IP\'si yukarıda görünür ve düğme tarayıcınızı başlatır.';
+
+  @override
+  String get hardeningGatewayHintConnected => 'Açılmıyor mu? Kopyalamak için yukarıdaki ağ geçidi IP\'sine dokunun, ardından tarayıcınızın adres çubuğuna (Chrome, Firefox vb.) yapıştırın.';
+
+  @override
+  String get whyThisMattersLabel => 'BU NEDEN ÖNEMLİ';
+
+  @override
+  String get markAsTodoLabel => 'YAPILACAK OLARAK İŞARETLE';
+
+  @override
+  String get vpnRecommendation => 'Bilinmeyen veya güvenilmeyen ağlara bağlanırken güvenilir bir VPN kullanın.';
+
+  @override
+  String get exportLocalDataTitle => 'EXPORT LOCAL DATA';
+
+  @override
+  String get exportLocalDataDesc => 'Your data on this device, in your hands. Pick a category and share or save it as JSON.';
+
+  @override
+  String get exportCategoryLabel => 'Category';
+
+  @override
+  String get exportFormatLabel => 'Format';
+
+  @override
+  String get jsonExportLabel => 'JSON — full, machine-readable';
+
+  @override
+  String get csvExportLabel => 'CSV — opens in Excel/Sheets';
+
+  @override
+  String get csvSingleCategoryOnlyLabel => 'CSV — single category only';
+
+  @override
+  String get htmlExportLabel => 'HTML — viewable in browser';
+
+  @override
+  String get anonymizeIdentifiersLabel => 'Anonymize identifiers';
+
+  @override
+  String get anonymizeIdentifiersDesc => 'Mask BSSID/MAC last 3 octets, redact SSID and hostname.';
+
+  @override
+  String get noIdentifiersToMaskDesc => 'This category has no identifiers to mask.';
+
+  @override
+  String get exportingLabel => 'EXPORTING…';
+
+  @override
+  String exportAsLabel(String format) {
+    return 'EXPORT AS $format';
+  }
+
+  @override
+  String get exportPrivacyNote => 'Stays on your device until you share it. Nothing is sent to any server.';
+
+  @override
+  String exportFailedMessage(String error) {
+    return 'Export failed: $error';
+  }
+
+  @override
+  String noDataInCategoryMessage(String category) {
+    return 'No data in \"$category\" yet.';
+  }
+
+  @override
+  String get categoryWifiScanHistory => 'Wi-Fi scan history';
+
+  @override
+  String get categorySpeedTestResults => 'Speed test results';
+
+  @override
+  String get categorySecurityEvents => 'Security events';
+
+  @override
+  String get categoryKnownAndTrustedNetworks => 'Known + trusted networks';
+
+  @override
+  String get categoryChannelRatingsHistory => 'Channel ratings history';
+
+  @override
+  String get categoryHeatmapSessions => 'Heatmap sessions';
+
+  @override
+  String get categoryLanScanLatest => 'LAN scan (latest)';
+
+  @override
+  String get categoryDeviceLabelOverrides => 'Device label overrides';
+
+  @override
+  String get categoryPinnedNetworks => 'Pinned networks';
+
+  @override
+  String get categoryScoreHistory => 'Security score history';
+
+  @override
+  String get categoryNetworkContextOverrides => 'Network context overrides';
+
+  @override
+  String get categoryRouterHardeningProgress => 'Router hardening progress';
+
+  @override
+  String get macRandomizedLabel => 'MAC Randomized';
+
+  @override
+  String get notificationsBlockedTitle => 'Notifications are blocked';
+
+  @override
+  String get notificationsBlockedDesc => 'The live ping HUD lives in the notification shade. Without notifications you cannot see ping while gaming. On MIUI/Xiaomi, also enable \"Show on Lock screen\" and \"Floating notifications\".';
+
+  @override
+  String get liveLatencyLabel => 'Live latency';
+
+  @override
+  String get latencyStatLabel => 'Latency';
+
+  @override
+  String get jitterStatLabel => 'Jitter';
+
+  @override
+  String get lossStatLabel => 'Loss';
+
+  @override
+  String baselineLatencyLabel(String ms) {
+    return 'Baseline (pre-tunnel): $ms ms';
+  }
+
+  @override
+  String jitterThresholdLabel(String ms) {
+    return 'Jitter alarm threshold: $ms ms';
+  }
+
+  @override
+  String get heatmapSettingsTitle => 'Heatmap Settings';
+
+  @override
+  String get dnsLabel => 'DNS';
+
+  @override
+  String get notNowLabel => 'NOT NOW';
+
+  @override
+  String get newNetworkLabel => '+ NEW';
+
+  @override
+  String get goneNetworkLabel => 'GONE';
+
+  @override
+  String get hiddenNetworkLabel => '[Hidden]';
+
+  @override
+  String get randomizedMacDetectedLabel => 'Randomized MAC Detected';
+
+  @override
+  String get howPingStabilizerWorksTitle => 'Ping Sabitleyici Nasıl Çalışır';
+
+  @override
+  String get stabilizerExplainerSubtitle => 'Cihaz üzerinde, uzak sunucu yok, ücretsiz.';
+
+  @override
+  String get whatItDoesTitle => 'Ne Yapar';
+
+  @override
+  String get whatItDoesBullet1 => 'Cihazınızda yerel bir VPN tüneli kurar — hiçbir trafik üçüncü taraf bir sunucudan geçmez.';
+
+  @override
+  String get whatItDoesBullet2 => 'DNS sorgularını canlı olarak ölçülen en hızlı çözücüye (1.1.1.1, 8.8.8.8, 9.9.9.9, …) yönlendirir.';
+
+  @override
+  String get whatItDoesBullet3 => 'Gecikme ve jitter değerlerini saniye saniye izler; ani bir artış olduğunda sizi uyarır veya kötüleşen yolu düzeltmek için tüneli yenileyebilir.';
+
+  @override
+  String get whatItDoesBullet4 => 'Gerçek performans kaybını ayırt etmek için EWMA filtresi kullanır, böylece anlık paket gürültülerine değil gerçek sorunlara tepki verir.';
+
+  @override
+  String get whatItDoesNotTitle => 'Ne Yapmaz';
+
+  @override
+  String get whatItDoesNotBullet1 => 'Servis sağlayıcınızın (ISP) oyun sunucusuna olan fiziksel yolunu kısaltamaz — hiçbir uygulama bunu yapamaz.';
+
+  @override
+  String get whatItDoesNotBullet2 => 'ExitLag veya WTFast gibi ücretli VPN/relay servislerinin yerini tutmaz (onlar kendi sunucuları üzerinden yönlendirme yapar; bu ise yereldir).';
+
+  @override
+  String get whatItDoesNotBullet3 => 'Wi-Fi + Mobil veri üzerinden eşzamanlı gönderim (Phase 2) geliştirme aşamasındadır ve şu an devre dışıdır.';
+
+  @override
+  String get risksAndThingsToKnowTitle => 'Riskler ve Bilinmesi Gerekenler';
+
+  @override
+  String get risksBullet1 => 'Tünel aktifken Android\'de anahtar simgesi görünür — bu normaldir ve sistem gereksinimidir.';
+
+  @override
+  String get risksBullet2 => 'Aynı anda sadece bir VPN çalışabilir. Başka bir VPN bağlıysa, bu özellik başlamayı reddedecektir.';
+
+  @override
+  String get risksBullet3 => 'Tünel çalışırken bildirim panelinde kalıcı bir bildirim (güncel ping + Durdur / Yenile butonları) kalır — bu sizin oyun içi panelinizdir; kapatmayın.';
+
+  @override
+  String get risksBullet4 => 'Xiaomi/MIUI, OnePlus/OxygenOS ve benzeri arayüzlerde, Torcav\'ı Ayarlar → Bildirimler ve Ayarlar → Pil → Kısıtlama yok altında izin vermeniz gerekebilir; aksi takdirde sistem bildirimi gizleyebilir.';
+
+  @override
+  String get risksBullet5 => 'DNS otomatik geçişi, tünel açıkken sorgularınızı cevaplayan çözücüyü değiştirir. Sabitleyici durduğunda bu değişiklik geri alınır.';
+
+  @override
+  String get risksBullet6 => 'Pil kullanımı düşüktür (testlerimizde ~%3-5/saat) ancak sıfır değildir — oyununuz bittiğinde kapatmayı unutmayın.';
+
+  @override
+  String get shieldIntegrityLabel => 'KALKAN BÜTÜNLÜĞÜ';
+
+  @override
+  String get activeThreatsLabel => 'AKTİF TEHDİTLER';
+
+  @override
+  String get shieldStatusOptimal => 'OPTIMAL';
+
+  @override
+  String get shieldStatusWarning => 'UYARI';
+
+  @override
+  String get shieldStatusCritical => 'KRİTİK';
+
+  @override
+  String get securityScoreLabel => 'GÜVENLİK PUANI';
+
+  @override
+  String get systemStatusLabel => 'SİSTEM DURUMU';
+
+  @override
+  String get scanningAllCaps => 'TARIYOR...';
+
+  @override
+  String bssidLabel(String bssid) {
+    return 'BSSID: $bssid';
+  }
+
+  @override
+  String gatewayWithIpLabel(String gateway) {
+    return 'AĞ GEÇİDİ: $gateway';
+  }
+
+  @override
+  String get trustedBadge => 'GÜVENİLİR';
+
+  @override
+  String get identifiedBadge => 'TANIMLANDI';
+
+  @override
+  String authEstablishedLabel(String date) {
+    return 'YETKİLİ BAĞLANTI';
+  }
+
+  @override
+  String get revokeTrustTooltip => 'REVOKE TRUST';
+
+  @override
+  String get apsLabel => 'Erişim Noktaları';
+
+  @override
+  String get openLabel => 'Açık';
+
+  @override
+  String get wpsLabel => 'WPS';
+
+  @override
+  String get wepLabel => 'WEP';
+
+  @override
+  String get publicWifiLabel => 'Halka Açık Wi-Fi';
+
+  @override
+  String get guestNetworkLabel => 'Misafir Ağı';
+
+  @override
+  String get publicWifiDesc => 'Open or untrusted network — assume traffic can be observed.';
+
+  @override
+  String get guestNetworkDesc => 'You are on a guest segment. Treat as untrusted by default.';
+
+  @override
+  String get tipVpnTitle => 'Use a VPN';
+
+  @override
+  String get tipVpnBody => 'Tunnel traffic through a trusted VPN before sending anything sensitive. Built-in OS VPN is fine for most users.';
+
+  @override
+  String get tipHttpsTitle => 'Verify HTTPS';
+
+  @override
+  String get tipHttpsBody => 'Only enter credentials on sites with a locked padlock. Reject certificate warnings — they are how attackers strip TLS.';
+
+  @override
+  String get tipSensitiveTitle => 'Defer sensitive actions';
+
+  @override
+  String get tipSensitiveBody => 'Avoid banking, payments, password resets and account logins until you are back on a trusted network.';
+
+  @override
+  String get tipDnsTitle => 'Check DNS health';
+
+  @override
+  String get tipDnsBody => 'Public hotspots can hijack DNS. Run a DNS test from this screen to confirm responses are not being rewritten.';
+
+  @override
+  String evilTwinPrefix(String confidence) {
+    return 'EVIL TWIN';
+  }
+
+  @override
+  String get whatIsEvilTwinTitle => 'BU NEDİR?';
+
+  @override
+  String get whyItMattersTitle => 'NEDEN ÖNEMLİ?';
+
+  @override
+  String get whatWeObservedTitle => 'NELER GÖZLEMLEDİK?';
+
+  @override
+  String get whatLookedLegitimateTitle => 'NELER MEŞRU GÖRÜNÜYOR?';
+
+  @override
+  String get whatYouShouldDoTitle => 'NELER YAPMALISINIZ?';
+
+  @override
+  String get hardeningUseWpa3OrWpa2AesStep1 => 'Üstteki düğmeyi kullanarak yönetici panelini açın.';
+
+  @override
+  String get hardeningUseWpa3OrWpa2AesStep2 => 'Kablosuz (Wireless) bölümünü bulun: \"Wireless\", \"Wi-Fi\" veya \"WLAN\".';
+
+  @override
+  String get hardeningUseWpa3OrWpa2AesStep3 => 'Bir güvenlik veya şifreleme ayarı arayın — genellikle \"Security mode\", \"Authentication\" veya \"Encryption\" olarak adlandırılır.';
+
+  @override
+  String get hardeningUseWpa3OrWpa2AesStep4 => 'Şu sırayla en güçlü seçeneği belirleyin: WPA3-Personal > WPA2/WPA3 mixed > WPA2-Personal (AES). \"WPA-PSK\", \"TKIP\", \"WEP\" veya \"Open\" etiketli olanlardan kaçının — bunlar güvensizdir.';
+
+  @override
+  String get hardeningUseWpa3OrWpa2AesStep5 => 'WPA3-Personal ayarlarsanız ve eski bir cihaz (akıllı ampul, yazıcı, eski telefon) çalışmayı durdurursa, \"WPA2/WPA3 mixed\" seçeneğine geçin — bu, eski donanımların bağlanmasına izin verirken yeni cihazların hala WPA3 kullanmasını sağlar.';
+
+  @override
+  String get hardeningUseWpa3OrWpa2AesStep6 => 'Ayrı 2.4 GHz ve 5 GHz ayarlarınız varsa, HER İKİ bandı da değiştirin.';
+
+  @override
+  String get hardeningUseWpa3OrWpa2AesStep7 => 'Kaydet / Uygula. Cihazlarınızın bağlantısı kısa bir süreliğine kesilebilir — birkaç saniye içinde yeniden bağlanacaklardır.';
+
+  @override
+  String get hardeningUseWpa3OrWpa2AesStep8 => 'Buraya geri dönün ve TAMAMLANDI İŞARETLE\'ye dokunun.';
+
+  @override
+  String get hardeningDisableWpsStep1 => 'Yönetici panelini açın.';
+
+  @override
+  String get hardeningDisableWpsStep2 => 'Kablosuz (Wireless) veya Wi-Fi bölümünü bulun.';
+
+  @override
+  String get hardeningDisableWpsStep3 => '\"WPS\", \"Easy Setup\", \"Quick Connect\" adında bir alt menü veya Kablosuz Ayarlarında WPS etiketli bir sekme arayın.';
+
+  @override
+  String get hardeningDisableWpsStep4 => 'WPS anahtarını OFF / Disabled (Kapalı) konumuna getirin.';
+
+  @override
+  String get hardeningDisableWpsStep5 => 'Bazı yönlendiricilerin üzerinde fiziksel bir WPS düğmesi de bulunur — bu da çalışmayı durduracaktır ki amaç da budur.';
+
+  @override
+  String get hardeningDisableWpsStep6 => 'Kaydet / Uygula.';
+
+  @override
+  String get hardeningDisableWpsStep7 => 'Şu andan itibaren, yeni bir cihaz bağladığınızda sadece normal şekilde Wi-Fi şifresini yazın. Ekstra 10 saniye sürer, ciddi bir saldırı yolunu ortadan kaldırır.';
+
+  @override
+  String get hardeningDisableWpsStep8 => 'Buraya geri dönün ve TAMAMLANDI İŞARETLE\'ye dokunun.';
+
+  @override
+  String get hardeningEnablePmfStep1 => 'Yönetici panelini açın.';
+
+  @override
+  String get hardeningEnablePmfStep2 => 'Kablosuz (Wireless) / Wi-Fi bölümüne gidin.';
+
+  @override
+  String get hardeningEnablePmfStep3 => '\"Advanced\" veya \"Wireless Security\" altında \"PMF\", \"802.11w\" veya \"Management Frame Protection\" adlı bir ayar arayın.';
+
+  @override
+  String get hardeningEnablePmfStep4 => 'Tüm cihazlarınız yeni ise (son ~5 yıl) \"Required\" (Gerekli) olarak ayarlayın. Eski cihazlar ağı görmemeye başlarsa, bunu \"Optional / Capable\" (İsteğe Bağlı) olarak değiştirin — bu yine de yardımcı olur, sadece daha az kısıtlayıcıdır.';
+
+  @override
+  String get hardeningEnablePmfStep5 => 'Bu ayarı hiçbir yerde bulamıyorsanız, yönlendiriciniz bunu WPA3 moduna entegre etmiş olabilir (bu nedenle yukarıdaki 2. adımı tamamlamak zaten kapsar). Bu durumda, buradaki TAMAMLANDI İŞARETLE\'ye de dokunun.';
+
+  @override
+  String get hardeningEnablePmfStep6 => 'Kaydet / Uygula.';
+
+  @override
+  String get hardeningEnablePmfStep7 => 'Buraya geri dönün ve TAMAMLANDI İŞARETLE\'ye dokunun.';
+
+  @override
+  String get hardeningEnableGuestNetworkStep1 => 'Yönetici panelini açın.';
+
+  @override
+  String get hardeningEnableGuestNetworkStep2 => '\"Guest Network\", \"Guest Wi-Fi\" veya \"Multi-SSID\" adında bir menü bulun.';
+
+  @override
+  String get hardeningEnableGuestNetworkStep3 => 'Etkinleştirin. Ana Wi-Fi ağınızdan farklı bir isim verin — örneğin, ana ağınız \"Ev\" ise misafir ağına \"Ev-Misafir\" deyin.';
+
+  @override
+  String get hardeningEnableGuestNetworkStep4 => 'Bir şifre belirleyin. Ana şifrenizden daha basit olabilir (misafirler yazacaktır), ancak yine de 10+ karakter olmalıdır.';
+
+  @override
+  String get hardeningEnableGuestNetworkStep5 => '\"Client Isolation\", \"AP Isolation\" veya \"Guest network isolation\" adında bir ayar arayın. Açık (ON) duruma getirin. Bu, misafir cihazların birbirleriyle veya özel ağınızla konuşmasını engeller.';
+
+  @override
+  String get hardeningEnableGuestNetworkStep6 => 'IoT cihazlarınızı (akıllı prizler, kameralar, robot süpürge, akıllı TV vb.) misafir ağına taşıyın — onları yeni şifreyle bağlayın.';
+
+  @override
+  String get hardeningEnableGuestNetworkStep7 => 'Kaydet / Uygula.';
+
+  @override
+  String get hardeningEnableGuestNetworkStep8 => 'Buraya geri dönün ve TAMAMLANDI İŞARETLE\'ye dokunun.';
+
+  @override
+  String get hardeningDisableRemoteAdminStep1 => 'Yönetici panelini açın.';
+
+  @override
+  String get hardeningDisableRemoteAdminStep2 => '\"Administration\", \"System Tools\" veya \"Security\" bölümüne gidin.';
+
+  @override
+  String get hardeningDisableRemoteAdminStep3 => '\"Remote Management\", \"Web Access from WAN\" veya \"Remote admin\" adlı bir ayar bulun.';
+
+  @override
+  String get hardeningDisableRemoteAdminStep4 => 'Bunu OFF / Disabled (Kapalı) konumuna getirin.';
+
+  @override
+  String get hardeningDisableRemoteAdminStep5 => 'Buradayken, \"Cloud / Remote App access\" ayarını da kontrol edin (bazı markalarda bu vardır — TP-Link Tether, Asus Router app, Mi Wi-Fi). Bu uygulamayı aktif olarak kullanmıyorsanız, onu da kapatın.';
+
+  @override
+  String get hardeningDisableRemoteAdminStep6 => 'Kaydet / Uygula.';
+
+  @override
+  String get hardeningDisableRemoteAdminStep7 => 'Yönlendiricinizi hala evinizin içinden yönetebilirsiniz — sadece uzaktan / genel internet yolu kapatılmıştır.';
+
+  @override
+  String get hardeningDisableRemoteAdminStep8 => 'Buraya geri dönün ve TAMAMLANDI İŞARETLE\'ye dokunun.';
+
+  @override
+  String get hardeningUpdateFirmwareStep1 => 'Yönetici panelini açın.';
+
+  @override
+  String get hardeningUpdateFirmwareStep2 => '\"Firmware Update\", \"System Update\", \"Online Upgrade\" veya \"Maintenance\" adında bir menü bulun.';
+
+  @override
+  String get hardeningUpdateFirmwareStep3 => '\"Check for update\" veya \"Online check\" seçeneğine dokunun. Yönlendirici üretici sunucusunda daha yeni bir sürüm arayacaktır.';
+
+  @override
+  String get hardeningUpdateFirmwareStep4 => 'Bir güncelleme teklif edilirse kurun. Yönlendirici 2-5 dakika boyunca yeniden başlayacaktır — güncelleme sırasında cihazın FİŞİNİ ÇEKMEYİN, aksi takdirde cihaz kullanılamaz hale gelebilir.';
+
+  @override
+  String get hardeningUpdateFirmwareStep5 => 'Cihaz geri geldikten sonra aynı menüye gidin ve \"Auto update\" veya \"Automatic upgrade\" arayın. Varsa ON (Açık) konumuna getirin.';
+
+  @override
+  String get hardeningUpdateFirmwareStep6 => 'Bazı eski yönlendiricilerde çevrimiçi güncelleme bulunmaz. Bu durumda cihaz etiketinden yönlendirici modelini not edin, üretici web sitesinde arayın, en son aygıt yazılımı dosyasını indirin ve aynı menüdeki \"Manual upload\" seçeneğini kullanın.';
+
+  @override
+  String get hardeningUpdateFirmwareStep7 => 'Buraya geri dönün ve TAMAMLANDI İŞARETLE\'ye dokunun.';
+
+  @override
+  String get hardeningStrongPassphraseStep1 => 'Yönetici panelini açın.';
+
+  @override
+  String get hardeningStrongPassphraseStep2 => '\"Wireless\", \"Wi-Fi\" veya \"WLAN\" bölümüne gidin.';
+
+  @override
+  String get hardeningStrongPassphraseStep3 => 'Şifre alanını bulun — \"Wireless password\", \"Pre-Shared Key (PSK)\", \"Wireless Key\" veya sadece \"Password\" olarak etiketlenmiştir.';
+
+  @override
+  String get hardeningStrongPassphraseStep4 => 'YENİ bir parola ile değiştirin: en az 12 karakter; büyük harf, küçük harf, rakam ve sembol karışımı olmalıdır. Sözlük kelimelerinden ve kişisel bilgilerden (doğum günleri, evcil hayvan adları) kaçının.';
+
+  @override
+  String get hardeningStrongPassphraseStep5 => 'İyi bir taktik: birbiriyle ilgisiz üç kelime artı bir sayı seçin, örn. \"dogru-at-batarya-9\". Uzun parolaları kırmak, kısa ama karmaşık olanları kırmaktan daha zordur.';
+
+  @override
+  String get hardeningStrongPassphraseStep6 => 'Ayrı 2.4 GHz ve 5 GHz ağlarınız varsa, HER İKİSİNİ de değiştirin.';
+
+  @override
+  String get hardeningStrongPassphraseStep7 => 'Kaydet / Uygula. Her cihazın bağlantısı kesilecektir — her birine yeni şifreyi tekrar girin.';
+
+  @override
+  String get hardeningStrongPassphraseStep8 => 'Şifreyi bir yere not edin (şifre yöneticisi, ziyaretçiler için buzdolabı notu, vb. hangisi size uyuyorsa).';
+
+  @override
+  String get hardeningStrongPassphraseStep9 => 'Buraya geri dönün ve TAMAMLANDI İŞARETLE\'ye dokunun.';
+
+  @override
+  String get severity_critical => 'KRİTİK';
+
+  @override
+  String get severity_high => 'YÜKSEK';
+
+  @override
+  String get severity_medium => 'ORTA';
+
+  @override
+  String get severity_low => 'DÜŞÜK';
+
+  @override
+  String get severity_info => 'BİLGİ';
+
+  @override
+  String get rule_scan_deep_scan_active_title => 'Derin Tarama Etkin';
+
+  @override
+  String get rule_scan_deep_scan_active_desc => 'Derin tarama etkinleştirildi, daha kapsamlı ağ testleri yapılıyor.';
+
+  @override
+  String get rule_scan_deep_scan_active_rec => 'Yalnızca sahibi olduğunuz veya tarama izniniz olan ağlarda kullanın.';
+
+  @override
+  String get rule_wifi_open_network_title => 'Açık Ağ Tespit Edildi';
+
+  @override
+  String get rule_wifi_open_network_desc => 'Şifreleme tespit edilmedi. Tüm trafik açık metin olarak izlenebilir.';
+
+  @override
+  String get rule_wifi_open_network_rec => 'Hassas aktivitelerden kaçının. Güvenilir bir VPN veya farklı bir ağ tercih edin.';
+
+  @override
+  String get rule_wifi_wep_title => 'WEP Şifreleme Tespit Edildi';
+
+  @override
+  String get rule_wifi_wep_desc => 'WEP artık güvenli değil ve kısa sürede kırılabilir.';
+
+  @override
+  String get rule_wifi_wep_rec => 'Erişim noktasını derhal WPA2 veya WPA3 olarak yeniden yapılandırın.';
+
+  @override
+  String get rule_wifi_legacy_wpa_title => 'Eski WPA Şifreleme';
+
+  @override
+  String get rule_wifi_legacy_wpa_desc => 'WPA/TKIP eski bir teknolojidir ve modern saldırı tekniklerine karşı zayıftır.';
+
+  @override
+  String get rule_wifi_legacy_wpa_rec => 'Erişim noktasını ve istemcileri WPA2/WPA3\'e yükseltin.';
+
+  @override
+  String get rule_wifi_hidden_ssid_title => 'Gizli SSID';
+
+  @override
+  String get rule_wifi_hidden_ssid_desc => 'Gizli SSID\'ler hala keşfedilebilir durumdadır ve uyumluluk sorunlarına yol açabilir.';
+
+  @override
+  String get rule_wifi_hidden_ssid_rec => 'Gizli SSID tek başına bir koruma değildir. Güçlü şifrelemeye odaklanın.';
+
+  @override
+  String get rule_wifi_very_weak_signal_title => 'Çok Zayıf Sinyal';
+
+  @override
+  String get rule_wifi_very_weak_signal_desc => 'Zayıf sinyal kararsız bağlantılara ve sahte erişim noktası saldırılarına karşı duyarlılığa işaret edebilir.';
+
+  @override
+  String get rule_wifi_very_weak_signal_rec => 'Erişim noktasına yaklaşın veya BSSID tutarlılığını doğrulayın.';
+
+  @override
+  String get rule_wifi_wps_enabled_title => 'WPS Etkin';
+
+  @override
+  String get rule_wifi_wps_enabled_desc => 'Wi-Fi Korumalı Kurulum (WPS) etkin. WPS PIN modu saatler içinde kaba kuvvetle kırılabilir.';
+
+  @override
+  String get rule_wifi_wps_enabled_rec => 'Yönlendirici yönetim panelinden WPS\'i devre dışı bırakın. Yalnızca WPA2/WPA3 parolası kullanın.';
+
+  @override
+  String get rule_wifi_pmf_not_enforced_title => 'PMF Zorunlu Değil';
+
+  @override
+  String get rule_wifi_pmf_not_enforced_desc => 'Bu erişim noktası Korumalı Yönetim Çerçevelerini (PMF / 802.11w) zorunlu kılmıyor, bu da bağlantı kesme saldırılarına izin verebilir.';
+
+  @override
+  String get rule_wifi_pmf_not_enforced_rec => 'Yönlendirici ayarlarından PMF\'yi etkinleştirin (genellikle \'802.11w\' veya \'Yönetim Çerçevesi Koruması\' olarak adlandırılır).';
+
+  @override
+  String get rule_wifi_suspicious_sibling_ap_title => 'Şüpheli Kardeş AP';
+
+  @override
+  String get rule_wifi_suspicious_sibling_ap_desc => 'Yakındaki bir erişim noktası bu SSID\'yi paylaşıyor ancak parmak izi uyuşmuyor; bu, bir saldırganın gerçek bir Wi-Fi\'yi taklit etmek için kullandığı bir yöntemdir.';
+
+  @override
+  String get rule_wifi_suspicious_sibling_ap_rec => 'Yönlendiricinizin arkasındaki BSSID\'yi doğrulamadan bu ağa şifre girmeyin.';
+
+  @override
+  String get rule_wifi_suspicious_ssid_title => 'Şüpheli SSID';
+
+  @override
+  String get rule_wifi_suspicious_ssid_desc => 'Bu SSID, saldırganlar tarafından kullanıcıları kandırmak için kullanılan yaygın \'bal küpü\' (honeypot) desenleriyle eşleşiyor (örn. \'Free WiFi\').';
+
+  @override
+  String get rule_wifi_suspicious_ssid_rec => 'Bağlanmadan önce ağın doğruluğunu işletme yetkilisiyle teyit edin. Bağlanmanız gerekiyorsa mutlaka VPN kullanın.';
+
+  @override
+  String get rule_wifi_high_channel_congestion_title => 'Yüksek Kanal Yoğunluğu';
+
+  @override
+  String get rule_wifi_high_channel_congestion_desc => 'Bu kanaldaki aşırı yoğunluk performansı ve bağlantı güvenilirliğini düşürür.';
+
+  @override
+  String get rule_wifi_high_channel_congestion_rec => 'Ağ yöneticisinden daha az yoğun bir kanala geçmesini isteyin.';
+
+  @override
+  String get rule_wifi_only_24ghz_title => 'Yalnızca 2.4 GHz';
+
+  @override
+  String get rule_wifi_only_24ghz_desc => 'Bu ağ yalnızca kalabalık 2.4 GHz bandında yayın yapıyor. 5 GHz daha iyi performans sunar.';
+
+  @override
+  String get rule_wifi_only_24ghz_rec => 'Daha iyi performans için yönlendiricinizde 5 GHz bandını etkinleştirin.';
+
+  @override
+  String get rule_trusted_baseline_drift_title => 'Güvenilir Temel Hat Sapması';
+
+  @override
+  String get rule_trusted_baseline_drift_desc => 'Bu erişim noktası artık daha önce güvendiğiniz parmak iziyle eşleşmiyor.';
+
+  @override
+  String get rule_trusted_baseline_drift_rec => 'Yönlendirici yapılandırmasını yeniden doğrulayın ve değişikliğin kasıtlı olduğundan eminseniz yeniden güvenin.';
+
+  @override
+  String get rule_hardware_vulnerability_title => 'Donanım Zafiyeti';
+
+  @override
+  String get rule_hardware_vulnerability_desc => 'BSSID öneki bilinen zayıf bir donanım profiliyle eşleşyor.';
+
+  @override
+  String get rule_hardware_vulnerability_rec => 'Bu model için bilinen güvenlik açıklarını (CVE) gideren üretici aygıt yazılımı güncellemelerini kontrol edin.';
+
+  @override
+  String get noLiveScanAvailable => 'NO LIVE SCAN AVAILABLE';
+
+  @override
+  String noLiveScanDesc(String ssid) {
+    return 'We don\'t have a fresh Wi-Fi scan that includes \"$ssid\" right now, so the live signal breakdown isn\'t available. Run a new Wi-Fi scan from the Discovery tab and reopen this alert to see the full evidence.';
+  }
+
+  @override
+  String get outOf100Label => '/ 100';
+
+  @override
+  String get networkLabel => 'Network';
+
+  @override
+  String get noActivityYet => 'NO ACTIVITY YET';
+
+  @override
+  String get runFirstScanDesc => 'Run your first scan to populate the timeline.';
+
+  @override
+  String get networkContextTitle => 'AĞ BAĞLAMI';
+
+  @override
+  String get networkContextHomeDesc => 'Eviniz, ofisiniz veya bildiğiniz yönlendirici. Sıkı standartlar uygulanır.';
+
+  @override
+  String get networkContextPublicDesc => 'Kafe, otel, havaalanı veya açık bağlantı noktası. VPN/HTTPS şiddetle tavsiye edilir.';
+
+  @override
+  String get networkContextGuestDesc => 'Bilinen bir ağın misafir segmenti. Doğal sapmalar beklenebilir.';
+
+  @override
+  String get networkContextUnknownDesc => 'Torcav\'ın bağlamı pasif sinyallerden çıkarmasına izin verin.';
+
+  @override
+  String scanVia(String backend) {
+    return 'Scan via $backend';
+  }
+
+  @override
+  String get justNow => 'az önce';
+
+  @override
+  String minutesAgo(int count) {
+    return '$count dk önce';
+  }
+
+  @override
+  String hoursAgo(int count) {
+    return '$count sa önce';
+  }
+
+  @override
+  String daysAgo(int count) {
+    return '$count gün önce';
+  }
+
+  @override
+  String get rogueApSuspected => 'Rogue AP suspected';
+
+  @override
+  String get deauthActivity => 'Deauth activity';
+
+  @override
+  String get handshakeCaptureStarted => 'Handshake capture started';
+
+  @override
+  String get handshakeCaptured => 'Handshake captured';
+
+  @override
+  String get captivePortal => 'Captive portal';
+
+  @override
+  String get evilTwinDetected => 'Evil twin detected';
+
+  @override
+  String get encryptionDowngrade => 'Encryption downgrade';
+
+  @override
+  String get unsupportedOp => 'Unsupported op';
+
+  @override
+  String get arpSpoofing => 'ARP spoofing';
+
+  @override
+  String get dnsHijacking => 'DNS hijacking';
+
+  @override
+  String get speedDoctorDesc => 'Resolve latency and throughput issues.';
+
+  @override
+  String get bestChannelTitle => 'BEST CHANNEL';
+
+  @override
+  String bestChannelDesc(int channel) {
+    return 'Switching to channel $channel could improve quality.';
+  }
+
+  @override
+  String networksWithCount(int count) {
+    return 'Networks ($count)';
+  }
+
+  @override
+  String throughputMbps(int count) {
+    return '$count Mbps';
+  }
+
+  @override
+  String signalStability(String stability) {
+    return 'Stability $stability';
+  }
+
+  @override
+  String get metricSignal => 'SİNYAL';
+
+  @override
+  String get metricScoreTrend => 'PUAN TRENDİ';
+
+  @override
+  String get metricChannels => 'KANALLAR';
+
+  @override
+  String get metricNewDevices => 'YENİ CİHAZLAR';
+
+  @override
+  String get metricThreats => 'TEHDİTLER';
+
+  @override
+  String get metricSpeed => 'HIZ';
+
+  @override
+  String get severityCrit => 'CRIT';
+
+  @override
+  String get severityHighShort => 'HIGH';
+
+  @override
+  String get severityMedShort => 'MED';
+
+  @override
+  String get severityInfoShort => 'INFO';
+
+  @override
+  String get hardenRouterTitle => 'HARDEN ROUTER';
+
+  @override
+  String get hardenRouterSubtitle => 'Security checklist';
+
+  @override
+  String get packetLossLabel => 'PACKET LOSS';
+
+  @override
+  String get loadedLatencyLabel => 'LOADED LATENCY';
+
+  @override
+  String get clearHistoryTooltip => 'Clear all history';
+
+  @override
+  String get whatIsThisSection => 'Bu nedir?';
+
+  @override
+  String get whyItMattersSection => 'Neden önemli?';
+
+  @override
+  String get covShort => 'COV';
+
+  @override
+  String get sigShort => 'SIG';
+
+  @override
+  String get motShort => 'MOT';
+
+  @override
+  String get wifiShort => 'WIFI';
+
+  @override
+  String get camShort => 'CAM';
+
+  @override
+  String get discardSurveyTooltip => 'Discard Survey';
+
+  @override
+  String get finishReviewTooltip => 'Finish & Review';
+
+  @override
+  String get noDataAtLocation => 'NO DATA AT THIS LOCATION';
+
+  @override
+  String get rssiLabel => 'RSSI';
+
+  @override
+  String get statusLabel => 'STATUS';
+
+  @override
+  String get floorLabel => 'FLOOR';
+
+  @override
+  String get positionLabel => 'POSITION';
+
+  @override
+  String get samplesLabel => 'SAMPLES';
+
+  @override
+  String get capturedLabel => 'CAPTURED';
+
+  @override
+  String get heatmapPermissionsTitle => 'HEATMAP PERMISSIONS';
+
+  @override
+  String get realignCompassTooltip => 'Realign Compass';
+
+  @override
+  String get osDetectLabel => 'OS DETECT';
+
+  @override
+  String get exportCsvLabel => 'Export CSV';
+
+  @override
+  String get thisDeviceLabel => 'This Device';
+
+  @override
+  String get setDeviceType => 'Set Device Type';
+
+  @override
+  String get resetToAiLabel => 'Reset to AI label';
+
+  @override
+  String get gatewayCaps => 'GATEWAY';
+
+  @override
+  String get identifiedCaps => 'IDENTIFIED';
+
+  @override
+  String get unknownMacRestricted => 'UNKNOWN MAC (RESTRICTED)';
+
+  @override
+  String get scanPortsCaps => 'SCAN PORTS';
+
+  @override
+  String get noOpenPortsFound => 'No open ports found';
+
+  @override
+  String get criticalCaps => 'CRITICAL';
+
+  @override
+  String get wpsActiveCaps => 'WPS ACTIVE';
+
+  @override
+  String get osDetectAction => 'OS DETECT';
+
+  @override
+  String get osDetectedLabel => 'OS DETECTED';
+
+  @override
+  String get filterAll => 'ALL';
+
+  @override
+  String get filterCore => 'CORE';
+
+  @override
+  String get filterMobile => 'MOBILE';
+
+  @override
+  String get filterIot => 'IOT';
+
+  @override
+  String get filterOther => 'OTHER';
+
+  @override
+  String get protectPdfTitle => 'PROTECT PDF WITH A PASSWORD';
+
+  @override
+  String get pdfLockedHint => 'Optional. Locked file: .torcav-pdf — open it again from Reports.';
+
+  @override
+  String get pdfLockedLabel => 'Locked file: .torcav-pdf — open it again from Reports.';
+
+  @override
+  String get pdfPasswordHint => 'Password (leave empty for plain PDF)';
+
+  @override
+  String get pdfPasswordWarning => 'Heads up: this is lightweight obfuscation, not bank-grade encryption. It protects the file against casual leaks (cloud thumbnails, mailbox cache) but a determined attacker who has the file could still attempt to brute-force a weak password. Use a long, unique passphrase.';
+
+  @override
+  String get understandEnable => 'I UNDERSTAND — ENABLE';
+
+  @override
+  String get categorySignal => 'Sinyal';
+
+  @override
+  String get categoryChannel => 'Kanal';
+
+  @override
+  String get categoryBufferbloat => 'Bufferbloat';
+
+  @override
+  String get categoryIsp => 'ISS Bant Genişliği';
+
+  @override
+  String get categoryDns => 'DNS';
+
+  @override
+  String get categoryHealthy => 'Sağlıklı';
+
+  @override
+  String get severityHigh => 'HIGH';
+
+  @override
+  String get severityMed => 'MED';
+
+  @override
+  String get severityLow => 'LOW';
+
+  @override
+  String get speedDoctorActionMoveCloser => 'Daha yakına taşı';
+
+  @override
+  String get speedDoctorActionAddMesh => 'Mesh düğümü ekle';
+
+  @override
+  String get speedDoctorActionSwitchTo5Ghz => '5 GHz\'e geç';
+
+  @override
+  String get speedDoctorActionChangeChannel => 'Kanalı değiştir';
+
+  @override
+  String get speedDoctorActionMoveTo5Ghz => '5 GHz\'e taşı';
+
+  @override
+  String get speedDoctorActionEnableQos => 'QoS / SQM etkinleştir';
+
+  @override
+  String get speedDoctorActionUpdateFirmware => 'Yazılımı güncelle';
+
+  @override
+  String get speedDoctorActionCallIsp => 'Servis sağlayıcıyı ara';
+
+  @override
+  String get speedDoctorActionRunWiredTest => 'Kablolu test yap';
+
+  @override
+  String get speedDoctorActionChangeDns => 'DNS değiştir';
+
+  @override
+  String get speedDoctorActionEnableDoh => 'DoH etkinleştir';
+
+  @override
+  String get waitingForHistory => 'Geçmiş veriler bekleniyor';
+
+  @override
+  String get noScanData => 'Tarama verisi yok';
+
+  @override
+  String get mbps => 'Mbps';
+
+  @override
+  String get primaryCauseWeakSignalTitle => 'ZAYIF SİNYAL';
+
+  @override
+  String get primaryCauseWeakSignalDesc => 'Cihazınız yönlendiriciden çok uzakta veya arada çok fazla duvar var. Daha yakına taşıyın veya bu alana bir mesh düğümü ekleyin.';
+
+  @override
+  String get primaryCauseCrowdedChannelTitle => 'KALABALIK KANAL';
+
+  @override
+  String get primaryCauseCrowdedChannelDesc => 'Çevredeki birkaç erişim noktası kanalınızı paylaşıyor. Daha az kalabalık bir kanala veya 5/6 GHz\'e geçmek yardımcı olacaktır.';
+
+  @override
+  String get primaryCauseBufferbloatTitle => 'BUFFERBLOAT';
+
+  @override
+  String get primaryCauseBufferbloatDesc => 'Bağlantı meşgul olduğunda gecikme artıyor. Trafik dalgalanmalarını yönetmek için yönlendiricinizde QoS / SQM özelliğini etkinleştirin.';
+
+  @override
+  String get primaryCauseIspSlowTitle => 'ISS HIZ SINIRI';
+
+  @override
+  String get primaryCauseIspSlowDesc => 'Wi-Fi bağlantınız sağlıklı ancak indirme hızı düşük. Darboğaz büyük olasılıkla internet planınızdan veya servis sağlayıcınızdan kaynaklanıyor.';
+
+  @override
+  String get primaryCauseSlowDnsTitle => 'YAVAŞ DNS';
+
+  @override
+  String get primaryCauseSlowDnsDesc => 'İsimlerin çözümlenmesi çok uzun sürüyor. DNS sağlayıcısını değiştirmek veya DoH/DoT özelliğini etkinleştirmek genellikle gecikmeyi ortadan kaldırır.';
+
+  @override
+  String get primaryCauseHealthyTitle => 'AĞ SAĞLIKLI';
+
+  @override
+  String get primaryCauseHealthyDesc => 'Hiçbir darboğaz uyarı eşiğine ulaşmadı. Bağlantınız şu an iyi görünüyor.';
+
+  @override
+  String get diagStepReadingSignal => 'Reading signal';
+
+  @override
+  String get diagStepAnalysingChannels => 'Analysing channels';
+
+  @override
+  String get diagStepMeasuringSpeed => 'Measuring speed';
+
+  @override
+  String get diagStepBenchmarkingDns => 'Benchmarking DNS';
+
+  @override
+  String get hideDetails => 'Detayları gizle';
+
+  @override
+  String get whatIsThisHowToFix => 'Bu nedir? · Nasıl düzeltilir';
+
+  @override
+  String get homePlanWifiHeatmap => 'HOME PLAN + WIFI HEATMAP';
+
+  @override
+  String get homePlanWifiHeatmapDesc => 'Outline, coverage, and weak zones';
+
+  @override
+  String get openSavedSurveys => 'Open saved surveys';
+
+  @override
+  String get toggleViewBlueprintNeon => 'Toggle view (Blueprint / Neon)';
+
+  @override
+  String get preview => 'Preview';
+
+  @override
+  String get recording => 'RECORDING';
+
+  @override
+  String get reviewing => 'REVIEW';
+
+  @override
+  String get idle => 'IDLE';
+
+  @override
+  String get surveyComplete => 'SURVEY COMPLETE';
+
+  @override
+  String get surveyCompleteDesc => 'The survey has been successfully recorded. Plan and signal data are synthesized.';
+
+  @override
+  String get coverage => 'COVERAGE';
+
+  @override
+  String get blindSpots => 'BLIND SPOTS';
+
+  @override
+  String get saveAndFinish => 'SAVE & FINISH';
+
+  @override
+  String get diagStepFinalizing => 'Finalising diagnosis';
+
+  @override
+  String get heatmapPageTitle => 'HOME PLAN + WIFI HEATMAP';
+
+  @override
+  String get heatmapPageSubtitle => 'Outline, coverage, and weak zones';
+
+  @override
+  String get heatmapHistoryTooltip => 'Open saved surveys';
+
+  @override
+  String get heatmapThemeToggleTooltip => 'Toggle view (Blueprint / Neon)';
+
+  @override
+  String get heatmapSamplesShort => 'samples';
+
+  @override
+  String get heatmapWallsShort => 'walls';
+
+  @override
+  String get heatmapRestartSurvey => 'RESTART SURVEY';
+
+  @override
+  String get heatmapRenameSurvey => 'RENAME SURVEY';
+
+  @override
+  String get heatmapShareHeatmap => 'SHARE HEATMAP';
+
+  @override
+  String get heatmapRenameDialogTitle => 'RENAME SURVEY';
+
+  @override
+  String get heatmapSave => 'Save';
+
+  @override
+  String get heatmapShareSubject => 'Torcav WiFi Heatmap';
+
+  @override
+  String get heatmapShareText => 'Sharing my WiFi heatmap result.';
+
+  @override
+  String get heatmapIssueTitle => 'Issue';
+
+  @override
+  String get heatmapGenericIssueBody => 'The survey could not finish. Check permissions and device sensors.';
+
+  @override
+  String get heatmapGoalTitle => 'What This Feature Does';
+
+  @override
+  String get heatmapGoalBody => 'It samples Wi-Fi as you walk, captures wall lines in AR, and then shows the home outline together with signal density.';
+
+  @override
+  String get heatmapWaitingForDataTitle => 'Waiting For Data';
+
+  @override
+  String get heatmapWaitingForDataBody => 'No signal sample has landed yet. Check motion and location permissions, then walk a few steps.';
+
+  @override
+  String get heatmapArCaptureTitle => 'AR Mode Active';
+
+  @override
+  String get heatmapArCaptureBody => 'Point the phone at room edges and door openings. The camera searches for wall lines while signal points are added automatically as you move.';
+
+  @override
+  String get heatmapMapCaptureTitle => '2D Map Active';
+
+  @override
+  String get heatmapMapCaptureBody => 'You are in the clearer 2D view. Samples keep arriving as you walk; if the outline stays weak, switch to AR mode.';
+
+  @override
+  String get heatmapReviewTitle => 'Survey Summary';
+
+  @override
+  String get heatmapReviewBodyNoSamples => 'There is a saved survey, but it still lacks meaningful signal samples.';
+
+  @override
+  String get heatmapReviewBodyReady => 'Coverage is readable. Use the summary below to inspect weak zones.';
+
+  @override
+  String get heatmapSamplesLabel => 'SAMPLES';
+
+  @override
+  String get heatmapWallsLabel => 'WALLS';
+
+  @override
+  String get heatmapCurrentSignalLabel => 'LIVE SIGNAL';
+
+  @override
+  String get heatmapAvgSignalLabel => 'AVG SIGNAL';
+
+  @override
+  String get heatmapWeakZonesLabel => 'WEAK ZONES';
+
+  @override
+  String get heatmapPlanSizeLabel => 'PLAN SIZE';
+
+  @override
+  String get heatmapNotAvailable => 'Not ready';
+
+  @override
+  String get heatmapNoSamplesHelper => 'Fills in as you start walking';
+
+  @override
+  String heatmapSamplesHelper(int count) {
+    return '$count signal samples collected';
+  }
+
+  @override
+  String get heatmapNoWallsHelper => 'AR pass may be needed for the outline';
+
+  @override
+  String heatmapWallsHelper(int count) {
+    return '$count wall segments retained';
+  }
+
+  @override
+  String get heatmapSignalUnavailableHelper => 'Wi-Fi reading has not arrived yet';
+
+  @override
+  String get heatmapSignalStrongHelper => 'Strong coverage';
+
+  @override
+  String get heatmapSignalFairHelper => 'Borderline but usable';
+
+  @override
+  String get heatmapSignalWeakHelper => 'Weak or problematic zone';
+
+  @override
+  String get heatmapWeakZoneHelperNone => 'No obvious dead zones';
+
+  @override
+  String get heatmapWeakZoneHelperOne => 'One problematic area';
+
+  @override
+  String heatmapWeakZoneHelperMany(int count) {
+    return '$count weak areas detected';
+  }
+
+  @override
+  String get heatmapPlanSizeHelper => 'Estimated span from captured trace';
+
+  @override
+  String get heatmapNoSurveyYetTitle => 'Start A Survey';
+
+  @override
+  String get heatmapNoSurveyYetBody => 'Start a walkthrough first. The result view will then show the outline and heatmap together.';
+
+  @override
+  String get heatmapWalkToBeginTitle => 'Start Walking';
+
+  @override
+  String get heatmapWalkToBeginBody => 'The trail and signal points appear as you take a few steps in each room.';
+
+  @override
+  String get heatmapMapViewLabel => '2D HARITA';
+
+  @override
+  String get heatmapResultViewLabel => 'SONUC GORUNUMU';
+
+  @override
+  String get heatmapFindingsTitle => 'NE ANLATIYOR?';
+
+  @override
+  String get heatmapInsightReady => 'The survey is now dense enough. One last room transition is enough before saving the result.';
+
+  @override
+  String get heatmapInsightTooEarly => 'It is still too early. After 4-5 samples across a few rooms, the result becomes readable.';
+
+  @override
+  String get heatmapInsightNoWalls => 'Signal is arriving but the outline is missing. Switch to AR and face the walls during another pass to improve the plan.';
+
+  @override
+  String heatmapInsightLive(int count) {
+    return 'The live result is starting to read well. With $count samples, weak areas are becoming visible.';
+  }
+
+  @override
+  String get heatmapReviewInsightNoSamples => 'This survey has no signal samples. If location or motion permissions are off, the app cannot build the heatmap.';
+
+  @override
+  String get heatmapReviewInsightNoPlan => 'The heatmap is present but the outline is weak. On the next run, use AR and face room boundaries while walking.';
+
+  @override
+  String get heatmapReviewInsightStrong => 'Coverage looks strong overall. No clear dead zones are visible, and the outline agrees with the signal trace.';
+
+  @override
+  String heatmapReviewInsightWeak(int count) {
+    return '$count weak zones are visible. Moving the router more centrally or adding another access point may help.';
+  }
+
+  @override
+  String heatmapReviewInsightBalanced(int count) {
+    return 'Coverage is reasonably balanced, but it dips in $count spots. These are often corners, corridor ends, or heavy wall transitions.';
+  }
+
+  @override
+  String get heatmapCloseReview => 'CLOSE REVIEW';
+
+  @override
+  String get heatmapNewSurvey => 'NEW SURVEY';
+
+  @override
+  String get heatmapFinishAndReview => 'FINISH & REVIEW';
+
+  @override
+  String get heatmapStartSurvey => 'START SURVEY';
+
+  @override
+  String get heatmapNewSurveyDialogTitle => 'NEW SURVEY';
+
+  @override
+  String heatmapDefaultSessionName(String time) {
+    return 'Survey $time';
+  }
+
+  @override
+  String get heatmapSessionNameField => 'Survey name';
+
+  @override
+  String get heatmapNewSurveyHint => 'Once the survey starts, signal samples are added automatically as you move. Switch to AR if you want a stronger room outline.';
+
+  @override
+  String get heatmapSavedSurveysTitle => 'SAVED SURVEYS';
+
+  @override
+  String get heatmapNoSavedSurveys => 'No saved surveys yet.';
+
+  @override
+  String heatmapSavedSurveySubtitle(int samples, int weak, String timestamp) {
+    return '$samples samples · $weak weak zones · $timestamp';
+  }
+
+  @override
+  String get heatmapDeleteSurveyTooltip => 'Delete survey';
+
+  @override
+  String get heatmapLegendTitle => 'COLOR GUIDE';
+
+  @override
+  String get heatmapLegendStrong => 'Strong';
+
+  @override
+  String get heatmapLegendFair => 'Fair';
+
+  @override
+  String get heatmapLegendWeak => 'Weak';
+
+  @override
+  String get heatmapCameraViewLabel => 'LIVE CAMERA';
+
+  @override
+  String get heatmapInfoSheetTitle => 'LIVE SURVEY DATA';
+
+  @override
+  String heatmapFeedStatus(String label, String status) {
+    return '$label: $status';
+  }
+
+  @override
+  String get heatmapActive => 'active';
+
+  @override
+  String get heatmapInactive => 'inactive';
+
+  @override
+  String get heatmapArViewLabel => 'AR VIEW';
+
+  @override
+  String get heatmapSwitchToMapHint => 'Return to the clearer 2D map';
+
+  @override
+  String get heatmapSwitchToArHint => 'Use AR to strengthen the outline';
+
+  @override
+  String get heatmapRouteLabel => 'NEXT STEP';
+
+  @override
+  String get heatmapPlanConfidenceLabel => 'PLAN CONFIDENCE';
+
+  @override
+  String get heatmapCoverageConfidenceLabel => 'COVERAGE CONFIDENCE';
+
+  @override
+  String get heatmapSignalConfidenceLabel => 'SIGNAL CONFIDENCE';
+
+  @override
+  String get heatmapMotionFeedLabel => 'Motion';
+
+  @override
+  String get heatmapCameraFeedLabel => 'Camera';
+
+  @override
+  String get heatmapPlanFeedLabel => 'Plan';
+
+  @override
+  String get heatmapGuidanceIdleTitle => 'Survey Setup';
+
+  @override
+  String get heatmapGuidanceCalibrationTitle => 'Starting Route';
+
+  @override
+  String get heatmapGuidanceSweepTitle => 'Filling Coverage';
+
+  @override
+  String get heatmapGuidanceWeakCheckTitle => 'Weak Zone Check';
+
+  @override
+  String get heatmapGuidanceWrapUpTitle => 'Ready To Save';
+
+  @override
+  String get heatmapGuidanceReviewTitle => 'Survey Quality';
+
+  @override
+  String get heatmapGuidanceIdleBody => 'Start a new survey. The app will combine motion, camera, and Wi-Fi traces into a cleaner floor plan.';
+
+  @override
+  String get heatmapGuidanceCalibrationBody => 'Walk straight for 5-8 steps to establish the first trace. Doorways and corner turns help anchor the layout faster.';
+
+  @override
+  String heatmapGuidanceSweepBody(String region) {
+    return 'The $region side of the map is still sparse. Move there and collect 3-4 more samples.';
+  }
+
+  @override
+  String get heatmapGuidanceWeakCheckBody => 'You are currently in a weak-signal area. Sweep this zone a bit more to confirm whether it is a real dead spot.';
+
+  @override
+  String get heatmapGuidanceWrapUpBody => 'Outline, coverage, and signal density are now strong enough. Save the result and read the plan/heatmap in review.';
+
+  @override
+  String heatmapGuidanceReviewBody(int progress, int count) {
+    return 'This survey is $progress% complete. With $count samples, the result is readable.';
+  }
+
+  @override
+  String get heatmapRouteFinish => 'Finish survey';
+
+  @override
+  String get heatmapRouteStart => 'Start survey';
+
+  @override
+  String get heatmapRouteWalkForward => 'Walk forward';
+
+  @override
+  String get heatmapRouteSweepWeak => 'Sweep weak zone';
+
+  @override
+  String get heatmapRouteWrapUp => 'Wrap up run';
+
+  @override
+  String get heatmapRouteReview => 'Review result';
+
+  @override
+  String get heatmapRegionLeft => 'left wing';
+
+  @override
+  String get heatmapRegionRight => 'right wing';
+
+  @override
+  String get heatmapRegionUpper => 'upper area';
+
+  @override
+  String get heatmapRegionLower => 'lower area';
+
+  @override
+  String get heatmapRegionKeep => 'keep sweeping';
+
+  @override
+  String channelShort(int channel) {
+    return 'CH $channel';
+  }
+
+  @override
+  String get langEnglish => 'English';
+
+  @override
+  String get langTurkish => 'Türkçe';
+
+  @override
+  String get langKurdish => 'Kurdî';
+
+  @override
+  String get langGerman => 'Deutsch';
+
+  @override
+  String get startNowCaps => 'START';
+
+  @override
+  String get howToFixSection => 'NASIL DÜZELTİLİR';
+
+  @override
+  String get endSurveyDialogTitle => 'Anketi Bitir?';
+
+  @override
+  String get endSurveyDialogBody => 'Anketi iptal ederseniz mevcut verileriniz kaybolacak. Kaydet veya İptal Et?';
+
+  @override
+  String get endSurveyReviewBody => 'Oturum incelemesinden çıkılsın mı?';
+
+  @override
+  String get discardAction => 'İPTAL ET';
+
+  @override
+  String get exitAction => 'ÇIKIŞ';
+
+  @override
+  String get continueAction => 'DEVAM';
+
+  @override
+  String get discardSurveyDialogTitle => 'ANKETİ İPTAL ET?';
+
+  @override
+  String get discardSurveyDialogBody => 'Bu oturum için kaydedilen tüm veriler kalıcı olarak silinecek.';
+
+  @override
+  String get autoSamplingDistance => 'Otomatik Örnekleme Mesafesi';
+
+  @override
+  String get appearanceLabel => 'Görünüm';
+
+  @override
+  String get clearHistoryAction => 'GEÇMİŞİ TEMİZLE';
+
+  @override
+  String get dataUsageWarningTitle => 'VERİ KULLANIMI UYARISI';
+
+  @override
+  String get dataUsageWarningBody => 'Bu hız testi ~300–500 MB veri indirir. Mobil/ölçümlü bir bağlantıdaysanız ücret oluşabilir veya veri limitiniz tükenebilir.';
+
+  @override
+  String latencyExcellentTitle(String ms) {
+    return 'Gecikme: $ms ms — Mükemmel';
+  }
+
+  @override
+  String latencyGoodTitle(String ms) {
+    return 'Gecikme: $ms ms — İyi';
+  }
+
+  @override
+  String latencyAcceptableTitle(String ms) {
+    return 'Gecikme: $ms ms — Kabul Edilebilir';
+  }
+
+  @override
+  String latencyHighTitle(String ms) {
+    return 'Gecikme: $ms ms — Yüksek';
+  }
+
+  @override
+  String get latencyExcellentBody => 'Neredeyse anlık yanıt. Oyun, video görüşme ve gerçek zamanlı uygulamalar için ideal.';
+
+  @override
+  String get latencyGoodBody => 'Video görüşme ve akış için iyi. Çoğu uygulama duyarlı hissettiri.';
+
+  @override
+  String get latencyAcceptableBody => 'Tarama ve akış için uygun, ancak video görüşmelerinde hafif gecikmeler olabilir.';
+
+  @override
+  String get latencyHighBody => 'Belirgin gecikme. Video görüşmeler ve oyunlar yavaş hissedebilir. Routerınıza daha yakın olmayı deneyin.';
+
+  @override
+  String jitterStableTitle(String ms) {
+    return 'Titreşim: $ms ms — Kararlı';
+  }
+
+  @override
+  String jitterGoodTitle(String ms) {
+    return 'Titreşim: $ms ms — İyi';
+  }
+
+  @override
+  String jitterModerateTitle(String ms) {
+    return 'Titreşim: $ms ms — Orta';
+  }
+
+  @override
+  String jitterUnstableTitle(String ms) {
+    return 'Titreşim: $ms ms — Kararsız';
+  }
+
+  @override
+  String get jitterStableBody => 'Çok tutarlı bağlantı. Paketleriniz minimum zamanlama farkıyla ulaşıyor.';
+
+  @override
+  String get jitterGoodBody => 'Görüşme ve akış için yeterince kararlı. Wi-Fi\'da küçük dalgalanma normaldir.';
+
+  @override
+  String get jitterModerateBody => 'Bazı tutarsızlıklar tespit edildi. Anlık artışlarda sesli görüşmeler bozulabilir.';
+
+  @override
+  String get jitterUnstableBody => 'Yüksek dalgalanma — ses ve video görüşmeleri muhtemelen kopacak. Bunun nedeni parazit veya kalabalık kanal olabilir.';
+
+  @override
+  String downloadFastTitle(String mbps) {
+    return 'İndirme: $mbps Mbps — Hızlı';
+  }
+
+  @override
+  String downloadGoodTitle(String mbps) {
+    return 'İndirme: $mbps Mbps — İyi';
+  }
+
+  @override
+  String downloadModerateTitle(String mbps) {
+    return 'İndirme: $mbps Mbps — Orta';
+  }
+
+  @override
+  String downloadSlowTitle(String mbps) {
+    return 'İndirme: $mbps Mbps — Yavaş';
+  }
+
+  @override
+  String downloadFastBody(int streams) {
+    return 'Kolayca $streams+ eş zamanlı HD akışı kaldırır. Büyük haneler için harika.';
+  }
+
+  @override
+  String downloadGoodBody(int streams) {
+    return '$streams eş zamanlı HD akışı destekler. Çoğu hane için iyi.';
+  }
+
+  @override
+  String get downloadModerateBody => 'Gezinti ve bir veya iki SD akış için yeterli. Büyük indirmeler yavaş olacak.';
+
+  @override
+  String get downloadSlowBody => 'Çok sınırlı. Routerınıza yaklaşmayı veya parazit kontrolü yapmayı düşünün.';
+
+  @override
+  String uploadFastTitle(String mbps) {
+    return 'Yükleme: $mbps Mbps — Hızlı';
+  }
+
+  @override
+  String uploadGoodTitle(String mbps) {
+    return 'Yükleme: $mbps Mbps — İyi';
+  }
+
+  @override
+  String uploadLimitedTitle(String mbps) {
+    return 'Yükleme: $mbps Mbps — Sınırlı';
+  }
+
+  @override
+  String uploadSlowTitle(String mbps) {
+    return 'Yükleme: $mbps Mbps — Yavaş';
+  }
+
+  @override
+  String get uploadFastBody => 'Video konferans, bulut yedeklemesi ve canlı yayın için mükemmel.';
+
+  @override
+  String get uploadGoodBody => 'Video görüşmeler ve dosya paylaşımı için iyi. Bulut yüklemeleri makul hızda olacak.';
+
+  @override
+  String get uploadLimitedBody => 'Temel video görüşmeler için yeterli. Büyük dosya yüklemeleri zaman alacak.';
+
+  @override
+  String get uploadSlowBody => 'Çok yavaş yükleme. Canlı video ve bulut eşitleme güçlük çekecek.';
+
+  @override
+  String get packetLossPerfectTitle => 'Paket Kaybı: %0 — Mükemmel';
+
+  @override
+  String packetLossMinimalTitle(String pct) {
+    return 'Paket Kaybı: %$pct — Minimal';
+  }
+
+  @override
+  String packetLossHighTitle(String pct) {
+    return 'Paket Kaybı: %$pct — Yüksek';
+  }
+
+  @override
+  String get packetLossPerfectBody => 'Sağlam bağlantı. Değerlendirme sırasında hiçbir veri paketi kaybolmadı.';
+
+  @override
+  String get packetLossMinimalBody => 'Çok az kayıp. Çoğu aktivite için muhtemelen fark edilmez.';
+
+  @override
+  String get packetLossHighBody => 'Veriler düşüyor. Bu, görüşme ve oyunlarda takılmalara neden olur. Wi-Fi paraziti kontrol edin.';
+
+  @override
+  String loadedLatencyExcellentTitle(String ms) {
+    return 'Yüklü Gecikme: $ms ms — Mükemmel';
+  }
+
+  @override
+  String loadedLatencyGoodTitle(String ms) {
+    return 'Yüklü Gecikme: $ms ms — İyi';
+  }
+
+  @override
+  String loadedLatencyFairTitle(String ms) {
+    return 'Yüklü Gecikme: $ms ms — Orta';
+  }
+
+  @override
+  String loadedLatencyPoorTitle(String ms) {
+    return 'Yüklü Gecikme: $ms ms — Kötü';
+  }
+
+  @override
+  String get loadedLatencyExcellentBody => 'İndirme sırasında bile ağınız duyarlı kalıyor. Mükemmel router kalitesi.';
+
+  @override
+  String get loadedLatencyGoodBody => 'Yanıt süresi yük altında hafifçe artıyor ama çok kullanılabilir.';
+
+  @override
+  String get loadedLatencyFairBody => 'Başkaları ağı kullanırken belirgin gecikme. İndirirken oyun oynamak etkilenebilir.';
+
+  @override
+  String get loadedLatencyPoorBody => 'Yüksek Bufferbloat. Büyük indirmeler sırasında bağlantı yanıt veremiyor. Router\'ınızda QoS etkinleştirmeyi düşünün.';
+
+  @override
+  String get bufferbloatGradeLabel => 'BUFFERBLOAT DERECESİ';
+
+  @override
+  String get bufferbloatGradeA => 'Mükemmel bufferbloat kontrolü. Router\'ınız ağır yük altında bile gecikmeyi düşük tutuyor.';
+
+  @override
+  String get bufferbloatGradeB => 'İyi bufferbloat. Yük altında küçük gecikme artışı — çoğu kullanıcı fark etmez.';
+
+  @override
+  String get bufferbloatGradeC => 'Orta bufferbloat. Başkaları indirirken oyun ve video görüşmeleri gecikebilir.';
+
+  @override
+  String get bufferbloatGradeD => 'Zayıf bufferbloat. Yük altında bağlantı yavaşlıyor. Router\'ınızda QoS etkinleştirin.';
+
+  @override
+  String get bufferbloatGradeE => 'Şiddetli bufferbloat. Eş zamanlı indirmeler sırasında gerçek zamanlı uygulamalar başarısız olur.';
+
+  @override
+  String get bufferbloatGradeF => 'Kritik bufferbloat. Router\'ınız kuyruk derinliğini kontrol etmiyor. Ürün yazılımını veya donanımı yükseltin.';
+
+  @override
+  String get speedTestDisclaimer => 'Sonuçlar Cloudflare\'ın en yakın sunucusuna hızı yansıtır ve Wi-Fi, cihaz donanımı ve PoP mesafesinden etkilenir. ISP sözleşme hızınızın doğrudan bir ölçümü değildir.';
+
+  @override
+  String get clearAllHistoryAction => 'TÜM GEÇMİŞİ TEMİZLE';
+
+  @override
+  String get deleteAllHistoryConfirm => 'Tüm hız testi kayıtları silinsin mi? Bu işlem geri alınamaz.';
+
+  @override
+  String get deleteAllAction => 'TÜMÜNÜ SİL';
+
+  @override
+  String whyIsThisLabel(String level) {
+    return 'BU NEDEN $level?';
+  }
+
+  @override
+  String get noSpecificConcerns => 'Bu cihaz için belirli bir endişe kaydedilmedi. Rozet toplu bir puanı yansıtır.';
+
+  @override
+  String get whatToDoLabel => 'NE YAPILMALI';
+
+  @override
+  String get trustLevelSafe => 'GÜVENLİ';
+
+  @override
+  String get trustLevelCaution => 'DİKKAT';
+
+  @override
+  String get trustLevelRisky => 'RİSKLİ';
+
+  @override
+  String cveDatabaseLabel(String freshness) {
+    return 'CVE VERİTABANI — $freshness';
+  }
+
+  @override
+  String get howToUpdateLabel => 'NASIL GÜNCELLENİR';
+
+  @override
+  String get vulnDbFreshLabel => 'GÜNCEL';
+
+  @override
+  String get vulnDbAgingLabel => 'ESKİYOR';
+
+  @override
+  String get vulnDbStaleLabel => 'ESKİ';
+
+  @override
+  String get vulnDbFreshMessage => 'Bu veritabanına karşı güvenlik açığı aramaları güncel.';
+
+  @override
+  String get vulnDbAgingMessage => 'Yerel güvenlik açığı veritabanı bir aydan eski. Temiz bir taramanın değeri var ama yakında yenilemeyi düşünün.';
+
+  @override
+  String get vulnDbStaleMessage => 'Bu veritabanı 90 günden eski. \"Bulgu yok\" sonucu artık ağın güvenli olduğu anlamına gelmiyor — burada henüz temsil edilmeyen çok sayıda yeni CVE olabilir.';
+
+  @override
+  String vulnDbEntriesInfo(String version, int count, int days) {
+    return 'v$version · $count giriş · $days gün önce';
+  }
+
+  @override
+  String get wipeAllDialogTitle => 'TÜM VERİYİ SİL';
+
+  @override
+  String get wipeAllDialogBody => 'Tüm yerel tarama geçmişi, hız testi kayıtları, güvenlik olayları, kanal derecelendirmeleri ve bellek içi anlık görüntüler kalıcı olarak silinecek. Bu işlem geri alınamaz.';
+
+  @override
+  String get wipeAllAction => 'TÜMÜNÜ SİL';
+
+  @override
+  String get allDataWiped => 'Tüm yerel veriler silindi.';
+
+  @override
+  String get systemDefault => 'Sistem Varsayılanı';
+
+  @override
+  String portScanTimeoutMs(int ms) {
+    return '$ms ms';
+  }
+
+  @override
+  String get endSurveyDiscardBody => 'Anketi iptal ederseniz mevcut verileriniz kaybolacak. Kaydet veya İptal Et?';
+
+  @override
+  String get legendAndNodes => 'EFSANE & DÜĞÜMLER';
+
+  @override
+  String get legendGateway => 'AĞ GEÇİDİ';
+
+  @override
+  String get legendGatewayDesc => 'Merkezi ağ giriş noktası';
+
+  @override
+  String get legendAccessPoint => 'ERİŞİM NOKTASI';
+
+  @override
+  String get legendAccessPointDesc => 'Wi-Fi sinyal dağıtıcı';
+
+  @override
+  String get legendMobile => 'MOBİL';
+
+  @override
+  String get legendMobileDesc => 'Kişisel taşınabilir cihazlar';
+
+  @override
+  String get legendIot => 'IOT';
+
+  @override
+  String get legendIotDesc => 'Akıllı ev ve sensörler';
+
+  @override
+  String get legendDevice => 'CİHAZ';
+
+  @override
+  String get legendDeviceDesc => 'Bilgisayarlar, TV\'ler vb.';
+
+  @override
+  String get surveyStageStandby => 'BEKLEME';
+
+  @override
+  String get surveyStageInitializing => 'BAŞLATILIYOR';
+
+  @override
+  String get surveyStageSweepRooms => 'ODA TARAMASI';
+
+  @override
+  String get surveyStageWeakZone => 'ZAYIF BÖLGE';
+
+  @override
+  String get surveyStageWrapUp => 'TAMAMLANIYOR';
+
+  @override
+  String get surveyStageReview => 'İNCELEME';
+
+  @override
+  String get connectionTypesHeader => 'BAĞLANTI TÜRLERİ';
+
+  @override
+  String get connTypeSolidLineLabel => 'Düz Çizgi (Mavi)';
+
+  @override
+  String get connTypeSolidLineDesc => 'Yüksek hızlı kablolu Ethernet bağlantısı';
+
+  @override
+  String get connTypeGradientLabel => 'Parlayan Gradyan (Camgöbeği)';
+
+  @override
+  String get connTypeGradientDesc => 'Kablosuz Wi-Fi bağlantısı';
+
+  @override
+  String get connTypePulsingLabel => 'Nabız Atan Veri Noktası';
+
+  @override
+  String get connTypePulsingDesc => 'Bağlantıda aktif trafik tespit edildi';
+
+  @override
+  String get uploadLabel => 'YÜKLEME';
+
+  @override
+  String get downloadLabel => 'İNDİRME';
+
+  @override
+  String get speedTestSemanticsIdle => 'Hız testi göstergesi. Başlatmak için dokun.';
+
+  @override
+  String speedTestSemanticsRunning(String mbps) {
+    return 'Hız testi çalışıyor — $mbps Mbps indirme. Durdurmak için dokun.';
+  }
+
+  @override
+  String speedTestSemanticsComplete(String dl, String ul) {
+    return 'Hız testi tamamlandı — $dl Mbps indirme, $ul Mbps yükleme.';
+  }
+
+  @override
+  String get measurementLockedTitle => 'ÖLÇÜM KİLİTLENDİ';
+
+  @override
+  String get measurementLockNoWifi => 'Anket hedefini kilitlemek için bir Wi-Fi ağına bağlanın.';
+
+  @override
+  String measurementLockReconnect(String bssid) {
+    return 'Örneklemeye devam etmek için $bssid ile yeniden bağlanın.';
+  }
+
+  @override
+  String get waitingForSignalTitle => 'TAZE SİNYAL BEKLENİYOR';
+
+  @override
+  String get waitingForSignalBody => 'RSSI 3 saniyeden eski. Yeni tarama için kısa süre yürüyün veya pozisyonu koruyun.';
+
+  @override
+  String get signalDroppedTitle => 'SİNYAL DÜŞTÜ';
+
+  @override
+  String get signalDroppedBody => 'Wi-Fi sinyali -85dBm\'nin altında. Erişim noktasına yaklaşın.';
+
+  @override
+  String get compassDriftTitle => 'PUSULA KAYMASI TESPİT EDİLDİ';
+
+  @override
+  String get measurementLockMagnetic => 'Manyetik parazit bulundu. Sekiz çizin veya Hizala\'ya dokunun.';
+
+  @override
+  String get placeSurveyOriginTitle => 'ANKET KÖKENİNİ YERLEŞTİRİN';
+
+  @override
+  String get measurementLockAnchor => 'Noktaları kaydetmeden önce AR anketini sabitlemek için algılanan bir düzleme dokunun.';
+
+  @override
+  String get trackingLostTitle => 'İZLEME KAYBOLDU';
+
+  @override
+  String get measurementLockTracking => 'Hareket takibi kullanılamıyor. İzleme geri gelene kadar yavaşça hareket edin.';
+
+  @override
+  String get readyBannerTapFinish => 'Taramayı bitirmek için dokun';
+
+  @override
+  String get ssidChipLock => 'KİLİT';
+
+  @override
+  String get ssidChipHold => 'BEKLE';
+
+  @override
+  String get guidanceStageIdle => 'Bekleme';
+
+  @override
+  String get guidanceStageInitializing => 'Başlatılıyor';
+
+  @override
+  String get guidanceStageMappingSignal => 'Sinyal Haritalanıyor';
+
+  @override
+  String get guidanceStageScanningWeakZones => 'Zayıf Bölgeler Taranıyor';
+
+  @override
+  String get guidanceStageReadyToFinish => 'Bitirmeye Hazır';
+
+  @override
+  String get guidanceStageReviewing => 'İnceleniyor';
+
+  @override
+  String get signalProbeHint => 'Yakalanan bir sinyal noktasına daha yakın dokunmayı deneyin.';
+
+  @override
+  String get wifiSecurityOpen => 'AÇIK';
+
+  @override
+  String get newSessionPermissionsBody => 'Doğru ısı haritaları oluşturmak ve ağ kapsamınızı haritalamak için Torcav belirli cihaz özelliklerine erişim gerektirir:';
+
+  @override
+  String get newSessionPermLocation => 'Konum (sinyali koordinatlara eşlemek için)';
+
+  @override
+  String get newSessionPermActivity => 'Aktivite Tanıma (adımları ve hareketi izlemek için)';
+
+  @override
+  String get newSessionPermCamera => 'Kamera (isteğe bağlı, görsel haritalama özellikleri için)';
+
+  @override
+  String get reportsMacMaskDesc => 'Dışa aktarmadan önce son 3 sekizliyi maskeler (XX:XX:XX)';
+
+  @override
+  String get reportsShareSubject => 'Torcav Tarama Raporu';
+
+  @override
+  String exportNoDataYet(String label) {
+    return '\"$label\" için henüz veri yok.';
+  }
+
+  @override
+  String get exportSubject => 'Torcav yerel veri dışa aktarma';
+
+  @override
+  String exportFailedError(String error) {
+    return 'Dışa aktarma başarısız: $error';
+  }
+
+  @override
+  String get tapToStart => 'BAŞLATMAK İÇİN DOKUN';
+
+  @override
+  String get tapToStop => 'DURDURMAK İÇİN DOKUN';
+
+  @override
+  String get liveWifi => 'CANLI WI-FI';
+
+  @override
+  String get signalProbeTitle => 'SİNYAL SONDASI';
+
+  @override
+  String get statusOptimal => 'EN UYGUN';
+
+  @override
+  String get statusFair => 'ORTA';
+
+  @override
+  String get statusCritical => 'KRİTİK';
+
+  @override
+  String daysCount(int count) {
+    return '$count g';
+  }
+
+  @override
+  String secondsCount(int count) {
+    return '$count sn';
+  }
+
+  @override
+  String millisecondsCount(int count) {
+    return '$count ms';
+  }
+
+  @override
+  String get languageEnglish => 'İngilizce 🇺🇸';
+
+  @override
+  String get languageTurkish => 'Türkçe 🇹🇷';
+
+  @override
+  String get languageKurdish => 'Kürtçe ☀️';
+
+  @override
+  String get languageGerman => 'Almanca 🇩🇪';
+
+  @override
+  String get sdWeakSignalWhatIs => 'Sinyal gücü (RSSI), cihazınızın yönlendiriciyi ne kadar yüksek sesle duyduğunu ölçer. Yaklaşık −70 dBm\'nin altında, Wi-Fi\'ın güvenilir kalması için daha yavaş, daha yedekli kodlamalara geçmesi gerekir.';
+
+  @override
+  String get sdWeakSignalWhyItMatters => 'Zayıf bir sinyal, radyoyu düşük hız modlarına zorlar. İnternet paketiniz hızlı olsa bile, Wi-Fi bağlantısının kendisi tavan haline gelir — indirmeler durur, görüntülü aramalar kesilir ve sayfaların yüklenmesi daha uzun sürer.';
+
+  @override
+  String get sdWeakSignalHowToFix1 => 'Yönlendiriciye daha yakın bir yere veya daha az engelli bir noktaya geçin.';
+
+  @override
+  String get sdWeakSignalHowToFix2 => 'Bu bölgeye bir mesh düğümü / Wi-Fi genişletici ekleyin.';
+
+  @override
+  String get sdWeakSignalHowToFix3 => 'Yönlendiriciniz bu SSID\'de 5 GHz veya 6 GHz\'i destekliyorsa, yönlendiriciyi görüş alanınızdayken bu bandı kullanın.';
+
+  @override
+  String get sdWeakSignalHowToFix4 => 'Yönlendiricinin bir kabinin içine, TV\'nin arkasına veya bir mikrodalga fırının yanına gömülmediğinden emin olun.';
+
+  @override
+  String sdWeakSignalEstimate(String gain) {
+    return 'Tahmini kazanç: Cihazı yönlendiriciye yaklaştırabilirseniz indirme hızında +$gain Mbps\'ye kadar artış.';
+  }
+
+  @override
+  String get sdCrowdedChannelWhatIs => 'Wi-Fi kanalları paylaşılan bir spektrumdur. Yakındaki birkaç erişim noktası aynı kanalda iletim yaptığında, sırayla hareket etmeleri gerekir — hava süresi sizinki de dahil olmak üzere hepsi arasında bölünür.';
+
+  @override
+  String get sdCrowdedChannelWhyItMatters => 'Kalabalık bir kanalda, evinizde kimse ağı kullanmasa bile veri akış hızınız düşer. Radyo donanımı sağlıklıdır ancak konuşmak için sırasını beklemek zorundadır.';
+
+  @override
+  String get sdCrowdedChannelHowToFix1 => 'Yönlendirici yönetici sayfasını açın ve Wi-Fi kanalını manuel olarak değiştirin (Uygulamadaki Kanal Puanlaması en temiz kanalı önerir).';
+
+  @override
+  String get sdCrowdedChannelHowToFix2 => '2.4 GHz\'de, 1 / 6 / 11 numaralı kanalları tercih edin — bunlar birbiriyle çakışmaz.';
+
+  @override
+  String get sdCrowdedChannelHowToFix3 => 'Yönlendiriciniz 5 GHz veya 6 GHz\'i destekliyorsa cihazı o banda taşıyın: Orada çok daha fazla temiz kanal mevcuttur.';
+
+  @override
+  String get sdCrowdedChannelHowToFix4 => 'Çift bantlı yönlendiriciler için her banda kendi SSID\'sini verin, böylece cihazlar kalabalık bir 2.4 GHz kanalına geri dönmeyi bırakır.';
+
+  @override
+  String sdCrowdedChannelEstimate(String gain) {
+    return 'Tahmini kazanç: Daha sessiz bir kanala geçtikten sonra indirme hızında +$gain Mbps\'ye kadar artış.';
+  }
+
+  @override
+  String get sdBufferbloatWhatIs => 'Bufferbloat, bağlantı tam yüklendiğinde yönlendiricinizin gönderim tamponlarında biriken gecikmedir — tipik paketler yığın trafiğin arkasında kuyruğa girmek zorunda kalır.';
+
+  @override
+  String get sdBufferbloatWhyItMatters => 'Bir dosya indirilirken indirme hızınız harika görünebilir, ancak sesli aramalar titrer, video konferanslar donar ve oyunlar gecikir — zamana duyarlı her şey kuyruğun arkasında bekletilir.';
+
+  @override
+  String get sdBufferbloatHowToFix1 => 'Yönlendirici yönetici sayfanızda QoS / SQM\'yi (bazen \"Akıllı Kuyruk Yönetimi\" veya \"Uyarlanabilir QoS\" olarak adlandırılır) etkinleştirin.';
+
+  @override
+  String get sdBufferbloatHowToFix2 => 'Yönlendirici yazılımını güncelleyin — modern yazılımlar varsayılan olarak daha iyi kuyruk disiplini ile gelir.';
+
+  @override
+  String get sdBufferbloatHowToFix3 => 'Yönlendirici çok eskiyse ve SQM özelliği yoksa, onu yeni bir modelle değiştirmek genellikle tek gerçek çözümdür.';
+
+  @override
+  String get sdBufferbloatHowToFix4 => 'Yönlendiricideki yükleme bant genişliğini gerçek paketinizin biraz altında (örneğin %90) sınırlayın, böylece kuyruk ISP\'de değil yönlendiricide oluşur.';
+
+  @override
+  String sdBufferbloatEstimate(String reduction) {
+    return 'Tahmini kazanç: Yaklaşık −$reduction ms yüklü gecikme. Aramalar ve oyunlar büyük indirmeler sırasında bile akıcı hissettirecek.';
+  }
+
+  @override
+  String get sdIspSlowWhatIs => 'Wi-Fi bağlantınız sağlıklı ve radyo, şu anda içinden akandan çok daha fazlasını taşıyabilir. Darboğaz yönlendiricinin üst akışındadır (servis sağlayıcı tarafında).';
+
+  @override
+  String get sdIspSlowWhyItMatters => 'Hiçbir yönlendirici veya Wi-Fi ayarı yardımcı olmayacaktır — ISP\'nizden yönlendiriciye gelen bağlantı tavan noktasıdır. Bunu bir Wi-Fi sorunu olarak değil, paket yükseltme veya destek çağrısı verisi olarak değerlendirin.';
+
+  @override
+  String get sdIspSlowHowToFix1 => 'Radyonun hatalı olmadığını doğrulamak için testi kablolu bir Ethernet kablosuyla yeniden çalıştırın.';
+
+  @override
+  String get sdIspSlowHowToFix2 => 'Ödediğiniz ISP paketini kontrol edin — test sonucu iyi bir günde paketinizin yaklaşık %80\'i ile eşleşmelidir.';
+
+  @override
+  String get sdIspSlowHowToFix3 => 'Günün farklı saatlerinde deneyin. Sadece akşamları yavaşsa, ISP segmenti yoğun olabilir.';
+
+  @override
+  String get sdIspSlowHowToFix4 => 'Sonuç sürekli olarak paketinizin çok altındaysa, hız testi çıktısıyla birlikte ISP ile iletişime geçin.';
+
+  @override
+  String sdIspSlowEstimate(String phy, String download) {
+    return 'Wi-Fi\'ınız ~$phy Mbps\'ye kadar taşıyabilir; şu anda $download Mbps alıyorsunuz. Boşluk yönlendiricinin üst akışındadır.';
+  }
+
+  @override
+  String get sdSlowDnsWhatIs => 'DNS, example.com gibi isimleri cihazınızın gerçekte bağlandığı IP adreslerine dönüştürür. Her sayfa yüklemesi, herhangi bir veri akışından önce bir avuç bu sorgulardan başlatır.';
+
+  @override
+  String get sdSlowDnsWhyItMatters => 'Yavaş DNS indirme hızınızı düşürmez — her bağlantının başında bir gecikme ekler. Hız testleri iyi görünse bile web \"yavaş\" hissettirir.';
+
+  @override
+  String get sdSlowDnsHowToFix1 => 'Cihazınızın veya yönlendiricinizin DNS\'ini hızlı bir genel çözücüye geçirin — 1.1.1.1 (Cloudflare), 8.8.8.8 (Google) veya 9.9.9.9 (Quad9).';
+
+  @override
+  String get sdSlowDnsHowToFix2 => 'Sorguları şifrelemek için işletim sisteminizde veya tarayıcınızda HTTPS üzerinden DNS (DoH) veya TLS üzerinden DNS (DoT) özelliğini etkinleştirin.';
+
+  @override
+  String get sdSlowDnsHowToFix3 => 'ISP\'nizin DNS\'i yavaşsa, çözücüyü yönlendirici üzerinde ayarlayın, böylece sadece bir cihaz değil tüm ev faydalansın.';
+
+  @override
+  String sdSlowDnsEstimate(int reduction) {
+    return 'Tahmini kazanç: İsim sorgusu başına yaklaşık −$reduction ms. Her sayfa bir düzine sorgu başlattığı için sayfa yüklemeleri genellikle %5–20 daha hızlı hissettirir.';
+  }
+
+  @override
+  String get sdHealthyWhatIs => 'Speed Doctor beş şeyi kontrol eder: sinyal gücü, kanal yoğunluğu, yük altında hız (bufferbloat), Wi-Fi kapasitesine karşı indirme hızı ve DNS çözümleme süresi.';
+
+  @override
+  String get sdHealthyWhyItMatters => 'Bu çalışma sırasında bunlardan hiçbiri bir uyarı eşiğini geçmedi. Bağlantınız şu anda iyi durumda — herhangi bir sorun fark etmeye başlarsanız bir şeylerin değişip değişmediğini görmek için testi yeniden çalıştırın.';
+
+  @override
+  String sdMetricRssi(int rssi) {
+    return 'RSSI: $rssi dBm';
+  }
+
+  @override
+  String sdThresholdRssi(int healthy, int severe) {
+    return 'Sağlıklı ≥ $healthy dBm · Kritik ≤ $severe dBm';
+  }
+
+  @override
+  String sdMetricChannel(int channel, String score) {
+    return 'Kanal $channel · puan $score/10';
+  }
+
+  @override
+  String sdThresholdChannel(String healthy, String severe) {
+    return 'Sağlıklı ≥ $healthy · Kritik ≤ $severe';
+  }
+
+  @override
+  String sdMetricBufferbloat(String induced, String latency, String loaded) {
+    return 'Yüklü gecikme Δ: $induced ms ($latency → $loaded)';
+  }
+
+  @override
+  String sdThresholdBufferbloat(String healthy, String severe) {
+    return 'Sağlıklı ≤ $healthy ms · Kritik ≥ $severe ms';
+  }
+
+  @override
+  String sdMetricIsp(String download, String phy) {
+    return 'İndirme: $download Mbps · PHY: $phy Mbps';
+  }
+
+  @override
+  String sdMetricIspNoPhy(String download) {
+    return 'İndirme: $download Mbps';
+  }
+
+  @override
+  String sdThresholdIsp(String healthy) {
+    return 'Radyo yoğunluğu yokken sağlıklı ≥ $healthy Mbps';
+  }
+
+  @override
+  String sdMetricDns(String name, int latency) {
+    return 'En iyi çözücü: $name · $latency ms';
+  }
+
+  @override
+  String sdThresholdDns(int healthy, int severe) {
+    return 'Sağlıklı ≤ $healthy ms · Kritik ≥ $severe ms';
+  }
+
+  @override
+  String get networkContextHomeLabel => 'Ev';
+
+  @override
+  String get networkContextPublicLabel => 'Halka Açık';
+
+  @override
+  String get networkContextGuestLabel => 'Misafir';
+
+  @override
+  String get networkContextUnknownLabel => 'Bilinmiyor';
+
+  @override
+  String get noChangeLabel => 'değişim yok';
+
+  @override
+  String get sinceLastScanLabel => 'son taramadan beri';
+
+  @override
+  String get allClearLabel => 'her şey yolunda';
+
+  @override
+  String get tapToTestLabel => 'test et';
+
+  @override
+  String get gameProfileLabel => 'Oyun profili';
+
+  @override
+  String get profileGeneric => 'Genel UDP Oyun';
+
+  @override
+  String get notificationChannelSecurityCritical => 'Kritik Uyarılar';
+
+  @override
+  String get notificationChannelSecurityHigh => 'Yüksek Öncelikli';
+
+  @override
+  String get notificationChannelSecurityMedium => 'Orta Öncelikli';
+
+  @override
+  String get notificationChannelSecurityWarning => 'Uyarılar';
+
+  @override
+  String get notificationChannelSecurityLow => 'Düşük Öncelikli';
+
+  @override
+  String get notificationChannelSecurityInfo => 'Bilgilendirme';
+
+  @override
+  String get notificationChannelSecurityDescription => 'Güvenlik uyarısı bildirimleri';
+
+  @override
+  String get scanCompleteTitle => 'Tarama Tamamlandı';
+
+  @override
+  String scanCompleteBody(int count, int seconds) {
+    return '$seconds saniyede $count ağ bulundu';
+  }
+
+  @override
+  String get wifiChannelQualityDroppedTitle => '📶 Wi-Fi kanal kalitesi düştü';
+
+  @override
+  String wifiChannelQualityDroppedBody(int channel, String rating, int recommendedChannel, String recommendedRating) {
+    return 'Kanal $channel şu an $rating/10. Kanal $recommendedChannel $recommendedRating/10 seviyesinde — geçiş yapmayı düşünün.';
+  }
+
+  @override
+  String attackDetectedTitle(String attackType) {
+    return '⚠️ Saldırı Tespit Edildi: $attackType';
+  }
+
+  @override
+  String get stabilizerJitterSpikeTitle => 'Jitter sıçraması tespit edildi';
+
+  @override
+  String get stabilizerFasterDnsTitle => 'Daha hızlı DNS mevcut';
+
+  @override
+  String get stabilizerPacketLossTitle => 'Sürekli paket kaybı';
+
+  @override
+  String stabilizerJitterSpikeBody(String threshold, int window) {
+    return 'Jitter $window örnek için $threshold ms\'yi aştı. Tüneli yenilemek sorunlu yolu düzeltebilir.';
+  }
+
+  @override
+  String stabilizerFasterDnsBody(String label) {
+    return 'Daha hızlı bir DNS ($label) mevcut.';
+  }
+
+  @override
+  String stabilizerPacketLossBody(String loss) {
+    return 'Paket kaybı %$loss. Çift arayüz gönderimi (Wi-Fi + hücresel) geçici düşüşleri maskeleyebilir.';
+  }
+
+  @override
+  String get lanDiscoveryTitle => 'LAN Cihazları Tespit Edildi';
+
+  @override
+  String lanDiscoveryDesc(int count) {
+    return 'Aktif tarama bu ağda $count cihaz belirledi.';
+  }
+
+  @override
+  String lanDiscoveryEvidence(String devices) {
+    return 'Tespit edilen: $devices';
+  }
+
+  @override
+  String get lanDiscoveryRecommendation => 'Yerel ağınızdaki tüm cihazları tanıdığınızdan emin olun.';
+
+  @override
+  String get gatewayPortsExposedTitle => 'Ağ Geçidi Portları Açık';
+
+  @override
+  String gatewayPortsExposedDesc(String ip) {
+    return 'Host $ip, savunmasız olabilecek açık portlara sahip.';
+  }
+
+  @override
+  String gatewayPortsExposedEvidence(String ports) {
+    return 'Açık Portlar: $ports';
+  }
+
+  @override
+  String get gatewayPortsExposedRecommendation => 'Ağ geçidi yönlendiricisindeki gereksiz servisleri devre dışı bırakın ve güçlü şifreler kullandığınızdan emin olun.';
+
+  @override
+  String get openServiceDetectedTitle => 'Açık Servis Tespit Edildi';
+
+  @override
+  String openServiceDetectedDesc(String ip, String service, int port) {
+    return 'Host $ip, $port portunda $service çalıştırıyor.';
+  }
+
+  @override
+  String openServiceDetectedEvidence(String ip, int port, String service) {
+    return 'Hedef: $ip, Port: $port, Servis: $service';
+  }
+
+  @override
+  String get openServiceDetectedRecommendation => 'Bu servisin erişilebilir olmasının amaçlandığından emin olun.';
+
+  @override
+  String lanDeviceDiscoveredTitle(String name) {
+    return 'LAN Cihazı: $name';
+  }
+
+  @override
+  String lanDeviceDiscoveredEvidence(String ip, String mac, String vendor) {
+    return 'IP: $ip, MAC: $mac, Satıcı: $vendor';
+  }
+
+  @override
+  String get lanDeviceDiscoveredRecommendation => 'Bu cihazın size ait olduğunu doğrulayın. Kötü niyetli cihazlar genellikle LAN içinde gizlenir.';
+
+  @override
+  String get rule_arp_spoofing_title => 'ARP Spoofing Tespit Edildi';
+
+  @override
+  String get rule_arp_spoofing_desc => 'Birden fazla MAC adresi aynı IP adresini sahipleniyor. Bir saldırgan trafiğinizi kesiyor olabilir.';
+
+  @override
+  String get rule_arp_spoofing_rec => 'Derhal farklı bir ağa geçin veya bir VPN kullanın.';
+
+  @override
+  String get rule_dns_hijacking_title => 'DNS Ele Geçirme Tespit Edildi';
+
+  @override
+  String get rule_dns_hijacking_desc => 'DNS sorgularınız beklenmedik bir sunucuya yönlendiriliyor. Bu, bir saldırganın hangi web sitelerini ziyaret ettiğinizi kontrol etmesine olanak tanır.';
+
+  @override
+  String get rule_dns_hijacking_rec => 'Derhal bir VPNe geçin. DNS sorgularınıza müdahale ediliyor.';
 }

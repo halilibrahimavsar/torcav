@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 
 import 'package:torcav/core/di/injection.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
@@ -55,10 +56,14 @@ class _NeonErrorWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.warning_amber_rounded, color: Color(0xFFFF4444), size: 48),
+            const Icon(
+              Icons.warning_amber_rounded,
+              color: Color(0xFFFF4444),
+              size: 48,
+            ),
             const SizedBox(height: 16),
             Text(
-              'RENDERING ERROR',
+              context.l10n.renderingErrorTitle,
               style: GoogleFonts.orbitron(
                 color: const Color(0xFFFF4444),
                 fontSize: 14,
@@ -98,7 +103,7 @@ class TorcavApp extends StatelessWidget {
             child: BlocBuilder<ThemeCubit, ThemeMode>(
               builder: (context, themeMode) {
                 return MaterialApp(
-                  title: 'Torcav Wi-Fi Analyzer',
+                  onGenerateTitle: (context) => context.l10n.appTitleLong,
                   debugShowCheckedModeBanner: false,
                   restorationScopeId: 'torcav',
 

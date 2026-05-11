@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../core/extensions/context_extensions.dart';
 
-import 'package:torcav/core/l10n/app_localizations.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
@@ -33,7 +33,7 @@ class _SpeedDoctorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -101,7 +101,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -115,8 +115,7 @@ class _Header extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         Text(
-          'Runs signal, channel, speed and DNS probes in ~30 seconds and '
-          'tells you which link in the chain is the bottleneck.',
+          l10n.speedDoctorLongDesc,
           style: GoogleFonts.rajdhani(
             color: theme.colorScheme.onSurfaceVariant,
             fontSize: 14,
@@ -143,14 +142,13 @@ class _IdleBody extends StatelessWidget {
           height: 56,
           child: NeonButton(
             onPressed: onStart,
-            label: 'START DIAGNOSIS',
+            label: context.l10n.startDiagnosis,
             icon: Icons.play_arrow_rounded,
           ),
         ),
         const SizedBox(height: 14),
         Text(
-          'Heads up: a real speed test downloads ~300–500 MB. Use Wi-Fi or '
-          'an unmetered connection to avoid burning your mobile quota.',
+          context.l10n.speedDoctorQuotaWarning,
           style: GoogleFonts.rajdhani(
             color: theme.colorScheme.onSurfaceVariant,
             fontSize: 12,
@@ -193,7 +191,7 @@ class _ResultBody extends StatelessWidget {
         const SizedBox(height: 20),
         if (result.allEvidence.isNotEmpty) ...[
           Text(
-            'EVIDENCE',
+            context.l10n.evidenceLabel,
             style: GoogleFonts.orbitron(
               color: theme.colorScheme.primary,
               fontSize: 12,
@@ -213,7 +211,7 @@ class _ResultBody extends StatelessWidget {
           height: 48,
           child: NeonButton(
             onPressed: onRerun,
-            label: 'RUN AGAIN',
+            label: context.l10n.runAgain,
             icon: Icons.refresh_rounded,
           ),
         ),
@@ -260,7 +258,7 @@ class _AboutSectionState extends State<_AboutSection> {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  'ABOUT SPEED DOCTOR',
+                  context.l10n.aboutSpeedDoctorTitle,
                   style: GoogleFonts.orbitron(
                     color: theme.colorScheme.primary,
                     fontSize: 12,
@@ -274,51 +272,37 @@ class _AboutSectionState extends State<_AboutSection> {
           if (_expanded) ...[
             const SizedBox(height: 12),
             _AboutBlock(
-              title: 'What is it?',
-              body:
-                  'A one-tap diagnostic that finds the likely bottleneck '
-                  'between you and the internet — without you having to '
-                  'compare numbers across separate screens.',
+              title: context.l10n.sdAboutWhatTitle,
+              body: context.l10n.sdAboutWhatBody,
             ),
             const SizedBox(height: 10),
             _AboutBlock(
-              title: 'How does it work?',
-              body:
-                  'Five short probes run end-to-end and the results are '
-                  'compared against published thresholds:',
-              bullets: const [
-                'Signal — reads RSSI from the connected access point.',
-                'Channel — scores your channel against neighbouring APs.',
-                'Speed — runs a real download/upload test against Cloudflare.',
-                'Bufferbloat — measures latency under load (Waveform A–F).',
-                'DNS — benchmarks public resolvers vs. your current one.',
+              title: context.l10n.sdAboutHowTitle,
+              body: context.l10n.sdAboutHowBody,
+              bullets: [
+                context.l10n.sdAboutHowBullet1,
+                context.l10n.sdAboutHowBullet2,
+                context.l10n.sdAboutHowBullet3,
+                context.l10n.sdAboutHowBullet4,
+                context.l10n.sdAboutHowBullet5,
               ],
             ),
             const SizedBox(height: 10),
             _AboutBlock(
-              title: 'What do the categories mean?',
+              title: context.l10n.sdAboutCategoriesTitle,
               body: '',
-              bullets: const [
-                'Weak Signal — Wi-Fi link forced into slower modes by '
-                    'distance / walls.',
-                'Crowded Channel — neighbouring APs on the same channel '
-                    'eat your air-time.',
-                'Bufferbloat — latency balloons when the link is fully '
-                    'loaded; calls and games suffer.',
-                'ISP Slow — Wi-Fi is fine but your plan / upstream is the '
-                    'ceiling.',
-                'Slow DNS — page loads feel laggy because name lookups '
-                    'take too long.',
+              bullets: [
+                context.l10n.sdAboutCategoriesBullet1,
+                context.l10n.sdAboutCategoriesBullet2,
+                context.l10n.sdAboutCategoriesBullet3,
+                context.l10n.sdAboutCategoriesBullet4,
+                context.l10n.sdAboutCategoriesBullet5,
               ],
             ),
             const SizedBox(height: 10),
             _AboutBlock(
-              title: 'About the speed-up estimate',
-              body:
-                  'Each finding shows a conservative projected gain — what '
-                  'you can realistically expect after applying the fix. It '
-                  'is a lower bound, not a guarantee, and it depends on the '
-                  'test conditions.',
+              title: context.l10n.sdAboutEstimateTitle,
+              body: context.l10n.sdAboutEstimateBody,
             ),
           ],
         ],
@@ -419,7 +403,7 @@ class _FailureBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Diagnosis failed',
+            context.l10n.diagnosisFailed,
             style: GoogleFonts.orbitron(
               color: Colors.redAccent,
               fontSize: 14,
@@ -439,7 +423,7 @@ class _FailureBody extends StatelessWidget {
             height: 44,
             child: NeonButton(
               onPressed: onRetry,
-              label: 'RETRY',
+              label: context.l10n.retryLabel,
               icon: Icons.refresh_rounded,
             ),
           ),

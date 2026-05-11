@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:torcav/core/extensions/context_extensions.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
 import '../../domain/entities/network_context_type.dart';
 
@@ -22,10 +23,12 @@ class PublicWifiSafetyCard extends StatelessWidget {
     final scheme = Theme.of(buildContext).colorScheme;
     final isPublic = context == NetworkContextType.public;
     final accent = isPublic ? scheme.error : scheme.tertiary;
-    final label = isPublic ? 'PUBLIC WI-FI' : 'GUEST NETWORK';
+    final label = isPublic
+        ? buildContext.l10n.publicWifiLabel
+        : buildContext.l10n.guestNetworkLabel;
     final subtitle = isPublic
-        ? 'Open or untrusted network — assume traffic can be observed.'
-        : 'You are on a guest segment. Treat as untrusted by default.';
+        ? buildContext.l10n.publicWifiDesc
+        : buildContext.l10n.guestNetworkDesc;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -66,31 +69,23 @@ class PublicWifiSafetyCard extends StatelessWidget {
           const SizedBox(height: 14),
           _Tip(
             icon: Icons.vpn_lock_rounded,
-            title: 'Use a VPN',
-            body:
-                'Tunnel traffic through a trusted VPN before sending anything '
-                'sensitive. Built-in OS VPN is fine for most users.',
+            title: buildContext.l10n.tipVpnTitle,
+            body: buildContext.l10n.tipVpnBody,
           ),
           _Tip(
             icon: Icons.lock_rounded,
-            title: 'Verify HTTPS',
-            body:
-                'Only enter credentials on sites with a locked padlock. Reject '
-                'certificate warnings — they are how attackers strip TLS.',
+            title: buildContext.l10n.tipHttpsTitle,
+            body: buildContext.l10n.tipHttpsBody,
           ),
           _Tip(
             icon: Icons.no_accounts_rounded,
-            title: 'Defer sensitive actions',
-            body:
-                'Avoid banking, payments, password resets and account logins '
-                'until you are back on a trusted network.',
+            title: buildContext.l10n.tipSensitiveTitle,
+            body: buildContext.l10n.tipSensitiveBody,
           ),
           _Tip(
             icon: Icons.dns_rounded,
-            title: 'Check DNS health',
-            body:
-                'Public hotspots can hijack DNS. Run a DNS test from this '
-                'screen to confirm responses are not being rewritten.',
+            title: buildContext.l10n.tipDnsTitle,
+            body: buildContext.l10n.tipDnsBody,
             onTap: onRunDnsTest,
           ),
         ],

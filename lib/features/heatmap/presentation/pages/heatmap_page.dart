@@ -26,6 +26,7 @@ import 'package:torcav/features/heatmap/presentation/widgets/heatmap/session_pic
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap/signal_probe_overlay.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap/survey_conclusion_overlay.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap_canvas.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 
 class HeatmapPage extends StatefulWidget {
   const HeatmapPage({super.key});
@@ -139,6 +140,7 @@ class _HeatmapViewState extends State<_HeatmapView> {
           onPopInvokedWithResult: (didPop, result) async {
             if (didPop) return;
 
+            final l10n = context.l10n;
             final shouldPop =
                 await showDialog<bool>(
                   context: context,
@@ -146,7 +148,7 @@ class _HeatmapViewState extends State<_HeatmapView> {
                       (context) => AlertDialog(
                         backgroundColor: colorScheme.surface,
                         title: Text(
-                          'End Survey?',
+                          l10n.endSurveyDialogTitle,
                           style: GoogleFonts.orbitron(
                             color: colorScheme.primary,
                             fontSize: 16,
@@ -155,8 +157,8 @@ class _HeatmapViewState extends State<_HeatmapView> {
                         ),
                         content: Text(
                           isRecording
-                              ? 'Your current survey data will be lost if you discard it. Save or Discard?'
-                              : 'Exit session review?',
+                              ? l10n.endSurveyDialogBody
+                              : l10n.endSurveyReviewBody,
                           style: GoogleFonts.outfit(
                             color: colorScheme.onSurface,
                             fontSize: 14,
@@ -166,7 +168,7 @@ class _HeatmapViewState extends State<_HeatmapView> {
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(false),
                             child: Text(
-                              'CANCEL',
+                              l10n.cancel,
                               style: GoogleFonts.orbitron(
                                 color:
                                     isLight
@@ -183,7 +185,7 @@ class _HeatmapViewState extends State<_HeatmapView> {
                                 Navigator.of(context).pop(true);
                               },
                               child: Text(
-                                'SAVE',
+                                l10n.save,
                                 style: GoogleFonts.orbitron(
                                   color: theme.colorScheme.primary,
                                   fontSize: 12,
@@ -196,7 +198,7 @@ class _HeatmapViewState extends State<_HeatmapView> {
                               Navigator.of(context).pop(true);
                             },
                             child: Text(
-                              isRecording ? 'DISCARD' : 'EXIT',
+                              isRecording ? l10n.discardAction : l10n.exitAction,
                               style: GoogleFonts.orbitron(
                                 color:
                                     isLight

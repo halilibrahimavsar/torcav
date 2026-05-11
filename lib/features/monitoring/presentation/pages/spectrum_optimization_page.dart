@@ -516,7 +516,7 @@ class _HistoryTabState extends State<_HistoryTab> {
                     color: Theme.of(context).colorScheme.error,
                   ),
                   label: Text(
-                    'CLEAR HISTORY',
+                    context.l10n.clearHistoryAction,
                     style: GoogleFonts.orbitron(
                       fontSize: 9,
                       fontWeight: FontWeight.bold,
@@ -1516,7 +1516,7 @@ class _NetworkRow extends StatelessWidget {
               const SizedBox(width: 6),
               _miniBadge('$width MHz', AppColors.neonCyan),
               const SizedBox(width: 4),
-              _miniBadge(_securityLabel(network.security), AppColors.neonPurple),
+              _miniBadge(_securityLabel(context, network.security), AppColors.neonPurple),
               const SizedBox(width: 6),
               Text(
                 '${network.signalStrength} dBm',
@@ -1559,10 +1559,10 @@ class _NetworkRow extends StatelessWidget {
     return Colors.redAccent;
   }
 
-  String _securityLabel(SecurityType s) {
+  String _securityLabel(BuildContext context, SecurityType s) {
     switch (s) {
       case SecurityType.open:
-        return 'OPEN';
+        return context.l10n.wifiSecurityOpen;
       case SecurityType.wep:
         return 'WEP';
       case SecurityType.wpa:

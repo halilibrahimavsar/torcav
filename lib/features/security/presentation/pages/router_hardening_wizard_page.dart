@@ -5,9 +5,11 @@ import 'package:network_info_plus/network_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../data/stores/router_hardening_store.dart';
 import '../../domain/entities/hardening_check.dart';
+import '../extensions/hardening_extension.dart';
 
 /// Vendor-agnostic step-by-step wizard that walks the user through tightening
 /// their router configuration. Items persist per-BSSID, so progress carries
@@ -95,9 +97,7 @@ class _RouterHardeningWizardPageState extends State<RouterHardeningWizardPage> {
         SnackBar(
           duration: const Duration(seconds: 6),
           content: Text(
-            'Could not open the browser automatically. Gateway IP '
-            '$gateway has been copied — paste it into your browser\'s '
-            'address bar.',
+            context.l10n.gatewayCopyError(gateway),
             style: GoogleFonts.rajdhani(fontSize: 13),
           ),
         ),
@@ -115,7 +115,7 @@ class _RouterHardeningWizardPageState extends State<RouterHardeningWizardPage> {
         SnackBar(
           duration: const Duration(seconds: 3),
           content: Text(
-            'Gateway IP $gateway copied to clipboard.',
+            context.l10n.gatewayCopied(gateway),
             style: GoogleFonts.rajdhani(fontSize: 13),
           ),
         ),
@@ -136,7 +136,7 @@ class _RouterHardeningWizardPageState extends State<RouterHardeningWizardPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          'ROUTER HARDENING',
+          context.l10n.hardeningTitle,
           style: GoogleFonts.orbitron(
             fontWeight: FontWeight.w900,
             letterSpacing: 2.0,
@@ -177,8 +177,7 @@ class _RouterHardeningWizardPageState extends State<RouterHardeningWizardPage> {
                           Border.all(color: scheme.error.withValues(alpha: 0.4)),
                     ),
                     child: Text(
-                      'Connect to your home Wi-Fi to track progress per '
-                      'router. The checklist still works without a connection.',
+                      context.l10n.hardeningConnectWifiHint,
                       style: GoogleFonts.rajdhani(
                         color: scheme.onSurfaceVariant,
                         fontSize: 13,
@@ -238,7 +237,7 @@ class _ProgressHeader extends StatelessWidget {
           Row(
             children: [
               NeonText(
-                'PROGRESS',
+                context.l10n.progressLabel,
                 style: GoogleFonts.orbitron(
                   color: accent,
                   fontSize: 11,
@@ -320,7 +319,7 @@ class _ProgressHeader extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      'tap to copy',
+                      context.l10n.tapToCopy,
                       style: GoogleFonts.rajdhani(
                         color:
                             scheme.onSurfaceVariant.withValues(alpha: 0.7),
@@ -374,7 +373,7 @@ class _OpenAdminButton extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 NeonText(
-                  'OPEN ADMIN PANEL',
+                  context.l10n.hardeningOpenAdmin,
                   style: GoogleFonts.orbitron(
                     color: accent,
                     fontSize: 13,
@@ -387,8 +386,8 @@ class _OpenAdminButton extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   enabled
-                      ? 'Launch your router login page in the browser'
-                      : 'Connect to Wi-Fi first',
+                      ? context.l10n.hardeningOpenAdminDesc
+                      : context.l10n.hardeningConnectWifiRequired,
                   style: GoogleFonts.rajdhani(
                     color: accent.withValues(alpha: 0.8),
                     fontSize: 11,
@@ -418,11 +417,8 @@ class _OpenAdminHint extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final body = gateway == null
-        ? 'Once connected, the gateway IP appears above and the button '
-            'will launch your browser.'
-        : 'Doesn\'t open? Tap the gateway IP above to copy it, then '
-            'paste it into your browser\'s address bar (Chrome, Firefox, '
-            'etc.).';
+        ? context.l10n.hardeningGatewayHintDisconnected
+        : context.l10n.hardeningGatewayHintConnected;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Row(
@@ -513,7 +509,7 @@ class _CheckTile extends StatelessWidget {
             ),
           ),
           title: Text(
-            meta.title,
+            meta.id.title(context),
             style: GoogleFonts.orbitron(
               color: scheme.onSurface,
               fontSize: 12.5,
@@ -527,7 +523,7 @@ class _CheckTile extends StatelessWidget {
               ? Padding(
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(
-                    'CRITICAL',
+                    context.l10n.hardeningCriticalBadge,
                     style: GoogleFonts.orbitron(
                       color: scheme.error,
                       fontSize: 9,
@@ -552,7 +548,7 @@ class _CheckTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'WHY THIS MATTERS',
+                    context.l10n.whyThisMattersLabel,
                     style: GoogleFonts.orbitron(
                       color: scheme.onSurfaceVariant,
                       fontSize: 9,
@@ -562,7 +558,7 @@ class _CheckTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    meta.body,
+                    meta.id.body(context),
                     style: GoogleFonts.rajdhani(
                       color: scheme.onSurface,
                       fontSize: 13,
@@ -580,7 +576,7 @@ class _CheckTile extends StatelessWidget {
                 Icon(Icons.list_alt_rounded, color: accent, size: 16),
                 const SizedBox(width: 6),
                 Text(
-                  'STEP-BY-STEP',
+                  context.l10n.hardeningStepsTitle,
                   style: GoogleFonts.orbitron(
                     color: accent,
                     fontSize: 10,
@@ -591,10 +587,10 @@ class _CheckTile extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            for (var i = 0; i < meta.steps.length; i++)
+            for (var i = 0; i < meta.id.steps(context).length; i++)
               _StepRow(
                 index: i + 1,
-                text: meta.steps[i],
+                text: meta.id.steps(context)[i],
                 accent: accent,
               ),
 
@@ -602,7 +598,7 @@ class _CheckTile extends StatelessWidget {
             if (meta.menuHints.isNotEmpty) ...[
               const SizedBox(height: 14),
               Text(
-                'MENU NAMES BY BRAND',
+                context.l10n.hardeningMenuHintsTitle,
                 style: GoogleFonts.orbitron(
                   color: scheme.onSurfaceVariant,
                   fontSize: 9,
@@ -653,7 +649,7 @@ class _CheckTile extends StatelessWidget {
                   size: 18,
                 ),
                 label: Text(
-                  completed ? 'MARK AS TODO' : 'MARK DONE',
+                  completed ? context.l10n.markAsTodoLabel : context.l10n.hardeningMarkDone,
                   style: GoogleFonts.orbitron(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/extensions/context_extensions.dart';
 import '../bloc/ping_stabilizer_cubit.dart';
 import '../bloc/ping_stabilizer_state.dart';
 import '../widgets/dns_picker_section.dart';
@@ -33,7 +34,7 @@ class _PingStabilizerView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'PING STABILIZER',
+          context.l10n.pingStabilizerTitle,
           style: GoogleFonts.orbitron(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -75,27 +76,25 @@ class _PingStabilizerView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Row(
+                          Row(
                             children: [
-                              Icon(Icons.notifications_off_rounded,
+                              const Icon(Icons.notifications_off_rounded,
                                   color: Colors.orangeAccent),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
-                                  'Notifications are blocked',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold),
+                                  context.l10n.notificationsBlockedTitle,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                           const SizedBox(height: 6),
-                          const Text(
-                            'The live ping HUD lives in the notification '
-                            'shade. Without notifications you cannot see ping '
-                            'while gaming. On MIUI/Xiaomi, also enable '
-                            '"Show on Lock screen" and "Floating notifications".',
-                            style: TextStyle(fontSize: 13),
+                          Text(
+                            context.l10n.notificationsBlockedDesc,
+                            style: const TextStyle(fontSize: 13),
                           ),
                           const SizedBox(height: 8),
                           Align(
@@ -105,7 +104,7 @@ class _PingStabilizerView extends StatelessWidget {
                                   .read<PingStabilizerCubit>()
                                   .openNotificationSettings(),
                               icon: const Icon(Icons.settings_rounded),
-                              label: const Text('Open settings'),
+                              label: Text(context.l10n.openSettingsLabel),
                             ),
                           ),
                         ],
@@ -120,9 +119,9 @@ class _PingStabilizerView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Live latency',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        Text(
+                          context.l10n.liveLatencyLabel,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8),
                         LiveJitterChart(stats: state.stats),
@@ -130,16 +129,19 @@ class _PingStabilizerView extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             _Stat(
-                              label: 'Latency',
-                              value: '${state.stats.ewmaLatencyMs.toStringAsFixed(0)} ms',
+                              label: context.l10n.latencyStatLabel,
+                              value:
+                                  '${state.stats.ewmaLatencyMs.toStringAsFixed(0)} ms',
                             ),
                             _Stat(
-                              label: 'Jitter',
-                              value: '${state.stats.ewmaJitterMs.toStringAsFixed(1)} ms',
+                              label: context.l10n.jitterStatLabel,
+                              value:
+                                  '${state.stats.ewmaJitterMs.toStringAsFixed(1)} ms',
                             ),
                             _Stat(
-                              label: 'Loss',
-                              value: '${state.stats.lossPct.toStringAsFixed(1)}%',
+                              label: context.l10n.lossStatLabel,
+                              value:
+                                  '${state.stats.lossPct.toStringAsFixed(1)}%',
                             ),
                           ],
                         ),
@@ -147,7 +149,9 @@ class _PingStabilizerView extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(top: 8),
                             child: Text(
-                              'Baseline (pre-tunnel): ${state.baselineLatencyMs} ms',
+                              context.l10n.baselineLatencyLabel(
+                                state.baselineLatencyMs.toString(),
+                              ),
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ),
@@ -177,8 +181,9 @@ class _PingStabilizerView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Jitter alarm threshold: '
-                          '${state.jitterThresholdMs.toStringAsFixed(0)} ms',
+                          context.l10n.jitterThresholdLabel(
+                            state.jitterThresholdMs.toStringAsFixed(0),
+                          ),
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         Slider(

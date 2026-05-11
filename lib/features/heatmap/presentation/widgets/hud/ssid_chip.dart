@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:torcav/core/extensions/context_extensions.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
 import 'package:torcav/features/heatmap/domain/entities/survey_gate.dart';
 import 'package:torcav/features/heatmap/domain/services/signal_tier.dart';
@@ -44,7 +45,7 @@ class SsidChip extends StatelessWidget {
                   children: [
                     Text(
                       slice.ssid.isEmpty
-                          ? 'LIVE WI-FI'
+                          ? context.l10n.liveWifi
                           : slice.ssid.toUpperCase(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -59,7 +60,7 @@ class SsidChip extends StatelessWidget {
                     Text(
                       slice.bssid.isEmpty
                           ? signalTierLabel(tier)
-                          : '${slice.locked ? 'LOCK' : 'HOLD'} ${compactBssid(slice.bssid)}',
+                          : '${slice.locked ? context.l10n.ssidChipLock : context.l10n.ssidChipHold} ${compactBssid(slice.bssid)}',
                       style: GoogleFonts.outfit(
                         color: color,
                         fontSize: 10,

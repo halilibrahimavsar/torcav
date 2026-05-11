@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/extensions/context_extensions.dart';
 import '../../domain/entities/host_trust_assessment.dart';
 
 /// Compact pill (green / amber / red) showing a host's trust verdict.
@@ -31,7 +32,7 @@ class HostTrustBadge extends StatelessWidget {
             Icon(_icon(assessment.level), size: 12, color: palette),
             const SizedBox(width: 4),
             Text(
-              _label(assessment.level),
+              _label(context, assessment.level),
               style: GoogleFonts.orbitron(
                 color: palette,
                 fontSize: 9,
@@ -66,10 +67,10 @@ class HostTrustBadge extends StatelessWidget {
     HostTrustLevel.risky => Icons.gpp_bad_rounded,
   };
 
-  String _label(HostTrustLevel l) => switch (l) {
-    HostTrustLevel.safe => 'SAFE',
-    HostTrustLevel.caution => 'CAUTION',
-    HostTrustLevel.risky => 'RISKY',
+  String _label(BuildContext context, HostTrustLevel l) => switch (l) {
+    HostTrustLevel.safe => context.l10n.trustLevelSafe,
+    HostTrustLevel.caution => context.l10n.trustLevelCaution,
+    HostTrustLevel.risky => context.l10n.trustLevelRisky,
   };
 }
 
@@ -107,7 +108,7 @@ class _HostTrustSheet extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'WHY IS THIS ${_levelText(assessment.level)}?',
+              context.l10n.whyIsThisLabel(_levelText(context, assessment.level)),
               style: GoogleFonts.orbitron(
                 color: theme.colorScheme.primary,
                 fontSize: 13,
@@ -128,8 +129,7 @@ class _HostTrustSheet extends StatelessWidget {
             const SizedBox(height: 16),
             if (assessment.reasons.isEmpty)
               Text(
-                'No specific concerns logged for this device. The badge '
-                'reflects an aggregate score.',
+                context.l10n.noSpecificConcerns,
                 style: GoogleFonts.rajdhani(
                   color: theme.colorScheme.onSurfaceVariant,
                   fontSize: 13,
@@ -168,7 +168,7 @@ class _HostTrustSheet extends StatelessWidget {
                           reason.remediation!.isNotEmpty) ...[
                         const SizedBox(height: 6),
                         Text(
-                          'WHAT TO DO',
+                          context.l10n.whatToDoLabel,
                           style: GoogleFonts.orbitron(
                             color: theme.colorScheme.primary,
                             fontSize: 10,
@@ -196,9 +196,9 @@ class _HostTrustSheet extends StatelessWidget {
     );
   }
 
-  String _levelText(HostTrustLevel l) => switch (l) {
-    HostTrustLevel.safe => 'SAFE',
-    HostTrustLevel.caution => 'CAUTION',
-    HostTrustLevel.risky => 'RISKY',
+  String _levelText(BuildContext context, HostTrustLevel l) => switch (l) {
+    HostTrustLevel.safe => context.l10n.trustLevelSafe,
+    HostTrustLevel.caution => context.l10n.trustLevelCaution,
+    HostTrustLevel.risky => context.l10n.trustLevelRisky,
   };
 }

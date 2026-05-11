@@ -7,6 +7,7 @@ import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.
 import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/scan_phase.dart';
 
+import 'package:torcav/core/extensions/context_extensions.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/hud/hud_dock.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/hud/hud_models.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/hud/hud_scrim.dart';
@@ -101,7 +102,7 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                     onPressed:
                         () => context.read<HeatmapBloc>().realignHeading(),
                     icon: const Icon(Icons.explore_rounded),
-                    tooltip: 'Realign Compass',
+                    tooltip: context.l10n.realignCompassTooltip,
                     constraints: const BoxConstraints(),
                     padding: const EdgeInsets.all(8),
                     style: IconButton.styleFrom(
@@ -121,7 +122,7 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                   IconButton(
                     onPressed: () => _showSettingsSheet(context),
                     icon: const Icon(Icons.settings_rounded),
-                    tooltip: 'Settings',
+                    tooltip: context.l10n.settingsTitle,
                     constraints: const BoxConstraints(),
                     padding: const EdgeInsets.all(8),
                     style: IconButton.styleFrom(
@@ -244,7 +245,7 @@ class _ArHudOverlayState extends State<ArHudOverlay>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Heatmap Settings',
+                  context.l10n.heatmapSettingsTitle,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.bold,
@@ -252,7 +253,7 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'Auto-sampling Distance',
+                  context.l10n.autoSamplingDistance,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
@@ -310,7 +311,7 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'Appearance',
+                          context.l10n.appearanceLabel,
                           style: Theme.of(
                             context,
                           ).textTheme.bodyMedium?.copyWith(
@@ -322,21 +323,21 @@ class _ArHudOverlayState extends State<ArHudOverlay>
                         BlocBuilder<ThemeCubit, ThemeMode>(
                           builder: (context, themeMode) {
                             return SegmentedButton<ThemeMode>(
-                              segments: const [
+                              segments: [
                                 ButtonSegment<ThemeMode>(
                                   value: ThemeMode.system,
-                                  icon: Icon(Icons.brightness_auto),
-                                  label: Text('Auto'),
+                                  icon: const Icon(Icons.brightness_auto),
+                                  label: Text(context.l10n.autoLabel),
                                 ),
                                 ButtonSegment<ThemeMode>(
                                   value: ThemeMode.light,
-                                  icon: Icon(Icons.light_mode),
-                                  label: Text('Light'),
+                                  icon: const Icon(Icons.light_mode),
+                                  label: Text(context.l10n.lightLabel),
                                 ),
                                 ButtonSegment<ThemeMode>(
                                   value: ThemeMode.dark,
-                                  icon: Icon(Icons.dark_mode),
-                                  label: Text('Dark'),
+                                  icon: const Icon(Icons.dark_mode),
+                                  label: Text(context.l10n.darkLabel),
                                 ),
                               ],
                               selected: {themeMode},

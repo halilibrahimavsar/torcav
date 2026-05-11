@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:torcav/core/extensions/context_extensions.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 import '../../../domain/entities/survey_gate.dart';
 import '../../bloc/heatmap_bloc.dart';
@@ -25,43 +26,44 @@ class MeasurementLockBanner extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
+        final l10n = context.l10n;
         final isLight = Theme.of(context).brightness == Brightness.light;
         final (title, body, color, icon) = switch (slice.gate) {
           SurveyGate.noConnectedBssid => (
-            'MEASUREMENT LOCKED',
+            l10n.measurementLockedTitle,
             slice.targetBssid == null
-                ? 'Connect to a Wi-Fi network to lock the survey target.'
-                : 'Reconnect to ${compactBssid(slice.targetBssid!)} to resume sampling.',
+                ? l10n.measurementLockNoWifi
+                : l10n.measurementLockReconnect(compactBssid(slice.targetBssid!)),
             isLight ? AppColors.inkRed : AppColors.neonRed,
             Icons.link_off_rounded,
           ),
           SurveyGate.staleSignal => (
-            'WAITING FOR FRESH SIGNAL',
-            'RSSI is older than 3 seconds. Walk briefly or hold position for a new scan.',
+            l10n.waitingForSignalTitle,
+            l10n.waitingForSignalBody,
             isLight ? AppColors.inkOrange : AppColors.neonOrange,
             Icons.hourglass_top_rounded,
           ),
           SurveyGate.weakSignal => (
-            'SIGNAL DROPPED',
-            'Wi-Fi signal is below -85dBm. Move closer to the Access Point.',
+            l10n.signalDroppedTitle,
+            l10n.signalDroppedBody,
             isLight ? AppColors.inkRed : AppColors.neonRed,
             Icons.signal_wifi_bad_rounded,
           ),
           SurveyGate.pdrDrift => (
-            'COMPASS DRIFT DETECTED',
-            'Magnetic interference found. Walk in a figure-8 or tap Realign.',
+            l10n.compassDriftTitle,
+            l10n.measurementLockMagnetic,
             isLight ? AppColors.inkYellow : AppColors.neonYellow,
             Icons.compass_calibration_rounded,
           ),
           SurveyGate.originNotPlaced => (
-            'PLACE SURVEY ORIGIN',
-            'Tap a detected plane to anchor the AR survey before recording points.',
+            l10n.placeSurveyOriginTitle,
+            l10n.measurementLockAnchor,
             isLight ? AppColors.inkCyan : AppColors.neonCyan,
             Icons.gps_fixed_rounded,
           ),
           SurveyGate.trackingLost => (
-            'TRACKING LOST',
-            'Motion tracking is unavailable. Move slowly until tracking returns.',
+            l10n.trackingLostTitle,
+            l10n.measurementLockTracking,
             isLight ? AppColors.inkOrange : AppColors.neonOrange,
             Icons.route_rounded,
           ),

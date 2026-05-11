@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/presentation/widgets/cyber_neomorphic_button.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../security/domain/entities/security_event.dart';
 import '../../../wifi_scan/domain/entities/channel_rating.dart';
 
@@ -56,7 +57,7 @@ class LiveMetricsBento extends StatelessWidget {
       _MetricTile(
         delayMs: 0,
         accent: AppColors.neonCyan,
-        title: 'SIGNAL',
+        title: context.l10n.metricSignal,
         onTap: onTapSignal,
         child: _SignalWaveform(
           rssiHistory: rssiHistory,
@@ -66,35 +67,35 @@ class LiveMetricsBento extends StatelessWidget {
       _MetricTile(
         delayMs: 80,
         accent: AppColors.neonGreen,
-        title: 'SCORE TREND',
+        title: context.l10n.metricScoreTrend,
         onTap: onTapScore,
         child: _ScoreSparkline(scores: scoreHistory),
       ),
       _MetricTile(
         delayMs: 160,
         accent: AppColors.neonPurple,
-        title: 'CHANNELS',
+        title: context.l10n.metricChannels,
         onTap: onTapChannels,
         child: _ChannelBars(ratings: channelRatings),
       ),
       _MetricTile(
         delayMs: 240,
         accent: AppColors.neonOrange,
-        title: 'NEW DEVICES',
+        title: context.l10n.metricNewDevices,
         onTap: onTapDevices,
         child: _NewDeviceCounter(count: newDeviceCount),
       ),
       _MetricTile(
         delayMs: 320,
         accent: AppColors.neonRed,
-        title: 'THREATS',
+        title: context.l10n.metricThreats,
         onTap: onTapThreats,
         child: _ThreatSeverity(events: recentEvents),
       ),
       _MetricTile(
         delayMs: 400,
         accent: AppColors.neonBlue,
-        title: 'SPEED',
+        title: context.l10n.metricSpeed,
         onTap: onTapSpeed,
         child: _SpeedSnapshot(
           downloadMbps: lastDownloadMbps,
@@ -313,7 +314,7 @@ class _ScoreSparkline extends StatelessWidget {
               ),
             ),
             Text(
-              'Waiting for history',
+            context.l10n.waitingForHistory,
               style: GoogleFonts.rajdhani(
                 color: scheme.onSurfaceVariant,
                 fontSize: 10,
@@ -404,7 +405,7 @@ class _ChannelBars extends StatelessWidget {
     if (ratings.isEmpty) {
       return Center(
         child: Text(
-          'No scan data',
+          context.l10n.noScanData,
           style: GoogleFonts.rajdhani(
             color: scheme.onSurfaceVariant,
             fontSize: 11,
@@ -508,7 +509,7 @@ class _NewDeviceCounter extends StatelessWidget {
           ),
           const SizedBox(height: 2),
           Text(
-            count == 0 ? 'no change' : 'since last scan',
+            count == 0 ? context.l10n.noChangeLabel : context.l10n.sinceLastScanLabel,
             style: GoogleFonts.rajdhani(
               color: scheme.onSurfaceVariant,
               fontSize: 10,
@@ -537,10 +538,10 @@ class _ThreatSeverity extends StatelessWidget {
     final other = events.length - critical - high - medium;
 
     final entries = [
-      (label: 'CRIT', count: critical, color: AppColors.neonRed),
-      (label: 'HIGH', count: high, color: AppColors.neonOrange),
-      (label: 'MED', count: medium, color: const Color(0xFFFFB300)),
-      (label: 'INFO', count: other, color: AppColors.neonCyan),
+      (label: context.l10n.severityCrit, count: critical, color: AppColors.neonRed),
+      (label: context.l10n.severityHighShort, count: high, color: AppColors.neonOrange),
+      (label: context.l10n.severityMedShort, count: medium, color: const Color(0xFFFFB300)),
+      (label: context.l10n.severityInfoShort, count: other, color: AppColors.neonCyan),
     ];
 
     if (events.isEmpty) {
@@ -552,7 +553,7 @@ class _ThreatSeverity extends StatelessWidget {
                 color: AppColors.neonGreen.withValues(alpha: 0.8), size: 24),
             const SizedBox(height: 4),
             Text(
-              'all clear',
+              context.l10n.allClearLabel,
               style: GoogleFonts.rajdhani(
                 color: scheme.onSurfaceVariant,
                 fontSize: 11,
@@ -636,7 +637,7 @@ class _SpeedSnapshot extends StatelessWidget {
                 color: AppColors.neonBlue.withValues(alpha: 0.5), size: 22),
             const SizedBox(height: 4),
             Text(
-              'tap to test',
+              context.l10n.tapToTestLabel,
               style: GoogleFonts.rajdhani(
                 color: scheme.onSurfaceVariant,
                 fontSize: 11,
@@ -669,7 +670,7 @@ class _SpeedSnapshot extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 2),
               child: Text(
-                'Mbps',
+                context.l10n.mbps,
                 style: GoogleFonts.rajdhani(
                   color: scheme.onSurfaceVariant,
                   fontSize: 9,
@@ -697,7 +698,7 @@ class _SpeedSnapshot extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 2),
               child: Text(
-                'Mbps',
+                context.l10n.mbps,
                 style: GoogleFonts.rajdhani(
                   color: scheme.onSurfaceVariant,
                   fontSize: 9,
@@ -709,7 +710,7 @@ class _SpeedSnapshot extends StatelessWidget {
         if (recordedAt != null) ...[
           const SizedBox(height: 4),
           Text(
-            _formatRelative(recordedAt!),
+            _formatRelative(recordedAt!, context),
             style: GoogleFonts.rajdhani(
               color: scheme.onSurfaceVariant,
               fontSize: 9,
@@ -720,11 +721,12 @@ class _SpeedSnapshot extends StatelessWidget {
     );
   }
 
-  String _formatRelative(DateTime t) {
+  String _formatRelative(DateTime t, BuildContext context) {
     final diff = DateTime.now().difference(t);
-    if (diff.inMinutes < 1) return 'just now';
-    if (diff.inHours < 1) return '${diff.inMinutes}m ago';
-    if (diff.inDays < 1) return '${diff.inHours}h ago';
-    return '${diff.inDays}d ago';
+    final l10n = context.l10n;
+    if (diff.inMinutes < 1) return l10n.justNow;
+    if (diff.inHours < 1) return l10n.minutesAgo(diff.inMinutes);
+    if (diff.inDays < 1) return l10n.hoursAgo(diff.inHours);
+    return l10n.daysAgo(diff.inDays);
   }
 }

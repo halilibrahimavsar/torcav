@@ -46,7 +46,7 @@ class OperationsHubPage extends StatelessWidget {
             crossAxisCount: 2,
             mainAxisSpacing: 16,
             crossAxisSpacing: 16,
-            childAspectRatio: 1.15,
+            childAspectRatio: 1.0,
             children: [
               _OperationCard(
                 title: l10n.performanceTitle,
@@ -140,8 +140,8 @@ class OperationsHubPage extends StatelessWidget {
                 delay: 550,
               ),
               _OperationCard(
-                title: 'HARDEN ROUTER',
-                subtitle: 'Security checklist',
+                title: l10n.hardenRouterTitle,
+                subtitle: l10n.hardenRouterSubtitle,
                 icon: Icons.shield_moon_rounded,
                 color: Colors.greenAccent,
                 onTap: () => Navigator.of(context).push(

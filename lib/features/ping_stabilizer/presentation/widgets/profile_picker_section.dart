@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/extensions/context_extensions.dart';
+import '../../domain/entities/stabilization_profile.dart';
 import '../bloc/ping_stabilizer_cubit.dart';
 import '../bloc/ping_stabilizer_state.dart';
 
@@ -14,9 +16,9 @@ class ProfilePickerSection extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Game profile',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            Text(
+              context.l10n.gameProfileLabel,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Wrap(
@@ -25,7 +27,7 @@ class ProfilePickerSection extends StatelessWidget {
               children: state.profiles.map((p) {
                 final isSelected = state.profile?.id == p.id;
                 return ChoiceChip(
-                  label: Text(p.displayName),
+                  label: Text(_translateProfileName(context, p)),
                   selected: isSelected,
                   onSelected: (_) =>
                       context.read<PingStabilizerCubit>().selectProfile(p),
@@ -36,5 +38,12 @@ class ProfilePickerSection extends StatelessWidget {
         );
       },
     );
+  }
+
+  String _translateProfileName(BuildContext context, StabilizationProfile p) {
+    return switch (p.id) {
+      'generic' => context.l10n.profileGeneric,
+      _ => p.displayName,
+    };
   }
 }

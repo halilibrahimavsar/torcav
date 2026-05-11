@@ -73,19 +73,21 @@ class EvilTwinAlertBanner extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        NeonText(
-                          l10n.evilTwinAlertTitle.toUpperCase(),
-                          style: GoogleFonts.orbitron(
-                            color: errorColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.5,
+                        Expanded(
+                          child: NeonText(
+                            l10n.evilTwinAlertTitle.toUpperCase(),
+                            style: GoogleFonts.orbitron(
+                              color: errorColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 1.5,
+                            ),
+                            glowColor: errorColor,
+                            glowRadius: 8,
                           ),
-                          glowColor: errorColor,
-                          glowRadius: 8,
                         ),
-                        const Spacer(),
-                        _AlertBadge(label: 'CRITICAL', color: errorColor),
+                        const SizedBox(width: 8),
+                        _AlertBadge(label: l10n.criticalCaps, color: errorColor),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -173,7 +175,7 @@ class WpsWarningCard extends StatelessWidget {
                             glowRadius: 5,
                           ),
                         ),
-                        _AlertBadge(label: 'WPS ACTIVE', color: warnColor),
+                        _AlertBadge(label: l10n.wpsActiveCaps, color: warnColor),
                       ],
                     ),
                     const SizedBox(height: 8),

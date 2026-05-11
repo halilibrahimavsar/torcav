@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/extensions/context_extensions.dart';
 import '../../domain/entities/stabilizer_recommendation.dart';
 import '../bloc/ping_stabilizer_cubit.dart';
 import '../bloc/ping_stabilizer_state.dart';
@@ -40,14 +41,14 @@ class RecommendationBanner extends StatelessWidget {
                           onPressed: () => context
                               .read<PingStabilizerCubit>()
                               .dismissRecommendation(r),
-                          child: const Text('Dismiss'),
+                          child: Text(context.l10n.dismissLabel),
                         ),
                         const SizedBox(width: 8),
                         FilledButton(
                           onPressed: () => context
                               .read<PingStabilizerCubit>()
                               .acceptRecommendation(r),
-                          child: const Text('Apply'),
+                          child: Text(context.l10n.applyLabel),
                         ),
                       ],
                     ),

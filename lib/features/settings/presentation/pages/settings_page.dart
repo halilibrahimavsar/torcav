@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../core/extensions/context_extensions.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/l10n/locale_cubit.dart';
@@ -40,7 +41,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final settings = _store.value;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.l10n;
     final themeCubit = getIt<ThemeCubit>();
 
     return Scaffold(
@@ -100,7 +101,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               ),
                             ),
                             Text(
-                              _getLanguageName(locale.languageCode),
+                              _getLanguageName(locale.languageCode, l10n),
                               style: GoogleFonts.rajdhani(
                                 color:
                                     Theme.of(
@@ -277,7 +278,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     min: 2,
                     max: 30,
                     divisions: 14,
-                    displayValue: '${settings.scanIntervalSeconds}s',
+                    displayValue: l10n.secondsCount(
+                      settings.scanIntervalSeconds,
+                    ),
                     color: Theme.of(context).colorScheme.secondary,
                     onChanged: (value) {
                       _update(
@@ -335,8 +338,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                     subtitle: Text(
-                      'Actively probes for hidden SSIDs. '
-                      'Off by default — only enable on networks you own.',
+                      l10n.settingsIncludeHiddenDesc,
                       style: GoogleFonts.rajdhani(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 12,
@@ -374,7 +376,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     value: settings.autoScanEnabled,
                     activeColor: Theme.of(context).colorScheme.primary,
                     title: Text(
-                      'Auto-Scan',
+                      l10n.autoScanLabel,
                       style: GoogleFonts.rajdhani(
                         color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 14,
@@ -382,7 +384,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                     subtitle: Text(
-                      'Repeat scan every ${settings.scanIntervalSeconds}s automatically',
+                      l10n.autoScanDesc(settings.scanIntervalSeconds),
                       style: GoogleFonts.rajdhani(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 12,
@@ -420,7 +422,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     value: settings.isDeepScanEnabled,
                     activeColor: Theme.of(context).colorScheme.error,
                     title: Text(
-                      'Deep Scan',
+                      l10n.deepScanLabel,
                       style: GoogleFonts.rajdhani(
                         color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 14,
@@ -428,7 +430,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                     subtitle: Text(
-                      'Banner grab + exposure analysis. Only enable on networks you are authorized to test.',
+                      l10n.deepScanDesc,
                       style: GoogleFonts.rajdhani(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 12,
@@ -447,7 +449,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     value: settings.restrictDeepScanOnPublic,
                     activeColor: Theme.of(context).colorScheme.primary,
                     title: Text(
-                      'Restrict Deep Scan on Public Wi-Fi',
+                      l10n.restrictDeepScanPublicLabel,
                       style: GoogleFonts.rajdhani(
                         color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 14,
@@ -455,9 +457,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                     subtitle: Text(
-                      'Suppress active probing when connected to a public or '
-                      'guest network. Recommended — active scans on networks '
-                      'you do not own are the dominant legal risk.',
+                      l10n.restrictDeepScanPublicDesc,
                       style: GoogleFonts.rajdhani(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 12,
@@ -474,7 +474,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     value: settings.backgroundMonitoringEnabled,
                     activeColor: Theme.of(context).colorScheme.primary,
                     title: Text(
-                      'Background Monitoring',
+                      l10n.backgroundMonitoringLabel,
                       style: GoogleFonts.rajdhani(
                         color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 14,
@@ -482,11 +482,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                     subtitle: Text(
-                      'Run a quiet Wi-Fi check every 30 minutes while the app '
-                      'is closed. You\'ll get a notification if a new device '
-                      'appears, the connected network swaps, or encryption '
-                      'changes. Battery impact is minimal. iOS support is '
-                      'limited (system-controlled refresh).',
+                      l10n.backgroundMonitoringDesc,
                       style: GoogleFonts.rajdhani(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 12,
@@ -512,12 +508,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   // Port scan timeout
                   _NeonSliderTile(
-                    label: 'Port Scan Timeout',
+                    label: l10n.portScanTimeoutLabel,
                     value: settings.portScanTimeoutMs.toDouble(),
                     min: 200,
                     max: 2000,
                     divisions: 18,
-                    displayValue: '${settings.portScanTimeoutMs} ms',
+                    displayValue: l10n.millisecondsCount(
+                      settings.portScanTimeoutMs,
+                    ),
                     color: Theme.of(context).colorScheme.tertiary,
                     onChanged: (value) {
                       _update(
@@ -536,7 +534,7 @@ class _SettingsPageState extends State<SettingsPage> {
           StaggeredEntry(
             delay: const Duration(milliseconds: 500),
             child: NeonSectionHeader(
-              label: 'PRIVACY & DATA',
+              label: l10n.privacyAndDataLabel,
               icon: Icons.privacy_tip_rounded,
               color: Theme.of(context).colorScheme.error,
             ),
@@ -554,7 +552,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Text(
-                      'DATA RETENTION',
+                      l10n.dataRetentionLabel,
                       style: GoogleFonts.orbitron(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 10,
@@ -564,45 +562,59 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                   _NeonSliderTile(
-                    label: 'Scan History',
+                    label: l10n.scanHistoryRetentionLabel,
                     value: settings.scanHistoryRetentionDays.toDouble(),
                     min: 7,
                     max: 365,
                     divisions: 20,
-                    displayValue: settings.scanHistoryRetentionDays == 0
-                        ? '∞'
-                        : '${settings.scanHistoryRetentionDays}d',
+                    displayValue:
+                        settings.scanHistoryRetentionDays == 0
+                            ? '∞'
+                            : l10n.daysCount(settings.scanHistoryRetentionDays),
                     color: Theme.of(context).colorScheme.primary,
-                    onChanged: (v) => _update(
-                      settings.copyWith(scanHistoryRetentionDays: v.round()),
-                    ),
+                    onChanged:
+                        (v) => _update(
+                          settings.copyWith(
+                            scanHistoryRetentionDays: v.round(),
+                          ),
+                        ),
                   ),
                   _NeonSliderTile(
-                    label: 'Speed Tests',
+                    label: l10n.speedTestsRetentionLabel,
                     value: settings.speedTestRetentionDays.toDouble(),
                     min: 7,
                     max: 365,
                     divisions: 20,
-                    displayValue: '${settings.speedTestRetentionDays}d',
-                    color: Theme.of(context).colorScheme.secondary,
-                    onChanged: (v) => _update(
-                      settings.copyWith(speedTestRetentionDays: v.round()),
+                    displayValue: l10n.daysCount(
+                      settings.speedTestRetentionDays,
                     ),
+                    color: Theme.of(context).colorScheme.secondary,
+                    onChanged:
+                        (v) => _update(
+                          settings.copyWith(speedTestRetentionDays: v.round()),
+                        ),
                   ),
                   _NeonSliderTile(
-                    label: 'Security Events',
+                    label: l10n.securityEventsRetentionLabel,
                     value: settings.securityEventRetentionDays.toDouble(),
                     min: 7,
                     max: 365,
                     divisions: 20,
-                    displayValue: '${settings.securityEventRetentionDays}d',
-                    color: Theme.of(context).colorScheme.error,
-                    onChanged: (v) => _update(
-                      settings.copyWith(securityEventRetentionDays: v.round()),
+                    displayValue: l10n.daysCount(
+                      settings.securityEventRetentionDays,
                     ),
+                    color: Theme.of(context).colorScheme.error,
+                    onChanged:
+                        (v) => _update(
+                          settings.copyWith(
+                            securityEventRetentionDays: v.round(),
+                          ),
+                        ),
                   ),
                   Divider(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.1),
                     height: 16,
                   ),
                   ListTile(
@@ -611,7 +623,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                     title: Text(
-                      'Replay Onboarding',
+                      l10n.replayOnboardingLabel,
                       style: GoogleFonts.rajdhani(
                         color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 15,
@@ -619,7 +631,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                     subtitle: Text(
-                      'View the welcome tour again.',
+                      l10n.replayOnboardingDesc,
                       style: GoogleFonts.rajdhani(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 12,
@@ -628,7 +640,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     trailing: IconButton(
                       icon: Icon(
                         Icons.chevron_right_rounded,
-                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.6),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.6),
                       ),
                       onPressed: () => _replayOnboarding(context),
                     ),
@@ -636,7 +650,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     contentPadding: EdgeInsets.zero,
                   ),
                   Divider(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.1),
                     height: 8,
                   ),
                   ListTile(
@@ -645,7 +661,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       color: Theme.of(context).colorScheme.error,
                     ),
                     title: Text(
-                      'Wipe All Local Data',
+                      l10n.wipeAllDataLabel,
                       style: GoogleFonts.rajdhani(
                         color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 15,
@@ -653,8 +669,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                     subtitle: Text(
-                      'Deletes all scan history, speed tests, security events '
-                      'and channel ratings from this device.',
+                      l10n.wipeAllDataDesc,
                       style: GoogleFonts.rajdhani(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 12,
@@ -683,7 +698,7 @@ class _SettingsPageState extends State<SettingsPage> {
           StaggeredEntry(
             delay: const Duration(milliseconds: 600),
             child: NeonSectionHeader(
-              label: 'ABOUT',
+              label: l10n.aboutLabel,
               icon: Icons.info_outline_rounded,
               color: Theme.of(context).colorScheme.secondary,
             ),
@@ -699,7 +714,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Legal Disclaimer',
+                    l10n.legalDisclaimerTitle,
                     style: GoogleFonts.orbitron(
                       color: Theme.of(context).colorScheme.secondary,
                       fontSize: 11,
@@ -709,16 +724,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'This application performs network observation and authorized LAN discovery. '
-                    'Active probing is strictly limited to service identification and security assessment. '
-                    'No brute-force authentication, frame injection, deauthentication packets, '
-                    'ARP poisoning, or credential harvesting are performed.\n\n'
-                    'Use of this application on networks you do not own or are not authorized '
-                    'to test may violate applicable laws (TCK 243/244, EU Directive 2013/40, '
-                    'CFAA). The user is solely responsible for ensuring lawful use.\n\n'
-                    'Bu uygulama ağ gözlemi ve yetkili LAN keşfi gerçekleştirir. '
-                    'Aktif sorgulama yalnızca servis tanımlama ve güvenlik değerlendirmesi ile sınırlıdır. '
-                    'Yetkisiz ağlarda kullanım TCK 243/244 kapsamında suç teşkil edebilir.',
+                    l10n.legalDisclaimerBody,
                     style: GoogleFonts.outfit(
                       color: Theme.of(
                         context,
@@ -734,7 +740,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       color: Theme.of(context).colorScheme.secondary,
                     ),
                     title: Text(
-                      'PRIVACY POLICY',
+                      l10n.privacyPolicyTitle.toUpperCase(),
                       style: GoogleFonts.orbitron(
                         color: Theme.of(context).colorScheme.secondary,
                         fontSize: 12,
@@ -773,6 +779,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<bool> _confirmDeepScan(BuildContext context) async {
+    final l10n = context.l10n;
     final result = await showDialog<bool>(
       context: context,
       builder:
@@ -782,7 +789,7 @@ class _SettingsPageState extends State<SettingsPage> {
               borderRadius: BorderRadius.circular(20),
             ),
             title: Text(
-              'ENABLE DEEP SCAN?',
+              l10n.enableDeepScanTitle,
               style: GoogleFonts.orbitron(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
@@ -790,10 +797,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             content: Text(
-              'Deep scan performs banner grabbing and service exposure analysis. '
-              'This mode must only be used on networks you own or are explicitly '
-              'authorized to test.\n\n'
-              'Proceeding on unauthorized networks may violate applicable laws.',
+              l10n.enableDeepScanBody,
               style: GoogleFonts.rajdhani(
                 color: Theme.of(ctx).colorScheme.onSurface,
                 fontSize: 14,
@@ -804,7 +808,7 @@ class _SettingsPageState extends State<SettingsPage> {
               TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
                 child: Text(
-                  'CANCEL',
+                  l10n.cancel,
                   style: GoogleFonts.orbitron(
                     fontSize: 11,
                     color: Theme.of(ctx).colorScheme.onSurfaceVariant,
@@ -814,7 +818,7 @@ class _SettingsPageState extends State<SettingsPage> {
               TextButton(
                 onPressed: () => Navigator.pop(ctx, true),
                 child: Text(
-                  'I UNDERSTAND — ENABLE',
+                  l10n.understandEnable,
                   style: GoogleFonts.orbitron(
                     fontSize: 11,
                     color: Theme.of(ctx).colorScheme.error,
@@ -831,6 +835,8 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _confirmWipeAll(BuildContext context) async {
     final messenger = ScaffoldMessenger.of(context);
     final errorColor = Theme.of(context).colorScheme.error;
+    // Capture l10n before async gap to satisfy use_build_context_synchronously.
+    final allDataWipedMsg = context.l10n.allDataWiped;
 
     final confirmed = await showDialog<bool>(
       context: context,
@@ -841,7 +847,7 @@ class _SettingsPageState extends State<SettingsPage> {
               borderRadius: BorderRadius.circular(20),
             ),
             title: Text(
-              'WIPE ALL DATA',
+              context.l10n.wipeAllDialogTitle,
               style: GoogleFonts.orbitron(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
@@ -849,23 +855,21 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             content: Text(
-              'This will permanently delete all local scan history, speed test '
-              'records, security events, channel ratings and in-memory snapshots. '
-              'This action cannot be undone.',
+              context.l10n.wipeAllDialogBody,
               style: GoogleFonts.rajdhani(fontSize: 14, height: 1.4),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
                 child: Text(
-                  'CANCEL',
+                  context.l10n.cancel,
                   style: GoogleFonts.orbitron(fontSize: 10),
                 ),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(ctx, true),
                 child: Text(
-                  'WIPE ALL',
+                  context.l10n.wipeAllAction,
                   style: GoogleFonts.orbitron(
                     fontSize: 10,
                     color: Theme.of(ctx).colorScheme.error,
@@ -898,7 +902,7 @@ class _SettingsPageState extends State<SettingsPage> {
     messenger.showSnackBar(
       SnackBar(
         content: Text(
-          'All local data wiped.',
+          allDataWipedMsg,
           style: GoogleFonts.rajdhani(fontWeight: FontWeight.w600),
         ),
         backgroundColor: errorColor,
@@ -983,17 +987,17 @@ class _SettingsPageState extends State<SettingsPage> {
     };
   }
 
-  String _getLanguageName(String code) {
+  String _getLanguageName(String code, AppLocalizations l10n) {
     switch (code) {
       case 'tr':
-        return 'Türkçe';
+        return l10n.languageTurkish;
       case 'ku':
-        return 'Kurdî';
+        return l10n.languageKurdish;
       case 'de':
-        return 'Deutsch';
+        return l10n.languageGerman;
       case 'en':
       default:
-        return 'English';
+        return l10n.languageEnglish;
     }
   }
 
@@ -1001,6 +1005,7 @@ class _SettingsPageState extends State<SettingsPage> {
     showDialog(
       context: context,
       builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
         return AlertDialog(
           backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
           shape: RoundedRectangleBorder(
@@ -1023,13 +1028,19 @@ class _SettingsPageState extends State<SettingsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               _LanguageOption(
-                label: 'English 🇺🇸',
+                label: l10n.languageEnglish,
                 locale: const Locale('en'),
               ),
-              _LanguageOption(label: 'Türkçe 🇹🇷', locale: const Locale('tr')),
-              _LanguageOption(label: 'Kurdî ☀️', locale: const Locale('ku')),
               _LanguageOption(
-                label: 'Deutsch 🇩🇪',
+                label: l10n.languageTurkish,
+                locale: const Locale('tr'),
+              ),
+              _LanguageOption(
+                label: l10n.languageKurdish,
+                locale: const Locale('ku'),
+              ),
+              _LanguageOption(
+                label: l10n.languageGerman,
                 locale: const Locale('de'),
               ),
               _SystemLanguageOption(),
@@ -1237,7 +1248,7 @@ class _SystemLanguageOption extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  'System Default',
+                  AppLocalizations.of(context)!.systemDefault,
                   style: GoogleFonts.rajdhani(
                     color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 16,
@@ -1370,8 +1381,7 @@ class _BackgroundOption extends StatelessWidget {
                             ? tertiary
                             : Theme.of(context).colorScheme.onSurface,
                     fontSize: 16,
-                    fontWeight:
-                        isSelected ? FontWeight.bold : FontWeight.w600,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                   ),
                 ),
                 const Spacer(),

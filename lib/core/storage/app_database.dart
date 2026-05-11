@@ -21,20 +21,33 @@ class AppDatabase {
   }
 
   Future<Database> _open() async {
-    if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
-      sqfliteFfiInit();
-      databaseFactory = databaseFactoryFfi;
-    }
-
     final baseDir = await getApplicationSupportDirectory();
     final dbPath = p.join(baseDir.path, 'torcav.sqlite');
 
     // Retrieve or generate the encryption key from secure storage
     final password = await _secureStorage.getDatabaseEncryptionKey();
 
+    if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+      sqfliteFfiInit();
+      return databaseFactoryFfi.openDatabase(
+        dbPath,
+        options: OpenDatabaseOptions(
+          version: 9,
+          onCreate: _onCreate,
+          onUpgrade: _onUpgrade,
+          onConfigure: (db) async {
+            await db.execute('PRAGMA foreign_keys = ON');
+            // Apply encryption key via PRAGMA for FFI platforms.
+            // Note: SQLCipher support on Desktop requires a compatible sqlite3 library.
+            await db.execute("PRAGMA key = '${password.replaceAll("'", "''")}'");
+          },
+        ),
+      );
+    }
+
     return openDatabase(
       dbPath,
-      password: password, // Enable encryption
+      password: password, // Enable encryption via sqflite_sqlcipher on mobile
       version: 9,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,

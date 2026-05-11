@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/theme/prominent_disclosure_dialog.dart';
 
 import '../../../../core/di/injection.dart';
@@ -83,16 +83,15 @@ class _WifiScanViewState extends State<_WifiScanView> {
             context: context,
             barrierDismissible: false,
             builder: (ctx) => ProminentDisclosureDialog(
-              title: 'WIFI SCAN PERMISSION',
-              description:
-                  'To discover nearby Wi-Fi networks and analyze signal strength, Torcav requires Location access. This is an Android system requirement for Wi-Fi scanning.',
+              title: context.l10n.wifiScanPermissionTitle,
+              description: context.l10n.wifiScanPermissionDesc,
               icon: Icons.location_on_rounded,
-              privacyPoints: const [
-                'Scan nearby Wi-Fi SSIDs',
-                'Analyze signal quality and interference',
-                'Torcav never tracks or shares your location',
+              privacyPoints: [
+                context.l10n.consentScanSsids,
+                context.l10n.consentAnalyzeSignal,
+                context.l10n.consentNoTracking,
               ],
-              actionLabel: 'CONTINUE',
+              actionLabel: context.l10n.continueLabel,
               onAccept: () => Navigator.of(ctx).pop(true),
               onCancel: () => Navigator.of(ctx).pop(false),
             ),
@@ -149,7 +148,7 @@ class _WifiScanViewState extends State<_WifiScanView> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.l10n;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Stack(
@@ -185,11 +184,9 @@ class _WifiScanViewState extends State<_WifiScanView> {
                           StaggeredEntry(
                             child: Column(
                               children: [
-                                Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!.initiatingSpectrumScan,
-                                  style: GoogleFonts.orbitron(
+                Text(
+                  context.l10n.initiatingSpectrumScan,
+                  style: GoogleFonts.orbitron(
                                     color:
                                         Theme.of(context).colorScheme.primary,
                                     fontSize: 14,
@@ -199,9 +196,7 @@ class _WifiScanViewState extends State<_WifiScanView> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!.broadcastingProbeRequests,
+                                  context.l10n.broadcastingProbeRequests,
                                   style: GoogleFonts.rajdhani(
                                     color:
                                         Theme.of(
@@ -287,22 +282,22 @@ class _SnapshotViewState extends State<_SnapshotView> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(
-          'CLEAR SCAN HISTORY',
+          context.l10n.clearScanHistoryTitle,
           style: GoogleFonts.orbitron(fontSize: 13, fontWeight: FontWeight.bold),
         ),
         content: Text(
-          'Delete all saved Wi-Fi scan sessions? This cannot be undone.',
+          context.l10n.clearWifiHistoryBody,
           style: GoogleFonts.rajdhani(fontSize: 14),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text('CANCEL', style: GoogleFonts.orbitron(fontSize: 10)),
+            child: Text(context.l10n.cancelLabel, style: GoogleFonts.orbitron(fontSize: 10)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(
-              'DELETE ALL',
+              context.l10n.deleteAllLabel,
               style: GoogleFonts.orbitron(
                 fontSize: 10,
                 color: Theme.of(ctx).colorScheme.error,
@@ -327,7 +322,6 @@ class _SnapshotViewState extends State<_SnapshotView> {
   @override
   Widget build(BuildContext context) {
     if (widget.snapshot.networks.isEmpty) {
-      final l10n = AppLocalizations.of(context)!;
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -342,7 +336,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
             ),
             const SizedBox(height: 24),
             Text(
-              l10n.noSignalsDetected.toUpperCase(),
+              context.l10n.noSignalsDetected.toUpperCase(),
               style: GoogleFonts.orbitron(
                 color: Theme.of(context).colorScheme.onSurface,
                 fontSize: 16,
@@ -352,7 +346,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
             ),
             const SizedBox(height: 8),
             Text(
-              l10n.noRadiosInRange,
+              context.l10n.noRadiosInRange,
               style: GoogleFonts.rajdhani(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 14,
@@ -404,7 +398,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'TRANSPARENT SIGNAL ANALYSIS',
+                        context.l10n.transparentSignalAnalysisTitle,
                         style: GoogleFonts.orbitron(
                           color: AppColors.neonCyan,
                           fontSize: 10,
@@ -413,7 +407,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
                         ),
                       ),
                       Text(
-                        'Advanced spectrum analysis for security auditing. Local processing only.',
+                        context.l10n.transparentSignalAnalysisDesc,
                         style: GoogleFonts.rajdhani(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontSize: 11,
@@ -450,8 +444,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      'Showing cached results — Android limits scan frequency. '
-                      'Wait ~30 s and refresh for live data.',
+                      context.l10n.cachedResultsWarning,
                       style: GoogleFonts.rajdhani(
                         color: Colors.orange,
                         fontSize: 11,
@@ -480,7 +473,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
                     child: OutlinedButton.icon(
                 icon: const Icon(Icons.compare_arrows_rounded, size: 16),
                 label: Text(
-                  AppLocalizations.of(context)!.compareWithPreviousScan,
+                  context.l10n.compareWithPreviousScan,
                   style: GoogleFonts.orbitron(fontSize: 11, letterSpacing: 1),
                 ),
                 style: OutlinedButton.styleFrom(
@@ -506,7 +499,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
                       size: 18,
                       color: Theme.of(context).colorScheme.error,
                     ),
-                    tooltip: 'Clear scan history',
+                    tooltip: context.l10n.clearScanHistoryTitle,
                     onPressed: () => _clearScanHistory(context),
                   ),
                 ],
@@ -539,7 +532,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         title: Text(
-                          'ENABLE DEEP SCAN',
+                          context.l10n.enableDeepScanTitle,
                           style: GoogleFonts.orbitron(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -547,23 +540,21 @@ class _SnapshotViewState extends State<_SnapshotView> {
                           ),
                         ),
                         content: Text(
-                          'Deep Scan performs banner grabbing and exposure analysis. '
-                          'Use only on networks you are authorized to scan. '
-                          'Unauthorized use may violate TCK 243/244 and similar laws.',
+                          context.l10n.enableDeepScanBodyWifi,
                           style: GoogleFonts.rajdhani(fontSize: 14, height: 1.4),
                         ),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(ctx, false),
                             child: Text(
-                              'CANCEL',
+                              context.l10n.cancelLabel,
                               style: GoogleFonts.orbitron(fontSize: 10),
                             ),
                           ),
                           TextButton(
                             onPressed: () => Navigator.pop(ctx, true),
                             child: Text(
-                              'I AM AUTHORIZED',
+                              context.l10n.iAmAuthorized,
                               style: GoogleFonts.orbitron(
                                 fontSize: 10,
                                 color: Theme.of(ctx).colorScheme.error,
@@ -583,16 +574,15 @@ class _SnapshotViewState extends State<_SnapshotView> {
                   final shouldProceed = await showDialog<bool>(
                         context: context,
                         builder: (ctx) => ProminentDisclosureDialog(
-                          title: 'WIFI SCAN PERMISSION',
-                          description:
-                              'To discover nearby Wi-Fi networks and analyze signal strength, Torcav requires Location access. This is an Android system requirement for Wi-Fi scanning.',
+                          title: context.l10n.wifiScanPermissionTitle,
+                          description: context.l10n.wifiScanPermissionDesc,
                           icon: Icons.location_on_rounded,
-                          privacyPoints: const [
-                            'Scan nearby Wi-Fi SSIDs',
-                            'Analyze signal quality and interference',
-                            'Torcav never tracks or shares your location',
+                          privacyPoints: [
+                            context.l10n.consentScanSsids,
+                            context.l10n.consentAnalyzeSignal,
+                            context.l10n.consentNoTracking,
                           ],
-                          actionLabel: 'CONTINUE',
+                          actionLabel: context.l10n.continueLabel,
                           onAccept: () => Navigator.of(ctx).pop(true),
                           onCancel: () => Navigator.of(ctx).pop(false),
                         ),
@@ -631,15 +621,12 @@ class _SnapshotViewState extends State<_SnapshotView> {
 
           // ── Network Count Header ──
           NeonSectionHeader(
-            label:
-                filtered.length == widget.snapshot.networks.length
-                    ? AppLocalizations.of(
-                      context,
-                    )!.networksCount(filtered.length)
-                    : AppLocalizations.of(context)!.filteredNetworksCount(
-                      filtered.length,
-                      widget.snapshot.networks.length,
-                    ),
+            label: filtered.length == widget.snapshot.networks.length
+                ? context.l10n.networksCount(filtered.length)
+                : context.l10n.filteredNetworksCount(
+                    filtered.length,
+                    widget.snapshot.networks.length,
+                  ),
             icon: Icons.wifi_rounded,
             color: Theme.of(context).colorScheme.primary,
           ),
@@ -651,7 +638,7 @@ class _SnapshotViewState extends State<_SnapshotView> {
               padding: const EdgeInsets.symmetric(vertical: 32),
               child: Center(
                 child: Text(
-                  AppLocalizations.of(context)!.noNetworksMatchFilter,
+                  context.l10n.noNetworksMatchFilter,
                   style: GoogleFonts.rajdhani(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 15,
@@ -697,8 +684,7 @@ class _IosPlatformBanner extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              'iOS: Wi-Fi scan results are limited by Apple APIs. '
-              'Active scan trigger and some network details are unavailable.',
+              context.l10n.iosWifiScanLimited,
               style: GoogleFonts.rajdhani(
                 color: Colors.orange,
                 fontSize: 12,

@@ -7,6 +7,7 @@ import 'package:torcav/core/theme/neon_widgets.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap/heatmap_utility_widgets.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 
 class SignalProbeOverlay extends StatelessWidget {
   const SignalProbeOverlay({
@@ -33,8 +34,8 @@ class SignalProbeOverlay extends StatelessWidget {
         child: InfoBanner(
           color: AppColors.neonOrange,
           icon: Icons.search_off_rounded,
-          title: 'NO DATA AT THIS LOCATION',
-          body: 'Try tapping closer to a captured signal point.',
+          title: context.l10n.noDataAtLocation,
+          body: context.l10n.signalProbeHint,
         ),
       );
     }
@@ -45,10 +46,10 @@ class SignalProbeOverlay extends StatelessWidget {
 
     final statusLabel =
         rssi > -60
-            ? 'OPTIMAL'
+            ? context.l10n.statusOptimal
             : rssi > -75
-            ? 'FAIR'
-            : 'CRITICAL';
+            ? context.l10n.statusFair
+            : context.l10n.statusCritical;
     final statusColor =
         rssi > -60
             ? AppColors.neonGreen
@@ -109,7 +110,7 @@ class SignalProbeOverlay extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'SIGNAL PROBE',
+                                  context.l10n.signalProbeTitle,
                                   style: GoogleFonts.orbitron(
                                     color: color,
                                     fontSize: 12,
@@ -148,7 +149,7 @@ class SignalProbeOverlay extends StatelessWidget {
                         children: [
                           Expanded(
                             child: StatBrick(
-                              label: 'RSSI',
+                              label: context.l10n.rssiLabel,
                               value: '$rssi dBm',
                               color: color,
                             ),
@@ -156,7 +157,7 @@ class SignalProbeOverlay extends StatelessWidget {
                           const SizedBox(width: 10),
                           Expanded(
                             child: StatBrick(
-                              label: 'STATUS',
+                              label: context.l10n.statusLabel,
                               value: statusLabel,
                               color: statusColor,
                             ),
@@ -164,7 +165,7 @@ class SignalProbeOverlay extends StatelessWidget {
                           const SizedBox(width: 10),
                           Expanded(
                             child: StatBrick(
-                              label: 'FLOOR',
+                              label: context.l10n.floorLabel,
                               value: '${p.floor}',
                               color: AppColors.neonBlue,
                             ),
@@ -176,19 +177,19 @@ class SignalProbeOverlay extends StatelessWidget {
                       // ── Detail rows ──────────────────────────────────────
                       ProbeDetailRow(
                         icon: Icons.location_on_outlined,
-                        label: 'POSITION',
+                        label: context.l10n.positionLabel,
                         value: posLabel,
                       ),
                       const SizedBox(height: 6),
                       ProbeDetailRow(
                         icon: Icons.wifi_outlined,
-                        label: 'SAMPLES',
+                        label: context.l10n.samplesLabel,
                         value: samplesLabel,
                       ),
                       const SizedBox(height: 6),
                       ProbeDetailRow(
                         icon: Icons.schedule_outlined,
-                        label: 'CAPTURED',
+                        label: context.l10n.capturedLabel,
                         value: timeLabel,
                       ),
                     ],

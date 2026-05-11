@@ -5,6 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../../core/di/injection.dart';
+import '../../../../core/l10n/app_localizations.dart';
+import '../../../../core/l10n/locale_cubit.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../data/datasources/ping_stabilizer_settings_store.dart';
 import '../../domain/entities/dns_candidate.dart';
@@ -255,6 +258,8 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
     final recs = _evaluateRecommendations(updated);
     emit(state.copyWith(stats: updated, recommendations: recs));
 
+    final l10n = lookupAppLocalizations(getIt<LocaleCubit>().state);
+
     // Surface new (not previously seen this session) recommendations as
     // system notifications so the user is informed even when the page is
     // backgrounded. Auto-dismiss-style suppression via the _notifiedKeys
@@ -266,9 +271,10 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
         unawaited(
           _notifications.showStabilizerAlert(
             title: switch (r.type) {
-              RecommendationType.switchDns => 'Faster DNS available',
-              RecommendationType.reconnectTunnel => 'Jitter spike detected',
-              RecommendationType.suggestDual => 'Persistent packet loss',
+              RecommendationType.switchDns => l10n.stabilizerFasterDnsTitle,
+              RecommendationType.reconnectTunnel =>
+                l10n.stabilizerJitterSpikeTitle,
+              RecommendationType.suggestDual => l10n.stabilizerPacketLossTitle,
             },
             body: r.message,
             actionable: r.type != RecommendationType.suggestDual,
@@ -302,16 +308,17 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
   }
 
   List<StabilizerRecommendation> _evaluateRecommendations(LiveStats s) {
+    final l10n = lookupAppLocalizations(getIt<LocaleCubit>().state);
     final recs = <StabilizerRecommendation>[];
 
     if (s.jitterBreached(state.jitterThresholdMs, _breachWindow)) {
       recs.add(StabilizerRecommendation(
         type: RecommendationType.reconnectTunnel,
         severity: RecommendationSeverity.warning,
-        message:
-            'Jitter exceeded ${state.jitterThresholdMs.toStringAsFixed(0)} ms '
-            'for $_breachWindow samples. Cycling the tunnel may break a '
-            'sticky bad path.',
+        message: l10n.stabilizerJitterSpikeBody(
+          state.jitterThresholdMs.toStringAsFixed(0),
+          _breachWindow,
+        ),
       ));
     }
 
@@ -325,7 +332,7 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
         recs.add(StabilizerRecommendation(
           type: RecommendationType.switchDns,
           severity: RecommendationSeverity.info,
-          message: 'A faster DNS (${best.label}) is available.',
+          message: l10n.stabilizerFasterDnsBody(best.label),
           payload: {'ip': best.ip},
         ));
       }
@@ -335,9 +342,7 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
       recs.add(StabilizerRecommendation(
         type: RecommendationType.suggestDual,
         severity: RecommendationSeverity.info,
-        message:
-            'Packet loss is ${s.lossPct.toStringAsFixed(1)}%. Dual-interface '
-            'send (Wi-Fi + cellular) can mask transient drops.',
+        message: l10n.stabilizerPacketLossBody(s.lossPct.toStringAsFixed(1)),
       ));
     }
     return recs;

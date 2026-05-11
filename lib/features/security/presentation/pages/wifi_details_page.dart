@@ -12,6 +12,7 @@ import '../../../../features/monitoring/presentation/pages/signal_graph_page.dar
 import '../../domain/entities/security_assessment.dart';
 import '../../domain/entities/vulnerability.dart';
 import '../bloc/wifi_details_bloc.dart';
+import '../extensions/vulnerability_extensions.dart';
 
 class WifiDetailsPage extends StatelessWidget {
   final WifiNetwork network;
@@ -574,67 +575,33 @@ class WifiDetailsPage extends StatelessWidget {
 
   String _localizeRiskFactor(BuildContext context, String factor) {
     final l10n = context.l10n;
-    return switch (factor) {
-      'No encryption in use' => l10n.riskFactorNoEncryption,
-      'Deprecated encryption (WEP)' => l10n.riskFactorDeprecatedEncryption,
-      'Legacy WPA in use' => l10n.riskFactorLegacyWpa,
-      'Hidden SSID behavior' => l10n.riskFactorHiddenSsid,
-      'Weak signal environment' => l10n.riskFactorWeakSignal,
-      'WPS PIN attack surface exposed' => l10n.riskFactorWpsEnabled,
-      'PMF not enforced — deauth spoofing possible' =>
-        l10n.riskFactorPmfNotEnforced,
-      'SSID fingerprint drift detected' => l10n.riskFactorFingerprintDrift,
-      _ => factor,
-    };
+    if (factor.startsWith('No encryption in use')) return l10n.riskFactorNoEncryption;
+    if (factor.startsWith('Deprecated encryption (WEP)')) {
+      return l10n.riskFactorDeprecatedEncryption;
+    }
+    if (factor.startsWith('Legacy WPA in use')) return l10n.riskFactorLegacyWpa;
+    if (factor.startsWith('Hidden SSID behavior')) return l10n.riskFactorHiddenSsid;
+    if (factor.startsWith('Weak signal environment')) return l10n.riskFactorWeakSignal;
+    if (factor.startsWith('WPS PIN attack surface exposed')) return l10n.riskFactorWpsEnabled;
+    if (factor.startsWith('PMF not enforced')) return l10n.riskFactorPmfNotEnforced;
+    if (factor.startsWith('SSID fingerprint drift detected')) return l10n.riskFactorFingerprintDrift;
+    if (factor.startsWith('SSID matches known honeypot pattern')) return l10n.riskFactorHoneypotPattern;
+    if (factor.startsWith('No 5 GHz band detected')) return l10n.riskFactorNo5Ghz;
+    if (factor.startsWith('Known vulnerability in')) return l10n.riskFactorKnownVulnerability;
+    if (factor.startsWith('Evil twin candidate')) return l10n.riskFactorEvilTwinCandidate;
+    if (factor.contains('is heavily congested')) return l10n.riskFactorChannelCongested;
+
+    return factor;
   }
 
   (String, String, String) _localizeVulnerability(
     BuildContext context,
     Vulnerability v,
   ) {
-    final l10n = context.l10n;
-    return switch (v.title) {
-      'Open Network' => (
-        l10n.vulnerabilityOpenNetworkTitle,
-        l10n.vulnerabilityOpenNetworkDesc,
-        l10n.vulnerabilityOpenNetworkRec,
-      ),
-      'WEP Encryption' => (
-        l10n.vulnerabilityWepTitle,
-        l10n.vulnerabilityWepDesc,
-        l10n.vulnerabilityWepRec,
-      ),
-      'Legacy WPA' => (
-        l10n.vulnerabilityLegacyWpaTitle,
-        l10n.vulnerabilityLegacyWpaDesc,
-        l10n.vulnerabilityLegacyWpaRec,
-      ),
-      'Hidden SSID' => (
-        l10n.vulnerabilityHiddenSsidTitle,
-        l10n.vulnerabilityHiddenSsidDesc,
-        l10n.vulnerabilityHiddenSsidRec,
-      ),
-      'Very Weak Signal' => (
-        l10n.vulnerabilityWeakSignalTitle,
-        l10n.vulnerabilityWeakSignalDesc,
-        l10n.vulnerabilityWeakSignalRec,
-      ),
-      'WPS Enabled' => (
-        l10n.vulnerabilityWpsTitle,
-        l10n.vulnerabilityWpsDesc,
-        l10n.vulnerabilityWpsRec,
-      ),
-      'Management Frames Unprotected' => (
-        l10n.vulnerabilityPmfTitle,
-        l10n.vulnerabilityPmfDesc,
-        l10n.vulnerabilityPmfRec,
-      ),
-      'Potential Evil Twin' => (
-        l10n.vulnerabilityEvilTwinTitle,
-        l10n.vulnerabilityEvilTwinDesc,
-        l10n.vulnerabilityEvilTwinRec,
-      ),
-      _ => (v.title, v.description, v.recommendation),
-    };
+    return (
+      v.localizedTitle(context),
+      v.localizedDescription(context),
+      v.localizedRecommendation(context),
+    );
   }
 }

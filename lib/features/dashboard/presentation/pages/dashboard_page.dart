@@ -6,8 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
 import '../../../../core/di/injection.dart';
-import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/l10n/app_localizations.dart';
+import '../../../../core/theme/neon_widgets.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../diagnostics/presentation/pages/speed_doctor_page.dart';
 import '../../../heatmap/domain/entities/connected_signal.dart';
 import '../../../heatmap/domain/services/connected_signal_service.dart';
@@ -22,6 +23,7 @@ import '../../../security/domain/repositories/security_repository.dart';
 import '../../../security/domain/services/network_context_resolver.dart';
 import '../../../security/domain/usecases/security_analyzer.dart';
 import '../../../security/presentation/bloc/notification/notification_bloc.dart';
+import '../../../security/presentation/extensions/vulnerability_extensions.dart';
 import '../../../wifi_scan/domain/entities/channel_rating.dart';
 import '../../../wifi_scan/domain/entities/scan_snapshot.dart';
 import '../../../wifi_scan/domain/entities/wifi_network.dart';
@@ -78,8 +80,9 @@ class _DashboardPageState extends State<DashboardPage> {
     super.initState();
     _notificationBloc = getIt<NotificationBloc>()..add(LoadNotifications());
     _loadNetworkInfo();
-    _scanSub =
-        getIt<ScanSessionStore>().snapshots.listen((_) => _loadNetworkInfo());
+    _scanSub = getIt<ScanSessionStore>().snapshots.listen(
+      (_) => _loadNetworkInfo(),
+    );
   }
 
   @override
@@ -103,7 +106,7 @@ class _DashboardPageState extends State<DashboardPage> {
       final latestSnapshot = store.latest;
       final networks =
           latestSnapshot?.networks.map((n) => n.toWifiNetwork()).toList() ??
-              <WifiNetwork>[];
+          <WifiNetwork>[];
 
       // ── Security score (context-aware) ──
       int secScore = 100;
@@ -127,8 +130,9 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           );
         }
-        worstAssessment =
-            assessments.reduce((a, b) => a.score < b.score ? a : b);
+        worstAssessment = assessments.reduce(
+          (a, b) => a.score < b.score ? a : b,
+        );
         secScore = worstAssessment.score;
 
         if (ssidForCtx.isNotEmpty) {
@@ -171,12 +175,14 @@ class _DashboardPageState extends State<DashboardPage> {
         final connected = networks.where((n) => n.ssid == ssid).toList();
         if (connected.isNotEmpty) {
           currentCh = connected.first.channel;
-          final band24 = ratings.where((r) => r.frequency < 4000).toList()
-            ..sort((a, b) => b.rating.compareTo(a.rating));
-          final band5 = ratings
-              .where((r) => r.frequency >= 4000 && r.frequency < 6000)
-              .toList()
-            ..sort((a, b) => b.rating.compareTo(a.rating));
+          final band24 =
+              ratings.where((r) => r.frequency < 4000).toList()
+                ..sort((a, b) => b.rating.compareTo(a.rating));
+          final band5 =
+              ratings
+                  .where((r) => r.frequency >= 4000 && r.frequency < 6000)
+                  .toList()
+                ..sort((a, b) => b.rating.compareTo(a.rating));
           final sameBand = connected.first.frequency < 4000 ? band24 : band5;
           if (sameBand.isNotEmpty &&
               sameBand.first.channel != currentCh &&
@@ -193,9 +199,10 @@ class _DashboardPageState extends State<DashboardPage> {
       } catch (_) {
         signal = null;
       }
-      final qualityPct = signal == null
-          ? null
-          : (((signal.rssi + 100) / 70) * 100).clamp(0.0, 100.0).round();
+      final qualityPct =
+          signal == null
+              ? null
+              : (((signal.rssi + 100) / 70) * 100).clamp(0.0, 100.0).round();
       final rssiHistory = List<int>.from(_rssiHistory);
       if (signal != null) {
         rssiHistory.add(signal.rssi);
@@ -221,8 +228,9 @@ class _DashboardPageState extends State<DashboardPage> {
       // ── Latest speed test ──
       SpeedTestResult? lastSpeed;
       try {
-        final list =
-            await getIt<SpeedTestHistoryRepository>().getRecent(limit: 1);
+        final list = await getIt<SpeedTestHistoryRepository>().getRecent(
+          limit: 1,
+        );
         lastSpeed = list.isEmpty ? null : list.first;
       } catch (_) {
         lastSpeed = null;
@@ -278,24 +286,26 @@ class _DashboardPageState extends State<DashboardPage> {
         appBar: AppBar(
           centerTitle: true,
           leading: Builder(
-            builder: (context) => IconButton(
-              icon: Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: scheme.primary.withValues(alpha: 0.3),
+            builder:
+                (context) => IconButton(
+                  icon: Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: scheme.primary.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: const Icon(Icons.menu_rounded, size: 18),
                   ),
+                  onPressed:
+                      widget.onOpenDrawer ??
+                      () => Scaffold.of(context).openDrawer(),
                 ),
-                child: const Icon(Icons.menu_rounded, size: 18),
-              ),
-              onPressed: widget.onOpenDrawer ??
-                  () => Scaffold.of(context).openDrawer(),
-            ),
           ),
           title: NeonText(
-            'TORCAV',
+            l10n.appTitle,
             style: GoogleFonts.orbitron(
               fontWeight: FontWeight.bold,
               fontSize: 20,
@@ -396,11 +406,7 @@ class _DashboardPageState extends State<DashboardPage> {
               // ── IP / Gateway compact strip ──
               StaggeredEntry(
                 delay: const Duration(milliseconds: 200),
-                child: _NetworkIdStrip(
-                  ssid: _ssid,
-                  ip: _ip,
-                  gateway: _gateway,
-                ),
+                child: _NetworkIdStrip(ssid: _ssid, ip: _ip, gateway: _gateway),
               ),
 
               if (_connectedBssid != null) ...[
@@ -438,9 +444,11 @@ class _DashboardPageState extends State<DashboardPage> {
                 lastUploadMbps: _lastSpeedTest?.uploadMbps,
                 lastSpeedTestAt: _lastSpeedTest?.recordedAt,
                 onTapSignal: () => widget.onNavigate('monitor/channels'),
-                onTapScore: () => _worstAssessment != null
-                    ? _showScoreExplanation(context, _worstAssessment!)
-                    : widget.onNavigate('security'),
+                onTapScore:
+                    () =>
+                        _worstAssessment != null
+                            ? _showScoreExplanation(context, _worstAssessment!)
+                            : widget.onNavigate('security'),
                 onTapChannels: () => widget.onNavigate('monitor/channels'),
                 onTapDevices: () => widget.onNavigate('wifi'),
                 onTapThreats: () => _showNotificationSheet(context),
@@ -497,11 +505,12 @@ class _DashboardPageState extends State<DashboardPage> {
               StaggeredEntry(
                 delay: const Duration(milliseconds: 580),
                 child: _SpeedDoctorTile(
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const SpeedDoctorPage(),
-                    ),
-                  ),
+                  onTap:
+                      () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const SpeedDoctorPage(),
+                        ),
+                      ),
                 ),
               ),
             ],
@@ -528,10 +537,11 @@ class _DashboardPageState extends State<DashboardPage> {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (sheetContext) => BlocProvider.value(
-        value: _notificationBloc,
-        child: const NotificationSheet(),
-      ),
+      builder:
+          (sheetContext) => BlocProvider.value(
+            value: _notificationBloc,
+            child: const NotificationSheet(),
+          ),
     );
   }
 
@@ -543,10 +553,11 @@ class _DashboardPageState extends State<DashboardPage> {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (_) => _NetworkContextSheet(
-        current: _connectedContext ?? NetworkContextType.unknown,
-        ssid: _ssid,
-      ),
+      builder:
+          (_) => _NetworkContextSheet(
+            current: _connectedContext ?? NetworkContextType.unknown,
+            ssid: _ssid,
+          ),
     );
     if (selected == null) return;
     if (selected.reset) {
@@ -574,7 +585,7 @@ class _NetworkIdStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.l10n;
     final scheme = Theme.of(context).colorScheme;
     return GlassmorphicContainer(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -584,7 +595,7 @@ class _NetworkIdStrip extends StatelessWidget {
           Expanded(
             child: _InlineId(
               icon: Icons.wifi_rounded,
-              label: 'SSID',
+              label: l10n.ssidLabel,
               value: ssid,
               color: scheme.primary,
             ),
@@ -718,7 +729,7 @@ class _ScoreExplanationSheet extends StatelessWidget {
                 child: Row(
                   children: [
                     NeonText(
-                      'SECURITY SCORE',
+                      context.l10n.securityScoreTitle.toUpperCase(),
                       style: GoogleFonts.orbitron(
                         color: scheme.primary,
                         fontSize: 13,
@@ -744,72 +755,79 @@ class _ScoreExplanationSheet extends StatelessWidget {
               const SizedBox(height: 12),
               const Divider(height: 1),
               Expanded(
-                child: findings.isEmpty
-                    ? Center(
-                        child: Text(
-                          'No security findings detected.',
-                          style: GoogleFonts.rajdhani(
-                            color: scheme.onSurfaceVariant,
-                            fontSize: 14,
-                          ),
-                        ),
-                      )
-                    : ListView.separated(
-                        controller: scrollController,
-                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-                        itemCount: findings.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 8),
-                        itemBuilder: (context, i) {
-                          final f = findings[i];
-                          final color =
-                              _severityColor(f.severity.name, scheme);
-                          return GlassmorphicContainer(
-                            borderColor: color.withValues(alpha: 0.25),
-                            padding: const EdgeInsets.all(12),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 8,
-                                  height: 8,
-                                  margin: const EdgeInsets.only(top: 4),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: color,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        f.title,
-                                        style: GoogleFonts.orbitron(
-                                          color: scheme.onSurface,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.5,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        f.recommendation,
-                                        style: GoogleFonts.rajdhani(
-                                          color: scheme.onSurfaceVariant,
-                                          fontSize: 12,
-                                          height: 1.4,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                child:
+                    findings.isEmpty
+                        ? Center(
+                          child: Text(
+                            context.l10n.noSecurityFindings,
+                            style: GoogleFonts.rajdhani(
+                              color: scheme.onSurfaceVariant,
+                              fontSize: 14,
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        )
+                        : ListView.separated(
+                          controller: scrollController,
+                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+                          itemCount: findings.length,
+                          separatorBuilder:
+                              (_, __) => const SizedBox(height: 8),
+                          itemBuilder: (context, i) {
+                            final f = findings[i];
+                            final vulnerability = f.toVulnerability();
+                            final title = vulnerability.localizedTitle(context);
+                            final recommendation = vulnerability
+                                .localizedRecommendation(context);
+                            final color = _severityColor(
+                              f.severity.name,
+                              scheme,
+                            );
+                            return GlassmorphicContainer(
+                              borderColor: color.withValues(alpha: 0.25),
+                              padding: const EdgeInsets.all(12),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 8,
+                                    height: 8,
+                                    margin: const EdgeInsets.only(top: 4),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: color,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          title,
+                                          style: GoogleFonts.orbitron(
+                                            color: scheme.onSurface,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          recommendation,
+                                          style: GoogleFonts.rajdhani(
+                                            color: scheme.onSurfaceVariant,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
               ),
             ],
           ),
@@ -911,7 +929,7 @@ class _ChannelRecommendationCard extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             NeonText(
-              'CH ${best.channel}',
+              l10n.channelShort(best.channel),
               style: GoogleFonts.orbitron(
                 color: color,
                 fontSize: 14,
@@ -944,11 +962,11 @@ Color _contextColor(NetworkContextType ctx, ColorScheme scheme) =>
     };
 
 IconData _contextIcon(NetworkContextType ctx) => switch (ctx) {
-      NetworkContextType.home => Icons.home_rounded,
-      NetworkContextType.public => Icons.public_rounded,
-      NetworkContextType.guest => Icons.group_rounded,
-      NetworkContextType.unknown => Icons.help_outline_rounded,
-    };
+  NetworkContextType.home => Icons.home_rounded,
+  NetworkContextType.public => Icons.public_rounded,
+  NetworkContextType.guest => Icons.group_rounded,
+  NetworkContextType.unknown => Icons.help_outline_rounded,
+};
 
 class _NetworkContextBadge extends StatelessWidget {
   final NetworkContextType context;
@@ -976,7 +994,7 @@ class _NetworkContextBadge extends StatelessWidget {
             Icon(_contextIcon(context), size: 14, color: color),
             const SizedBox(width: 8),
             Text(
-              context.label.toUpperCase(),
+              _getNetworkContextLabel(buildContext, context).toUpperCase(),
               style: GoogleFonts.orbitron(
                 color: color,
                 fontSize: 11,
@@ -1003,27 +1021,16 @@ class _NetworkContextSheet extends StatelessWidget {
 
   const _NetworkContextSheet({required this.current, required this.ssid});
 
-  static const _options = [
-    (
-      NetworkContextType.home,
-      'Your home, office, or known router. Strict standards apply.',
-    ),
-    (
-      NetworkContextType.public,
-      'Café, hotel, airport, or open hotspot. VPN/HTTPS strongly advised.',
-    ),
-    (
-      NetworkContextType.guest,
-      'Guest segment of a known network. Natural drift expected.',
-    ),
-    (
-      NetworkContextType.unknown,
-      'Let Torcav infer the context from passive signals.',
-    ),
+  List<(NetworkContextType, String)> _options(AppLocalizations l10n) => [
+    (NetworkContextType.home, l10n.networkContextHomeDesc),
+    (NetworkContextType.public, l10n.networkContextPublicDesc),
+    (NetworkContextType.guest, l10n.networkContextGuestDesc),
+    (NetworkContextType.unknown, l10n.networkContextUnknownDesc),
   ];
 
   @override
   Widget build(BuildContext buildContext) {
+    final l10n = AppLocalizations.of(buildContext)!;
     final scheme = Theme.of(buildContext).colorScheme;
     return DraggableScrollableSheet(
       initialChildSize: 0.55,
@@ -1033,8 +1040,7 @@ class _NetworkContextSheet extends StatelessWidget {
         return Container(
           decoration: BoxDecoration(
             color: scheme.surface,
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(24)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
             border: Border(
               top: BorderSide(
                 color: scheme.primary.withValues(alpha: 0.2),
@@ -1058,7 +1064,7 @@ class _NetworkContextSheet extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               NeonText(
-                'NETWORK CONTEXT',
+                l10n.networkContextTitle,
                 style: GoogleFonts.orbitron(
                   color: scheme.primary,
                   fontSize: 13,
@@ -1076,7 +1082,7 @@ class _NetworkContextSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              for (final option in _options)
+              for (final option in _options(l10n))
                 _ContextOption(
                   type: option.$1,
                   description: option.$2,
@@ -1097,11 +1103,11 @@ class _NetworkContextSheet extends StatelessWidget {
                   );
                 },
                 child: Text(
-                  'Reset to inferred',
-                  style: GoogleFonts.orbitron(
-                    color: scheme.onSurfaceVariant,
-                    fontSize: 11,
-                    letterSpacing: 1.5,
+                  l10n.resetToInferred,
+                  style: GoogleFonts.rajdhani(
+                    color: scheme.primary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
                   ),
                 ),
               ),
@@ -1140,9 +1146,10 @@ class _ContextOption extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: selected
-                  ? color.withValues(alpha: 0.6)
-                  : scheme.outlineVariant.withValues(alpha: 0.3),
+              color:
+                  selected
+                      ? color.withValues(alpha: 0.6)
+                      : scheme.outlineVariant.withValues(alpha: 0.3),
               width: selected ? 2 : 1,
             ),
             color: selected ? color.withValues(alpha: 0.06) : null,
@@ -1156,7 +1163,7 @@ class _ContextOption extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      type.label.toUpperCase(),
+                      _getNetworkContextLabel(context, type).toUpperCase(),
                       style: GoogleFonts.orbitron(
                         color: color,
                         fontSize: 12,
@@ -1184,6 +1191,17 @@ class _ContextOption extends StatelessWidget {
       ),
     );
   }
+}
+
+String _getNetworkContextLabel(BuildContext context, NetworkContextType type) {
+  final l10n = context.l10n;
+  return switch (type.labelKey) {
+    'networkContextHomeLabel' => l10n.networkContextHomeLabel,
+    'networkContextPublicLabel' => l10n.networkContextPublicLabel,
+    'networkContextGuestLabel' => l10n.networkContextGuestLabel,
+    'networkContextUnknownLabel' => l10n.networkContextUnknownLabel,
+    _ => type.labelKey,
+  };
 }
 
 class _SpeedDoctorTile extends StatelessWidget {
@@ -1233,7 +1251,7 @@ class _SpeedDoctorTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'INTERNET YAVAŞ MI?',
+                    context.l10n.internetSlowQuestion,
                     style: GoogleFonts.orbitron(
                       color: const Color(0xFFB91DFB),
                       fontSize: 12,
@@ -1243,7 +1261,7 @@ class _SpeedDoctorTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Run Speed Doctor — 30-second root-cause diagnostic.',
+                    context.l10n.runSpeedDoctorDesc,
                     style: GoogleFonts.rajdhani(
                       color: theme.colorScheme.onSurface,
                       fontSize: 13,

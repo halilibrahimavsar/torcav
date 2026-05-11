@@ -69,7 +69,7 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
           (ctx) => SimpleDialog(
             backgroundColor: scheme.surfaceContainerHigh,
             title: Text(
-              'Set Device Type',
+              context.l10n.setDeviceType,
               style: GoogleFonts.orbitron(
                 fontSize: 12,
                 color: scheme.primary,
@@ -98,7 +98,7 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
               SimpleDialogOption(
                 onPressed: () => Navigator.pop(ctx, '__clear__'),
                 child: Text(
-                  'Reset to AI label',
+                  context.l10n.resetToAiLabel,
                   style: GoogleFonts.rajdhani(
                     color: scheme.error,
                     fontSize: 13,
@@ -280,11 +280,11 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
                           ),
                           if (widget.host.isGateway) ...[
                             const SizedBox(width: 6),
-                            _Badge(label: 'GATEWAY', color: scheme.tertiary),
+                            _Badge(label: context.l10n.gatewayCaps, color: scheme.tertiary),
                           ],
                           if (widget.host.deviceType != 'Unknown') ...[
                             const SizedBox(width: 6),
-                            _Badge(label: 'IDENTIFIED', color: scheme.primary),
+                            _Badge(label: context.l10n.identifiedCaps, color: scheme.primary),
                           ],
                           if (widget.host.isAiClassified) ...[
                             const SizedBox(width: 6),
@@ -340,7 +340,7 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
               children: [
                 _TechDetail(
                   label: widget.host.mac == '00:00:00:00:00:00'
-                      ? 'UNKNOWN MAC (RESTRICTED)'
+                      ? context.l10n.unknownMacRestricted
                       : widget.host.mac.toUpperCase(),
                   icon: Icons.fingerprint_rounded,
                   color: scheme.onSurfaceVariant,
@@ -596,7 +596,7 @@ class _PortScanSection extends StatelessWidget {
               Icon(Icons.lock_rounded, size: 14, color: scheme.tertiary.withValues(alpha: 0.7)),
               const SizedBox(width: 6),
               Text(
-                'No open ports found',
+                context.l10n.noOpenPortsFound,
                 style: GoogleFonts.rajdhani(
                   color: scheme.onSurfaceVariant,
                   fontSize: 12,
@@ -652,7 +652,7 @@ class _ScanButton extends StatelessWidget {
             Icon(Icons.radar_rounded, size: 14, color: scheme.primary),
             const SizedBox(width: 6),
             Text(
-              'SCAN PORTS',
+              context.l10n.scanPortsCaps,
               style: GoogleFonts.orbitron(
                 fontSize: 10,
                 fontWeight: FontWeight.bold,

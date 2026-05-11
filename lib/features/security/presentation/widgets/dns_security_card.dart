@@ -106,7 +106,7 @@ class DnsSecurityCard extends StatelessWidget {
                 // --- Core DNS Metrics (Always Visible) ---
                 _DnsDetailRow(
                   label: l10n.dnsCurrentDns,
-                  value: dnsResult?.currentDns ?? "PENDING",
+                  value: dnsResult?.currentDns ?? l10n.dnsStatusPending,
                   icon: Icons.dns_outlined,
                   color: dnsResult != null ? statusColor : scheme.outline,
                   infoTitle: l10n.dnsInfoHijackingTitle,
@@ -115,7 +115,7 @@ class DnsSecurityCard extends StatelessWidget {
                 const SizedBox(height: 12),
                 _DnsDetailRow(
                   label: l10n.dnsIspProvider,
-                  value: dnsResult?.ispName ?? "NOT ASSESSED",
+                  value: dnsResult?.ispName ?? l10n.dnsStatusNotAssessed,
                   icon: Icons.business_rounded,
                   color: dnsResult != null ? statusColor : scheme.outline,
                   infoTitle: l10n.dnsInfoLeakTitle,
@@ -125,7 +125,7 @@ class DnsSecurityCard extends StatelessWidget {
 
                 // Protocol & DNSSEC section (Always visible)
                 _DnsProtocolSection(
-                  protocol: dnsResult?.encryptedProtocol ?? "---",
+                  protocol: dnsResult?.encryptedProtocol ?? l10n.notAvailableCaps,
                   dnssec: dnsResult?.dnssecSupported ?? false,
                   color: dnsResult != null ? statusColor : scheme.outline,
                 ),
@@ -134,7 +134,7 @@ class DnsSecurityCard extends StatelessWidget {
                   const SizedBox(height: 12),
                   _DnsDetailRow(
                     label: l10n.dnsInfoResolverDriftTitle,
-                    value: "INCONSISTENT",
+                    value: l10n.dnsStatusInconsistent,
                     icon: Icons.analytics_outlined,
                     color: scheme.error,
                     infoTitle: l10n.dnsInfoResolverDriftTitle,
@@ -651,7 +651,7 @@ class _DnsProtocolSection extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      dnssec ? "ENABLED" : "DISABLED",
+                      dnssec ? l10n.dnsStatusEnabled : l10n.dnsStatusDisabled,
                       style: GoogleFonts.orbitron(
                         fontSize: 10,
                         fontWeight: FontWeight.w800,

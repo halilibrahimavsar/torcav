@@ -156,7 +156,7 @@ class _ProfileHubPageState extends State<ProfileHubPage> {
                         _buildInfoRow(
                           context,
                           l10n.settingsLanguage,
-                          _languageName(locale.languageCode),
+                          _languageName(locale.languageCode, l10n),
                           Icons.language_outlined,
                         ),
                         const Divider(height: 24),
@@ -227,7 +227,7 @@ class _ProfileHubPageState extends State<ProfileHubPage> {
     final l10n = AppLocalizations.of(context)!;
     if (latestSnapshot == null) {
       return Text(
-        'No scan snapshot is available yet. Run a Wi-Fi scan first.',
+        l10n.noSnapshotAvailable,
         style: GoogleFonts.outfit(
           color: Theme.of(context).colorScheme.onSurfaceVariant,
           fontSize: 14,
@@ -249,7 +249,7 @@ class _ProfileHubPageState extends State<ProfileHubPage> {
         const Divider(height: 24),
         _buildInfoRow(
           context,
-          'Networks (${latestSnapshot.networks.length})',
+          l10n.networksWithCount(latestSnapshot.networks.length),
           latestSnapshot.backendUsed.toUpperCase(),
           Icons.radar_outlined,
         ),
@@ -323,12 +323,12 @@ class _ProfileHubPageState extends State<ProfileHubPage> {
     );
   }
 
-  String _languageName(String code) {
+  String _languageName(String code, AppLocalizations l10n) {
     return switch (code) {
-      'tr' => 'Turkce',
-      'ku' => 'Kurdi',
-      'de' => 'Deutsch',
-      _ => 'English',
+      'tr' => l10n.langTurkish,
+      'ku' => l10n.langKurdish,
+      'de' => l10n.langGerman,
+      _ => l10n.langEnglish,
     };
   }
 

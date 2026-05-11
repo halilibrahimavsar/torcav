@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 
 import '../../domain/entities/evil_twin_assessment.dart';
 import '../../domain/services/evil_twin_explainer.dart';
@@ -22,8 +23,56 @@ class EvilTwinDetailCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     final exp = explainer.explain(assessment);
     final palette = _palette(exp.confidenceLabel);
+
+    // Determine localized headline and phrase based on assessment
+    String headline;
+    String phrase;
+    String whatIs = l10n.evilTwinWhatIs;
+    String whyItMatters = l10n.evilTwinWhyItMatters;
+    List<String> actions = [];
+
+    if (assessment.dismissedAsLegitimate) {
+      headline = l10n.evilTwinSafeHeadline;
+      whatIs = l10n.evilTwinSafeWhatIs;
+      whyItMatters = l10n.evilTwinSafeWhyItMatters;
+      phrase = l10n.evilTwinSafePhrase;
+      actions = [l10n.evilTwinSafeAction];
+    } else if (!assessment.isCandidate) {
+      headline = l10n.evilTwinNoPatternHeadline;
+      phrase = l10n.evilTwinNoPatternPhrase;
+      actions = [l10n.evilTwinNoPatternAction];
+    } else {
+      final pct = (assessment.confidence * 100).round();
+      if (assessment.confidence >= 0.75) {
+        headline = l10n.evilTwinHighHeadline;
+        phrase = l10n.evilTwinHighPhrase(pct);
+      } else if (assessment.confidence >= 0.6) {
+        headline = l10n.evilTwinMediumHeadline;
+        phrase = l10n.evilTwinMediumPhrase(pct);
+      } else {
+        headline = l10n.evilTwinLowHeadline;
+        phrase = l10n.evilTwinLowPhrase(pct);
+      }
+
+      // Build actions
+      actions = [
+        l10n.evilTwinActionPasswords,
+        l10n.evilTwinActionCheckMac,
+        l10n.evilTwinActionForgetNetwork,
+      ];
+      if (assessment.suspicions.contains(EvilTwinSignal.securityDowngrade)) {
+        actions.insert(0, l10n.evilTwinActionSecurityDowngrade);
+      }
+      if (assessment.confidence >= 0.75) {
+        actions.insert(0, l10n.evilTwinActionDisconnectNow);
+      }
+      if (assessment.suspicions.contains(EvilTwinSignal.ouiMismatch)) {
+        actions.add(l10n.evilTwinActionHardwareVendor);
+      }
+    }
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -59,7 +108,7 @@ class EvilTwinDetailCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'EVIL TWIN · ${exp.confidenceLabel.toUpperCase()}',
+                      context.l10n.evilTwinPrefix(exp.confidenceLabel.toUpperCase()),
                       style: GoogleFonts.orbitron(
                         color: palette,
                         fontSize: 11,
@@ -69,7 +118,7 @@ class EvilTwinDetailCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      exp.headline,
+                      headline,
                       style: GoogleFonts.rajdhani(
                         color: theme.colorScheme.onSurface,
                         fontSize: 15,
@@ -92,7 +141,7 @@ class EvilTwinDetailCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
-              exp.confidencePhrase,
+              phrase,
               style: GoogleFonts.rajdhani(
                 color: theme.colorScheme.onSurface,
                 fontSize: 13,
@@ -101,39 +150,67 @@ class EvilTwinDetailCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 14),
-          _Section(title: 'What is an evil-twin?', body: exp.whatIs),
+          _Section(title: context.l10n.whatIsEvilTwinTitle, body: whatIs),
           const SizedBox(height: 12),
-          _Section(title: 'Why does it matter?', body: exp.whyItMatters),
-          if (exp.observedSignals.isNotEmpty) ...[
+          _Section(title: context.l10n.whyItMattersTitle, body: whyItMatters),
+          if (assessment.suspicions.isNotEmpty) ...[
             const SizedBox(height: 12),
             _BulletBlock(
-              title: 'What we observed',
+              title: context.l10n.whatWeObservedTitle,
               titleColor: Colors.orangeAccent,
               icon: Icons.warning_amber_rounded,
-              items: exp.observedSignals,
+              items: assessment.suspicions.map((s) => _translateSignal(context, s)).toList(),
             ),
           ],
-          if (exp.mitigationSignals.isNotEmpty) ...[
+          if (assessment.mitigations.isNotEmpty) ...[
             const SizedBox(height: 12),
             _BulletBlock(
-              title: 'What looked legitimate',
+              title: context.l10n.whatLookedLegitimateTitle,
               titleColor: Colors.greenAccent,
               icon: Icons.verified_user_rounded,
-              items: exp.mitigationSignals,
+              items: assessment.mitigations.map((s) => _translateSignal(context, s)).toList(),
             ),
           ],
-          if (exp.recommendedActions.isNotEmpty) ...[
+          if (actions.isNotEmpty) ...[
             const SizedBox(height: 14),
             _BulletBlock(
-              title: 'What you should do',
+              title: context.l10n.whatYouShouldDoTitle,
               titleColor: theme.colorScheme.primary,
               icon: Icons.task_alt_rounded,
-              items: exp.recommendedActions,
+              items: actions,
             ),
           ],
         ],
       ),
     );
+  }
+
+  String _translateSignal(BuildContext context, EvilTwinSignal s) {
+    final l10n = context.l10n;
+    switch (s) {
+      case EvilTwinSignal.ouiMismatch:
+        return l10n.evilTwinSignalOuiMismatch;
+      case EvilTwinSignal.securityDowngrade:
+        return l10n.evilTwinSignalSecurityDowngrade;
+      case EvilTwinSignal.sameBandChannelDrift:
+        return l10n.evilTwinSignalSameBandChannelDrift;
+      case EvilTwinSignal.channelWidthMismatch:
+        return l10n.evilTwinSignalChannelWidthMismatch;
+      case EvilTwinSignal.wpsToggleMismatch:
+        return l10n.evilTwinSignalWpsToggleMismatch;
+      case EvilTwinSignal.pmfToggleMismatch:
+        return l10n.evilTwinSignalPmfToggleMismatch;
+      case EvilTwinSignal.hiddenVsVisible:
+        return l10n.evilTwinSignalHiddenVsVisible;
+      case EvilTwinSignal.sharedMldMac:
+        return l10n.evilTwinSignalSharedMldMac;
+      case EvilTwinSignal.bssidProximity:
+        return l10n.evilTwinSignalBssidProximity;
+      case EvilTwinSignal.crossBandSibling:
+        return l10n.evilTwinSignalCrossBandSibling;
+      case EvilTwinSignal.knownMeshVendor:
+        return l10n.evilTwinSignalKnownMeshVendor;
+    }
   }
 
   Color _palette(String label) {

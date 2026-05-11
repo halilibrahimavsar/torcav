@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
 import '../bloc/security_bloc.dart';
 import '../../domain/entities/known_network.dart';
@@ -151,7 +152,7 @@ class NetworkCard extends StatelessWidget {
                       children: [
                         Flexible(
                           child: Text(
-                            'BSSID: ${network.bssid.toUpperCase()}',
+                            context.l10n.bssidLabel(network.bssid.toUpperCase()),
                             style: GoogleFonts.firaCode(
                               color: scheme.onSurfaceVariant.withValues(
                                 alpha: 0.7,
@@ -173,7 +174,9 @@ class NetworkCard extends StatelessWidget {
                       children: [
                         Flexible(
                           child: Text(
-                            'GATEWAY: ${network.gateway?.toUpperCase() ?? 'N/A'}',
+                            context.l10n.gatewayWithIpLabel(
+                              network.gateway?.toUpperCase() ?? l10n.notAvailableCaps,
+                            ),
                             style: GoogleFonts.firaCode(
                               color: scheme.onSurfaceVariant.withValues(
                                 alpha: 0.7,
@@ -194,9 +197,15 @@ class NetworkCard extends StatelessWidget {
                 ),
               ),
               if (isTrusted)
-                _StatusBadge(label: 'TRUSTED', color: scheme.tertiary)
+                _StatusBadge(
+                  label: context.l10n.trustedBadge,
+                  color: scheme.tertiary,
+                )
               else
-                _StatusBadge(label: 'IDENTIFIED', color: scheme.secondary),
+                _StatusBadge(
+                  label: context.l10n.identifiedBadge,
+                  color: scheme.secondary,
+                ),
             ],
           ),
         ),
@@ -248,7 +257,9 @@ class TrustedProfileCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'AUTH: ESTABLISHED ${profile.trustedAt.day}.${profile.trustedAt.month}.${profile.trustedAt.year}',
+                      context.l10n.authEstablishedLabel(
+                        '${profile.trustedAt.day}.${profile.trustedAt.month}.${profile.trustedAt.year}',
+                      ),
                       style: GoogleFonts.rajdhani(
                         color: scheme.onSurfaceVariant,
                         fontSize: 11,
@@ -268,7 +279,7 @@ class TrustedProfileCard extends StatelessWidget {
                   size: 20,
                   color: scheme.error.withValues(alpha: 0.8),
                 ),
-                tooltip: 'REVOKE TRUST',
+                tooltip: context.l10n.revokeTrustTooltip,
               ),
             ],
           ),

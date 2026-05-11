@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:torcav/core/l10n/app_localizations.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:torcav/core/l10n/app_localizations.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/theme/theme_cubit.dart';
 
@@ -13,7 +14,7 @@ class CyberDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.l10n;
 
     return Drawer(
       backgroundColor: Colors.transparent,
@@ -139,7 +140,7 @@ class CyberDrawer extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          'AGENT-01',
+          context.l10n.agentId,
           style: GoogleFonts.orbitron(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -148,7 +149,7 @@ class CyberDrawer extends StatelessWidget {
           ),
         ),
         Text(
-          'CYBERNETIC_ID: 0x8FA2',
+          context.l10n.cyberneticId('0x8FA2'),
           style: GoogleFonts.shareTechMono(
             fontSize: 10,
             color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
@@ -193,7 +194,7 @@ class CyberDrawer extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Sub: Premium',
+                    l10n.subscriptionLabel('Premium'),
                     style: GoogleFonts.rajdhani(
                       fontSize: 10,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,

@@ -160,11 +160,12 @@ class TopologyInfoSheet extends StatelessWidget {
   }
 
   Widget _buildLegendSection(BuildContext context) {
+    final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(context, 'LEGEND & NODES', Icons.legend_toggle_rounded),
+        _sectionHeader(context, l10n.legendAndNodes, Icons.legend_toggle_rounded),
         const SizedBox(height: 12),
         Wrap(
           spacing: 12,
@@ -174,36 +175,36 @@ class TopologyInfoSheet extends StatelessWidget {
               context,
               Icons.router,
               colorScheme.primary,
-              'GATEWAY',
-              'Central network entry point',
+              l10n.legendGateway,
+              l10n.legendGatewayDesc,
             ),
             _legendTile(
               context,
               Icons.settings_input_antenna,
               colorScheme.tertiary,
-              'ACCESS POINT',
-              'WiFi signal distributor',
+              l10n.legendAccessPoint,
+              l10n.legendAccessPointDesc,
             ),
             _legendTile(
               context,
               Icons.smartphone,
               const Color(0xFFFF0060),
-              'MOBILE',
-              'Personal handheld devices',
+              l10n.legendMobile,
+              l10n.legendMobileDesc,
             ),
             _legendTile(
               context,
               Icons.sensors_outlined,
               const Color(0xFFB5179E),
-              'IOT',
-              'Smart home & sensors',
+              l10n.legendIot,
+              l10n.legendIotDesc,
             ),
             _legendTile(
               context,
               Icons.device_hub,
               colorScheme.secondary,
-              'DEVICE',
-              'Computers, TVs, etc.',
+              l10n.legendDevice,
+              l10n.legendDeviceDesc,
             ),
           ],
         ),
@@ -259,25 +260,26 @@ class TopologyInfoSheet extends StatelessWidget {
   }
 
   Widget _buildTechnicalContext(BuildContext context) {
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(context, 'CONNECTION TYPES', Icons.linear_scale_rounded),
+        _sectionHeader(context, l10n.connectionTypesHeader, Icons.linear_scale_rounded),
         const SizedBox(height: 12),
         _connectionType(
           context,
-          'Solid Line (Blue)',
-          'High-speed wired Ethernet connection',
+          l10n.connTypeSolidLineLabel,
+          l10n.connTypeSolidLineDesc,
         ),
         _connectionType(
           context,
-          'Glowing Gradient (Cyan)',
-          'Wireless WiFi connection',
+          l10n.connTypeGradientLabel,
+          l10n.connTypeGradientDesc,
         ),
         _connectionType(
           context,
-          'Pulsing Data Point',
-          'Active traffic detected on the link',
+          l10n.connTypePulsingLabel,
+          l10n.connTypePulsingDesc,
         ),
       ],
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:torcav/core/extensions/context_extensions.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 
 /// Right rail button dock for control actions (discard, finish).
@@ -19,7 +20,7 @@ class HudDock extends StatelessWidget {
         if (onDiscard != null) ...[
           _DockButton(
             icon: Icons.delete_forever_rounded,
-            tooltip: 'Discard Survey',
+            tooltip: context.l10n.discardSurveyTooltip,
             color: AppColors.neonOrange,
             onTap: () async {
               if (!context.mounted) return;
@@ -29,7 +30,7 @@ class HudDock extends StatelessWidget {
                     (context) => AlertDialog(
                       backgroundColor: Colors.black.withValues(alpha: 0.9),
                       title: Text(
-                        'DISCARD SURVEY?',
+                        context.l10n.discardSurveyDialogTitle,
                         style: GoogleFonts.orbitron(
                           color: AppColors.neonOrange,
                           fontSize: 14,
@@ -37,14 +38,14 @@ class HudDock extends StatelessWidget {
                         ),
                       ),
                       content: Text(
-                        'All recorded data for this session will be permanently deleted.',
+                        context.l10n.discardSurveyDialogBody,
                         style: GoogleFonts.outfit(color: Colors.white70),
                       ),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context, false),
                           child: Text(
-                            'CANCEL',
+                            context.l10n.cancel,
                             style: GoogleFonts.orbitron(
                               color: Colors.white,
                               fontSize: 12,
@@ -54,7 +55,7 @@ class HudDock extends StatelessWidget {
                         TextButton(
                           onPressed: () => Navigator.pop(context, true),
                           child: Text(
-                            'DISCARD',
+                            context.l10n.discardAction,
                             style: GoogleFonts.orbitron(
                               color: AppColors.neonOrange,
                               fontSize: 12,
@@ -75,7 +76,7 @@ class HudDock extends StatelessWidget {
         if (onFinish != null)
           _DockButton(
             icon: Icons.stop_rounded,
-            tooltip: 'Finish & Review',
+            tooltip: context.l10n.finishReviewTooltip,
             color: AppColors.neonRed,
             onTap: onFinish!,
           ),

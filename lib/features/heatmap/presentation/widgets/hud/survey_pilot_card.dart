@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 import '../../../domain/services/survey_guidance_service.dart';
 import 'hud_models.dart';
 
@@ -34,7 +35,7 @@ class SurveyPilotCard extends StatelessWidget {
                   Flexible(
                     child: Text(
                       (guidance.customInstruction ??
-                              _stageLabel(guidance.stage))
+                              _stageLabel(context, guidance.stage))
                           .toUpperCase(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -66,7 +67,7 @@ class SurveyPilotCard extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 4),
                     child: Text(
-                      'COMPLETE',
+                      context.l10n.surveyComplete,
                       style: GoogleFonts.orbitron(
                         color: accent.withValues(alpha: 0.7),
                         fontSize: 9,
@@ -84,12 +85,12 @@ class SurveyPilotCard extends StatelessWidget {
                   _MiniRing(
                     value: guidance.coverageScore,
                     color: AppColors.neonCyan,
-                    label: 'COV',
+                    label: context.l10n.covShort,
                   ),
                   _MiniRing(
                     value: guidance.signalScore,
                     color: AppColors.neonGreen,
-                    label: 'SIG',
+                    label: context.l10n.sigShort,
                   ),
                 ],
               ),
@@ -99,9 +100,9 @@ class SurveyPilotCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _FeedDot(label: 'MOT', live: guidance.feeds.motionLive),
-                  _FeedDot(label: 'WIFI', live: guidance.feeds.wifiLive),
-                  _FeedDot(label: 'CAM', live: guidance.feeds.cameraLive),
+                  _FeedDot(label: context.l10n.motShort, live: guidance.feeds.motionLive),
+                  _FeedDot(label: context.l10n.wifiShort, live: guidance.feeds.wifiLive),
+                  _FeedDot(label: context.l10n.camShort, live: guidance.feeds.cameraLive),
                 ],
               ),
             ],
@@ -124,20 +125,21 @@ class SurveyPilotCard extends StatelessWidget {
     }
   }
 
-  String _stageLabel(SurveyStage stage) {
+  String _stageLabel(BuildContext context, SurveyStage stage) {
+    final l10n = context.l10n;
     switch (stage) {
       case SurveyStage.idle:
-        return 'STANDBY';
+        return l10n.surveyStageStandby;
       case SurveyStage.calibration:
-        return 'INITIALIZING';
+        return l10n.surveyStageInitializing;
       case SurveyStage.coverageSweep:
-        return 'SWEEP ROOMS';
+        return l10n.surveyStageSweepRooms;
       case SurveyStage.weakZoneReview:
-        return 'WEAK ZONE';
+        return l10n.surveyStageWeakZone;
       case SurveyStage.wrapUp:
-        return 'WRAP UP';
+        return l10n.surveyStageWrapUp;
       case SurveyStage.review:
-        return 'REVIEW';
+        return l10n.surveyStageReview;
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../core/extensions/context_extensions.dart';
 
 class TermsOfServicePage extends StatelessWidget {
   const TermsOfServicePage({super.key});
@@ -8,6 +9,7 @@ class TermsOfServicePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -23,7 +25,7 @@ class TermsOfServicePage extends StatelessWidget {
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
               title: Text(
-                'TERMS OF SERVICE',
+                l10n.tosTitle,
                 style: GoogleFonts.orbitron(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
@@ -53,34 +55,34 @@ class TermsOfServicePage extends StatelessWidget {
                 const SizedBox(height: 24),
                 _buildTermSection(
                   context,
-                  '1. ACCEPTANCE',
-                  'By accessing or using Torcav, you agree to be bound by these Terms. If you do not agree, you must immediately cease use of the App.',
+                  l10n.tosAcceptanceTitle,
+                  l10n.tosAcceptanceBody,
                 ),
                 _buildTermSection(
                   context,
-                  '2. AUTHORIZED TESTING ONLY',
-                  'You represent and warrant that you will only use the App to analyze networks and devices that you own or for which you have received explicit, written authorization to test. Unauthorized access to networks is strictly prohibited and may be illegal in your jurisdiction.',
+                  l10n.tosAuthorizedTestingTitle,
+                  l10n.tosAuthorizedTestingBody,
                   isCritical: true,
                 ),
                 _buildTermSection(
                   context,
-                  '3. DISCLAIMER OF WARRANTIES',
-                  'The App is provided "as is" and "as available". We do not guarantee that the App will identify all security vulnerabilities or that its results are 100% accurate. Use at your own risk.',
+                  l10n.tosDisclaimerTitle,
+                  l10n.tosDisclaimerBody,
                 ),
                 _buildTermSection(
                   context,
-                  '4. LIMITATION OF LIABILITY',
-                  'In no event shall the developers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the App.',
+                  l10n.tosLiabilityTitle,
+                  l10n.tosLiabilityBody,
                 ),
                 _buildTermSection(
                   context,
-                  '5. MODIFICATIONS',
-                  'We reserve the right to modify these terms at any time. Continued use of the App following any changes constitutes acceptance of the new terms.',
+                  l10n.tosModificationsTitle,
+                  l10n.tosModificationsBody,
                 ),
                 const SizedBox(height: 32),
                 Center(
                   child: Text(
-                    'Last Updated: April 2026',
+                    l10n.tosLastUpdated,
                     style: GoogleFonts.outfit(
                       fontSize: 11,
                       color: colorScheme.onSurface.withValues(alpha: 0.5),
@@ -96,6 +98,7 @@ class TermsOfServicePage extends StatelessWidget {
   }
 
   Widget _buildWarningCard(BuildContext context) {
+    final l10n = context.l10n;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -114,7 +117,7 @@ class TermsOfServicePage extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'LEGAL NOTICE',
+            l10n.legalNoticeTitle,
             style: GoogleFonts.orbitron(
               fontSize: 14,
               fontWeight: FontWeight.w900,
@@ -124,7 +127,7 @@ class TermsOfServicePage extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'This application is a security auditing tool. Misuse of this software to access or monitor networks without permission is strictly prohibited.',
+            l10n.legalNoticeBody,
             textAlign: TextAlign.center,
             style: GoogleFonts.rajdhani(
               fontSize: 14,

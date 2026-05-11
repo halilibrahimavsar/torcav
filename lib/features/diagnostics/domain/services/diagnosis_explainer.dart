@@ -41,6 +41,7 @@ class DiagnosisExplainer {
   ) {
     final download = inputs.speedTest?.downloadMbps;
     String? estimate;
+    double? finalGain;
     if (download != null && download > 1) {
       // Wi-Fi throughput scales roughly with SNR: a strong-signal link can
       // sustain its PHY rate, while a weak link is forced into lower MCS
@@ -53,12 +54,24 @@ class DiagnosisExplainer {
         if (headroom > 0 && gain > headroom) gain = headroom;
       }
       if (gain >= 5) {
+        finalGain = gain;
         estimate =
             'Estimated gain: up to +${gain.toStringAsFixed(0)} Mbps download '
             'if you can pull the device closer to the router.';
       }
     }
     return CategoryExplanation(
+      whatIsKey: 'sdWeakSignalWhatIs',
+      whyItMattersKey: 'sdWeakSignalWhyItMatters',
+      howToFixKeys: const [
+        'sdWeakSignalHowToFix1',
+        'sdWeakSignalHowToFix2',
+        'sdWeakSignalHowToFix3',
+        'sdWeakSignalHowToFix4',
+      ],
+      estimatedImprovementKey: estimate != null ? 'sdWeakSignalEstimate' : null,
+      estimatedImprovementParams:
+          finalGain != null ? {'gain': finalGain.toStringAsFixed(0)} : null,
       whatIs:
           'Signal strength (RSSI) measures how loudly your device hears the '
           'router. Below about −70 dBm, Wi-Fi has to drop to slower, more '
@@ -86,17 +99,31 @@ class DiagnosisExplainer {
   ) {
     final download = inputs.speedTest?.downloadMbps;
     String? estimate;
+    double? finalGain;
     if (download != null && download > 1 && ev.severity > 0.4) {
       // Channel contention costs airtime. A clean channel typically
       // recovers ~30–50% of contention loss. Conservative: severity × 0.4.
       final gain = download * 0.4 * ev.severity;
       if (gain >= 3) {
+        finalGain = gain;
         estimate =
             'Estimated gain: up to +${gain.toStringAsFixed(0)} Mbps download '
             'after switching to a quieter channel.';
       }
     }
     return CategoryExplanation(
+      whatIsKey: 'sdCrowdedChannelWhatIs',
+      whyItMattersKey: 'sdCrowdedChannelWhyItMatters',
+      howToFixKeys: const [
+        'sdCrowdedChannelHowToFix1',
+        'sdCrowdedChannelHowToFix2',
+        'sdCrowdedChannelHowToFix3',
+        'sdCrowdedChannelHowToFix4',
+      ],
+      estimatedImprovementKey:
+          estimate != null ? 'sdCrowdedChannelEstimate' : null,
+      estimatedImprovementParams:
+          finalGain != null ? {'gain': finalGain.toStringAsFixed(0)} : null,
       whatIs:
           'Wi-Fi channels are shared spectrum. When several nearby access '
           'points transmit on the same channel, they have to take turns — '
@@ -125,12 +152,14 @@ class DiagnosisExplainer {
   ) {
     String? estimate;
     final speed = inputs.speedTest;
+    double? finalReduction;
     if (speed != null) {
       final induced = speed.loadedLatencyMs - speed.latencyMs;
       // A working SQM/QoS implementation typically pulls induced latency
       // back under 30 ms. Project the latency reduction, not throughput.
       if (induced > 50) {
         final reduction = (induced - 30).clamp(0, induced).toDouble();
+        finalReduction = reduction;
         estimate =
             'Estimated gain: about −${reduction.toStringAsFixed(0)} ms loaded '
             'latency. Calls and gaming will feel responsive even during '
@@ -138,6 +167,19 @@ class DiagnosisExplainer {
       }
     }
     return CategoryExplanation(
+      whatIsKey: 'sdBufferbloatWhatIs',
+      whyItMattersKey: 'sdBufferbloatWhyItMatters',
+      howToFixKeys: const [
+        'sdBufferbloatHowToFix1',
+        'sdBufferbloatHowToFix2',
+        'sdBufferbloatHowToFix3',
+        'sdBufferbloatHowToFix4',
+      ],
+      estimatedImprovementKey:
+          estimate != null ? 'sdBufferbloatEstimate' : null,
+      estimatedImprovementParams: finalReduction != null
+          ? {'reduction': finalReduction.toStringAsFixed(0)}
+          : null,
       whatIs:
           'Bufferbloat is the latency that builds up inside your router\'s '
           'send buffers when the link is fully loaded — typical packets '
@@ -175,6 +217,21 @@ class DiagnosisExplainer {
           'gap is upstream of the router.';
     }
     return CategoryExplanation(
+      whatIsKey: 'sdIspSlowWhatIs',
+      whyItMattersKey: 'sdIspSlowWhyItMatters',
+      howToFixKeys: const [
+        'sdIspSlowHowToFix1',
+        'sdIspSlowHowToFix2',
+        'sdIspSlowHowToFix3',
+        'sdIspSlowHowToFix4',
+      ],
+      estimatedImprovementKey: estimate != null ? 'sdIspSlowEstimate' : null,
+      estimatedImprovementParams: estimate != null
+          ? {
+            'phy': phy?.toStringAsFixed(0),
+            'download': download?.toStringAsFixed(1),
+          }
+          : null,
       whatIs:
           'Your Wi-Fi link is healthy and the radio could carry far more '
           'than what is actually flowing through it. The bottleneck sits '
@@ -204,14 +261,26 @@ class DiagnosisExplainer {
   ) {
     final benchmark = inputs.dnsBenchmark;
     String? estimate;
+    num? finalReduction;
     if (benchmark != null && benchmark.latencyMs > 50) {
       final reduction = (benchmark.latencyMs - 30).clamp(0, 9999);
+      finalReduction = reduction;
       estimate =
           'Estimated gain: about −$reduction ms per name lookup. Page '
           'loads usually feel 5–20% snappier because each page kicks off '
           'a dozen lookups.';
     }
     return CategoryExplanation(
+      whatIsKey: 'sdSlowDnsWhatIs',
+      whyItMattersKey: 'sdSlowDnsWhyItMatters',
+      howToFixKeys: const [
+        'sdSlowDnsHowToFix1',
+        'sdSlowDnsHowToFix2',
+        'sdSlowDnsHowToFix3',
+      ],
+      estimatedImprovementKey: estimate != null ? 'sdSlowDnsEstimate' : null,
+      estimatedImprovementParams:
+          finalReduction != null ? {'reduction': finalReduction} : null,
       whatIs:
           'DNS turns names like example.com into the IP addresses your '
           'device actually connects to. Every page load fires off a handful '
@@ -234,6 +303,8 @@ class DiagnosisExplainer {
 
   CategoryExplanation _healthy() {
     return const CategoryExplanation(
+      whatIsKey: 'sdHealthyWhatIs',
+      whyItMattersKey: 'sdHealthyWhyItMatters',
       whatIs:
           'Speed Doctor checks five things: signal strength, channel '
           'congestion, speed-under-load (bufferbloat), download throughput '

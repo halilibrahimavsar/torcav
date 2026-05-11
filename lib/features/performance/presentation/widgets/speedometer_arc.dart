@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../domain/entities/speed_test_progress.dart';
@@ -63,13 +64,19 @@ class _SpeedometerArcState extends State<SpeedometerArc>
           curve: Curves.easeOutCubic,
           tween: Tween<double>(begin: 0, end: widget.upload),
           builder: (context, ulValue, _) {
+            final l10n = context.l10n;
             final isRunning = widget.phase != SpeedTestPhase.idle &&
                 widget.phase != SpeedTestPhase.done;
             final semanticLabel = widget.phase == SpeedTestPhase.idle
-                ? 'Speed test gauge. Tap to start.'
+                ? l10n.speedTestSemanticsIdle
                 : isRunning
-                    ? 'Speed test running — ${widget.download.toStringAsFixed(1)} Mbps download. Tap to stop.'
-                    : 'Speed test complete — ${widget.download.toStringAsFixed(1)} Mbps download, ${widget.upload.toStringAsFixed(1)} Mbps upload.';
+                    ? l10n.speedTestSemanticsRunning(
+                        widget.download.toStringAsFixed(1),
+                      )
+                    : l10n.speedTestSemanticsComplete(
+                        widget.download.toStringAsFixed(1),
+                        widget.upload.toStringAsFixed(1),
+                      );
             return Semantics(
               label: semanticLabel,
               button: widget.onTap != null,
@@ -124,7 +131,9 @@ class _SpeedometerArcState extends State<SpeedometerArc>
 
     final centerValue = isUpload ? ul : dl;
     final centerColor = isUpload ? ulColor : dlColor;
-    final centerLabel = isUpload ? 'UPLOAD' : 'DOWNLOAD';
+    final centerLabel = isUpload
+        ? context.l10n.uploadLabel
+        : context.l10n.downloadLabel;
 
     if (isIdle) {
       return Column(
@@ -137,7 +146,7 @@ class _SpeedometerArcState extends State<SpeedometerArc>
           ),
           const SizedBox(height: 12),
           Text(
-            'TAP TO START',
+            context.l10n.tapToStart,
             style: GoogleFonts.orbitron(
               fontSize: 14,
               fontWeight: FontWeight.w900,
@@ -176,7 +185,7 @@ class _SpeedometerArcState extends State<SpeedometerArc>
           _buildMiniStats(dl, ul, dlColor, ulColor),
           const SizedBox(height: 12),
           Text(
-            'TAP TO STOP',
+            context.l10n.tapToStop,
             style: GoogleFonts.orbitron(
               fontSize: 9,
               color: Colors.white.withValues(alpha: 0.35),

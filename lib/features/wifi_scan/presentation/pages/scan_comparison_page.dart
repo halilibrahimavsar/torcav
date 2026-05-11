@@ -89,7 +89,7 @@ class ScanComparisonPage extends StatelessWidget {
                       (n) => _NetworkRow(
                         network: n,
                         accentColor: Theme.of(context).colorScheme.tertiary,
-                        trailing: '+ NEW',
+                        trailing: l10n.newNetworkLabel,
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -104,7 +104,7 @@ class ScanComparisonPage extends StatelessWidget {
                       (n) => _NetworkRow(
                         network: n,
                         accentColor: Theme.of(context).colorScheme.error,
-                        trailing: 'GONE',
+                        trailing: l10n.goneNetworkLabel,
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -176,7 +176,9 @@ class _NetworkRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  network.ssid.isEmpty ? '[Hidden]' : network.ssid,
+                  network.ssid.isEmpty
+                      ? context.l10n.hiddenNetworkLabel
+                      : network.ssid,
                   style: GoogleFonts.orbitron(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
@@ -239,7 +241,9 @@ class _ChangedRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  before.ssid.isEmpty ? '[Hidden]' : before.ssid,
+                  before.ssid.isEmpty
+                      ? context.l10n.hiddenNetworkLabel
+                      : before.ssid,
                   style: GoogleFonts.orbitron(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,

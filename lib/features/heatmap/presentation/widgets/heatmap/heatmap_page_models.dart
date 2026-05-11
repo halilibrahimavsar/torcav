@@ -2,9 +2,11 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import 'package:torcav/core/theme/app_theme.dart';
+import 'package:torcav/core/extensions/context_extensions.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
 import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
+import 'package:torcav/core/l10n/app_localizations.dart';
 
 class HeatmapSummary {
   const HeatmapSummary({
@@ -79,11 +81,6 @@ class HeatmapSummary {
 
   String get coveragePercent {
     if (!hasSamples) return '0%';
-    // BUG-23: The previous heuristic treated 25 samples as 100% for every room,
-    // which gave 100% after a tiny corner sweep of a large hall.
-    // New heuristic: target ≈ 1 sample per 0.7 m² of surveyed area, floored at
-    // 15 and capped at 100, so small studios saturate at ~15 samples and a
-    // 50 m² office needs ~71 samples to reach 100%.
     final areaM2 = widthMeters * heightMeters;
     final targetSamples = (areaM2 / 0.7).clamp(15.0, 100.0);
     final progress = (sampleCount / targetSamples).clamp(0.0, 1.0);
@@ -121,289 +118,161 @@ class MetricBounds {
   final double heightMeters;
 }
 
+/// A localized copy provider for Heatmap features.
+/// This class now proxies to [AppLocalizations].
 class HeatmapCopy {
-  const HeatmapCopy._({required this.isTurkish});
+  const HeatmapCopy._(this._l10n);
 
   factory HeatmapCopy.of(BuildContext context) {
-    final isTurkish = Localizations.localeOf(context).languageCode == 'tr';
-    return HeatmapCopy._(isTurkish: isTurkish);
+    return HeatmapCopy._(context.l10n);
   }
 
-  final bool isTurkish;
+  final AppLocalizations _l10n;
 
-  String get pageTitle =>
-      isTurkish ? 'EV PLANI + WIFI ISI HARITASI' : 'HOME PLAN + WIFI HEATMAP';
-  String get pageSubtitle =>
-      isTurkish
-          ? 'Plan cizgisi, kapsama ve zayif bolgeler'
-          : 'Outline, coverage, and weak zones';
-  String get historyTooltip =>
-      isTurkish ? 'Kayitli turlari ac' : 'Open saved surveys';
-  String get themeToggleTooltip =>
-      isTurkish
-          ? 'Gorunumu degistir (Blueprint / Neon)'
-          : 'Toggle view (Blueprint / Neon)';
-  String get previewSessionName => isTurkish ? 'Onizleme' : 'Preview';
-  String get recordingStatus => isTurkish ? 'KAYIT' : 'RECORDING';
-  String get reviewingStatus => isTurkish ? 'INCELEME' : 'REVIEW';
-  String get idleStatus => isTurkish ? 'HAZIR' : 'IDLE';
-  String get samplesShort => isTurkish ? 'ornek' : 'samples';
-  String get wallsShort => isTurkish ? 'duvar' : 'walls';
+  String get pageTitle => _l10n.heatmapPageTitle;
+  String get pageSubtitle => _l10n.heatmapPageSubtitle;
+  String get historyTooltip => _l10n.heatmapHistoryTooltip;
+  String get themeToggleTooltip => _l10n.heatmapThemeToggleTooltip;
+  String get previewSessionName => _l10n.preview;
+  String get recordingStatus => _l10n.recording;
+  String get reviewingStatus => _l10n.reviewing;
+  String get idleStatus => _l10n.idle;
+  String get samplesShort => _l10n.heatmapSamplesShort;
+  String get wallsShort => _l10n.heatmapWallsShort;
 
-  String get surveyCompleteTitle =>
-      isTurkish ? 'TUR TAMAMLANDI' : 'SURVEY COMPLETE';
-  String get surveyCompleteBody =>
-      isTurkish
-          ? 'Ev turu basariyla kaydedildi. Plan ve sinyal verileri sentezlendi.'
-          : 'The survey has been successfully recorded. Plan and signal data are synthesized.';
-  String get coverageLabel => isTurkish ? 'KAPSAMA' : 'COVERAGE';
-  String get blindSpotsLabel => isTurkish ? 'OLU NOKTALAR' : 'BLIND SPOTS';
-  String get finishAndSave => isTurkish ? 'KAYDET VE BITIR' : 'SAVE & FINISH';
-  String get restartSurvey => isTurkish ? 'YENIDEN BASLAT' : 'RESTART SURVEY';
-  String get renameSurvey => isTurkish ? 'ISIM DEGISTIR' : 'RENAME SURVEY';
-  String get shareHeatmap => isTurkish ? 'HARITAYI PAYLAS' : 'SHARE HEATMAP';
-  String get renameDialogTitle =>
-      isTurkish ? 'TUR ISMINI GUNCELLE' : 'RENAME SURVEY';
-  String get save => isTurkish ? 'Kaydet' : 'Save';
-  String get shareSubject =>
-      isTurkish ? 'Torcav WiFi Isi Haritasi' : 'Torcav WiFi Heatmap';
-  String get shareText =>
-      isTurkish
-          ? 'Evimin WiFi isi haritasini paylasiyorum.'
-          : 'Sharing my WiFi heatmap result.';
+  String get surveyCompleteTitle => _l10n.surveyComplete;
+  String get surveyCompleteBody => _l10n.surveyCompleteDesc;
+  String get coverageLabel => _l10n.coverage;
+  String get blindSpotsLabel => _l10n.blindSpots;
+  String get finishAndSave => _l10n.saveAndFinish;
+  String get restartSurvey => _l10n.heatmapRestartSurvey;
+  String get renameSurvey => _l10n.heatmapRenameSurvey;
+  String get shareHeatmap => _l10n.heatmapShareHeatmap;
+  String get renameDialogTitle => _l10n.heatmapRenameDialogTitle;
+  String get save => _l10n.heatmapSave;
+  String get shareSubject => _l10n.heatmapShareSubject;
+  String get shareText => _l10n.heatmapShareText;
 
-  String get issueTitle => isTurkish ? 'Duzeltilmesi Gereken Durum' : 'Issue';
-  String get genericIssueBody =>
-      isTurkish
-          ? 'Tarama tamamlanamadi. Izinleri ve cihaz sensorlerini kontrol edin.'
-          : 'The survey could not finish. Check permissions and device sensors.';
+  String get issueTitle => _l10n.heatmapIssueTitle;
+  String get genericIssueBody => _l10n.heatmapGenericIssueBody;
 
-  String get goalTitle =>
-      isTurkish ? 'Bu Ozellik Ne Yapiyor?' : 'What This Feature Does';
-  String get goalBody =>
-      isTurkish
-          ? 'Yurudukce Wi-Fi ornekleri toplar, AR ile duvar cizgilerini yakalar ve sonunda ev planini sinyal yogunluguyla birlikte gostermeye calisir.'
-          : 'It samples Wi-Fi as you walk, captures wall lines in AR, and then shows the home outline together with signal density.';
+  String get goalTitle => _l10n.heatmapGoalTitle;
+  String get goalBody => _l10n.heatmapGoalBody;
 
-  String get waitingForDataTitle =>
-      isTurkish ? 'Veri Bekleniyor' : 'Waiting For Data';
-  String get waitingForDataBody =>
-      isTurkish
-          ? 'Henuz sinyal ornegi dusmedi. Konum ve hareket izinlerini kontrol edip birkac adim yuruyun.'
-          : 'No signal sample has landed yet. Check motion and location permissions, then walk a few steps.';
+  String get waitingForDataTitle => _l10n.heatmapWaitingForDataTitle;
+  String get waitingForDataBody => _l10n.heatmapWaitingForDataBody;
 
-  String get arCaptureTitle => isTurkish ? 'AR Modu Acik' : 'AR Mode Active';
-  String get arCaptureBody =>
-      isTurkish
-          ? 'Telefonu oda kenarlarina ve kapi gecislerine cevirin. Kamera duvar cizgilerini ariyor, sinyal ise yurudukce otomatik ekleniyor.'
-          : 'Point the phone at room edges and door openings. The camera searches for wall lines while signal points are added automatically as you move.';
-  String get mapCaptureTitle => isTurkish ? '2D Harita Acik' : '2D Map Active';
-  String get mapCaptureBody =>
-      isTurkish
-          ? 'Sonucu daha net izlemek icin 2D gorunumdesiniz. Ornekler yurudukce islenir; plan cizgisi zayifsa AR moduna gecin.'
-          : 'You are in the clearer 2D view. Samples keep arriving as you walk; if the outline stays weak, switch to AR mode.';
+  String get arCaptureTitle => _l10n.heatmapArCaptureTitle;
+  String get arCaptureBody => _l10n.heatmapArCaptureBody;
+  String get mapCaptureTitle => _l10n.heatmapMapCaptureTitle;
+  String get mapCaptureBody => _l10n.heatmapMapCaptureBody;
 
-  String get reviewTitle => isTurkish ? 'Sonuc Ozeti' : 'Survey Summary';
+  String get reviewTitle => _l10n.heatmapReviewTitle;
   String reviewBody(HeatmapSummary summary) {
     if (!summary.hasSamples) {
-      return isTurkish
-          ? 'Kayitli tur var ama henuz anlamli sinyal ornegi yok.'
-          : 'There is a saved survey, but it still lacks meaningful signal samples.';
+      return _l10n.heatmapReviewBodyNoSamples;
     }
-    return isTurkish
-        ? 'Kapsama okunabilir durumda. Zayif bolgeleri asagidaki ozetten takip edin.'
-        : 'Coverage is readable. Use the summary below to inspect weak zones.';
+    return _l10n.heatmapReviewBodyReady;
   }
 
-  String get samplesLabel => isTurkish ? 'TOPLANAN ORNEK' : 'SAMPLES';
-  String get wallsLabel => isTurkish ? 'PLAN CIZGISI' : 'WALLS';
-  String get currentSignalLabel => isTurkish ? 'ANLIK SINYAL' : 'LIVE SIGNAL';
-  String get avgSignalLabel => isTurkish ? 'ORT. SINYAL' : 'AVG SIGNAL';
-  String get weakZonesLabel => isTurkish ? 'ZAYIF NOKTA' : 'WEAK ZONES';
-  String get planSizeLabel => isTurkish ? 'PLAN BOYUTU' : 'PLAN SIZE';
-  String get notAvailable => isTurkish ? 'Hazir degil' : 'Not ready';
-  String get noSamplesHelper =>
-      isTurkish
-          ? 'Tur baslayinca adimlarla dolar'
-          : 'Fills in as you start walking';
-  String samplesHelper(int count) =>
-      isTurkish
-          ? '$count noktadan sinyal okundu'
-          : 'Signal read from $count locations';
-  String get noWallsHelper =>
-      isTurkish
-          ? 'Plan icin AR turu gerekebilir'
-          : 'AR pass may be needed for the outline';
-  String wallsHelper(int count) =>
-      isTurkish
-          ? '$count duvar cizgisi secildi'
-          : '$count wall segments retained';
-  String get signalUnavailableHelper =>
-      isTurkish
-          ? 'Wi-Fi okumasi henuz gelmedi'
-          : 'Wi-Fi reading has not arrived yet';
-  String get signalStrongHelper =>
-      isTurkish ? 'Guclu kapsama' : 'Strong coverage';
-  String get signalFairHelper =>
-      isTurkish ? 'Sinirda ama kullanilabilir' : 'Borderline but usable';
-  String get signalWeakHelper =>
-      isTurkish ? 'Zayif veya sorunlu bolge' : 'Weak or problematic zone';
+  String get samplesLabel => _l10n.heatmapSamplesLabel;
+  String get wallsLabel => _l10n.heatmapWallsLabel;
+  String get currentSignalLabel => _l10n.heatmapCurrentSignalLabel;
+  String get avgSignalLabel => _l10n.heatmapAvgSignalLabel;
+  String get weakZonesLabel => _l10n.heatmapWeakZonesLabel;
+  String get planSizeLabel => _l10n.heatmapPlanSizeLabel;
+  String get notAvailable => _l10n.heatmapNotAvailable;
+  String get noSamplesHelper => _l10n.heatmapNoSamplesHelper;
+  String samplesHelper(int count) => _l10n.heatmapSamplesHelper(count);
+  String get noWallsHelper => _l10n.heatmapNoWallsHelper;
+  String wallsHelper(int count) => _l10n.heatmapWallsHelper(count);
+  String get signalUnavailableHelper => _l10n.heatmapSignalUnavailableHelper;
+  String get signalStrongHelper => _l10n.heatmapSignalStrongHelper;
+  String get signalFairHelper => _l10n.heatmapSignalFairHelper;
+  String get signalWeakHelper => _l10n.heatmapSignalWeakHelper;
   String weakZoneHelper(int count) {
-    if (count == 0) {
-      return isTurkish ? 'Belirgin olu nokta yok' : 'No obvious dead zones';
-    }
-    if (count == 1) {
-      return isTurkish ? 'Tek sorunlu alan' : 'One problematic area';
-    }
-    return isTurkish
-        ? '$count farkli zayif alan'
-        : '$count weak areas detected';
+    if (count == 0) return _l10n.heatmapWeakZoneHelperNone;
+    if (count == 1) return _l10n.heatmapWeakZoneHelperOne;
+    return _l10n.heatmapWeakZoneHelperMany(count);
   }
 
-  String get planSizeHelper =>
-      isTurkish
-          ? 'Gorunen izden tahmini cap'
-          : 'Estimated span from captured trace';
+  String get planSizeHelper => _l10n.heatmapPlanSizeHelper;
 
-  String get noSurveyYetTitle => isTurkish ? 'Tur Baslatin' : 'Start A Survey';
-  String get noSurveyYetBody =>
-      isTurkish
-          ? 'Ilk olarak bir ev turu baslatin. Sonuc ekraninda plan ve isi haritasi birlikte okunacak.'
-          : 'Start a walkthrough first. The result view will then show the outline and heatmap together.';
-  String get walkToBeginTitle =>
-      isTurkish ? 'Yuruyerek Baslayin' : 'Start Walking';
-  String get walkToBeginBody =>
-      isTurkish
-          ? 'Her odada birkac adim atildikca yol ve sinyal noktasi olusur.'
-          : 'The trail and signal points appear as you take a few steps in each room.';
+  String get noSurveyYetTitle => _l10n.heatmapNoSurveyYetTitle;
+  String get noSurveyYetBody => _l10n.heatmapNoSurveyYetBody;
+  String get walkToBeginTitle => _l10n.heatmapWalkToBeginTitle;
+  String get walkToBeginBody => _l10n.heatmapWalkToBeginBody;
 
-  String get mapViewLabel => isTurkish ? '2D HARITA' : '2D MAP';
-  String get resultViewLabel => isTurkish ? 'SONUC GORUNUMU' : 'RESULT VIEW';
+  String get mapViewLabel => _l10n.heatmapMapViewLabel;
+  String get resultViewLabel => _l10n.heatmapResultViewLabel;
 
-  String get findingsTitle => isTurkish ? 'NE ANLATIYOR?' : 'WHAT IT MEANS';
-  String get recordingInsightReady =>
-      isTurkish
-          ? 'Survey artik yeterince doldu. Son bir oda gecisi daha alip sonucu kaydedebilirsiniz.'
-          : 'The survey is now dense enough. One last room transition is enough before saving the result.';
-  String get recordingInsightTooEarly =>
-      isTurkish
-          ? 'Henuz cok erken. En az birkac odada dolasip 4-5 ornek toplandiginda sonuc yorumlanabilir hale gelir.'
-          : 'It is still too early. After 4-5 samples across a few rooms, the result becomes readable.';
-  String get recordingInsightNoWalls =>
-      isTurkish
-          ? 'Sinyal geliyor ama plan cizgisi yok. AR moduna gecip telefonu duvarlara dogru tutarak ikinci bir tur atmak plan kalitesini belirgin artirir.'
-          : 'Signal is arriving but the outline is missing. Switch to AR and face the walls during another pass to improve the plan.';
+  String get findingsTitle => _l10n.heatmapFindingsTitle;
+  String get recordingInsightReady => _l10n.heatmapInsightReady;
+  String get recordingInsightTooEarly => _l10n.heatmapInsightTooEarly;
+  String get recordingInsightNoWalls => _l10n.heatmapInsightNoWalls;
   String recordingInsight(HeatmapSummary summary) =>
-      isTurkish
-          ? 'Canli sonuc okunmaya basladi. ${summary.sampleCount} ornek ile zayif alanlar kabaca gorunuyor.'
-          : 'The live result is starting to read well. With ${summary.sampleCount} samples, weak areas are becoming visible.';
-  String get reviewInsightNoSamples =>
-      isTurkish
-          ? 'Bu turde sinyal ornegi yok. Konum ve hareket algilama izinleri kapaliysa uygulama isi haritasi uretemez.'
-          : 'This survey has no signal samples. If location or motion permissions are off, the app cannot build the heatmap.';
-  String get reviewInsightNoPlan =>
-      isTurkish
-          ? 'Isi haritasi olusmus ama plan zayif. Tekrar denerken AR modunda oda sinirlarina bakarak yuruyun.'
-          : 'The heatmap is present but the outline is weak. On the next run, use AR and face room boundaries while walking.';
-  String get reviewInsightStrong =>
-      isTurkish
-          ? 'Kapsama genel olarak guclu. Belirgin olu nokta gorunmuyor; plan ve sinyal birlikte tutarli duruyor.'
-          : 'Coverage looks strong overall. No clear dead zones are visible, and the outline agrees with the signal trace.';
+      _l10n.heatmapInsightLive(summary.sampleCount);
+
+  String get reviewInsightNoSamples => _l10n.heatmapReviewInsightNoSamples;
+  String get reviewInsightNoPlan => _l10n.heatmapReviewInsightNoPlan;
+  String get reviewInsightStrong => _l10n.heatmapReviewInsightStrong;
   String reviewInsightWeak(int weakCount) =>
-      isTurkish
-          ? '$weakCount zayif bolge gorunuyor. Modemi daha merkezi bir konuma almak veya ek erisim noktasi dusunmek mantikli olabilir.'
-          : '$weakCount weak zones are visible. Moving the router more centrally or adding another access point may help.';
+      _l10n.heatmapReviewInsightWeak(weakCount);
   String reviewInsightBalanced(int weakCount) =>
-      isTurkish
-          ? 'Genel kapsama dengeli ama $weakCount noktada dusus var. Bunlar genelde kose, koridor sonu veya kalin duvar arkasi olur.'
-          : 'Coverage is reasonably balanced, but it dips in $weakCount spots. These are often corners, corridor ends, or heavy wall transitions.';
+      _l10n.heatmapReviewInsightBalanced(weakCount);
 
-  String get closeReview => isTurkish ? 'INCELEMEYI KAPAT' : 'CLOSE REVIEW';
-  String get newSurvey => isTurkish ? 'YENI TUR' : 'NEW SURVEY';
-  String get finishAndReview =>
-      isTurkish ? 'BITIR VE SONUCU GOR' : 'FINISH & REVIEW';
-  String get startSurvey => isTurkish ? 'EV TURUNU BASLAT' : 'START SURVEY';
-  String get newSurveyDialogTitle => isTurkish ? 'YENI EV TURU' : 'NEW SURVEY';
-  String defaultSessionName(DateTime now) =>
-      isTurkish
-          ? 'Ev turu ${now.hour}:${now.minute.toString().padLeft(2, '0')}'
-          : 'Survey ${now.hour}:${now.minute.toString().padLeft(2, '0')}';
-  String get sessionNameField => isTurkish ? 'Tur adi' : 'Survey name';
-  String get newSurveyHint =>
-      isTurkish
-          ? 'Tur baslayinca sinyal yurudukce otomatik toplanir. Plan cizgisini guclendirmek isterseniz AR gorunumune gecebilirsiniz.'
-          : 'Once the survey starts, signal samples are added automatically as you move. Switch to AR if you want a stronger room outline.';
-  String get cancel => isTurkish ? 'Vazgec' : 'Cancel';
-  String get startNow => isTurkish ? 'Baslat' : 'Start';
-
-  String get savedSurveysTitle =>
-      isTurkish ? 'KAYITLI EV TURLARI' : 'SAVED SURVEYS';
-  String get noSavedSurveys =>
-      isTurkish ? 'Henuz kayitli bir tur yok.' : 'No saved surveys yet.';
-  String savedSurveySubtitle(int samples, int weak, String timestamp) {
-    if (isTurkish) {
-      return '$samples ornek · $weak zayif nokta · $timestamp';
-    }
-    return '$samples samples · $weak weak zones · $timestamp';
+  String get closeReview => _l10n.heatmapCloseReview;
+  String get newSurvey => _l10n.heatmapNewSurvey;
+  String get finishAndReview => _l10n.heatmapFinishAndReview;
+  String get startSurvey => _l10n.heatmapStartSurvey;
+  String get newSurveyDialogTitle => _l10n.heatmapNewSurveyDialogTitle;
+  String defaultSessionName(DateTime now) {
+    final timeStr = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
+    return _l10n.heatmapDefaultSessionName(timeStr);
   }
 
-  String get deleteSurveyTooltip => isTurkish ? 'Turu sil' : 'Delete survey';
+  String get sessionNameField => _l10n.heatmapSessionNameField;
+  String get newSurveyHint => _l10n.heatmapNewSurveyHint;
+  String get cancel => _l10n.cancel;
+  String get startNow => _l10n.startNowCaps;
 
-  String get legendTitle => isTurkish ? 'RENK ANLAMI' : 'COLOR GUIDE';
-  String get legendStrong => isTurkish ? 'Guclu' : 'Strong';
-  String get legendFair => isTurkish ? 'Orta' : 'Fair';
-  String get legendWeak => isTurkish ? 'Zayif' : 'Weak';
-  String get cameraViewLabel => isTurkish ? 'CANLI KAMERA' : 'LIVE CAMERA';
-  String get infoSheetTitle =>
-      isTurkish ? 'CANLI SURVEY VERILERI' : 'LIVE SURVEY DATA';
+  String get savedSurveysTitle => _l10n.heatmapSavedSurveysTitle;
+  String get noSavedSurveys => _l10n.heatmapNoSavedSurveys;
+  String savedSurveySubtitle(int samples, int weak, String timestamp) =>
+      _l10n.heatmapSavedSurveySubtitle(samples, weak, timestamp);
 
-  String feedStatusLabel(String label, bool active) {
-    if (isTurkish) {
-      return '$label: ${active ? 'aktif' : 'pasif'}';
-    }
-    return '$label: ${active ? 'active' : 'inactive'}';
-  }
+  String get deleteSurveyTooltip => _l10n.heatmapDeleteSurveyTooltip;
 
-  String get tutorialTitle =>
-      isTurkish ? 'ISI HARITASINI NASIL OKURUM?' : 'HOW TO READ THE HEATMAP';
-  String get tutorialStep1 =>
-      isTurkish
-          ? 'Yeni bir ev turu baslatin. Uygulama yurudukce sinyal noktalarini otomatik toplar.'
-          : 'Start a new survey. The app collects signal samples automatically as you walk.';
-  String get tutorialStep2 =>
-      isTurkish
-          ? 'Her odayi gezip koridor ve kose gecislerinden gecin. Harita iziniz bu sayede olusur.'
-          : 'Walk each room and pass through corridor and corner transitions. That builds the survey trail.';
-  String get tutorialStep3 =>
-      isTurkish
-          ? 'Plan cizgisi zayifsa AR moduna gecip telefonu duvarlara dogru tutun. Bu kisim ev plani icin kullanilir.'
-          : 'If the outline is weak, switch to AR and face the walls. That pass is used to build the home plan.';
-  String get tutorialStep4 =>
-      isTurkish
-          ? 'Bitirip sonucu acin. Ekran artik plan, sinyal ve zayif alanlari birlikte gosterecek.'
-          : 'Finish and open the result. The screen will then show the plan, signal, and weak zones together.';
+  String get legendTitle => _l10n.heatmapLegendTitle;
+  String get legendStrong => _l10n.heatmapLegendStrong;
+  String get legendFair => _l10n.heatmapLegendFair;
+  String get legendWeak => _l10n.heatmapLegendWeak;
+  String get cameraViewLabel => _l10n.heatmapCameraViewLabel;
+  String get infoSheetTitle => _l10n.heatmapInfoSheetTitle;
 
-  String get arViewLabel => isTurkish ? 'AR GORUNUMU' : 'AR VIEW';
-  String get switchToMapHint =>
-      isTurkish
-          ? 'Sonucu daha net okumak icin 2D haritaya don'
-          : 'Return to the clearer 2D map';
-  String get switchToArHint =>
-      isTurkish
-          ? 'Plan cizgisini guclendirmek icin AR kullan'
-          : 'Use AR to strengthen the outline';
+  String feedStatusLabel(String label, bool active) => _l10n.heatmapFeedStatus(
+    label,
+    active ? _l10n.heatmapActive : _l10n.heatmapInactive,
+  );
 
-  String get routeLabel => isTurkish ? 'SONRAKI ADIM' : 'NEXT STEP';
-  String get planConfidenceLabel =>
-      isTurkish ? 'PLAN GUVENI' : 'PLAN CONFIDENCE';
-  String get coverageConfidenceLabel =>
-      isTurkish ? 'KAPSAMA GUVENI' : 'COVERAGE CONFIDENCE';
-  String get signalConfidenceLabel =>
-      isTurkish ? 'SINYAL GUVENI' : 'SIGNAL CONFIDENCE';
-  String get motionFeedLabel => isTurkish ? 'Hareket' : 'Motion';
+  String get tutorialTitle => _l10n.heatmapTutorialTitle;
+  String get tutorialStep1 => _l10n.heatmapTutorialStep1;
+  String get tutorialStep2 => _l10n.heatmapTutorialStep2;
+  String get tutorialStep3 => _l10n.heatmapTutorialStep3;
+  String get tutorialStep4 => _l10n.heatmapTutorialStep4;
+
+  String get arViewLabel => _l10n.heatmapArViewLabel;
+  String get switchToMapHint => _l10n.heatmapSwitchToMapHint;
+  String get switchToArHint => _l10n.heatmapSwitchToArHint;
+
+  String get routeLabel => _l10n.heatmapRouteLabel;
+  String get planConfidenceLabel => _l10n.heatmapPlanConfidenceLabel;
+  String get coverageConfidenceLabel => _l10n.heatmapCoverageConfidenceLabel;
+  String get signalConfidenceLabel => _l10n.heatmapSignalConfidenceLabel;
+  String get motionFeedLabel => _l10n.heatmapMotionFeedLabel;
   String get wifiFeedLabel => 'Wi-Fi';
-  String get cameraFeedLabel => isTurkish ? 'Kamera' : 'Camera';
-  String get planFeedLabel => isTurkish ? 'Plan' : 'Plan';
+  String get cameraFeedLabel => _l10n.heatmapCameraFeedLabel;
+  String get planFeedLabel => _l10n.heatmapPlanFeedLabel;
 
   String percent(double value) => '${(value.clamp(0.0, 1.0) * 100).round()}%';
 
@@ -441,81 +310,72 @@ class HeatmapCopy {
   String guidanceTitle(SurveyGuidance guidance) {
     switch (guidance.stage) {
       case SurveyStage.idle:
-        return isTurkish ? 'Survey Hazirligi' : 'Survey Setup';
+        return _l10n.heatmapGuidanceIdleTitle;
       case SurveyStage.calibration:
-        return isTurkish ? 'Rota Baslatiliyor' : 'Starting Route';
+        return _l10n.heatmapGuidanceCalibrationTitle;
       case SurveyStage.coverageSweep:
-        return isTurkish ? 'Kapsama Dolduruluyor' : 'Filling Coverage';
+        return _l10n.heatmapGuidanceSweepTitle;
       case SurveyStage.weakZoneReview:
-        return isTurkish ? 'Zayif Alan Dogrulama' : 'Weak Zone Check';
+        return _l10n.heatmapGuidanceWeakCheckTitle;
       case SurveyStage.wrapUp:
-        return isTurkish ? 'Kayda Hazir' : 'Ready To Save';
+        return _l10n.heatmapGuidanceWrapUpTitle;
       case SurveyStage.review:
-        return isTurkish ? 'Survey Kalitesi' : 'Survey Quality';
+        return _l10n.heatmapGuidanceReviewTitle;
     }
   }
 
   String guidanceBody(SurveyGuidance guidance, HeatmapSummary summary) {
     switch (guidance.stage) {
       case SurveyStage.idle:
-        return isTurkish
-            ? 'Yeni bir tur baslatin. Uygulama hareket, kamera ve Wi-Fi izini birlikte sentezleyerek net bir plan cikarmaya calisacak.'
-            : 'Start a new survey. The app will combine motion, camera, and Wi-Fi traces into a cleaner floor plan.';
+        return _l10n.heatmapGuidanceIdleBody;
       case SurveyStage.calibration:
-        return isTurkish
-            ? 'Ilk izi olusturmak icin 5-8 adim duz ilerleyin. Oda girisleri ve kose donusleri konum iskeletini daha hizli oturtur.'
-            : 'Walk straight for 5-8 steps to establish the first trace. Doorways and corner turns help anchor the layout faster.';
+        return _l10n.heatmapGuidanceCalibrationBody;
       case SurveyStage.coverageSweep:
-        return isTurkish
-            ? 'Haritanin ${routeLabelValue(guidance)} tarafi daha seyrek. O yone gidip 3-4 yeni ornek toplayin.'
-            : 'The ${routeLabelValue(guidance)} side of the map is still sparse. Move there and collect 3-4 more samples.';
+        return _l10n.heatmapGuidanceSweepBody(routeLabelValue(guidance));
       case SurveyStage.weakZoneReview:
-        return isTurkish
-            ? 'Su an zayif sinyal bolgesindesiniz. Bu alani biraz daha tarayip sonucun gercek bir olu nokta olup olmadigini netlestirin.'
-            : 'You are currently in a weak-signal area. Sweep this zone a bit more to confirm whether it is a real dead spot.';
+        return _l10n.heatmapGuidanceWeakCheckBody;
       case SurveyStage.wrapUp:
-        return isTurkish
-            ? 'Plan, kapsama and sinyal yogunlugu yeterince doldu. Sonucu kaydedip review ekraninda plan/isi haritasini okuyabilirsiniz.'
-            : 'Outline, coverage, and signal density are now strong enough. Save the result and read the plan/heatmap in review.';
+        return _l10n.heatmapGuidanceWrapUpBody;
       case SurveyStage.review:
-        return isTurkish
-            ? 'Bu tur ${(guidance.overallProgress * 100).round()}% dolulukta. ${summary.sampleCount} ornek ile sonuc okunabilir.'
-            : 'This survey is ${(guidance.overallProgress * 100).round()}% complete. With ${summary.sampleCount} samples, the result is readable.';
+        return _l10n.heatmapGuidanceReviewBody(
+          (guidance.overallProgress * 100).round(),
+          summary.sampleCount,
+        );
     }
   }
 
   String routeLabelValue(SurveyGuidance guidance) {
     if (guidance.readyToFinish) {
-      return isTurkish ? 'Kaydi bitir' : 'Finish survey';
+      return _l10n.heatmapRouteFinish;
     }
     switch (guidance.stage) {
       case SurveyStage.idle:
-        return isTurkish ? 'Turu baslat' : 'Start survey';
+        return _l10n.heatmapRouteStart;
       case SurveyStage.calibration:
-        return isTurkish ? 'Duz ilerle' : 'Walk forward';
+        return _l10n.heatmapRouteWalkForward;
       case SurveyStage.coverageSweep:
         return directionLabel(guidance.sparseRegion);
       case SurveyStage.weakZoneReview:
-        return isTurkish ? 'Zayif alani tara' : 'Sweep weak zone';
+        return _l10n.heatmapRouteSweepWeak;
       case SurveyStage.wrapUp:
-        return isTurkish ? 'Son turu tamamla' : 'Wrap up run';
+        return _l10n.heatmapRouteWrapUp;
       case SurveyStage.review:
-        return isTurkish ? 'Sonucu incele' : 'Review result';
+        return _l10n.heatmapRouteReview;
     }
   }
 
   String directionLabel(SparseRegion? region) {
     switch (region) {
       case SparseRegion.leftWing:
-        return isTurkish ? 'sol kanada ilerle' : 'move to left wing';
+        return _l10n.heatmapRegionLeft;
       case SparseRegion.rightWing:
-        return isTurkish ? 'sag kanada ilerle' : 'move to right wing';
+        return _l10n.heatmapRegionRight;
       case SparseRegion.topWing:
-        return isTurkish ? 'ust bolgeyi doldur' : 'cover upper area';
+        return _l10n.heatmapRegionUpper;
       case SparseRegion.bottomWing:
-        return isTurkish ? 'alt bolgeyi doldur' : 'cover lower area';
+        return _l10n.heatmapRegionLower;
       case null:
-        return isTurkish ? 'dengeyi koru' : 'keep sweeping';
+        return _l10n.heatmapRegionKeep;
     }
   }
 }

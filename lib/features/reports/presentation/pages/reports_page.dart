@@ -227,7 +227,7 @@ class _ReportsViewState extends State<ReportsView> {
                               ),
                             ),
                             Text(
-                              'Masks last 3 octets (XX:XX:XX) before export',
+                              context.l10n.reportsMacMaskDesc,
                               style: GoogleFonts.rajdhani(
                                 color: Theme.of(
                                   context,
@@ -326,7 +326,7 @@ class _ReportsViewState extends State<ReportsView> {
                       ),
                       _ExportActionCard(
                         icon: Icons.table_chart_rounded,
-                        label: 'Export CSV',
+                        label: l10n.exportCsvLabel,
                         color: Theme.of(context).colorScheme.tertiary,
                         isLoading: isLoading,
                         onTap:
@@ -421,7 +421,7 @@ class _ReportsViewState extends State<ReportsView> {
           (content) => content as Uint8List,
         );
       },
-      name: 'Torcav Scan Report',
+      name: context.l10n.reportsShareSubject,
     );
   }
 
@@ -766,6 +766,7 @@ class _PdfPasswordFieldState extends State<_PdfPasswordField> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(14),
@@ -791,7 +792,7 @@ class _PdfPasswordFieldState extends State<_PdfPasswordField> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'PROTECT PDF WITH A PASSWORD',
+                        l10n.protectPdfTitle,
                         style: GoogleFonts.orbitron(
                           color: theme.colorScheme.primary,
                           fontSize: 12,
@@ -802,8 +803,8 @@ class _PdfPasswordFieldState extends State<_PdfPasswordField> {
                       const SizedBox(height: 2),
                       Text(
                         widget.value.isEmpty
-                            ? 'Optional. Locked file: .torcav-pdf — open it again from Reports.'
-                            : 'Locked file: .torcav-pdf — open it again from Reports.',
+                            ? l10n.pdfLockedHint
+                            : l10n.pdfLockedLabel,
                         style: GoogleFonts.rajdhani(
                           color: theme.colorScheme.onSurfaceVariant,
                           fontSize: 12,
@@ -827,7 +828,7 @@ class _PdfPasswordFieldState extends State<_PdfPasswordField> {
             TextField(
               obscureText: _obscure,
               decoration: InputDecoration(
-                hintText: 'Password (leave empty for plain PDF)',
+                hintText: l10n.pdfPasswordHint,
                 isDense: true,
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
@@ -843,11 +844,7 @@ class _PdfPasswordFieldState extends State<_PdfPasswordField> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Heads up: this is lightweight obfuscation, not bank-grade '
-              'encryption. It protects the file against casual leaks (cloud '
-              'thumbnails, mailbox cache) but a determined attacker who has '
-              'the file could still attempt to brute-force a weak password. '
-              'Use a long, unique passphrase.',
+              l10n.pdfPasswordWarning,
               style: GoogleFonts.rajdhani(
                 color: theme.colorScheme.onSurfaceVariant,
                 fontSize: 11,

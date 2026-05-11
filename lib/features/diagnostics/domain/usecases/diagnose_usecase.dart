@@ -71,10 +71,13 @@ class DiagnoseUseCase {
     return DiagnosisEvidence(
       category: RootCauseCategory.weakSignal,
       severity: severity,
-      metricLabel: 'RSSI: $rssi dBm',
-      thresholdLabel:
-          'Healthy ≥ ${DiagnosticThresholds.rssiHealthyDbm} dBm · '
-          'Severe ≤ ${DiagnosticThresholds.rssiSevereDbm} dBm',
+      metricKey: 'sdMetricRssi',
+      metricParams: {'rssi': rssi},
+      thresholdKey: 'sdThresholdRssi',
+      thresholdParams: {
+        'healthy': DiagnosticThresholds.rssiHealthyDbm,
+        'severe': DiagnosticThresholds.rssiSevereDbm,
+      },
       actions: const [
         DiagnosticAction(labelKey: 'speedDoctorActionMoveCloser'),
         DiagnosticAction(labelKey: 'speedDoctorActionAddMesh'),
@@ -108,12 +111,16 @@ class DiagnoseUseCase {
     return DiagnosisEvidence(
       category: RootCauseCategory.crowdedChannel,
       severity: severity,
-      metricLabel:
-          'Channel ${connectedRating.channel} · score '
-          '${score.toStringAsFixed(1)}/10',
-      thresholdLabel:
-          'Healthy ≥ ${DiagnosticThresholds.channelHealthyScore.toStringAsFixed(1)} · '
-          'Severe ≤ ${DiagnosticThresholds.channelSevereScore.toStringAsFixed(1)}',
+      metricKey: 'sdMetricChannel',
+      metricParams: {
+        'channel': connectedRating.channel,
+        'score': score.toStringAsFixed(1),
+      },
+      thresholdKey: 'sdThresholdChannel',
+      thresholdParams: {
+        'healthy': DiagnosticThresholds.channelHealthyScore.toStringAsFixed(1),
+        'severe': DiagnosticThresholds.channelSevereScore.toStringAsFixed(1),
+      },
       actions: const [
         DiagnosticAction(labelKey: 'speedDoctorActionChangeChannel'),
         DiagnosticAction(labelKey: 'speedDoctorActionMoveTo5Ghz'),
@@ -133,13 +140,17 @@ class DiagnoseUseCase {
     return DiagnosisEvidence(
       category: RootCauseCategory.bufferbloat,
       severity: severity,
-      metricLabel:
-          'Loaded latency Δ: ${induced.toStringAsFixed(0)} ms '
-          '(${speedTest.latencyMs.toStringAsFixed(0)} → '
-          '${speedTest.loadedLatencyMs.toStringAsFixed(0)})',
-      thresholdLabel:
-          'Healthy ≤ ${DiagnosticThresholds.bufferbloatHealthyMs.toStringAsFixed(0)} ms · '
-          'Severe ≥ ${DiagnosticThresholds.bufferbloatSevereMs.toStringAsFixed(0)} ms',
+      metricKey: 'sdMetricBufferbloat',
+      metricParams: {
+        'induced': induced.toStringAsFixed(0),
+        'latency': speedTest.latencyMs.toStringAsFixed(0),
+        'loaded': speedTest.loadedLatencyMs.toStringAsFixed(0),
+      },
+      thresholdKey: 'sdThresholdBufferbloat',
+      thresholdParams: {
+        'healthy': DiagnosticThresholds.bufferbloatHealthyMs.toStringAsFixed(0),
+        'severe': DiagnosticThresholds.bufferbloatSevereMs.toStringAsFixed(0),
+      },
       actions: const [
         DiagnosticAction(
           labelKey: 'speedDoctorActionEnableQos',
@@ -176,14 +187,15 @@ class DiagnoseUseCase {
     return DiagnosisEvidence(
       category: RootCauseCategory.ispSlow,
       severity: severity,
-      metricLabel:
-          phy == null
-              ? 'Download: ${download.toStringAsFixed(1)} Mbps'
-              : 'Download: ${download.toStringAsFixed(1)} Mbps · '
-                  'PHY: ${phy.toStringAsFixed(0)} Mbps',
-      thresholdLabel:
-          'Healthy ≥ ${DiagnosticThresholds.ispSlowAbsoluteMbps.toStringAsFixed(0)} Mbps '
-          'when radio is uncongested',
+      metricKey: phy == null ? 'sdMetricIspNoPhy' : 'sdMetricIsp',
+      metricParams: {
+        'download': download.toStringAsFixed(1),
+        'phy': phy?.toStringAsFixed(0),
+      },
+      thresholdKey: 'sdThresholdIsp',
+      thresholdParams: {
+        'healthy': DiagnosticThresholds.ispSlowAbsoluteMbps.toStringAsFixed(0),
+      },
       actions: const [
         DiagnosticAction(labelKey: 'speedDoctorActionCallIsp'),
         DiagnosticAction(labelKey: 'speedDoctorActionRunWiredTest'),
@@ -204,11 +216,16 @@ class DiagnoseUseCase {
     return DiagnosisEvidence(
       category: RootCauseCategory.slowDns,
       severity: severity,
-      metricLabel:
-          'Best resolver: ${dnsBenchmark.name} · $latency ms',
-      thresholdLabel:
-          'Healthy ≤ ${DiagnosticThresholds.dnsHealthyMs} ms · '
-          'Severe ≥ ${DiagnosticThresholds.dnsSevereMs} ms',
+      metricKey: 'sdMetricDns',
+      metricParams: {
+        'name': dnsBenchmark.name,
+        'latency': latency,
+      },
+      thresholdKey: 'sdThresholdDns',
+      thresholdParams: {
+        'healthy': DiagnosticThresholds.dnsHealthyMs,
+        'severe': DiagnosticThresholds.dnsSevereMs,
+      },
       actions: const [
         DiagnosticAction(labelKey: 'speedDoctorActionChangeDns'),
         DiagnosticAction(labelKey: 'speedDoctorActionEnableDoh'),
