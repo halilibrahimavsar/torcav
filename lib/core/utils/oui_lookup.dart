@@ -20,8 +20,9 @@ class OuiLookup {
   /// LAA is identified by the second hex character of the first octet being
   /// 2, 6, A, or E (i.e. bit 1 of the first byte is set).
   static bool isSuspicious(String mac) {
-    if (mac.length < 2) return false;
-    final secondChar = mac[1].toUpperCase();
+    final oui = OuiDatabaseService.normalizeMacToOui(mac);
+    if (oui == null) return false;
+    final secondChar = oui[1].toUpperCase();
     return ['2', '6', 'A', 'E'].contains(secondChar);
   }
 }
