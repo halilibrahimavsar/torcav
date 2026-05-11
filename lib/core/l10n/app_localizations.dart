@@ -4149,6 +4149,18 @@ abstract class AppLocalizations {
   /// **'iOS: LAN discovery is limited. mDNS browsing and ARP table access may be restricted by the OS.'**
   String get iosLanDiscoveryLimited;
 
+  /// Warning for Android users about LAN vendor detection limitations.
+  ///
+  /// In en, this message translates to:
+  /// **'Android limits LAN MAC access. Vendor names may only appear for the router/gateway; other devices are identified by IP, hostname and services when available.'**
+  String get androidLanVendorLimited;
+
+  /// Node inspector hint when Android cannot expose a LAN device MAC/vendor.
+  ///
+  /// In en, this message translates to:
+  /// **'Vendor unavailable: Android does not expose this device\'s LAN MAC address to apps.'**
+  String get vendorUnavailableAndroid;
+
   /// Long description for Speed Doctor.
   ///
   /// In en, this message translates to:

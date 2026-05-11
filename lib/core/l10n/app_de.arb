@@ -2709,6 +2709,14 @@
     "@iosLanDiscoveryLimited": {
         "description": "Warning for iOS users about LAN scan limitations."
     },
+    "androidLanVendorLimited": "Android limits LAN MAC access. Vendor names may only appear for the router/gateway; other devices are identified by IP, hostname and services when available.",
+    "@androidLanVendorLimited": {
+        "description": "Warning for Android users about LAN vendor detection limitations."
+    },
+    "vendorUnavailableAndroid": "Vendor unavailable: Android does not expose this device's LAN MAC address to apps.",
+    "@vendorUnavailableAndroid": {
+        "description": "Node inspector hint when Android cannot expose a LAN device MAC/vendor."
+    },
     "speedDoctorLongDesc": "Runs signal, channel, speed and DNS probes in ~30 seconds and tells you which link in the chain is the bottleneck.",
     "@speedDoctorLongDesc": {
         "description": "Long description for Speed Doctor."

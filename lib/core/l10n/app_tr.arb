@@ -2851,6 +2851,14 @@
     "@iosLanDiscoveryLimited": {
         "description": "Warning for iOS users about LAN scan limitations."
     },
+    "androidLanVendorLimited": "Android LAN MAC erişimini sınırlar. Üretici adı genelde yalnızca router/gateway için görünebilir; diğer cihazlar mümkün olduğunda IP, hostname ve servis bilgileriyle tanımlanır.",
+    "@androidLanVendorLimited": {
+        "description": "Warning for Android users about LAN vendor detection limitations."
+    },
+    "vendorUnavailableAndroid": "Üretici bilgisi yok: Android bu cihazın LAN MAC adresini uygulamalara açmıyor.",
+    "@vendorUnavailableAndroid": {
+        "description": "Node inspector hint when Android cannot expose a LAN device MAC/vendor."
+    },
     "speedDoctorLongDesc": "~30 saniye içinde sinyal, kanal, hız ve DNS sorguları yaparak zincirdeki hangi halkanın darboğaz olduğunu söyler.",
     "@speedDoctorLongDesc": {
         "description": "Long description for Speed Doctor."

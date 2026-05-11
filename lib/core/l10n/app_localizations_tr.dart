@@ -2173,6 +2173,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get iosLanDiscoveryLimited => 'iOS: LAN discovery is limited. mDNS browsing and ARP table access may be restricted by the OS.';
 
   @override
+  String get androidLanVendorLimited => 'Android LAN MAC erişimini sınırlar. Üretici adı genelde yalnızca router/gateway için görünebilir; diğer cihazlar mümkün olduğunda IP, hostname ve servis bilgileriyle tanımlanır.';
+
+  @override
+  String get vendorUnavailableAndroid => 'Üretici bilgisi yok: Android bu cihazın LAN MAC adresini uygulamalara açmıyor.';
+
+  @override
   String get speedDoctorLongDesc => '~30 saniye içinde sinyal, kanal, hız ve DNS sorguları yaparak zincirdeki hangi halkanın darboğaz olduğunu söyler.';
 
   @override

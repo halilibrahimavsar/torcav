@@ -2171,6 +2171,12 @@ class AppLocalizationsKu extends AppLocalizations {
   String get iosLanDiscoveryLimited => 'iOS: LAN discovery is limited. mDNS browsing and ARP table access may be restricted by the OS.';
 
   @override
+  String get androidLanVendorLimited => 'Android limits LAN MAC access. Vendor names may only appear for the router/gateway; other devices are identified by IP, hostname and services when available.';
+
+  @override
+  String get vendorUnavailableAndroid => 'Vendor unavailable: Android does not expose this device\'s LAN MAC address to apps.';
+
+  @override
   String get speedDoctorLongDesc => 'Runs signal, channel, speed and DNS probes in ~30 seconds and tells you which link in the chain is the bottleneck.';
 
   @override

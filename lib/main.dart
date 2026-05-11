@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,11 +12,9 @@ import 'package:torcav/core/l10n/locale_cubit.dart';
 import 'package:torcav/core/l10n/delegates/fallback_localization_delegate.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/core/theme/theme_cubit.dart';
-import 'package:torcav/features/app_shell/presentation/pages/app_shell_page.dart';
-import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
-import 'package:torcav/features/security/presentation/widgets/cyber_grid_background.dart';
-import 'package:torcav/core/services/data_retention_service.dart';
 import 'package:torcav/core/storage/hive_storage_service.dart';
+import 'package:torcav/features/security/presentation/widgets/cyber_grid_background.dart';
+import 'package:torcav/features/splash/presentation/pages/splash_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,13 +31,9 @@ void main() async {
 
   ErrorWidget.builder = (details) => _NeonErrorWidget(details: details);
 
-  // Initialize Storage and Dependency Injection
+  // Core initialization that must happen before runApp
   await HiveStorageService.init();
   await configureDependencies();
-  await getIt<ScanSessionStore>().restore();
-
-  // Enforce data retention policy at startup
-  await getIt<DataRetentionService>().enforceRetention();
 
   runApp(const TorcavApp());
 }
@@ -115,20 +110,58 @@ class TorcavApp extends StatelessWidget {
                   // Global Layout Configuration
                   builder: (context, child) {
                     final theme = Theme.of(context);
-                    return CyberGridBackground(
-                      color:
-                          theme
-                              .colorScheme
-                              .primary, // Dynamic color from current theme
-                      child: NotificationListener<ScrollNotification>(
-                        onNotification: (notification) {
-                          if (notification is ScrollUpdateNotification) {
-                            final velocity = notification.scrollDelta ?? 0;
-                            CyberGridBackground.updateScrollVelocity(velocity);
-                          }
-                          return false;
-                        },
-                        child: SafeArea(bottom: false, child: child!),
+                    final topPadding = MediaQuery.of(context).viewPadding.top;
+                    
+                    return AnnotatedRegion<SystemUiOverlayStyle>(
+                      value: const SystemUiOverlayStyle(
+                        statusBarColor: Colors.transparent,
+                        statusBarIconBrightness: Brightness.light,
+                        systemNavigationBarColor: Color(0xFF040506), // AppColors.deepBlack
+                        systemNavigationBarIconBrightness: Brightness.light,
+                      ),
+                      child: CyberGridBackground(
+                        color: theme.colorScheme.primary, // Dynamic color from current theme
+                        child: Stack(
+                          children: [
+                            // 1. Main App Content (Respects SafeArea)
+                            NotificationListener<ScrollNotification>(
+                              onNotification: (notification) {
+                                if (notification is ScrollUpdateNotification) {
+                                  final velocity = notification.scrollDelta ?? 0;
+                                  CyberGridBackground.updateScrollVelocity(velocity);
+                                }
+                                return false;
+                              },
+                              child: SafeArea(bottom: false, child: child!),
+                            ),
+                            
+                            // 2. Premium Status Bar Overlay (Frosted Glass + Fade)
+                            if (topPadding > 0)
+                              Positioned(
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                height: topPadding,
+                                child: ClipRect(
+                                  child: BackdropFilter(
+                                    filter: ImageFilter.blur(sigmaX: 12.0, sigmaY: 12.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            const Color(0xFF040506).withValues(alpha: 0.85),
+                                            const Color(0xFF040506).withValues(alpha: 0.2),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -146,7 +179,7 @@ class TorcavApp extends StatelessWidget {
                   ],
 
                   // Main Entry Point
-                  home: const AppShellPage(),
+                  home: const SplashPage(),
                 );
               },
             ),

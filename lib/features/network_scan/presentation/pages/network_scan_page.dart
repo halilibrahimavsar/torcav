@@ -157,29 +157,8 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
             children: [
               if (Platform.isIOS)
-                Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.info_outline_rounded, color: Colors.orange, size: 15),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          context.l10n.iosLanDiscoveryLimited,
-                          style: GoogleFonts.rajdhani(
-                            color: Colors.orange,
-                            fontSize: 12,
-                            height: 1.3,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                _LanPlatformNotice(
+                  message: context.l10n.iosLanDiscoveryLimited,
                 ),
               // ── Section 1: SCAN CONTROL ──
               StaggeredEntry(
@@ -265,6 +244,18 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                   hosts: loaded.hosts,
                   target: _targetController.text,
                 ),
+                if (Platform.isAndroid &&
+                    loaded.hosts.any(
+                      (host) =>
+                          host.vendor.isEmpty ||
+                          host.vendor == 'Unknown' ||
+                          host.vendor == 'Android Device (MAC Restricted)',
+                    )) ...[
+                  const SizedBox(height: 12),
+                  _LanPlatformNotice(
+                    message: context.l10n.androidLanVendorLimited,
+                  ),
+                ],
                 const SizedBox(height: 32),
 
                 // ── Section 3: DISCOVERED NODES ──
@@ -325,6 +316,43 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class _LanPlatformNotice extends StatelessWidget {
+  const _LanPlatformNotice({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    const color = Colors.orange;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.22)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.info_outline_rounded, color: color, size: 15),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              message,
+              style: GoogleFonts.rajdhani(
+                color: color,
+                fontSize: 12,
+                height: 1.3,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -5,7 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart'
+    hide Database, openDatabase;
+import 'package:sqflite_sqlcipher/sqflite.dart' hide databaseFactory;
 
 @lazySingleton
 class OuiDatabaseService {
@@ -38,7 +40,14 @@ class OuiDatabaseService {
 
     await _syncAssetDatabase(dbPath);
 
-    return await openDatabase(dbPath, readOnly: true);
+    if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+      return databaseFactoryFfi.openDatabase(
+        dbPath,
+        options: OpenDatabaseOptions(readOnly: true),
+      );
+    }
+
+    return openDatabase(dbPath, readOnly: true);
   }
 
   Future<void> _syncAssetDatabase(String dbPath) async {

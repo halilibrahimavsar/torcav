@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -861,6 +863,8 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
               ],
               if (node.vendor != null && node.vendor!.isNotEmpty)
                 _infoRow(l10n.mnfrLabel, node.vendor!, Icons.factory),
+              if (Platform.isAndroid && _isVendorUnavailable(node))
+                _vendorLimitHint(l10n.vendorUnavailableAndroid),
 
               const SizedBox(height: 12),
               const NeonDivider(),
@@ -884,6 +888,45 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
           ),
         ),
       ],
+    );
+  }
+
+  bool _isVendorUnavailable(TopologyNode node) {
+    final vendor = node.vendor?.trim().toLowerCase();
+    return vendor == null ||
+        vendor.isEmpty ||
+        vendor == 'unknown' ||
+        vendor == 'android device (mac restricted)';
+  }
+
+  Widget _vendorLimitHint(String message) {
+    const color = Colors.orange;
+    return Container(
+      margin: const EdgeInsets.only(top: 6, bottom: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.22)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.info_outline_rounded, color: color, size: 14),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              message,
+              style: GoogleFonts.rajdhani(
+                color: color,
+                fontSize: 11,
+                height: 1.25,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

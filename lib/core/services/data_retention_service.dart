@@ -10,7 +10,8 @@ class DataRetentionService {
   DataRetentionService(this._database, this._settingsStore);
 
   /// Deletes local records older than the configured retention period.
-  Future<void> enforceRetention() async {
+  /// Returns the total number of rows deleted across all tables.
+  Future<int> enforceRetention() async {
     final settings = _settingsStore.value;
     
     final now = DateTime.now();
@@ -44,8 +45,8 @@ class DataRetentionService {
       tasks.add(db.delete('security_score_history', where: 'recorded_at < ?', whereArgs: [cutoffMs]));
     }
 
-    if (tasks.isNotEmpty) {
-      await Future.wait(tasks);
-    }
+    if (tasks.isEmpty) return 0;
+    final results = await Future.wait(tasks);
+    return results.fold<int>(0, (sum, count) => sum + count);
   }
 }

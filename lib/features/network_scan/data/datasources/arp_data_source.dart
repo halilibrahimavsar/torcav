@@ -3,6 +3,7 @@ import 'dart:isolate';
 
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../../../../core/utils/oui_lookup.dart';
@@ -30,6 +31,7 @@ class ArpDataSource {
     NetworkScanProfile profile = NetworkScanProfile.fast,
   }) async* {
     final receivePort = ReceivePort();
+    final connectedGateway = await _connectedGatewayIdentity();
 
     // Spawn isolate for heavy scanning work
     final isolate = await Isolate.spawn(
@@ -45,15 +47,21 @@ class ArpDataSource {
       await for (final message in receivePort) {
         if (message is HostScanResult) {
           // Resolve vendor and device type in the main thread to avoid Isolate DI issues
-          final vendor = await _ouiLookup.lookup(message.mac);
+          var vendor = await _ouiLookup.lookup(message.mac);
+          final isConnectedGateway = connectedGateway?.ip == message.ip;
+          if (isConnectedGateway &&
+              (vendor == 'Unknown' ||
+                  vendor == 'Android Device (MAC Restricted)')) {
+            vendor = connectedGateway!.vendor;
+          }
           final deviceType = _guessDeviceType(
             services: message.services,
             vendor: vendor,
           );
           yield message.copyWith(
             vendor: vendor,
-            deviceType: deviceType,
-            isGateway: deviceType == 'Router/Gateway',
+            deviceType: isConnectedGateway ? 'Router/Gateway' : deviceType,
+            isGateway: isConnectedGateway || deviceType == 'Router/Gateway',
           );
         } else if (message == 'DONE') {
           break;
@@ -66,6 +74,28 @@ class ArpDataSource {
     } finally {
       receivePort.close();
       isolate.kill(priority: Isolate.immediate);
+    }
+  }
+
+  Future<_GatewayIdentity?> _connectedGatewayIdentity() async {
+    try {
+      final info = NetworkInfo();
+      final gatewayIp = await info.getWifiGatewayIP();
+      final bssid = await info.getWifiBSSID();
+      if (gatewayIp == null ||
+          gatewayIp.isEmpty ||
+          bssid == null ||
+          bssid.isEmpty) {
+        return null;
+      }
+
+      final vendor = await _ouiLookup.lookup(bssid);
+      if (vendor == 'Unknown' || vendor == 'Android Device (MAC Restricted)') {
+        return null;
+      }
+      return _GatewayIdentity(ip: gatewayIp, vendor: vendor);
+    } catch (_) {
+      return null;
     }
   }
 
@@ -102,7 +132,12 @@ class ArpDataSource {
           for (var j = 0; j < parallelBatches; j++) {
             final hostPart = i + j;
             if (hostPart > 254) break;
-            futures.add(_pingResultStatic('$baseIp.$hostPart', pingTimeoutSec: pingTimeoutSec));
+            futures.add(
+              _pingResultStatic(
+                '$baseIp.$hostPart',
+                pingTimeoutSec: pingTimeoutSec,
+              ),
+            );
           }
           final results = await Future.wait(futures);
           for (final r in results) {
@@ -269,7 +304,9 @@ class ArpDataSource {
     final futures = <Future<ServiceFingerprint?>>[];
 
     for (final entry in commonPorts.entries) {
-      futures.add(_probePortStatic(ip, entry.key, entry.value, timeoutMs: timeoutMs));
+      futures.add(
+        _probePortStatic(ip, entry.key, entry.value, timeoutMs: timeoutMs),
+      );
     }
 
     final probed = await Future.wait(futures);
@@ -310,10 +347,19 @@ class ArpDataSource {
   }) async {
     try {
       final watch = Stopwatch()..start();
-      final result = await Process.run('ping', ['-c', '1', '-W', pingTimeoutSec, ip]);
+      final result = await Process.run('ping', [
+        '-c',
+        '1',
+        '-W',
+        pingTimeoutSec,
+        ip,
+      ]);
       watch.stop();
       if (result.exitCode == 0) {
-        return _PingResult(ip: ip, latencyMs: watch.elapsedMilliseconds.toDouble());
+        return _PingResult(
+          ip: ip,
+          latencyMs: watch.elapsedMilliseconds.toDouble(),
+        );
       }
     } catch (_) {}
     // TCP fallback for hosts that block ICMP (Windows firewall, iOS).
@@ -321,10 +367,17 @@ class ArpDataSource {
     for (final port in fallbackPorts) {
       try {
         final watch = Stopwatch()..start();
-        final socket = await Socket.connect(ip, port, timeout: const Duration(milliseconds: 400));
+        final socket = await Socket.connect(
+          ip,
+          port,
+          timeout: const Duration(milliseconds: 400),
+        );
         watch.stop();
         socket.destroy();
-        return _PingResult(ip: ip, latencyMs: watch.elapsedMilliseconds.toDouble());
+        return _PingResult(
+          ip: ip,
+          latencyMs: watch.elapsedMilliseconds.toDouble(),
+        );
       } catch (_) {}
     }
     return null;
@@ -364,4 +417,11 @@ class _PingResult {
   final double latencyMs;
 
   _PingResult({required this.ip, required this.latencyMs});
+}
+
+class _GatewayIdentity {
+  final String ip;
+  final String vendor;
+
+  const _GatewayIdentity({required this.ip, required this.vendor});
 }
