@@ -772,7 +772,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _replayOnboarding(BuildContext context) async {
     final navigator = Navigator.of(context);
-    await getIt<HiveStorageService>().save('onboarding_complete', false);
+    await getIt<HiveStorageService>().save(
+      OnboardingPage.completionKey,
+      false,
+    );
     navigator.pushReplacement(
       MaterialPageRoute(builder: (_) => const OnboardingPage()),
     );

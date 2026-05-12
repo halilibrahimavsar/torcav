@@ -135,7 +135,10 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     // subsequent runs go straight to the shell. The flag is set by
     // [OnboardingPage._finish].
     final hasOnboarded =
-        getIt<HiveStorageService>().get<bool>('onboarding_complete') ?? false;
+        getIt<HiveStorageService>().get<bool>(
+          OnboardingPage.completionKey,
+        ) ??
+        false;
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         pageBuilder: (_, __, ___) =>

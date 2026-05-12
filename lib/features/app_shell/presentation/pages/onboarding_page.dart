@@ -15,6 +15,10 @@ import 'app_shell_page.dart';
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
 
+  /// Hive key recording whether the user has finished onboarding.
+  /// Read by [SplashPage] to decide initial routing.
+  static const String completionKey = 'onboarding_complete';
+
   @override
   State<OnboardingPage> createState() => _OnboardingPageState();
 }
@@ -40,7 +44,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Future<void> _finish() async {
-    await getIt<HiveStorageService>().save('onboarding_complete', true);
+    await getIt<HiveStorageService>().save(OnboardingPage.completionKey, true);
     // Persist the user's declared default trust posture so the network
     // context resolver can fall back to it for unknown networks.
     try {

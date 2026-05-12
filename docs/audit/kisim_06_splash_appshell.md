@@ -208,3 +208,41 @@ if (elapsed < minVisualMs) {
 **Düzeltme: 4/8 (kritik B6.1 dahil tümü uygulandı; 4'ü ileri kısımlara veya sürüm sonrasına ertelendi).**
 
 flutter analyze: temiz
+
+---
+
+## v3 — Halüsinasyon Kontrolü Sonrası Bulgular
+
+Tüm 8 bulgu git diff + kaynak kod ile yeniden doğrulandı. **2 yeni bulgu** ortaya çıktı:
+
+### B6.9 — Pubspec versiyon güncelliği (Y) — sürüm öncesi düzeltme
+**Kanıt:**
+- `pubspec.yaml`: `version: 1.0.0+1` (Flutter default, hiç güncellenmemiş)
+- Önceki hardcoded splash: `_buildVersion = 'v1.0.4'` (manuel takip ediliyordu)
+- Yeni `PackageInfo.fromPlatform()`: `info.version` → `'1.0.0'` döndürür
+- Splash artık `v1.0.0` gösteriyor — eski `v1.0.4`'ten geriye dönüş
+
+**Karar (kullanıcı):** Pubspec doğru kaynak; `1.0.0+1` ile devam. Hardcoded `'v1.0.4'` zaten senkron edilmemişti, bağlayıcı değildi.
+**Aksiyon:** Yok (Kısım 14'te Play Store sürüm versiyonu netleştirilecek).
+
+### B6.10 — `'onboarding_complete'` magic string 3 yerde duplicate (D) — ✅ DÜZELTİLDİ
+**Kanıt (commit 1a6443b sonrası):**
+```
+lib/features/app_shell/.../onboarding_page.dart:43  save('onboarding_complete', true)
+lib/features/settings/.../settings_page.dart:775   save('onboarding_complete', false)
+lib/features/splash/.../splash_page.dart:138       get('onboarding_complete')
+```
+3 yerde aynı string literal; typo riski.
+**Aksiyon (uygulandı):** `OnboardingPage.completionKey = 'onboarding_complete'` static const eklendi. 3 yerdeki literal `OnboardingPage.completionKey` referansına çevrildi. Refactor sonrası:
+```
+$ grep -rn "'onboarding_complete'" lib/
+lib/features/app_shell/.../onboarding_page.dart:20  static const String completionKey = ...
+```
+**Tek tanım yeri** — 3 referans `OnboardingPage.completionKey` üzerinden.
+
+---
+
+## Güncel Toplam
+
+**Kısım 6 doğrulanmış bulgu sayısı: 10** — **1 K**, 4 Y, 2 O, 2 D, 1 ✅
+**Düzeltme: 5/10** (B6.1, B6.3, B6.4, B6.6, B6.10) — kritik + onboarding entegrasyonu + bonus refactor.
