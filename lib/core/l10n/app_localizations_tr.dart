@@ -1742,6 +1742,18 @@ class AppLocalizationsTr extends AppLocalizations {
   String get onboardingLocationBody => 'Android, Wi-Fi ağlarını taramak için Konum izni gerektirir. Sinyal ısı haritalarını göstermek için aktivite sensörlerini de kullanıyoruz. Tüm veriler cihazınızda kalır ve asla yüklenmez. Konumunuz yalnızca yakındaki Wi-Fi sinyallerini okumak için kullanılır.';
 
   @override
+  String get onboardingNotificationsTitle => 'GÜVENLİK UYARILARI';
+
+  @override
+  String get onboardingNotificationsBody => 'Torcav ağınızda bir güvenlik olayı tespit ettiği an haberdar olun — sahte erişim noktaları, açık portlar, DNS yönlendirme. Tüm bildirimler cihazınızda üretilir; hiçbir veri sunucuya gönderilmez.';
+
+  @override
+  String get onboardingNotificationsEnable => 'Bildirimleri etkinleştir';
+
+  @override
+  String get onboardingNotificationsSkip => 'Şimdilik geç';
+
+  @override
   String get onboardingTourTitle => 'ÜÇ SEKME';
 
   @override

@@ -1740,6 +1740,18 @@ class AppLocalizationsKu extends AppLocalizations {
   String get onboardingLocationBody => 'Android requires Location permission to scan for Wi-Fi networks. To show signal heatmaps, we also use activity sensors. All data stays on your device and is never uploaded. Your location is only used to read nearby Wi-Fi signals.';
 
   @override
+  String get onboardingNotificationsTitle => 'HIŞYARÎYÊN EWLEHIYÊ';
+
+  @override
+  String get onboardingNotificationsBody => 'Gava ku Torcav bûyerek ewlehiyê di tora we de tespît bike agahdar bibin — xalên gihîştinê yên cêwiyê, portên vekirî, revandina DNSê. Hemû hişyarî li ser amûrê têne çêkirin; tu daneyek nayê şandin ser servereke.';
+
+  @override
+  String get onboardingNotificationsEnable => 'Hişyariyan çalak bike';
+
+  @override
+  String get onboardingNotificationsSkip => 'Niha derbas bike';
+
+  @override
   String get onboardingTourTitle => 'THREE TABS';
 
   @override

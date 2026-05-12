@@ -2425,6 +2425,22 @@
     "@onboardingLocationBody": {
         "description": "Location permission explanation."
     },
+    "onboardingNotificationsTitle": "HIŞYARÎYÊN EWLEHIYÊ",
+    "@onboardingNotificationsTitle": {
+        "description": "Onboarding notifications page key: onboardingNotificationsTitle"
+    },
+    "onboardingNotificationsBody": "Gava ku Torcav bûyerek ewlehiyê di tora we de tespît bike agahdar bibin — xalên gihîştinê yên cêwiyê, portên vekirî, revandina DNSê. Hemû hişyarî li ser amûrê têne çêkirin; tu daneyek nayê şandin ser servereke.",
+    "@onboardingNotificationsBody": {
+        "description": "Onboarding notifications page key: onboardingNotificationsBody"
+    },
+    "onboardingNotificationsEnable": "Hişyariyan çalak bike",
+    "@onboardingNotificationsEnable": {
+        "description": "Onboarding notifications page key: onboardingNotificationsEnable"
+    },
+    "onboardingNotificationsSkip": "Niha derbas bike",
+    "@onboardingNotificationsSkip": {
+        "description": "Onboarding notifications page key: onboardingNotificationsSkip"
+    },
     "onboardingTourTitle": "THREE TABS",
     "@onboardingTourTitle": {
         "description": "Tour section title."

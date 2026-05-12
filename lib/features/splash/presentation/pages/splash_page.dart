@@ -2,11 +2,14 @@ import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:torcav/core/di/injection.dart';
 import 'package:torcav/core/services/data_retention_service.dart';
+import 'package:torcav/core/storage/hive_storage_service.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/features/app_shell/presentation/pages/app_shell_page.dart';
+import 'package:torcav/features/app_shell/presentation/pages/onboarding_page.dart';
 import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
 import '../widgets/starfield_background.dart';
 
@@ -36,7 +39,7 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   // ── App metadata ──────────────────────────────────────────────────────────
-  static const String _buildVersion = 'v1.0.4';
+  String _buildVersion = '...';
 
   // ── Animation ─────────────────────────────────────────────────────────────
   late final AnimationController _pulseController;
@@ -85,7 +88,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     // Signal vault is online (Hive + DI are done before runApp, so we're safe here)
     if (mounted) setState(() => _vaultOnline = true);
 
-    // ── Run both tasks in parallel ────────────────────────────────────────
+    // ── Run boot tasks in parallel ────────────────────────────────────────
     final store = getIt<ScanSessionStore>();
     final retentionService = getIt<DataRetentionService>();
 
@@ -97,6 +100,10 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       retentionService.enforceRetention().then((pruned) {
         if (mounted) setState(() => _retentionDone = true);
         return pruned;
+      }),
+      PackageInfo.fromPlatform().then((info) {
+        if (mounted) setState(() => _buildVersion = 'v${info.version}');
+        return 0;
       }),
     ]);
 
@@ -123,12 +130,18 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     }
 
     if (!mounted) return;
+
+    // Route the user to onboarding the first time they launch the app; on
+    // subsequent runs go straight to the shell. The flag is set by
+    // [OnboardingPage._finish].
+    final hasOnboarded =
+        getIt<HiveStorageService>().get<bool>('onboarding_complete') ?? false;
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => const AppShellPage(),
-        transitionsBuilder:
-            (_, animation, __, child) =>
-                FadeTransition(opacity: animation, child: child),
+        pageBuilder: (_, __, ___) =>
+            hasOnboarded ? const AppShellPage() : const OnboardingPage(),
+        transitionsBuilder: (_, animation, __, child) =>
+            FadeTransition(opacity: animation, child: child),
         transitionDuration: const Duration(milliseconds: 600),
       ),
     );

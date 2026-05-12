@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:torcav/core/services/notification_service.dart';
 import 'package:torcav/core/storage/hive_storage_service.dart';
 import 'package:torcav/core/di/injection.dart';
 import 'package:torcav/core/extensions/context_extensions.dart';
@@ -22,7 +23,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final _controller = PageController();
   int _page = 0;
 
-  static const _totalPages = 5;
+  static const _totalPages = 6;
 
   bool _allAccepted = false;
   NetworkContextType _chosenContext = NetworkContextType.unknown;
@@ -76,6 +77,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 children: [
                   const _WelcomePage(),
                   const _PermissionsPage(),
+                  const _NotificationsPage(),
                   const _TourPage(),
                   _NetworkContextPage(
                     selected: _chosenContext,
@@ -222,6 +224,103 @@ class _PermissionsPage extends StatelessWidget {
       title: context.l10n.onboardingLocationTitle,
       body: context.l10n.onboardingLocationBody,
       color: Theme.of(context).colorScheme.tertiary,
+    );
+  }
+}
+
+class _NotificationsPage extends StatefulWidget {
+  const _NotificationsPage();
+
+  @override
+  State<_NotificationsPage> createState() => _NotificationsPageState();
+}
+
+class _NotificationsPageState extends State<_NotificationsPage> {
+  bool _busy = false;
+
+  Future<void> _enable() async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      await getIt<NotificationService>().requestAndroidNotificationPermission();
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final secondary = Theme.of(context).colorScheme.secondary;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final onSurfaceVariant = Theme.of(context).colorScheme.onSurfaceVariant;
+
+    return Padding(
+      padding: const EdgeInsets.all(32),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          NeonGlowBox(
+            glowColor: secondary,
+            child: Icon(
+              Icons.notifications_active_rounded,
+              size: 72,
+              color: secondary,
+            ),
+          ),
+          const SizedBox(height: 40),
+          Text(
+            context.l10n.onboardingNotificationsTitle,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.orbitron(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: onSurface,
+              letterSpacing: 2,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            context.l10n.onboardingNotificationsBody,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.rajdhani(
+              fontSize: 15,
+              color: onSurfaceVariant,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 32),
+          FilledButton.icon(
+            onPressed: _busy ? null : _enable,
+            icon: const Icon(Icons.notifications_rounded, size: 18),
+            label: Text(
+              context.l10n.onboardingNotificationsEnable,
+              style: GoogleFonts.orbitron(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1,
+              ),
+            ),
+            style: FilledButton.styleFrom(
+              backgroundColor: secondary,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 14,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            context.l10n.onboardingNotificationsSkip,
+            style: GoogleFonts.rajdhani(
+              fontSize: 12,
+              color: onSurfaceVariant.withValues(alpha: 0.7),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

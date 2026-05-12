@@ -2425,6 +2425,22 @@
     "@onboardingLocationBody": {
         "description": "Location permission explanation."
     },
+    "onboardingNotificationsTitle": "GÜVENLİK UYARILARI",
+    "@onboardingNotificationsTitle": {
+        "description": "Onboarding notifications page key: onboardingNotificationsTitle"
+    },
+    "onboardingNotificationsBody": "Torcav ağınızda bir güvenlik olayı tespit ettiği an haberdar olun — sahte erişim noktaları, açık portlar, DNS yönlendirme. Tüm bildirimler cihazınızda üretilir; hiçbir veri sunucuya gönderilmez.",
+    "@onboardingNotificationsBody": {
+        "description": "Onboarding notifications page key: onboardingNotificationsBody"
+    },
+    "onboardingNotificationsEnable": "Bildirimleri etkinleştir",
+    "@onboardingNotificationsEnable": {
+        "description": "Onboarding notifications page key: onboardingNotificationsEnable"
+    },
+    "onboardingNotificationsSkip": "Şimdilik geç",
+    "@onboardingNotificationsSkip": {
+        "description": "Onboarding notifications page key: onboardingNotificationsSkip"
+    },
     "onboardingTourTitle": "ÜÇ SEKME",
     "@onboardingTourTitle": {
         "description": "Tour section title."

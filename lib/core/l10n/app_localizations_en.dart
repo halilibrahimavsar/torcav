@@ -1749,6 +1749,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingLocationBody => 'Android requires Location permission to scan for Wi-Fi networks. To show signal heatmaps, we also use activity sensors. All data stays on your device and is never uploaded. Your location is only used to read nearby Wi-Fi signals.';
 
   @override
+  String get onboardingNotificationsTitle => 'SECURITY ALERTS';
+
+  @override
+  String get onboardingNotificationsBody => 'Get notified the moment Torcav detects a security event on your network — evil-twin access points, open ports, DNS hijacking. All notifications are generated on-device; nothing is sent to a server.';
+
+  @override
+  String get onboardingNotificationsEnable => 'Enable notifications';
+
+  @override
+  String get onboardingNotificationsSkip => 'Skip for now';
+
+  @override
   String get onboardingTourTitle => 'THREE TABS';
 
   @override
