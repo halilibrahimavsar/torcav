@@ -7,7 +7,6 @@ import '../entities/network_fingerprint.dart';
 import '../entities/security_assessment.dart';
 import '../entities/security_drift_finding.dart';
 import '../entities/security_finding.dart';
-import '../entities/security_report.dart';
 import '../entities/trusted_network_profile.dart';
 import '../entities/vulnerability.dart';
 import '../entities/vulnerable_router.dart';
@@ -416,26 +415,6 @@ class SecurityAnalyzer {
       status: status,
       evidenceFindings: findings,
       riskFactors: riskFactors,
-    );
-  }
-
-  SecurityReport analyze(
-    WifiNetwork network, {
-    List<WifiNetwork> localBaseline = const [],
-    TrustedNetworkProfile? trustedProfile,
-    NetworkContextType context = NetworkContextType.unknown,
-  }) {
-    final assessment = assess(
-      network,
-      localBaseline: localBaseline,
-      trustedProfile: trustedProfile,
-      context: context,
-    );
-    return SecurityReport(
-      score: assessment.score,
-      vulnerabilities:
-          assessment.evidenceFindings.map((f) => f.toVulnerability()).toList(),
-      overallStatus: assessment.statusLabel,
     );
   }
 

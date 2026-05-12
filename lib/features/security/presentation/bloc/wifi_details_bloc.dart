@@ -2,8 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import '../../../security/domain/entities/security_assessment.dart';
-import '../../../security/domain/entities/security_report.dart';
-import '../../../security/domain/usecases/security_analyzer.dart';
 import '../../../security/domain/repositories/security_repository.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 
@@ -45,27 +43,20 @@ class WifiDetailsInitial extends WifiDetailsState {}
 class WifiDetailsLoading extends WifiDetailsState {}
 
 class WifiDetailsLoaded extends WifiDetailsState {
-  final SecurityReport report;
   final SecurityAssessment assessment;
   final bool isTrusted;
 
-  const WifiDetailsLoaded({
-    required this.report,
-    required this.assessment,
-    this.isTrusted = false,
-  });
+  const WifiDetailsLoaded({required this.assessment, this.isTrusted = false});
 
   @override
-  List<Object?> get props => [report, assessment, isTrusted];
+  List<Object?> get props => [assessment, isTrusted];
 }
 
 @injectable
 class WifiDetailsBloc extends Bloc<WifiDetailsEvent, WifiDetailsState> {
-  final SecurityAnalyzer _securityAnalyzer;
   final SecurityRepository _securityRepository;
 
-  WifiDetailsBloc(this._securityAnalyzer, this._securityRepository)
-    : super(WifiDetailsInitial()) {
+  WifiDetailsBloc(this._securityRepository) : super(WifiDetailsInitial()) {
     on<AnalyzeNetworkSecurity>(_onAnalyzeNetworkSecurity);
     on<WifiDetailsTrustRequested>(_onTrustRequested);
     on<WifiDetailsUntrustRequested>(_onUntrustRequested);
@@ -95,16 +86,9 @@ class WifiDetailsBloc extends Bloc<WifiDetailsEvent, WifiDetailsState> {
 
     assessmentResult.fold(
       (failure) => emit(WifiDetailsInitial()), // Or error
-      (assessment) {
-        final report = _securityAnalyzer.analyze(event.network);
-        emit(
-          WifiDetailsLoaded(
-            report: report,
-            assessment: assessment,
-            isTrusted: isTrusted,
-          ),
-        );
-      },
+      (assessment) => emit(
+        WifiDetailsLoaded(assessment: assessment, isTrusted: isTrusted),
+      ),
     );
   }
 

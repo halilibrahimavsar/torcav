@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import '../../../../core/logging/app_logger.dart';
 import '../../../../core/theme/app_theme.dart';
 
 class NeomorphicBackground extends StatefulWidget {
@@ -45,8 +46,8 @@ class _NeomorphicBackgroundState extends State<NeomorphicBackground>
           _shaderLoaded = true;
         });
       }
-    } catch (e) {
-      debugPrint('Error loading shader: $e');
+    } catch (e, stack) {
+      AppLogger.e('Error loading shader', error: e, stackTrace: stack);
     }
   }
 

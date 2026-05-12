@@ -696,10 +696,7 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.factory<_i361.WifiDetailsBloc>(
-      () => _i361.WifiDetailsBloc(
-        gh<_i471.SecurityAnalyzer>(),
-        gh<_i578.SecurityRepository>(),
-      ),
+      () => _i361.WifiDetailsBloc(gh<_i578.SecurityRepository>()),
     );
     gh.factory<_i613.MonitoringBloc>(
       () => _i613.MonitoringBloc(

@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:torcav/features/security/domain/entities/network_context_type.dart';
+import 'package:torcav/features/security/domain/entities/security_assessment.dart';
 import 'package:torcav/features/security/domain/entities/vulnerability.dart';
 import 'package:torcav/features/security/domain/services/evil_twin_classifier.dart';
 import 'package:torcav/features/security/domain/usecases/security_analyzer.dart';
@@ -23,12 +24,12 @@ void main() {
       vendor: '',
     );
 
-    final report = analyzer.analyze(network);
+    final report = analyzer.assess(network);
 
     expect(report.score, lessThan(40));
-    expect(report.overallStatus, 'Critical');
+    expect(report.status, SecurityStatus.critical);
     expect(
-      report.vulnerabilities.any(
+      report.findings.any(
         (v) => v.severity == VulnerabilitySeverity.critical,
       ),
       true,
@@ -46,10 +47,10 @@ void main() {
       vendor: '',
     );
 
-    final report = analyzer.analyze(network);
+    final report = analyzer.assess(network);
 
     expect(report.score, lessThan(40));
-    expect(report.overallStatus, 'Critical');
+    expect(report.status, SecurityStatus.critical);
   });
 
   test('should identify WPA network as high risk', () {
@@ -63,10 +64,10 @@ void main() {
       vendor: '',
     );
 
-    final report = analyzer.analyze(network);
+    final report = analyzer.assess(network);
 
     expect(report.score, lessThan(70));
-    expect(report.overallStatus, 'At Risk');
+    expect(report.status, SecurityStatus.atRisk);
   });
 
   test('should identify Hidden SSID as vulnerability', () {
@@ -81,12 +82,12 @@ void main() {
       isHidden: true,
     );
 
-    final report = analyzer.analyze(network);
+    final report = analyzer.assess(network);
 
-    expect(report.vulnerabilities.any((v) => v.title == 'Hidden SSID'), true);
+    expect(report.findings.any((v) => v.title == 'Hidden SSID'), true);
     // WPA2 is secure (100), but hidden deduction (-5) = 95. Status Secure.
     expect(report.score, 95);
-    expect(report.overallStatus, 'Secure');
+    expect(report.status, SecurityStatus.secure);
   });
 
   test('should return perfect score for WPA3/WPA2 visible network', () {
@@ -100,10 +101,10 @@ void main() {
       vendor: '',
     );
 
-    final report = analyzer.analyze(network);
+    final report = analyzer.assess(network);
 
     expect(report.score, 100);
-    expect(report.vulnerabilities, isEmpty);
+    expect(report.findings, isEmpty);
   });
 
   group('context-aware scoring', () {
@@ -159,8 +160,8 @@ void main() {
     });
 
     test('unknown context preserves legacy behaviour', () {
-      final legacy = analyzer.analyze(wpsNetwork);
-      final explicit = analyzer.analyze(
+      final legacy = analyzer.assess(wpsNetwork);
+      final explicit = analyzer.assess(
         wpsNetwork,
         context: NetworkContextType.unknown,
       );

@@ -21,13 +21,6 @@ class SecurityAssessment extends Equatable {
   List<Vulnerability> get findings =>
       evidenceFindings.map((finding) => finding.toVulnerability()).toList();
 
-  String get statusLabel => switch (status) {
-    SecurityStatus.secure => 'Secure',
-    SecurityStatus.moderate => 'Moderate',
-    SecurityStatus.atRisk => 'At Risk',
-    SecurityStatus.critical => 'Critical',
-  };
-
   @override
   List<Object?> get props => [score, status, evidenceFindings, riskFactors];
 }

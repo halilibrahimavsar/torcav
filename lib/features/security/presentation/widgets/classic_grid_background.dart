@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:torcav/core/logging/app_logger.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 
 class ClassicGridBackground extends StatefulWidget {
@@ -51,8 +52,8 @@ class _ClassicGridBackgroundState extends State<ClassicGridBackground>
           _shaderLoaded = true;
         });
       }
-    } catch (e) {
-      debugPrint('Error loading shader: $e');
+    } catch (e, stack) {
+      AppLogger.e('Error loading shader', error: e, stackTrace: stack);
     }
   }
 
