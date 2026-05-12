@@ -3687,6 +3687,10 @@
     "@renderingErrorTitle": {
         "description": "Label for renderingErrorTitle"
     },
+    "renderingErrorBody": "Bu ekran çizilirken bir sorun oluştu. Lütfen uygulamayı yeniden başlatın.",
+    "@renderingErrorBody": {
+        "description": "Body text shown in release builds when a render error occurs."
+    },
     "appTitleLong": "Torcav Wi-Fi Analyzer",
     "@appTitleLong": {
         "description": "Label for appTitleLong"

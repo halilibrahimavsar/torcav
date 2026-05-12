@@ -2632,6 +2632,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get renderingErrorTitle => 'RENDERING ERROR';
 
   @override
+  String get renderingErrorBody => 'Beim Zeichnen dieses Bildschirms ist ein Fehler aufgetreten. Bitte starten Sie die App neu.';
+
+  @override
   String get appTitleLong => 'Torcav Wi-Fi Analyzer';
 
   @override

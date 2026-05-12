@@ -2634,6 +2634,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get renderingErrorTitle => 'RENDERING ERROR';
 
   @override
+  String get renderingErrorBody => 'Bu ekran çizilirken bir sorun oluştu. Lütfen uygulamayı yeniden başlatın.';
+
+  @override
   String get appTitleLong => 'Torcav Wi-Fi Analyzer';
 
   @override

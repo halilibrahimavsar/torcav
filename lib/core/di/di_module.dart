@@ -22,6 +22,9 @@ abstract class AppModule {
     LinuxWifiDataSource linux,
   ) {
     if (Platform.isAndroid) return android;
-    return linux;
+    if (Platform.isLinux) return linux;
+    throw UnsupportedError(
+      'WifiDataSource is not implemented for ${Platform.operatingSystem}',
+    );
   }
 }

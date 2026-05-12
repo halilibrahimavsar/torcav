@@ -5019,6 +5019,12 @@ abstract class AppLocalizations {
   /// **'RENDERING ERROR'**
   String get renderingErrorTitle;
 
+  /// Body text shown in release builds when a render error occurs. Generic, no technical detail.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong while drawing this screen. Please restart the app.'**
+  String get renderingErrorBody;
+
   /// Label for appTitleLong
   ///
   /// In en, this message translates to:

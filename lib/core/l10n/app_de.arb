@@ -3687,6 +3687,10 @@
     "@renderingErrorTitle": {
         "description": "Label for renderingErrorTitle"
     },
+    "renderingErrorBody": "Beim Zeichnen dieses Bildschirms ist ein Fehler aufgetreten. Bitte starten Sie die App neu.",
+    "@renderingErrorBody": {
+        "description": "Body text shown in release builds when a render error occurs."
+    },
     "appTitleLong": "Torcav Wi-Fi Analyzer",
     "@appTitleLong": {
         "description": "Label for appTitleLong"

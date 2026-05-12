@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -17,26 +19,34 @@ import 'package:torcav/core/storage/hive_storage_service.dart';
 import 'package:torcav/features/security/presentation/widgets/cyber_grid_background.dart';
 import 'package:torcav/features/splash/presentation/pages/splash_page.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+void main() {
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  FlutterError.onError = (details) {
-    FlutterError.presentError(details);
-    AppLogger.e('FlutterError', error: details.exception, stackTrace: details.stack);
-  };
+    FlutterError.onError = (details) {
+      FlutterError.presentError(details);
+      AppLogger.e(
+        'FlutterError',
+        error: details.exception,
+        stackTrace: details.stack,
+      );
+    };
 
-  PlatformDispatcher.instance.onError = (error, stack) {
-    AppLogger.e('Uncaught Error', error: error, stackTrace: stack);
-    return true;
-  };
+    PlatformDispatcher.instance.onError = (error, stack) {
+      AppLogger.e('Uncaught Error', error: error, stackTrace: stack);
+      return true;
+    };
 
-  ErrorWidget.builder = (details) => _NeonErrorWidget(details: details);
+    ErrorWidget.builder = (details) => _NeonErrorWidget(details: details);
 
-  // Core initialization that must happen before runApp
-  await HiveStorageService.init();
-  await configureDependencies();
+    // Core initialization that must happen before runApp
+    await HiveStorageService.init();
+    await configureDependencies();
 
-  runApp(const TorcavApp());
+    runApp(const TorcavApp());
+  }, (error, stack) {
+    AppLogger.e('Zone error', error: error, stackTrace: stack);
+  });
 }
 
 class _NeonErrorWidget extends StatelessWidget {
@@ -69,7 +79,9 @@ class _NeonErrorWidget extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              details.exceptionAsString(),
+              kReleaseMode
+                  ? context.l10n.renderingErrorBody
+                  : details.exceptionAsString(),
               style: GoogleFonts.rajdhani(
                 color: const Color(0xFF888888),
                 fontSize: 12,

@@ -3687,6 +3687,10 @@
     "@renderingErrorTitle": {
         "description": "Label for renderingErrorTitle"
     },
+    "renderingErrorBody": "Dema ev rûpel dihat çêkirin çewtiyek çêbû. Ji kerema xwe sepanê ji nû ve bide destpêkirin.",
+    "@renderingErrorBody": {
+        "description": "Body text shown in release builds when a render error occurs."
+    },
     "appTitleLong": "Torcav Wi-Fi Analyzer",
     "@appTitleLong": {
         "description": "Label for appTitleLong"

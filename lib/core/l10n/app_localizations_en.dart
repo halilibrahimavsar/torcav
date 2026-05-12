@@ -2641,6 +2641,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get renderingErrorTitle => 'RENDERING ERROR';
 
   @override
+  String get renderingErrorBody => 'Something went wrong while drawing this screen. Please restart the app.';
+
+  @override
   String get appTitleLong => 'Torcav Wi-Fi Analyzer';
 
   @override
