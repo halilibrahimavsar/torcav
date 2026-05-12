@@ -3,10 +3,6 @@
     "@appName": {
         "description": "The name of the application."
     },
-    "wifiScanTitle": "WIFI SCAN",
-    "@wifiScanTitle": {
-        "description": "Title for the wifi scan screen."
-    },
     "subscriptionPremium": "Premium",
     "@subscriptionPremium": {
         "description": "Premium subscription label."
@@ -39,14 +35,6 @@
     "@deviceTypeSmartTV": {
         "description": "Device or OS label for deviceTypeSmartTV"
     },
-    "deviceTypeIoTSensor": "IoT Sensor",
-    "@deviceTypeIoTSensor": {
-        "description": "Device or OS label for deviceTypeIoTSensor"
-    },
-    "deviceTypePrinter": "Printer",
-    "@deviceTypePrinter": {
-        "description": "Device or OS label for deviceTypePrinter"
-    },
     "deviceTypeNASStorage": "NAS/Storage",
     "@deviceTypeNASStorage": {
         "description": "Device or OS label for deviceTypeNASStorage"
@@ -71,17 +59,9 @@
     "@deviceTypeUnknown": {
         "description": "Device or OS label for deviceTypeUnknown"
     },
-    "searchingNetworksPlaceholder": "SEARCHING NETWORKS...",
-    "@searchingNetworksPlaceholder": {
-        "description": "Text shown when the search bar is empty."
-    },
     "notificationOpenAction": "Open notification",
     "@notificationOpenAction": {
         "description": "Default action name for Linux notifications."
-    },
-    "filterNetworksPlaceholder": "FILTER NETWORKS...",
-    "@filterNetworksPlaceholder": {
-        "description": "Placeholder for the search input."
     },
     "quickScan": "Quick Scan",
     "@quickScan": {
@@ -90,14 +70,6 @@
     "deepScan": "Deep Scan",
     "@deepScan": {
         "description": "Active scan label."
-    },
-    "deepScanExperimentalTitle": "Deep Scan (Experimental)",
-    "@deepScanExperimentalTitle": {
-        "description": "Title for the experimental deep scan toggle in Security Center."
-    },
-    "deepScanExperimentalSubtitle": "Actively probe LAN for devices and ports. Increased battery usage.",
-    "@deepScanExperimentalSubtitle": {
-        "description": "Subtitle for the experimental deep scan toggle in Security Center."
     },
     "scanModesTitle": "Scan Modes",
     "@scanModesTitle": {
@@ -152,10 +124,6 @@
     "@liveLabel": {
         "description": "Live indicator label"
     },
-    "operationsLabel": "OPERATIONS",
-    "@operationsLabel": {
-        "description": "Dashboard section label."
-    },
     "topologyLabel": "TOPOLOGY",
     "@topologyLabel": {
         "description": "Dashboard section label."
@@ -180,10 +148,6 @@
     "@gatewayLabel": {
         "description": "Gateway label."
     },
-    "accessEngine": "ACCESS ENGINE",
-    "@accessEngine": {
-        "description": "Access engine status."
-    },
     "latestSnapshotTitle": "Latest Network Snapshot",
     "@latestSnapshotTitle": {
         "description": "Snapshot section title."
@@ -191,14 +155,6 @@
     "noSnapshotAvailable": "No scan snapshot is available yet. Run a Wi-Fi scan first.",
     "@noSnapshotAvailable": {
         "description": "Label for noSnapshotAvailable"
-    },
-    "strictSafetyEnabled": "Strict safety protocols enabled",
-    "@strictSafetyEnabled": {
-        "description": "Safety mode text."
-    },
-    "activeMonitoringProgress": "Active monitoring in progress...",
-    "@activeMonitoringProgress": {
-        "description": "Monitoring status text."
     },
     "scanComparisonTitle": "SCAN COMPARISON",
     "@scanComparisonTitle": {
@@ -238,14 +194,6 @@
                 "type": "int"
             }
         }
-    },
-    "plusNewLabel": "+ NEW",
-    "@plusNewLabel": {
-        "description": "Plus New Label"
-    },
-    "goneLabel": "GONE",
-    "@goneLabel": {
-        "description": "Gone Label"
     },
     "hiddenLabel": "[Hidden]",
     "@hiddenLabel": {
@@ -478,14 +426,6 @@
     "@threatsDetected": {
         "description": "Status text when threats are detected"
     },
-    "trustedLabel": "TRUSTED",
-    "@trustedLabel": {
-        "description": "Trusted Label"
-    },
-    "securityEventTitle": "Security Event",
-    "@securityEventTitle": {
-        "description": "Security Event Title"
-    },
     "networkReconTitle": "NETWORK RECON",
     "@networkReconTitle": {
         "description": "Network Recon Title"
@@ -516,34 +456,6 @@
             }
         }
     },
-    "targetIpSubnet": "Target IP / Subnet",
-    "@targetIpSubnet": {
-        "description": "Target Ip Subnet"
-    },
-    "scanProfileFast": "Fast",
-    "@scanProfileFast": {
-        "description": "Scan Profile Fast"
-    },
-    "scanProfileBalanced": "Balanced",
-    "@scanProfileBalanced": {
-        "description": "Scan Profile Balanced"
-    },
-    "scanProfileAggressive": "Aggressive",
-    "@scanProfileAggressive": {
-        "description": "Scan Profile Aggressive"
-    },
-    "scanProfileNormal": "Normal",
-    "@scanProfileNormal": {
-        "description": "Scan Profile Normal"
-    },
-    "scanProfileIntense": "Intense",
-    "@scanProfileIntense": {
-        "description": "Scan Profile Intense"
-    },
-    "vulnOnlyLabel": "Vulnerabilities Only",
-    "@vulnOnlyLabel": {
-        "description": "Vuln Only Label"
-    },
     "lanReconTitle": "LAN RECON",
     "@lanReconTitle": {
         "description": "Lan Recon Title"
@@ -555,10 +467,6 @@
     "scanAllCaps": "SCAN",
     "@scanAllCaps": {
         "description": "Scan All Caps"
-    },
-    "channelRatingTitle": "CHANNEL RATING",
-    "@channelRatingTitle": {
-        "description": "Channel Rating Title"
     },
     "refreshScanTooltip": "Refresh Scan",
     "@refreshScanTooltip": {
@@ -592,26 +500,9 @@
     "@analyzing": {
         "description": "Analyzing"
     },
-    "historyLabel": "HISTORY",
-    "@historyLabel": {
-        "description": "History Label"
-    },
-    "failedLoadTopology": "Failed to load topology: {error}",
-    "@failedLoadTopology": {
-        "description": "Failed Load Topology",
-        "placeholders": {
-            "error": {
-                "type": "String"
-            }
-        }
-    },
     "trafficLabel": "TRAFFIC",
     "@trafficLabel": {
         "description": "Traffic Label"
-    },
-    "forceLabel": "FORCE",
-    "@forceLabel": {
-        "description": "Force Label"
     },
     "normalSpeed": "NORMAL",
     "@normalSpeed": {
@@ -624,10 +515,6 @@
     "overdriveSpeed": "OVERDRIVE",
     "@overdriveSpeed": {
         "description": "Overdrive Speed"
-    },
-    "topologyMapTitle": "TOPOLOGY MAP",
-    "@topologyMapTitle": {
-        "description": "Topology Map Title"
     },
     "noTopologyData": "No Topology Data",
     "@noTopologyData": {
@@ -701,19 +588,6 @@
     "@pingAction": {
         "description": "Action to ping a device"
     },
-    "pingSuccess": "Latency: {ms}ms",
-    "@pingSuccess": {
-        "description": "Ping success message",
-        "placeholders": {
-            "ms": {
-                "type": "int"
-            }
-        }
-    },
-    "pingFailure": "Host Unreachable",
-    "@pingFailure": {
-        "description": "Ping failure message"
-    },
     "settingsTitle": "Settings",
     "@settingsTitle": {
         "description": "Label for settingsTitle"
@@ -753,10 +627,6 @@
     "backgroundNeuralPulse": "Neural Pulse (Animated)",
     "@backgroundNeuralPulse": {
         "description": "Label for the neural pulse background."
-    },
-    "backgroundSelectionRestricted": "Cyber grid styles are optimized for dark mode and only available when using the dark theme.",
-    "@backgroundSelectionRestricted": {
-        "description": "Info message explaining why background selection is disabled in light mode."
     },
     "settingsScanBehavior": "Scan Behavior",
     "@settingsScanBehavior": {
@@ -850,29 +720,13 @@
     "@defenseTitle": {
         "description": "Defense Title"
     },
-    "shieldLabReady": "Ready for Assessment",
-    "@shieldLabReady": {
-        "description": "Shield Lab Ready"
-    },
-    "deepScanRunning": "Scan in progress...",
-    "@deepScanRunning": {
-        "description": "Deep Scan Running"
-    },
     "knownNetworks": "Known Networks",
     "@knownNetworks": {
         "description": "Known Networks"
     },
-    "noKnownNetworksYet": "No known networks yet",
-    "@noKnownNetworksYet": {
-        "description": "No Known Networks Yet"
-    },
     "noIdentifiedNetworks": "No identified networks in laboratory archives",
     "@noIdentifiedNetworks": {
         "description": "No Identified Networks"
-    },
-    "knownNetworksDashboard": "KNOWN NETWORKS ARCHIVE",
-    "@knownNetworksDashboard": {
-        "description": "Known Networks Dashboard"
     },
     "securityTimeline": "Security Timeline",
     "@securityTimeline": {
@@ -886,33 +740,13 @@
     "@dnsSecurityTitle": {
         "description": "Title for DNS Security card"
     },
-    "dnsSecurityBody": "Verify that your DNS queries are not being hijacked or spoofed.",
-    "@dnsSecurityBody": {
-        "description": "Body for DNS Security card"
-    },
-    "dnsIntegrity": "DNS INTEGRITY",
-    "@dnsIntegrity": {
-        "description": "DNS Integrity status label"
-    },
     "dnsPerformanceBenchmark": "PERFORMANCE BENCHMARK",
     "@dnsPerformanceBenchmark": {
         "description": "Section title for DNS benchmark"
     },
-    "dnsLatency": "LATENCY",
-    "@dnsLatency": {
-        "description": "Label for latency"
-    },
     "dnsRecommended": "RECOMMENDED",
     "@dnsRecommended": {
         "description": "Badge for recommended provider"
-    },
-    "dnsFastest": "FASTEST",
-    "@dnsFastest": {
-        "description": "Label for fastest provider"
-    },
-    "dnsProvider": "PROVIDER",
-    "@dnsProvider": {
-        "description": "Provider column header"
     },
     "dnsResultLatency": "{ms} ms",
     "@dnsResultLatency": {
@@ -938,10 +772,6 @@
     "osUnknown": "Unknown OS",
     "@osUnknown": {
         "description": "Device or OS label for osUnknown"
-    },
-    "osDetectionFailure": "Could not determine OS",
-    "@osDetectionFailure": {
-        "description": "Device or OS label for osDetectionFailure"
     },
     "osDetectedLabel": "OS DETECTED",
     "@osDetectedLabel": {
@@ -1007,62 +837,6 @@
     "filterOther": "OTHER",
     "@filterOther": {
         "description": "Label for filterOther"
-    },
-    "lanDiscoveryEvidence": "Discovered: {devices}",
-    "@lanDiscoveryEvidence": {
-        "placeholders": {
-            "devices": {
-                "type": "String"
-            }
-        },
-        "description": "Label for lanDiscoveryEvidence"
-    },
-    "gatewayPortsExposedEvidence": "Open Ports: {ports}",
-    "@gatewayPortsExposedEvidence": {
-        "placeholders": {
-            "ports": {
-                "type": "String"
-            }
-        },
-        "description": "Label for gatewayPortsExposedEvidence"
-    },
-    "openServiceDetectedEvidence": "Target: {ip}, Port: {port}, Service: {service}",
-    "@openServiceDetectedEvidence": {
-        "placeholders": {
-            "ip": {
-                "type": "String"
-            },
-            "port": {
-                "type": "int"
-            },
-            "service": {
-                "type": "String"
-            }
-        },
-        "description": "Label for openServiceDetectedEvidence"
-    },
-    "lanDeviceDiscoveredEvidence": "IP: {ip}, MAC: {mac}, Vendor: {vendor}",
-    "@lanDeviceDiscoveredEvidence": {
-        "placeholders": {
-            "ip": {
-                "type": "String"
-            },
-            "mac": {
-                "type": "String"
-            },
-            "vendor": {
-                "type": "String"
-            }
-        },
-        "description": "Label for lanDeviceDiscoveredEvidence"
-    },
-    "runTest": "RUN TEST",
-    "@runTest": {
-        "description": "Label for run test button"
-    },
-    "integrityCheck": "INTEGRITY CHECK",
-    "@integrityCheck": {
-        "description": "Label for integrity check"
     },
     "authLocalSystem": "AUTH_LOCAL_SYSTEM",
     "@authLocalSystem": {
@@ -1266,33 +1040,6 @@
     "@evilTwinActionHardwareVendor": {
         "description": "Label for evilTwinActionHardwareVendor"
     },
-    "evidenceDiscoveredDevices": "Discovered: {devices}",
-    "@evidenceDiscoveredDevices": {
-        "placeholders": {
-            "devices": {
-                "type": "String"
-            }
-        },
-        "description": "Label for evidenceDiscoveredDevices"
-    },
-    "evidenceVulnerablePorts": "Host {host} has open ports that may be vulnerable.",
-    "@evidenceVulnerablePorts": {
-        "placeholders": {
-            "host": {
-                "type": "String"
-            }
-        },
-        "description": "Label for evidenceVulnerablePorts"
-    },
-    "evidenceNoEncryption": "The access point advertises no encryption for {network}.",
-    "@evidenceNoEncryption": {
-        "placeholders": {
-            "network": {
-                "type": "String"
-            }
-        },
-        "description": "Label for evidenceNoEncryption"
-    },
     "ipAddrLabel": "IP_ADDR",
     "@ipAddrLabel": {
         "description": "Ip Addr Label"
@@ -1362,10 +1109,6 @@
     "@networkSecurity": {
         "description": "Label for network security section"
     },
-    "arpInfoAction": "ARP INFO",
-    "@arpInfoAction": {
-        "description": "Action to get ARP information for a device"
-    },
     "portScanCommonPorts": "COMMON PORTS",
     "@portScanCommonPorts": {
         "description": "Label for common ports scanning mode"
@@ -1389,10 +1132,6 @@
     "portScanEndPort": "END PORT",
     "@portScanEndPort": {
         "description": "Label for end port input"
-    },
-    "portScanInvalidRange": "Invalid port range",
-    "@portScanInvalidRange": {
-        "description": "Error message for invalid port range"
     },
     "portScanTooManyPorts": "Scanning too many ports might be slow",
     "@portScanTooManyPorts": {
@@ -1423,22 +1162,6 @@
     "portScanNoPortsProbed": "No ports probed yet. Run a port scan to discover open services.",
     "@portScanNoPortsProbed": {
         "description": "Message shown when no ports have been scanned yet"
-    },
-    "arpInfoLabel": "ARP DATA",
-    "@arpInfoLabel": {
-        "description": "Label for ARP information"
-    },
-    "scanningPortsTitle": "SCANNING PORTS...",
-    "@scanningPortsTitle": {
-        "description": "Loading title for port scanning"
-    },
-    "lookingUpHostnameTitle": "LOOKING UP HOSTNAME...",
-    "@lookingUpHostnameTitle": {
-        "description": "Loading title for hostname lookup"
-    },
-    "fetchingArpTitle": "FETCHING ARP DATA...",
-    "@fetchingArpTitle": {
-        "description": "Loading title for fetching ARP info"
     },
     "capabilitiesLabel": "CAPABILITIES",
     "@capabilitiesLabel": {
@@ -1536,10 +1259,6 @@
     "@cidrTargetLabel": {
         "description": "Cidr Target Label"
     },
-    "anonymousNode": "ANONYMOUS NODE",
-    "@anonymousNode": {
-        "description": "Anonymous Node"
-    },
     "portsCountLabel": "{count} PORTS",
     "@portsCountLabel": {
         "description": "Ports Count Label",
@@ -1593,102 +1312,6 @@
     "@securitySummaryCritical": {
         "description": "Security Summary Critical"
     },
-    "vulnerabilityOpenNetworkTitle": "Open Network",
-    "@vulnerabilityOpenNetworkTitle": {
-        "description": "Vulnerability Open Network Title"
-    },
-    "vulnerabilityOpenNetworkDesc": "No encryption detected. All traffic can be sniffed in plaintext.",
-    "@vulnerabilityOpenNetworkDesc": {
-        "description": "Vulnerability Open Network Desc"
-    },
-    "vulnerabilityOpenNetworkRec": "Avoid sensitive activity. Prefer trusted VPN or different network.",
-    "@vulnerabilityOpenNetworkRec": {
-        "description": "Vulnerability Open Network Rec"
-    },
-    "vulnerabilityWepTitle": "WEP Encryption",
-    "@vulnerabilityWepTitle": {
-        "description": "Vulnerability Wep Title"
-    },
-    "vulnerabilityWepDesc": "WEP is deprecated and can be cracked quickly.",
-    "@vulnerabilityWepDesc": {
-        "description": "Vulnerability Wep Desc"
-    },
-    "vulnerabilityWepRec": "Reconfigure AP to WPA2 or WPA3 immediately.",
-    "@vulnerabilityWepRec": {
-        "description": "Vulnerability Wep Rec"
-    },
-    "vulnerabilityLegacyWpaTitle": "Legacy WPA",
-    "@vulnerabilityLegacyWpaTitle": {
-        "description": "Vulnerability Legacy Wpa Title"
-    },
-    "vulnerabilityLegacyWpaDesc": "WPA/TKIP is older and weaker against modern attack techniques.",
-    "@vulnerabilityLegacyWpaDesc": {
-        "description": "Vulnerability Legacy Wpa Desc"
-    },
-    "vulnerabilityLegacyWpaRec": "Upgrade AP and clients to WPA2/WPA3.",
-    "@vulnerabilityLegacyWpaRec": {
-        "description": "Vulnerability Legacy Wpa Rec"
-    },
-    "vulnerabilityHiddenSsidTitle": "Hidden SSID",
-    "@vulnerabilityHiddenSsidTitle": {
-        "description": "Vulnerability Hidden Ssid Title"
-    },
-    "vulnerabilityHiddenSsidDesc": "Hidden SSIDs are still discoverable and may hurt compatibility.",
-    "@vulnerabilityHiddenSsidDesc": {
-        "description": "Vulnerability Hidden Ssid Desc"
-    },
-    "vulnerabilityHiddenSsidRec": "Hidden SSID alone is not protection. Focus on strong encryption.",
-    "@vulnerabilityHiddenSsidRec": {
-        "description": "Vulnerability Hidden Ssid Rec"
-    },
-    "vulnerabilityWeakSignalTitle": "Very Weak Signal",
-    "@vulnerabilityWeakSignalTitle": {
-        "description": "Vulnerability Weak Signal Title"
-    },
-    "vulnerabilityWeakSignalDesc": "Weak signal can indicate unstable links and spoofing susceptibility.",
-    "@vulnerabilityWeakSignalDesc": {
-        "description": "Vulnerability Weak Signal Desc"
-    },
-    "vulnerabilityWeakSignalRec": "Move closer to AP or validate BSSID consistency.",
-    "@vulnerabilityWeakSignalRec": {
-        "description": "Vulnerability Weak Signal Rec"
-    },
-    "vulnerabilityWpsTitle": "WPS Enabled",
-    "@vulnerabilityWpsTitle": {
-        "description": "Vulnerability Wps Title"
-    },
-    "vulnerabilityWpsDesc": "Wi-Fi Protected Setup (WPS) is enabled. The WPS PIN mode can be brute-forced in hours using Pixie Dust attack, effectively bypassing any password.",
-    "@vulnerabilityWpsDesc": {
-        "description": "Vulnerability Wps Desc"
-    },
-    "vulnerabilityWpsRec": "Disable WPS in your router admin panel. Use WPA2/WPA3 passphrase only.",
-    "@vulnerabilityWpsRec": {
-        "description": "Vulnerability Wps Rec"
-    },
-    "vulnerabilityPmfTitle": "Management Frames Unprotected",
-    "@vulnerabilityPmfTitle": {
-        "description": "Vulnerability Pmf Title"
-    },
-    "vulnerabilityPmfDesc": "This access point does not enforce Protected Management Frames (PMF / 802.11w). Unprotected management frames allow an attacker to forge deauthentication packets and disconnect clients.",
-    "@vulnerabilityPmfDesc": {
-        "description": "Vulnerability Pmf Desc"
-    },
-    "vulnerabilityPmfRec": "Enable PMF in router settings (often labelled '802.11w' or 'Management Frame Protection'). WPA3 requires PMF by default.",
-    "@vulnerabilityPmfRec": {
-        "description": "Vulnerability Pmf Rec"
-    },
-    "vulnerabilityEvilTwinTitle": "Potential Evil Twin",
-    "@vulnerabilityEvilTwinTitle": {
-        "description": "Vulnerability Evil Twin Title"
-    },
-    "vulnerabilityEvilTwinDesc": "SSID appears with conflicting security/channel fingerprint nearby.",
-    "@vulnerabilityEvilTwinDesc": {
-        "description": "Vulnerability Evil Twin Desc"
-    },
-    "vulnerabilityEvilTwinRec": "Verify BSSID and certificate before authentication or data exchange.",
-    "@vulnerabilityEvilTwinRec": {
-        "description": "Vulnerability Evil Twin Rec"
-    },
     "riskFactorNoEncryption": "No encryption in use",
     "@riskFactorNoEncryption": {
         "description": "Risk Factor No Encryption"
@@ -1721,10 +1344,6 @@
     "@refresh": {
         "description": "Label for refresh button."
     },
-    "addZonePoint": "Add Zone Point",
-    "@addZonePoint": {
-        "description": "Title for adding a zone point."
-    },
     "cancel": "CANCEL",
     "@cancel": {
         "description": "Label for cancel"
@@ -1741,10 +1360,6 @@
     "@temporalHeatmap": {
         "description": "Title for the temporal heatmap screen."
     },
-    "failedToSaveHeatmapPoint": "Failed to save heatmap point",
-    "@failedToSaveHeatmapPoint": {
-        "description": "Failed To Save Heatmap Point"
-    },
     "signalMonitoringTitle": "SIGNAL MONITORING: {ssid}",
     "@signalMonitoringTitle": {
         "description": "Signal Monitoring Title",
@@ -1758,10 +1373,6 @@
     "@heatmapTooltip": {
         "description": "Heatmap Tooltip"
     },
-    "tagCurrentPointTooltip": "Tag current point",
-    "@tagCurrentPointTooltip": {
-        "description": "Tag Current Point Tooltip"
-    },
     "signalCaps": "SIGNAL",
     "@signalCaps": {
         "description": "Signal Caps"
@@ -1774,19 +1385,6 @@
     "@frequencyCaps": {
         "description": "Frequency Caps"
     },
-    "heatmapPointAdded": "Heatmap point added for {zone}",
-    "@heatmapPointAdded": {
-        "description": "Heatmap Point Added",
-        "placeholders": {
-            "zone": {
-                "type": "String"
-            }
-        }
-    },
-    "zoneTagLabel": "Zone tag (e.g. Kitchen)",
-    "@zoneTagLabel": {
-        "description": "Zone Tag Label"
-    },
     "errorPrefix": "Error: {message}",
     "@errorPrefix": {
         "description": "Error Prefix",
@@ -1795,19 +1393,6 @@
                 "type": "String"
             }
         }
-    },
-    "noHeatmapPointsYet": "No heatmap points yet for {bssid}",
-    "@noHeatmapPointsYet": {
-        "description": "No Heatmap Points Yet",
-        "placeholders": {
-            "bssid": {
-                "type": "String"
-            }
-        }
-    },
-    "averageSignalByZone": "Average signal by zone",
-    "@averageSignalByZone": {
-        "description": "Average Signal By Zone"
     },
     "bandChannels": "{band} CHANNELS",
     "@bandChannels": {
@@ -1882,10 +1467,6 @@
     "@spectrumOptimizationCaps": {
         "description": "Spectrum Optimization Caps"
     },
-    "spectrumOptimizationDesc": "Analyze channel congestion & interference",
-    "@spectrumOptimizationDesc": {
-        "description": "Spectrum Optimization Desc"
-    },
     "qualityExcellent": "Excellent",
     "@qualityExcellent": {
         "description": "Quality Excellent"
@@ -1922,10 +1503,6 @@
     "noHistoryPlaceholder": "No history yet.\nChannel ratings are recorded each time you open this screen.",
     "@noHistoryPlaceholder": {
         "description": "No History Placeholder"
-    },
-    "currentSessionInfo": "Current session — higher score = less congested.",
-    "@currentSessionInfo": {
-        "description": "Current Session Info"
     },
     "historySummaryInfo": "{sessions} sessions · {samples} samples · higher = less congested",
     "@historySummaryInfo": {
@@ -1991,14 +1568,6 @@
     "@speedTestHeader": {
         "description": "Speed Test Header"
     },
-    "startTest": "START TEST",
-    "@startTest": {
-        "description": "Start Test"
-    },
-    "testAgain": "TEST AGAIN",
-    "@testAgain": {
-        "description": "Test Again"
-    },
     "commandCenters": "COMMAND CENTERS",
     "@commandCenters": {
         "description": "Command Centers"
@@ -2019,14 +1588,6 @@
     "@networkMesh": {
         "description": "Network Mesh"
     },
-    "tuningTitle": "TUNING",
-    "@tuningTitle": {
-        "description": "Tuning Title"
-    },
-    "systemConfig": "System Config",
-    "@systemConfig": {
-        "description": "System Config"
-    },
     "phasePing": "PHASE: PING",
     "@phasePing": {
         "description": "Phase Ping"
@@ -2042,10 +1603,6 @@
     "phaseDone": "PHASE: DONE",
     "@phaseDone": {
         "description": "Phase Done"
-    },
-    "riskScore": "Risk Score",
-    "@riskScore": {
-        "description": "Risk Score"
     },
     "loading": "Loading...",
     "@loading": {
@@ -2084,61 +1641,6 @@
         "description": "Name of security event type",
         "placeholders": {
             "type": {
-                "type": "String"
-            }
-        }
-    },
-    "securityEventSeverity": "{severity, select, low{Low} medium{Medium} info{Info} warning{Warning} high{High} critical{Critical} other{{severity}}}",
-    "@securityEventSeverity": {
-        "description": "Name of security severity",
-        "placeholders": {
-            "severity": {
-                "type": "String"
-            },
-            "Low": {
-                "type": "String"
-            },
-            "Medium": {
-                "type": "String"
-            },
-            "Info": {
-                "type": "String"
-            },
-            "Warning": {
-                "type": "String"
-            },
-            "High": {
-                "type": "String"
-            },
-            "Critical": {
-                "type": "String"
-            }
-        }
-    },
-    "evilTwinEvidence": "BSSID mismatch! Expected: {expected}, Found: {found}. High probability of an Evil Twin Access Point.",
-    "@evilTwinEvidence": {
-        "description": "Evil twin evidence text",
-        "placeholders": {
-            "expected": {
-                "type": "String"
-            },
-            "found": {
-                "type": "String"
-            }
-        }
-    },
-    "rogueApEvidence": "Randomized/LAA MAC detected on known network! This is highly unusual for legitimate Access Points and may indicate a rogue device.",
-    "@rogueApEvidence": {
-        "description": "Rogue AP evidence text"
-    },
-    "downgradeEvidence": "Encryption profile changed from {oldSec} to {newSec}. Possible downgrade attack.",
-    "@downgradeEvidence": {
-        "description": "Downgrade evidence text",
-        "placeholders": {
-            "oldSec": {
-                "type": "String"
-            },
-            "newSec": {
                 "type": "String"
             }
         }
@@ -2195,10 +1697,6 @@
     "@dnsHijacked": {
         "description": "Status label for hijacked DNS"
     },
-    "dnsVerifyIntegrity": "Run a scan to verify DNS integrity",
-    "@dnsVerifyIntegrity": {
-        "description": "Prompt for verifying DNS integrity"
-    },
     "dnsLastCheck": "Last check: {hour}:{minute}",
     "@dnsLastCheck": {
         "description": "Last check time for DNS test",
@@ -2236,14 +1734,6 @@
     "performanceTitle": "SPEED TEST",
     "@performanceTitle": {
         "description": "Performance page title"
-    },
-    "performanceStart": "START TEST",
-    "@performanceStart": {
-        "description": "Start speed test button"
-    },
-    "performanceRetry": "RUN AGAIN",
-    "@performanceRetry": {
-        "description": "Retry speed test button"
     },
     "jitterLabel": "JITTER",
     "@jitterLabel": {
@@ -2286,15 +1776,6 @@
     "@wpsWarningBody": {
         "description": "WPS warning body"
     },
-    "wpsAffectedNetworks": "{count} network(s) with WPS enabled",
-    "@wpsAffectedNetworks": {
-        "description": "WPS affected networks count",
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        }
-    },
     "heatmapTutorialTitle": "HOW TO READ THE HEATMAP",
     "@heatmapTutorialTitle": {
         "description": "Label for heatmapTutorialTitle"
@@ -2326,10 +1807,6 @@
     "noSpeedTestHistory": "No tests recorded yet. Run your first test above.",
     "@noSpeedTestHistory": {
         "description": "Empty speed test history"
-    },
-    "networkScoreLabel": "NETWORK SCORE",
-    "@networkScoreLabel": {
-        "description": "Security score label on dashboard"
     },
     "vulnLabTitle": "VULNERABILITY LAB",
     "@vulnLabTitle": {
@@ -2380,26 +1857,6 @@
     "@dnsEvidenceTitle": {
         "description": "Title for the DNS diagnostic evidence section"
     },
-    "shieldLabTitle": "SHIELD LABORATORY",
-    "@shieldLabTitle": {
-        "description": "Experimental security testing and analysis title"
-    },
-    "discoveredDevices": "DISCOVERED DEVICES",
-    "@discoveredDevices": {
-        "description": "Header for LAN devices discovery section"
-    },
-    "openPortsFound": "OPEN PORTS DETECTED",
-    "@openPortsFound": {
-        "description": "Header for open ports list"
-    },
-    "experimentalFeature": "EXPERIMENTAL",
-    "@experimentalFeature": {
-        "description": "Badge for experimental features"
-    },
-    "deepScanDescription": "Active port scanning and LAN discovery (May trigger network alerts)",
-    "@deepScanDescription": {
-        "description": "Description for deep scan toggle"
-    },
     "dnsProtocol": "PROTOCOL",
     "@dnsProtocol": {
         "description": "Dns protocol"
@@ -2407,10 +1864,6 @@
     "dnsSsec": "DNSSEC",
     "@dnsSsec": {
         "description": "Dns ssec"
-    },
-    "dnsWhatIsThat": "What is that?",
-    "@dnsWhatIsThat": {
-        "description": "Dns what is that"
     },
     "dnsInfoHijackingTitle": "DNS Hijacking",
     "@dnsInfoHijackingTitle": {
@@ -2620,10 +2073,6 @@
     "@guideCredentialsBody": {
         "description": "Detailed credentials body"
     },
-    "guideAddressLabel": "Admin address",
-    "@guideAddressLabel": {
-        "description": "Label for admin URL/IP"
-    },
     "guideCopyAddress": "Copy",
     "@guideCopyAddress": {
         "description": "Copy button label"
@@ -2759,10 +2208,6 @@
     "@countryAllowlistHeader": {
         "description": "Country selector header"
     },
-    "countryAllowlistInfoBody": "Wi-Fi channels are regulated differently per country. Channels disallowed in your region are dimmed and can't be used by your router. Switch the region if you're abroad — but the recommendation will only show legal channels for the selected region.",
-    "@countryAllowlistInfoBody": {
-        "description": "Region selector info"
-    },
     "channelIllegalBadge": "NOT ALLOWED",
     "@channelIllegalBadge": {
         "description": "Badge for region-illegal channels"
@@ -2874,10 +2319,6 @@
     "connectedChannelGuideLabel": "YOU",
     "@connectedChannelGuideLabel": {
         "description": "Tag for the vertical guide line in the spectrum analyzer pointing at the user's own router"
-    },
-    "unstableChannelLabel": "UNSTABLE",
-    "@unstableChannelLabel": {
-        "description": "Badge for channels that fluctuate heavily across history"
     },
     "unstableChannelTooltip": "This channel's quality has fluctuated by more than 1.5 points across the last sessions",
     "@unstableChannelTooltip": {
@@ -3539,14 +2980,6 @@
     "@allCategoriesLabel": {
         "description": "Label for allCategoriesLabel"
     },
-    "jsonFormatLabel": "JSON — full, machine-readable",
-    "@jsonFormatLabel": {
-        "description": "Label for jsonFormatLabel"
-    },
-    "htmlFormatLabel": "HTML — viewable in browser",
-    "@htmlFormatLabel": {
-        "description": "Label for htmlFormatLabel"
-    },
     "autoLabel": "Auto",
     "@autoLabel": {
         "description": "Label for autoLabel"
@@ -3574,14 +3007,6 @@
     "privacyPolicyTitle": "Privacy Policy",
     "@privacyPolicyTitle": {
         "description": "Label for privacyPolicyTitle"
-    },
-    "noConnectedNetwork": "No connected network",
-    "@noConnectedNetwork": {
-        "description": "Label for noConnectedNetwork"
-    },
-    "ssidNotAvailable": "SSID not available",
-    "@ssidNotAvailable": {
-        "description": "Label for ssidNotAvailable"
     },
     "encryptionAndConfigTitle": "ENCRYPTION & CONFIG",
     "@encryptionAndConfigTitle": {
@@ -3929,10 +3354,6 @@
     "@hardeningTitle": {
         "description": "Label for hardeningTitle"
     },
-    "hardeningSubtitle": "SECURE YOUR GATEWAY",
-    "@hardeningSubtitle": {
-        "description": "Label for hardeningSubtitle"
-    },
     "hardeningMarkDone": "MARK DONE",
     "@hardeningMarkDone": {
         "description": "Label for hardeningMarkDone"
@@ -4167,24 +3588,6 @@
     "exportPrivacyNote": "Stays on your device until you share it. Nothing is sent to any server.",
     "@exportPrivacyNote": {
         "description": "Label for exportPrivacyNote"
-    },
-    "exportFailedMessage": "Export failed: {error}",
-    "@exportFailedMessage": {
-        "placeholders": {
-            "error": {
-                "type": "String"
-            }
-        },
-        "description": "Label for exportFailedMessage"
-    },
-    "noDataInCategoryMessage": "No data in \"{category}\" yet.",
-    "@noDataInCategoryMessage": {
-        "placeholders": {
-            "category": {
-                "type": "String"
-            }
-        },
-        "description": "Label for noDataInCategoryMessage"
     },
     "categoryWifiScanHistory": "Wi-Fi scan history",
     "@categoryWifiScanHistory": {
@@ -5081,23 +4484,6 @@
     "@dnsHijacking": {
         "description": "Label for dnsHijacking"
     },
-    "speedDoctorDesc": "Resolve latency and throughput issues.",
-    "@speedDoctorDesc": {
-        "description": "Label for speedDoctorDesc"
-    },
-    "bestChannelTitle": "BEST CHANNEL",
-    "@bestChannelTitle": {
-        "description": "Label for bestChannelTitle"
-    },
-    "bestChannelDesc": "Switching to channel {channel} could improve quality.",
-    "@bestChannelDesc": {
-        "placeholders": {
-            "channel": {
-                "type": "int"
-            }
-        },
-        "description": "Label for bestChannelDesc"
-    },
     "networksWithCount": "Networks ({count})",
     "@networksWithCount": {
         "placeholders": {
@@ -5106,15 +4492,6 @@
             }
         },
         "description": "Label for networksWithCount"
-    },
-    "throughputMbps": "{count} Mbps",
-    "@throughputMbps": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for throughputMbps"
     },
     "signalStability": "Stability {stability}",
     "@signalStability": {
@@ -5257,17 +4634,9 @@
     "@realignCompassTooltip": {
         "description": "Label for realignCompassTooltip"
     },
-    "osDetectLabel": "OS DETECT",
-    "@osDetectLabel": {
-        "description": "Label for osDetectLabel"
-    },
     "exportCsvLabel": "Export CSV",
     "@exportCsvLabel": {
         "description": "Label for exportCsvLabel"
-    },
-    "thisDeviceLabel": "This Device",
-    "@thisDeviceLabel": {
-        "description": "Label for thisDeviceLabel"
     },
     "setDeviceType": "Set Device Type",
     "@setDeviceType": {
@@ -5492,22 +4861,6 @@
     "whatIsThisHowToFix": "What is this? · How to fix",
     "@whatIsThisHowToFix": {
         "description": "Label for whatIsThisHowToFix"
-    },
-    "homePlanWifiHeatmap": "HOME PLAN + WIFI HEATMAP",
-    "@homePlanWifiHeatmap": {
-        "description": "Label for homePlanWifiHeatmap"
-    },
-    "homePlanWifiHeatmapDesc": "Outline, coverage, and weak zones",
-    "@homePlanWifiHeatmapDesc": {
-        "description": "Label for homePlanWifiHeatmapDesc"
-    },
-    "openSavedSurveys": "Open saved surveys",
-    "@openSavedSurveys": {
-        "description": "Label for openSavedSurveys"
-    },
-    "toggleViewBlueprintNeon": "Toggle view (Blueprint / Neon)",
-    "@toggleViewBlueprintNeon": {
-        "description": "Label for toggleViewBlueprintNeon"
     },
     "preview": "Preview",
     "@preview": {
@@ -6619,10 +5972,6 @@
             }
         }
     },
-    "endSurveyDiscardBody": "Your current survey data will be lost if you discard it. Save or Discard?",
-    "@endSurveyDiscardBody": {
-        "description": "Dialog body when recording and user tries to exit"
-    },
     "legendAndNodes": "LEGEND & NODES",
     "@legendAndNodes": {
         "description": "Section header for the legend panel in topology info sheet"
@@ -7429,15 +6778,6 @@
     "@lanDiscoveryTitle": {
         "description": "Label for lanDiscoveryTitle"
     },
-    "lanDiscoveryDesc": "Active scanning identified {count} devices on this network.",
-    "@lanDiscoveryDesc": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for lanDiscoveryDesc"
-    },
     "lanDiscoveryRecommendation": "Ensure you recognize all devices on your local network.",
     "@lanDiscoveryRecommendation": {
         "description": "Label for lanDiscoveryRecommendation"
@@ -7446,15 +6786,6 @@
     "@gatewayPortsExposedTitle": {
         "description": "Label for gatewayPortsExposedTitle"
     },
-    "gatewayPortsExposedDesc": "Host {ip} has open ports that may be vulnerable.",
-    "@gatewayPortsExposedDesc": {
-        "placeholders": {
-            "ip": {
-                "type": "String"
-            }
-        },
-        "description": "Label for gatewayPortsExposedDesc"
-    },
     "gatewayPortsExposedRecommendation": "Disable unnecessary services on the gateway router and ensure strong passwords.",
     "@gatewayPortsExposedRecommendation": {
         "description": "Label for gatewayPortsExposedRecommendation"
@@ -7462,21 +6793,6 @@
     "openServiceDetectedTitle": "Open Service Detected",
     "@openServiceDetectedTitle": {
         "description": "Label for openServiceDetectedTitle"
-    },
-    "openServiceDetectedDesc": "Host {ip} is running {service} on port {port}.",
-    "@openServiceDetectedDesc": {
-        "placeholders": {
-            "ip": {
-                "type": "String"
-            },
-            "service": {
-                "type": "String"
-            },
-            "port": {
-                "type": "int"
-            }
-        },
-        "description": "Label for openServiceDetectedDesc"
     },
     "openServiceDetectedRecommendation": "Ensure this service is intended to be accessible.",
     "@openServiceDetectedRecommendation": {
@@ -7530,5 +6846,95 @@
             }
         },
         "description": "Label for channelWithRating"
+    },
+    "lanDiscoveryEvidence": "Discovered: {devices}",
+    "@lanDiscoveryEvidence": {
+        "placeholders": {
+            "devices": {
+                "type": "String"
+            }
+        },
+        "description": "Label for lanDiscoveryEvidence"
+    },
+    "gatewayPortsExposedEvidence": "Open Ports: {ports}",
+    "@gatewayPortsExposedEvidence": {
+        "placeholders": {
+            "ports": {
+                "type": "String"
+            }
+        },
+        "description": "Label for gatewayPortsExposedEvidence"
+    },
+    "openServiceDetectedEvidence": "Target: {ip}, Port: {port}, Service: {service}",
+    "@openServiceDetectedEvidence": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            },
+            "port": {
+                "type": "int"
+            },
+            "service": {
+                "type": "String"
+            }
+        },
+        "description": "Label for openServiceDetectedEvidence"
+    },
+    "lanDeviceDiscoveredEvidence": "IP: {ip}, MAC: {mac}, Vendor: {vendor}",
+    "@lanDeviceDiscoveredEvidence": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            },
+            "mac": {
+                "type": "String"
+            },
+            "vendor": {
+                "type": "String"
+            }
+        },
+        "description": "Label for lanDeviceDiscoveredEvidence"
+    },
+    "evidenceNoEncryption": "The access point advertises no encryption for {network}.",
+    "@evidenceNoEncryption": {
+        "placeholders": {
+            "network": {
+                "type": "String"
+            }
+        },
+        "description": "Label for evidenceNoEncryption"
+    },
+    "lanDiscoveryDesc": "Active scanning identified {count} devices on this network.",
+    "@lanDiscoveryDesc": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Label for lanDiscoveryDesc"
+    },
+    "gatewayPortsExposedDesc": "Host {ip} has open ports that may be vulnerable.",
+    "@gatewayPortsExposedDesc": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            }
+        },
+        "description": "Label for gatewayPortsExposedDesc"
+    },
+    "openServiceDetectedDesc": "Host {ip} is running {service} on port {port}.",
+    "@openServiceDetectedDesc": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            },
+            "service": {
+                "type": "String"
+            },
+            "port": {
+                "type": "int"
+            }
+        },
+        "description": "Label for openServiceDetectedDesc"
     }
 }

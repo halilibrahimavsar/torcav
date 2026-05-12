@@ -12,9 +12,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appName => 'TORCAV';
 
   @override
-  String get wifiScanTitle => 'WIFI TARAMA';
-
-  @override
   String get subscriptionPremium => 'Premium';
 
   @override
@@ -39,12 +36,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get deviceTypeSmartTV => 'Akıllı TV';
 
   @override
-  String get deviceTypeIoTSensor => 'IoT Sensörü';
-
-  @override
-  String get deviceTypePrinter => 'Yazıcı';
-
-  @override
   String get deviceTypeNASStorage => 'NAS / Depolama';
 
   @override
@@ -63,25 +54,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get deviceTypeUnknown => 'Bilinmiyor';
 
   @override
-  String get searchingNetworksPlaceholder => 'AĞLAR ARANIYOR...';
-
-  @override
   String get notificationOpenAction => 'Bildirimi aç';
-
-  @override
-  String get filterNetworksPlaceholder => 'AĞLARI FİLTRELE...';
 
   @override
   String get quickScan => 'Hızlı Tarama';
 
   @override
   String get deepScan => 'Derin Tarama';
-
-  @override
-  String get deepScanExperimentalTitle => 'Deep Scan (Experimental)';
-
-  @override
-  String get deepScanExperimentalSubtitle => 'Cihazlar ve portlar için LAN\'ı aktif olarak sorgulayın. Artan pil kullanımı.';
 
   @override
   String get scanModesTitle => 'Tarama Modları';
@@ -118,9 +97,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get liveLabel => 'CANLI';
 
   @override
-  String get operationsLabel => 'OPERASYONLAR';
-
-  @override
   String get topologyLabel => 'TOPOLOJİ';
 
   @override
@@ -139,19 +115,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get gatewayLabel => 'AĞ GEÇİDİ';
 
   @override
-  String get accessEngine => 'ERİŞİM MOTORU';
-
-  @override
   String get latestSnapshotTitle => 'Son Ağ Görünümü';
 
   @override
   String get noSnapshotAvailable => 'Görünüm verisi yok...';
-
-  @override
-  String get strictSafetyEnabled => 'Sıkı güvenlik protokolleri etkin';
-
-  @override
-  String get activeMonitoringProgress => 'Aktif izleme devam ediyor...';
 
   @override
   String get scanComparisonTitle => 'TARAMA KARŞILAŞTIRMA';
@@ -176,12 +143,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String changedNetworksCountLabel(int count) {
     return 'DEĞİŞEN ($count)';
   }
-
-  @override
-  String get plusNewLabel => '+ YENİ';
-
-  @override
-  String get goneLabel => 'GİDEN';
 
   @override
   String get hiddenLabel => '[Gizli]';
@@ -337,12 +298,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get threatsDetected => 'TEHDİT TESPİT EDİLDİ';
 
   @override
-  String get trustedLabel => 'GÜVENİLİR';
-
-  @override
-  String get securityEventTitle => 'Güvenlik Olayı';
-
-  @override
   String get networkReconTitle => 'AĞ KEŞFİ';
 
   @override
@@ -362,27 +317,6 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get targetIpSubnet => 'Hedef IP / Alt Ağ';
-
-  @override
-  String get scanProfileFast => 'Hızlı';
-
-  @override
-  String get scanProfileBalanced => 'Balanced';
-
-  @override
-  String get scanProfileAggressive => 'Aggressive';
-
-  @override
-  String get scanProfileNormal => 'Normal';
-
-  @override
-  String get scanProfileIntense => 'Yoğun';
-
-  @override
-  String get vulnOnlyLabel => 'Sadece Zafiyetler';
-
-  @override
   String get lanReconTitle => 'LAN TARAMASI';
 
   @override
@@ -390,9 +324,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get scanAllCaps => 'TARA';
-
-  @override
-  String get channelRatingTitle => 'KANAL PUANLAMASI';
 
   @override
   String get refreshScanTooltip => 'Taramayı Yenile';
@@ -419,18 +350,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get analyzing => 'Analiz ediliyor...';
 
   @override
-  String get historyLabel => 'GEÇMİŞ';
-
-  @override
-  String failedLoadTopology(String error) {
-    return 'Topoloji yüklenemedi: $error';
-  }
-
-  @override
   String get trafficLabel => 'TRAFİK';
-
-  @override
-  String get forceLabel => 'GÜÇ';
 
   @override
   String get normalSpeed => 'NORMAL';
@@ -440,9 +360,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get overdriveSpeed => 'MAKSİMUM';
-
-  @override
-  String get topologyMapTitle => 'TOPOLOJİ HARİTASI';
 
   @override
   String get noTopologyData => 'Topoloji Verisi Yok';
@@ -499,14 +416,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get pingAction => 'TEST LATENCY';
 
   @override
-  String pingSuccess(int ms) {
-    return 'Latency: ${ms}ms';
-  }
-
-  @override
-  String get pingFailure => 'Host Unreachable';
-
-  @override
   String get settingsTitle => 'AYARLAR';
 
   @override
@@ -535,9 +444,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backgroundNeuralPulse => 'Nöral Nabız (Animasyonlu)';
-
-  @override
-  String get backgroundSelectionRestricted => 'Siber ızgara stilleri karanlık mod için optimize edilmiştir ve yalnızca karanlık tema kullanılırken seçilebilir.';
 
   @override
   String get settingsScanBehavior => 'Tarama Davranışı';
@@ -609,22 +515,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get defenseTitle => 'SAVUNMA';
 
   @override
-  String get shieldLabReady => 'Ready for Assessment';
-
-  @override
-  String get deepScanRunning => 'Scan in progress...';
-
-  @override
   String get knownNetworks => 'Bilinen Ağlar';
 
   @override
-  String get noKnownNetworksYet => 'Henüz bilinen ağ yok';
-
-  @override
   String get noIdentifiedNetworks => 'No identified networks in laboratory archives';
-
-  @override
-  String get knownNetworksDashboard => 'KNOWN NETWORKS ARCHIVE';
 
   @override
   String get securityTimeline => 'Güvenlik Zaman Çizelgesi';
@@ -636,25 +530,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dnsSecurityTitle => 'DNS GÜVENLİĞİ';
 
   @override
-  String get dnsSecurityBody => 'Verify that your DNS queries are not being hijacked or spoofed.';
-
-  @override
-  String get dnsIntegrity => 'DNS INTEGRITY';
-
-  @override
   String get dnsPerformanceBenchmark => 'PERFORMANS TESTİ';
 
   @override
-  String get dnsLatency => 'LATENCY';
-
-  @override
   String get dnsRecommended => 'ÖNERİLEN';
-
-  @override
-  String get dnsFastest => 'FASTEST';
-
-  @override
-  String get dnsProvider => 'PROVIDER';
 
   @override
   String dnsResultLatency(int ms) {
@@ -672,9 +551,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get osUnknown => 'Bilinmeyen İşletim Sistemi';
-
-  @override
-  String get osDetectionFailure => 'İşletim sistemi belirlenemedi';
 
   @override
   String get osDetectedLabel => 'İŞLETİM SİSTEMİ';
@@ -722,32 +598,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get filterOther => 'DİĞER';
-
-  @override
-  String lanDiscoveryEvidence(String devices) {
-    return 'Tespit edilen: $devices';
-  }
-
-  @override
-  String gatewayPortsExposedEvidence(String ports) {
-    return 'Açık Portlar: $ports';
-  }
-
-  @override
-  String openServiceDetectedEvidence(String ip, int port, String service) {
-    return 'Hedef: $ip, Port: $port, Servis: $service';
-  }
-
-  @override
-  String lanDeviceDiscoveredEvidence(String ip, String mac, String vendor) {
-    return 'IP: $ip, MAC: $mac, Satıcı: $vendor';
-  }
-
-  @override
-  String get runTest => 'RUN TEST';
-
-  @override
-  String get integrityCheck => 'INTEGRITY CHECK';
 
   @override
   String get authLocalSystem => 'YEREL_SİSTEM';
@@ -891,21 +741,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get evilTwinActionHardwareVendor => 'İki yönlendirici farklı donanım üreticilerinden geliyor — gerçek yönlendiriciniz aniden üretici değiştirmemelidir.';
 
   @override
-  String evidenceDiscoveredDevices(String devices) {
-    return 'Keşfedilen: $devices';
-  }
-
-  @override
-  String evidenceVulnerablePorts(String host) {
-    return '$host ana bilgisayarı savunmasız olabilecek açık bağlantı noktalarına sahip.';
-  }
-
-  @override
-  String evidenceNoEncryption(String network) {
-    return 'Erişim noktası $network için şifreleme sunmuyor.';
-  }
-
-  @override
   String get ipAddrLabel => 'IP_ADRESI';
 
   @override
@@ -956,9 +791,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get networkSecurity => 'Ağ Güvenliği';
 
   @override
-  String get arpInfoAction => 'ARP INFO';
-
-  @override
   String get portScanCommonPorts => 'Ortak Portlar';
 
   @override
@@ -975,9 +807,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get portScanEndPort => 'Bitiş Portu';
-
-  @override
-  String get portScanInvalidRange => 'Geçersiz port aralığı';
 
   @override
   String get portScanTooManyPorts => 'Uyarı: 1000\'den fazla portu taramak yavaş olabilir';
@@ -997,18 +826,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get portScanNoPortsProbed => 'Henüz taranmış port yok. Açık servisleri keşfetmek için bir port taraması çalıştırın.';
-
-  @override
-  String get arpInfoLabel => 'ARP DATA';
-
-  @override
-  String get scanningPortsTitle => 'SCANNING PORTS...';
-
-  @override
-  String get lookingUpHostnameTitle => 'LOOKING UP HOSTNAME...';
-
-  @override
-  String get fetchingArpTitle => 'FETCHING ARP DATA...';
 
   @override
   String get capabilitiesLabel => 'ÖZELLİKLER';
@@ -1083,9 +900,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get cidrTargetLabel => 'CIDR HEDEFİ';
 
   @override
-  String get anonymousNode => 'ANONİM DÜĞÜM';
-
-  @override
   String portsCountLabel(int count) {
     return '$count PORT';
   }
@@ -1124,78 +938,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get securitySummaryCritical => 'Uyarı: Bu ağ güvenli değil. Yakındaki herkes internet trafiğinizi görebilir. Bir VPN kullanın veya ağ değiştirin.';
 
   @override
-  String get vulnerabilityOpenNetworkTitle => 'Açık Ağ';
-
-  @override
-  String get vulnerabilityOpenNetworkDesc => 'Şifreleme tespit edilmedi. Tüm trafik düz metin olarak dinlenebilir.';
-
-  @override
-  String get vulnerabilityOpenNetworkRec => 'Hassas aktivitelerden kaçının. Güvenilir bir VPN veya farklı bir ağ tercih edin.';
-
-  @override
-  String get vulnerabilityWepTitle => 'WEP Şifreleme';
-
-  @override
-  String get vulnerabilityWepDesc => 'WEP kullanımdan kaldırılmıştır ve hızla kırılabilir.';
-
-  @override
-  String get vulnerabilityWepRec => 'Erişim noktasını derhal WPA2 veya WPA3 olarak yeniden yapılandırın.';
-
-  @override
-  String get vulnerabilityLegacyWpaTitle => 'Eski WPA';
-
-  @override
-  String get vulnerabilityLegacyWpaDesc => 'WPA/TKIP daha eskidir ve modern saldırı tekniklerine karşı zayıftır.';
-
-  @override
-  String get vulnerabilityLegacyWpaRec => 'Erişim noktasını ve istemcileri WPA2/WPA3\'e yükseltin.';
-
-  @override
-  String get vulnerabilityHiddenSsidTitle => 'Gizli SSID';
-
-  @override
-  String get vulnerabilityHiddenSsidDesc => 'Gizli SSID\'ler hala keşfedilebilir ve uyumluluğa zarar verebilir.';
-
-  @override
-  String get vulnerabilityHiddenSsidRec => 'Tek başına gizli SSID koruma sağlamaz. Güçlü şifrelemeye odaklanın.';
-
-  @override
-  String get vulnerabilityWeakSignalTitle => 'Çok Zayıf Sinyal';
-
-  @override
-  String get vulnerabilityWeakSignalDesc => 'Zayıf sinyal, kararsız bağlantıları ve yanıltma olasılığını gösterebilir.';
-
-  @override
-  String get vulnerabilityWeakSignalRec => 'Erişim noktasına yaklaşın veya BSSID tutarlılığını doğrulayın.';
-
-  @override
-  String get vulnerabilityWpsTitle => 'WPS Etkin';
-
-  @override
-  String get vulnerabilityWpsDesc => 'Wi-Fi Korumalı Kurulum (WPS) etkin. WPS PIN modu, Pixie Dust saldırısı kullanılarak saatler içinde kaba kuvvetle kırılabilir ve şifreyi etkisiz hale getirebilir.';
-
-  @override
-  String get vulnerabilityWpsRec => 'Yönlendirici yönetici panelinden WPS\'yi devre dışı bırakın. Sadece WPA2/WPA3 parolası kullanın.';
-
-  @override
-  String get vulnerabilityPmfTitle => 'Yönetim Çerçeveleri Korunmuyor';
-
-  @override
-  String get vulnerabilityPmfDesc => 'Bu erişim noktası Korumalı Yönetim Çerçevelerini (PMF / 802.11w) zorunlu tutmuyor. Korunmayan yönetim çerçeveleri, bir saldırganın kimlik doğrulama paketleri oluşturmasına ve istemcilerin bağlantısını kesmesine olanak tanır.';
-
-  @override
-  String get vulnerabilityPmfRec => 'Yönlendirici ayarlarında PMF\'yi (genellikle \'802.11w\' veya \'Yönetim Çerçevesi Koruması\' olarak adlandırılır) etkinleştirin. WPA3 varsayılan olarak PMF gerektirir.';
-
-  @override
-  String get vulnerabilityEvilTwinTitle => 'Potansiyel Kötü İkiz (Evil Twin)';
-
-  @override
-  String get vulnerabilityEvilTwinDesc => 'SSID yakında çelişkili güvenlik/kanal parmak iziyle görünüyor.';
-
-  @override
-  String get vulnerabilityEvilTwinRec => 'Kimlik doğrulama veya veri alışverişinden önce BSSID ve sertifikayı doğrulayın.';
-
-  @override
   String get riskFactorNoEncryption => 'Şifreleme kullanılmıyor';
 
   @override
@@ -1220,9 +962,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get refresh => 'Yenile';
 
   @override
-  String get addZonePoint => 'Bölge Noktası Ekle';
-
-  @override
   String get cancel => 'İptal';
 
   @override
@@ -1235,18 +974,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get temporalHeatmap => 'Zamansal Isı Haritası';
 
   @override
-  String get failedToSaveHeatmapPoint => 'Isı haritası noktası kaydedilemedi';
-
-  @override
   String signalMonitoringTitle(String ssid) {
     return 'SİNYAL İZLEME: $ssid';
   }
 
   @override
   String get heatmapTooltip => 'Isı Haritası';
-
-  @override
-  String get tagCurrentPointTooltip => 'Mevcut noktayı etiketle';
 
   @override
   String get signalCaps => 'SİNYAL';
@@ -1258,25 +991,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get frequencyCaps => 'FREKANS';
 
   @override
-  String heatmapPointAdded(String zone) {
-    return '$zone için ısı haritası noktası eklendi';
-  }
-
-  @override
-  String get zoneTagLabel => 'Bölge etiketi (örn. Mutfak)';
-
-  @override
   String errorPrefix(String message) {
     return 'Hata: $message';
   }
-
-  @override
-  String noHeatmapPointsYet(String bssid) {
-    return '$bssid için henüz ısı haritası noktası yok';
-  }
-
-  @override
-  String get averageSignalByZone => 'Bölgeye göre ortalama sinyal';
 
   @override
   String bandChannels(String band) {
@@ -1328,9 +1045,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get spectrumOptimizationCaps => 'SPEKTRUM OPTİMİZASYONU';
 
   @override
-  String get spectrumOptimizationDesc => 'Kanal yoğunluğunu ve paraziti analiz et';
-
-  @override
   String get qualityExcellent => 'Mükemmel';
 
   @override
@@ -1355,9 +1069,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get noHistoryPlaceholder => 'Henüz geçmiş yok.\nKanal derecelendirmeleri bu ekranı her açtığınızda kaydedilir.';
-
-  @override
-  String get currentSessionInfo => 'Mevcut oturum — yüksek puan = daha az yoğun.';
 
   @override
   String historySummaryInfo(int sessions, int samples) {
@@ -1404,12 +1115,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get speedTestHeader => 'HIZ TESTİ';
 
   @override
-  String get startTest => 'TESTİ BAŞLAT';
-
-  @override
-  String get testAgain => 'TEKRAR TEST ET';
-
-  @override
   String get commandCenters => 'KOMUTA MERKEZLERİ';
 
   @override
@@ -1425,12 +1130,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get networkMesh => 'Ağ Örgüsü';
 
   @override
-  String get tuningTitle => 'AYARLAMA';
-
-  @override
-  String get systemConfig => 'Sistem Yapılandırması';
-
-  @override
   String get phasePing => 'AŞAMA: PING';
 
   @override
@@ -1441,9 +1140,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get phaseDone => 'AŞAMA: TAMAMLANDI';
-
-  @override
-  String get riskScore => 'Risk Puanı';
 
   @override
   String get loading => 'Yükleniyor...';
@@ -1492,36 +1188,6 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String securityEventSeverity(String severity, String Low, String Medium, String Info, String Warning, String High, String Critical) {
-    String _temp0 = intl.Intl.selectLogic(
-      severity,
-      {
-        'low': 'Düşük',
-        'medium': 'Orta',
-        'info': 'Bilgi',
-        'warning': 'Uyarı',
-        'high': 'Yüksek',
-        'critical': 'Kritik',
-        'other': '$severity',
-      },
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String evilTwinEvidence(String expected, String found) {
-    return 'BSSID uyuşmazlığı! Beklenen: $expected, Bulunan: $found. Yüksek Evil Twin (Kötü İkiz) Erişim Noktası olasılığı.';
-  }
-
-  @override
-  String get rogueApEvidence => 'Bilinen ağda Rastgele/LAA MAC algılandı! Bu meşru Erişim Noktaları için oldukça olağandışıdır ve sahte bir cihaza işaret edebilir.';
-
-  @override
-  String downgradeEvidence(String oldSec, String newSec) {
-    return 'Şifreleme profili $oldSec değerinden $newSec değerine değişti. Olası düşürme (downgrade) saldırısı.';
-  }
-
-  @override
   String get historyAllBands => 'TÜMÜ';
 
   @override
@@ -1561,9 +1227,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dnsHijacked => 'ELE GEÇİRİLDİ';
 
   @override
-  String get dnsVerifyIntegrity => 'DNS bütünlüğünü doğrulamak için tara';
-
-  @override
   String dnsLastCheck(String hour, String minute) {
     return 'Son kontrol: $hour:$minute';
   }
@@ -1585,12 +1248,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get performanceTitle => 'HIZ TESTİ';
-
-  @override
-  String get performanceStart => 'TEST BAŞLAT';
-
-  @override
-  String get performanceRetry => 'TEKRAR ÇALIŞTIR';
 
   @override
   String get jitterLabel => 'JITTER';
@@ -1622,11 +1279,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get wpsWarningBody => 'WPS, WPA2\'de bile şifrenizi kırmaya izin veren güvenlik açıkları içerir. Router ayarlarından devre dışı bırakın.';
 
   @override
-  String wpsAffectedNetworks(int count) {
-    return 'WPS etkin $count ağ';
-  }
-
-  @override
   String get heatmapTutorialTitle => 'ISISI HARİTASINI NASIL KULLANIRIM';
 
   @override
@@ -1649,9 +1301,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get noSpeedTestHistory => 'Henüz kayıtlı test yok. İlk testi yukarıdan başlatın.';
-
-  @override
-  String get networkScoreLabel => 'AĞ PUANI';
 
   @override
   String get vulnLabTitle => 'GÜVENLİK LABORATUVARI';
@@ -1689,28 +1338,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dnsEvidenceTitle => 'DNS KANITI';
 
   @override
-  String get shieldLabTitle => 'SHIELD LABORATORY';
-
-  @override
-  String get discoveredDevices => 'DISCOVERED DEVICES';
-
-  @override
-  String get openPortsFound => 'OPEN PORTS DETECTED';
-
-  @override
-  String get experimentalFeature => 'EXPERIMENTAL';
-
-  @override
-  String get deepScanDescription => 'Aktif port tarama ve LAN keşfi (Ağ uyarılarını tetikleyebilir)';
-
-  @override
   String get dnsProtocol => 'PROTOKOL';
 
   @override
   String get dnsSsec => 'DNSSEC';
-
-  @override
-  String get dnsWhatIsThat => 'Bu nedir?';
 
   @override
   String get dnsInfoHijackingTitle => 'DNS Ele Geçirme (Hijacking)';
@@ -1869,9 +1500,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get guideCredentialsBody => 'Yönetim sayfası giriş istediğinde:\n\n1. Yönlendiricinin altına veya arkasına bak — orada genellikle Wi-Fi şifresinin yanında YÖNETİM giriş bilgileri de yazar. Yönetim girişi \"Yönetim şifresi\", \"Web şifresi\", \"Modem şifresi\", \"Admin password\" veya \"Web password\" olarak etiketlenir. Bu, Wi-Fi şifresiyle AYNI DEĞİLDİR.\n\n2. Etiket yoksa şu fabrika varsayılanlarını dene:\n   • admin / admin\n   • admin / password\n   • admin / 1234\n   • root / admin\n   • Kullanıcı adı boş / şifre admin\n\n3. Yönlendiriciyi internet sağlayıcın kurduysa (Türk Telekom, TurkNet, Vodafone, Superonline, vb.) yönetim şifresi genellikle cihazın seri numarasının son 6-8 karakteridir; bu da etikette yazar. Birçok sağlayıcı her cihaza özel rastgele şifre basar.\n\n4. Hiçbiri olmuyorsa: birisi daha önce şifreyi değiştirmiş demektir. Yönlendiricinin arkasındaki RESET deliğine 10-15 saniye basılı tutarak fabrika ayarlarına dönebilirsin — ancak bu Wi-Fi adını ve şifresini de sıfırlar; tekrar baştan kurman gerekir.\n\n5. Bazı yeni yönlendiriciler web yönetim panelini bir telefon uygulamasıyla değiştirir (örn. TP-Link Tether, ASUS Router, Mi WiFi, Huawei AI Life). Web sayfası seni uygulamayı yüklemeye yönlendiriyorsa uygulamayı kurup oradan devam et.';
 
   @override
-  String get guideAddressLabel => 'Yönetim adresi';
-
-  @override
   String get guideCopyAddress => 'Kopyala';
 
   @override
@@ -1964,9 +1592,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get countryAllowlistHeader => 'Bölge';
 
   @override
-  String get countryAllowlistInfoBody => 'Wi-Fi kanalları her ülkede farklı düzenlenir. Bölgenizde yasak olan kanallar soluk gösterilir ve yönlendiricinizde kullanılamaz. Yurt dışındaysanız bölgeyi değiştirebilirsiniz; öneri yalnızca seçilen bölge için yasal kanallar arasından yapılır.';
-
-  @override
   String get channelIllegalBadge => 'İZİNSİZ';
 
   @override
@@ -2041,9 +1666,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get connectedChannelGuideLabel => 'SİZ';
-
-  @override
-  String get unstableChannelLabel => 'DENGESİZ';
 
   @override
   String get unstableChannelTooltip => 'Bu kanalın puanı son oturumlarda 1.5 puandan fazla dalgalandı';
@@ -2530,12 +2152,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get allCategoriesLabel => 'All categories (single bundle)';
 
   @override
-  String get jsonFormatLabel => 'JSON — full, machine-readable';
-
-  @override
-  String get htmlFormatLabel => 'HTML — viewable in browser';
-
-  @override
   String get autoLabel => 'Auto';
 
   @override
@@ -2555,12 +2171,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get privacyPolicyTitle => 'Gizlilik Politikası';
-
-  @override
-  String get noConnectedNetwork => 'No connected network';
-
-  @override
-  String get ssidNotAvailable => 'SSID not available';
 
   @override
   String get encryptionAndConfigTitle => 'ŞİFRELEME VE YAPILANDIRMA';
@@ -2812,9 +2422,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get hardeningTitle => 'YÖNLENDİRİCİ GÜÇLENDİRME';
 
   @override
-  String get hardeningSubtitle => 'AĞ GEÇİDİNİZİ GÜVENLİ HALE GETİRİN';
-
-  @override
   String get hardeningMarkDone => 'TAMAMLANDI İŞARETLE';
 
   @override
@@ -2984,16 +2591,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get exportPrivacyNote => 'Stays on your device until you share it. Nothing is sent to any server.';
-
-  @override
-  String exportFailedMessage(String error) {
-    return 'Export failed: $error';
-  }
-
-  @override
-  String noDataInCategoryMessage(String category) {
-    return 'No data in \"$category\" yet.';
-  }
 
   @override
   String get categoryWifiScanHistory => 'Wi-Fi scan history';
@@ -3648,24 +3245,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dnsHijacking => 'DNS hijacking';
 
   @override
-  String get speedDoctorDesc => 'Resolve latency and throughput issues.';
-
-  @override
-  String get bestChannelTitle => 'BEST CHANNEL';
-
-  @override
-  String bestChannelDesc(int channel) {
-    return 'Switching to channel $channel could improve quality.';
-  }
-
-  @override
   String networksWithCount(int count) {
     return 'Networks ($count)';
-  }
-
-  @override
-  String throughputMbps(int count) {
-    return '$count Mbps';
   }
 
   @override
@@ -3773,13 +3354,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get realignCompassTooltip => 'Realign Compass';
 
   @override
-  String get osDetectLabel => 'OS DETECT';
-
-  @override
   String get exportCsvLabel => 'Export CSV';
-
-  @override
-  String get thisDeviceLabel => 'This Device';
 
   @override
   String get setDeviceType => 'Set Device Type';
@@ -3948,18 +3523,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get whatIsThisHowToFix => 'Bu nedir? · Nasıl düzeltilir';
-
-  @override
-  String get homePlanWifiHeatmap => 'HOME PLAN + WIFI HEATMAP';
-
-  @override
-  String get homePlanWifiHeatmapDesc => 'Outline, coverage, and weak zones';
-
-  @override
-  String get openSavedSurveys => 'Open saved surveys';
-
-  @override
-  String get toggleViewBlueprintNeon => 'Toggle view (Blueprint / Neon)';
 
   @override
   String get preview => 'Preview';
@@ -4711,9 +4274,6 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get endSurveyDiscardBody => 'Anketi iptal ederseniz mevcut verileriniz kaybolacak. Kaydet veya İptal Et?';
-
-  @override
   String get legendAndNodes => 'EFSANE & DÜĞÜMLER';
 
   @override
@@ -5230,31 +4790,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get lanDiscoveryTitle => 'LAN Cihazları Tespit Edildi';
 
   @override
-  String lanDiscoveryDesc(int count) {
-    return 'Aktif tarama bu ağda $count cihaz belirledi.';
-  }
-
-  @override
   String get lanDiscoveryRecommendation => 'Yerel ağınızdaki tüm cihazları tanıdığınızdan emin olun.';
 
   @override
   String get gatewayPortsExposedTitle => 'Ağ Geçidi Portları Açık';
 
   @override
-  String gatewayPortsExposedDesc(String ip) {
-    return 'Host $ip, savunmasız olabilecek açık portlara sahip.';
-  }
-
-  @override
   String get gatewayPortsExposedRecommendation => 'Ağ geçidi yönlendiricisindeki gereksiz servisleri devre dışı bırakın ve güçlü şifreler kullandığınızdan emin olun.';
 
   @override
   String get openServiceDetectedTitle => 'Açık Servis Tespit Edildi';
-
-  @override
-  String openServiceDetectedDesc(String ip, String service, int port) {
-    return 'Host $ip, $port portunda $service çalıştırıyor.';
-  }
 
   @override
   String get openServiceDetectedRecommendation => 'Bu servisin erişilebilir olmasının amaçlandığından emin olun.';
@@ -5288,5 +4833,45 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String channelWithRating(int channel, String rating) {
     return 'KN $channel ($rating)';
+  }
+
+  @override
+  String lanDiscoveryEvidence(String devices) {
+    return 'Tespit edilen: $devices';
+  }
+
+  @override
+  String gatewayPortsExposedEvidence(String ports) {
+    return 'Açık Portlar: $ports';
+  }
+
+  @override
+  String openServiceDetectedEvidence(String ip, int port, String service) {
+    return 'Hedef: $ip, Port: $port, Servis: $service';
+  }
+
+  @override
+  String lanDeviceDiscoveredEvidence(String ip, String mac, String vendor) {
+    return 'IP: $ip, MAC: $mac, Satıcı: $vendor';
+  }
+
+  @override
+  String evidenceNoEncryption(String network) {
+    return 'Erişim noktası $network için şifreleme sunmuyor.';
+  }
+
+  @override
+  String lanDiscoveryDesc(int count) {
+    return 'Aktif tarama bu ağda $count cihaz belirledi.';
+  }
+
+  @override
+  String gatewayPortsExposedDesc(String ip) {
+    return 'Host $ip, savunmasız olabilecek açık portlara sahip.';
+  }
+
+  @override
+  String openServiceDetectedDesc(String ip, String service, int port) {
+    return 'Host $ip, $port portunda $service çalıştırıyor.';
   }
 }

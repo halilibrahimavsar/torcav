@@ -12,9 +12,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get appName => 'TORCAV';
 
   @override
-  String get wifiScanTitle => 'TARANA WI-FI';
-
-  @override
   String get subscriptionPremium => 'Premium';
 
   @override
@@ -39,12 +36,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get deviceTypeSmartTV => 'Smart TV';
 
   @override
-  String get deviceTypeIoTSensor => 'IoT Sensor';
-
-  @override
-  String get deviceTypePrinter => 'Printer';
-
-  @override
   String get deviceTypeNASStorage => 'NAS/Storage';
 
   @override
@@ -63,25 +54,13 @@ class AppLocalizationsKu extends AppLocalizations {
   String get deviceTypeUnknown => 'Unknown';
 
   @override
-  String get searchingNetworksPlaceholder => 'TORA DIGERE...';
-
-  @override
   String get notificationOpenAction => 'Open notification';
-
-  @override
-  String get filterNetworksPlaceholder => 'TORAN PARZÛN BIKE...';
 
   @override
   String get quickScan => 'Tarana Bilez';
 
   @override
   String get deepScan => 'Tarana Kûr';
-
-  @override
-  String get deepScanExperimentalTitle => 'Deep Scan (Experimental)';
-
-  @override
-  String get deepScanExperimentalSubtitle => 'Actively probe LAN for devices and ports. Increased battery usage.';
 
   @override
   String get scanModesTitle => 'Modên Taranê';
@@ -118,9 +97,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get liveLabel => 'ZINDÎ';
 
   @override
-  String get operationsLabel => 'OPERASYON';
-
-  @override
   String get topologyLabel => 'TOPOLOJÎ';
 
   @override
@@ -139,19 +115,10 @@ class AppLocalizationsKu extends AppLocalizations {
   String get gatewayLabel => 'GATEWAY';
 
   @override
-  String get accessEngine => 'MOTORA GIHÎŞTINÊ';
-
-  @override
   String get latestSnapshotTitle => 'Wêneyê Dawî ya Torê';
 
   @override
   String get noSnapshotAvailable => 'Daneyên wêneyê tune...';
-
-  @override
-  String get strictSafetyEnabled => 'Protokolên ewlehiyê yên hişk çalak in';
-
-  @override
-  String get activeMonitoringProgress => 'Şopandina aktîf berdewam dike...';
 
   @override
   String get scanComparisonTitle => 'BERAWIRDKIRINA TARANÊ';
@@ -176,12 +143,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String changedNetworksCountLabel(int count) {
     return 'GUHERÎ ($count)';
   }
-
-  @override
-  String get plusNewLabel => '+ NÛ';
-
-  @override
-  String get goneLabel => 'ÇÛYÎ';
 
   @override
   String get hiddenLabel => '[Veşartî]';
@@ -337,12 +298,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get threatsDetected => 'XETER HATIN DÎTIN';
 
   @override
-  String get trustedLabel => 'EWLE';
-
-  @override
-  String get securityEventTitle => 'Bûyera Ewlehiyê';
-
-  @override
   String get networkReconTitle => 'KEŞFA TORÊ';
 
   @override
@@ -362,27 +317,6 @@ class AppLocalizationsKu extends AppLocalizations {
   }
 
   @override
-  String get targetIpSubnet => 'Target IP / Subnet';
-
-  @override
-  String get scanProfileFast => 'Bilez';
-
-  @override
-  String get scanProfileBalanced => 'Hevseng';
-
-  @override
-  String get scanProfileAggressive => 'Zêde';
-
-  @override
-  String get scanProfileNormal => 'Normal';
-
-  @override
-  String get scanProfileIntense => 'Giran';
-
-  @override
-  String get vulnOnlyLabel => 'Tenê Lawazî';
-
-  @override
   String get lanReconTitle => 'LAN RECON';
 
   @override
@@ -390,9 +324,6 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get scanAllCaps => 'TARA';
-
-  @override
-  String get channelRatingTitle => 'PUANLAMA KANALÊ';
 
   @override
   String get refreshScanTooltip => 'Taranê Nû Bike';
@@ -419,18 +350,7 @@ class AppLocalizationsKu extends AppLocalizations {
   String get analyzing => 'Analîz dike...';
 
   @override
-  String get historyLabel => 'DÎROK';
-
-  @override
-  String failedLoadTopology(String error) {
-    return 'Topolojî bar nabe: $error';
-  }
-
-  @override
   String get trafficLabel => 'TRAFÎK';
-
-  @override
-  String get forceLabel => 'HÊZ';
 
   @override
   String get normalSpeed => 'NORMAL';
@@ -440,9 +360,6 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get overdriveSpeed => 'OVERDRIVE';
-
-  @override
-  String get topologyMapTitle => 'NEXŞEYA TOPOLOJIYÊ';
 
   @override
   String get noTopologyData => 'Daneyên Topolojiyê Nîn in';
@@ -499,14 +416,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get pingAction => 'TEST LATENCY';
 
   @override
-  String pingSuccess(int ms) {
-    return 'Latency: ${ms}ms';
-  }
-
-  @override
-  String get pingFailure => 'Host Unreachable';
-
-  @override
   String get settingsTitle => 'MÎHENG';
 
   @override
@@ -535,9 +444,6 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get backgroundNeuralPulse => 'Pulsê Nöral (Anîmasyonî)';
-
-  @override
-  String get backgroundSelectionRestricted => 'Cyber grid styles are optimized for dark mode and only available when using the dark theme.';
 
   @override
   String get settingsScanBehavior => 'Tevgera Taraneyê';
@@ -609,22 +515,10 @@ class AppLocalizationsKu extends AppLocalizations {
   String get defenseTitle => 'PARASTIN';
 
   @override
-  String get shieldLabReady => 'Ready for Assessment';
-
-  @override
-  String get deepScanRunning => 'Scan in progress...';
-
-  @override
   String get knownNetworks => 'Torên Nas';
 
   @override
-  String get noKnownNetworksYet => 'Hîn torên nas tune ne';
-
-  @override
   String get noIdentifiedNetworks => 'No identified networks in laboratory archives';
-
-  @override
-  String get knownNetworksDashboard => 'KNOWN NETWORKS ARCHIVE';
 
   @override
   String get securityTimeline => 'Rêzika Demê ya Ewlehiyê';
@@ -636,25 +530,10 @@ class AppLocalizationsKu extends AppLocalizations {
   String get dnsSecurityTitle => 'DNS INTEGRITY';
 
   @override
-  String get dnsSecurityBody => 'Verify that your DNS queries are not being hijacked or spoofed.';
-
-  @override
-  String get dnsIntegrity => 'DNS INTEGRITY';
-
-  @override
   String get dnsPerformanceBenchmark => 'PERFORMANCE BENCHMARK';
 
   @override
-  String get dnsLatency => 'LATENCY';
-
-  @override
   String get dnsRecommended => 'RECOMMENDED';
-
-  @override
-  String get dnsFastest => 'FASTEST';
-
-  @override
-  String get dnsProvider => 'PROVIDER';
 
   @override
   String dnsResultLatency(int ms) {
@@ -672,9 +551,6 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get osUnknown => 'Unknown OS';
-
-  @override
-  String get osDetectionFailure => 'Could not determine OS';
 
   @override
   String get osDetectedLabel => 'OS DETECTED';
@@ -722,32 +598,6 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get filterOther => 'OTHER';
-
-  @override
-  String lanDiscoveryEvidence(String devices) {
-    return 'Discovered: $devices';
-  }
-
-  @override
-  String gatewayPortsExposedEvidence(String ports) {
-    return 'Open Ports: $ports';
-  }
-
-  @override
-  String openServiceDetectedEvidence(String ip, int port, String service) {
-    return 'Target: $ip, Port: $port, Service: $service';
-  }
-
-  @override
-  String lanDeviceDiscoveredEvidence(String ip, String mac, String vendor) {
-    return 'IP: $ip, MAC: $mac, Vendor: $vendor';
-  }
-
-  @override
-  String get runTest => 'RUN TEST';
-
-  @override
-  String get integrityCheck => 'INTEGRITY CHECK';
 
   @override
   String get authLocalSystem => 'AUTH_SÎSTEMA_XWECÎHÎ';
@@ -891,21 +741,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get evilTwinActionHardwareVendor => 'The two routers come from different hardware vendors — your real router shouldn\'t suddenly change manufacturer.';
 
   @override
-  String evidenceDiscoveredDevices(String devices) {
-    return 'Discovered: $devices';
-  }
-
-  @override
-  String evidenceVulnerablePorts(String host) {
-    return 'Host $host has open ports that may be vulnerable.';
-  }
-
-  @override
-  String evidenceNoEncryption(String network) {
-    return 'The access point advertises no encryption for $network.';
-  }
-
-  @override
   String get ipAddrLabel => 'NAVNÎŞANA_IP';
 
   @override
@@ -956,9 +791,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get networkSecurity => 'Network Security';
 
   @override
-  String get arpInfoAction => 'ARP INFO';
-
-  @override
   String get portScanCommonPorts => 'Portên Hevpar';
 
   @override
@@ -975,9 +807,6 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get portScanEndPort => 'Porta Dawî';
-
-  @override
-  String get portScanInvalidRange => 'Rêzeya portê ya nelihev hat dayîn';
 
   @override
   String get portScanTooManyPorts => 'Hişyarî: Skankirina >1000 portan dikare hêdî bibe';
@@ -997,18 +826,6 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get portScanNoPortsProbed => 'Hîn tu port nehatine skankirin. Ji bo dîtina xizmetên vekirî skanekê bidin destpêkirin.';
-
-  @override
-  String get arpInfoLabel => 'ARP DATA';
-
-  @override
-  String get scanningPortsTitle => 'SCANNING PORTS...';
-
-  @override
-  String get lookingUpHostnameTitle => 'LOOKING UP HOSTNAME...';
-
-  @override
-  String get fetchingArpTitle => 'FETCHING ARP DATA...';
 
   @override
   String get capabilitiesLabel => 'TAYBETMENDÎ';
@@ -1083,9 +900,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get cidrTargetLabel => 'CIDR TARGET';
 
   @override
-  String get anonymousNode => 'NAVENDA NANAV';
-
-  @override
   String portsCountLabel(int count) {
     return '$count PORT';
   }
@@ -1124,78 +938,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get securitySummaryCritical => 'Hişyarî: Ev tor ne ewle ye. Kesên li nêzîk dikarin trafîka înterneta we bibînin. VPN bikar bînin an torê biguherînin.';
 
   @override
-  String get vulnerabilityOpenNetworkTitle => 'Tora Vekirî';
-
-  @override
-  String get vulnerabilityOpenNetworkDesc => 'Şîfrekirin nehat tespîtkirin. Hemû trafîk wekî nivîs dikare were dîtin.';
-
-  @override
-  String get vulnerabilityOpenNetworkRec => 'Ji karên hesas dûr bisekin. VPN-ya pêbawer an toreke cuda tercîh bikin.';
-
-  @override
-  String get vulnerabilityWepTitle => 'Şîfrekirina WEP';
-
-  @override
-  String get vulnerabilityWepDesc => 'WEP nayê pêşniyar kirin û bi hêsanî dikare were şikandin.';
-
-  @override
-  String get vulnerabilityWepRec => 'Tavilê mîhengên AP biguherînin WPA2 an WPA3.';
-
-  @override
-  String get vulnerabilityLegacyWpaTitle => 'WPA ya Kevn';
-
-  @override
-  String get vulnerabilityLegacyWpaDesc => 'WPA/TKIP kevn e û li hember êrîşên nûjen lawaz e.';
-
-  @override
-  String get vulnerabilityLegacyWpaRec => 'AP û amûran bikşînin asteke bilind (WPA2/WPA3).';
-
-  @override
-  String get vulnerabilityHiddenSsidTitle => 'SSID ya Veşartî';
-
-  @override
-  String get vulnerabilityHiddenSsidDesc => 'SSID-yên veşartî hîn jî dikarin werin dîtin û dibe ku lihevhatinê xirab bikin.';
-
-  @override
-  String get vulnerabilityHiddenSsidRec => 'SSID-ya veşartî ne parastin e. Bala xwe bidin ser şîfrekirina bi hêz.';
-
-  @override
-  String get vulnerabilityWeakSignalTitle => 'Sînyala Gelek Lawaz';
-
-  @override
-  String get vulnerabilityWeakSignalDesc => 'Sînyala lawaz dikare girêdanên ne aram û metirsiyan nîşan bide.';
-
-  @override
-  String get vulnerabilityWeakSignalRec => 'Nêzîkî AP bibin an BSSID kontrol bikin.';
-
-  @override
-  String get vulnerabilityWpsTitle => 'WPS Çalak e';
-
-  @override
-  String get vulnerabilityWpsDesc => 'Wi-Fi Korumalı Kurulum (WPS) çalak e. Moda PIN-a WPS dikare bi hêsanî were şikandin û gihîştina şîfreyê bide.';
-
-  @override
-  String get vulnerabilityWpsRec => 'Di panela mîhengan a routerê de WPS bigirin. Tenê WPA2/WPA3 bikar bînin.';
-
-  @override
-  String get vulnerabilityPmfTitle => 'Çarçoveyên Rêvebiriyê Nehatine Parastin';
-
-  @override
-  String get vulnerabilityPmfDesc => 'Ev access point PMF (802.11w) naxwaze. Nivîsên rêvebiriyê yên neparastî rê didin êrîşkaran ku amûran deauth bikin.';
-
-  @override
-  String get vulnerabilityPmfRec => 'Di mîhengên routerê de PMF (wek \'802.11w\' jî tê zanîn) çalak bikin. WPA3 jixwe PMF dixwaze.';
-
-  @override
-  String get vulnerabilityEvilTwinTitle => 'Evil Twin ya Potansiyel';
-
-  @override
-  String get vulnerabilityEvilTwinDesc => 'SSID li nêzîk bi hûrguliyên ewlehiyê yên nakok xuya dike.';
-
-  @override
-  String get vulnerabilityEvilTwinRec => 'Beriya nasandinê BSSID û sertîfîkayê kontrol bikin.';
-
-  @override
   String get riskFactorNoEncryption => 'Şîfrekirin nayê bikaranîn';
 
   @override
@@ -1220,9 +962,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get refresh => 'Nû bike';
 
   @override
-  String get addZonePoint => 'Xala Herêmê Zêde Bike';
-
-  @override
   String get cancel => 'Betal bike';
 
   @override
@@ -1235,18 +974,12 @@ class AppLocalizationsKu extends AppLocalizations {
   String get temporalHeatmap => 'Nexşeya Germiyê ya Demkî';
 
   @override
-  String get failedToSaveHeatmapPoint => 'Xala nexşeya germiyê nehat tomarkirin';
-
-  @override
   String signalMonitoringTitle(String ssid) {
     return 'ŞOPANDINA SÎNYALÊ: $ssid';
   }
 
   @override
   String get heatmapTooltip => 'Nexşeya Germiyê';
-
-  @override
-  String get tagCurrentPointTooltip => 'Xala heyî nîşan bike';
 
   @override
   String get signalCaps => 'SÎNYAL';
@@ -1258,25 +991,9 @@ class AppLocalizationsKu extends AppLocalizations {
   String get frequencyCaps => 'FREKANS';
 
   @override
-  String heatmapPointAdded(String zone) {
-    return 'Xala nexşeya germiyê ji bo $zone hat zêdekirin';
-  }
-
-  @override
-  String get zoneTagLabel => 'Etîketa herêmê (mînak: Metbex)';
-
-  @override
   String errorPrefix(String message) {
     return 'Şaşî: $message';
   }
-
-  @override
-  String noHeatmapPointsYet(String bssid) {
-    return 'Ji bo $bssid hîn ti xalên nexşeya germiyê tune';
-  }
-
-  @override
-  String get averageSignalByZone => 'Sînyala navîn li gorî herêman';
 
   @override
   String bandChannels(String band) {
@@ -1328,9 +1045,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get spectrumOptimizationCaps => 'OPTMÎZASYONA SPEKTRUMÊ';
 
   @override
-  String get spectrumOptimizationDesc => 'Qelebalixiya kanalê û parazîtê analîz bike';
-
-  @override
   String get qualityExcellent => 'Zaf Baş';
 
   @override
@@ -1355,9 +1069,6 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get noHistoryPlaceholder => 'Hîn dîrok tune.\nHer cara ku hûn vê ekranê vedikin, pileya kanalan tê tomarkirin.';
-
-  @override
-  String get currentSessionInfo => 'Oturuma heyî — skora bilind = kêmtir qerebalix.';
 
   @override
   String historySummaryInfo(int sessions, int samples) {
@@ -1404,12 +1115,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get speedTestHeader => 'TESTA LEZÊ';
 
   @override
-  String get startTest => 'DEST PÊ BIKIN';
-
-  @override
-  String get testAgain => 'DÎSA TEST BIKIN';
-
-  @override
   String get commandCenters => 'NAVENDA FERMANDARIYÊ';
 
   @override
@@ -1425,12 +1130,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get networkMesh => 'Tora Qatî';
 
   @override
-  String get tuningTitle => 'VERASTKIRIN';
-
-  @override
-  String get systemConfig => 'Veavakirina Pergalê';
-
-  @override
   String get phasePing => 'QONAX: PING';
 
   @override
@@ -1441,9 +1140,6 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get phaseDone => 'QONAX: TEMAM';
-
-  @override
-  String get riskScore => 'Pûana Rîskê';
 
   @override
   String get loading => 'Tê barkirin...';
@@ -1490,36 +1186,6 @@ class AppLocalizationsKu extends AppLocalizations {
   }
 
   @override
-  String securityEventSeverity(String severity, String Low, String Medium, String Info, String Warning, String High, String Critical) {
-    String _temp0 = intl.Intl.selectLogic(
-      severity,
-      {
-        'low': 'Kêm',
-        'medium': 'Navîn',
-        'info': 'Zanyarî',
-        'warning': 'Hişyarî',
-        'high': 'Bilind',
-        'critical': 'Krîtîk',
-        'other': '$severity',
-      },
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String evilTwinEvidence(String expected, String found) {
-    return 'Lihevnehatina BSSID! Ya Tê Çaverêkirin: $expected, Ya Hatî Dîtin: $found. Îhtîmaleke mezin a Xala Gihîştina Cêwîyê Xirab.';
-  }
-
-  @override
-  String get rogueApEvidence => 'MAC-a Ketober/LAA di tora naskirî de hat dîtin! Ev ji bo Xalên Gihîştina rewa pir neasayî ye û dibe ku nîşan bide ku amûrek sexte heye.';
-
-  @override
-  String downgradeEvidence(String oldSec, String newSec) {
-    return 'Profîla şîfrekirinê ji $oldSec ber bi $newSec ve hat guhartin. Gumana êrîşa daxistinê.';
-  }
-
-  @override
   String get historyAllBands => 'HEMÛ';
 
   @override
@@ -1559,9 +1225,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get dnsHijacked => 'HIJACKED';
 
   @override
-  String get dnsVerifyIntegrity => 'Run a scan to verify DNS integrity';
-
-  @override
   String dnsLastCheck(String hour, String minute) {
     return 'Last check: $hour:$minute';
   }
@@ -1583,12 +1246,6 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get performanceTitle => 'TESTA LEZÊ';
-
-  @override
-  String get performanceStart => 'DEST PÊ KE';
-
-  @override
-  String get performanceRetry => 'DU CARÊ';
 
   @override
   String get jitterLabel => 'JITTER';
@@ -1620,11 +1277,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get wpsWarningBody => 'WPS xeletiyên ewlehiyê hene. Ji mîhengên rûterê xwe neçalak bike.';
 
   @override
-  String wpsAffectedNetworks(int count) {
-    return '$count tor bi WPS vekirî';
-  }
-
-  @override
   String get heatmapTutorialTitle => 'NEXŞEYA GERMAHIYÊ ÇAWA BIKAR BÎNIM';
 
   @override
@@ -1647,9 +1299,6 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get noSpeedTestHistory => 'Hêj test nehatiye tomar kirin. Testa yekem li jorê dest pê bike.';
-
-  @override
-  String get networkScoreLabel => 'PUANA TORÊ';
 
   @override
   String get vulnLabTitle => 'VULNERABILITY LAB';
@@ -1687,28 +1336,10 @@ class AppLocalizationsKu extends AppLocalizations {
   String get dnsEvidenceTitle => 'DNS EVIDENCE';
 
   @override
-  String get shieldLabTitle => 'SHIELD LABORATORY';
-
-  @override
-  String get discoveredDevices => 'DISCOVERED DEVICES';
-
-  @override
-  String get openPortsFound => 'OPEN PORTS DETECTED';
-
-  @override
-  String get experimentalFeature => 'EXPERIMENTAL';
-
-  @override
-  String get deepScanDescription => 'Active port scanning and LAN discovery (May trigger network alerts)';
-
-  @override
   String get dnsProtocol => 'PROTOCOL';
 
   @override
   String get dnsSsec => 'DNSSEC';
-
-  @override
-  String get dnsWhatIsThat => 'What is that?';
 
   @override
   String get dnsInfoHijackingTitle => 'DNS Hijacking';
@@ -1867,9 +1498,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get guideCredentialsBody => 'Gava rûpela rêveberiyê ji te têketinê dixwaze:\n\n1. Li binî an pişta routerê binêre — bi gelemperî li wir etîketek heye ku şîfreya Wi-Fi û her wiha agahiyên têketina REVEBERIYÊ jî dinivîse. Têketina rêveberiyê wek \"Admin password\", \"Web password\", \"Modem password\" an \"Şîfreya Rêveberiyê\" tê nîşandan. Ev bi şîfreya Wi-Fi NEYAN E.\n\n2. Heke etîket tune be, van standardên fabrîkayê biceribîne:\n   • admin / admin\n   • admin / password\n   • admin / 1234\n   • root / admin\n   • Navê bikarhêner vala / şîfre admin\n\n3. Heke router ji aliyê pêşkêşkarê înternetê hatibe sazkirin, şîfreya rêveberiyê bi gelemperî 6-8 karakterên dawî yên seriya cihazê ye, ku ew jî li ser etîketê dinivîse. Gelek pêşkêşkar şîfreyek taybet a cihazî çap dikin.\n\n4. Heke tu yek nexebite, kesek berê şîfre guherandî ye. Dikarî bişkoja RESET ya li pişta routerê 10-15 çirkeyan bigirî da ku rewşa fabrîkayê vegere — lê ev navê Wi-Fi û şîfreya wê jî paqij dike, divê ji nû ve saz bikî.\n\n5. Hin routerên nû panela web bi sepanê telefonê re diguherînin (mînak TP-Link Tether, ASUS Router, Mi WiFi, Huawei AI Life). Heke rûpela web te ber bi sazkirina sepanê ve dişîne, sepanê saz bike û ji wir berdewam bike.';
 
   @override
-  String get guideAddressLabel => 'Navnîşana rêveberiyê';
-
-  @override
   String get guideCopyAddress => 'Kopî bike';
 
   @override
@@ -1962,9 +1590,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get countryAllowlistHeader => 'Herêm';
 
   @override
-  String get countryAllowlistInfoBody => 'Kanalên Wi-Fi li her welatî bi awayekî cuda têne rêvebirin. Kanalên ku li herêma we qedexe ne kêmreng têne nîşandan û ji aliyê routerê we nayên bikaranîn. Heke li derveyê welêt bî, herêmê biguherîne — pêşniyaz tenê kanalên yasayî yên herêma hilbijartî nîşan dide.';
-
-  @override
   String get channelIllegalBadge => 'QEDEXEYÎ';
 
   @override
@@ -2039,9 +1664,6 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get connectedChannelGuideLabel => 'TU';
-
-  @override
-  String get unstableChannelLabel => 'NEARAM';
 
   @override
   String get unstableChannelTooltip => 'Puanê vê kanalê di rûniştinên dawî de ji 1.5 puanan zêdetir guherî';
@@ -2528,12 +2150,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get allCategoriesLabel => 'All categories (single bundle)';
 
   @override
-  String get jsonFormatLabel => 'JSON — full, machine-readable';
-
-  @override
-  String get htmlFormatLabel => 'HTML — viewable in browser';
-
-  @override
   String get autoLabel => 'Auto';
 
   @override
@@ -2553,12 +2169,6 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get privacyPolicyTitle => 'Privacy Policy';
-
-  @override
-  String get noConnectedNetwork => 'No connected network';
-
-  @override
-  String get ssidNotAvailable => 'SSID not available';
 
   @override
   String get encryptionAndConfigTitle => 'ENCRYPTION & CONFIG';
@@ -2810,9 +2420,6 @@ class AppLocalizationsKu extends AppLocalizations {
   String get hardeningTitle => 'ROUTER HARDENING';
 
   @override
-  String get hardeningSubtitle => 'SECURE YOUR GATEWAY';
-
-  @override
   String get hardeningMarkDone => 'MARK DONE';
 
   @override
@@ -2982,16 +2589,6 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get exportPrivacyNote => 'Stays on your device until you share it. Nothing is sent to any server.';
-
-  @override
-  String exportFailedMessage(String error) {
-    return 'Export failed: $error';
-  }
-
-  @override
-  String noDataInCategoryMessage(String category) {
-    return 'No data in \"$category\" yet.';
-  }
 
   @override
   String get categoryWifiScanHistory => 'Wi-Fi scan history';
@@ -3646,24 +3243,8 @@ class AppLocalizationsKu extends AppLocalizations {
   String get dnsHijacking => 'DNS hijacking';
 
   @override
-  String get speedDoctorDesc => 'Resolve latency and throughput issues.';
-
-  @override
-  String get bestChannelTitle => 'BEST CHANNEL';
-
-  @override
-  String bestChannelDesc(int channel) {
-    return 'Switching to channel $channel could improve quality.';
-  }
-
-  @override
   String networksWithCount(int count) {
     return 'Networks ($count)';
-  }
-
-  @override
-  String throughputMbps(int count) {
-    return '$count Mbps';
   }
 
   @override
@@ -3771,13 +3352,7 @@ class AppLocalizationsKu extends AppLocalizations {
   String get realignCompassTooltip => 'Realign Compass';
 
   @override
-  String get osDetectLabel => 'OS DETECT';
-
-  @override
   String get exportCsvLabel => 'Export CSV';
-
-  @override
-  String get thisDeviceLabel => 'This Device';
 
   @override
   String get setDeviceType => 'Set Device Type';
@@ -3946,18 +3521,6 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get whatIsThisHowToFix => 'What is this? · How to fix';
-
-  @override
-  String get homePlanWifiHeatmap => 'HOME PLAN + WIFI HEATMAP';
-
-  @override
-  String get homePlanWifiHeatmapDesc => 'Outline, coverage, and weak zones';
-
-  @override
-  String get openSavedSurveys => 'Open saved surveys';
-
-  @override
-  String get toggleViewBlueprintNeon => 'Toggle view (Blueprint / Neon)';
 
   @override
   String get preview => 'Preview';
@@ -4709,9 +4272,6 @@ class AppLocalizationsKu extends AppLocalizations {
   }
 
   @override
-  String get endSurveyDiscardBody => 'Your current survey data will be lost if you discard it. Save or Discard?';
-
-  @override
   String get legendAndNodes => 'LEGEND & NODES';
 
   @override
@@ -5228,31 +4788,16 @@ class AppLocalizationsKu extends AppLocalizations {
   String get lanDiscoveryTitle => 'LAN Devices Discovered';
 
   @override
-  String lanDiscoveryDesc(int count) {
-    return 'Active scanning identified $count devices on this network.';
-  }
-
-  @override
   String get lanDiscoveryRecommendation => 'Ensure you recognize all devices on your local network.';
 
   @override
   String get gatewayPortsExposedTitle => 'Gateway Ports Exposed';
 
   @override
-  String gatewayPortsExposedDesc(String ip) {
-    return 'Host $ip has open ports that may be vulnerable.';
-  }
-
-  @override
   String get gatewayPortsExposedRecommendation => 'Disable unnecessary services on the gateway router and ensure strong passwords.';
 
   @override
   String get openServiceDetectedTitle => 'Open Service Detected';
-
-  @override
-  String openServiceDetectedDesc(String ip, String service, int port) {
-    return 'Host $ip is running $service on port $port.';
-  }
 
   @override
   String get openServiceDetectedRecommendation => 'Ensure this service is intended to be accessible.';
@@ -5286,5 +4831,45 @@ class AppLocalizationsKu extends AppLocalizations {
   @override
   String channelWithRating(int channel, String rating) {
     return 'CH $channel ($rating)';
+  }
+
+  @override
+  String lanDiscoveryEvidence(String devices) {
+    return 'Discovered: $devices';
+  }
+
+  @override
+  String gatewayPortsExposedEvidence(String ports) {
+    return 'Open Ports: $ports';
+  }
+
+  @override
+  String openServiceDetectedEvidence(String ip, int port, String service) {
+    return 'Target: $ip, Port: $port, Service: $service';
+  }
+
+  @override
+  String lanDeviceDiscoveredEvidence(String ip, String mac, String vendor) {
+    return 'IP: $ip, MAC: $mac, Vendor: $vendor';
+  }
+
+  @override
+  String evidenceNoEncryption(String network) {
+    return 'The access point advertises no encryption for $network.';
+  }
+
+  @override
+  String lanDiscoveryDesc(int count) {
+    return 'Active scanning identified $count devices on this network.';
+  }
+
+  @override
+  String gatewayPortsExposedDesc(String ip) {
+    return 'Host $ip has open ports that may be vulnerable.';
+  }
+
+  @override
+  String openServiceDetectedDesc(String ip, String service, int port) {
+    return 'Host $ip is running $service on port $port.';
   }
 }

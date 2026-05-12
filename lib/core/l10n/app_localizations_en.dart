@@ -12,9 +12,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => 'TORCAV';
 
   @override
-  String get wifiScanTitle => 'WIFI SCAN';
-
-  @override
   String get subscriptionPremium => 'Premium';
 
   @override
@@ -39,12 +36,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deviceTypeSmartTV => 'Smart TV';
 
   @override
-  String get deviceTypeIoTSensor => 'IoT Sensor';
-
-  @override
-  String get deviceTypePrinter => 'Printer';
-
-  @override
   String get deviceTypeNASStorage => 'NAS/Storage';
 
   @override
@@ -63,25 +54,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deviceTypeUnknown => 'Unknown';
 
   @override
-  String get searchingNetworksPlaceholder => 'SEARCHING NETWORKS...';
-
-  @override
   String get notificationOpenAction => 'Open notification';
-
-  @override
-  String get filterNetworksPlaceholder => 'FILTER NETWORKS...';
 
   @override
   String get quickScan => 'Quick Scan';
 
   @override
   String get deepScan => 'Deep Scan';
-
-  @override
-  String get deepScanExperimentalTitle => 'Deep Scan (Experimental)';
-
-  @override
-  String get deepScanExperimentalSubtitle => 'Actively probe LAN for devices and ports. Increased battery usage.';
 
   @override
   String get scanModesTitle => 'Scan Modes';
@@ -125,9 +104,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get liveLabel => 'LIVE';
 
   @override
-  String get operationsLabel => 'OPERATIONS';
-
-  @override
   String get topologyLabel => 'TOPOLOGY';
 
   @override
@@ -146,19 +122,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gatewayLabel => 'GATEWAY';
 
   @override
-  String get accessEngine => 'ACCESS ENGINE';
-
-  @override
   String get latestSnapshotTitle => 'Latest Network Snapshot';
 
   @override
   String get noSnapshotAvailable => 'No scan snapshot is available yet. Run a Wi-Fi scan first.';
-
-  @override
-  String get strictSafetyEnabled => 'Strict safety protocols enabled';
-
-  @override
-  String get activeMonitoringProgress => 'Active monitoring in progress...';
 
   @override
   String get scanComparisonTitle => 'SCAN COMPARISON';
@@ -183,12 +150,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String changedNetworksCountLabel(int count) {
     return 'CHANGED ($count)';
   }
-
-  @override
-  String get plusNewLabel => '+ NEW';
-
-  @override
-  String get goneLabel => 'GONE';
 
   @override
   String get hiddenLabel => '[Hidden]';
@@ -344,12 +305,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get threatsDetected => 'THREATS DETECTED';
 
   @override
-  String get trustedLabel => 'TRUSTED';
-
-  @override
-  String get securityEventTitle => 'Security Event';
-
-  @override
   String get networkReconTitle => 'NETWORK RECON';
 
   @override
@@ -369,27 +324,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get targetIpSubnet => 'Target IP / Subnet';
-
-  @override
-  String get scanProfileFast => 'Fast';
-
-  @override
-  String get scanProfileBalanced => 'Balanced';
-
-  @override
-  String get scanProfileAggressive => 'Aggressive';
-
-  @override
-  String get scanProfileNormal => 'Normal';
-
-  @override
-  String get scanProfileIntense => 'Intense';
-
-  @override
-  String get vulnOnlyLabel => 'Vulnerabilities Only';
-
-  @override
   String get lanReconTitle => 'LAN RECON';
 
   @override
@@ -397,9 +331,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scanAllCaps => 'SCAN';
-
-  @override
-  String get channelRatingTitle => 'CHANNEL RATING';
 
   @override
   String get refreshScanTooltip => 'Refresh Scan';
@@ -426,18 +357,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get analyzing => 'Analyzing...';
 
   @override
-  String get historyLabel => 'HISTORY';
-
-  @override
-  String failedLoadTopology(String error) {
-    return 'Failed to load topology: $error';
-  }
-
-  @override
   String get trafficLabel => 'TRAFFIC';
-
-  @override
-  String get forceLabel => 'FORCE';
 
   @override
   String get normalSpeed => 'NORMAL';
@@ -447,9 +367,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get overdriveSpeed => 'OVERDRIVE';
-
-  @override
-  String get topologyMapTitle => 'TOPOLOGY MAP';
 
   @override
   String get noTopologyData => 'No Topology Data';
@@ -506,14 +423,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pingAction => 'TEST LATENCY';
 
   @override
-  String pingSuccess(int ms) {
-    return 'Latency: ${ms}ms';
-  }
-
-  @override
-  String get pingFailure => 'Host Unreachable';
-
-  @override
   String get settingsTitle => 'Settings';
 
   @override
@@ -542,9 +451,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backgroundNeuralPulse => 'Neural Pulse (Animated)';
-
-  @override
-  String get backgroundSelectionRestricted => 'Cyber grid styles are optimized for dark mode and only available when using the dark theme.';
 
   @override
   String get settingsScanBehavior => 'Scan Behavior';
@@ -616,22 +522,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get defenseTitle => 'SECURITY CENTER';
 
   @override
-  String get shieldLabReady => 'Ready for Assessment';
-
-  @override
-  String get deepScanRunning => 'Scan in progress...';
-
-  @override
   String get knownNetworks => 'Known Networks';
 
   @override
-  String get noKnownNetworksYet => 'No known networks yet';
-
-  @override
   String get noIdentifiedNetworks => 'No identified networks in laboratory archives';
-
-  @override
-  String get knownNetworksDashboard => 'KNOWN NETWORKS ARCHIVE';
 
   @override
   String get securityTimeline => 'Security Timeline';
@@ -643,25 +537,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dnsSecurityTitle => 'DNS INTEGRITY';
 
   @override
-  String get dnsSecurityBody => 'Verify that your DNS queries are not being hijacked or spoofed.';
-
-  @override
-  String get dnsIntegrity => 'DNS INTEGRITY';
-
-  @override
   String get dnsPerformanceBenchmark => 'PERFORMANCE BENCHMARK';
 
   @override
-  String get dnsLatency => 'LATENCY';
-
-  @override
   String get dnsRecommended => 'RECOMMENDED';
-
-  @override
-  String get dnsFastest => 'FASTEST';
-
-  @override
-  String get dnsProvider => 'PROVIDER';
 
   @override
   String dnsResultLatency(int ms) {
@@ -679,9 +558,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get osUnknown => 'Unknown OS';
-
-  @override
-  String get osDetectionFailure => 'Could not determine OS';
 
   @override
   String get osDetectedLabel => 'OS DETECTED';
@@ -729,32 +605,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filterOther => 'OTHER';
-
-  @override
-  String lanDiscoveryEvidence(String devices) {
-    return 'Discovered: $devices';
-  }
-
-  @override
-  String gatewayPortsExposedEvidence(String ports) {
-    return 'Open Ports: $ports';
-  }
-
-  @override
-  String openServiceDetectedEvidence(String ip, int port, String service) {
-    return 'Target: $ip, Port: $port, Service: $service';
-  }
-
-  @override
-  String lanDeviceDiscoveredEvidence(String ip, String mac, String vendor) {
-    return 'IP: $ip, MAC: $mac, Vendor: $vendor';
-  }
-
-  @override
-  String get runTest => 'RUN TEST';
-
-  @override
-  String get integrityCheck => 'INTEGRITY CHECK';
 
   @override
   String get authLocalSystem => 'AUTH_LOCAL_SYSTEM';
@@ -898,21 +748,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get evilTwinActionHardwareVendor => 'The two routers come from different hardware vendors — your real router shouldn\'t suddenly change manufacturer.';
 
   @override
-  String evidenceDiscoveredDevices(String devices) {
-    return 'Discovered: $devices';
-  }
-
-  @override
-  String evidenceVulnerablePorts(String host) {
-    return 'Host $host has open ports that may be vulnerable.';
-  }
-
-  @override
-  String evidenceNoEncryption(String network) {
-    return 'The access point advertises no encryption for $network.';
-  }
-
-  @override
   String get ipAddrLabel => 'IP_ADDR';
 
   @override
@@ -963,9 +798,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get networkSecurity => 'Network Security';
 
   @override
-  String get arpInfoAction => 'ARP INFO';
-
-  @override
   String get portScanCommonPorts => 'COMMON PORTS';
 
   @override
@@ -982,9 +814,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get portScanEndPort => 'END PORT';
-
-  @override
-  String get portScanInvalidRange => 'Invalid port range';
 
   @override
   String get portScanTooManyPorts => 'Scanning too many ports might be slow';
@@ -1004,18 +833,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get portScanNoPortsProbed => 'No ports probed yet. Run a port scan to discover open services.';
-
-  @override
-  String get arpInfoLabel => 'ARP DATA';
-
-  @override
-  String get scanningPortsTitle => 'SCANNING PORTS...';
-
-  @override
-  String get lookingUpHostnameTitle => 'LOOKING UP HOSTNAME...';
-
-  @override
-  String get fetchingArpTitle => 'FETCHING ARP DATA...';
 
   @override
   String get capabilitiesLabel => 'CAPABILITIES';
@@ -1090,9 +907,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cidrTargetLabel => 'CIDR TARGET';
 
   @override
-  String get anonymousNode => 'ANONYMOUS NODE';
-
-  @override
   String portsCountLabel(int count) {
     return '$count PORTS';
   }
@@ -1131,78 +945,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get securitySummaryCritical => 'Warning: This network is not secure. Anyone nearby may be able to see your internet traffic. Use a VPN or switch networks.';
 
   @override
-  String get vulnerabilityOpenNetworkTitle => 'Open Network';
-
-  @override
-  String get vulnerabilityOpenNetworkDesc => 'No encryption detected. All traffic can be sniffed in plaintext.';
-
-  @override
-  String get vulnerabilityOpenNetworkRec => 'Avoid sensitive activity. Prefer trusted VPN or different network.';
-
-  @override
-  String get vulnerabilityWepTitle => 'WEP Encryption';
-
-  @override
-  String get vulnerabilityWepDesc => 'WEP is deprecated and can be cracked quickly.';
-
-  @override
-  String get vulnerabilityWepRec => 'Reconfigure AP to WPA2 or WPA3 immediately.';
-
-  @override
-  String get vulnerabilityLegacyWpaTitle => 'Legacy WPA';
-
-  @override
-  String get vulnerabilityLegacyWpaDesc => 'WPA/TKIP is older and weaker against modern attack techniques.';
-
-  @override
-  String get vulnerabilityLegacyWpaRec => 'Upgrade AP and clients to WPA2/WPA3.';
-
-  @override
-  String get vulnerabilityHiddenSsidTitle => 'Hidden SSID';
-
-  @override
-  String get vulnerabilityHiddenSsidDesc => 'Hidden SSIDs are still discoverable and may hurt compatibility.';
-
-  @override
-  String get vulnerabilityHiddenSsidRec => 'Hidden SSID alone is not protection. Focus on strong encryption.';
-
-  @override
-  String get vulnerabilityWeakSignalTitle => 'Very Weak Signal';
-
-  @override
-  String get vulnerabilityWeakSignalDesc => 'Weak signal can indicate unstable links and spoofing susceptibility.';
-
-  @override
-  String get vulnerabilityWeakSignalRec => 'Move closer to AP or validate BSSID consistency.';
-
-  @override
-  String get vulnerabilityWpsTitle => 'WPS Enabled';
-
-  @override
-  String get vulnerabilityWpsDesc => 'Wi-Fi Protected Setup (WPS) is enabled. The WPS PIN mode can be brute-forced in hours using Pixie Dust attack, effectively bypassing any password.';
-
-  @override
-  String get vulnerabilityWpsRec => 'Disable WPS in your router admin panel. Use WPA2/WPA3 passphrase only.';
-
-  @override
-  String get vulnerabilityPmfTitle => 'Management Frames Unprotected';
-
-  @override
-  String get vulnerabilityPmfDesc => 'This access point does not enforce Protected Management Frames (PMF / 802.11w). Unprotected management frames allow an attacker to forge deauthentication packets and disconnect clients.';
-
-  @override
-  String get vulnerabilityPmfRec => 'Enable PMF in router settings (often labelled \'802.11w\' or \'Management Frame Protection\'). WPA3 requires PMF by default.';
-
-  @override
-  String get vulnerabilityEvilTwinTitle => 'Potential Evil Twin';
-
-  @override
-  String get vulnerabilityEvilTwinDesc => 'SSID appears with conflicting security/channel fingerprint nearby.';
-
-  @override
-  String get vulnerabilityEvilTwinRec => 'Verify BSSID and certificate before authentication or data exchange.';
-
-  @override
   String get riskFactorNoEncryption => 'No encryption in use';
 
   @override
@@ -1227,9 +969,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get refresh => 'Refresh';
 
   @override
-  String get addZonePoint => 'Add Zone Point';
-
-  @override
   String get cancel => 'CANCEL';
 
   @override
@@ -1242,18 +981,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get temporalHeatmap => 'Temporal Heatmap';
 
   @override
-  String get failedToSaveHeatmapPoint => 'Failed to save heatmap point';
-
-  @override
   String signalMonitoringTitle(String ssid) {
     return 'SIGNAL MONITORING: $ssid';
   }
 
   @override
   String get heatmapTooltip => 'Heatmap';
-
-  @override
-  String get tagCurrentPointTooltip => 'Tag current point';
 
   @override
   String get signalCaps => 'SIGNAL';
@@ -1265,25 +998,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get frequencyCaps => 'FREQ';
 
   @override
-  String heatmapPointAdded(String zone) {
-    return 'Heatmap point added for $zone';
-  }
-
-  @override
-  String get zoneTagLabel => 'Zone tag (e.g. Kitchen)';
-
-  @override
   String errorPrefix(String message) {
     return 'Error: $message';
   }
-
-  @override
-  String noHeatmapPointsYet(String bssid) {
-    return 'No heatmap points yet for $bssid';
-  }
-
-  @override
-  String get averageSignalByZone => 'Average signal by zone';
 
   @override
   String bandChannels(String band) {
@@ -1335,9 +1052,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get spectrumOptimizationCaps => 'SPECTRUM OPTIMIZATION';
 
   @override
-  String get spectrumOptimizationDesc => 'Analyze channel congestion & interference';
-
-  @override
   String get qualityExcellent => 'Excellent';
 
   @override
@@ -1362,9 +1076,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noHistoryPlaceholder => 'No history yet.\nChannel ratings are recorded each time you open this screen.';
-
-  @override
-  String get currentSessionInfo => 'Current session — higher score = less congested.';
 
   @override
   String historySummaryInfo(int sessions, int samples) {
@@ -1411,12 +1122,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get speedTestHeader => 'SPEED TEST';
 
   @override
-  String get startTest => 'START TEST';
-
-  @override
-  String get testAgain => 'TEST AGAIN';
-
-  @override
   String get commandCenters => 'COMMAND CENTERS';
 
   @override
@@ -1432,12 +1137,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get networkMesh => 'Network Mesh';
 
   @override
-  String get tuningTitle => 'TUNING';
-
-  @override
-  String get systemConfig => 'System Config';
-
-  @override
   String get phasePing => 'PHASE: PING';
 
   @override
@@ -1448,9 +1147,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get phaseDone => 'PHASE: DONE';
-
-  @override
-  String get riskScore => 'Risk Score';
 
   @override
   String get loading => 'Loading...';
@@ -1499,36 +1195,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String securityEventSeverity(String severity, String Low, String Medium, String Info, String Warning, String High, String Critical) {
-    String _temp0 = intl.Intl.selectLogic(
-      severity,
-      {
-        'low': 'Low',
-        'medium': 'Medium',
-        'info': 'Info',
-        'warning': 'Warning',
-        'high': 'High',
-        'critical': 'Critical',
-        'other': '$severity',
-      },
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String evilTwinEvidence(String expected, String found) {
-    return 'BSSID mismatch! Expected: $expected, Found: $found. High probability of an Evil Twin Access Point.';
-  }
-
-  @override
-  String get rogueApEvidence => 'Randomized/LAA MAC detected on known network! This is highly unusual for legitimate Access Points and may indicate a rogue device.';
-
-  @override
-  String downgradeEvidence(String oldSec, String newSec) {
-    return 'Encryption profile changed from $oldSec to $newSec. Possible downgrade attack.';
-  }
-
-  @override
   String get historyAllBands => 'ALL';
 
   @override
@@ -1568,9 +1234,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dnsHijacked => 'HIJACKED';
 
   @override
-  String get dnsVerifyIntegrity => 'Run a scan to verify DNS integrity';
-
-  @override
   String dnsLastCheck(String hour, String minute) {
     return 'Last check: $hour:$minute';
   }
@@ -1592,12 +1255,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get performanceTitle => 'SPEED TEST';
-
-  @override
-  String get performanceStart => 'START TEST';
-
-  @override
-  String get performanceRetry => 'RUN AGAIN';
 
   @override
   String get jitterLabel => 'JITTER';
@@ -1629,11 +1286,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get wpsWarningBody => 'One or more nearby networks have WPS active. This can be exploited to gain unauthorized access.';
 
   @override
-  String wpsAffectedNetworks(int count) {
-    return '$count network(s) with WPS enabled';
-  }
-
-  @override
   String get heatmapTutorialTitle => 'HOW TO READ THE HEATMAP';
 
   @override
@@ -1656,9 +1308,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noSpeedTestHistory => 'No tests recorded yet. Run your first test above.';
-
-  @override
-  String get networkScoreLabel => 'NETWORK SCORE';
 
   @override
   String get vulnLabTitle => 'VULNERABILITY LAB';
@@ -1696,28 +1345,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dnsEvidenceTitle => 'DNS EVIDENCE';
 
   @override
-  String get shieldLabTitle => 'SHIELD LABORATORY';
-
-  @override
-  String get discoveredDevices => 'DISCOVERED DEVICES';
-
-  @override
-  String get openPortsFound => 'OPEN PORTS DETECTED';
-
-  @override
-  String get experimentalFeature => 'EXPERIMENTAL';
-
-  @override
-  String get deepScanDescription => 'Active port scanning and LAN discovery (May trigger network alerts)';
-
-  @override
   String get dnsProtocol => 'PROTOCOL';
 
   @override
   String get dnsSsec => 'DNSSEC';
-
-  @override
-  String get dnsWhatIsThat => 'What is that?';
 
   @override
   String get dnsInfoHijackingTitle => 'DNS Hijacking';
@@ -1876,9 +1507,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get guideCredentialsBody => 'When the admin page asks you to sign in:\n\n1. Look at the bottom or back of your router — there\'s usually a sticker with the default Wi-Fi password AND the admin login. The admin login is labeled \"Admin password\", \"Web password\", \"Modem password\" or \"Yönetim şifresi\". This is NOT the same as the Wi-Fi password.\n\n2. If your router has no sticker, try these factory defaults:\n   • admin / admin\n   • admin / password\n   • admin / 1234\n   • root / admin\n   • Username empty / password admin\n\n3. If your ISP installed the router (Türk Telekom, TurkNet, Vodafone, Superonline, etc.), the admin password is often the last 6-8 characters of the device serial number, also on the sticker. Many ISPs ship a unique password printed only on the sticker.\n\n4. If nothing works: someone has changed the password before. You can press and hold the RESET pin on the back of the router for 10-15 seconds to restore factory defaults — but this also wipes your Wi-Fi name and password, so you\'ll have to set them up again.\n\n5. Some modern routers replace the web admin with a phone app (e.g. TP-Link Tether, ASUS Router, Mi WiFi, Huawei AI Life). If the web page redirects you to install an app, install it and continue from there.';
 
   @override
-  String get guideAddressLabel => 'Admin address';
-
-  @override
   String get guideCopyAddress => 'Copy';
 
   @override
@@ -1971,9 +1599,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get countryAllowlistHeader => 'Region';
 
   @override
-  String get countryAllowlistInfoBody => 'Wi-Fi channels are regulated differently per country. Channels disallowed in your region are dimmed and can\'t be used by your router. Switch the region if you\'re abroad — but the recommendation will only show legal channels for the selected region.';
-
-  @override
   String get channelIllegalBadge => 'NOT ALLOWED';
 
   @override
@@ -2048,9 +1673,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get connectedChannelGuideLabel => 'YOU';
-
-  @override
-  String get unstableChannelLabel => 'UNSTABLE';
 
   @override
   String get unstableChannelTooltip => 'This channel\'s quality has fluctuated by more than 1.5 points across the last sessions';
@@ -2537,12 +2159,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allCategoriesLabel => 'All categories (single bundle)';
 
   @override
-  String get jsonFormatLabel => 'JSON — full, machine-readable';
-
-  @override
-  String get htmlFormatLabel => 'HTML — viewable in browser';
-
-  @override
   String get autoLabel => 'Auto';
 
   @override
@@ -2562,12 +2178,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPolicyTitle => 'Privacy Policy';
-
-  @override
-  String get noConnectedNetwork => 'No connected network';
-
-  @override
-  String get ssidNotAvailable => 'SSID not available';
 
   @override
   String get encryptionAndConfigTitle => 'ENCRYPTION & CONFIG';
@@ -2819,9 +2429,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hardeningTitle => 'ROUTER HARDENING';
 
   @override
-  String get hardeningSubtitle => 'SECURE YOUR GATEWAY';
-
-  @override
   String get hardeningMarkDone => 'MARK DONE';
 
   @override
@@ -2991,16 +2598,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exportPrivacyNote => 'Stays on your device until you share it. Nothing is sent to any server.';
-
-  @override
-  String exportFailedMessage(String error) {
-    return 'Export failed: $error';
-  }
-
-  @override
-  String noDataInCategoryMessage(String category) {
-    return 'No data in \"$category\" yet.';
-  }
 
   @override
   String get categoryWifiScanHistory => 'Wi-Fi scan history';
@@ -3655,24 +3252,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dnsHijacking => 'DNS hijacking';
 
   @override
-  String get speedDoctorDesc => 'Resolve latency and throughput issues.';
-
-  @override
-  String get bestChannelTitle => 'BEST CHANNEL';
-
-  @override
-  String bestChannelDesc(int channel) {
-    return 'Switching to channel $channel could improve quality.';
-  }
-
-  @override
   String networksWithCount(int count) {
     return 'Networks ($count)';
-  }
-
-  @override
-  String throughputMbps(int count) {
-    return '$count Mbps';
   }
 
   @override
@@ -3780,13 +3361,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get realignCompassTooltip => 'Realign Compass';
 
   @override
-  String get osDetectLabel => 'OS DETECT';
-
-  @override
   String get exportCsvLabel => 'Export CSV';
-
-  @override
-  String get thisDeviceLabel => 'This Device';
 
   @override
   String get setDeviceType => 'Set Device Type';
@@ -3955,18 +3530,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get whatIsThisHowToFix => 'What is this? · How to fix';
-
-  @override
-  String get homePlanWifiHeatmap => 'HOME PLAN + WIFI HEATMAP';
-
-  @override
-  String get homePlanWifiHeatmapDesc => 'Outline, coverage, and weak zones';
-
-  @override
-  String get openSavedSurveys => 'Open saved surveys';
-
-  @override
-  String get toggleViewBlueprintNeon => 'Toggle view (Blueprint / Neon)';
 
   @override
   String get preview => 'Preview';
@@ -4718,9 +4281,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get endSurveyDiscardBody => 'Your current survey data will be lost if you discard it. Save or Discard?';
-
-  @override
   String get legendAndNodes => 'LEGEND & NODES';
 
   @override
@@ -5237,31 +4797,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lanDiscoveryTitle => 'LAN Devices Discovered';
 
   @override
-  String lanDiscoveryDesc(int count) {
-    return 'Active scanning identified $count devices on this network.';
-  }
-
-  @override
   String get lanDiscoveryRecommendation => 'Ensure you recognize all devices on your local network.';
 
   @override
   String get gatewayPortsExposedTitle => 'Gateway Ports Exposed';
 
   @override
-  String gatewayPortsExposedDesc(String ip) {
-    return 'Host $ip has open ports that may be vulnerable.';
-  }
-
-  @override
   String get gatewayPortsExposedRecommendation => 'Disable unnecessary services on the gateway router and ensure strong passwords.';
 
   @override
   String get openServiceDetectedTitle => 'Open Service Detected';
-
-  @override
-  String openServiceDetectedDesc(String ip, String service, int port) {
-    return 'Host $ip is running $service on port $port.';
-  }
 
   @override
   String get openServiceDetectedRecommendation => 'Ensure this service is intended to be accessible.';
@@ -5295,5 +4840,45 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String channelWithRating(int channel, String rating) {
     return 'CH $channel ($rating)';
+  }
+
+  @override
+  String lanDiscoveryEvidence(String devices) {
+    return 'Discovered: $devices';
+  }
+
+  @override
+  String gatewayPortsExposedEvidence(String ports) {
+    return 'Open Ports: $ports';
+  }
+
+  @override
+  String openServiceDetectedEvidence(String ip, int port, String service) {
+    return 'Target: $ip, Port: $port, Service: $service';
+  }
+
+  @override
+  String lanDeviceDiscoveredEvidence(String ip, String mac, String vendor) {
+    return 'IP: $ip, MAC: $mac, Vendor: $vendor';
+  }
+
+  @override
+  String evidenceNoEncryption(String network) {
+    return 'The access point advertises no encryption for $network.';
+  }
+
+  @override
+  String lanDiscoveryDesc(int count) {
+    return 'Active scanning identified $count devices on this network.';
+  }
+
+  @override
+  String gatewayPortsExposedDesc(String ip) {
+    return 'Host $ip has open ports that may be vulnerable.';
+  }
+
+  @override
+  String openServiceDetectedDesc(String ip, String service, int port) {
+    return 'Host $ip is running $service on port $port.';
   }
 }

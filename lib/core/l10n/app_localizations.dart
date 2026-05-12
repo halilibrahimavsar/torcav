@@ -105,12 +105,6 @@ abstract class AppLocalizations {
   /// **'TORCAV'**
   String get appName;
 
-  /// Title for the wifi scan screen.
-  ///
-  /// In en, this message translates to:
-  /// **'WIFI SCAN'**
-  String get wifiScanTitle;
-
   /// Premium subscription label.
   ///
   /// In en, this message translates to:
@@ -159,18 +153,6 @@ abstract class AppLocalizations {
   /// **'Smart TV'**
   String get deviceTypeSmartTV;
 
-  /// Device or OS label for deviceTypeIoTSensor
-  ///
-  /// In en, this message translates to:
-  /// **'IoT Sensor'**
-  String get deviceTypeIoTSensor;
-
-  /// Device or OS label for deviceTypePrinter
-  ///
-  /// In en, this message translates to:
-  /// **'Printer'**
-  String get deviceTypePrinter;
-
   /// Device or OS label for deviceTypeNASStorage
   ///
   /// In en, this message translates to:
@@ -207,23 +189,11 @@ abstract class AppLocalizations {
   /// **'Unknown'**
   String get deviceTypeUnknown;
 
-  /// Text shown when the search bar is empty.
-  ///
-  /// In en, this message translates to:
-  /// **'SEARCHING NETWORKS...'**
-  String get searchingNetworksPlaceholder;
-
   /// Default action name for Linux notifications.
   ///
   /// In en, this message translates to:
   /// **'Open notification'**
   String get notificationOpenAction;
-
-  /// Placeholder for the search input.
-  ///
-  /// In en, this message translates to:
-  /// **'FILTER NETWORKS...'**
-  String get filterNetworksPlaceholder;
 
   /// Passive scan label.
   ///
@@ -236,18 +206,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Deep Scan'**
   String get deepScan;
-
-  /// Title for the experimental deep scan toggle in Security Center.
-  ///
-  /// In en, this message translates to:
-  /// **'Deep Scan (Experimental)'**
-  String get deepScanExperimentalTitle;
-
-  /// Subtitle for the experimental deep scan toggle in Security Center.
-  ///
-  /// In en, this message translates to:
-  /// **'Actively probe LAN for devices and ports. Increased battery usage.'**
-  String get deepScanExperimentalSubtitle;
 
   /// Title for scan mode info.
   ///
@@ -312,12 +270,6 @@ abstract class AppLocalizations {
   /// Dashboard section label.
   ///
   /// In en, this message translates to:
-  /// **'OPERATIONS'**
-  String get operationsLabel;
-
-  /// Dashboard section label.
-  ///
-  /// In en, this message translates to:
   /// **'TOPOLOGY'**
   String get topologyLabel;
 
@@ -351,12 +303,6 @@ abstract class AppLocalizations {
   /// **'GATEWAY'**
   String get gatewayLabel;
 
-  /// Access engine status.
-  ///
-  /// In en, this message translates to:
-  /// **'ACCESS ENGINE'**
-  String get accessEngine;
-
   /// Snapshot section title.
   ///
   /// In en, this message translates to:
@@ -368,18 +314,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No scan snapshot is available yet. Run a Wi-Fi scan first.'**
   String get noSnapshotAvailable;
-
-  /// Safety mode text.
-  ///
-  /// In en, this message translates to:
-  /// **'Strict safety protocols enabled'**
-  String get strictSafetyEnabled;
-
-  /// Monitoring status text.
-  ///
-  /// In en, this message translates to:
-  /// **'Active monitoring in progress...'**
-  String get activeMonitoringProgress;
 
   /// Comparison page title.
   ///
@@ -416,18 +350,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'CHANGED ({count})'**
   String changedNetworksCountLabel(int count);
-
-  /// Plus New Label
-  ///
-  /// In en, this message translates to:
-  /// **'+ NEW'**
-  String get plusNewLabel;
-
-  /// Gone Label
-  ///
-  /// In en, this message translates to:
-  /// **'GONE'**
-  String get goneLabel;
 
   /// Hidden Label
   ///
@@ -699,18 +621,6 @@ abstract class AppLocalizations {
   /// **'THREATS DETECTED'**
   String get threatsDetected;
 
-  /// Trusted Label
-  ///
-  /// In en, this message translates to:
-  /// **'TRUSTED'**
-  String get trustedLabel;
-
-  /// Security Event Title
-  ///
-  /// In en, this message translates to:
-  /// **'Security Event'**
-  String get securityEventTitle;
-
   /// Network Recon Title
   ///
   /// In en, this message translates to:
@@ -741,48 +651,6 @@ abstract class AppLocalizations {
   /// **'{count} new devices on your network'**
   String newDevicesFound(int count);
 
-  /// Target Ip Subnet
-  ///
-  /// In en, this message translates to:
-  /// **'Target IP / Subnet'**
-  String get targetIpSubnet;
-
-  /// Scan Profile Fast
-  ///
-  /// In en, this message translates to:
-  /// **'Fast'**
-  String get scanProfileFast;
-
-  /// Scan Profile Balanced
-  ///
-  /// In en, this message translates to:
-  /// **'Balanced'**
-  String get scanProfileBalanced;
-
-  /// Scan Profile Aggressive
-  ///
-  /// In en, this message translates to:
-  /// **'Aggressive'**
-  String get scanProfileAggressive;
-
-  /// Scan Profile Normal
-  ///
-  /// In en, this message translates to:
-  /// **'Normal'**
-  String get scanProfileNormal;
-
-  /// Scan Profile Intense
-  ///
-  /// In en, this message translates to:
-  /// **'Intense'**
-  String get scanProfileIntense;
-
-  /// Vuln Only Label
-  ///
-  /// In en, this message translates to:
-  /// **'Vulnerabilities Only'**
-  String get vulnOnlyLabel;
-
   /// Lan Recon Title
   ///
   /// In en, this message translates to:
@@ -800,12 +668,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'SCAN'**
   String get scanAllCaps;
-
-  /// Channel Rating Title
-  ///
-  /// In en, this message translates to:
-  /// **'CHANNEL RATING'**
-  String get channelRatingTitle;
 
   /// Refresh Scan Tooltip
   ///
@@ -855,29 +717,11 @@ abstract class AppLocalizations {
   /// **'Analyzing...'**
   String get analyzing;
 
-  /// History Label
-  ///
-  /// In en, this message translates to:
-  /// **'HISTORY'**
-  String get historyLabel;
-
-  /// Failed Load Topology
-  ///
-  /// In en, this message translates to:
-  /// **'Failed to load topology: {error}'**
-  String failedLoadTopology(String error);
-
   /// Traffic Label
   ///
   /// In en, this message translates to:
   /// **'TRAFFIC'**
   String get trafficLabel;
-
-  /// Force Label
-  ///
-  /// In en, this message translates to:
-  /// **'FORCE'**
-  String get forceLabel;
 
   /// Normal Speed
   ///
@@ -896,12 +740,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OVERDRIVE'**
   String get overdriveSpeed;
-
-  /// Topology Map Title
-  ///
-  /// In en, this message translates to:
-  /// **'TOPOLOGY MAP'**
-  String get topologyMapTitle;
 
   /// No Topology Data
   ///
@@ -1011,18 +849,6 @@ abstract class AppLocalizations {
   /// **'TEST LATENCY'**
   String get pingAction;
 
-  /// Ping success message
-  ///
-  /// In en, this message translates to:
-  /// **'Latency: {ms}ms'**
-  String pingSuccess(int ms);
-
-  /// Ping failure message
-  ///
-  /// In en, this message translates to:
-  /// **'Host Unreachable'**
-  String get pingFailure;
-
   /// Label for settingsTitle
   ///
   /// In en, this message translates to:
@@ -1082,12 +908,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Neural Pulse (Animated)'**
   String get backgroundNeuralPulse;
-
-  /// Info message explaining why background selection is disabled in light mode.
-  ///
-  /// In en, this message translates to:
-  /// **'Cyber grid styles are optimized for dark mode and only available when using the dark theme.'**
-  String get backgroundSelectionRestricted;
 
   /// Settings Scan Behavior
   ///
@@ -1227,41 +1047,17 @@ abstract class AppLocalizations {
   /// **'SECURITY CENTER'**
   String get defenseTitle;
 
-  /// Shield Lab Ready
-  ///
-  /// In en, this message translates to:
-  /// **'Ready for Assessment'**
-  String get shieldLabReady;
-
-  /// Deep Scan Running
-  ///
-  /// In en, this message translates to:
-  /// **'Scan in progress...'**
-  String get deepScanRunning;
-
   /// Known Networks
   ///
   /// In en, this message translates to:
   /// **'Known Networks'**
   String get knownNetworks;
 
-  /// No Known Networks Yet
-  ///
-  /// In en, this message translates to:
-  /// **'No known networks yet'**
-  String get noKnownNetworksYet;
-
   /// No Identified Networks
   ///
   /// In en, this message translates to:
   /// **'No identified networks in laboratory archives'**
   String get noIdentifiedNetworks;
-
-  /// Known Networks Dashboard
-  ///
-  /// In en, this message translates to:
-  /// **'KNOWN NETWORKS ARCHIVE'**
-  String get knownNetworksDashboard;
 
   /// Security Timeline
   ///
@@ -1281,47 +1077,17 @@ abstract class AppLocalizations {
   /// **'DNS INTEGRITY'**
   String get dnsSecurityTitle;
 
-  /// Body for DNS Security card
-  ///
-  /// In en, this message translates to:
-  /// **'Verify that your DNS queries are not being hijacked or spoofed.'**
-  String get dnsSecurityBody;
-
-  /// DNS Integrity status label
-  ///
-  /// In en, this message translates to:
-  /// **'DNS INTEGRITY'**
-  String get dnsIntegrity;
-
   /// Section title for DNS benchmark
   ///
   /// In en, this message translates to:
   /// **'PERFORMANCE BENCHMARK'**
   String get dnsPerformanceBenchmark;
 
-  /// Label for latency
-  ///
-  /// In en, this message translates to:
-  /// **'LATENCY'**
-  String get dnsLatency;
-
   /// Badge for recommended provider
   ///
   /// In en, this message translates to:
   /// **'RECOMMENDED'**
   String get dnsRecommended;
-
-  /// Label for fastest provider
-  ///
-  /// In en, this message translates to:
-  /// **'FASTEST'**
-  String get dnsFastest;
-
-  /// Provider column header
-  ///
-  /// In en, this message translates to:
-  /// **'PROVIDER'**
-  String get dnsProvider;
 
   /// Formatted latency value
   ///
@@ -1352,12 +1118,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unknown OS'**
   String get osUnknown;
-
-  /// Device or OS label for osDetectionFailure
-  ///
-  /// In en, this message translates to:
-  /// **'Could not determine OS'**
-  String get osDetectionFailure;
 
   /// OS Detection Label
   ///
@@ -1448,42 +1208,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OTHER'**
   String get filterOther;
-
-  /// Label for lanDiscoveryEvidence
-  ///
-  /// In en, this message translates to:
-  /// **'Discovered: {devices}'**
-  String lanDiscoveryEvidence(String devices);
-
-  /// Label for gatewayPortsExposedEvidence
-  ///
-  /// In en, this message translates to:
-  /// **'Open Ports: {ports}'**
-  String gatewayPortsExposedEvidence(String ports);
-
-  /// Label for openServiceDetectedEvidence
-  ///
-  /// In en, this message translates to:
-  /// **'Target: {ip}, Port: {port}, Service: {service}'**
-  String openServiceDetectedEvidence(String ip, int port, String service);
-
-  /// Label for lanDeviceDiscoveredEvidence
-  ///
-  /// In en, this message translates to:
-  /// **'IP: {ip}, MAC: {mac}, Vendor: {vendor}'**
-  String lanDeviceDiscoveredEvidence(String ip, String mac, String vendor);
-
-  /// Label for run test button
-  ///
-  /// In en, this message translates to:
-  /// **'RUN TEST'**
-  String get runTest;
-
-  /// Label for integrity check
-  ///
-  /// In en, this message translates to:
-  /// **'INTEGRITY CHECK'**
-  String get integrityCheck;
 
   /// Auth Local System
   ///
@@ -1743,24 +1467,6 @@ abstract class AppLocalizations {
   /// **'The two routers come from different hardware vendors — your real router shouldn\'t suddenly change manufacturer.'**
   String get evilTwinActionHardwareVendor;
 
-  /// Label for evidenceDiscoveredDevices
-  ///
-  /// In en, this message translates to:
-  /// **'Discovered: {devices}'**
-  String evidenceDiscoveredDevices(String devices);
-
-  /// Label for evidenceVulnerablePorts
-  ///
-  /// In en, this message translates to:
-  /// **'Host {host} has open ports that may be vulnerable.'**
-  String evidenceVulnerablePorts(String host);
-
-  /// Label for evidenceNoEncryption
-  ///
-  /// In en, this message translates to:
-  /// **'The access point advertises no encryption for {network}.'**
-  String evidenceNoEncryption(String network);
-
   /// Ip Addr Label
   ///
   /// In en, this message translates to:
@@ -1857,12 +1563,6 @@ abstract class AppLocalizations {
   /// **'Network Security'**
   String get networkSecurity;
 
-  /// Action to get ARP information for a device
-  ///
-  /// In en, this message translates to:
-  /// **'ARP INFO'**
-  String get arpInfoAction;
-
   /// Label for common ports scanning mode
   ///
   /// In en, this message translates to:
@@ -1899,12 +1599,6 @@ abstract class AppLocalizations {
   /// **'END PORT'**
   String get portScanEndPort;
 
-  /// Error message for invalid port range
-  ///
-  /// In en, this message translates to:
-  /// **'Invalid port range'**
-  String get portScanInvalidRange;
-
   /// Warning for large port range
   ///
   /// In en, this message translates to:
@@ -1934,30 +1628,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No ports probed yet. Run a port scan to discover open services.'**
   String get portScanNoPortsProbed;
-
-  /// Label for ARP information
-  ///
-  /// In en, this message translates to:
-  /// **'ARP DATA'**
-  String get arpInfoLabel;
-
-  /// Loading title for port scanning
-  ///
-  /// In en, this message translates to:
-  /// **'SCANNING PORTS...'**
-  String get scanningPortsTitle;
-
-  /// Loading title for hostname lookup
-  ///
-  /// In en, this message translates to:
-  /// **'LOOKING UP HOSTNAME...'**
-  String get lookingUpHostnameTitle;
-
-  /// Loading title for fetching ARP info
-  ///
-  /// In en, this message translates to:
-  /// **'FETCHING ARP DATA...'**
-  String get fetchingArpTitle;
 
   /// Capabilities Label
   ///
@@ -2103,12 +1773,6 @@ abstract class AppLocalizations {
   /// **'CIDR TARGET'**
   String get cidrTargetLabel;
 
-  /// Anonymous Node
-  ///
-  /// In en, this message translates to:
-  /// **'ANONYMOUS NODE'**
-  String get anonymousNode;
-
   /// Ports Count Label
   ///
   /// In en, this message translates to:
@@ -2181,150 +1845,6 @@ abstract class AppLocalizations {
   /// **'Warning: This network is not secure. Anyone nearby may be able to see your internet traffic. Use a VPN or switch networks.'**
   String get securitySummaryCritical;
 
-  /// Vulnerability Open Network Title
-  ///
-  /// In en, this message translates to:
-  /// **'Open Network'**
-  String get vulnerabilityOpenNetworkTitle;
-
-  /// Vulnerability Open Network Desc
-  ///
-  /// In en, this message translates to:
-  /// **'No encryption detected. All traffic can be sniffed in plaintext.'**
-  String get vulnerabilityOpenNetworkDesc;
-
-  /// Vulnerability Open Network Rec
-  ///
-  /// In en, this message translates to:
-  /// **'Avoid sensitive activity. Prefer trusted VPN or different network.'**
-  String get vulnerabilityOpenNetworkRec;
-
-  /// Vulnerability Wep Title
-  ///
-  /// In en, this message translates to:
-  /// **'WEP Encryption'**
-  String get vulnerabilityWepTitle;
-
-  /// Vulnerability Wep Desc
-  ///
-  /// In en, this message translates to:
-  /// **'WEP is deprecated and can be cracked quickly.'**
-  String get vulnerabilityWepDesc;
-
-  /// Vulnerability Wep Rec
-  ///
-  /// In en, this message translates to:
-  /// **'Reconfigure AP to WPA2 or WPA3 immediately.'**
-  String get vulnerabilityWepRec;
-
-  /// Vulnerability Legacy Wpa Title
-  ///
-  /// In en, this message translates to:
-  /// **'Legacy WPA'**
-  String get vulnerabilityLegacyWpaTitle;
-
-  /// Vulnerability Legacy Wpa Desc
-  ///
-  /// In en, this message translates to:
-  /// **'WPA/TKIP is older and weaker against modern attack techniques.'**
-  String get vulnerabilityLegacyWpaDesc;
-
-  /// Vulnerability Legacy Wpa Rec
-  ///
-  /// In en, this message translates to:
-  /// **'Upgrade AP and clients to WPA2/WPA3.'**
-  String get vulnerabilityLegacyWpaRec;
-
-  /// Vulnerability Hidden Ssid Title
-  ///
-  /// In en, this message translates to:
-  /// **'Hidden SSID'**
-  String get vulnerabilityHiddenSsidTitle;
-
-  /// Vulnerability Hidden Ssid Desc
-  ///
-  /// In en, this message translates to:
-  /// **'Hidden SSIDs are still discoverable and may hurt compatibility.'**
-  String get vulnerabilityHiddenSsidDesc;
-
-  /// Vulnerability Hidden Ssid Rec
-  ///
-  /// In en, this message translates to:
-  /// **'Hidden SSID alone is not protection. Focus on strong encryption.'**
-  String get vulnerabilityHiddenSsidRec;
-
-  /// Vulnerability Weak Signal Title
-  ///
-  /// In en, this message translates to:
-  /// **'Very Weak Signal'**
-  String get vulnerabilityWeakSignalTitle;
-
-  /// Vulnerability Weak Signal Desc
-  ///
-  /// In en, this message translates to:
-  /// **'Weak signal can indicate unstable links and spoofing susceptibility.'**
-  String get vulnerabilityWeakSignalDesc;
-
-  /// Vulnerability Weak Signal Rec
-  ///
-  /// In en, this message translates to:
-  /// **'Move closer to AP or validate BSSID consistency.'**
-  String get vulnerabilityWeakSignalRec;
-
-  /// Vulnerability Wps Title
-  ///
-  /// In en, this message translates to:
-  /// **'WPS Enabled'**
-  String get vulnerabilityWpsTitle;
-
-  /// Vulnerability Wps Desc
-  ///
-  /// In en, this message translates to:
-  /// **'Wi-Fi Protected Setup (WPS) is enabled. The WPS PIN mode can be brute-forced in hours using Pixie Dust attack, effectively bypassing any password.'**
-  String get vulnerabilityWpsDesc;
-
-  /// Vulnerability Wps Rec
-  ///
-  /// In en, this message translates to:
-  /// **'Disable WPS in your router admin panel. Use WPA2/WPA3 passphrase only.'**
-  String get vulnerabilityWpsRec;
-
-  /// Vulnerability Pmf Title
-  ///
-  /// In en, this message translates to:
-  /// **'Management Frames Unprotected'**
-  String get vulnerabilityPmfTitle;
-
-  /// Vulnerability Pmf Desc
-  ///
-  /// In en, this message translates to:
-  /// **'This access point does not enforce Protected Management Frames (PMF / 802.11w). Unprotected management frames allow an attacker to forge deauthentication packets and disconnect clients.'**
-  String get vulnerabilityPmfDesc;
-
-  /// Vulnerability Pmf Rec
-  ///
-  /// In en, this message translates to:
-  /// **'Enable PMF in router settings (often labelled \'802.11w\' or \'Management Frame Protection\'). WPA3 requires PMF by default.'**
-  String get vulnerabilityPmfRec;
-
-  /// Vulnerability Evil Twin Title
-  ///
-  /// In en, this message translates to:
-  /// **'Potential Evil Twin'**
-  String get vulnerabilityEvilTwinTitle;
-
-  /// Vulnerability Evil Twin Desc
-  ///
-  /// In en, this message translates to:
-  /// **'SSID appears with conflicting security/channel fingerprint nearby.'**
-  String get vulnerabilityEvilTwinDesc;
-
-  /// Vulnerability Evil Twin Rec
-  ///
-  /// In en, this message translates to:
-  /// **'Verify BSSID and certificate before authentication or data exchange.'**
-  String get vulnerabilityEvilTwinRec;
-
   /// Risk Factor No Encryption
   ///
   /// In en, this message translates to:
@@ -2373,12 +1893,6 @@ abstract class AppLocalizations {
   /// **'Refresh'**
   String get refresh;
 
-  /// Title for adding a zone point.
-  ///
-  /// In en, this message translates to:
-  /// **'Add Zone Point'**
-  String get addZonePoint;
-
   /// Label for cancel
   ///
   /// In en, this message translates to:
@@ -2403,12 +1917,6 @@ abstract class AppLocalizations {
   /// **'Temporal Heatmap'**
   String get temporalHeatmap;
 
-  /// Failed To Save Heatmap Point
-  ///
-  /// In en, this message translates to:
-  /// **'Failed to save heatmap point'**
-  String get failedToSaveHeatmapPoint;
-
   /// Signal Monitoring Title
   ///
   /// In en, this message translates to:
@@ -2420,12 +1928,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Heatmap'**
   String get heatmapTooltip;
-
-  /// Tag Current Point Tooltip
-  ///
-  /// In en, this message translates to:
-  /// **'Tag current point'**
-  String get tagCurrentPointTooltip;
 
   /// Signal Caps
   ///
@@ -2445,35 +1947,11 @@ abstract class AppLocalizations {
   /// **'FREQ'**
   String get frequencyCaps;
 
-  /// Heatmap Point Added
-  ///
-  /// In en, this message translates to:
-  /// **'Heatmap point added for {zone}'**
-  String heatmapPointAdded(String zone);
-
-  /// Zone Tag Label
-  ///
-  /// In en, this message translates to:
-  /// **'Zone tag (e.g. Kitchen)'**
-  String get zoneTagLabel;
-
   /// Error Prefix
   ///
   /// In en, this message translates to:
   /// **'Error: {message}'**
   String errorPrefix(String message);
-
-  /// No Heatmap Points Yet
-  ///
-  /// In en, this message translates to:
-  /// **'No heatmap points yet for {bssid}'**
-  String noHeatmapPointsYet(String bssid);
-
-  /// Average Signal By Zone
-  ///
-  /// In en, this message translates to:
-  /// **'Average signal by zone'**
-  String get averageSignalByZone;
 
   /// Band Channels
   ///
@@ -2565,12 +2043,6 @@ abstract class AppLocalizations {
   /// **'SPECTRUM OPTIMIZATION'**
   String get spectrumOptimizationCaps;
 
-  /// Spectrum Optimization Desc
-  ///
-  /// In en, this message translates to:
-  /// **'Analyze channel congestion & interference'**
-  String get spectrumOptimizationDesc;
-
   /// Quality Excellent
   ///
   /// In en, this message translates to:
@@ -2618,12 +2090,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No history yet.\nChannel ratings are recorded each time you open this screen.'**
   String get noHistoryPlaceholder;
-
-  /// Current Session Info
-  ///
-  /// In en, this message translates to:
-  /// **'Current session — higher score = less congested.'**
-  String get currentSessionInfo;
 
   /// History Summary Info
   ///
@@ -2709,18 +2175,6 @@ abstract class AppLocalizations {
   /// **'SPEED TEST'**
   String get speedTestHeader;
 
-  /// Start Test
-  ///
-  /// In en, this message translates to:
-  /// **'START TEST'**
-  String get startTest;
-
-  /// Test Again
-  ///
-  /// In en, this message translates to:
-  /// **'TEST AGAIN'**
-  String get testAgain;
-
   /// Command Centers
   ///
   /// In en, this message translates to:
@@ -2751,18 +2205,6 @@ abstract class AppLocalizations {
   /// **'Network Mesh'**
   String get networkMesh;
 
-  /// Tuning Title
-  ///
-  /// In en, this message translates to:
-  /// **'TUNING'**
-  String get tuningTitle;
-
-  /// System Config
-  ///
-  /// In en, this message translates to:
-  /// **'System Config'**
-  String get systemConfig;
-
   /// Phase Ping
   ///
   /// In en, this message translates to:
@@ -2786,12 +2228,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'PHASE: DONE'**
   String get phaseDone;
-
-  /// Risk Score
-  ///
-  /// In en, this message translates to:
-  /// **'Risk Score'**
-  String get riskScore;
 
   /// Loading
   ///
@@ -2846,30 +2282,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst Detected} handshakeCaptureStarted{Handshake Protocol Analysis} handshakeCaptureCompleted{Handshake Protocol Secured} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} arpSpoofingDetected{ARP Spoofing Detected} dnsHijackingDetected{DNS Hijacking Detected} unsupportedOperation{Unsupported Operation} other{{type}}}'**
   String securityEventType(String type);
-
-  /// Name of security severity
-  ///
-  /// In en, this message translates to:
-  /// **'{severity, select, low{Low} medium{Medium} info{Info} warning{Warning} high{High} critical{Critical} other{{severity}}}'**
-  String securityEventSeverity(String severity, String Low, String Medium, String Info, String Warning, String High, String Critical);
-
-  /// Evil twin evidence text
-  ///
-  /// In en, this message translates to:
-  /// **'BSSID mismatch! Expected: {expected}, Found: {found}. High probability of an Evil Twin Access Point.'**
-  String evilTwinEvidence(String expected, String found);
-
-  /// Rogue AP evidence text
-  ///
-  /// In en, this message translates to:
-  /// **'Randomized/LAA MAC detected on known network! This is highly unusual for legitimate Access Points and may indicate a rogue device.'**
-  String get rogueApEvidence;
-
-  /// Downgrade evidence text
-  ///
-  /// In en, this message translates to:
-  /// **'Encryption profile changed from {oldSec} to {newSec}. Possible downgrade attack.'**
-  String downgradeEvidence(String oldSec, String newSec);
 
   /// Label for showing all Wi-Fi bands in history filter.
   ///
@@ -2949,12 +2361,6 @@ abstract class AppLocalizations {
   /// **'HIJACKED'**
   String get dnsHijacked;
 
-  /// Prompt for verifying DNS integrity
-  ///
-  /// In en, this message translates to:
-  /// **'Run a scan to verify DNS integrity'**
-  String get dnsVerifyIntegrity;
-
   /// Last check time for DNS test
   ///
   /// In en, this message translates to:
@@ -2996,18 +2402,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'SPEED TEST'**
   String get performanceTitle;
-
-  /// Start speed test button
-  ///
-  /// In en, this message translates to:
-  /// **'START TEST'**
-  String get performanceStart;
-
-  /// Retry speed test button
-  ///
-  /// In en, this message translates to:
-  /// **'RUN AGAIN'**
-  String get performanceRetry;
 
   /// Jitter stat label
   ///
@@ -3063,12 +2457,6 @@ abstract class AppLocalizations {
   /// **'One or more nearby networks have WPS active. This can be exploited to gain unauthorized access.'**
   String get wpsWarningBody;
 
-  /// WPS affected networks count
-  ///
-  /// In en, this message translates to:
-  /// **'{count} network(s) with WPS enabled'**
-  String wpsAffectedNetworks(int count);
-
   /// Label for heatmapTutorialTitle
   ///
   /// In en, this message translates to:
@@ -3116,12 +2504,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No tests recorded yet. Run your first test above.'**
   String get noSpeedTestHistory;
-
-  /// Security score label on dashboard
-  ///
-  /// In en, this message translates to:
-  /// **'NETWORK SCORE'**
-  String get networkScoreLabel;
 
   /// Vulnerability Lab screen title
   ///
@@ -3189,36 +2571,6 @@ abstract class AppLocalizations {
   /// **'DNS EVIDENCE'**
   String get dnsEvidenceTitle;
 
-  /// Experimental security testing and analysis title
-  ///
-  /// In en, this message translates to:
-  /// **'SHIELD LABORATORY'**
-  String get shieldLabTitle;
-
-  /// Header for LAN devices discovery section
-  ///
-  /// In en, this message translates to:
-  /// **'DISCOVERED DEVICES'**
-  String get discoveredDevices;
-
-  /// Header for open ports list
-  ///
-  /// In en, this message translates to:
-  /// **'OPEN PORTS DETECTED'**
-  String get openPortsFound;
-
-  /// Badge for experimental features
-  ///
-  /// In en, this message translates to:
-  /// **'EXPERIMENTAL'**
-  String get experimentalFeature;
-
-  /// Description for deep scan toggle
-  ///
-  /// In en, this message translates to:
-  /// **'Active port scanning and LAN discovery (May trigger network alerts)'**
-  String get deepScanDescription;
-
   /// Dns protocol
   ///
   /// In en, this message translates to:
@@ -3230,12 +2582,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'DNSSEC'**
   String get dnsSsec;
-
-  /// Dns what is that
-  ///
-  /// In en, this message translates to:
-  /// **'What is that?'**
-  String get dnsWhatIsThat;
 
   /// Dns info hijacking title
   ///
@@ -3549,12 +2895,6 @@ abstract class AppLocalizations {
   /// **'When the admin page asks you to sign in:\n\n1. Look at the bottom or back of your router — there\'s usually a sticker with the default Wi-Fi password AND the admin login. The admin login is labeled \"Admin password\", \"Web password\", \"Modem password\" or \"Yönetim şifresi\". This is NOT the same as the Wi-Fi password.\n\n2. If your router has no sticker, try these factory defaults:\n   • admin / admin\n   • admin / password\n   • admin / 1234\n   • root / admin\n   • Username empty / password admin\n\n3. If your ISP installed the router (Türk Telekom, TurkNet, Vodafone, Superonline, etc.), the admin password is often the last 6-8 characters of the device serial number, also on the sticker. Many ISPs ship a unique password printed only on the sticker.\n\n4. If nothing works: someone has changed the password before. You can press and hold the RESET pin on the back of the router for 10-15 seconds to restore factory defaults — but this also wipes your Wi-Fi name and password, so you\'ll have to set them up again.\n\n5. Some modern routers replace the web admin with a phone app (e.g. TP-Link Tether, ASUS Router, Mi WiFi, Huawei AI Life). If the web page redirects you to install an app, install it and continue from there.'**
   String get guideCredentialsBody;
 
-  /// Label for admin URL/IP
-  ///
-  /// In en, this message translates to:
-  /// **'Admin address'**
-  String get guideAddressLabel;
-
   /// Copy button label
   ///
   /// In en, this message translates to:
@@ -3723,12 +3063,6 @@ abstract class AppLocalizations {
   /// **'Region'**
   String get countryAllowlistHeader;
 
-  /// Region selector info
-  ///
-  /// In en, this message translates to:
-  /// **'Wi-Fi channels are regulated differently per country. Channels disallowed in your region are dimmed and can\'t be used by your router. Switch the region if you\'re abroad — but the recommendation will only show legal channels for the selected region.'**
-  String get countryAllowlistInfoBody;
-
   /// Badge for region-illegal channels
   ///
   /// In en, this message translates to:
@@ -3872,12 +3206,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'YOU'**
   String get connectedChannelGuideLabel;
-
-  /// Badge for channels that fluctuate heavily across history
-  ///
-  /// In en, this message translates to:
-  /// **'UNSTABLE'**
-  String get unstableChannelLabel;
 
   /// Tooltip for unstable channel badge
   ///
@@ -4827,18 +4155,6 @@ abstract class AppLocalizations {
   /// **'All categories (single bundle)'**
   String get allCategoriesLabel;
 
-  /// Label for jsonFormatLabel
-  ///
-  /// In en, this message translates to:
-  /// **'JSON — full, machine-readable'**
-  String get jsonFormatLabel;
-
-  /// Label for htmlFormatLabel
-  ///
-  /// In en, this message translates to:
-  /// **'HTML — viewable in browser'**
-  String get htmlFormatLabel;
-
   /// Label for autoLabel
   ///
   /// In en, this message translates to:
@@ -4880,18 +4196,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Privacy Policy'**
   String get privacyPolicyTitle;
-
-  /// Label for noConnectedNetwork
-  ///
-  /// In en, this message translates to:
-  /// **'No connected network'**
-  String get noConnectedNetwork;
-
-  /// Label for ssidNotAvailable
-  ///
-  /// In en, this message translates to:
-  /// **'SSID not available'**
-  String get ssidNotAvailable;
 
   /// Label for encryptionAndConfigTitle
   ///
@@ -5367,12 +4671,6 @@ abstract class AppLocalizations {
   /// **'ROUTER HARDENING'**
   String get hardeningTitle;
 
-  /// Label for hardeningSubtitle
-  ///
-  /// In en, this message translates to:
-  /// **'SECURE YOUR GATEWAY'**
-  String get hardeningSubtitle;
-
   /// Label for hardeningMarkDone
   ///
   /// In en, this message translates to:
@@ -5702,18 +5000,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Stays on your device until you share it. Nothing is sent to any server.'**
   String get exportPrivacyNote;
-
-  /// Label for exportFailedMessage
-  ///
-  /// In en, this message translates to:
-  /// **'Export failed: {error}'**
-  String exportFailedMessage(String error);
-
-  /// Label for noDataInCategoryMessage
-  ///
-  /// In en, this message translates to:
-  /// **'No data in \"{category}\" yet.'**
-  String noDataInCategoryMessage(String category);
 
   /// Label for categoryWifiScanHistory
   ///
@@ -6975,35 +6261,11 @@ abstract class AppLocalizations {
   /// **'DNS hijacking'**
   String get dnsHijacking;
 
-  /// Label for speedDoctorDesc
-  ///
-  /// In en, this message translates to:
-  /// **'Resolve latency and throughput issues.'**
-  String get speedDoctorDesc;
-
-  /// Label for bestChannelTitle
-  ///
-  /// In en, this message translates to:
-  /// **'BEST CHANNEL'**
-  String get bestChannelTitle;
-
-  /// Label for bestChannelDesc
-  ///
-  /// In en, this message translates to:
-  /// **'Switching to channel {channel} could improve quality.'**
-  String bestChannelDesc(int channel);
-
   /// Label for networksWithCount
   ///
   /// In en, this message translates to:
   /// **'Networks ({count})'**
   String networksWithCount(int count);
-
-  /// Label for throughputMbps
-  ///
-  /// In en, this message translates to:
-  /// **'{count} Mbps'**
-  String throughputMbps(int count);
 
   /// Label for signalStability
   ///
@@ -7209,23 +6471,11 @@ abstract class AppLocalizations {
   /// **'Realign Compass'**
   String get realignCompassTooltip;
 
-  /// Label for osDetectLabel
-  ///
-  /// In en, this message translates to:
-  /// **'OS DETECT'**
-  String get osDetectLabel;
-
   /// Label for exportCsvLabel
   ///
   /// In en, this message translates to:
   /// **'Export CSV'**
   String get exportCsvLabel;
-
-  /// Label for thisDeviceLabel
-  ///
-  /// In en, this message translates to:
-  /// **'This Device'**
-  String get thisDeviceLabel;
 
   /// Label for setDeviceType
   ///
@@ -7562,30 +6812,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'What is this? · How to fix'**
   String get whatIsThisHowToFix;
-
-  /// Label for homePlanWifiHeatmap
-  ///
-  /// In en, this message translates to:
-  /// **'HOME PLAN + WIFI HEATMAP'**
-  String get homePlanWifiHeatmap;
-
-  /// Label for homePlanWifiHeatmapDesc
-  ///
-  /// In en, this message translates to:
-  /// **'Outline, coverage, and weak zones'**
-  String get homePlanWifiHeatmapDesc;
-
-  /// Label for openSavedSurveys
-  ///
-  /// In en, this message translates to:
-  /// **'Open saved surveys'**
-  String get openSavedSurveys;
-
-  /// Label for toggleViewBlueprintNeon
-  ///
-  /// In en, this message translates to:
-  /// **'Toggle view (Blueprint / Neon)'**
-  String get toggleViewBlueprintNeon;
 
   /// Label for preview
   ///
@@ -8925,12 +8151,6 @@ abstract class AppLocalizations {
   /// **'{ms} ms'**
   String portScanTimeoutMs(int ms);
 
-  /// Dialog body when recording and user tries to exit
-  ///
-  /// In en, this message translates to:
-  /// **'Your current survey data will be lost if you discard it. Save or Discard?'**
-  String get endSurveyDiscardBody;
-
   /// Section header for the legend panel in topology info sheet
   ///
   /// In en, this message translates to:
@@ -9843,12 +9063,6 @@ abstract class AppLocalizations {
   /// **'LAN Devices Discovered'**
   String get lanDiscoveryTitle;
 
-  /// Label for lanDiscoveryDesc
-  ///
-  /// In en, this message translates to:
-  /// **'Active scanning identified {count} devices on this network.'**
-  String lanDiscoveryDesc(int count);
-
   /// Label for lanDiscoveryRecommendation
   ///
   /// In en, this message translates to:
@@ -9861,12 +9075,6 @@ abstract class AppLocalizations {
   /// **'Gateway Ports Exposed'**
   String get gatewayPortsExposedTitle;
 
-  /// Label for gatewayPortsExposedDesc
-  ///
-  /// In en, this message translates to:
-  /// **'Host {ip} has open ports that may be vulnerable.'**
-  String gatewayPortsExposedDesc(String ip);
-
   /// Label for gatewayPortsExposedRecommendation
   ///
   /// In en, this message translates to:
@@ -9878,12 +9086,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open Service Detected'**
   String get openServiceDetectedTitle;
-
-  /// Label for openServiceDetectedDesc
-  ///
-  /// In en, this message translates to:
-  /// **'Host {ip} is running {service} on port {port}.'**
-  String openServiceDetectedDesc(String ip, String service, int port);
 
   /// Label for openServiceDetectedRecommendation
   ///
@@ -9944,6 +9146,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'CH {channel} ({rating})'**
   String channelWithRating(int channel, String rating);
+
+  /// Label for lanDiscoveryEvidence
+  ///
+  /// In en, this message translates to:
+  /// **'Discovered: {devices}'**
+  String lanDiscoveryEvidence(String devices);
+
+  /// Label for gatewayPortsExposedEvidence
+  ///
+  /// In en, this message translates to:
+  /// **'Open Ports: {ports}'**
+  String gatewayPortsExposedEvidence(String ports);
+
+  /// Label for openServiceDetectedEvidence
+  ///
+  /// In en, this message translates to:
+  /// **'Target: {ip}, Port: {port}, Service: {service}'**
+  String openServiceDetectedEvidence(String ip, int port, String service);
+
+  /// Label for lanDeviceDiscoveredEvidence
+  ///
+  /// In en, this message translates to:
+  /// **'IP: {ip}, MAC: {mac}, Vendor: {vendor}'**
+  String lanDeviceDiscoveredEvidence(String ip, String mac, String vendor);
+
+  /// Label for evidenceNoEncryption
+  ///
+  /// In en, this message translates to:
+  /// **'The access point advertises no encryption for {network}.'**
+  String evidenceNoEncryption(String network);
+
+  /// Label for lanDiscoveryDesc
+  ///
+  /// In en, this message translates to:
+  /// **'Active scanning identified {count} devices on this network.'**
+  String lanDiscoveryDesc(int count);
+
+  /// Label for gatewayPortsExposedDesc
+  ///
+  /// In en, this message translates to:
+  /// **'Host {ip} has open ports that may be vulnerable.'**
+  String gatewayPortsExposedDesc(String ip);
+
+  /// Label for openServiceDetectedDesc
+  ///
+  /// In en, this message translates to:
+  /// **'Host {ip} is running {service} on port {port}.'**
+  String openServiceDetectedDesc(String ip, String service, int port);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

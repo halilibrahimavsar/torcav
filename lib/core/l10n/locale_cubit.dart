@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import '../logging/app_logger.dart';
 import '../storage/hive_storage_service.dart';
 
 @lazySingleton
@@ -26,9 +27,12 @@ class LocaleCubit extends Cubit<Locale> {
           emit(detected);
         }
       }
-    } catch (e) {
-      // Log error but don't crash the Cubit initialization
-      debugPrint('[TorcavError] LocaleCubit failed to load saved locale: $e');
+    } catch (e, stack) {
+      AppLogger.e(
+        'LocaleCubit failed to load saved locale',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 

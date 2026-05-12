@@ -3,10 +3,6 @@
     "@appName": {
         "description": "The name of the application."
     },
-    "wifiScanTitle": "TARANA WI-FI",
-    "@wifiScanTitle": {
-        "description": "Title for the wifi scan screen."
-    },
     "subscriptionPremium": "Premium",
     "@subscriptionPremium": {
         "description": "Premium subscription label."
@@ -39,14 +35,6 @@
     "@deviceTypeSmartTV": {
         "description": "Device or OS label for deviceTypeSmartTV"
     },
-    "deviceTypeIoTSensor": "IoT Sensor",
-    "@deviceTypeIoTSensor": {
-        "description": "Device or OS label for deviceTypeIoTSensor"
-    },
-    "deviceTypePrinter": "Printer",
-    "@deviceTypePrinter": {
-        "description": "Device or OS label for deviceTypePrinter"
-    },
     "deviceTypeNASStorage": "NAS/Storage",
     "@deviceTypeNASStorage": {
         "description": "Device or OS label for deviceTypeNASStorage"
@@ -71,17 +59,9 @@
     "@deviceTypeUnknown": {
         "description": "Device or OS label for deviceTypeUnknown"
     },
-    "searchingNetworksPlaceholder": "TORA DIGERE...",
-    "@searchingNetworksPlaceholder": {
-        "description": "Text shown when the search bar is empty."
-    },
     "notificationOpenAction": "Open notification",
     "@notificationOpenAction": {
         "description": "Default action name for Linux notifications."
-    },
-    "filterNetworksPlaceholder": "TORAN PARZÛN BIKE...",
-    "@filterNetworksPlaceholder": {
-        "description": "Placeholder for the search input."
     },
     "quickScan": "Tarana Bilez",
     "@quickScan": {
@@ -90,14 +70,6 @@
     "deepScan": "Tarana Kûr",
     "@deepScan": {
         "description": "Active scan label."
-    },
-    "deepScanExperimentalTitle": "Deep Scan (Experimental)",
-    "@deepScanExperimentalTitle": {
-        "description": "Title for the experimental deep scan toggle in Security Center."
-    },
-    "deepScanExperimentalSubtitle": "Actively probe LAN for devices and ports. Increased battery usage.",
-    "@deepScanExperimentalSubtitle": {
-        "description": "Subtitle for the experimental deep scan toggle in Security Center."
     },
     "scanModesTitle": "Modên Taranê",
     "@scanModesTitle": {
@@ -152,10 +124,6 @@
     "@liveLabel": {
         "description": "Live indicator label"
     },
-    "operationsLabel": "OPERASYON",
-    "@operationsLabel": {
-        "description": "Dashboard section label."
-    },
     "topologyLabel": "TOPOLOJÎ",
     "@topologyLabel": {
         "description": "Dashboard section label."
@@ -180,10 +148,6 @@
     "@gatewayLabel": {
         "description": "Gateway label."
     },
-    "accessEngine": "MOTORA GIHÎŞTINÊ",
-    "@accessEngine": {
-        "description": "Access engine status."
-    },
     "latestSnapshotTitle": "Wêneyê Dawî ya Torê",
     "@latestSnapshotTitle": {
         "description": "Snapshot section title."
@@ -191,14 +155,6 @@
     "noSnapshotAvailable": "Daneyên wêneyê tune...",
     "@noSnapshotAvailable": {
         "description": "Label for noSnapshotAvailable"
-    },
-    "strictSafetyEnabled": "Protokolên ewlehiyê yên hişk çalak in",
-    "@strictSafetyEnabled": {
-        "description": "Safety mode text."
-    },
-    "activeMonitoringProgress": "Şopandina aktîf berdewam dike...",
-    "@activeMonitoringProgress": {
-        "description": "Monitoring status text."
     },
     "scanComparisonTitle": "BERAWIRDKIRINA TARANÊ",
     "@scanComparisonTitle": {
@@ -238,14 +194,6 @@
                 "type": "int"
             }
         }
-    },
-    "plusNewLabel": "+ NÛ",
-    "@plusNewLabel": {
-        "description": "Plus New Label"
-    },
-    "goneLabel": "ÇÛYÎ",
-    "@goneLabel": {
-        "description": "Gone Label"
     },
     "hiddenLabel": "[Veşartî]",
     "@hiddenLabel": {
@@ -478,14 +426,6 @@
     "@threatsDetected": {
         "description": "Status text when threats are detected"
     },
-    "trustedLabel": "EWLE",
-    "@trustedLabel": {
-        "description": "Trusted Label"
-    },
-    "securityEventTitle": "Bûyera Ewlehiyê",
-    "@securityEventTitle": {
-        "description": "Security Event Title"
-    },
     "networkReconTitle": "KEŞFA TORÊ",
     "@networkReconTitle": {
         "description": "Network Recon Title"
@@ -516,34 +456,6 @@
             }
         }
     },
-    "targetIpSubnet": "Target IP / Subnet",
-    "@targetIpSubnet": {
-        "description": "Target Ip Subnet"
-    },
-    "scanProfileFast": "Bilez",
-    "@scanProfileFast": {
-        "description": "Scan Profile Fast"
-    },
-    "scanProfileBalanced": "Hevseng",
-    "@scanProfileBalanced": {
-        "description": "Scan Profile Balanced"
-    },
-    "scanProfileAggressive": "Zêde",
-    "@scanProfileAggressive": {
-        "description": "Scan Profile Aggressive"
-    },
-    "scanProfileNormal": "Normal",
-    "@scanProfileNormal": {
-        "description": "Scan Profile Normal"
-    },
-    "scanProfileIntense": "Giran",
-    "@scanProfileIntense": {
-        "description": "Scan Profile Intense"
-    },
-    "vulnOnlyLabel": "Tenê Lawazî",
-    "@vulnOnlyLabel": {
-        "description": "Vuln Only Label"
-    },
     "lanReconTitle": "LAN RECON",
     "@lanReconTitle": {
         "description": "Lan Recon Title"
@@ -555,10 +467,6 @@
     "scanAllCaps": "TARA",
     "@scanAllCaps": {
         "description": "Scan All Caps"
-    },
-    "channelRatingTitle": "PUANLAMA KANALÊ",
-    "@channelRatingTitle": {
-        "description": "Channel Rating Title"
     },
     "refreshScanTooltip": "Taranê Nû Bike",
     "@refreshScanTooltip": {
@@ -592,26 +500,9 @@
     "@analyzing": {
         "description": "Analyzing"
     },
-    "historyLabel": "DÎROK",
-    "@historyLabel": {
-        "description": "History Label"
-    },
-    "failedLoadTopology": "Topolojî bar nabe: {error}",
-    "@failedLoadTopology": {
-        "description": "Failed Load Topology",
-        "placeholders": {
-            "error": {
-                "type": "String"
-            }
-        }
-    },
     "trafficLabel": "TRAFÎK",
     "@trafficLabel": {
         "description": "Traffic Label"
-    },
-    "forceLabel": "HÊZ",
-    "@forceLabel": {
-        "description": "Force Label"
     },
     "normalSpeed": "NORMAL",
     "@normalSpeed": {
@@ -624,10 +515,6 @@
     "overdriveSpeed": "OVERDRIVE",
     "@overdriveSpeed": {
         "description": "Overdrive Speed"
-    },
-    "topologyMapTitle": "NEXŞEYA TOPOLOJIYÊ",
-    "@topologyMapTitle": {
-        "description": "Topology Map Title"
     },
     "noTopologyData": "Daneyên Topolojiyê Nîn in",
     "@noTopologyData": {
@@ -701,19 +588,6 @@
     "@pingAction": {
         "description": "Action to ping a device"
     },
-    "pingSuccess": "Latency: {ms}ms",
-    "@pingSuccess": {
-        "description": "Ping success message",
-        "placeholders": {
-            "ms": {
-                "type": "int"
-            }
-        }
-    },
-    "pingFailure": "Host Unreachable",
-    "@pingFailure": {
-        "description": "Ping failure message"
-    },
     "settingsTitle": "MÎHENG",
     "@settingsTitle": {
         "description": "Label for settingsTitle"
@@ -753,10 +627,6 @@
     "backgroundNeuralPulse": "Pulsê Nöral (Anîmasyonî)",
     "@backgroundNeuralPulse": {
         "description": "Label for the neural pulse background."
-    },
-    "backgroundSelectionRestricted": "Cyber grid styles are optimized for dark mode and only available when using the dark theme.",
-    "@backgroundSelectionRestricted": {
-        "description": "Info message explaining why background selection is disabled in light mode."
     },
     "settingsScanBehavior": "Tevgera Taraneyê",
     "@settingsScanBehavior": {
@@ -850,29 +720,13 @@
     "@defenseTitle": {
         "description": "Defense Title"
     },
-    "shieldLabReady": "Ready for Assessment",
-    "@shieldLabReady": {
-        "description": "Shield Lab Ready"
-    },
-    "deepScanRunning": "Scan in progress...",
-    "@deepScanRunning": {
-        "description": "Deep Scan Running"
-    },
     "knownNetworks": "Torên Nas",
     "@knownNetworks": {
         "description": "Known Networks"
     },
-    "noKnownNetworksYet": "Hîn torên nas tune ne",
-    "@noKnownNetworksYet": {
-        "description": "No Known Networks Yet"
-    },
     "noIdentifiedNetworks": "No identified networks in laboratory archives",
     "@noIdentifiedNetworks": {
         "description": "No Identified Networks"
-    },
-    "knownNetworksDashboard": "KNOWN NETWORKS ARCHIVE",
-    "@knownNetworksDashboard": {
-        "description": "Known Networks Dashboard"
     },
     "securityTimeline": "Rêzika Demê ya Ewlehiyê",
     "@securityTimeline": {
@@ -886,33 +740,13 @@
     "@dnsSecurityTitle": {
         "description": "Title for DNS Security card"
     },
-    "dnsSecurityBody": "Verify that your DNS queries are not being hijacked or spoofed.",
-    "@dnsSecurityBody": {
-        "description": "Body for DNS Security card"
-    },
-    "dnsIntegrity": "DNS INTEGRITY",
-    "@dnsIntegrity": {
-        "description": "DNS Integrity status label"
-    },
     "dnsPerformanceBenchmark": "PERFORMANCE BENCHMARK",
     "@dnsPerformanceBenchmark": {
         "description": "Section title for DNS benchmark"
     },
-    "dnsLatency": "LATENCY",
-    "@dnsLatency": {
-        "description": "Label for latency"
-    },
     "dnsRecommended": "RECOMMENDED",
     "@dnsRecommended": {
         "description": "Badge for recommended provider"
-    },
-    "dnsFastest": "FASTEST",
-    "@dnsFastest": {
-        "description": "Label for fastest provider"
-    },
-    "dnsProvider": "PROVIDER",
-    "@dnsProvider": {
-        "description": "Provider column header"
     },
     "dnsResultLatency": "{ms} ms",
     "@dnsResultLatency": {
@@ -938,10 +772,6 @@
     "osUnknown": "Unknown OS",
     "@osUnknown": {
         "description": "Device or OS label for osUnknown"
-    },
-    "osDetectionFailure": "Could not determine OS",
-    "@osDetectionFailure": {
-        "description": "Device or OS label for osDetectionFailure"
     },
     "osDetectedLabel": "OS DETECTED",
     "@osDetectedLabel": {
@@ -1007,62 +837,6 @@
     "filterOther": "OTHER",
     "@filterOther": {
         "description": "Label for filterOther"
-    },
-    "lanDiscoveryEvidence": "Discovered: {devices}",
-    "@lanDiscoveryEvidence": {
-        "placeholders": {
-            "devices": {
-                "type": "String"
-            }
-        },
-        "description": "Label for lanDiscoveryEvidence"
-    },
-    "gatewayPortsExposedEvidence": "Open Ports: {ports}",
-    "@gatewayPortsExposedEvidence": {
-        "placeholders": {
-            "ports": {
-                "type": "String"
-            }
-        },
-        "description": "Label for gatewayPortsExposedEvidence"
-    },
-    "openServiceDetectedEvidence": "Target: {ip}, Port: {port}, Service: {service}",
-    "@openServiceDetectedEvidence": {
-        "placeholders": {
-            "ip": {
-                "type": "String"
-            },
-            "port": {
-                "type": "int"
-            },
-            "service": {
-                "type": "String"
-            }
-        },
-        "description": "Label for openServiceDetectedEvidence"
-    },
-    "lanDeviceDiscoveredEvidence": "IP: {ip}, MAC: {mac}, Vendor: {vendor}",
-    "@lanDeviceDiscoveredEvidence": {
-        "placeholders": {
-            "ip": {
-                "type": "String"
-            },
-            "mac": {
-                "type": "String"
-            },
-            "vendor": {
-                "type": "String"
-            }
-        },
-        "description": "Label for lanDeviceDiscoveredEvidence"
-    },
-    "runTest": "RUN TEST",
-    "@runTest": {
-        "description": "Label for run test button"
-    },
-    "integrityCheck": "INTEGRITY CHECK",
-    "@integrityCheck": {
-        "description": "Label for integrity check"
     },
     "authLocalSystem": "AUTH_SÎSTEMA_XWECÎHÎ",
     "@authLocalSystem": {
@@ -1266,33 +1040,6 @@
     "@evilTwinActionHardwareVendor": {
         "description": "Label for evilTwinActionHardwareVendor"
     },
-    "evidenceDiscoveredDevices": "Discovered: {devices}",
-    "@evidenceDiscoveredDevices": {
-        "placeholders": {
-            "devices": {
-                "type": "String"
-            }
-        },
-        "description": "Label for evidenceDiscoveredDevices"
-    },
-    "evidenceVulnerablePorts": "Host {host} has open ports that may be vulnerable.",
-    "@evidenceVulnerablePorts": {
-        "placeholders": {
-            "host": {
-                "type": "String"
-            }
-        },
-        "description": "Label for evidenceVulnerablePorts"
-    },
-    "evidenceNoEncryption": "The access point advertises no encryption for {network}.",
-    "@evidenceNoEncryption": {
-        "placeholders": {
-            "network": {
-                "type": "String"
-            }
-        },
-        "description": "Label for evidenceNoEncryption"
-    },
     "ipAddrLabel": "NAVNÎŞANA_IP",
     "@ipAddrLabel": {
         "description": "Ip Addr Label"
@@ -1362,10 +1109,6 @@
     "@networkSecurity": {
         "description": "Label for network security section"
     },
-    "arpInfoAction": "ARP INFO",
-    "@arpInfoAction": {
-        "description": "Action to get ARP information for a device"
-    },
     "portScanCommonPorts": "Portên Hevpar",
     "@portScanCommonPorts": {
         "description": "Label for common ports scanning mode"
@@ -1389,10 +1132,6 @@
     "portScanEndPort": "Porta Dawî",
     "@portScanEndPort": {
         "description": "Label for end port input"
-    },
-    "portScanInvalidRange": "Rêzeya portê ya nelihev hat dayîn",
-    "@portScanInvalidRange": {
-        "description": "Error message for invalid port range"
     },
     "portScanTooManyPorts": "Hişyarî: Skankirina >1000 portan dikare hêdî bibe",
     "@portScanTooManyPorts": {
@@ -1423,22 +1162,6 @@
     "portScanNoPortsProbed": "Hîn tu port nehatine skankirin. Ji bo dîtina xizmetên vekirî skanekê bidin destpêkirin.",
     "@portScanNoPortsProbed": {
         "description": "Message shown when no ports have been scanned yet"
-    },
-    "arpInfoLabel": "ARP DATA",
-    "@arpInfoLabel": {
-        "description": "Label for ARP information"
-    },
-    "scanningPortsTitle": "SCANNING PORTS...",
-    "@scanningPortsTitle": {
-        "description": "Loading title for port scanning"
-    },
-    "lookingUpHostnameTitle": "LOOKING UP HOSTNAME...",
-    "@lookingUpHostnameTitle": {
-        "description": "Loading title for hostname lookup"
-    },
-    "fetchingArpTitle": "FETCHING ARP DATA...",
-    "@fetchingArpTitle": {
-        "description": "Loading title for fetching ARP info"
     },
     "capabilitiesLabel": "TAYBETMENDÎ",
     "@capabilitiesLabel": {
@@ -1536,10 +1259,6 @@
     "@cidrTargetLabel": {
         "description": "Cidr Target Label"
     },
-    "anonymousNode": "NAVENDA NANAV",
-    "@anonymousNode": {
-        "description": "Anonymous Node"
-    },
     "portsCountLabel": "{count} PORT",
     "@portsCountLabel": {
         "description": "Ports Count Label",
@@ -1593,102 +1312,6 @@
     "@securitySummaryCritical": {
         "description": "Security Summary Critical"
     },
-    "vulnerabilityOpenNetworkTitle": "Tora Vekirî",
-    "@vulnerabilityOpenNetworkTitle": {
-        "description": "Vulnerability Open Network Title"
-    },
-    "vulnerabilityOpenNetworkDesc": "Şîfrekirin nehat tespîtkirin. Hemû trafîk wekî nivîs dikare were dîtin.",
-    "@vulnerabilityOpenNetworkDesc": {
-        "description": "Vulnerability Open Network Desc"
-    },
-    "vulnerabilityOpenNetworkRec": "Ji karên hesas dûr bisekin. VPN-ya pêbawer an toreke cuda tercîh bikin.",
-    "@vulnerabilityOpenNetworkRec": {
-        "description": "Vulnerability Open Network Rec"
-    },
-    "vulnerabilityWepTitle": "Şîfrekirina WEP",
-    "@vulnerabilityWepTitle": {
-        "description": "Vulnerability Wep Title"
-    },
-    "vulnerabilityWepDesc": "WEP nayê pêşniyar kirin û bi hêsanî dikare were şikandin.",
-    "@vulnerabilityWepDesc": {
-        "description": "Vulnerability Wep Desc"
-    },
-    "vulnerabilityWepRec": "Tavilê mîhengên AP biguherînin WPA2 an WPA3.",
-    "@vulnerabilityWepRec": {
-        "description": "Vulnerability Wep Rec"
-    },
-    "vulnerabilityLegacyWpaTitle": "WPA ya Kevn",
-    "@vulnerabilityLegacyWpaTitle": {
-        "description": "Vulnerability Legacy Wpa Title"
-    },
-    "vulnerabilityLegacyWpaDesc": "WPA/TKIP kevn e û li hember êrîşên nûjen lawaz e.",
-    "@vulnerabilityLegacyWpaDesc": {
-        "description": "Vulnerability Legacy Wpa Desc"
-    },
-    "vulnerabilityLegacyWpaRec": "AP û amûran bikşînin asteke bilind (WPA2/WPA3).",
-    "@vulnerabilityLegacyWpaRec": {
-        "description": "Vulnerability Legacy Wpa Rec"
-    },
-    "vulnerabilityHiddenSsidTitle": "SSID ya Veşartî",
-    "@vulnerabilityHiddenSsidTitle": {
-        "description": "Vulnerability Hidden Ssid Title"
-    },
-    "vulnerabilityHiddenSsidDesc": "SSID-yên veşartî hîn jî dikarin werin dîtin û dibe ku lihevhatinê xirab bikin.",
-    "@vulnerabilityHiddenSsidDesc": {
-        "description": "Vulnerability Hidden Ssid Desc"
-    },
-    "vulnerabilityHiddenSsidRec": "SSID-ya veşartî ne parastin e. Bala xwe bidin ser şîfrekirina bi hêz.",
-    "@vulnerabilityHiddenSsidRec": {
-        "description": "Vulnerability Hidden Ssid Rec"
-    },
-    "vulnerabilityWeakSignalTitle": "Sînyala Gelek Lawaz",
-    "@vulnerabilityWeakSignalTitle": {
-        "description": "Vulnerability Weak Signal Title"
-    },
-    "vulnerabilityWeakSignalDesc": "Sînyala lawaz dikare girêdanên ne aram û metirsiyan nîşan bide.",
-    "@vulnerabilityWeakSignalDesc": {
-        "description": "Vulnerability Weak Signal Desc"
-    },
-    "vulnerabilityWeakSignalRec": "Nêzîkî AP bibin an BSSID kontrol bikin.",
-    "@vulnerabilityWeakSignalRec": {
-        "description": "Vulnerability Weak Signal Rec"
-    },
-    "vulnerabilityWpsTitle": "WPS Çalak e",
-    "@vulnerabilityWpsTitle": {
-        "description": "Vulnerability Wps Title"
-    },
-    "vulnerabilityWpsDesc": "Wi-Fi Korumalı Kurulum (WPS) çalak e. Moda PIN-a WPS dikare bi hêsanî were şikandin û gihîştina şîfreyê bide.",
-    "@vulnerabilityWpsDesc": {
-        "description": "Vulnerability Wps Desc"
-    },
-    "vulnerabilityWpsRec": "Di panela mîhengan a routerê de WPS bigirin. Tenê WPA2/WPA3 bikar bînin.",
-    "@vulnerabilityWpsRec": {
-        "description": "Vulnerability Wps Rec"
-    },
-    "vulnerabilityPmfTitle": "Çarçoveyên Rêvebiriyê Nehatine Parastin",
-    "@vulnerabilityPmfTitle": {
-        "description": "Vulnerability Pmf Title"
-    },
-    "vulnerabilityPmfDesc": "Ev access point PMF (802.11w) naxwaze. Nivîsên rêvebiriyê yên neparastî rê didin êrîşkaran ku amûran deauth bikin.",
-    "@vulnerabilityPmfDesc": {
-        "description": "Vulnerability Pmf Desc"
-    },
-    "vulnerabilityPmfRec": "Di mîhengên routerê de PMF (wek '802.11w' jî tê zanîn) çalak bikin. WPA3 jixwe PMF dixwaze.",
-    "@vulnerabilityPmfRec": {
-        "description": "Vulnerability Pmf Rec"
-    },
-    "vulnerabilityEvilTwinTitle": "Evil Twin ya Potansiyel",
-    "@vulnerabilityEvilTwinTitle": {
-        "description": "Vulnerability Evil Twin Title"
-    },
-    "vulnerabilityEvilTwinDesc": "SSID li nêzîk bi hûrguliyên ewlehiyê yên nakok xuya dike.",
-    "@vulnerabilityEvilTwinDesc": {
-        "description": "Vulnerability Evil Twin Desc"
-    },
-    "vulnerabilityEvilTwinRec": "Beriya nasandinê BSSID û sertîfîkayê kontrol bikin.",
-    "@vulnerabilityEvilTwinRec": {
-        "description": "Vulnerability Evil Twin Rec"
-    },
     "riskFactorNoEncryption": "Şîfrekirin nayê bikaranîn",
     "@riskFactorNoEncryption": {
         "description": "Risk Factor No Encryption"
@@ -1721,10 +1344,6 @@
     "@refresh": {
         "description": "Label for refresh button."
     },
-    "addZonePoint": "Xala Herêmê Zêde Bike",
-    "@addZonePoint": {
-        "description": "Title for adding a zone point."
-    },
     "cancel": "Betal bike",
     "@cancel": {
         "description": "Label for cancel"
@@ -1741,10 +1360,6 @@
     "@temporalHeatmap": {
         "description": "Title for the temporal heatmap screen."
     },
-    "failedToSaveHeatmapPoint": "Xala nexşeya germiyê nehat tomarkirin",
-    "@failedToSaveHeatmapPoint": {
-        "description": "Failed To Save Heatmap Point"
-    },
     "signalMonitoringTitle": "ŞOPANDINA SÎNYALÊ: {ssid}",
     "@signalMonitoringTitle": {
         "description": "Signal Monitoring Title",
@@ -1758,10 +1373,6 @@
     "@heatmapTooltip": {
         "description": "Heatmap Tooltip"
     },
-    "tagCurrentPointTooltip": "Xala heyî nîşan bike",
-    "@tagCurrentPointTooltip": {
-        "description": "Tag Current Point Tooltip"
-    },
     "signalCaps": "SÎNYAL",
     "@signalCaps": {
         "description": "Signal Caps"
@@ -1774,19 +1385,6 @@
     "@frequencyCaps": {
         "description": "Frequency Caps"
     },
-    "heatmapPointAdded": "Xala nexşeya germiyê ji bo {zone} hat zêdekirin",
-    "@heatmapPointAdded": {
-        "description": "Heatmap Point Added",
-        "placeholders": {
-            "zone": {
-                "type": "String"
-            }
-        }
-    },
-    "zoneTagLabel": "Etîketa herêmê (mînak: Metbex)",
-    "@zoneTagLabel": {
-        "description": "Zone Tag Label"
-    },
     "errorPrefix": "Şaşî: {message}",
     "@errorPrefix": {
         "description": "Error Prefix",
@@ -1795,19 +1393,6 @@
                 "type": "String"
             }
         }
-    },
-    "noHeatmapPointsYet": "Ji bo {bssid} hîn ti xalên nexşeya germiyê tune",
-    "@noHeatmapPointsYet": {
-        "description": "No Heatmap Points Yet",
-        "placeholders": {
-            "bssid": {
-                "type": "String"
-            }
-        }
-    },
-    "averageSignalByZone": "Sînyala navîn li gorî herêman",
-    "@averageSignalByZone": {
-        "description": "Average Signal By Zone"
     },
     "bandChannels": "{band} KANAL",
     "@bandChannels": {
@@ -1882,10 +1467,6 @@
     "@spectrumOptimizationCaps": {
         "description": "Spectrum Optimization Caps"
     },
-    "spectrumOptimizationDesc": "Qelebalixiya kanalê û parazîtê analîz bike",
-    "@spectrumOptimizationDesc": {
-        "description": "Spectrum Optimization Desc"
-    },
     "qualityExcellent": "Zaf Baş",
     "@qualityExcellent": {
         "description": "Quality Excellent"
@@ -1922,10 +1503,6 @@
     "noHistoryPlaceholder": "Hîn dîrok tune.\nHer cara ku hûn vê ekranê vedikin, pileya kanalan tê tomarkirin.",
     "@noHistoryPlaceholder": {
         "description": "No History Placeholder"
-    },
-    "currentSessionInfo": "Oturuma heyî — skora bilind = kêmtir qerebalix.",
-    "@currentSessionInfo": {
-        "description": "Current Session Info"
     },
     "historySummaryInfo": "{sessions} rûniştin · {samples} nimûne · bilindtir = kêmtir qerebalix",
     "@historySummaryInfo": {
@@ -1991,14 +1568,6 @@
     "@speedTestHeader": {
         "description": "Speed Test Header"
     },
-    "startTest": "DEST PÊ BIKIN",
-    "@startTest": {
-        "description": "Start Test"
-    },
-    "testAgain": "DÎSA TEST BIKIN",
-    "@testAgain": {
-        "description": "Test Again"
-    },
     "commandCenters": "NAVENDA FERMANDARIYÊ",
     "@commandCenters": {
         "description": "Command Centers"
@@ -2019,14 +1588,6 @@
     "@networkMesh": {
         "description": "Network Mesh"
     },
-    "tuningTitle": "VERASTKIRIN",
-    "@tuningTitle": {
-        "description": "Tuning Title"
-    },
-    "systemConfig": "Veavakirina Pergalê",
-    "@systemConfig": {
-        "description": "System Config"
-    },
     "phasePing": "QONAX: PING",
     "@phasePing": {
         "description": "Phase Ping"
@@ -2042,10 +1603,6 @@
     "phaseDone": "QONAX: TEMAM",
     "@phaseDone": {
         "description": "Phase Done"
-    },
-    "riskScore": "Pûana Rîskê",
-    "@riskScore": {
-        "description": "Risk Score"
     },
     "loading": "Tê barkirin...",
     "@loading": {
@@ -2084,61 +1641,6 @@
         "description": "Name of security event type",
         "placeholders": {
             "type": {
-                "type": "String"
-            }
-        }
-    },
-    "securityEventSeverity": "{severity, select, low{Kêm} medium{Navîn} info{Zanyarî} warning{Hişyarî} high{Bilind} critical{Krîtîk} other{{severity}}}",
-    "@securityEventSeverity": {
-        "description": "Name of security severity",
-        "placeholders": {
-            "severity": {
-                "type": "String"
-            },
-            "Low": {
-                "type": "String"
-            },
-            "Medium": {
-                "type": "String"
-            },
-            "Info": {
-                "type": "String"
-            },
-            "Warning": {
-                "type": "String"
-            },
-            "High": {
-                "type": "String"
-            },
-            "Critical": {
-                "type": "String"
-            }
-        }
-    },
-    "evilTwinEvidence": "Lihevnehatina BSSID! Ya Tê Çaverêkirin: {expected}, Ya Hatî Dîtin: {found}. Îhtîmaleke mezin a Xala Gihîştina Cêwîyê Xirab.",
-    "@evilTwinEvidence": {
-        "description": "Evil twin evidence text",
-        "placeholders": {
-            "expected": {
-                "type": "String"
-            },
-            "found": {
-                "type": "String"
-            }
-        }
-    },
-    "rogueApEvidence": "MAC-a Ketober/LAA di tora naskirî de hat dîtin! Ev ji bo Xalên Gihîştina rewa pir neasayî ye û dibe ku nîşan bide ku amûrek sexte heye.",
-    "@rogueApEvidence": {
-        "description": "Rogue AP evidence text"
-    },
-    "downgradeEvidence": "Profîla şîfrekirinê ji {oldSec} ber bi {newSec} ve hat guhartin. Gumana êrîşa daxistinê.",
-    "@downgradeEvidence": {
-        "description": "Downgrade evidence text",
-        "placeholders": {
-            "oldSec": {
-                "type": "String"
-            },
-            "newSec": {
                 "type": "String"
             }
         }
@@ -2195,10 +1697,6 @@
     "@dnsHijacked": {
         "description": "Status label for hijacked DNS"
     },
-    "dnsVerifyIntegrity": "Run a scan to verify DNS integrity",
-    "@dnsVerifyIntegrity": {
-        "description": "Prompt for verifying DNS integrity"
-    },
     "dnsLastCheck": "Last check: {hour}:{minute}",
     "@dnsLastCheck": {
         "description": "Last check time for DNS test",
@@ -2236,14 +1734,6 @@
     "performanceTitle": "TESTA LEZÊ",
     "@performanceTitle": {
         "description": "Performance page title"
-    },
-    "performanceStart": "DEST PÊ KE",
-    "@performanceStart": {
-        "description": "Start speed test button"
-    },
-    "performanceRetry": "DU CARÊ",
-    "@performanceRetry": {
-        "description": "Retry speed test button"
     },
     "jitterLabel": "JITTER",
     "@jitterLabel": {
@@ -2286,15 +1776,6 @@
     "@wpsWarningBody": {
         "description": "WPS warning body"
     },
-    "wpsAffectedNetworks": "{count} tor bi WPS vekirî",
-    "@wpsAffectedNetworks": {
-        "description": "WPS affected networks count",
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        }
-    },
     "heatmapTutorialTitle": "NEXŞEYA GERMAHIYÊ ÇAWA BIKAR BÎNIM",
     "@heatmapTutorialTitle": {
         "description": "Label for heatmapTutorialTitle"
@@ -2326,10 +1807,6 @@
     "noSpeedTestHistory": "Hêj test nehatiye tomar kirin. Testa yekem li jorê dest pê bike.",
     "@noSpeedTestHistory": {
         "description": "Empty speed test history"
-    },
-    "networkScoreLabel": "PUANA TORÊ",
-    "@networkScoreLabel": {
-        "description": "Security score label on dashboard"
     },
     "vulnLabTitle": "VULNERABILITY LAB",
     "@vulnLabTitle": {
@@ -2380,26 +1857,6 @@
     "@dnsEvidenceTitle": {
         "description": "Title for the DNS diagnostic evidence section"
     },
-    "shieldLabTitle": "SHIELD LABORATORY",
-    "@shieldLabTitle": {
-        "description": "Experimental security testing and analysis title"
-    },
-    "discoveredDevices": "DISCOVERED DEVICES",
-    "@discoveredDevices": {
-        "description": "Header for LAN devices discovery section"
-    },
-    "openPortsFound": "OPEN PORTS DETECTED",
-    "@openPortsFound": {
-        "description": "Header for open ports list"
-    },
-    "experimentalFeature": "EXPERIMENTAL",
-    "@experimentalFeature": {
-        "description": "Badge for experimental features"
-    },
-    "deepScanDescription": "Active port scanning and LAN discovery (May trigger network alerts)",
-    "@deepScanDescription": {
-        "description": "Description for deep scan toggle"
-    },
     "dnsProtocol": "PROTOCOL",
     "@dnsProtocol": {
         "description": "Dns protocol"
@@ -2407,10 +1864,6 @@
     "dnsSsec": "DNSSEC",
     "@dnsSsec": {
         "description": "Dns ssec"
-    },
-    "dnsWhatIsThat": "What is that?",
-    "@dnsWhatIsThat": {
-        "description": "Dns what is that"
     },
     "dnsInfoHijackingTitle": "DNS Hijacking",
     "@dnsInfoHijackingTitle": {
@@ -2620,10 +2073,6 @@
     "@guideCredentialsBody": {
         "description": "Detailed credentials body"
     },
-    "guideAddressLabel": "Navnîşana rêveberiyê",
-    "@guideAddressLabel": {
-        "description": "Label for admin URL/IP"
-    },
     "guideCopyAddress": "Kopî bike",
     "@guideCopyAddress": {
         "description": "Copy button label"
@@ -2759,10 +2208,6 @@
     "@countryAllowlistHeader": {
         "description": "Country selector header"
     },
-    "countryAllowlistInfoBody": "Kanalên Wi-Fi li her welatî bi awayekî cuda têne rêvebirin. Kanalên ku li herêma we qedexe ne kêmreng têne nîşandan û ji aliyê routerê we nayên bikaranîn. Heke li derveyê welêt bî, herêmê biguherîne — pêşniyaz tenê kanalên yasayî yên herêma hilbijartî nîşan dide.",
-    "@countryAllowlistInfoBody": {
-        "description": "Region selector info"
-    },
     "channelIllegalBadge": "QEDEXEYÎ",
     "@channelIllegalBadge": {
         "description": "Badge for region-illegal channels"
@@ -2874,10 +2319,6 @@
     "connectedChannelGuideLabel": "TU",
     "@connectedChannelGuideLabel": {
         "description": "Tag for the vertical guide line in the spectrum analyzer pointing at the user's own router"
-    },
-    "unstableChannelLabel": "NEARAM",
-    "@unstableChannelLabel": {
-        "description": "Badge for channels that fluctuate heavily across history"
     },
     "unstableChannelTooltip": "Puanê vê kanalê di rûniştinên dawî de ji 1.5 puanan zêdetir guherî",
     "@unstableChannelTooltip": {
@@ -3539,14 +2980,6 @@
     "@allCategoriesLabel": {
         "description": "Label for allCategoriesLabel"
     },
-    "jsonFormatLabel": "JSON — full, machine-readable",
-    "@jsonFormatLabel": {
-        "description": "Label for jsonFormatLabel"
-    },
-    "htmlFormatLabel": "HTML — viewable in browser",
-    "@htmlFormatLabel": {
-        "description": "Label for htmlFormatLabel"
-    },
     "autoLabel": "Auto",
     "@autoLabel": {
         "description": "Label for autoLabel"
@@ -3574,14 +3007,6 @@
     "privacyPolicyTitle": "Privacy Policy",
     "@privacyPolicyTitle": {
         "description": "Label for privacyPolicyTitle"
-    },
-    "noConnectedNetwork": "No connected network",
-    "@noConnectedNetwork": {
-        "description": "Label for noConnectedNetwork"
-    },
-    "ssidNotAvailable": "SSID not available",
-    "@ssidNotAvailable": {
-        "description": "Label for ssidNotAvailable"
     },
     "encryptionAndConfigTitle": "ENCRYPTION & CONFIG",
     "@encryptionAndConfigTitle": {
@@ -3929,10 +3354,6 @@
     "@hardeningTitle": {
         "description": "Label for hardeningTitle"
     },
-    "hardeningSubtitle": "SECURE YOUR GATEWAY",
-    "@hardeningSubtitle": {
-        "description": "Label for hardeningSubtitle"
-    },
     "hardeningMarkDone": "MARK DONE",
     "@hardeningMarkDone": {
         "description": "Label for hardeningMarkDone"
@@ -4167,24 +3588,6 @@
     "exportPrivacyNote": "Stays on your device until you share it. Nothing is sent to any server.",
     "@exportPrivacyNote": {
         "description": "Label for exportPrivacyNote"
-    },
-    "exportFailedMessage": "Export failed: {error}",
-    "@exportFailedMessage": {
-        "placeholders": {
-            "error": {
-                "type": "String"
-            }
-        },
-        "description": "Label for exportFailedMessage"
-    },
-    "noDataInCategoryMessage": "No data in \"{category}\" yet.",
-    "@noDataInCategoryMessage": {
-        "placeholders": {
-            "category": {
-                "type": "String"
-            }
-        },
-        "description": "Label for noDataInCategoryMessage"
     },
     "categoryWifiScanHistory": "Wi-Fi scan history",
     "@categoryWifiScanHistory": {
@@ -5081,23 +4484,6 @@
     "@dnsHijacking": {
         "description": "Label for dnsHijacking"
     },
-    "speedDoctorDesc": "Resolve latency and throughput issues.",
-    "@speedDoctorDesc": {
-        "description": "Label for speedDoctorDesc"
-    },
-    "bestChannelTitle": "BEST CHANNEL",
-    "@bestChannelTitle": {
-        "description": "Label for bestChannelTitle"
-    },
-    "bestChannelDesc": "Switching to channel {channel} could improve quality.",
-    "@bestChannelDesc": {
-        "placeholders": {
-            "channel": {
-                "type": "int"
-            }
-        },
-        "description": "Label for bestChannelDesc"
-    },
     "networksWithCount": "Networks ({count})",
     "@networksWithCount": {
         "placeholders": {
@@ -5106,15 +4492,6 @@
             }
         },
         "description": "Label for networksWithCount"
-    },
-    "throughputMbps": "{count} Mbps",
-    "@throughputMbps": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for throughputMbps"
     },
     "signalStability": "Stability {stability}",
     "@signalStability": {
@@ -5257,17 +4634,9 @@
     "@realignCompassTooltip": {
         "description": "Label for realignCompassTooltip"
     },
-    "osDetectLabel": "OS DETECT",
-    "@osDetectLabel": {
-        "description": "Label for osDetectLabel"
-    },
     "exportCsvLabel": "Export CSV",
     "@exportCsvLabel": {
         "description": "Label for exportCsvLabel"
-    },
-    "thisDeviceLabel": "This Device",
-    "@thisDeviceLabel": {
-        "description": "Label for thisDeviceLabel"
     },
     "setDeviceType": "Set Device Type",
     "@setDeviceType": {
@@ -5492,22 +4861,6 @@
     "whatIsThisHowToFix": "What is this? · How to fix",
     "@whatIsThisHowToFix": {
         "description": "Label for whatIsThisHowToFix"
-    },
-    "homePlanWifiHeatmap": "HOME PLAN + WIFI HEATMAP",
-    "@homePlanWifiHeatmap": {
-        "description": "Label for homePlanWifiHeatmap"
-    },
-    "homePlanWifiHeatmapDesc": "Outline, coverage, and weak zones",
-    "@homePlanWifiHeatmapDesc": {
-        "description": "Label for homePlanWifiHeatmapDesc"
-    },
-    "openSavedSurveys": "Open saved surveys",
-    "@openSavedSurveys": {
-        "description": "Label for openSavedSurveys"
-    },
-    "toggleViewBlueprintNeon": "Toggle view (Blueprint / Neon)",
-    "@toggleViewBlueprintNeon": {
-        "description": "Label for toggleViewBlueprintNeon"
     },
     "preview": "Preview",
     "@preview": {
@@ -6619,10 +5972,6 @@
             }
         }
     },
-    "endSurveyDiscardBody": "Your current survey data will be lost if you discard it. Save or Discard?",
-    "@endSurveyDiscardBody": {
-        "description": "Dialog body when recording and user tries to exit"
-    },
     "legendAndNodes": "LEGEND & NODES",
     "@legendAndNodes": {
         "description": "Section header for the legend panel in topology info sheet"
@@ -7429,15 +6778,6 @@
     "@lanDiscoveryTitle": {
         "description": "Label for lanDiscoveryTitle"
     },
-    "lanDiscoveryDesc": "Active scanning identified {count} devices on this network.",
-    "@lanDiscoveryDesc": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for lanDiscoveryDesc"
-    },
     "lanDiscoveryRecommendation": "Ensure you recognize all devices on your local network.",
     "@lanDiscoveryRecommendation": {
         "description": "Label for lanDiscoveryRecommendation"
@@ -7446,15 +6786,6 @@
     "@gatewayPortsExposedTitle": {
         "description": "Label for gatewayPortsExposedTitle"
     },
-    "gatewayPortsExposedDesc": "Host {ip} has open ports that may be vulnerable.",
-    "@gatewayPortsExposedDesc": {
-        "placeholders": {
-            "ip": {
-                "type": "String"
-            }
-        },
-        "description": "Label for gatewayPortsExposedDesc"
-    },
     "gatewayPortsExposedRecommendation": "Disable unnecessary services on the gateway router and ensure strong passwords.",
     "@gatewayPortsExposedRecommendation": {
         "description": "Label for gatewayPortsExposedRecommendation"
@@ -7462,21 +6793,6 @@
     "openServiceDetectedTitle": "Open Service Detected",
     "@openServiceDetectedTitle": {
         "description": "Label for openServiceDetectedTitle"
-    },
-    "openServiceDetectedDesc": "Host {ip} is running {service} on port {port}.",
-    "@openServiceDetectedDesc": {
-        "placeholders": {
-            "ip": {
-                "type": "String"
-            },
-            "service": {
-                "type": "String"
-            },
-            "port": {
-                "type": "int"
-            }
-        },
-        "description": "Label for openServiceDetectedDesc"
     },
     "openServiceDetectedRecommendation": "Ensure this service is intended to be accessible.",
     "@openServiceDetectedRecommendation": {
@@ -7530,5 +6846,95 @@
             }
         },
         "description": "Label for channelWithRating"
+    },
+    "lanDiscoveryEvidence": "Discovered: {devices}",
+    "@lanDiscoveryEvidence": {
+        "placeholders": {
+            "devices": {
+                "type": "String"
+            }
+        },
+        "description": "Label for lanDiscoveryEvidence"
+    },
+    "gatewayPortsExposedEvidence": "Open Ports: {ports}",
+    "@gatewayPortsExposedEvidence": {
+        "placeholders": {
+            "ports": {
+                "type": "String"
+            }
+        },
+        "description": "Label for gatewayPortsExposedEvidence"
+    },
+    "openServiceDetectedEvidence": "Target: {ip}, Port: {port}, Service: {service}",
+    "@openServiceDetectedEvidence": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            },
+            "port": {
+                "type": "int"
+            },
+            "service": {
+                "type": "String"
+            }
+        },
+        "description": "Label for openServiceDetectedEvidence"
+    },
+    "lanDeviceDiscoveredEvidence": "IP: {ip}, MAC: {mac}, Vendor: {vendor}",
+    "@lanDeviceDiscoveredEvidence": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            },
+            "mac": {
+                "type": "String"
+            },
+            "vendor": {
+                "type": "String"
+            }
+        },
+        "description": "Label for lanDeviceDiscoveredEvidence"
+    },
+    "evidenceNoEncryption": "The access point advertises no encryption for {network}.",
+    "@evidenceNoEncryption": {
+        "placeholders": {
+            "network": {
+                "type": "String"
+            }
+        },
+        "description": "Label for evidenceNoEncryption"
+    },
+    "lanDiscoveryDesc": "Active scanning identified {count} devices on this network.",
+    "@lanDiscoveryDesc": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Label for lanDiscoveryDesc"
+    },
+    "gatewayPortsExposedDesc": "Host {ip} has open ports that may be vulnerable.",
+    "@gatewayPortsExposedDesc": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            }
+        },
+        "description": "Label for gatewayPortsExposedDesc"
+    },
+    "openServiceDetectedDesc": "Host {ip} is running {service} on port {port}.",
+    "@openServiceDetectedDesc": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            },
+            "service": {
+                "type": "String"
+            },
+            "port": {
+                "type": "int"
+            }
+        },
+        "description": "Label for openServiceDetectedDesc"
     }
 }
