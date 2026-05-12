@@ -43,3 +43,12 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Local development artifacts
+scratch/
+__pycache__/
+coverage/
+analyze_output.txt
+strings_found.txt
+l10n_report.txt
+hardcoded_strings.json
