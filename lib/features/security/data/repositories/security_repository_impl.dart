@@ -14,6 +14,7 @@ import '../../domain/entities/vulnerability.dart';
 import '../../domain/repositories/security_repository.dart';
 import '../../domain/entities/vulnerable_router.dart';
 import '../datasources/vulnerability_data_source.dart';
+import '../../domain/services/captive_portal_detector.dart';
 import '../../domain/services/gateway_drift_detector.dart';
 import '../../domain/services/network_context_resolver.dart';
 import '../../domain/usecases/deauth_detector.dart';
@@ -42,6 +43,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
   final DnsSecurityUseCase _dnsSecurityUseCase;
   final NetworkScanRepository _networkScanRepository;
   final GatewayDriftDetector _gatewayDriftDetector;
+  final CaptivePortalDetector _captivePortalDetector;
   final NetworkInfo _networkInfo = NetworkInfo();
 
   SecurityRepositoryImpl(
@@ -56,6 +58,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
     this._dnsSecurityUseCase,
     this._networkScanRepository,
     this._gatewayDriftDetector,
+    this._captivePortalDetector,
   );
 
   @override
@@ -392,6 +395,10 @@ class SecurityRepositoryImpl implements SecurityRepository {
 
       final dnsEvent = await _dnsSecurityUseCase.check();
       if (dnsEvent != null) alerts.add(dnsEvent);
+
+      // Captive portal probe: detects ISP / public-Wi-Fi traffic interception.
+      final portal = await _captivePortalDetector.check();
+      if (portal.event != null) alerts.add(portal.event!);
 
       // Gateway-baseline drift: compare current gateway IP against the one
       // saved when the network was first trusted. Catches rogue DHCP /

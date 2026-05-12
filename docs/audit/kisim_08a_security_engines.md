@@ -1,4 +1,4 @@
-# Kısım 8a — Security I (İzinler & Scan Engines)
+# Kısım 8a — Security I (İzinler & Scan Engines) (v2 — derin halüsinasyon kontrolü)
 
 > Kapsam: 29 dosya — detection engines (services), use-cases, scan-related entities, DNS + security_local data sources.
 >
@@ -174,4 +174,81 @@ Heuristic detection (beacon count drop + RSSI swing) — root/pcap **gerektirmiy
 **Kısım 8a bulgu sayısı: 8** — 0 K, 3 Y, 1 O, 4 D
 **Pozitif (✅) sayısı: 6** — Güvenlik mimarisi **çok güçlü**.
 
-Bu kısım Kısım 7 ile benzer profil: kod sağlam, asıl iş presentation katmanına (Kısım 8c) toplandı.
+---
+
+## v2 — Halüsinasyon Kontrolü Sonrası Düzeltmeler
+
+Derin doğrulama (`grep .toVulnerability`, `grep "meta\\." router_hardening_wizard_page`, `grep CaptivePortalDetector`) ile v1 raporundaki **3 iddia yanlış çıktı**, **2 yeni bulgu yakalandı**.
+
+### ❌ B8a.✅4 İPTAL → 🆕 B8a.9 (Y) `CaptivePortalDetector` DEAD CODE — ✅ DÜZELTİLDİ
+**v1 iddiası:** "Captive portal detector tasarımı doğru, kullanılıyor." ❌
+**Doğrulama:** `grep "CaptivePortalDetector\|captivePortalDetect" lib/`:
+- `injection.config.dart` — DI register
+- `captive_portal_detector.dart` — tanım yeri
+- **Hiçbir yerden `getIt<CaptivePortalDetector>` çağrısı YOK**
+- `.check()` metoduna hiçbir referans yok
+- Ama `SecurityEventType.captivePortalDetected` enum'ı notification timeline'da **kullanılıyor** → kullanıcıya "feature var" gibi gözüküp gerçek tespit kodu **hiç çalışmıyor**
+
+**Play Store etkisi:** *Misleading Claims* riski — kullanıcıya vaad edilen güvenlik özelliği fiilen yok.
+
+**Aksiyon uygulandı:**
+```dart
+// security_repository_impl.dart constructor:
+final CaptivePortalDetector _captivePortalDetector;
+SecurityRepositoryImpl(..., this._captivePortalDetector);
+
+// analyzeNetworks() içinde, arp/dns detector'lardan sonra:
+final portal = await _captivePortalDetector.check();
+if (portal.event != null) alerts.add(portal.event!);
+```
+Artık captive portal tespit edildiğinde gerçek `SecurityEvent` oluşur, notification timeline'a düşer.
+
+### ❌ B8a.2 ÇOK BÜYÜK HALÜSİNASYON → 🆕 B8a.10 (D) DEAD FIELDS — ✅ DÜZELTİLDİ
+**v1 iddiası:** "`hardening_check.dart` 20 hardcoded öneri kullanıcıya gösteriliyor, Kısım 8c'de Failure code refactor." ❌
+**Doğrulama (`router_hardening_wizard_page.dart`):**
+```dart
+title: Text(meta.id.title(context)),    // ← l10n extension
+meta.id.body(context),                   // ← l10n extension
+meta.id.steps(context).length            // ← l10n extension
+```
+UI **`meta.id.X(context)`** kullanıyor — `HardeningCheckX` extension'ı zaten `l10n.hardeningChangeAdminPasswordTitle` vb. çekiyor.
+**`HardeningCheckMeta.title`, `.body`, `.steps` ALANLARI HİÇ OKUNMUYOR** — saf ölü kod.
+
+**Aksiyon uygulandı:** `HardeningCheckMeta` class'tan `title`, `body`, `steps` field'ları kaldırıldı; catalog yeniden yazıldı (sadece `id`, `critical`, `menuHints`). **150 satır → 109 satır.**
+
+### ❌ B8a.1 NÜANS DÜZELTMESİ — bulgu hâlâ geçerli ama mekanizma farklı
+**v1 iddiası:** "`security_analyzer.dart` 29 hardcoded `title`/`description` doğrudan UI'a gidiyor."
+**Doğrulama:**
+- security_analyzer → `SecurityFinding(title: 'Open Network', description: '...')`
+- `SecurityFinding.toVulnerability()` → `Vulnerability(title: title, description: description, ...)` (**aynen kopyalıyor**)
+- UI `assessment.findings.map((v) => _VulnerabilityCard(vulnerability: v))` → `Vulnerability.title` kullanılıyor
+
+**Sonuç:** İddia doğru ama dönüşüm var. `SecurityFinding → Vulnerability → UI`. **Kısım 8c'de** `_VulnerabilityCard`'ın hangi alanları çağırdığı incelenecek ve Failure code refactor o zaman tasarlanacak.
+
+### 🆕 B8a.11 (O) — `SecurityAssessment.statusLabel` hardcoded İngilizce
+**Kanıt:**
+```dart
+// security_assessment.dart:24
+String get statusLabel => switch (status) {
+  SecurityStatus.secure => 'Secure',
+  SecurityStatus.moderate => 'Moderate',
+  SecurityStatus.atRisk => 'At Risk',
+  SecurityStatus.critical => 'Critical',
+};
+```
+**Kullanım:** `security_analyzer.dart:438` → `SecurityReport(overallStatus: assessment.statusLabel)`. `SecurityReport.overallStatus` String alanı UI'a aktarılıyor olabilir.
+
+**Karar:** Düzeltme **Kısım 8c'ye taşındı** — UI'da `SecurityReport.overallStatus`'un nasıl tüketildiği netleşince entity getter silinecek, dashboard kendi l10n switch'ini yapacak.
+
+---
+
+## v2 Güncel Sayım
+
+| Konu | v1 | v2 |
+|---|---|---|
+| Bulgu sayısı | 8 | **9** (B8a.11 eklendi) |
+| Pozitif ✅ | 6 | **5** (B8a.✅4 iptal) |
+| Halüsinasyon | 0 | **3 yakalandı** (✅4 iptal, B8a.2 dead-fields-yanlış-yorum, B8a.1 mekanizma nüansı) |
+| Düzeltme uygulanan | 0 | **2** (B8a.9 CaptivePortal bağlama, B8a.10 dead fields temizliği) |
+
+flutter analyze: temiz (build_runner sonrası)
