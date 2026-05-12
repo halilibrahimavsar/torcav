@@ -2254,6 +2254,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get renderingErrorBody => 'Something went wrong while drawing this screen. Please restart the app.';
 
   @override
+  String get dbHealedNotice => 'Some of your data was reset to recover from a storage issue. Please reconfigure your trusted networks if needed.';
+
+  @override
   String get appTitleLong => 'Torcav Wi-Fi Analyzer';
 
   @override

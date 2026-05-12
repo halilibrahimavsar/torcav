@@ -15,7 +15,9 @@ import 'package:torcav/core/l10n/locale_cubit.dart';
 import 'package:torcav/core/l10n/delegates/fallback_localization_delegate.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/core/theme/theme_cubit.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:torcav/core/storage/hive_storage_service.dart';
+import 'package:torcav/core/storage/secure_storage_service.dart';
 import 'package:torcav/features/security/presentation/widgets/cyber_grid_background.dart';
 import 'package:torcav/features/splash/presentation/pages/splash_page.dart';
 
@@ -39,8 +41,17 @@ void main() {
 
     ErrorWidget.builder = (details) => _NeonErrorWidget(details: details);
 
-    // Core initialization that must happen before runApp
-    await HiveStorageService.init();
+    // Core initialization that must happen before runApp.
+    // Hive's encryption key lives in flutter_secure_storage, so we resolve it
+    // here directly (DI is not configured yet at this point).
+    const secureStorage = FlutterSecureStorage(
+      aOptions: AndroidOptions(),
+      iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
+    );
+    final hiveKey = await const SecureStorageService(
+      secureStorage,
+    ).getOrCreateHiveBoxKey();
+    await HiveStorageService.init(hiveKey);
     await configureDependencies();
 
     runApp(const TorcavApp());

@@ -2245,6 +2245,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get renderingErrorBody => 'Beim Zeichnen dieses Bildschirms ist ein Fehler aufgetreten. Bitte starten Sie die App neu.';
 
   @override
+  String get dbHealedNotice => 'Einige Ihrer Daten wurden zurückgesetzt, um ein Speicherproblem zu beheben. Bitte konfigurieren Sie ggf. Ihre vertrauenswürdigen Netzwerke neu.';
+
+  @override
   String get appTitleLong => 'Torcav Wi-Fi Analyzer';
 
   @override

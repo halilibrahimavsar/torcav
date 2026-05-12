@@ -3117,6 +3117,10 @@
     "@renderingErrorBody": {
         "description": "Body text shown in release builds when a render error occurs."
     },
+    "dbHealedNotice": "Einige Ihrer Daten wurden zurückgesetzt, um ein Speicherproblem zu beheben. Bitte konfigurieren Sie ggf. Ihre vertrauenswürdigen Netzwerke neu.",
+    "@dbHealedNotice": {
+        "description": "SnackBar shown after auto-heal: SQLCipher key mismatch caused local data reset."
+    },
     "appTitleLong": "Torcav Wi-Fi Analyzer",
     "@appTitleLong": {
         "description": "Label for appTitleLong"

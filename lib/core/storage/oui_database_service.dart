@@ -9,6 +9,8 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart'
     hide Database, openDatabase;
 import 'package:sqflite_sqlcipher/sqflite.dart' hide databaseFactory;
 
+import '../logging/app_logger.dart';
+
 @lazySingleton
 class OuiDatabaseService {
   Database? _database;
@@ -110,7 +112,7 @@ class OuiDatabaseService {
         return results.first['vendor'] as String;
       }
     } catch (e) {
-      debugPrint('OUI lookup failed: $e');
+      AppLogger.e('OUI lookup failed', error: e);
     }
 
     return 'Unknown';

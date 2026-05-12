@@ -10,13 +10,19 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart'
 import 'package:sqflite_sqlcipher/sqflite.dart' hide databaseFactory;
 
 import '../logging/app_logger.dart';
+import 'hive_storage_service.dart';
 import 'secure_storage_service.dart';
 
 @lazySingleton
 class AppDatabase {
-  AppDatabase(this._secureStorage);
+  AppDatabase(this._secureStorage, this._hive);
+
+  /// Hive key set by [_open] when the encrypted database had to be reset.
+  /// The splash page reads (and clears) it to surface a one-time notice.
+  static const String healedFlagKey = 'last_db_healed_at';
 
   final SecureStorageService _secureStorage;
+  final HiveStorageService _hive;
   Database? _database;
   Completer<Database>? _dbOpenCompleter;
 
@@ -71,11 +77,17 @@ class AppDatabase {
           errorStr.contains('malformed');
 
       if (isCorruption) {
-        AppLogger.w('Vault mismatch/corruption detected ($errorStr). Healing...');
+        AppLogger.e(
+          'Vault mismatch/corruption detected ($errorStr). Healing — '
+          'local user data is being reset.',
+          error: e,
+        );
         final file = File(dbPath);
         if (await file.exists()) {
           await file.delete();
         }
+        // Flag for the splash page to surface a one-time user notice next run.
+        await _hive.save(healedFlagKey, DateTime.now().toIso8601String());
         return await _openDatabase(dbPath, password);
       }
       rethrow;
@@ -336,9 +348,11 @@ class AppDatabase {
       await _createScoreHistoryTable(db);
     }
     if (oldVersion < 9) {
-      // App is still in development; the channel rating history table is
-      // recreated cleanly so we don't have to worry about back-filling
-      // frequency on legacy rows.
+      // v9 is the first version shipped to Play Store; pre-release builds
+      // (v1–v8) had no `frequency` column on channel_rating_history, so the
+      // table is recreated cleanly. Once v9 is published, future migrations
+      // must be non-destructive (use ALTER TABLE ADD COLUMN) — production
+      // users will have real history rows.
       await db.execute('DROP TABLE IF EXISTS channel_rating_history');
       await db.execute('''
         CREATE TABLE channel_rating_history (

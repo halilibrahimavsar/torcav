@@ -7,7 +7,11 @@ import '../../features/security/domain/entities/security_event.dart';
 import '../l10n/app_localizations.dart';
 import '../l10n/locale_cubit.dart';
 import '../l10n/security_localization_helper.dart';
+import '../logging/app_logger.dart';
 import '../di/injection.dart';
+
+bool get defaultTargetPlatformIsAndroid =>
+    defaultTargetPlatform == TargetPlatform.android;
 
 @lazySingleton
 class NotificationService {
@@ -43,8 +47,23 @@ class NotificationService {
     _initialized = true;
   }
 
+  /// Requests the Android 13+ `POST_NOTIFICATIONS` runtime permission.
+  /// On older Android, iOS and other platforms this is a no-op that resolves
+  /// to `true`. Call this AFTER showing a prominent disclosure to the user
+  /// (per Google Play notification policy).
+  Future<bool> requestAndroidNotificationPermission() async {
+    if (!_initialized) await initialize();
+    if (kIsWeb || !defaultTargetPlatformIsAndroid) return true;
+    final granted = await _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
+        ?.requestNotificationsPermission();
+    return granted ?? false;
+  }
+
   void _onNotificationTapped(NotificationResponse response) {
-    debugPrint('Notification tapped: ${response.payload}');
+    AppLogger.d('Notification tapped: ${response.payload}');
   }
 
   AppLocalizations get _l10n =>

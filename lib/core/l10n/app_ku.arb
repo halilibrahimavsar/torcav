@@ -3117,6 +3117,10 @@
     "@renderingErrorBody": {
         "description": "Body text shown in release builds when a render error occurs."
     },
+    "dbHealedNotice": "Hin daneyên we ji bo çareserkirina pirsgirêkek bîranînê hatin sifirkirin. Heke pêwîst be, torên xwe yên pêbawer ji nû ve mîheng bikin.",
+    "@dbHealedNotice": {
+        "description": "SnackBar shown after auto-heal: SQLCipher key mismatch caused local data reset."
+    },
     "appTitleLong": "Torcav Wi-Fi Analyzer",
     "@appTitleLong": {
         "description": "Label for appTitleLong"

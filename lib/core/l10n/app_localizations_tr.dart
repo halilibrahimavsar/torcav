@@ -2247,6 +2247,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get renderingErrorBody => 'Bu ekran çizilirken bir sorun oluştu. Lütfen uygulamayı yeniden başlatın.';
 
   @override
+  String get dbHealedNotice => 'Bir depolama sorununu gidermek için bazı verileriniz sıfırlandı. Güvendiğiniz ağları yeniden ayarlamanız gerekebilir.';
+
+  @override
   String get appTitleLong => 'Torcav Wi-Fi Analyzer';
 
   @override

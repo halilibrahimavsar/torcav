@@ -4329,6 +4329,12 @@ abstract class AppLocalizations {
   /// **'Something went wrong while drawing this screen. Please restart the app.'**
   String get renderingErrorBody;
 
+  /// SnackBar shown after auto-heal: SQLCipher key mismatch caused local data reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Some of your data was reset to recover from a storage issue. Please reconfigure your trusted networks if needed.'**
+  String get dbHealedNotice;
+
   /// Label for appTitleLong
   ///
   /// In en, this message translates to:

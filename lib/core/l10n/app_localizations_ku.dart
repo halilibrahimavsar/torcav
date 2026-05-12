@@ -2245,6 +2245,9 @@ class AppLocalizationsKu extends AppLocalizations {
   String get renderingErrorBody => 'Dema ev rûpel dihat çêkirin çewtiyek çêbû. Ji kerema xwe sepanê ji nû ve bide destpêkirin.';
 
   @override
+  String get dbHealedNotice => 'Hin daneyên we ji bo çareserkirina pirsgirêkek bîranînê hatin sifirkirin. Heke pêwîst be, torên xwe yên pêbawer ji nû ve mîheng bikin.';
+
+  @override
   String get appTitleLong => 'Torcav Wi-Fi Analyzer';
 
   @override
