@@ -113,7 +113,6 @@ flutter:
     - assets/data/
 
   shaders:
-    - shaders/cyber_post.frag
     - shaders/neomorphic.frag
     - shaders/premium_grid.frag
 

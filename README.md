@@ -71,7 +71,7 @@ lib/
 - **State**: `flutter_bloc` (`Bloc`/`Cubit`).
 - **Functional error handling**: `fpdart` + `dartz` (sınırlı kullanım).
 - **Storage**: SQLite (`sqflite` + `sqflite_common_ffi`), SharedPreferences, `flutter_secure_storage` (v10).
-- **Theming**: Neon/cyber tema, `google_fonts`, custom shader (`shaders/cyber_post.frag`), `CyberGridBackground`.
+- **Theming**: Neon/cyber tema, `google_fonts`, custom shaders (`shaders/neomorphic.frag`, `shaders/premium_grid.frag`), `CyberGridBackground`.
 - **Localization**: `flutter_localizations` + `intl` + kendi fallback delegate'leri.
 - **Machine Learning**: `onnxruntime` on-device inference.
 - **Platform channels**: `core/platform/wifi_extended_channel.dart` üzerinden Android native WiFi detail'leri.
@@ -139,7 +139,7 @@ flutter run
 
 - `assets/models/device_classifier.onnx` — AI feature
 - `assets/data/` — Vulnerable router JSON, OUI snapshot (bağımlılık `unified_flutter_features` üzerinden)
-- `shaders/cyber_post.frag` — post-process shader
+- `shaders/neomorphic.frag`, `shaders/premium_grid.frag` — neon/grid shader'lar
 
 ---
 
