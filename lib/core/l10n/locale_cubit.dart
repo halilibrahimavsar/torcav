@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import '../storage/hive_storage_service.dart';
 
-@singleton
+@lazySingleton
 class LocaleCubit extends Cubit<Locale> {
   static const String _localeKey = 'app_locale';
   static const Set<String> _supportedCodes = {'en', 'tr', 'de', 'ku'};
@@ -15,15 +15,20 @@ class LocaleCubit extends Cubit<Locale> {
   }
 
   void _loadSavedLocale() {
-    final savedCode = _storage.get<String>(_localeKey);
-    if (savedCode != null) {
-      emit(Locale(savedCode));
-    } else {
-      final detected = _detectSystemLocale();
-      if (detected != null) {
-        _storage.save(_localeKey, detected.languageCode);
-        emit(detected);
+    try {
+      final savedCode = _storage.get<String>(_localeKey);
+      if (savedCode != null) {
+        emit(Locale(savedCode));
+      } else {
+        final detected = _detectSystemLocale();
+        if (detected != null) {
+          _storage.save(_localeKey, detected.languageCode);
+          emit(detected);
+        }
       }
+    } catch (e) {
+      // Log error but don't crash the Cubit initialization
+      debugPrint('[TorcavError] LocaleCubit failed to load saved locale: $e');
     }
   }
 

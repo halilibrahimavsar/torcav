@@ -1,12 +1,15 @@
-import 'dart:io';
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:injectable/injectable.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart'
-    hide openDatabase, Database, ConflictAlgorithm;
+    hide openDatabase, Database, ConflictAlgorithm, getDatabasesPath;
 import 'package:sqflite_sqlcipher/sqflite.dart' hide databaseFactory;
+
+import '../logging/app_logger.dart';
 import 'secure_storage_service.dart';
 
 @lazySingleton
@@ -15,19 +18,71 @@ class AppDatabase {
 
   final SecureStorageService _secureStorage;
   Database? _database;
+  Completer<Database>? _dbOpenCompleter;
 
   Future<Database> get database async {
-    _database ??= await _open();
-    return _database!;
+    if (_database != null) return _database!;
+
+    if (_dbOpenCompleter != null) {
+      return _dbOpenCompleter!.future;
+    }
+
+    _dbOpenCompleter = Completer<Database>();
+    try {
+      _database = await _open();
+      _dbOpenCompleter!.complete(_database);
+      return _database!;
+    } catch (e, stack) {
+      _dbOpenCompleter!.completeError(e, stack);
+      _dbOpenCompleter = null;
+      rethrow;
+    }
   }
 
   Future<Database> _open() async {
-    final baseDir = await getApplicationSupportDirectory();
-    final dbPath = p.join(baseDir.path, 'torcav.sqlite');
+    // Standard database path for Android/iOS, fallbacks to support for desktop
+    String baseDirPath;
+    if (Platform.isAndroid || Platform.isIOS) {
+      baseDirPath = await getDatabasesPath();
+    } else {
+      final appDir = await getApplicationSupportDirectory();
+      baseDirPath = appDir.path;
+    }
+
+    final dbPath = p.join(baseDirPath, 'torcav.sqlite');
+    AppLogger.d('Initializing Vault at: $dbPath');
+
+    // Ensure parent directory exists
+    await Directory(baseDirPath).create(recursive: true);
 
     // Retrieve or generate the encryption key from secure storage
     final password = await _secureStorage.getDatabaseEncryptionKey();
 
+    try {
+      return await _openDatabase(dbPath, password);
+    } catch (e) {
+      final errorStr = e.toString().toLowerCase();
+      // SQLCipher triggers 'not a database' or 'code 26' on key mismatch.
+      // Some Android versions return 'open_failed' for the same underlying issue.
+      final isCorruption =
+          errorStr.contains('not a database') ||
+          errorStr.contains('code 26') ||
+          errorStr.contains('open_failed') ||
+          errorStr.contains('malformed');
+
+      if (isCorruption) {
+        AppLogger.w('Vault mismatch/corruption detected ($errorStr). Healing...');
+        final file = File(dbPath);
+        if (await file.exists()) {
+          await file.delete();
+        }
+        return await _openDatabase(dbPath, password);
+      }
+      rethrow;
+    }
+  }
+
+  Future<Database> _openDatabase(String dbPath, String password) async {
     if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
       sqfliteFfiInit();
       return databaseFactoryFfi.openDatabase(
@@ -39,7 +94,6 @@ class AppDatabase {
           onConfigure: (db) async {
             await db.execute('PRAGMA foreign_keys = ON');
             // Apply encryption key via PRAGMA for FFI platforms.
-            // Note: SQLCipher support on Desktop requires a compatible sqlite3 library.
             await db.execute(
               "PRAGMA key = '${password.replaceAll("'", "''")}'",
             );

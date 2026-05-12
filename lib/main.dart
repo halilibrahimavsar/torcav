@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/extensions/context_extensions.dart';
 
+import 'package:torcav/core/logging/app_logger.dart';
 import 'package:torcav/core/di/injection.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
 import 'package:torcav/core/l10n/locale_cubit.dart';
@@ -21,11 +22,11 @@ void main() async {
 
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
-    debugPrint('[TorcavError] ${details.exceptionAsString()}');
+    AppLogger.e('FlutterError', error: details.exception, stackTrace: details.stack);
   };
 
   PlatformDispatcher.instance.onError = (error, stack) {
-    debugPrint('[TorcavError] Uncaught: $error\n$stack');
+    AppLogger.e('Uncaught Error', error: error, stackTrace: stack);
     return true;
   };
 

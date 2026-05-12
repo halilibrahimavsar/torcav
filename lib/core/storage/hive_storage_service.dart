@@ -1,6 +1,8 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 
+import '../logging/app_logger.dart';
+
 /// Service for handling non-sensitive persistent app state.
 /// Wraps [Hive] as a modern, high-performance alternative to SharedPreferences.
 @lazySingleton
@@ -10,8 +12,12 @@ class HiveStorageService {
   /// Initializes Hive for Flutter.
   /// Should be called in main() before app launch.
   static Future<void> init() async {
-    await Hive.initFlutter();
-    await Hive.openBox(_defaultBoxName);
+    try {
+      await Hive.initFlutter();
+      await Hive.openBox(_defaultBoxName);
+    } catch (e, stack) {
+      AppLogger.e('Failed to initialize Hive', error: e, stackTrace: stack);
+    }
   }
 
   Box get box => Hive.box(_defaultBoxName);
