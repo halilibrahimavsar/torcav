@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
@@ -111,19 +112,11 @@ class PdfLockService {
     return diff == 0;
   }
 
-  /// Salt source. Uses `DateTime.now()` and the password hash as entropy
-  /// — good enough for a 16-byte unique-per-file value. Override in tests.
+  /// Cryptographically secure salt source — uniqueness-per-file is required
+  /// so the keystream is never reused across two locked PDFs that share a
+  /// password.
   Iterable<int> _randomBytes(int n) {
-    final seed = DateTime.now().microsecondsSinceEpoch;
-    final mixed =
-        sha256.convert([
-          seed & 0xff,
-          (seed >> 8) & 0xff,
-          (seed >> 16) & 0xff,
-          (seed >> 24) & 0xff,
-          (seed >> 32) & 0xff,
-          (seed >> 40) & 0xff,
-        ]).bytes;
-    return mixed.take(n);
+    final rng = Random.secure();
+    return List<int>.generate(n, (_) => rng.nextInt(256));
   }
 }
