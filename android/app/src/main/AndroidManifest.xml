@@ -1,5 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <!-- Wi-Fi scanning permissions.
+         On Android 13+ (API 33+) the new NEARBY_WIFI_DEVICES permission
+         is the modern way to scan without prompting for location, marked
+         "neverForLocation" so Data Safety beyanı sade kalır. Older versions
+         still need FINE_LOCATION; we keep both declared because the Dart
+         layer still requests Permission.location on legacy flows.
+         TODO(prod): migrate Dart side to Permission.nearbyWifiDevices on
+         API 33+ and add android:maxSdkVersion="32" to the location entries. -->
+    <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES"
+        android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="tiramisu" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />

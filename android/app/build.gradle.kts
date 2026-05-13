@@ -25,7 +25,9 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = maxOf(flutter.minSdkVersion, 24)
-        targetSdk = 34
+        // Play Console requires targetSdk 35 (Android 15) for new app
+        // submissions and updates starting 2026.
+        targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
@@ -44,9 +46,20 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // TODO(prod): replace with a real release keystore before Play Store
+            // submission. Signing with debug keys for now so `flutter run
+            // --release` works for local profiling.
             signingConfig = signingConfigs.getByName("debug")
+            // R8 (code shrinker + obfuscator) + resource shrinker. Reduces
+            // APK/AAB size and removes unused symbols. Flutter ships a
+            // proguard-rules baseline; add app-specific keep rules in
+            // android/app/proguard-rules.pro if needed.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 }

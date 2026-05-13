@@ -46,9 +46,13 @@
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
 		<key>NSCameraUsageDescription</key>
-		<string>Used to scan room layout for signal mapping</string>
+		<string>Torcav uses the camera only for indoor heatmap surveys — to track your position and map Wi-Fi signal strength room by room. No video or photos leave the device.</string>
 		<key>NSMotionUsageDescription</key>
-		<string>Used to track your position as you walk through rooms</string>
+		<string>Torcav uses motion sensors (step counter, barometer) to follow your position as you walk through rooms during a heatmap survey. Motion data stays on the device.</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>Torcav uses location only to read nearby Wi-Fi BSSIDs (Apple requires location to expose Wi-Fi scan results). Your GPS coordinates are not stored or transmitted.</string>
+		<key>NSLocalNetworkUsageDescription</key>
+		<string>Torcav scans your local Wi-Fi network for devices, open ports and security issues. Scanning only runs on networks you confirm you are authorized to audit.</string>
 		<!-- Background monitoring (opt-in feature). Only fires when the user
 	     enables Settings → Privacy → Background monitoring. -->
 		<key>BGTaskSchedulerPermittedIdentifiers</key>
