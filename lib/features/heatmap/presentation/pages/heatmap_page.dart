@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:torcav/core/logging/app_logger.dart';
 import 'package:torcav/core/theme/theme_cubit.dart';
 import 'package:torcav/core/storage/hive_storage_service.dart';
 import 'package:torcav/core/di/injection.dart';
@@ -533,8 +534,8 @@ class _HeatmapViewState extends State<_HeatmapView> {
           text: copy.shareText,
         ),
       );
-    } catch (e) {
-      debugPrint('Share failed: $e');
+    } catch (e, stack) {
+      AppLogger.e('Heatmap share failed', error: e, stackTrace: stack);
     }
   }
 }
