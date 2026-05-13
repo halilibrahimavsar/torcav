@@ -65,11 +65,11 @@ class HeatmapManager {
     );
     _sessionController.add(_currentSession);
 
-    _signalSub?.cancel();
+    unawaited(_signalSub?.cancel());
     _signalSub = _signalTracker.stateStream.listen(_onSignalUpdate);
     await _signalTracker.start(bssid, ssid);
 
-    _positionSub?.cancel();
+    unawaited(_positionSub?.cancel());
     _positionSub = _positionTracker.candidateStream.listen(
       _onPositionCandidate,
     );

@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
@@ -70,8 +72,12 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
       Map<String, String> upnpMap = {};
 
       // Trigger parallel resolution to populate maps
-      mdnsFuture.then((res) => res.fold((_) => null, (m) => mdnsMap = m));
-      upnpFuture.then((res) => res.fold((_) => null, (u) => upnpMap = u));
+      unawaited(
+        mdnsFuture.then((res) => res.fold((_) => null, (m) => mdnsMap = m)),
+      );
+      unawaited(
+        upnpFuture.then((res) => res.fold((_) => null, (u) => upnpMap = u)),
+      );
 
       await for (final host in _arpDataSource.discoverHostsStream(
         targetSubnet: target,

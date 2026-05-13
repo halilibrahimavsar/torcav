@@ -156,7 +156,10 @@ void main() {
     try {
       await bloc.close();
     } catch (_) {}
+    await sessionController.close();
+    await gateController.close();
     await positionController.close();
+    await signalController.close();
   });
 
   test(

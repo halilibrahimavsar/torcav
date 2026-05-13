@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -821,7 +822,7 @@ class _SpeedTestHistorySectionState extends State<_SpeedTestHistorySection> {
 
   Future<void> _deleteOne(int id) async {
     await getIt<SpeedTestHistoryRepository>().deleteById(id);
-    _load();
+    unawaited(_load());
   }
 
   Future<void> _deleteAll(BuildContext context) async {
@@ -868,7 +869,7 @@ class _SpeedTestHistorySectionState extends State<_SpeedTestHistorySection> {
     );
     if (confirm == true) {
       await getIt<SpeedTestHistoryRepository>().deleteAll();
-      _load();
+      unawaited(_load());
     }
   }
 

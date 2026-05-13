@@ -205,10 +205,12 @@ class SpeedTestRepositoryImpl implements SpeedTestRepository {
     // Spawn parallel downloader workers.
     var activeWorkers = _kDownloadStreams;
     for (var i = 0; i < _kDownloadStreams; i++) {
-      _downloadWorker(client, sw, controller).then((_) {
-        activeWorkers--;
-        if (activeWorkers == 0) controller.close();
-      });
+      unawaited(
+        _downloadWorker(client, sw, controller).then((_) {
+          activeWorkers--;
+          if (activeWorkers == 0) controller.close();
+        }),
+      );
     }
 
     var lastReportMs = -999;

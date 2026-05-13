@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -488,7 +490,7 @@ class _HistoryTabState extends State<_HistoryTab> {
     );
     if (confirm == true) {
       await GetIt.I<ChannelRatingRepository>().clearHistory();
-      _reload();
+      unawaited(_reload());
     }
   }
 

@@ -109,10 +109,10 @@ class PortScanDataSource {
           await Future<void>.delayed(const Duration(seconds: 1));
         }
       }
-      controller.close();
+      unawaited(controller.close());
     }
 
-    runBatch();
+    unawaited(runBatch());
     yield* controller.stream;
   }
 
