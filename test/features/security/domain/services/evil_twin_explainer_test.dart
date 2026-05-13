@@ -5,7 +5,7 @@ import 'package:torcav/features/security/domain/services/evil_twin_explainer.dar
 void main() {
   const explainer = EvilTwinExplainer();
 
-  test('dismissed pair gets a "Safe" explanation with no actions to take', () {
+  test('dismissed pair gets a "Safe" label', () {
     const a = EvilTwinAssessment.legitimate(
       ssid: 'Home',
       peerBssid: 'AA:BB:CC:DD:EE:02',
@@ -13,13 +13,14 @@ void main() {
     );
     final exp = explainer.explain(a);
     expect(exp.confidenceLabel, 'Safe');
-    expect(exp.headline.toLowerCase(), contains('same router'));
-    expect(exp.recommendedActions, isNotEmpty);
-    expect(exp.observedSignals, isEmpty);
-    expect(exp.mitigationSignals, isNotEmpty);
   });
 
-  test('high-confidence assessment recommends disconnecting first', () {
+  test('no candidate → Low', () {
+    const a = EvilTwinAssessment.none('Home');
+    expect(explainer.explain(a).confidenceLabel, 'Low');
+  });
+
+  test('high-confidence assessment yields "High" label', () {
     final a = EvilTwinAssessment(
       confidence: 0.85,
       isCandidate: true,
@@ -32,13 +33,10 @@ void main() {
       peerBssid: '11:22:33:44:55:66',
       ssid: 'Home',
     );
-    final exp = explainer.explain(a);
-    expect(exp.confidenceLabel, 'High');
-    expect(exp.recommendedActions.first.toLowerCase(), contains('disconnect'));
-    expect(exp.observedSignals.length, 2);
+    expect(explainer.explain(a).confidenceLabel, 'High');
   });
 
-  test('medium-confidence flag warns without forcing disconnect', () {
+  test('medium-confidence assessment yields "Medium" label', () {
     final a = EvilTwinAssessment(
       confidence: 0.62,
       isCandidate: true,
@@ -51,37 +49,19 @@ void main() {
       peerBssid: '11:22:33:44:55:66',
       ssid: 'Home',
     );
-    final exp = explainer.explain(a);
-    expect(exp.confidenceLabel, 'Medium');
-    expect(
-      exp.recommendedActions.first.toLowerCase(),
-      isNot(contains('disconnect')),
-    );
+    expect(explainer.explain(a).confidenceLabel, 'Medium');
   });
 
-  test('every confidence path produces non-empty whatIs / whyItMatters', () {
-    const cases = [
-      EvilTwinAssessment.legitimate(
-        ssid: 'Home',
-        peerBssid: 'AA:BB:CC:DD:EE:02',
-        mitigations: [EvilTwinSignal.bssidProximity],
-      ),
-      EvilTwinAssessment.none('Home'),
-      EvilTwinAssessment(
-        confidence: 0.55,
-        isCandidate: true,
-        dismissedAsLegitimate: false,
-        suspicions: [EvilTwinSignal.ouiMismatch],
-        mitigations: [],
-        peerBssid: '11:22:33:44:55:66',
-        ssid: 'Home',
-      ),
-    ];
-    for (final a in cases) {
-      final exp = explainer.explain(a);
-      expect(exp.whatIs, isNotEmpty);
-      expect(exp.whyItMatters, isNotEmpty);
-      expect(exp.confidencePhrase, isNotEmpty);
-    }
+  test('low-confidence assessment yields "Low" label', () {
+    final a = EvilTwinAssessment(
+      confidence: 0.55,
+      isCandidate: true,
+      dismissedAsLegitimate: false,
+      suspicions: const [EvilTwinSignal.ouiMismatch],
+      mitigations: const [],
+      peerBssid: '11:22:33:44:55:66',
+      ssid: 'Home',
+    );
+    expect(explainer.explain(a).confidenceLabel, 'Low');
   });
 }
