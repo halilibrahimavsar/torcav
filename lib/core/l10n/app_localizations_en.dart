@@ -2269,6 +2269,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dbHealedNotice => 'Some of your data was reset to recover from a storage issue. Please reconfigure your trusted networks if needed.';
 
   @override
+  String get pingStabilizerConsentTitle => 'Activate Ping Stabilizer';
+
+  @override
+  String get pingStabilizerConsentDesc => 'A local on-device VPN tunnel will be set up to measure your jitter and route DNS for stable gaming/streaming.';
+
+  @override
+  String get pingStabilizerConsentRouting => 'Traffic stays on your device. Nothing is sent to a remote server.';
+
+  @override
+  String get pingStabilizerConsentDns => 'Only DNS queries are redirected; other packets pass through unchanged.';
+
+  @override
+  String get pingStabilizerConsentControl => 'You can stop the tunnel at any time from this screen or the notification.';
+
+  @override
+  String get pingStabilizerConsentAction => 'Start stabilizer';
+
+  @override
   String get appTitleLong => 'Torcav Wi-Fi Analyzer';
 
   @override

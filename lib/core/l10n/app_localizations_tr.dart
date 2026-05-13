@@ -2262,6 +2262,24 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dbHealedNotice => 'Bir depolama sorununu gidermek için bazı verileriniz sıfırlandı. Güvendiğiniz ağları yeniden ayarlamanız gerekebilir.';
 
   @override
+  String get pingStabilizerConsentTitle => 'Ping Stabilizer\'ı Etkinleştir';
+
+  @override
+  String get pingStabilizerConsentDesc => 'Jitter ölçmek ve DNS\'i yönlendirmek için cihazınızda yerel bir VPN tüneli kurulacak. Oyun/yayında daha kararlı bağlantı için.';
+
+  @override
+  String get pingStabilizerConsentRouting => 'Trafiğiniz cihazınızda kalır. Uzak bir sunucuya hiçbir veri gönderilmez.';
+
+  @override
+  String get pingStabilizerConsentDns => 'Yalnızca DNS sorguları yönlendirilir; diğer paketler değiştirilmeden geçer.';
+
+  @override
+  String get pingStabilizerConsentControl => 'Tüneli istediğiniz anda bu ekrandan veya bildirimden durdurabilirsiniz.';
+
+  @override
+  String get pingStabilizerConsentAction => 'Stabilizer\'ı başlat';
+
+  @override
   String get appTitleLong => 'Torcav Wi-Fi Analyzer';
 
   @override

@@ -3137,6 +3137,30 @@
     "@dbHealedNotice": {
         "description": "SnackBar shown after auto-heal: SQLCipher key mismatch caused local data reset."
     },
+    "pingStabilizerConsentTitle": "Aramkerê Pingê çalak bike",
+    "@pingStabilizerConsentTitle": {
+        "description": "Ping stabilizer prominent disclosure: pingStabilizerConsentTitle"
+    },
+    "pingStabilizerConsentDesc": "Ji bo pîşkandina jitterê û beralikirina DNSê ji bo lîstik/weşana aram, dê tunelek VPNê ya li ser amûrê were avakirin.",
+    "@pingStabilizerConsentDesc": {
+        "description": "Ping stabilizer prominent disclosure: pingStabilizerConsentDesc"
+    },
+    "pingStabilizerConsentRouting": "Trafîka we li ser amûra we dimîne. Tu daneyek nayê şandin ser servereke dûr.",
+    "@pingStabilizerConsentRouting": {
+        "description": "Ping stabilizer prominent disclosure: pingStabilizerConsentRouting"
+    },
+    "pingStabilizerConsentDns": "Tenê pirsên DNSê têne beralikirin; pakêtên din bê guhertin derbas dibin.",
+    "@pingStabilizerConsentDns": {
+        "description": "Ping stabilizer prominent disclosure: pingStabilizerConsentDns"
+    },
+    "pingStabilizerConsentControl": "Hûn dikarin tunelê her gav ji vê ekranê an ji hişyariyê rawestînin.",
+    "@pingStabilizerConsentControl": {
+        "description": "Ping stabilizer prominent disclosure: pingStabilizerConsentControl"
+    },
+    "pingStabilizerConsentAction": "Aramkerê dest pê bike",
+    "@pingStabilizerConsentAction": {
+        "description": "Ping stabilizer prominent disclosure: pingStabilizerConsentAction"
+    },
     "appTitleLong": "Torcav Wi-Fi Analyzer",
     "@appTitleLong": {
         "description": "Label for appTitleLong"

@@ -4359,6 +4359,42 @@ abstract class AppLocalizations {
   /// **'Some of your data was reset to recover from a storage issue. Please reconfigure your trusted networks if needed.'**
   String get dbHealedNotice;
 
+  /// Ping stabilizer prominent disclosure: pingStabilizerConsentTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Activate Ping Stabilizer'**
+  String get pingStabilizerConsentTitle;
+
+  /// Ping stabilizer prominent disclosure: pingStabilizerConsentDesc
+  ///
+  /// In en, this message translates to:
+  /// **'A local on-device VPN tunnel will be set up to measure your jitter and route DNS for stable gaming/streaming.'**
+  String get pingStabilizerConsentDesc;
+
+  /// Ping stabilizer prominent disclosure: pingStabilizerConsentRouting
+  ///
+  /// In en, this message translates to:
+  /// **'Traffic stays on your device. Nothing is sent to a remote server.'**
+  String get pingStabilizerConsentRouting;
+
+  /// Ping stabilizer prominent disclosure: pingStabilizerConsentDns
+  ///
+  /// In en, this message translates to:
+  /// **'Only DNS queries are redirected; other packets pass through unchanged.'**
+  String get pingStabilizerConsentDns;
+
+  /// Ping stabilizer prominent disclosure: pingStabilizerConsentControl
+  ///
+  /// In en, this message translates to:
+  /// **'You can stop the tunnel at any time from this screen or the notification.'**
+  String get pingStabilizerConsentControl;
+
+  /// Ping stabilizer prominent disclosure: pingStabilizerConsentAction
+  ///
+  /// In en, this message translates to:
+  /// **'Start stabilizer'**
+  String get pingStabilizerConsentAction;
+
   /// Label for appTitleLong
   ///
   /// In en, this message translates to:

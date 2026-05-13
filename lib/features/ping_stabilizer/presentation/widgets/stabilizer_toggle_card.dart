@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/l10n/app_localizations.dart';
+import '../../../../core/theme/prominent_disclosure_dialog.dart';
 import '../bloc/ping_stabilizer_cubit.dart';
 import '../bloc/ping_stabilizer_state.dart';
 
@@ -83,13 +84,32 @@ class StabilizerToggleCard extends StatelessWidget {
                   else
                     Switch(
                       value: isActive,
-                      onChanged: (v) {
+                      onChanged: (v) async {
                         final cubit = context.read<PingStabilizerCubit>();
-                        if (v) {
-                          cubit.startStabilizer();
-                        } else {
+                        if (!v) {
                           cubit.stopStabilizer();
+                          return;
                         }
+                        // Google Play VPN policy: show prominent disclosure
+                        // before requesting VpnService permission.
+                        final accepted = await showDialog<bool>(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (ctx) => ProminentDisclosureDialog(
+                            icon: Icons.shield_moon_rounded,
+                            title: l10n.pingStabilizerConsentTitle,
+                            description: l10n.pingStabilizerConsentDesc,
+                            privacyPoints: [
+                              l10n.pingStabilizerConsentRouting,
+                              l10n.pingStabilizerConsentDns,
+                              l10n.pingStabilizerConsentControl,
+                            ],
+                            actionLabel: l10n.pingStabilizerConsentAction,
+                            onAccept: () => Navigator.of(ctx).pop(true),
+                            onCancel: () => Navigator.of(ctx).pop(false),
+                          ),
+                        );
+                        if (accepted == true) cubit.startStabilizer();
                       },
                     ),
                 ],

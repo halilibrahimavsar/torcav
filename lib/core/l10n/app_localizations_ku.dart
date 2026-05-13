@@ -2260,6 +2260,24 @@ class AppLocalizationsKu extends AppLocalizations {
   String get dbHealedNotice => 'Hin daneyên we ji bo çareserkirina pirsgirêkek bîranînê hatin sifirkirin. Heke pêwîst be, torên xwe yên pêbawer ji nû ve mîheng bikin.';
 
   @override
+  String get pingStabilizerConsentTitle => 'Aramkerê Pingê çalak bike';
+
+  @override
+  String get pingStabilizerConsentDesc => 'Ji bo pîşkandina jitterê û beralikirina DNSê ji bo lîstik/weşana aram, dê tunelek VPNê ya li ser amûrê were avakirin.';
+
+  @override
+  String get pingStabilizerConsentRouting => 'Trafîka we li ser amûra we dimîne. Tu daneyek nayê şandin ser servereke dûr.';
+
+  @override
+  String get pingStabilizerConsentDns => 'Tenê pirsên DNSê têne beralikirin; pakêtên din bê guhertin derbas dibin.';
+
+  @override
+  String get pingStabilizerConsentControl => 'Hûn dikarin tunelê her gav ji vê ekranê an ji hişyariyê rawestînin.';
+
+  @override
+  String get pingStabilizerConsentAction => 'Aramkerê dest pê bike';
+
+  @override
   String get appTitleLong => 'Torcav Wi-Fi Analyzer';
 
   @override
