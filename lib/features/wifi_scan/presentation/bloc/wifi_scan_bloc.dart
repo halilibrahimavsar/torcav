@@ -60,7 +60,6 @@ class WifiScanBloc extends Bloc<WifiScanEvent, WifiScanState> {
         WifiScanLoaded(
           sortedSnapshot,
           pinnedBssids: _favorites.pinned,
-          isRefreshing: false,
         ),
       );
     });

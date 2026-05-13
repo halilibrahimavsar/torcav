@@ -111,7 +111,7 @@ void main() {
   test('flags ISP slow when PHY is fast but download is low', () {
     final result = useCase(
       build(
-        connectedNetwork: connected(rssi: -50, phy: 866),
+        connectedNetwork: connected(),
         speedTest: speed(download: 5, latency: 10, loaded: 14),
       ),
     );
@@ -121,7 +121,7 @@ void main() {
   test('suppresses ISP-slow on public networks', () {
     final result = useCase(
       build(
-        connectedNetwork: connected(rssi: -50, phy: 866),
+        connectedNetwork: connected(),
         speedTest: speed(download: 5, latency: 10, loaded: 14),
         context: NetworkContextType.public,
       ),

@@ -15,7 +15,7 @@ class UpnpDataSource {
     const multicastAddress = '239.255.255.250';
     const multicastPort = 1900;
 
-    final searchRequest =
+    const searchRequest =
         'M-SEARCH * HTTP/1.1\r\n'
         'HOST: $multicastAddress:$multicastPort\r\n'
         'MAN: "ssdp:discover"\r\n'
@@ -29,7 +29,6 @@ class UpnpDataSource {
       socket = await RawDatagramSocket.bind(
         InternetAddress.anyIPv4,
         0,
-        reusePort: false,
       );
       socket.broadcastEnabled = true;
       socket.send(

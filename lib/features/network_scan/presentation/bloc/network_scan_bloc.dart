@@ -211,7 +211,6 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
         devices: List.from(_activeDevices),
         hosts: List.from(_activeHosts),
         newDevices: List.from(_activeNewDevices),
-        isScanning: false,
       ),
     );
   }
@@ -258,7 +257,6 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
         devices: List.from(_activeDevices),
         hosts: List.from(_activeHosts),
         newDevices: List.from(_activeNewDevices),
-        isScanning: false,
       ),
     );
   }

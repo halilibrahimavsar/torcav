@@ -699,7 +699,6 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
       left: 16,
       right: 16,
       child: StaggeredEntry(
-        delay: Duration.zero,
         child: HolographicCard(
           color: TopologyViewData.nodeColor(
             node,

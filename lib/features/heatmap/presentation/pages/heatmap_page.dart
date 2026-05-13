@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 import 'dart:io';
@@ -233,7 +234,7 @@ class _HeatmapViewState extends State<_HeatmapView> {
                           if (!isRecording) {
                             Navigator.of(context).pop();
                           } else {
-                            Navigator.of(context).maybePop();
+                            unawaited(Navigator.of(context).maybePop());
                           }
                         },
                       ),
@@ -303,7 +304,6 @@ class _HeatmapViewState extends State<_HeatmapView> {
                           child: HeatmapCanvas(
                             session: session,
                             showPath: session.points.isNotEmpty,
-                            activeFloor: null,
                             minRssi: minRssi,
                             maxRssi: maxRssi,
                             coverageScore: state.coverageScore,

@@ -260,7 +260,7 @@ void main() {
       expect(bloc.state.currentSession?.points, hasLength(1));
 
       signalController.add(
-        const SignalState(targetBssid: 'AA:BB:CC:DD:EE:FF', currentRssi: null),
+        const SignalState(targetBssid: 'AA:BB:CC:DD:EE:FF'),
       );
       gateController.add(SurveyGate.noConnectedBssid);
       await _flush();

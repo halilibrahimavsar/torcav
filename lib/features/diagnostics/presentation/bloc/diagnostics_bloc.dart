@@ -28,7 +28,6 @@ class DiagnosticsBloc extends Bloc<DiagnosticsEvent, DiagnosticsState> {
     emit(
       const DiagnosticsState(
         status: DiagnosticsStatus.running,
-        progress: 0,
         currentStep: DiagnosticsStep.signal,
       ),
     );

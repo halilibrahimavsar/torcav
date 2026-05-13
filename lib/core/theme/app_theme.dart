@@ -70,7 +70,6 @@ class AppColors {
           BoxShadow(
             color: color.withValues(alpha: 0.15),
             blurRadius: 12,
-            spreadRadius: 0,
           ),
         ],
     GlowTier.med:
@@ -96,7 +95,6 @@ class AppColors {
           BoxShadow(
             color: color.withValues(alpha: 0.2),
             blurRadius: 12,
-            spreadRadius: 0,
           ),
         ],
   };

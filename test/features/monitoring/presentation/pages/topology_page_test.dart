@@ -46,7 +46,7 @@ void main() {
       () => networkInfo.getWifiBSSID(),
     ).thenAnswer((_) async => 'AA:BB:CC:DD:EE:FF');
     when(() => networkScanRepository.scanNetwork(any())).thenAnswer(
-      (_) => Stream.value(Right<Failure, List<NetworkDevice>>([_mobileNode])),
+      (_) => Stream.value(const Right<Failure, List<NetworkDevice>>([_mobileNode])),
     );
 
     await _configureDependencies(networkInfo, networkScanRepository);
@@ -144,7 +144,7 @@ final _snapshot = ScanSnapshot(
   interfaceName: 'wlan0',
   networks: [
     WifiObservation.fromSingleNetwork(
-      WifiNetwork(
+      const WifiNetwork(
         ssid: 'Lab AP',
         bssid: 'AA:BB:CC:DD:EE:FF',
         signalStrength: -45,

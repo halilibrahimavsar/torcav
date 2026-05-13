@@ -13,7 +13,7 @@ class AboutSpectrumPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final color = AppColors.neonPurple;
+    const color = AppColors.neonPurple;
     final onSurface = Theme.of(context).colorScheme.onSurface;
 
     return Container(
@@ -33,7 +33,7 @@ class AboutSpectrumPanel extends StatelessWidget {
           childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           iconColor: color,
           collapsedIconColor: color.withValues(alpha: 0.7),
-          leading: Icon(Icons.info_outline_rounded, color: color, size: 22),
+          leading: const Icon(Icons.info_outline_rounded, color: color, size: 22),
           title: Text(
             l10n.aboutSpectrumTitle,
             style: GoogleFonts.orbitron(

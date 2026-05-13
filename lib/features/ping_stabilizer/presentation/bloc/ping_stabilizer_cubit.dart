@@ -304,7 +304,6 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
               type: RecommendationType.switchDns,
               severity: RecommendationSeverity.info,
               message: '',
-              payload: const {},
             ),
       );
       final ip = swap.payload['ip'] as String?;

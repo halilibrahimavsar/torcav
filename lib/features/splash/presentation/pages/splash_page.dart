@@ -139,13 +139,15 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
           OnboardingPage.completionKey,
         ) ??
         false;
-    Navigator.of(context).pushReplacement(
-      PageRouteBuilder(
-        pageBuilder: (_, __, ___) =>
-            hasOnboarded ? const AppShellPage() : const OnboardingPage(),
-        transitionsBuilder: (_, animation, __, child) =>
-            FadeTransition(opacity: animation, child: child),
-        transitionDuration: const Duration(milliseconds: 600),
+    unawaited(
+      Navigator.of(context).pushReplacement(
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) =>
+              hasOnboarded ? const AppShellPage() : const OnboardingPage(),
+          transitionsBuilder: (_, animation, __, child) =>
+              FadeTransition(opacity: animation, child: child),
+          transitionDuration: const Duration(milliseconds: 600),
+        ),
       ),
     );
   }

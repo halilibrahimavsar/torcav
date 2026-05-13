@@ -147,7 +147,7 @@ abstract final class DeviceFeatureExtractor {
     }
 
     // 2. Vendor hash (multi-hot)
-    final vendorOffset = _numPorts;
+    const vendorOffset = _numPorts;
     for (final word in host.vendor.toLowerCase().split(' ')) {
       if (word.isEmpty) continue;
       final bucket = _hashToBucket(word, _vendorHashDim);
@@ -155,14 +155,14 @@ abstract final class DeviceFeatureExtractor {
     }
 
     // 3. Hostname trigram hash (multi-hot)
-    final hostnameOffset = vendorOffset + _vendorHashDim;
+    const hostnameOffset = vendorOffset + _vendorHashDim;
     for (final tri in _trigrams(host.hostName)) {
       final bucket = _hashToBucket(tri, _hostnameHashDim);
       feat[hostnameOffset + bucket] = 1.0;
     }
 
     // 4. Service name BoW hash (multi-hot)
-    final serviceOffset = hostnameOffset + _hostnameHashDim;
+    const serviceOffset = hostnameOffset + _hostnameHashDim;
     for (final svc in host.services) {
       for (final word in svc.serviceName.toLowerCase().split('-')) {
         if (word.isEmpty) continue;

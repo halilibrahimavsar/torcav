@@ -123,7 +123,6 @@ class _HoloSphereBackgroundState extends State<HoloSphereBackground>
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: RadialGradient(
-                  center: Alignment.center,
                   radius: 1.3,
                   colors: [
                     Colors.transparent,
@@ -250,7 +249,7 @@ class _HoloSpherePainter extends CustomPainter {
 
   void _paintSphere(Canvas canvas, Offset center, double r) {
     final rotY = progress * math.pi * 2;
-    final tilt = 0.35; // earth-like tilt
+    const tilt = 0.35; // earth-like tilt
     final cosT = math.cos(tilt);
     final sinT = math.sin(tilt);
 
@@ -368,8 +367,6 @@ class _HoloSpherePainter extends CustomPainter {
             ..strokeWidth = 1.4
             ..strokeCap = StrokeCap.round
             ..shader = LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
               colors: [
                 color.withValues(alpha: isLight ? 0.7 : 0.9),
                 color.withValues(alpha: 0),

@@ -708,7 +708,6 @@ class _ScoreExplanationSheet extends StatelessWidget {
             border: Border(
               top: BorderSide(
                 color: scheme.primary.withValues(alpha: 0.2),
-                width: 1,
               ),
             ),
           ),
@@ -1044,7 +1043,6 @@ class _NetworkContextSheet extends StatelessWidget {
             border: Border(
               top: BorderSide(
                 color: scheme.primary.withValues(alpha: 0.2),
-                width: 1,
               ),
             ),
           ),

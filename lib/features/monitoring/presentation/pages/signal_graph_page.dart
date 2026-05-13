@@ -169,8 +169,6 @@ class _SignalChart extends StatelessWidget {
           return LineChart(
             LineChartData(
               gridData: FlGridData(
-                show: true,
-                drawVerticalLine: true,
                 getDrawingHorizontalLine:
                     (value) => FlLine(
                       color: onSurface.withValues(alpha: 0.12),
@@ -183,15 +181,14 @@ class _SignalChart extends StatelessWidget {
                     ),
               ),
               titlesData: FlTitlesData(
-                show: true,
-                rightTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
+                rightTitles: const AxisTitles(
+                  
                 ),
-                topTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
+                topTitles: const AxisTitles(
+                  
                 ),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
+                bottomTitles: const AxisTitles(
+                  
                 ),
                 leftTitles: AxisTitles(
                   sideTitles: SideTitles(
@@ -231,7 +228,6 @@ class _SignalChart extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primary,
                   barWidth: 3,
                   isStrokeCapRound: true,
-                  dotData: const FlDotData(show: true),
                   belowBarData: BarAreaData(
                     show: true,
                     color: Theme.of(

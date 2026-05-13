@@ -59,7 +59,6 @@ class SurveyConclusionOverlay extends StatelessWidget {
                 color: theme.colorScheme.primary.withValues(
                   alpha: isLight ? 0.2 : 0.35,
                 ),
-                width: 1,
               ),
             ),
             boxShadow: [

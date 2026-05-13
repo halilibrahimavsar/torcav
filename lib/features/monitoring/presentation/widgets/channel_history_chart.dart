@@ -679,7 +679,7 @@ class _InteractiveLegend extends StatelessWidget {
             ),
             if (isUnstable) ...[
               const SizedBox(width: 4),
-              Icon(
+              const Icon(
                 Icons.warning_amber_rounded,
                 size: 12,
                 color: AppColors.neonOrange,
@@ -765,7 +765,6 @@ class _BarView extends StatelessWidget {
             barGroups: groups,
             maxY: 10,
             gridData: FlGridData(
-              drawHorizontalLine: true,
               drawVerticalLine: false,
               getDrawingHorizontalLine:
                   (_) => FlLine(
@@ -836,10 +835,10 @@ class _BarView extends StatelessWidget {
                 ),
               ),
               topTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
+                
               ),
               rightTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
+                
               ),
             ),
             barTouchData: BarTouchData(
@@ -972,9 +971,6 @@ class _LineView extends StatelessWidget {
           // tallest fill blots out every line below it.
           return LineChartBarData(
             spots: spots,
-            isCurved: false,
-            isStrokeCapRound: false,
-            isStrokeJoinRound: false,
             color: color.withValues(alpha: alpha),
             barWidth: barWidth,
             dotData: FlDotData(
@@ -983,7 +979,6 @@ class _LineView extends StatelessWidget {
                   (spot, _, __, ___) => FlDotCirclePainter(
                     radius: dotRadius,
                     color: color,
-                    strokeWidth: 0,
                   ),
             ),
             belowBarData: BarAreaData(
@@ -1025,7 +1020,6 @@ class _LineView extends StatelessWidget {
             minX: 0,
             maxX: (sessions.length - 1).toDouble(),
             gridData: FlGridData(
-              drawHorizontalLine: true,
               drawVerticalLine: false,
               getDrawingHorizontalLine:
                   (_) => FlLine(
@@ -1075,10 +1069,10 @@ class _LineView extends StatelessWidget {
                 ),
               ),
               topTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
+                
               ),
               rightTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
+                
               ),
             ),
             lineTouchData: LineTouchData(
@@ -1437,7 +1431,7 @@ class _HeatmapColorScale extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final low = const Color(0xFFFF1744);
+    const low = Color(0xFFFF1744);
     final mid = isDark ? const Color(0xFFEEFF41) : const Color(0xFFFF8F00);
     final high = isDark ? const Color(0xFF39FF14) : const Color(0xFF2E7D32);
     return Row(

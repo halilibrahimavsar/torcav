@@ -46,7 +46,6 @@ class OperationsHubPage extends StatelessWidget {
             crossAxisCount: 2,
             mainAxisSpacing: 16,
             crossAxisSpacing: 16,
-            childAspectRatio: 1.0,
             children: [
               _OperationCard(
                 title: l10n.performanceTitle,
@@ -212,7 +211,6 @@ class _OperationCard extends StatelessWidget {
       child: CyberNeomorphicButton(
         onPressed: onTap,
         borderRadius: 24,
-        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

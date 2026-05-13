@@ -33,7 +33,7 @@ void main() {
     // Default mock setup
     when(
       () => mockSettingsStore.value,
-    ).thenReturn(const AppSettings(strictSafetyMode: true));
+    ).thenReturn(const AppSettings());
 
     bloc = NetworkScanBloc(mockRepository, mockDetector, mockSettingsStore);
   });
@@ -88,7 +88,7 @@ void main() {
           () => [
             NetworkScanInitial(),
             NetworkScanLoading(),
-            const NetworkScanLoaded(devices: [], hosts: [], isScanning: false),
+            const NetworkScanLoaded(devices: [], hosts: []),
           ],
     );
   });

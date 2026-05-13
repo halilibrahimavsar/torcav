@@ -17,7 +17,6 @@ class TermsOfServicePage extends StatelessWidget {
         slivers: [
           SliverAppBar(
             expandedHeight: 120.0,
-            floating: false,
             pinned: true,
             centerTitle: true,
             backgroundColor: colorScheme.surface,

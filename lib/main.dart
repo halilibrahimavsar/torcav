@@ -45,7 +45,6 @@ void main() {
     // Hive's encryption key lives in flutter_secure_storage, so we resolve it
     // here directly (DI is not configured yet at this point).
     const secureStorage = FlutterSecureStorage(
-      aOptions: AndroidOptions(),
       iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
     );
     final hiveKey = await const SecureStorageService(

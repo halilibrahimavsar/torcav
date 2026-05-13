@@ -88,7 +88,7 @@ class _RadialDashboardCoreState extends State<RadialDashboardCore>
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final size = 320.0;
+    const size = 320.0;
 
     final secColor = _scoreColor(widget.securityScore, scheme);
     final sigColor = _signalColor(widget.signalQualityPct);
@@ -96,7 +96,7 @@ class _RadialDashboardCoreState extends State<RadialDashboardCore>
         widget.threatCount > 0
             ? scheme.error
             : scheme.primary.withValues(alpha: 0.6);
-    final deviceColor = AppColors.neonPurple;
+    const deviceColor = AppColors.neonPurple;
 
     final gauges = <_GaugeSpec>[
       _GaugeSpec(
@@ -151,7 +151,7 @@ class _RadialDashboardCoreState extends State<RadialDashboardCore>
             animation: _orbit,
             builder: (context, _) {
               return CustomPaint(
-                size: Size(size, size),
+                size: const Size(size, size),
                 painter: _OrbitPainter(
                   gauges: gauges,
                   orbit: _orbit.value,
@@ -229,13 +229,11 @@ class _GaugeBadge extends StatelessWidget {
               color: spec.color.withValues(alpha: 0.12),
               border: Border.all(
                 color: spec.color.withValues(alpha: 0.5),
-                width: 1,
               ),
               boxShadow: [
                 BoxShadow(
                   color: spec.color.withValues(alpha: 0.25),
                   blurRadius: 8,
-                  spreadRadius: 0,
                 ),
               ],
             ),
@@ -291,7 +289,7 @@ class _OrbitPainter extends CustomPainter {
     const halfArc = math.pi / 4 - 0.05; // ~44° each side, gap between arcs
     for (final g in gauges) {
       final start = g.anglePos - halfArc;
-      final fullSweep = halfArc * 2;
+      const fullSweep = halfArc * 2;
       final filled = fullSweep * g.valuePct.clamp(0.0, 1.0);
 
       // Faint background arc segment
@@ -314,7 +312,6 @@ class _OrbitPainter extends CustomPainter {
               startAngle: start,
               endAngle: start + fullSweep,
               colors: [g.color.withValues(alpha: 0.4), g.color],
-              tileMode: TileMode.clamp,
               transform: GradientRotation(start),
             ).createShader(rect);
       canvas.drawArc(rect, start, filled, false, fg);

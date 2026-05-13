@@ -165,7 +165,6 @@ class CyberDrawer extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: GlassmorphicContainer(
-        padding: const EdgeInsets.all(16),
         borderColor: color.withValues(alpha: 0.2),
         backgroundColor: Theme.of(
           context,

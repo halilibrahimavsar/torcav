@@ -160,7 +160,6 @@ class _NeuralPulseBackgroundState extends State<NeuralPulseBackground>
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: RadialGradient(
-                  center: Alignment.center,
                   radius: 1.25,
                   colors: [
                     Colors.transparent,

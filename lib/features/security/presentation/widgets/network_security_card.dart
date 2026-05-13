@@ -57,7 +57,7 @@ class NetworkSecurityCard extends StatelessWidget {
             if (knownNetworks.isNotEmpty && trustedProfiles.isNotEmpty)
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 12),
-                child: NeonDivider(height: 1),
+                child: NeonDivider(),
               ),
             ...trustedProfiles.asMap().entries.map((entry) {
               return TrustedProfileCard(

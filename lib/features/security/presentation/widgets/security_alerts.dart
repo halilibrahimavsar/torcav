@@ -39,7 +39,6 @@ class EvilTwinAlertBanner extends StatelessWidget {
           child: NeonCard(
             glowColor: errorColor,
             glowIntensity: 0.25,
-            padding: const EdgeInsets.all(16),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -132,8 +131,6 @@ class WpsWarningCard extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 16),
         child: NeonCard(
           glowColor: warnColor,
-          glowIntensity: 0.15,
-          padding: const EdgeInsets.all(16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -148,9 +145,9 @@ class WpsWarningCard extends StatelessWidget {
                     width: 2,
                   ),
                 ),
-                child: PulseAnimation(
+                child: const PulseAnimation(
                   color: warnColor,
-                  child: const Icon(
+                  child: Icon(
                     Icons.lock_open_rounded,
                     color: warnColor,
                     size: 24,

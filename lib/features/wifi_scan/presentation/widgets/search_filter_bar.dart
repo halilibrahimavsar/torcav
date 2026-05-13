@@ -29,7 +29,7 @@ class SearchFilterBar extends StatelessWidget {
           decoration: BoxDecoration(
             color: surface.withValues(alpha: 0.8),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: primary.withValues(alpha: 0.2), width: 1),
+            border: Border.all(color: primary.withValues(alpha: 0.2)),
           ),
           child: TextField(
             controller: controller,
@@ -240,7 +240,6 @@ class _ScanChip extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: color.withValues(alpha: selected ? 0.6 : 0.2),
-            width: 1,
           ),
         ),
         child: Row(

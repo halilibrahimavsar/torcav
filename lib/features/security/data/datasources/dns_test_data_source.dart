@@ -131,11 +131,8 @@ class DnsDataSource {
         isLeaking: false,
         status: DnsSecurityStatus.warning,
         detectedServers: const [],
-        encryptedDnsActive: false,
         encryptedProtocol: 'Unknown',
-        dnssecSupported: false,
         evidence: 'Failed: $e',
-        benchmarks: const [],
       );
     }
   }

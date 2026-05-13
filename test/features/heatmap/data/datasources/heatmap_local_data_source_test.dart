@@ -37,7 +37,6 @@ void main() {
         HeatmapPoint(
           floorX: 1.2,
           floorY: 2.4,
-          floorZ: 0,
           heading: 90,
           rssi: -61,
           timestamp: DateTime(2026, 4, 10, 12),

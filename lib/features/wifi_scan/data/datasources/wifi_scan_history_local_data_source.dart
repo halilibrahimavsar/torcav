@@ -41,7 +41,7 @@ class WifiScanHistoryLocalDataSourceImpl
         'band_stats_json': jsonEncode(
           snapshot.bandStats.map(_bandStatToJson).toList(),
         ),
-      }, conflictAlgorithm: ConflictAlgorithm.replace);
+      }, conflictAlgorithm: ConflictAlgorithm.replace,);
 
       await txn.delete(
         'wifi_observations',

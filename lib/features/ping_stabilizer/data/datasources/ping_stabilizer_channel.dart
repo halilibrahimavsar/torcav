@@ -143,4 +143,14 @@ class PingStabilizerChannel {
       },
     );
   }
+
+  /// Releases the event channel subscription and stream controllers. Called
+  /// by get_it when the singleton scope is torn down (app shutdown).
+  @disposeMethod
+  Future<void> dispose() async {
+    await _eventSub?.cancel();
+    _eventSub = null;
+    await _samplesCtrl.close();
+    await _stoppedCtrl.close();
+  }
 }

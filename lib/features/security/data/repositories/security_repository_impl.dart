@@ -28,7 +28,6 @@ import '../../../network_scan/domain/repositories/network_scan_repository.dart';
 import '../../../network_scan/domain/entities/network_device.dart';
 import '../../../network_scan/domain/entities/lan_exposure_finding.dart';
 import '../../../network_scan/domain/entities/vulnerability_finding.dart';
-import '../../../network_scan/domain/entities/network_scan_profile.dart';
 
 @LazySingleton(as: SecurityRepository)
 class SecurityRepositoryImpl implements SecurityRepository {
@@ -306,7 +305,6 @@ class SecurityRepositoryImpl implements SecurityRepository {
               cloudGateway ?? '${ip.substring(0, ip.lastIndexOf('.'))}.1';
           final portScanStream = _networkScanRepository.scanWithProfile(
             gatewayIp,
-            profile: NetworkScanProfile.fast,
           );
           final portScanResult = await portScanStream.last;
 
@@ -479,7 +477,6 @@ class SecurityRepositoryImpl implements SecurityRepository {
               '${subnet.substring(0, subnet.lastIndexOf('.'))}.1';
           final portScanStream = _networkScanRepository.scanWithProfile(
             gatewayIp,
-            profile: NetworkScanProfile.fast,
           );
           final portScanResult = await portScanStream.last;
 
@@ -671,7 +668,6 @@ class SecurityRepositoryImpl implements SecurityRepository {
           gateway: gateway,
           firstSeen: DateTime.now(),
           lastSeen: DateTime.now(),
-          seenCount: 1,
         ),
       );
     } else {

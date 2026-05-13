@@ -41,7 +41,6 @@ class LiveJitterChart extends StatelessWidget {
             LineChartBarData(
               spots: spots,
               isCurved: true,
-              barWidth: 2,
               color: scheme.primary,
               dotData: const FlDotData(show: false),
               belowBarData: BarAreaData(

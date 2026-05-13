@@ -183,7 +183,7 @@ class SignalTracker {
   Future<void> runMetadataScan() async {
     _lastScanTime = DateTime.now();
     final result = await _scanWifi(
-      request: const ScanRequest(passes: 3, passIntervalMs: 300),
+      request: const ScanRequest(passIntervalMs: 300),
     );
 
     result.fold((_) {}, (snapshot) {

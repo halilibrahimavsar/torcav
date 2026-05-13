@@ -182,7 +182,6 @@ class _SecurityCenterView extends StatelessWidget {
                     label: l10n.securityTimeline,
                     icon: Icons.terminal_rounded,
                     color: scheme.tertiary,
-                    initiallyExpanded: false,
                     child: SecurityTimelineView(events: state.recentEvents),
                   ),
                 ],

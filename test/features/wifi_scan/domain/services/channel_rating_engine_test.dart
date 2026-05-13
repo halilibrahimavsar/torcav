@@ -22,7 +22,7 @@ void main() {
     });
 
     test('Penalty for same channel (CCI)', () {
-      final network = WifiNetwork(
+      const network = WifiNetwork(
         ssid: 'Test AP',
         bssid: '00:11:22:33:44:55',
         signalStrength: -30, // Very strong
@@ -30,7 +30,6 @@ void main() {
         frequency: 2412,
         security: SecurityType.wpa2,
         vendor: 'SomeVendor',
-        isHidden: false,
       );
 
       final ratings = engine.calculateRatings([network]);
@@ -41,7 +40,7 @@ void main() {
     });
 
     test('Overlapping penalty (ACI) for 2.4GHz', () {
-      final network = WifiNetwork(
+      const network = WifiNetwork(
         ssid: 'Strong AP on Ch 1',
         bssid: '00:11:22:33:44:55',
         signalStrength: -40,
@@ -49,7 +48,6 @@ void main() {
         frequency: 2412,
         security: SecurityType.wpa2,
         vendor: 'SomeVendor',
-        isHidden: false,
       );
 
       final ratings = engine.calculateRatings([network]);
@@ -67,7 +65,7 @@ void main() {
     });
 
     test('Signal strength affects penalty magnitude', () {
-      final strong = WifiNetwork(
+      const strong = WifiNetwork(
         ssid: 'Strong',
         bssid: 'AA:...',
         signalStrength: -30,
@@ -75,10 +73,9 @@ void main() {
         frequency: 2412,
         security: SecurityType.wpa2,
         vendor: 'V',
-        isHidden: false,
       );
 
-      final weak = WifiNetwork(
+      const weak = WifiNetwork(
         ssid: 'Weak',
         bssid: 'BB:...',
         signalStrength: -90,
@@ -86,7 +83,6 @@ void main() {
         frequency: 2437,
         security: SecurityType.wpa2,
         vendor: 'V',
-        isHidden: false,
       );
 
       final ratings = engine.calculateRatings([strong, weak]);

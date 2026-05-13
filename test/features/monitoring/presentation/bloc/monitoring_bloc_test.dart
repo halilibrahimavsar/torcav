@@ -105,14 +105,14 @@ void main() {
     build: () {
       when(
         () => repo.monitorNetwork(any(), interval: any(named: 'interval')),
-      ).thenAnswer((_) => Stream.fromIterable([Right(tNetwork)]));
+      ).thenAnswer((_) => Stream.fromIterable([const Right(tNetwork)]));
       return bloc;
     },
     act: (bloc) => bloc.add(const StartMonitoring('00:11:22:33:44:55')),
     expect:
         () => [
           MonitoringLoading(),
-          MonitoringActive(tNetwork, const [-60]),
+          const MonitoringActive(tNetwork, [-60]),
         ],
   );
 

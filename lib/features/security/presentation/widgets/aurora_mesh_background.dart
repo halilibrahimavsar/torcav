@@ -161,7 +161,6 @@ class _AuroraMeshBackgroundState extends State<AuroraMeshBackground>
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: RadialGradient(
-                  center: Alignment.center,
                   radius: 1.2,
                   colors: [
                     Colors.transparent,
@@ -279,7 +278,7 @@ class _AuroraMeshPainter extends CustomPainter {
   void _paintHexMesh(Canvas canvas, Size size) {
     const hexSize = 38.0;
     final hexW = hexSize * math.sqrt(3);
-    final hexH = hexSize * 1.5;
+    const hexH = hexSize * 1.5;
 
     final lineColor = (isLight ? AppColors.inkCyan : AppColors.neonCyan)
         .withValues(alpha: isLight ? 0.18 : 0.16);
@@ -379,14 +378,13 @@ class _AuroraMeshPainter extends CustomPainter {
     final sweepPaint =
         Paint()
           ..shader = SweepGradient(
-            center: Alignment.center,
             startAngle: sweepAngle - sweepWidth,
             endAngle: sweepAngle,
             colors: [
               Colors.transparent,
               accent.withValues(alpha: isLight ? 0.12 : 0.18),
             ],
-            transform: GradientRotation(0),
+            transform: const GradientRotation(0),
           ).createShader(rect);
 
     canvas.save();

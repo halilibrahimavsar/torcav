@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/l10n/app_localizations.dart';
@@ -709,7 +710,6 @@ class _SettingsPageState extends State<SettingsPage> {
             child: NeonCard(
               glowColor: Theme.of(context).colorScheme.secondary,
               glowIntensity: 0.04,
-              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -776,8 +776,10 @@ class _SettingsPageState extends State<SettingsPage> {
       OnboardingPage.completionKey,
       false,
     );
-    navigator.pushReplacement(
-      MaterialPageRoute(builder: (_) => const OnboardingPage()),
+    unawaited(
+      navigator.pushReplacement(
+        MaterialPageRoute(builder: (_) => const OnboardingPage()),
+      ),
     );
   }
 

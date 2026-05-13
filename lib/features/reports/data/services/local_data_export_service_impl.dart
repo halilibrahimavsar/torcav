@@ -76,7 +76,7 @@ class LocalDataExportServiceImpl implements LocalDataExportService {
       ExportFormat.csv => _payloadToCsv(category, payload),
       ExportFormat.html => _wrapHtml([
         (category, payload),
-      ], anonymize: anonymize),
+      ], anonymize: anonymize,),
     };
   }
 

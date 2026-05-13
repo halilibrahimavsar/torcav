@@ -216,7 +216,7 @@ class _RunDnsButton extends StatelessWidget {
             isLoading
                 ? null
                 : () => context.read<SecurityBloc>().add(
-                  SecurityDnsTestRequested(),
+                  const SecurityDnsTestRequested(),
                 ),
         borderRadius: BorderRadius.circular(8),
         child: Container(
@@ -507,7 +507,7 @@ class _BenchmarkItem extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    benchmark.features.take(2).join(" • "),
+                    benchmark.features.take(2).join(' • '),
                     style: GoogleFonts.rajdhani(
                       fontSize: 10,
                       fontWeight: FontWeight.w500,

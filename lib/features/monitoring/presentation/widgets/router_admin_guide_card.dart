@@ -84,7 +84,7 @@ class _RouterAdminGuideCardState extends State<RouterAdminGuideCard> {
     if (_loading) return const SizedBox.shrink();
 
     final l10n = context.l10n;
-    final color = AppColors.neonCyan;
+    const color = AppColors.neonCyan;
     final onSurface = Theme.of(context).colorScheme.onSurface;
 
     final hasConnection = _ssid != null;
@@ -109,7 +109,7 @@ class _RouterAdminGuideCardState extends State<RouterAdminGuideCard> {
           childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           iconColor: color,
           collapsedIconColor: color.withValues(alpha: 0.7),
-          leading: Icon(Icons.router_rounded, color: color, size: 22),
+          leading: const Icon(Icons.router_rounded, color: color, size: 22),
           title: Text(
             l10n.howToChangeChannelTitle,
             style: GoogleFonts.orbitron(

@@ -29,7 +29,7 @@ void main() {
     // Default settings
     when(
       () => mockSettingsStore.value,
-    ).thenReturn(const AppSettings(strictSafetyMode: true));
+    ).thenReturn(const AppSettings());
   });
 
   group('AndroidWifiDataSource Safety Enforcement', () {
@@ -93,7 +93,7 @@ void main() {
       // Note: This test will still fail on non-Android due to Platform.isAndroid check.
       // In a real project, we would use a Platform wrapper to mock the OS.
       try {
-        await dataSource.scanSnapshot(const ScanRequest(includeHidden: true));
+        await dataSource.scanSnapshot(const ScanRequest());
       } catch (e) {
         if (e.toString().contains(
           'Android scanner is only supported on Android',

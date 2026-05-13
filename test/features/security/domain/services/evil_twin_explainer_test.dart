@@ -21,15 +21,15 @@ void main() {
   });
 
   test('high-confidence assessment yields "High" label', () {
-    final a = EvilTwinAssessment(
+    const a = EvilTwinAssessment(
       confidence: 0.85,
       isCandidate: true,
       dismissedAsLegitimate: false,
-      suspicions: const [
+      suspicions: [
         EvilTwinSignal.ouiMismatch,
         EvilTwinSignal.securityDowngrade,
       ],
-      mitigations: const [],
+      mitigations: [],
       peerBssid: '11:22:33:44:55:66',
       ssid: 'Home',
     );
@@ -37,15 +37,15 @@ void main() {
   });
 
   test('medium-confidence assessment yields "Medium" label', () {
-    final a = EvilTwinAssessment(
+    const a = EvilTwinAssessment(
       confidence: 0.62,
       isCandidate: true,
       dismissedAsLegitimate: false,
-      suspicions: const [
+      suspicions: [
         EvilTwinSignal.ouiMismatch,
         EvilTwinSignal.channelWidthMismatch,
       ],
-      mitigations: const [],
+      mitigations: [],
       peerBssid: '11:22:33:44:55:66',
       ssid: 'Home',
     );
@@ -53,12 +53,12 @@ void main() {
   });
 
   test('low-confidence assessment yields "Low" label', () {
-    final a = EvilTwinAssessment(
+    const a = EvilTwinAssessment(
       confidence: 0.55,
       isCandidate: true,
       dismissedAsLegitimate: false,
-      suspicions: const [EvilTwinSignal.ouiMismatch],
-      mitigations: const [],
+      suspicions: [EvilTwinSignal.ouiMismatch],
+      mitigations: [],
       peerBssid: '11:22:33:44:55:66',
       ssid: 'Home',
     );

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/services/notification_service.dart';
@@ -54,8 +55,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
       // Onboarding must never block on settings persistence.
     }
     if (mounted) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const AppShellPage()),
+      unawaited(
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const AppShellPage()),
+        ),
       );
     }
   }

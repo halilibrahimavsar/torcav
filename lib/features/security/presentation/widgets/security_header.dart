@@ -153,7 +153,6 @@ class SecurityCenterBentoHeader extends StatelessWidget {
                                 child: OverflowBox(
                                   maxWidth: 600,
                                   maxHeight: 600,
-                                  alignment: Alignment.center,
                                   child: SizedBox.square(
                                     dimension: 600,
                                     child: _NeonHeaderBackground(
@@ -180,7 +179,6 @@ class SecurityCenterBentoHeader extends StatelessWidget {
                           border: Border(
                             top: BorderSide(
                               color: activeColor.withValues(alpha: 0.05),
-                              width: 1,
                             ),
                           ),
                         ),
@@ -294,7 +292,6 @@ class _HeaderGlowPainter extends CustomPainter {
     final sweepPaint =
         Paint()
           ..shader = SweepGradient(
-            center: Alignment.center,
             colors: [
               color.withValues(alpha: 0.0),
               color.withValues(alpha: 0.2),
@@ -471,7 +468,6 @@ class _AnimatedSecurityScoreState extends State<AnimatedSecurityScore>
             color: widget.color,
           ),
           glowColor: widget.color,
-          glowRadius: 12,
         );
       },
     );

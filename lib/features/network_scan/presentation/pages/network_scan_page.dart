@@ -151,7 +151,6 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 content: Text(label),
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 behavior: SnackBarBehavior.floating,
-                duration: const Duration(seconds: 4),
               ),
             );
           }
@@ -208,7 +207,6 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 visible: isActivelyScanning,
                 maintainState: true,
                 maintainAnimation: true,
-                maintainSize: false,
                 child: _ScanningBanner(
                   foundCount: loadedState?.hosts.length ?? 0,
                 ),
@@ -394,7 +392,6 @@ class _ScanControlPanel extends StatelessWidget {
     return NeonCard(
       glowColor: scheme.primary,
       glowIntensity: 0.06,
-      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

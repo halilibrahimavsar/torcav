@@ -399,7 +399,7 @@ class AppDatabase {
             lastConfirmedAt.isEmpty
                 ? DateTime.fromMillisecondsSinceEpoch(0).toIso8601String()
                 : lastConfirmedAt,
-      }, conflictAlgorithm: ConflictAlgorithm.ignore);
+      }, conflictAlgorithm: ConflictAlgorithm.ignore,);
     }
   }
 }

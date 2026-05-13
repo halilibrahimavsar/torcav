@@ -128,7 +128,7 @@ class _SecurityCoreState extends State<SecurityCore>
                       ),
                     )
                   else
-                    PulsingDot(color: widget.statusColor, size: 10),
+                    PulsingDot(color: widget.statusColor),
                   const SizedBox(height: 12),
                   Text(
                     widget.label.toUpperCase(),

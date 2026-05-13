@@ -70,7 +70,6 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
           ..hideCurrentSnackBar()
           ..showSnackBar(
             SnackBar(
-              duration: const Duration(seconds: 4),
               content: Text(
                 noDataMsg,
                 style: GoogleFonts.rajdhani(fontSize: 13),
@@ -103,7 +102,6 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
         ..hideCurrentSnackBar()
         ..showSnackBar(
           SnackBar(
-            duration: const Duration(seconds: 4),
             content: Text(
               '$failPrefix$e',
               style: GoogleFonts.rajdhani(fontSize: 13),
@@ -187,7 +185,6 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
             ),
             items: [
               DropdownMenuItem<UserDataCategory?>(
-                value: null,
                 child: Row(
                   children: [
                     const Icon(Icons.all_inclusive_rounded, size: 16),

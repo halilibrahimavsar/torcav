@@ -248,7 +248,6 @@ class _DiscoveryTabPageState extends State<_DiscoveryTabPage>
                 color: Theme.of(
                   context,
                 ).colorScheme.primary.withValues(alpha: 0.1),
-                width: 1,
               ),
             ),
             child: TabBar(
@@ -271,7 +270,6 @@ class _DiscoveryTabPageState extends State<_DiscoveryTabPage>
                   color: Theme.of(
                     context,
                   ).colorScheme.primary.withValues(alpha: 0.4),
-                  width: 1,
                 ),
               ),
               dividerColor: Colors.transparent,
@@ -399,7 +397,6 @@ class _NeonBottomBar extends StatelessWidget {
                             color: Theme.of(
                               context,
                             ).colorScheme.primary.withValues(alpha: 0.2),
-                            width: 1,
                           ),
                           boxShadow: [
                             BoxShadow(

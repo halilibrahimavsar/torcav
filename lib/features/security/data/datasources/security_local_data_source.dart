@@ -93,7 +93,7 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
         'first_seen': profile.trustedAt.toIso8601String(),
         'last_seen': profile.lastConfirmedAt.toIso8601String(),
         'seen_count': 100, // Trusted profiles are considered highly seen/stable
-      }, conflictAlgorithm: ConflictAlgorithm.replace);
+      }, conflictAlgorithm: ConflictAlgorithm.replace,);
     });
   }
 
@@ -232,7 +232,7 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
               ? null
               : jsonEncode(session.dnsResult!.toJson()),
       'trusted_profile_count': session.trustedProfileCount,
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
+    }, conflictAlgorithm: ConflictAlgorithm.replace,);
   }
 
   @override

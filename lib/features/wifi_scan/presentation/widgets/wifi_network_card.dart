@@ -48,7 +48,6 @@ class WifiNetworkCard extends StatelessWidget {
             ),
           );
         },
-        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Row(
@@ -64,7 +63,6 @@ class WifiNetworkCard extends StatelessWidget {
                         color: signalColor.withValues(alpha: 0.1),
                         border: Border.all(
                           color: signalColor.withValues(alpha: 0.2),
-                          width: 1,
                         ),
                       ),
                     ),
@@ -131,7 +129,7 @@ class WifiNetworkCard extends StatelessWidget {
                             const SizedBox(width: 4),
                             Tooltip(
                               message: l10n.randomizedMacDetectedLabel,
-                              child: Icon(
+                              child: const Icon(
                                 Icons.privacy_tip_outlined,
                                 color: AppColors.neonOrange,
                                 size: 14,

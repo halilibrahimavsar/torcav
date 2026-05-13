@@ -145,7 +145,7 @@ class PortScanDataSource {
           port == 80 ||
           port == 8080) {
         if (port == 80 || port == 8080) {
-          socket.write("HEAD / HTTP/1.0\r\n\r\n");
+          socket.write('HEAD / HTTP/1.0\r\n\r\n');
         }
 
         try {

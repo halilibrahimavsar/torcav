@@ -208,7 +208,7 @@ class _ArHudOverlayState extends State<ArHudOverlay>
         ),
 
         // 8. Live Diagnostic Tag (bottom-center)
-        Positioned(
+        const Positioned(
           bottom: 110,
           left: 0,
           right: 0,

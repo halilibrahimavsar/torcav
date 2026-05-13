@@ -43,7 +43,7 @@ class RouterGroupsCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.router_outlined,
                 color: AppColors.neonPurple,
                 size: 16,

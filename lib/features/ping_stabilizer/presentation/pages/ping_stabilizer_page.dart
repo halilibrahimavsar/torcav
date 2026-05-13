@@ -164,12 +164,12 @@ class _PingStabilizerView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Card(
+                const Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(12),
+                    padding: EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         ProfilePickerSection(),
                         SizedBox(height: 16),
                         DnsPickerSection(),

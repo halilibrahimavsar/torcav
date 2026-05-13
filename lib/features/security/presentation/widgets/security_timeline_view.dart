@@ -178,7 +178,6 @@ class SecurityEventCard extends StatelessWidget {
       delay: Duration(milliseconds: 100 + (index * 50)),
       child: GlassmorphicContainer(
         borderColor: sevColor.withValues(alpha: 0.3),
-        padding: const EdgeInsets.all(16),
         backgroundColor: sevColor.withValues(alpha: 0.02),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

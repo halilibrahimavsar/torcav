@@ -187,7 +187,7 @@ class ReportExportRepositoryImpl implements ReportExportRepository {
                     pw.Spacer(),
                     pw.Text(
                       'Generated: ${snapshot.timestamp.toIso8601String()}',
-                      style: pw.TextStyle(
+                      style: const pw.TextStyle(
                         fontSize: 9,
                         color: PdfColors.grey600,
                       ),

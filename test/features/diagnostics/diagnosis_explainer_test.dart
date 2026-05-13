@@ -58,8 +58,6 @@ void main() {
       final ev = DiagnosisEvidence(
         category: cat,
         severity: 0.6,
-        metricLabel: '',
-        thresholdLabel: '',
       );
       final exp = explainer.explain(ev, inputs(speedTest: speed()));
       expect(exp.whatIs, isNotEmpty, reason: 'whatIs for $cat');
@@ -68,11 +66,9 @@ void main() {
   });
 
   test('weak signal estimate scales with severity and download', () {
-    final ev = DiagnosisEvidence(
+    const ev = DiagnosisEvidence(
       category: RootCauseCategory.weakSignal,
       severity: 0.8,
-      metricLabel: '',
-      thresholdLabel: '',
     );
     final exp = explainer.explain(
       ev,
@@ -83,11 +79,9 @@ void main() {
   });
 
   test('bufferbloat estimate reports a latency reduction in ms', () {
-    final ev = DiagnosisEvidence(
+    const ev = DiagnosisEvidence(
       category: RootCauseCategory.bufferbloat,
       severity: 0.9,
-      metricLabel: '',
-      thresholdLabel: '',
     );
     final exp = explainer.explain(
       ev,
@@ -98,11 +92,9 @@ void main() {
   });
 
   test('slow DNS estimate reports a per-lookup reduction in ms', () {
-    final ev = DiagnosisEvidence(
+    const ev = DiagnosisEvidence(
       category: RootCauseCategory.slowDns,
       severity: 0.8,
-      metricLabel: '',
-      thresholdLabel: '',
     );
     final exp = explainer.explain(
       ev,
@@ -121,11 +113,9 @@ void main() {
   });
 
   test('healthy explainer never proposes an estimate or fix', () {
-    final ev = DiagnosisEvidence(
+    const ev = DiagnosisEvidence(
       category: RootCauseCategory.healthy,
       severity: 0,
-      metricLabel: '',
-      thresholdLabel: '',
     );
     final exp = explainer.explain(ev, inputs());
     expect(exp.estimatedImprovement, isNull);
@@ -135,11 +125,9 @@ void main() {
   test(
     'weak signal estimate suppressed when download is too low to project',
     () {
-      final ev = DiagnosisEvidence(
+      const ev = DiagnosisEvidence(
         category: RootCauseCategory.weakSignal,
         severity: 0.6,
-        metricLabel: '',
-        thresholdLabel: '',
       );
       final exp = explainer.explain(
         ev,

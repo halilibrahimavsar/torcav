@@ -102,7 +102,7 @@ class DiagnoseUseCase {
     );
 
     final score = connectedRating.rating; // 0..10
-    final span =
+    const span =
         DiagnosticThresholds.channelHealthyScore -
         DiagnosticThresholds.channelSevereScore;
     final raw = (DiagnosticThresholds.channelHealthyScore - score) / span;
@@ -132,7 +132,7 @@ class DiagnoseUseCase {
     if (speedTest == null) return null;
     final induced = speedTest.loadedLatencyMs - speedTest.latencyMs;
     if (induced.isNaN || induced.isInfinite) return null;
-    final span =
+    const span =
         DiagnosticThresholds.bufferbloatSevereMs -
         DiagnosticThresholds.bufferbloatHealthyMs;
     final raw = (induced - DiagnosticThresholds.bufferbloatHealthyMs) / span;

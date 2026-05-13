@@ -254,7 +254,6 @@ class _SignalWaveform extends StatelessWidget {
                   isCurved: true,
                   curveSmoothness: 0.4,
                   color: color,
-                  barWidth: 2,
                   dotData: const FlDotData(show: false),
                   belowBarData: BarAreaData(
                     show: true,
@@ -350,14 +349,11 @@ class _ScoreSparkline extends StatelessWidget {
                   spots: spots,
                   isCurved: true,
                   color: color,
-                  barWidth: 2,
                   dotData: FlDotData(
-                    show: true,
                     getDotPainter:
                         (s, _, __, i) => FlDotCirclePainter(
                           radius: i == spots.length - 1 ? 3 : 0,
                           color: color,
-                          strokeWidth: 0,
                         ),
                   ),
                 ),
@@ -683,7 +679,7 @@ class _SpeedSnapshot extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Icon(
+            const Icon(
               Icons.arrow_downward_rounded,
               size: 12,
               color: AppColors.neonCyan,
@@ -714,7 +710,7 @@ class _SpeedSnapshot extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Icon(
+            const Icon(
               Icons.arrow_upward_rounded,
               size: 12,
               color: AppColors.neonPurple,

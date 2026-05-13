@@ -39,7 +39,7 @@ void main() {
     test(
       'legitimate dual-band sibling (2.4 + 5 GHz, same vendor) dismissed',
       () {
-        final target = net(channel: 36, frequency: 5180);
+        final target = net();
         final peer = net(
           bssid: 'AA:BB:CC:DD:EE:11',
           channel: 6,
@@ -70,7 +70,7 @@ void main() {
     });
 
     test('mesh sibling with sequential BSSID dismissed', () {
-      final target = net(bssid: 'AA:BB:CC:DD:EE:01');
+      final target = net();
       final peer = net(bssid: 'AA:BB:CC:DD:EE:02');
       final result = classifier.assess(target, peer);
       expect(result.dismissedAsLegitimate, isTrue);
@@ -81,9 +81,7 @@ void main() {
   group('genuine evil-twin patterns', () {
     test('flags vendor mismatch + security downgrade as high confidence', () {
       final target = net(
-        bssid: 'AA:BB:CC:DD:EE:01',
-        security: SecurityType.wpa3,
-        vendor: 'Asus',
+        
       );
       final peer = net(
         bssid: '11:22:33:44:55:66',
@@ -100,9 +98,6 @@ void main() {
 
     test('same band, far apart channel + width mismatch flagged', () {
       final target = net(
-        bssid: 'AA:BB:CC:DD:EE:01',
-        channel: 36,
-        frequency: 5180,
         channelWidthMhz: 80,
       );
       final peer = net(
@@ -127,15 +122,10 @@ void main() {
       // Same band, channels are 4 apart so channel-drift doesn't fire either.
       // Only the hiddenVsVisible signal (0.20) is below threshold (0.50).
       final target = net(
-        bssid: 'AA:BB:CC:DD:EE:01',
-        channel: 36,
-        frequency: 5180,
-        isHidden: false,
+        
       );
       final peer = net(
         bssid: 'AA:BB:CC:99:88:77',
-        channel: 36,
-        frequency: 5180,
         isHidden: true,
       );
       final result = classifier.assess(target, peer);
@@ -147,16 +137,13 @@ void main() {
   group('confidence scaling', () {
     test('downgrade alone with same OUI falls below threshold', () {
       final target = net(
-        bssid: 'AA:BB:CC:DD:EE:01',
-        security: SecurityType.wpa3,
+        
       );
       // Pure downgrade with same OUI prefix should sit below threshold.
       final samePrefix = net(
         bssid: 'AA:BB:CC:99:88:77',
         security: SecurityType.open,
         vendor: 'Different', // breaks crossBandSibling mitigation for same band
-        channel: 36,
-        frequency: 5180,
       );
       final result = classifier.assess(target, samePrefix);
       // OUI prefix matches (AA:BB:CC), so only securityDowngrade fires.
@@ -169,8 +156,6 @@ void main() {
 
     test('high confidence pair triggers candidate flag', () {
       final target = net(
-        bssid: 'AA:BB:CC:DD:EE:01',
-        security: SecurityType.wpa3,
         channelWidthMhz: 80,
         hasWps: false,
       );
@@ -188,7 +173,7 @@ void main() {
 
   group('assessAll', () {
     test('returns the worst peer when multiple are present', () {
-      final target = net(bssid: 'AA:BB:CC:DD:EE:01');
+      final target = net();
       final peers = [
         net(bssid: 'AA:BB:CC:DD:EE:02'), // legit mesh sibling (BSSID close)
         net(
@@ -204,7 +189,7 @@ void main() {
     });
 
     test('returns dismissal when every peer is legit', () {
-      final target = net(bssid: 'AA:BB:CC:DD:EE:01');
+      final target = net();
       final peers = [
         net(bssid: 'AA:BB:CC:DD:EE:02'), // BSSID close
       ];
@@ -222,7 +207,7 @@ void main() {
     });
 
     test('user-trusted peer BSSID short-circuits to legitimate', () {
-      final target = net(bssid: 'AA:BB:CC:DD:EE:01');
+      final target = net();
       final peers = [
         // Would normally flag — different OUI + open security.
         net(

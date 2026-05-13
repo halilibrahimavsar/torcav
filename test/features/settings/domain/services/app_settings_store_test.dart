@@ -38,7 +38,6 @@ void main() {
         scanIntervalSeconds: 12,
         defaultScanPasses: 4,
         defaultBackendPreference: WifiBackendPreference.android,
-        includeHiddenSsids: false,
         strictSafetyMode: false,
       );
 

@@ -266,7 +266,6 @@ class NotificationTile extends StatelessWidget {
     return NeonCard(
       glowColor: color,
       glowIntensity: isUnread ? 0.15 : 0.05,
-      padding: const EdgeInsets.all(16),
       onTap: () {
         if (isUnread && event.id != null) {
           context.read<NotificationBloc>().add(

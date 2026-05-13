@@ -10,7 +10,6 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../wifi_scan/domain/entities/channel_rating.dart';
 import '../../../wifi_scan/domain/entities/channel_rating_sample.dart';
-import '../../../wifi_scan/domain/entities/scan_request.dart';
 import '../../../wifi_scan/domain/entities/wifi_network.dart';
 import '../../../wifi_scan/domain/repositories/channel_rating_repository.dart';
 import '../../../wifi_scan/presentation/bloc/wifi_scan_bloc.dart';
@@ -55,7 +54,6 @@ class _SpectrumView extends StatefulWidget {
 }
 
 class _SpectrumViewState extends State<_SpectrumView> {
-  static const _scanRequest = ScanRequest();
   static const double _alertThreshold = 6.0;
   String? _connectedBssid;
   WifiRegion? _region;
@@ -76,7 +74,7 @@ class _SpectrumViewState extends State<_SpectrumView> {
     if (state is WifiScanLoaded) {
       _analyse(state);
     }
-    scanBloc.add(const WifiScanRefreshed(request: _scanRequest));
+    scanBloc.add(const WifiScanRefreshed());
   }
 
   void _maybeAlertOnLowQuality(ChannelAnalysisReady state) {
@@ -216,7 +214,7 @@ class _SpectrumViewState extends State<_SpectrumView> {
                     tooltip: l10n.refreshScanTooltip,
                     onPressed: () {
                       context.read<WifiScanBloc>().add(
-                        const WifiScanRefreshed(request: _scanRequest),
+                        const WifiScanRefreshed(),
                       );
                     },
                   );
@@ -2059,7 +2057,6 @@ class _PulsingNowBadgeState extends State<_PulsingNowBadge>
                 BoxShadow(
                   color: AppColors.neonCyan.withValues(alpha: glowAlpha),
                   blurRadius: glow,
-                  spreadRadius: 0,
                 ),
               ],
             ),

@@ -198,7 +198,6 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
           overallScore: score,
           scanSummary: summary,
           isDeepScanEnabled: isDeepScan,
-          isDeepScanning: false,
           latestSession: latestSession,
           suppressedDeepScanContext: suppressedFor,
           connectedContext: connectedCtx,

@@ -120,7 +120,7 @@ class _SignalIcon extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         PulsingDot(color: color, size: 36),
-        Icon(Icons.wifi_rounded, color: Colors.white, size: 18),
+        const Icon(Icons.wifi_rounded, color: Colors.white, size: 18),
       ],
     );
   }

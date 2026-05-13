@@ -44,7 +44,7 @@ class LanScanHistoryLocalDataSourceImpl
         'target': target,
         'profile': profile,
         'payload_json': jsonEncode(payload),
-      }, conflictAlgorithm: ConflictAlgorithm.replace);
+      }, conflictAlgorithm: ConflictAlgorithm.replace,);
 
       final batch = txn.batch();
       for (final host in hosts) {

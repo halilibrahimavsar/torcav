@@ -136,7 +136,7 @@ class _HourlyPainter extends CustomPainter {
       );
     }
 
-    final headerH = 22.0;
+    const headerH = 22.0;
     for (var ci = 0; ci < channels.length; ci++) {
       final ch = channels[ci];
       final y = headerH + ci * cellH;

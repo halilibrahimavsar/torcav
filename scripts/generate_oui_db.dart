@@ -97,7 +97,7 @@ Future<void> main(List<String> arguments) async {
         await txn.insert('oui', {
           'prefix': prefix,
           'vendor': vendor,
-        }, conflictAlgorithm: ConflictAlgorithm.replace);
+        }, conflictAlgorithm: ConflictAlgorithm.replace,);
 
         if (isNewPrefix) count++;
         if (count % 1000 == 0) {
@@ -116,15 +116,15 @@ Future<void> main(List<String> arguments) async {
     await db.insert('metadata', {
       'key': 'source',
       'value': 'https://standards-oui.ieee.org/oui/oui.csv',
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
+    }, conflictAlgorithm: ConflictAlgorithm.replace,);
     await db.insert('metadata', {
       'key': 'generatedAt',
       'value': DateTime.now().toUtc().toIso8601String(),
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
+    }, conflictAlgorithm: ConflictAlgorithm.replace,);
     await db.insert('metadata', {
       'key': 'recordCount',
       'value': '$count',
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
+    }, conflictAlgorithm: ConflictAlgorithm.replace,);
 
     await db.close();
     dbClosed = true;

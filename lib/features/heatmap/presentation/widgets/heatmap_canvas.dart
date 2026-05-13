@@ -706,7 +706,7 @@ class _StaticHeatmapPainter extends CustomPainter {
       fontWeight: FontWeight.w500,
     );
 
-    final tickX = marginLeft + barW + 8;
+    const tickX = marginLeft + barW + 8;
     _drawText(canvas, '$maxRssi', Offset(tickX, top - 1), labelStyle);
     _drawText(
       canvas,

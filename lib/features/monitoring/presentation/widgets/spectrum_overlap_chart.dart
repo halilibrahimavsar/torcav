@@ -287,7 +287,7 @@ class _SpectrumPainter extends CustomPainter {
 
     final x =
         padLeft + ((me.frequency - range.low) / (range.high - range.low)) * w;
-    final color = AppColors.neonCyan;
+    const color = AppColors.neonCyan;
 
     // Dashed vertical line.
     final dashPaint =

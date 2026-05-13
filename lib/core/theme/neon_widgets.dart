@@ -290,7 +290,6 @@ class NeonCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(
           color: effectiveGlowColor.withValues(alpha: 0.2),
-          width: 1,
         ),
         boxShadow:
             isDark
@@ -629,7 +628,6 @@ class NeonDivider extends StatelessWidget {
           BoxShadow(
             color: effectiveColor.withValues(alpha: isDark ? 0.3 : 0.15),
             blurRadius: isDark ? 8 : 4,
-            spreadRadius: 0,
           ),
         ],
       ),
@@ -1005,7 +1003,6 @@ class HolographicCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: effectiveColor.withValues(alpha: 0.2),
-          width: 1,
         ),
         boxShadow: [
           BoxShadow(
@@ -1222,7 +1219,6 @@ class _FoldableNeonSectionState extends State<FoldableNeonSection> {
                   ? CrossFadeState.showSecond
                   : CrossFadeState.showFirst,
           duration: const Duration(milliseconds: 300),
-          alignment: Alignment.topCenter,
         ),
       ],
     );

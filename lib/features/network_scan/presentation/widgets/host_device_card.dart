@@ -261,7 +261,6 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
       child: NeonCard(
         glowColor: riskColor,
         glowIntensity: 0.08,
-        padding: const EdgeInsets.all(16),
         onTap: () => setState(() => _isExpanded = !_isExpanded),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,7 +276,6 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
                     color: riskColor.withValues(alpha: 0.1),
                     border: Border.all(
                       color: riskColor.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                   ),
                   child: Icon(_deviceIcon, color: riskColor, size: 20),

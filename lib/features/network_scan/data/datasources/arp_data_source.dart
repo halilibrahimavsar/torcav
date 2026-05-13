@@ -225,7 +225,7 @@ class ArpDataSource {
 
     if (profile == NetworkScanProfile.balanced) {
       // 10-port quick probe with 500ms timeout
-      services.addAll(await _probePortsStatic(entry.ip, timeoutMs: 500));
+      services.addAll(await _probePortsStatic(entry.ip));
     } else if (profile == NetworkScanProfile.aggressive) {
       // Extended 10-port probe with 1000ms timeout for better coverage
       services.addAll(await _probePortsStatic(entry.ip, timeoutMs: 1000));
@@ -245,7 +245,6 @@ class ArpDataSource {
         exposureFindings: const [],
         exposureScore: (services.length * 7).toDouble().clamp(0, 100),
         deviceType: 'Unknown',
-        isGateway: false,
       ),
     );
   }
@@ -333,8 +332,6 @@ class ArpDataSource {
         port: port,
         protocol: 'tcp',
         serviceName: serviceName,
-        product: '',
-        version: '',
       );
     } catch (e) {
       return null;

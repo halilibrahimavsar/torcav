@@ -47,7 +47,6 @@ class _NewSessionDialogState extends State<NewSessionDialog> {
         children: [
           TextField(
             controller: _controller,
-            autofocus: false,
             decoration: InputDecoration(
               labelText: widget.copy.sessionNameField,
               prefixIcon: const Icon(Icons.label_outline_rounded),

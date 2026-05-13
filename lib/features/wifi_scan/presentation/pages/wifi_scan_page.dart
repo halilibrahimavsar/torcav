@@ -182,7 +182,7 @@ class _WifiScanViewState extends State<_WifiScanView> {
                           const SizedBox(
                             width: 120,
                             height: 120,
-                            child: WifiScannerRadar(isScanning: true),
+                            child: WifiScannerRadar(),
                           ),
                           const SizedBox(height: 48),
                           StaggeredEntry(
@@ -393,12 +393,11 @@ class _SnapshotViewState extends State<_SnapshotView> {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: AppColors.neonCyan.withValues(alpha: 0.2),
-                width: 1,
               ),
             ),
             child: Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.verified_user_outlined,
                   size: 16,
                   color: AppColors.neonCyan,
@@ -442,7 +441,6 @@ class _SnapshotViewState extends State<_SnapshotView> {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: Colors.orange.withValues(alpha: 0.3),
-                  width: 1,
                 ),
               ),
               child: Row(

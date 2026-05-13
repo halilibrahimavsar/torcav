@@ -163,7 +163,6 @@ void main() {
       final legacy = analyzer.assess(wpsNetwork);
       final explicit = analyzer.assess(
         wpsNetwork,
-        context: NetworkContextType.unknown,
       );
       expect(legacy.score, explicit.score);
     });

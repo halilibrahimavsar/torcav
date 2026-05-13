@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -87,7 +89,7 @@ class StabilizerToggleCard extends StatelessWidget {
                       onChanged: (v) async {
                         final cubit = context.read<PingStabilizerCubit>();
                         if (!v) {
-                          cubit.stopStabilizer();
+                          unawaited(cubit.stopStabilizer());
                           return;
                         }
                         // Google Play VPN policy: show prominent disclosure
@@ -109,7 +111,7 @@ class StabilizerToggleCard extends StatelessWidget {
                             onCancel: () => Navigator.of(ctx).pop(false),
                           ),
                         );
-                        if (accepted == true) cubit.startStabilizer();
+                        if (accepted == true) unawaited(cubit.startStabilizer());
                       },
                     ),
                 ],

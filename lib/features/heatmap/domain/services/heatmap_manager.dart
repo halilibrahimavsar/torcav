@@ -130,13 +130,11 @@ class HeatmapManager {
     final newPoint = HeatmapPoint(
       floorX: candidate.x,
       floorY: candidate.y,
-      floorZ: 0,
       heading: candidate.heading,
       rssi: _lastSignalState.currentRssi ?? 0,
       timestamp: _lastSignalState.lastSignalAt ?? DateTime.now(),
       ssid: _lastSignalState.targetSsid ?? '',
       bssid: _lastSignalState.targetBssid ?? '',
-      floor: 0, // Floor tracking can be added here
       sampleCount: _lastSignalState.sampleCount,
       rssiStdDev: _lastSignalState.stdDev,
     );
@@ -166,7 +164,6 @@ class HeatmapManager {
     final newPoint = HeatmapPoint(
       floorX: floorX,
       floorY: floorY,
-      floorZ: 0,
       heading: heading,
       rssi: rssi,
       timestamp: timestamp,

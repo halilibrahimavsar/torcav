@@ -312,8 +312,6 @@ class DiagnosisExplainer {
           'None of those crossed an alert threshold this run. Your link is '
           'in good shape right now — re-run the test if you start noticing '
           'a problem to see whether anything shifted.',
-      howToFix: [],
-      estimatedImprovement: null,
     );
   }
 }

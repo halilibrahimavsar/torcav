@@ -80,7 +80,7 @@ void main() {
   test('a risky LAN host pulls LAN score down meaningfully', () {
     final risky = host(
       findings: [
-        LanExposureFinding(
+        const LanExposureFinding(
           ruleId: 'lan.test',
           hostIp: '192.168.1.10',
           hostMac: '00',

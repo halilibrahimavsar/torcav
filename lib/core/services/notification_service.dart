@@ -26,9 +26,7 @@ class NotificationService {
       '@mipmap/ic_launcher',
     );
     const iosSettings = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
+      
     );
     final linuxSettings = LinuxInitializationSettings(
       defaultActionName: _l10n.notificationOpenAction,
@@ -210,7 +208,6 @@ class NotificationService {
         priority: priority,
         color: color,
         enableVibration: severity != SecurityEventSeverity.info,
-        playSound: true,
         icon: '@mipmap/ic_launcher',
       ),
       iOS: DarwinNotificationDetails(
