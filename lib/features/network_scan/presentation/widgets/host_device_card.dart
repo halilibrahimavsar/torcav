@@ -343,7 +343,10 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
                               ),
                             ),
                             Text(
-                              context.translateDeviceType(_customLabel ?? widget.host.deviceType)
+                              context
+                                  .translateDeviceType(
+                                    _customLabel ?? widget.host.deviceType,
+                                  )
                                   .toUpperCase(),
                               style: GoogleFonts.rajdhani(
                                 color:
@@ -395,7 +398,10 @@ class _HostDeviceCardState extends State<HostDeviceCard> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: _TechDetail(
-                      label: context.translateVendor(widget.host.vendor).toUpperCase(),
+                      label:
+                          context
+                              .translateVendor(widget.host.vendor)
+                              .toUpperCase(),
                       icon: Icons.factory_rounded,
                       color: scheme.secondary,
                     ),
