@@ -629,6 +629,18 @@
     "@backgroundNeuralPulse": {
         "description": "Label for the neural pulse background."
     },
+    "backgroundAegisShield": "Mertala Aegis",
+    "@backgroundAegisShield": {
+        "description": "Label for the Aegis Shield background (default)."
+    },
+    "backgroundSignalTopography": "Topografyaya Sînyalê",
+    "@backgroundSignalTopography": {
+        "description": "Label for the Signal Topography background."
+    },
+    "backgroundQuantumMesh": "Tora Kuantûmî",
+    "@backgroundQuantumMesh": {
+        "description": "Label for the Quantum Mesh background."
+    },
     "settingsScanBehavior": "Tevgera Taraneyê",
     "@settingsScanBehavior": {
         "description": "Settings Scan Behavior"

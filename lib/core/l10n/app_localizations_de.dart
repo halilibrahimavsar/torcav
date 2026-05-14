@@ -446,6 +446,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get backgroundNeuralPulse => 'Neuraler Puls (Animiert)';
 
   @override
+  String get backgroundAegisShield => 'Aegis-Schild';
+
+  @override
+  String get backgroundSignalTopography => 'Signal-Topografie';
+
+  @override
+  String get backgroundQuantumMesh => 'Quanten-Netz';
+
+  @override
   String get settingsScanBehavior => 'Scan-Verhalten';
 
   @override

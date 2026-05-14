@@ -909,6 +909,24 @@ abstract class AppLocalizations {
   /// **'Neural Pulse (Animated)'**
   String get backgroundNeuralPulse;
 
+  /// Label for the Aegis Shield background (default).
+  ///
+  /// In en, this message translates to:
+  /// **'Aegis Shield'**
+  String get backgroundAegisShield;
+
+  /// Label for the Signal Topography background.
+  ///
+  /// In en, this message translates to:
+  /// **'Signal Topography'**
+  String get backgroundSignalTopography;
+
+  /// Label for the Quantum Mesh background.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantum Mesh'**
+  String get backgroundQuantumMesh;
+
   /// Settings Scan Behavior
   ///
   /// In en, this message translates to:

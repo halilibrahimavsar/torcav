@@ -446,6 +446,15 @@ class AppLocalizationsTr extends AppLocalizations {
   String get backgroundNeuralPulse => 'Nöral Nabız (Animasyonlu)';
 
   @override
+  String get backgroundAegisShield => 'Aegis Kalkanı';
+
+  @override
+  String get backgroundSignalTopography => 'Sinyal Topografyası';
+
+  @override
+  String get backgroundQuantumMesh => 'Kuantum Ağ';
+
+  @override
   String get settingsScanBehavior => 'Tarama Davranışı';
 
   @override

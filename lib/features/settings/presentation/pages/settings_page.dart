@@ -1084,6 +1084,30 @@ class _SettingsPageState extends State<SettingsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _BackgroundOption(
+                label: l10n.backgroundAegisShield,
+                type: AppBackgroundType.aegisShield,
+                onSelected: (type) {
+                  _update(_store.value.copyWith(backgroundType: type));
+                  Navigator.pop(context);
+                },
+              ),
+              _BackgroundOption(
+                label: l10n.backgroundSignalTopography,
+                type: AppBackgroundType.signalTopography,
+                onSelected: (type) {
+                  _update(_store.value.copyWith(backgroundType: type));
+                  Navigator.pop(context);
+                },
+              ),
+              _BackgroundOption(
+                label: l10n.backgroundQuantumMesh,
+                type: AppBackgroundType.quantumMesh,
+                onSelected: (type) {
+                  _update(_store.value.copyWith(backgroundType: type));
+                  Navigator.pop(context);
+                },
+              ),
+              _BackgroundOption(
                 label: l10n.backgroundNeomorphic,
                 type: AppBackgroundType.neomorphic,
                 onSelected: (type) {
@@ -1137,6 +1161,9 @@ class _SettingsPageState extends State<SettingsPage> {
       AppBackgroundType.auroraMesh => l10n.backgroundAuroraMesh,
       AppBackgroundType.holoSphere => l10n.backgroundHoloSphere,
       AppBackgroundType.neuralPulse => l10n.backgroundNeuralPulse,
+      AppBackgroundType.aegisShield => l10n.backgroundAegisShield,
+      AppBackgroundType.signalTopography => l10n.backgroundSignalTopography,
+      AppBackgroundType.quantumMesh => l10n.backgroundQuantumMesh,
     };
   }
 

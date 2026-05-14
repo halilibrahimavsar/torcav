@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:torcav/core/di/injection.dart';
 import '../../../settings/domain/entities/app_settings.dart';
 import '../../../settings/domain/services/app_settings_store.dart';
+import 'aegis_shield_background.dart';
 import 'aurora_mesh_background.dart';
 import 'classic_grid_background.dart';
 import 'holo_sphere_background.dart';
 import 'neomorphic_background.dart';
 import 'neural_pulse_background.dart';
+import 'quantum_mesh_background.dart';
+import 'signal_topography_background.dart';
 
 class CyberGridBackground extends StatefulWidget {
   final Color color;
@@ -78,7 +81,32 @@ class _CyberGridBackgroundState extends State<CyberGridBackground> {
           );
         }
 
-        return NeomorphicBackground(
+        if (settings.backgroundType == AppBackgroundType.signalTopography) {
+          return SignalTopographyBackground(
+            color: widget.color,
+            scrollVelocity: scrollVelocity,
+            child: widget.child,
+          );
+        }
+
+        if (settings.backgroundType == AppBackgroundType.quantumMesh) {
+          return QuantumMeshBackground(
+            color: widget.color,
+            scrollVelocity: scrollVelocity,
+            child: widget.child,
+          );
+        }
+
+        if (settings.backgroundType == AppBackgroundType.neomorphic) {
+          return NeomorphicBackground(
+            scrollVelocity: scrollVelocity,
+            child: widget.child,
+          );
+        }
+
+        // Default: Aegis Shield
+        return AegisShieldBackground(
+          color: widget.color,
           scrollVelocity: scrollVelocity,
           child: widget.child,
         );

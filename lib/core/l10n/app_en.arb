@@ -629,6 +629,18 @@
     "@backgroundNeuralPulse": {
         "description": "Label for the neural pulse background."
     },
+    "backgroundAegisShield": "Aegis Shield",
+    "@backgroundAegisShield": {
+        "description": "Label for the Aegis Shield background (default)."
+    },
+    "backgroundSignalTopography": "Signal Topography",
+    "@backgroundSignalTopography": {
+        "description": "Label for the Signal Topography background."
+    },
+    "backgroundQuantumMesh": "Quantum Mesh",
+    "@backgroundQuantumMesh": {
+        "description": "Label for the Quantum Mesh background."
+    },
     "settingsScanBehavior": "Scan Behavior",
     "@settingsScanBehavior": {
         "description": "Settings Scan Behavior"

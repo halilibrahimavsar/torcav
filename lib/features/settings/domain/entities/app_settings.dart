@@ -9,6 +9,9 @@ enum AppBackgroundType {
   auroraMesh,
   holoSphere,
   neuralPulse,
+  aegisShield,
+  signalTopography,
+  quantumMesh,
 }
 
 class AppSettings extends Equatable {
@@ -58,7 +61,7 @@ class AppSettings extends Equatable {
     this.restrictDeepScanOnPublic = true,
     this.portScanTimeoutMs = 500,
     this.isAiEnabled = true,
-    this.backgroundType = AppBackgroundType.neomorphic,
+    this.backgroundType = AppBackgroundType.aegisShield,
     this.scanHistoryRetentionDays = 30,
     this.speedTestRetentionDays = 30,
     this.securityEventRetentionDays = 30,
@@ -223,7 +226,7 @@ class AppSettings extends Equatable {
         return value;
       }
     }
-    return AppBackgroundType.neomorphic;
+    return AppBackgroundType.aegisShield;
   }
 
   static NetworkContextType _parseNetworkContext(String? name) {

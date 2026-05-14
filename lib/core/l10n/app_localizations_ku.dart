@@ -446,6 +446,15 @@ class AppLocalizationsKu extends AppLocalizations {
   String get backgroundNeuralPulse => 'Pulsê Nöral (Anîmasyonî)';
 
   @override
+  String get backgroundAegisShield => 'Mertala Aegis';
+
+  @override
+  String get backgroundSignalTopography => 'Topografyaya Sînyalê';
+
+  @override
+  String get backgroundQuantumMesh => 'Tora Kuantûmî';
+
+  @override
   String get settingsScanBehavior => 'Tevgera Taraneyê';
 
   @override

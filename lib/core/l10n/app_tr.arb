@@ -629,6 +629,18 @@
     "@backgroundNeuralPulse": {
         "description": "Label for the neural pulse background."
     },
+    "backgroundAegisShield": "Aegis Kalkanı",
+    "@backgroundAegisShield": {
+        "description": "Label for the Aegis Shield background (default)."
+    },
+    "backgroundSignalTopography": "Sinyal Topografyası",
+    "@backgroundSignalTopography": {
+        "description": "Label for the Signal Topography background."
+    },
+    "backgroundQuantumMesh": "Kuantum Ağ",
+    "@backgroundQuantumMesh": {
+        "description": "Label for the Quantum Mesh background."
+    },
     "settingsScanBehavior": "Tarama Davranışı",
     "@settingsScanBehavior": {
         "description": "Settings Scan Behavior"
