@@ -5,6 +5,7 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../../../wifi_scan/domain/entities/scan_snapshot.dart';
@@ -131,7 +132,16 @@ class ReportExportRepositoryImpl implements ReportExportRepository {
     ReportLabels labels,
   ) async {
     try {
-      final document = pw.Document();
+      final base = await PdfGoogleFonts.notoSansRegular();
+      final bold = await PdfGoogleFonts.notoSansBold();
+      final italic = await PdfGoogleFonts.notoSansItalic();
+      final document = pw.Document(
+        theme: pw.ThemeData.withFont(
+          base: base,
+          bold: bold,
+          italic: italic,
+        ),
+      );
       document.addPage(
         pw.Page(
           pageFormat: PdfPageFormat.a4,

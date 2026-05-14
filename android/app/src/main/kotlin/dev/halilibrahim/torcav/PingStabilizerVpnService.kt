@@ -256,7 +256,11 @@ class PingStabilizerVpnService : VpnService() {
                 output.write(rebuilt)
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Tun loop died", e)
+            if (running.get()) {
+                Log.e(TAG, "Tun loop died", e)
+            } else {
+                Log.i(TAG, "Tun loop stopped (shutdown)")
+            }
         } finally {
             try { dnsSocket.close() } catch (_: Exception) {}
         }
