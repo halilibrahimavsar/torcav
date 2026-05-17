@@ -32,7 +32,19 @@ class HiveStorageService {
     }
   }
 
-  Box get box => Hive.box(_defaultBoxName);
+  Box get box {
+    if (!Hive.isBoxOpen(_defaultBoxName)) {
+      // Hive'ın `BoxNotFound` mesajı yerine bootstrap context'ini verir.
+      // Production'da hiç tetiklenmemeli; test/refactor regression'larında
+      // erken sinyal verir.
+      throw StateError(
+        'HiveStorageService.init() not called before accessing storage. '
+        'Bootstrap order: SecureStorage → HiveStorageService.init → '
+        'configureDependencies.',
+      );
+    }
+    return Hive.box(_defaultBoxName);
+  }
 
   /// Saves a value to the default box.
   Future<void> save(String key, dynamic value) async {

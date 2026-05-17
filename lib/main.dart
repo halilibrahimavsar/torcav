@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -47,9 +48,25 @@ void main() {
     const secureStorage = FlutterSecureStorage(
       iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
     );
-    final hiveKey = await const SecureStorageService(
-      secureStorage,
-    ).getOrCreateHiveBoxKey();
+    List<int> hiveKey;
+    try {
+      hiveKey = await const SecureStorageService(
+        secureStorage,
+      ).getOrCreateHiveBoxKey();
+    } catch (e, stack) {
+      // Keystore tamamen başarısız olursa (örn. Android keychain bozulması,
+      // iOS Keychain access denied) uygulamayı çökertmek yerine ephemeral
+      // (session-only) anahtarla devam et. Önceki session verisi okunamaz
+      // ama uygulama açılır ve kullanıcı yeniden yapılandırabilir.
+      AppLogger.e(
+        'SecureStorage init failed — using ephemeral Hive key '
+        '(previous session data will be unreadable)',
+        error: e,
+        stackTrace: stack,
+      );
+      final rng = Random.secure();
+      hiveKey = List<int>.generate(32, (_) => rng.nextInt(256));
+    }
     await HiveStorageService.init(hiveKey);
     await configureDependencies();
 

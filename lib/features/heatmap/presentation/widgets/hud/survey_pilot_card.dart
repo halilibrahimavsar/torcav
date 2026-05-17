@@ -64,15 +64,21 @@ class SurveyPilotCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Text(
-                      context.l10n.surveyComplete,
-                      style: GoogleFonts.orbitron(
-                        color: accent.withValues(alpha: 0.7),
-                        fontSize: 9,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1.2,
+                  // Expanded: dar kart genişliğinde "SURVEY COMPLETE" / lokalize
+                  // versiyonu sığmazsa ellipsize edilsin, RenderFlex overflow olmasın.
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Text(
+                        context.l10n.surveyComplete,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.orbitron(
+                          color: accent.withValues(alpha: 0.7),
+                          fontSize: 9,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.2,
+                        ),
                       ),
                     ),
                   ),

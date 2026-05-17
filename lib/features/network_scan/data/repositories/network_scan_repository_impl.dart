@@ -91,8 +91,11 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
         String? netbiosName;
 
         // Use mDNS name if hostName is empty
-        if (hostName.isEmpty && mdnsMap.containsKey(host.ip)) {
-          hostName = mdnsMap[host.ip]!.first;
+        if (hostName.isEmpty) {
+          final names = mdnsMap[host.ip];
+          if (names != null && names.isNotEmpty) {
+            hostName = names.first;
+          }
         }
 
         // Fallback to NetBIOS if still empty and safety mode allows
@@ -158,9 +161,13 @@ class NetworkScanRepositoryImpl implements NetworkScanRepository {
   Future<String> _reverseDnsLookup(String ip) async {
     try {
       final address = InternetAddress(ip);
-      final result = await address.reverse();
+      // Timeout: yanıtsız DNS sunucusunda tarama stream'inin askıda kalmaması için.
+      final result = await address.reverse().timeout(
+        const Duration(seconds: 3),
+      );
       return result.host != ip ? result.host : '';
     } catch (_) {
+      // ArgumentError (invalid IP), TimeoutException, SocketException tümünü yakalar.
       return '';
     }
   }

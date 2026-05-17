@@ -121,7 +121,10 @@ class PingStabilizerChannel {
   void _ensureListening() {
     _eventSub ??= _events.receiveBroadcastStream().listen(
       (event) {
-        final m = (event as Map?) ?? const {};
+        // Native taraf bir Map göndermiyorsa (örn. tip mismatch / protokol drift)
+        // sessizce skip — `as Map?` cast'i non-null non-Map'te TypeError fırlatırdı.
+        if (event is! Map) return;
+        final m = event;
         if (m['stopped'] == true) {
           _stoppedCtrl.add(null);
           return;

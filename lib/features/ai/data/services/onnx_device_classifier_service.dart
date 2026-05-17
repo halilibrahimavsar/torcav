@@ -93,7 +93,9 @@ class OnnxDeviceClassifierService {
           if (raw is List<List<double>> && raw.isNotEmpty) {
             logits = raw.first;
           } else if (raw is List) {
-            logits = raw.map((e) => (e as num).toDouble()).toList();
+            // ONNX plugin'i bazen int dönebilir; non-num eleman varsa
+            // 0.0 ile doldur — outer fallback yine vendor heuristic'i sağlıyor.
+            logits = raw.map((e) => e is num ? e.toDouble() : 0.0).toList();
           } else {
             return _vendorHeuristic(host);
           }

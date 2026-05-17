@@ -369,11 +369,21 @@ class _StaticHeatmapPainter extends CustomPainter {
 
     final heatmapRadius = (viewport.scale * 1.8).clamp(28.0, 72.0);
 
+    // Tek geçişte centre + signalColor hesapla — ikinci loop'ta tekrar
+    // hesaplamamak için cache'le. Paint sıralaması korunmalı: tüm bloom'lar
+    // önce, center dot'lar üzerine.
+    final centres = <Offset>[];
+    final signalColors = <Color>[];
+    for (final point in points) {
+      centres.add(viewport.worldToCanvas(Offset(point.floorX, point.floorY)));
+      signalColors.add(_signalColor(point.rssi));
+    }
+
     // Thermal Bloom: We layer semi-transparent disks with different blur radii
     // to create a smooth, organic 'glow' that looks premium.
-    for (final point in points) {
-      final centre = viewport.worldToCanvas(Offset(point.floorX, point.floorY));
-      final signalColor = _signalColor(point.rssi);
+    for (var i = 0; i < points.length; i++) {
+      final centre = centres[i];
+      final signalColor = signalColors[i];
 
       // Core: High opacity, small blur
       canvas.drawCircle(
@@ -401,15 +411,13 @@ class _StaticHeatmapPainter extends CustomPainter {
       );
     }
 
-    for (final point in points) {
-      final centre = viewport.worldToCanvas(Offset(point.floorX, point.floorY));
-      canvas.drawCircle(
-        centre,
-        2.4,
-        Paint()
-          ..color = theme.colorScheme.onSurface.withValues(alpha: 0.8)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.2),
-      );
+    // Center dot'lar tüm bloom'ların üstüne — ayrı geçiş bu sıralamayı garanti
+    // eder (merge edilirse A'nın dot'u B'nin bloom'unun altında kalabilir).
+    final dotPaint = Paint()
+      ..color = theme.colorScheme.onSurface.withValues(alpha: 0.8)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.2);
+    for (final centre in centres) {
+      canvas.drawCircle(centre, 2.4, dotPaint);
     }
   }
 

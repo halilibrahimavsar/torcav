@@ -8,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/l10n/locale_cubit.dart';
+import '../../../../core/logging/app_logger.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../data/datasources/ping_stabilizer_settings_store.dart';
 import '../../domain/entities/dns_candidate.dart';
@@ -50,6 +51,15 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
   /// out one-shot spikes, short enough to react to a sticky bad path.
   static const int _breachWindow = 3;
 
+  /// Watchdog: native tarafın çöktüğünü `tunnelStopped` event'i bize ulaşmadan
+  /// fark edebilmek için, sample stream'inin sessiz kaldığı süreyi izleriz.
+  /// Sample'lar normalde ~1 Hz akar; [_silenceThreshold] üst sınırı aşıldığında
+  /// native tünelin öldüğünü varsayıp [_onNativeStopped] çalıştırırız.
+  Timer? _healthCheckTimer;
+  DateTime _lastSampleTime = DateTime.now();
+  static const Duration _healthCheckInterval = Duration(seconds: 30);
+  static const Duration _silenceThreshold = Duration(seconds: 35);
+
   PingStabilizerCubit(
     this._start,
     this._stop,
@@ -77,6 +87,8 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
 
   void _onNativeStopped() {
     if (isClosed) return;
+    _healthCheckTimer?.cancel();
+    _healthCheckTimer = null;
     _statsSub?.cancel();
     _statsSub = null;
     _notifiedKeys.clear();
@@ -183,6 +195,21 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
         _statsSub?.cancel();
         _statsSub = _observe().listen(_onSample);
 
+        // Watchdog: tunnelStopped event'i gelmezse sample sessizliğinden anla.
+        _lastSampleTime = DateTime.now();
+        _healthCheckTimer?.cancel();
+        _healthCheckTimer = Timer.periodic(_healthCheckInterval, (_) {
+          if (isClosed) return;
+          final silent = DateTime.now().difference(_lastSampleTime);
+          if (silent > _silenceThreshold) {
+            AppLogger.w(
+              'PingStabilizer: native sample timeout '
+              '(${silent.inSeconds}s) — assuming tunnel down',
+            );
+            _onNativeStopped();
+          }
+        });
+
         // Push the resolved active DNS down to the native tunnel so its
         // interceptor uses the fastest one immediately.
         final dns = state.activeDns;
@@ -195,6 +222,8 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
 
   Future<void> stopStabilizer() async {
     emit(state.copyWith(status: StabilizerStatus.stopping));
+    _healthCheckTimer?.cancel();
+    _healthCheckTimer = null;
     await _statsSub?.cancel();
     _statsSub = null;
     await _stop();
@@ -262,6 +291,7 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
   }
 
   void _onSample(sample) {
+    _lastSampleTime = DateTime.now();
     final updated = state.stats.add(sample, activeDns: state.activeDns);
     final recs = _evaluateRecommendations(updated);
     emit(state.copyWith(stats: updated, recommendations: recs));
@@ -362,6 +392,7 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
 
   @override
   Future<void> close() async {
+    _healthCheckTimer?.cancel();
     await _statsSub?.cancel();
     await _stoppedSub?.cancel();
     return super.close();

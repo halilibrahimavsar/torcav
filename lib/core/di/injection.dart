@@ -11,5 +11,8 @@ final getIt = GetIt.instance;
   asExtension: true, // default
 )
 Future<void> configureDependencies() async {
-  getIt.init();
+  // `init()` artık async — `@PostConstruct(preResolve: true)` ile işaretlenmiş
+  // bağımlılıkların (örn. `AppSettingsStore`) init future'larını DI kayıt
+  // sırasında await eder. Await edilmezse "not ready yet" StateError'ı.
+  await getIt.init();
 }

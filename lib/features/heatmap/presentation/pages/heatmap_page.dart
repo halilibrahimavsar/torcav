@@ -512,10 +512,20 @@ class _HeatmapViewState extends State<_HeatmapView> {
 
   Future<void> _handleShare(HeatmapSession session, HeatmapCopy copy) async {
     try {
-      final boundary =
-          _boundaryKey.currentContext?.findRenderObject()
-              as RenderRepaintBoundary?;
-      if (boundary == null) return;
+      // Safe type-check: `as RenderRepaintBoundary?` non-null farklı tipte
+      // CastError fırlatabilir. `is!` ile explicit guard + future regression'lar
+      // için log.
+      final renderObject = _boundaryKey.currentContext?.findRenderObject();
+      if (renderObject is! RenderRepaintBoundary) {
+        if (renderObject != null) {
+          AppLogger.w(
+            'Heatmap share: expected RenderRepaintBoundary, '
+            'got ${renderObject.runtimeType}',
+          );
+        }
+        return;
+      }
+      final boundary = renderObject;
 
       final image = await boundary.toImage(pixelRatio: 3.0);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);

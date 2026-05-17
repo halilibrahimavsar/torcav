@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:injectable/injectable.dart';
@@ -20,6 +21,14 @@ class LinuxWifiDataSource implements WifiDataSource {
   final ScanSnapshotBuilder _snapshotBuilder;
 
   LinuxWifiDataSource(this._snapshotBuilder);
+
+  /// `LANG=C` ile çağrılan subprocess'ler İngilizce/C locale'de çıktı verir;
+  /// güvenlik anahtarı (`WPA2`/`WPA3`/`WEP`) gibi token'ların lokalize
+  /// edilmesini engeller. `PATH` ve diğer env değişkenleri korunur.
+  static final Map<String, String> _cLocaleEnv = {
+    'LANG': 'C',
+    ...Platform.environment,
+  };
 
   @override
   Future<List<WifiNetwork>> scanNetworks({ScanRequest? request}) async {
@@ -51,38 +60,52 @@ class LinuxWifiDataSource implements WifiDataSource {
   }
 
   Future<List<WifiNetwork>> _scan(ScanRequest request) async {
+    // Per-tool error accumulation: kullanıcı/destek hangi aracın neden başarısız
+    // olduğunu (örn. nmcli exit kodu, iwlist EACCES) görmeli.
+    final errors = <String>[];
+
     // Try nmcli first (most reliable, no root required)
     try {
       return await _scanWithNmcli(request);
-    } catch (_) {
-      // Fallback: iwlist (older systems)
-      try {
-        return await _scanWithIwlist(request);
-      } catch (e) {
-        throw ScanFailure(
-          'Wi-Fi scan failed. Ensure NetworkManager or wireless-tools is '
-          'installed and Wi-Fi is enabled. Error: $e',
-        );
-      }
+    } catch (e) {
+      errors.add('nmcli: $e');
     }
+
+    // Fallback: iwlist (older systems)
+    try {
+      return await _scanWithIwlist(request);
+    } catch (e) {
+      errors.add('iwlist: $e');
+    }
+
+    throw ScanFailure(
+      'Wi-Fi scan failed. Ensure NetworkManager or wireless-tools is '
+      'installed and Wi-Fi is enabled.\n${errors.join('\n')}',
+    );
   }
 
   Future<List<WifiNetwork>> _scanWithNmcli(ScanRequest request) async {
     // Request a rescan first (may be ignored if too frequent)
-    await Process.run('nmcli', [
-      'device',
-      'wifi',
-      'rescan',
-    ]).catchError((_) => ProcessResult(0, 0, '', ''));
+    await Process.run(
+      'nmcli',
+      ['device', 'wifi', 'rescan'],
+      environment: _cLocaleEnv,
+    ).catchError((_) => ProcessResult(0, 0, '', ''));
 
-    final result = await Process.run('nmcli', [
-      '-t',
-      '-f',
-      'SSID,BSSID,SIGNAL,CHAN,FREQ,SECURITY,BARS',
-      'device',
-      'wifi',
-      'list',
-    ]);
+    final result = await Process.run(
+      'nmcli',
+      [
+        '-t',
+        '-f',
+        'SSID,BSSID,SIGNAL,CHAN,FREQ,SECURITY,BARS',
+        'device',
+        'wifi',
+        'list',
+      ],
+      stdoutEncoding: utf8,
+      stderrEncoding: utf8,
+      environment: _cLocaleEnv,
+    );
 
     if (result.exitCode != 0) {
       throw ScanFailure(
@@ -170,7 +193,13 @@ class LinuxWifiDataSource implements WifiDataSource {
 
   Future<List<WifiNetwork>> _scanWithIwlist(ScanRequest request) async {
     final iface = await _detectInterface();
-    final result = await Process.run('iwlist', [iface, 'scan']);
+    final result = await Process.run(
+      'iwlist',
+      [iface, 'scan'],
+      stdoutEncoding: utf8,
+      stderrEncoding: utf8,
+      environment: _cLocaleEnv,
+    );
     if (result.exitCode != 0) {
       throw ScanFailure('iwlist exited with ${result.exitCode}');
     }
@@ -242,7 +271,12 @@ class LinuxWifiDataSource implements WifiDataSource {
   Future<String> _detectInterface() async {
     // Try to get the first active wireless interface via iw/ip
     try {
-      final result = await Process.run('iw', ['dev']);
+      final result = await Process.run(
+        'iw',
+        ['dev'],
+        stdoutEncoding: utf8,
+        environment: _cLocaleEnv,
+      );
       final m = RegExp(
         r'Interface\s+(\w+)',
       ).firstMatch(result.stdout as String);

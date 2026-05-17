@@ -16,7 +16,11 @@ class AppSettingsStore {
 
   AppSettingsStore(this._storage) : _settings = const AppSettings();
 
-  @postConstruct
+  // `preResolve: true` injectable'a init future'ını DI kayıt sırasında
+  // await ettirir; consumer'lar `getIt<AppSettingsStore>()` çağırdığında
+  // instance hazır gelir. Olmazsa `_CyberGridBackgroundState.initState`
+  // gibi sync erişimler "not ready yet" StateError'ı fırlatır.
+  @PostConstruct(preResolve: true)
   Future<void> init() async {
     _settings = await _loadInitialValue(_storage);
     _changes.add(_settings);

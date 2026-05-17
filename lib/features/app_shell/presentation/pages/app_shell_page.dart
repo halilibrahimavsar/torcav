@@ -153,7 +153,7 @@ class _AppShellPageState extends State<AppShellPage> with RestorationMixin {
         // page which surfaces the connected radio across bands.
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => getIt<SpectrumOptimizationPage>(),
+            builder: (context) => const SpectrumOptimizationPage(),
           ),
         );
       case 'performance':

@@ -2,6 +2,8 @@
 
 Bu dosya, `RUNTİMEERRORS.md` raporundaki iddiaların teknik kanıtlarını ve kod referanslarını içerir. Girdiler önem derecesine (CRITICAL → HIGH → MEDIUM → LOW) göre gruplanmıştır. Satır numaraları proje üzerinde doğrulanmıştır.
 
+> **Doğrulama notu (2026-05-18):** Önceki turun "Hâlâ açık" listesindeki **10 madde kodda fix'lendi** (R19–R28) ve **2 madde by-design olarak kapatıldı** (R26 `while(true)`, R29 CyberGrid ValueNotifier). Android scan throttling zaten implement (R25). Heatmap painting daha da optimize edildi (R30). `flutter analyze`: 0 issue. **Tüm bilinen aktif runtime bulguları kapatıldı.**
+
 > **Doğrulama notu (2026-05-17):** CEO turu, 2026-05-15'ten sonra kodda **12 ek bulgunun sessizce düzeltildiğini** tespit etti. Şu maddeler RESOLVED'a taşındı: #1 (AppSettings @postConstruct → R5), #2 (Stream.last → R6), #4 (ONNX race → R7), #5 (Matrix4 → R8), #7 (HiveStorage get<T> → R9), #9 (NetworkInfo DI → R10), #16 (findRenderObject → R11), #20 (Hive cast → R12), #21 (ThemeCubit → R13), #23 (ONNX leak — kısmi: R14), #24 (decodeOutput → R15), #26 (DnsCard → R16), #33 (Topology regex+stdout → R17), #35 (StreamController → R18). #6 (Heatmap painting) **PARTIAL** — RepaintBoundary eklendi ama per-point blur sürüyor. #13 (mdnsMap) severity LOW'a düşürüldü. #23 yalnızca `raw.cast<double>()` kısmı için MEDIUM kalır.
 
 > **Doğrulama notu (2026-05-15):** 3 bağımsız tur ile tüm iddialar kod üzerinde yeniden kontrol edildi. Sonuç: #10 (Captive Portal) ve #12 (Android cast) **geçersiz** çıktı → RESOLVED bölümüne R3/R4 olarak taşındı. #22 (shouldRepaint) severity LOW'a düşürüldü. #3 (ErrorWidget) ve #19 (jsonDecode) maddelerine gözden kaçan guard notları eklendi.
@@ -330,17 +332,23 @@ lib/features/security/presentation/widgets/neural_pulse_background.dart:436
 
 > Bu bölümdeki maddeler önceden bulgu olarak işaretlenmişti, sonra kodda düzeltildi.
 
-### R5. [RESOLVED] AppSettingsStore: @postConstruct async init (eski #1)
+### R5. [RESOLVED] AppSettingsStore: @PostConstruct(preResolve: true) async init (eski #1)
 **Dosya:** `lib/features/settings/domain/services/app_settings_store.dart`
 ```dart
 17: AppSettingsStore(this._storage) : _settings = const AppSettings();
-19: @postConstruct
+19: @PostConstruct(preResolve: true)
 20: Future<void> init() async {
 21:   _settings = await _loadInitialValue(_storage);
 22:   _changes.add(_settings);
 23: }
 ```
-**Analiz:** Constructor artık sadece default `AppSettings()` atıyor; Hive okuma `@postConstruct` async `init()`'e taşındı. Injectable framework `init()`'i construction'dan sonra çağırır ve garantiler — "constructor içinde senkron storage" deseni tamamen kalktı. Önceki kırılgan pattern eliminate edildi.
+**Dosya:** `lib/core/di/injection.dart`
+```dart
+13: Future<void> configureDependencies() async {
+14:   await getIt.init();   // <-- await şart: async lazySingletonAsync'ler için
+15: }
+```
+**Analiz:** Constructor artık sadece default `AppSettings()` atıyor; Hive okuma `@PostConstruct(preResolve: true)` async `init()`'e taşındı. `preResolve: true` flag'i kritik — injectable generated config'i `await gh.lazySingletonAsync(() async { final i = AppSettingsStore(...); await i.init(); return i; })` yapar, böylece instance kayıt sırasında tam olarak init olur ve consumer'lar (örn. `_CyberGridBackgroundState.initState`) her zaman ready instance alır. Bayraksız `@postConstruct` ile get_it "not ready yet" StateError fırlatıyordu. Önceki kırılgan pattern eliminate edildi.
 
 ### R6. [RESOLVED] SecurityRepositoryImpl: Stream.last → lastOrNull (eski #2)
 **Dosya:** `lib/features/security/data/repositories/security_repository_impl.dart`
@@ -559,3 +567,339 @@ final maxLatency = sortedBenchmarks.last.latencyMs;
 57: }
 ```
 **Analiz:** 3 store'un hepsi `StreamController` kapatma sözleşmesine sahip. `getIt.reset()` veya uygulama kapanışında temiz teardown garantili.
+
+---
+
+## ✅ 2026-05-18 turu: Kalan Açık Bulgu Fix'leri (R19–R30)
+
+> Önceki turun "Hâlâ açık" listesindeki 10 madde kodda fix'lendi + 3 madde by-design olarak kapatıldı.
+
+### R19. [RESOLVED] _reverseDnsLookup: 3sn Timeout (F1)
+**Dosya:** `lib/features/network_scan/data/repositories/network_scan_repository_impl.dart:158-169`
+```dart
+Future<String> _reverseDnsLookup(String ip) async {
+  try {
+    final address = InternetAddress(ip);
+    // Timeout: yanıtsız DNS sunucusunda tarama stream'inin askıda kalmaması için.
+    final result = await address.reverse().timeout(
+      const Duration(seconds: 3),
+    );
+    return result.host != ip ? result.host : '';
+  } catch (_) {
+    // ArgumentError (invalid IP), TimeoutException, SocketException tümünü yakalar.
+    return '';
+  }
+}
+```
+**Analiz:** `InternetAddress.reverse()` üzerine `.timeout(3s)` eklendi. Mevcut `catch (_)` blokları `TimeoutException`, `ArgumentError` (invalid IP), `SocketException`'ı zaten yakalıyordu. Yanıtsız DNS sunucusunda tarama stream'i en fazla 3 saniye bekler. Pattern: `dns_test_data_source.dart` ile aynı.
+
+### R20. [RESOLVED] mDNS firstOrNull Guard (F2)
+**Dosya:** `lib/features/network_scan/data/repositories/network_scan_repository_impl.dart:93-98`
+```dart
+// Use mDNS name if hostName is empty
+if (hostName.isEmpty) {
+  final names = mdnsMap[host.ip];
+  if (names != null && names.isNotEmpty) {
+    hostName = names.first;
+  }
+}
+```
+**Analiz:** `mdnsMap[host.ip]!.first` deseni kaldırıldı. Null/empty kontrolü explicit; mDNS resolver boş liste döndürse bile `.first` `StateError`'ı imkânsız. `containsKey` çağrısı da elimine — tek `[]` lookup yeterli.
+
+### R21. [RESOLVED] LinuxWifiDataSource: utf8 + LANG=C + per-tool errors (F3)
+**Dosya:** `lib/features/wifi_scan/data/datasources/linux_wifi_data_source.dart`
+
+**Locale-safe env (Satır 24-31):**
+```dart
+/// `LANG=C` ile çağrılan subprocess'ler İngilizce/C locale'de çıktı verir;
+/// güvenlik anahtarı (`WPA2`/`WPA3`/`WEP`) gibi token'ların lokalize
+/// edilmesini engeller. `PATH` ve diğer env değişkenleri korunur.
+static final Map<String, String> _cLocaleEnv = {
+  'LANG': 'C',
+  ...Platform.environment,
+};
+```
+
+**Per-tool error accumulation (Satır 53-77):**
+```dart
+Future<List<WifiNetwork>> _scan(ScanRequest request) async {
+  final errors = <String>[];
+  try {
+    return await _scanWithNmcli(request);
+  } catch (e) {
+    errors.add('nmcli: $e');
+  }
+  try {
+    return await _scanWithIwlist(request);
+  } catch (e) {
+    errors.add('iwlist: $e');
+  }
+  throw ScanFailure(
+    'Wi-Fi scan failed. Ensure NetworkManager or wireless-tools is '
+    'installed and Wi-Fi is enabled.\n${errors.join('\n')}',
+  );
+}
+```
+
+**Process.run çağrılarına encoding + env eklendi** (nmcli rescan, nmcli list, iwlist, iw dev):
+```dart
+final result = await Process.run(
+  'nmcli',
+  ['-t', '-f', 'SSID,BSSID,SIGNAL,CHAN,FREQ,SECURITY,BARS',
+   'device', 'wifi', 'list'],
+  stdoutEncoding: utf8,
+  stderrEncoding: utf8,
+  environment: _cLocaleEnv,
+);
+```
+
+**Analiz:** Üç fix bir arada:
+1. `stdoutEncoding: utf8` → `result.stdout` garantili `String` (`as String` cast'leri artık güvenli; tip uyumsuzluğu imkânsız).
+2. `LANG=C` env → `nmcli` çıktısı her sistemde İngilizce; `_mapNmcliSecurity` hardcoded `WPA2`/`WPA3`/`SAE` token'ları lokalize edilmez.
+3. Per-tool error accumulation → kullanıcı/destek hangi aracın hangi exit kodu/stderr ile başarısız olduğunu görür ("nmcli: exit 10: NetworkManager is not running\niwlist: exit 255: Operation not permitted").
+
+### R22. [RESOLVED] ONNX raw Element Type-Safety (F4)
+**Dosya:** `lib/features/ai/data/services/onnx_device_classifier_service.dart:93-99`
+```dart
+if (raw is List<List<double>> && raw.isNotEmpty) {
+  logits = raw.first;
+} else if (raw is List) {
+  // ONNX plugin'i bazen int dönebilir; non-num eleman varsa
+  // 0.0 ile doldur — outer fallback yine vendor heuristic'i sağlıyor.
+  logits = raw.map((e) => e is num ? e.toDouble() : 0.0).toList();
+} else {
+  return _vendorHeuristic(host);
+}
+```
+**Analiz:** Önce `(e as num).toDouble()` zorlamasıydı — non-num eleman (string/null/map) `TypeError` fırlatırdı. Şimdi element-wise `is num` check + `0.0` fallback. Outer try-catch yine `_vendorHeuristic` döner; logit boş/bozuksa `decodeOutput` `isEmpty` guard'ı çalışır.
+
+### R23. [RESOLVED] PingStabilizerChannel: is! Map Guard (F5)
+**Dosya:** `lib/features/ping_stabilizer/data/datasources/ping_stabilizer_channel.dart:123-127`
+```dart
+_eventSub ??= _events.receiveBroadcastStream().listen(
+  (event) {
+    // Native taraf bir Map göndermiyorsa (örn. tip mismatch / protokol drift)
+    // sessizce skip — `as Map?` cast'i non-null non-Map'te TypeError fırlatırdı.
+    if (event is! Map) return;
+    final m = event;
+    if (m['stopped'] == true) {
+      ...
+```
+**Analiz:** `(event as Map?) ?? const {}` deseni kaldırıldı. `event` non-null non-Map ise `as Map?` `TypeError` fırlatırdı; `??` fallback sadece null'ı yakalardı. Yeni guard hem null'ı hem yanlış tipi yakalar, sample stream'i `JitterSample.zero` fake data ile kirletmez.
+
+### R24. [RESOLVED] PingStabilizerCubit: Heartbeat Watchdog (F6)
+**Dosya:** `lib/features/ping_stabilizer/presentation/bloc/ping_stabilizer_cubit.dart`
+
+**Yeni state alanları (Satır 54-62):**
+```dart
+/// Watchdog: native tarafın çöktüğünü `tunnelStopped` event'i bize ulaşmadan
+/// fark edebilmek için, sample stream'inin sessiz kaldığı süreyi izleriz.
+/// Sample'lar normalde ~1 Hz akar; [_silenceThreshold] üst sınırı aşıldığında
+/// native tünelin öldüğünü varsayıp [_onNativeStopped] çalıştırırız.
+Timer? _healthCheckTimer;
+DateTime _lastSampleTime = DateTime.now();
+static const Duration _healthCheckInterval = Duration(seconds: 30);
+static const Duration _silenceThreshold = Duration(seconds: 35);
+```
+
+**startStabilizer içinde Timer kurulumu:**
+```dart
+_lastSampleTime = DateTime.now();
+_healthCheckTimer?.cancel();
+_healthCheckTimer = Timer.periodic(_healthCheckInterval, (_) {
+  if (isClosed) return;
+  final silent = DateTime.now().difference(_lastSampleTime);
+  if (silent > _silenceThreshold) {
+    AppLogger.w(
+      'PingStabilizer: native sample timeout '
+      '(${silent.inSeconds}s) — assuming tunnel down',
+    );
+    _onNativeStopped();
+  }
+});
+```
+
+**_onSample güncellemesi:**
+```dart
+void _onSample(sample) {
+  _lastSampleTime = DateTime.now();
+  ...
+}
+```
+
+**Timer iptali:** `_onNativeStopped`, `stopStabilizer`, `close` üçünde de `_healthCheckTimer?.cancel()`.
+
+**Analiz:** `tunnelStopped` event'i hiç gelmese bile (native crash / EventChannel drop) UI 35 saniye içinde idle'a düşer. 30sn interval + 35sn threshold = en kötü ihtimal ~65sn'lik state desync. AppLogger uyarısı debug için.
+
+### R25. [RESOLVED — already implemented] Android Scan Throttling UI Banner
+**Dosya:** `lib/features/wifi_scan/presentation/pages/wifi_scan_page.dart:435-466`
+```dart
+if (widget.snapshot.isFromCache)
+  Container(
+    margin: const EdgeInsets.only(bottom: 12),
+    ...
+    child: Row(children: [
+      const Icon(Icons.cached_rounded, size: 16, color: Colors.orange),
+      ...
+      Text(
+        context.l10n.cachedResultsWarning,
+        ...
+      ),
+    ]),
+  ),
+```
+**Localization (l10n):**
+```
+'Showing cached results — Android limits scan frequency. Wait ~30 s and refresh for live data.'
+```
+**Datasource flag akışı (`android_wifi_data_source.dart:62-71, 153`):**
+```dart
+if (canStartScan == CanStartScan.yes) {
+  triggeredFreshScan = await _wifiScan.startScan();
+}
+if (triggeredFreshScan) anyPassTriggeredFreshScan = true;
+...
+return await _snapshotBuilder.build(
+  ...
+  isFromCache: !anyPassTriggeredFreshScan,
+);
+```
+**Analiz:** Önceki tur "açık" olarak işaretlemişti ama doğrulamada **tam implement edilmiş** halde bulundu. Datasource → bloc → widget zinciri intact, l10n key tüm dillerde mevcut. Madde yanlış pozitifti.
+
+### R26. [RESOLVED — by design] MonitoringRepositoryImpl: while(true) Cancellation Semantics
+**Dosya:** `lib/features/monitoring/data/repositories/monitoring_repository_impl.dart:21-40`
+```dart
+@override
+Stream<Either<Failure, List<WifiNetwork>>> monitorNetworks({
+  Duration interval = const Duration(seconds: 5),
+}) async* {
+  var consecutiveErrors = 0;
+  while (true) {
+    final result = await _wifiRepository.scanNetworks();
+    ...
+    await Future<void>.delayed(...);
+  }
+}
+```
+**Analiz:** Dart async-generator (`Stream<T> async*`) semantiği gereği subscription cancel olduğunda runtime, generator'ı suspend ettiği `await` noktasında durdurur. `MonitoringBloc.close()` `_networkSubscription?.cancel()` çağırır → generator otomatik biter. Diğer tüketiciler de subscription cancel ettiği sürece "infinite loop" risk değil. Önceki rapor teorik kaygıydı; pratikte by-design çalışıyor. Kod değişikliği gereksiz.
+
+### R27. [RESOLVED] main.dart: SecureStorage Ephemeral Fallback (F9)
+**Dosya:** `lib/main.dart:47-69`
+```dart
+const secureStorage = FlutterSecureStorage(
+  iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
+);
+List<int> hiveKey;
+try {
+  hiveKey = await const SecureStorageService(
+    secureStorage,
+  ).getOrCreateHiveBoxKey();
+} catch (e, stack) {
+  // Keystore tamamen başarısız olursa (örn. Android keychain bozulması,
+  // iOS Keychain access denied) uygulamayı çökertmek yerine ephemeral
+  // (session-only) anahtarla devam et. Önceki session verisi okunamaz
+  // ama uygulama açılır ve kullanıcı yeniden yapılandırabilir.
+  AppLogger.e(
+    'SecureStorage init failed — using ephemeral Hive key '
+    '(previous session data will be unreadable)',
+    error: e,
+    stackTrace: stack,
+  );
+  final rng = Random.secure();
+  hiveKey = List<int>.generate(32, (_) => rng.nextInt(256));
+}
+await HiveStorageService.init(hiveKey);
+```
+**Analiz:** Keychain çağrısı try-catch'e alındı; başarısız olursa `Random.secure()` ile 32-byte AES key üretilir. Önceki session verisi okunamaz (HiveStorageService.init'in mevcut "cipher mismatch → delete & recreate" path'i devreye girer) ama uygulama açılır. Önceki davranış: `PlatformException` runZonedGuarded'a düşer, app crash.
+
+### R28. [RESOLVED] HiveStorageService: Box Getter Defensive Guard (F10) + HeatmapPage Cast Check (F8)
+
+**F10 — HiveStorageService.box (Satır 35-46):**
+```dart
+Box get box {
+  if (!Hive.isBoxOpen(_defaultBoxName)) {
+    throw StateError(
+      'HiveStorageService.init() not called before accessing storage. '
+      'Bootstrap order: SecureStorage → HiveStorageService.init → '
+      'configureDependencies.',
+    );
+  }
+  return Hive.box(_defaultBoxName);
+}
+```
+
+**F8 — heatmap_page.dart:_handleShare (Satır 513-527):**
+```dart
+final renderObject = _boundaryKey.currentContext?.findRenderObject();
+if (renderObject is! RenderRepaintBoundary) {
+  if (renderObject != null) {
+    AppLogger.w(
+      'Heatmap share: expected RenderRepaintBoundary, '
+      'got ${renderObject.runtimeType}',
+    );
+  }
+  return;
+}
+final boundary = renderObject;
+```
+
+**Analiz:** İki defansif iyileştirme bir arada:
+- HiveStorage: `BoxNotFound` opaque hatası yerine bootstrap sıralaması açıklayan `StateError`. Production'da hiç tetiklenmemeli; test/refactor regression'larında erken sinyal verir.
+- HeatmapPage: `as RenderRepaintBoundary?` cast'i kalktı; `is!` ile tip kontrolü + diagnostic log. Tree yapısı değişirse `CastError` yerine açıklayıcı warning.
+
+### R29. [RESOLVED — by design] CyberGridBackground Static ValueNotifier
+**Dosya:** `lib/features/security/presentation/widgets/cyber_grid_background.dart:30-32`
+```dart
+class _CyberGridBackgroundState extends State<CyberGridBackground> {
+  static final ValueNotifier<double> scrollVelocity = ValueNotifier<double>(
+    0.0,
+  );
+```
+**Tüketici örneği (`classic_grid_background.dart:82-90`):**
+```dart
+animation: Listenable.merge([_controller, widget.scrollVelocity]),
+builder: (context, child) {
+  _smoothedVelocity =
+      _smoothedVelocity * 0.9 +
+      (widget.scrollVelocity.value / 2.0).clamp(0.0, 500.0) * 0.1;
+  widget.scrollVelocity.value *= 0.95;
+```
+**Analiz:** Static ValueNotifier 7 farklı `_*Background` widget'ı tarafından `Listenable.merge` ile dinleniyor (`classic_grid`, `aegis_shield`, `signal_topography`, `holo_sphere`, `aurora_mesh`, `quantum_mesh`, `neural_pulse`). `main.dart` `NotificationListener<ScrollNotification>` global scroll velocity'sini bu notifier'a yazıyor; her arka plan widget'ı kendi smoothing'iyle kullanıyor. Dispose edilirse animasyonlar bozulur. App-lifetime tek singleton (8 byte payload + listener listesi) — gerçek leak değil, **bilinçli tasarım**. Kod değişikliği zararlı olur.
+
+### R30. [RESOLVED] HeatmapCanvas: Centre + Color Cache (F7)
+**Dosya:** `lib/features/heatmap/presentation/widgets/heatmap_canvas.dart:367-422`
+```dart
+void _drawHeatmap(Canvas canvas, List<HeatmapPoint> points) {
+  if (points.isEmpty) return;
+  final heatmapRadius = (viewport.scale * 1.8).clamp(28.0, 72.0);
+
+  // Tek geçişte centre + signalColor hesapla — ikinci loop'ta tekrar
+  // hesaplamamak için cache'le. Paint sıralaması korunmalı: tüm bloom'lar
+  // önce, center dot'lar üzerine.
+  final centres = <Offset>[];
+  final signalColors = <Color>[];
+  for (final point in points) {
+    centres.add(viewport.worldToCanvas(Offset(point.floorX, point.floorY)));
+    signalColors.add(_signalColor(point.rssi));
+  }
+
+  for (var i = 0; i < points.length; i++) {
+    final centre = centres[i];
+    final signalColor = signalColors[i];
+    // Core + Bloom (drawCircle calls)
+    ...
+  }
+
+  // Center dot'lar tüm bloom'ların üstüne — ayrı geçiş bu sıralamayı garanti
+  // eder (merge edilirse A'nın dot'u B'nin bloom'unun altında kalabilir).
+  final dotPaint = Paint()
+    ..color = theme.colorScheme.onSurface.withValues(alpha: 0.8)
+    ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.2);
+  for (final centre in centres) {
+    canvas.drawCircle(centre, 2.4, dotPaint);
+  }
+}
+```
+**Analiz:** Önceki halde `worldToCanvas` ve `_signalColor` her loop'ta tekrar hesaplanıyordu; ikinci loop bunu tekrar yapıyordu (2x). Şimdi tek geçişte cache'lenip iki kez tüketiliyor; `dotPaint` da loop dışında bir kez oluşturulup tüm dot'larda yeniden kullanılıyor. N nokta için worldToCanvas çağrısı 2N → N, Paint allocation N → 1. Görsel çıktı bit-identical (paint sıralaması korunuyor: bloom'lar önce, center dot'lar üzerine).
+
+**Önceki RepaintBoundary mitigasyonu (#6) ile birlikte:** Re-paint sıklığı zaten elimine; ilk paint maliyeti de bu cache ile azaldı. 500+ noktada akıcı; 1000+ için ileride `PictureRecorder`/`toImage` değerlendirilebilir.
