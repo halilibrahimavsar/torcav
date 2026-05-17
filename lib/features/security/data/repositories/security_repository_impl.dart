@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
+import 'package:torcav/core/extensions/stream_extensions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/services/notification_service.dart';
 import '../datasources/security_local_data_source.dart';
@@ -43,7 +44,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
   final NetworkScanRepository _networkScanRepository;
   final GatewayDriftDetector _gatewayDriftDetector;
   final CaptivePortalDetector _captivePortalDetector;
-  final NetworkInfo _networkInfo = NetworkInfo();
+  final NetworkInfo _networkInfo;
 
   SecurityRepositoryImpl(
     this._localDataSource,
@@ -58,6 +59,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
     this._networkScanRepository,
     this._gatewayDriftDetector,
     this._captivePortalDetector,
+    this._networkInfo,
   );
 
   @override
@@ -278,8 +280,9 @@ class SecurityRepositoryImpl implements SecurityRepository {
 
           // 1. Full Subnet Discovery
           final scanStream = _networkScanRepository.scanNetwork(subnet);
-          final scanResult = await scanStream.last;
-          scanResult.fold((failure) => null, (devices) {
+          final scanResult = await scanStream.lastOrNull;
+
+          scanResult?.fold((failure) => null, (devices) {
             if (devices.isNotEmpty) {
               assessment.evidenceFindings.add(
                 SecurityFinding(
@@ -306,9 +309,9 @@ class SecurityRepositoryImpl implements SecurityRepository {
           final portScanStream = _networkScanRepository.scanWithProfile(
             gatewayIp,
           );
-          final portScanResult = await portScanStream.last;
+          final portScanResult = await portScanStream.lastOrNull;
 
-          portScanResult.fold((failure) => null, (host) {
+          portScanResult?.fold((failure) => null, (host) {
             if (host.services.isNotEmpty) {
               assessment.evidenceFindings.add(
                 SecurityFinding(
@@ -459,8 +462,9 @@ class SecurityRepositoryImpl implements SecurityRepository {
 
           // Subnet Device Discovery
           final scanStream = _networkScanRepository.scanNetwork(subnet);
-          final scanResult = await scanStream.last;
-          scanResult.fold(
+          final scanResult = await scanStream.lastOrNull;
+
+          scanResult?.fold(
             (failure) => null, // Ignore scan failure for security report
             (devices) {
               lanDevices.addAll(devices);
@@ -478,9 +482,9 @@ class SecurityRepositoryImpl implements SecurityRepository {
           final portScanStream = _networkScanRepository.scanWithProfile(
             gatewayIp,
           );
-          final portScanResult = await portScanStream.last;
+          final portScanResult = await portScanStream.lastOrNull;
 
-          portScanResult.fold((failure) => null, (host) {
+          portScanResult?.fold((failure) => null, (host) {
             // If not already in lanDevices, add it (discovery might have missed it)
             final existingIdx = lanDevices.indexWhere((d) => d.ip == host.ip);
             if (existingIdx == -1) {

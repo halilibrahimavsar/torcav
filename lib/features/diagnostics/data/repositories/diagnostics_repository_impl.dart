@@ -25,6 +25,7 @@ class DiagnosticsRepositoryImpl implements DiagnosticsRepository {
   final ScanSessionStore _scanStore;
   final NetworkContextResolver _contextResolver;
   final PingNodeUseCase _pingNode;
+  final NetworkInfo _networkInfo;
 
   DiagnosticsRepositoryImpl(
     this._runSpeedTest,
@@ -33,6 +34,7 @@ class DiagnosticsRepositoryImpl implements DiagnosticsRepository {
     this._scanStore,
     this._contextResolver,
     this._pingNode,
+    this._networkInfo,
   );
 
   @override
@@ -161,7 +163,7 @@ class DiagnosticsRepositoryImpl implements DiagnosticsRepository {
   /// returns null and the caller treats gateway latency as unknown.
   Future<int?> _safeGatewayPing() async {
     try {
-      final gateway = await NetworkInfo().getWifiGatewayIP();
+      final gateway = await _networkInfo.getWifiGatewayIP();
       if (gateway == null || gateway.isEmpty) return null;
       final result = await _pingNode(gateway);
       return result.fold((_) => null, (latency) => latency);

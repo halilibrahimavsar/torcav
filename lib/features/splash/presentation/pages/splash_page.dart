@@ -142,8 +142,9 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     unawaited(
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) =>
-              hasOnboarded ? const AppShellPage() : const OnboardingPage(),
+          pageBuilder: (_, __, ___) => hasOnboarded
+              ? const AppShellPage()
+              : const OnboardingPage(),
           transitionsBuilder: (_, animation, __, child) =>
               FadeTransition(opacity: animation, child: child),
           transitionDuration: const Duration(milliseconds: 600),

@@ -14,7 +14,13 @@ class AppSettingsStore {
   final StreamController<AppSettings> _changes =
       StreamController<AppSettings>.broadcast();
 
-  AppSettingsStore(this._storage) : _settings = _loadInitialValue(_storage);
+  AppSettingsStore(this._storage) : _settings = const AppSettings();
+
+  @postConstruct
+  Future<void> init() async {
+    _settings = await _loadInitialValue(_storage);
+    _changes.add(_settings);
+  }
 
   AppSettings get value => _settings;
 
@@ -26,7 +32,12 @@ class AppSettingsStore {
     unawaited(_storage.save(_settingsKey, jsonEncode(settings.toJson())));
   }
 
-  static AppSettings _loadInitialValue(HiveStorageService storage) {
+  @disposeMethod
+  void dispose() {
+    _changes.close();
+  }
+
+  static Future<AppSettings> _loadInitialValue(HiveStorageService storage) async {
     final raw = storage.get<String>(_settingsKey);
     if (raw == null || raw.isEmpty) {
       return const AppSettings();
@@ -38,7 +49,8 @@ class AppSettingsStore {
         return const AppSettings();
       }
       return AppSettings.fromJson(decoded);
-    } catch (_) {
+    } catch (e) {
+      // In case of corruption, return default settings
       return const AppSettings();
     }
   }

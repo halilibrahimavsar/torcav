@@ -176,6 +176,9 @@ abstract final class DeviceFeatureExtractor {
 
   /// Decode model output logits into a classification result.
   static DeviceClassification decodeOutput(List<double> logits) {
+    if (logits.isEmpty) {
+      return const DeviceClassification(deviceType: 'Unknown', confidence: 0.0);
+    }
     // Softmax
     var maxLogit = logits[0];
     for (final l in logits) {

@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../../../core/di/injection.dart';
+
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../data/stores/router_hardening_store.dart';
@@ -36,7 +36,7 @@ class _RouterHardeningWizardPageState extends State<RouterHardeningWizardPage> {
   }
 
   Future<void> _load() async {
-    final info = NetworkInfo();
+    final info = getIt<NetworkInfo>();
     final results = await Future.wait([
       info.getWifiName(),
       info.getWifiBSSID(),

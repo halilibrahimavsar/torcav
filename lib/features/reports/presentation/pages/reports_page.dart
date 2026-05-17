@@ -3,14 +3,12 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/l10n/app_localizations.dart';
-import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../../core/di/injection.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../wifi_scan/domain/entities/scan_snapshot.dart';
@@ -21,14 +19,15 @@ import '../../domain/services/pdf_lock_service.dart';
 import '../../domain/usecases/generate_report_usecase.dart';
 import '../bloc/reports_bloc.dart';
 import '../widgets/local_data_export_card.dart';
+import '../../../../core/di/injection.dart';
 
 class ReportsPage extends StatelessWidget {
   const ReportsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => GetIt.I<ReportsBloc>(),
+    return BlocProvider.value(
+      value: getIt<ReportsBloc>(),
       child: const ReportsView(),
     );
   }
@@ -94,8 +93,7 @@ class _ReportsViewState extends State<ReportsView> {
 
   @override
   Widget build(BuildContext context) {
-    final store = getIt<ScanSessionStore>();
-    final latest = store.latest;
+    final latest = getIt<ScanSessionStore>().latest;
     final l10n = AppLocalizations.of(context)!;
 
     return BlocListener<ReportsBloc, ReportsState>(
@@ -409,8 +407,7 @@ class _ReportsViewState extends State<ReportsView> {
   Future<void> _printPdf(BuildContext context, ScanSnapshot snapshot) async {
     await Printing.layoutPdf(
       onLayout: (_) async {
-        final useCase = getIt<GenerateReportUseCase>();
-        final result = await useCase(
+        final result = await getIt<GenerateReportUseCase>()(
           snapshot,
           ReportFormat.pdf,
           _getReportLabels(context),

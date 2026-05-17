@@ -9,7 +9,11 @@ import '../../domain/entities/diagnostic_action.dart';
 import '../../domain/entities/root_cause_category.dart';
 
 class EvidenceCard extends StatefulWidget {
-  const EvidenceCard({super.key, required this.evidence, this.explanation});
+  const EvidenceCard({
+    super.key,
+    required this.evidence,
+    this.explanation,
+  });
 
   final DiagnosisEvidence evidence;
   final CategoryExplanation? explanation;
@@ -337,7 +341,10 @@ class _ActionChip extends StatelessWidget {
   void _navigate(BuildContext context, String route) {
     if (route == 'router-hardening') {
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const RouterHardeningWizardPage()),
+        MaterialPageRoute(
+          builder:
+              (_) => const RouterHardeningWizardPage(),
+        ),
       );
     }
   }

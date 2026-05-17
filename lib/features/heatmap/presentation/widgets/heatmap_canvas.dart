@@ -126,20 +126,27 @@ class _HeatmapCanvasState extends State<HeatmapCanvas> {
                       widget.onTap == null
                           ? null
                           : (details) {
-                            final RenderBox box =
-                                context.findRenderObject() as RenderBox;
-                            final Offset localOffset = box.globalToLocal(
+                            if (!mounted) return;
+                            final renderObject = context.findRenderObject();
+                            if (renderObject is! RenderBox) return;
+
+                            final Offset localOffset = renderObject.globalToLocal(
                               details.globalPosition,
                             );
                             final Matrix4 matrix =
                                 _transformationController.value;
+
+                            // Guard against singular matrix (scale 0 etc)
+                            final determinant = matrix.determinant();
+                            if (determinant == 0) return;
+
                             final Matrix4 inverse = Matrix4.inverted(matrix);
                             final Offset transformed =
                                 MatrixUtils.transformPoint(
                                   inverse,
                                   localOffset,
                                 );
-                            widget.onTap!(viewport.canvasToWorld(transformed));
+                            widget.onTap?.call(viewport.canvasToWorld(transformed));
                           },
                   child: Stack(
                     children: [

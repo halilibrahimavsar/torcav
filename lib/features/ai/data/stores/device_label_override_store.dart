@@ -30,7 +30,10 @@ class DeviceLabelOverrideStore {
     for (final key in box.keys) {
       if (key is String && key.startsWith(_prefix)) {
         final mac = key.substring(_prefix.length);
-        result[mac] = box.get(key) as String;
+        final value = box.get(key);
+        if (value is String) {
+          result[mac] = value;
+        }
       }
     }
     return result;

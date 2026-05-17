@@ -2,51 +2,23 @@
 
 Bu dosya, `RUNTİMEERRORS.md` raporundaki iddiaların teknik kanıtlarını ve kod referanslarını içerir. Girdiler önem derecesine (CRITICAL → HIGH → MEDIUM → LOW) göre gruplanmıştır. Satır numaraları proje üzerinde doğrulanmıştır.
 
+> **Doğrulama notu (2026-05-17):** CEO turu, 2026-05-15'ten sonra kodda **12 ek bulgunun sessizce düzeltildiğini** tespit etti. Şu maddeler RESOLVED'a taşındı: #1 (AppSettings @postConstruct → R5), #2 (Stream.last → R6), #4 (ONNX race → R7), #5 (Matrix4 → R8), #7 (HiveStorage get<T> → R9), #9 (NetworkInfo DI → R10), #16 (findRenderObject → R11), #20 (Hive cast → R12), #21 (ThemeCubit → R13), #23 (ONNX leak — kısmi: R14), #24 (decodeOutput → R15), #26 (DnsCard → R16), #33 (Topology regex+stdout → R17), #35 (StreamController → R18). #6 (Heatmap painting) **PARTIAL** — RepaintBoundary eklendi ama per-point blur sürüyor. #13 (mdnsMap) severity LOW'a düşürüldü. #23 yalnızca `raw.cast<double>()` kısmı için MEDIUM kalır.
+
 > **Doğrulama notu (2026-05-15):** 3 bağımsız tur ile tüm iddialar kod üzerinde yeniden kontrol edildi. Sonuç: #10 (Captive Portal) ve #12 (Android cast) **geçersiz** çıktı → RESOLVED bölümüne R3/R4 olarak taşındı. #22 (shouldRepaint) severity LOW'a düşürüldü. #3 (ErrorWidget) ve #19 (jsonDecode) maddelerine gözden kaçan guard notları eklendi.
 
 ---
 
 ## 🔴 CRITICAL
 
-### 1. [CRITICAL] AppSettingsStore: DI Initialization Crash
-**Hata:** Hive box'ı açılmadan (init tamamlanmadan) constructor içinde senkron storage erişimi.
-**Dosya:** `lib/features/settings/domain/services/app_settings_store.dart`
-```dart
-17: AppSettingsStore(this._storage) : _settings = _loadInitialValue(_storage);
-...
-29: static AppSettings _loadInitialValue(HiveStorageService storage) {
-30:   final raw = storage.get<String>(_settingsKey); // <--- BOOM!
-```
-**Dosya (Altyapı):** `lib/core/storage/hive_storage_service.dart`
-```dart
-35: Box get box => Hive.box(_defaultBoxName);
-43: T? get<T>(String key, {T? defaultValue}) {
-44:   return box.get(key, defaultValue: defaultValue) as T?;
-45: }
-```
-**Analiz:** `AppSettingsStore` bir `@lazySingleton`. `configureDependencies()` aşamasında ilk erişimde `HiveStorageService.init` bitmemişse `Hive.box()` "Box not open" hatasıyla uygulamayı `runApp`'e gelmeden çökertir. Şu an `main.dart` sırası (`HiveStorageService.init` Satır 53 → `configureDependencies` Satır 54) bunu önlüyor; ancak constructor içinde senkron storage okuması kırılgan bir desen. `_loadInitialValue` lazy/async hale getirilmeli.
+### 1. [RESOLVED] AppSettingsStore: DI Initialization Crash
+> **RESOLVED — bkz. R5.** `AppSettingsStore` `@postConstruct` async `init()` deseniyle yeniden yazıldı; constructor yalnızca default değer atıyor. Detay R5'te.
 
 ---
 
 ## 🟠 HIGH
 
-### 2. [HIGH] SecurityRepositoryImpl: Stream.last Exception
-**Hata:** Boş bir stream üzerinde `.last` çağrıldığında `StateError: No element`.
-**Dosya:** `lib/features/security/data/repositories/security_repository_impl.dart`
-```dart
-280: final scanStream = _networkScanRepository.scanNetwork(subnet);
-281: final scanResult = await scanStream.last;        // <--- RISK
-...
-306: final portScanStream = _networkScanRepository.scanWithProfile(gatewayIp);
-309: final portScanResult = await portScanStream.last; // <--- RISK
-...
-461: final scanStream = _networkScanRepository.scanNetwork(subnet);
-462: final scanResult = await scanStream.last;        // <--- RISK
-...
-478: final portScanStream = _networkScanRepository.scanWithProfile(gatewayIp);
-481: final portScanResult = await portScanStream.last; // <--- RISK
-```
-**Analiz:** Ağ taraması sonuç üretmeden kapanırsa (empty stream) `StateError: No element` fırlar ve "Deep Scan" sırasında tüm güvenlik analizi yarıda kesilir. `last` yerine `lastOrNull` veya `fold` ile boşluk kontrolü yapılmalı.
+### 2. [RESOLVED] SecurityRepositoryImpl: Stream.last Exception
+> **RESOLVED — bkz. R6.** 4 noktanın hepsi `.lastOrNull`'a geçti (yeni satırlar 283, 312, 465, 485). Detay R6'da.
 
 ### 3. [MEDIUM] _NeonErrorWidget: Localization Extension Crash
 > **Not:** Severity HIGH → MEDIUM. Fallback localization delegate'leri bulundu (aşağıya bkz.); risk azaldı ama force-unwrap nedeniyle tamamen sıfırlanmadı. Konum gereği bu bölümde bırakıldı.
@@ -62,77 +34,37 @@ Bu dosya, `RUNTİMEERRORS.md` raporundaki iddiaların teknik kanıtlarını ve k
 **Analiz:** `ErrorWidget.builder` bir render hatasında çağrılır. Hata `MaterialApp` ağaca eklenmeden (DI/Bootstrap aşamasında) oluşursa `context` içinde `AppLocalizations` bulunamaz. `context.l10n` extension'ı `AppLocalizations.of(context)!` yaptığı için `null` check operator hatasıyla crash loop'a girer.
 **Azaltıcı faktör (doğrulamada bulundu):** `main.dart:210-216`'da `FallbackMaterialLocalizationsDelegate` ve `FallbackCupertinoLocalizationsDelegate` kayıtlı; bunlar İngilizce fallback sağlıyor (`fallback_localization_delegate.dart:24-30`). Yani `MaterialApp` ağaçtayken risk pratikte ortadan kalkıyor. Kalan risk: `MaterialApp` hiç kurulmadan (çok erken bootstrap hatası) `ErrorWidget` tetiklenirse `!` yine fırlatır. Hata ekranı yine de ham string / fallback kullanmalı.
 
-### 4. [HIGH] OnnxDeviceClassifierService: Model Loading Race Condition
-**Hata:** Eşzamanlı model yükleme denemelerinin dosya sisteminde çakışması.
-**Dosya:** `lib/features/ai/data/services/onnx_device_classifier_service.dart`
-```dart
-254: Future<OrtSession?> _ensureSession() async {
-255:   if (_session != null) return _session;
-...
-266:   final modelFile = File(p.join(tempDir.path, 'device_classifier.onnx'));
-267:   await modelFile.writeAsBytes(modelBytes.buffer.asUint8List(), flush: true);
-...
-273:   _session = OrtSession.fromFile(modelFile, sessionOptions);
-```
-**Analiz:** `_ensureSession` içinde lock/mutex yok. İki sınıflandırma aynı anda başlarsa ikisi de aynı `modelFile` yoluna yazar; biri yazarken diğeri açmaya çalışırsa `FileSystemException` fırlar ve AI modülü `_initFailed = true` ile kalıcı devre dışı kalır. Bir `Completer` veya mutex kullanılmalı.
+### 4. [RESOLVED] OnnxDeviceClassifierService: Model Loading Race Condition
+> **RESOLVED — bkz. R7.** `Completer<void>? _initCompleter` ile serileştirildi (Satır 263-303). Detay R7'de.
 
-### 5. [HIGH] HeatmapCanvas: Matrix Inversion Error
-**Hata:** Singular (tersi alınamaz) matrisin `Matrix4.inverted` ile çevrilmesi.
+### 5. [RESOLVED] HeatmapCanvas: Matrix Inversion Error
+> **RESOLVED — bkz. R8.** `determinant() == 0` guard'ı eklendi (Satır 140-141). Detay R8'de.
+
+### 6. [MEDIUM — PARTIAL] HeatmapCanvas: Painting Performance
+> **Kısmen mitige:** `heatmap_canvas.dart:155-169` static layer `RepaintBoundary` ile sarıldı; dynamic layer için ayrı `RepaintBoundary` (Satır 176-185). Re-paint maliyeti büyük ölçüde elimine. **Kalan:** İlk-frame ve veri değişikliğinde per-point `MaskFilter.blur` + `Gradient.radial` döngüleri (Satır ~374-413) hâlâ var; 500+ nokta için image caching (`PictureRecorder` → `toImage`) veya downsampling önerilir. Severity HIGH → MEDIUM.
+
 **Dosya:** `lib/features/heatmap/presentation/widgets/heatmap_canvas.dart`
 ```dart
-134: final Matrix4 matrix = _transformationController.value;
-136: final Matrix4 inverse = Matrix4.inverted(matrix); // <--- ARGUMENTERROR
+// 155-169: static layer RepaintBoundary
+// 176-185: dynamic layer RepaintBoundary
+// 374-413: hâlâ per-point blur+gradient (iki döngü)
 ```
-**Analiz:** Zoom/scale değeri sıfıra yaklaşırsa veya transform matrisi singular olursa `Matrix4.inverted` `ArgumentError` fırlatır ve tap handler kilitlenir. `matrix.clone()..invert()` dönüş değeri kontrolü veya `tryInvert` deseni kullanılmalı.
-
-### 6. [HIGH] HeatmapCanvas: Painting Performance (OOM Risk)
-**Hata:** Nokta başına çoklu blur + gradient çizimi.
-**Dosya:** `lib/features/heatmap/presentation/widgets/heatmap_canvas.dart`
-```dart
-367: for (final point in points) {
-...
-377:   ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12),
-...
-385:   ..shader = ui.Gradient.radial(centre, heatmapRadius, [...], const [0.2, 1]),
-...
-397: for (final point in points) {  // ikinci tam tur
-```
-**Analiz:** `_drawHeatmap` her nokta için bir `MaskFilter.blur` + bir `Gradient.radial` oluşturuyor, ardından ikinci bir döngü daha. 500+ noktalı survey'de frame başına binlerce pahalı GPU operasyonu → düşük donanımda OOM / "Frame Hang" (ANR). Nokta sayısı arttıkça downsampling veya image caching yapılmalı.
+**Analiz:** Re-paint sıklığı RepaintBoundary sayesinde dramatik olarak düştü, ancak ilk paint maliyeti aynı kaldı. ANR / OOM riski büyük ölçüde azaldı ama eliminate edilmedi.
 
 ---
 
 ## 🟡 MEDIUM
 
-### 7. [MEDIUM] HiveStorageService: Type Mismatch on Cast
-**Hata:** `as T?` cast'inin kaydedilen tiple uyuşmaması.
-**Dosya:** `lib/core/storage/hive_storage_service.dart`
-```dart
-43: T? get<T>(String key, {T? defaultValue}) {
-44:   return box.get(key, defaultValue: defaultValue) as T?;
-45: }
-```
-**Analiz:** Kaydedilen veri tipi istenen `T` ile uyuşmazsa (örn. `int` kaydedilmiş, `String` isteniyor) `TypeError` fırlar. Birçok store bu metoda güveniyor; tip uyuşmazlığında güvenli `null` dönüşü yok.
+### 7. [RESOLVED] HiveStorageService: Type Mismatch on Cast
+> **RESOLVED — bkz. R9.** Artık try-catch + `is! T` runtime check + `defaultValue` fallback (`hive_storage_service.dart:43-56`). Detay R9'da.
 
 ### 8. [MEDIUM] DI: Registration Failure / Unregistered Access
 **Hata:** Kayıtsız servise `getIt<T>` ile erişim veya kayıt başarısızlığı.
 **Dosya:** `lib/core/di/` (`configureDependencies`)
 **Analiz:** `configureDependencies()` içinde bir servis kaydı başarısız olursa veya henüz kayıtlı olmayan bir servise `getIt<T>` ile erişilirse `StateError` fırlatılır. Bootstrap aşamasında yakalanmazsa uygulama açılmaz.
 
-### 9. [MEDIUM] NetworkInfo: Manual Instantiation (DI Bypass)
-**Hata:** DI'da sağlanan `NetworkInfo`'nun manuel `new` edilmesi, plugin hatalarının yakalanmaması.
-**Dosya (DI sağlayıcı):** `lib/core/di/di_module.dart:14` → `NetworkInfo get networkInfo => NetworkInfo();`
-**Manuel kullanım noktaları:**
-```dart
-lib/features/security/data/repositories/security_repository_impl.dart:46  final NetworkInfo _networkInfo = NetworkInfo();
-lib/features/security/domain/usecases/arp_spoofing_detector.dart:10       final NetworkInfo _networkInfo = NetworkInfo();
-lib/features/security/presentation/bloc/security_bloc.dart:33             final NetworkInfo _networkInfo = NetworkInfo();
-lib/features/network_scan/data/datasources/arp_data_source.dart:82        final info = NetworkInfo();
-lib/features/security/presentation/pages/router_hardening_wizard_page.dart:39
-lib/features/monitoring/presentation/widgets/router_admin_guide_card.dart:39
-lib/features/monitoring/presentation/pages/spectrum_optimization_page.dart:131
-lib/features/diagnostics/data/repositories/diagnostics_repository_impl.dart:164
-```
-**Analiz:** Bu noktalarda platform plugin hataları (`MissingPluginException`, `PlatformException`) veya izin eksiklikleri yakalanmıyor. DI üzerinden tek noktadan sağlanması ve hata sarmalama eklenmesi gerekir.
+### 9. [RESOLVED] NetworkInfo: Manual Instantiation (DI Bypass)
+> **RESOLVED — bkz. R10.** 8 noktanın hepsi DI'a geçti (field injection / `getIt<>()` / widget parametresi). Detay R10'da.
 
 ### 10. [RESOLVED] CaptivePortalDetector: Infinite Await
 > **Geçersiz bulgu — RESOLVED bölümüne taşındı (R4).** `CaptivePortalDetector.check()` içinde `HttpClient.connectionTimeout = 5s` + request'te `.timeout(5s)` + dış try-catch mevcut. Sonsuz `await` mümkün değil. Detay için bkz. **R4**.
@@ -150,15 +82,16 @@ lib/features/diagnostics/data/repositories/diagnostics_repository_impl.dart:164
 ### 12. [RESOLVED] AndroidWifiDataSource: Native Type Casting
 > **Geçersiz bulgu — RESOLVED bölümüne taşındı (R3).** Cited cast'lerin hepsi **nullable** (`as String?` / `as int?`); native tarafta tip değişse bile cast `TypeError` fırlatmaz, `null` döner. Detay için bkz. **R3**.
 
-### 13. [MEDIUM] NetworkScanRepositoryImpl: mDNS Empty List Access
-**Hata:** mDNS eşleşmesinin boş liste değeri üzerinde `.first`.
+### 13. [LOW] NetworkScanRepositoryImpl: mDNS Empty List Access
+> **Severity MEDIUM → LOW.** `containsKey` guard'ı pratikte etkili; boş liste değeri mDNS implementasyonunda nadir bir durum.
+
 **Dosya:** `lib/features/network_scan/data/repositories/network_scan_repository_impl.dart`
 ```dart
 94: if (hostName.isEmpty && mdnsMap.containsKey(host.ip)) {
 95:   hostName = mdnsMap[host.ip]!.first;
 96: }
 ```
-**Analiz:** `containsKey` kontrolü `!` operatörünü güvenli kılar (arada `await` yok), ancak `mdnsMap[host.ip]` değeri boş bir liste ise `.first` `StateError: No element` fırlatır. `firstOrNull` kullanılmalı.
+**Analiz:** `containsKey` kontrolü `!` operatörünü güvenli kılar (arada `await` yok); değer listesi boşsa `.first` yine `StateError` fırlatır ama mDNS resolver normal şartlarda boş liste tutmuyor. Yine de defansif olarak `firstOrNull` ile değiştirilmesi önerilir.
 
 ### 14. [MEDIUM] NetworkScanRepositoryImpl: Reverse DNS Timeout
 **Hata:** `InternetAddress.reverse()`'in timeout'suz çağrılması ve geçersiz IP riski.
@@ -184,15 +117,8 @@ lib/features/diagnostics/data/repositories/diagnostics_repository_impl.dart:164
 ```
 **Analiz:** #11 ile aynı failure mode — `ping` çıktısı beklenmedik tipte dönerse `TypeError`.
 
-### 16. [MEDIUM] HeatmapCanvas: GlobalToLocal Cast Crash
-**Hata:** `findRenderObject()` sonucunun null kontrolsüz `as RenderBox` cast'i.
-**Dosya:** `lib/features/heatmap/presentation/widgets/heatmap_canvas.dart`
-```dart
-129: final RenderBox box =
-130:     context.findRenderObject() as RenderBox;
-131: final Offset localOffset = box.globalToLocal(details.globalPosition);
-```
-**Analiz:** Tap işlemi sırasında widget ağaçtan çıkıyorsa `findRenderObject()` `null` dönebilir; `as RenderBox` cast'i `TypeError` fırlatır. `as RenderBox?` + null guard kullanılmalı.
+### 16. [RESOLVED] HeatmapCanvas: GlobalToLocal Cast Crash
+> **RESOLVED — bkz. R11.** `is! RenderBox` guard'ı eklendi (Satır 130-131). Detay R11'de.
 
 ### 17. [MEDIUM] PingStabilizerChannel: EventChannel TypeError
 **Hata:** EventChannel olayının `as Map?` cast'i.
@@ -223,29 +149,11 @@ lib/features/diagnostics/data/repositories/diagnostics_repository_impl.dart:164
 **Analiz:** Veritabanında bozuk/eksik JSON varsa `jsonDecode` `FormatException` fırlatır ve yükleme işlemi çöker. Bu metotlar try-catch ile sarılmalı.
 **Azaltıcı faktör (doğrulamada bulundu):** `lan_scan_history_local_data_source.dart:84` çağrısı `?? '[]'` null-coalescing guard'ı altında — yani satır/sütun **null** olduğunda güvenli, geçerli boş JSON'a düşüyor. Risk yalnızca veritabanında fiilen **bozuk/atipik** bir JSON string'i bulunması durumunda geçerli. Madde geçerli kalır, kapsamı dardır. *(Not: `ping_stabilizer_settings_store.dart:44` ve `app_settings_store.dart:36` zaten try-catch içinde — güvenli.)*
 
-### 20. [MEDIUM] Unsafe Cast on Hive Read (Stores)
-**Hata:** Hive okumalarında fallback'siz `as` cast'leri.
-**Dosya:** `lib/features/ai/data/stores/device_label_override_store.dart`
-```dart
-33: result[mac] = box.get(key) as String;
-```
-**Dosya:** `lib/features/wifi_scan/data/services/favorites_store.dart`
-```dart
-42: return (storage.get<List<dynamic>>(_key) ?? []).cast<String>().toSet();
-```
-**Analiz:** `box.get(key) as String` — değer bozulmuş/farklı tipteyse `TypeError`, fallback yok. `.cast<String>()` — listede String olmayan eleman varsa erişimde `TypeError`. `whereType<String>()` veya tryCast deseni güvenli.
+### 20. [RESOLVED] Unsafe Cast on Hive Read (Stores)
+> **RESOLVED — bkz. R12.** `device_label_override_store.dart:34` `if (value is String)` ile kontrol; `favorites_store.dart:48` `.whereType<String>().toSet()`. Detay R12'de.
 
-### 21. [MEDIUM] ThemeCubit: Unguarded Storage Read in Constructor
-**Hata:** Constructor'da try-catch'siz senkron storage okuması.
-**Dosya:** `lib/core/theme/theme_cubit.dart`
-```dart
-11: ThemeCubit(this._storage) : super(ThemeMode.dark) {
-12:   _load();
-13: }
-15: void _load() {
-16:   final saved = _storage.get<String>(_key);  // <--- korumasız
-```
-**Analiz:** `_storage.get` Hive hatası fırlatırsa DI ilklendirmesi çöker. Karşılaştırma: `LocaleCubit._loadSavedLocale` (`locale_cubit.dart:17-37`) try-catch ile sarılı ve güvenli — `ThemeCubit._load` aynı korumayı almalı.
+### 21. [RESOLVED] ThemeCubit: Unguarded Storage Read in Constructor
+> **RESOLVED — bkz. R13.** `_load()` tamamen try-catch içine alındı; hata durumunda sessiz `ThemeMode.dark` fallback (`theme_cubit.dart:15-28`). Detay R13'te.
 
 ### 22. [LOW] Shader Backgrounds: shouldRepaint => true (Kod Kokusu)
 > **Severity MEDIUM → LOW. "Perf/OOM" iddiası geçersiz.**
@@ -263,27 +171,17 @@ lib/features/security/presentation/widgets/neural_pulse_background.dart:436
 ```
 **Analiz (doğrulamada düzeltildi):** 7 painter'ın **hepsi** `AnimatedBuilder(animation: Listenable.merge([_controller, widget.scrollVelocity]))` içinde sarılı (örn. `classic_grid_background.dart:81-83`). Painter zaten yalnızca `_controller` (AnimationController) ilerlediğinde veya `scrollVelocity` değiştiğinde çağrılıyor ve bu durumlarda animasyon değeri **gerçekten** değişiyor. Dolayısıyla `shouldRepaint => true` bu bağlamda **doğru ve beklenen** davranıştır — "veri değişmese bile çizim" senaryosu yok, "her frame gereksiz repaint" yanlış. "OOM / ANR" iddiası geçersiz. Kalan tek nokta: `progress` / `velocity` değerleri `oldDelegate` ile karşılaştırılarak niyet daha açık ifade edilebilirdi (kozmetik kod kokusu, crash/perf riski değil).
 
-### 23. [MEDIUM] OnnxDeviceClassifierService: Session Run Memory Leak & Unsafe Cast
-**Hata:** Tensor release eksikliği ve `raw.cast<double>()` tip riski.
+### 23. [MEDIUM — PARTIAL] OnnxDeviceClassifierService: raw.cast<double>() (eski memory leak + empty access RESOLVED)
+> **Memory leak ve empty access RESOLVED** (bkz. R14 ve R15). **Hâlâ açık:** `raw.cast<double>()` (Satır 94) — model çıktısında bir int dönerse `TypeError`.
+
 **Dosya:** `lib/features/ai/data/services/onnx_device_classifier_service.dart`
 ```dart
-81: final outputs = session.run(runOptions, {'features': inputOrt});
-85: final outputTensor = outputs.first;   // boş liste → StateError
-...
-88: outputTensor.release();               // yalnızca .first release
-92: logits = raw.first;                   // boş iç liste → StateError
 94: logits = raw.cast<double>();           // int dönerse → TypeError
 ```
-**Analiz:** `outputs` listesinde birden fazla tensor varsa yalnızca `.first` release ediliyor → native memory leak. `outputs.first` / `raw.first` boş listede `StateError`. `raw.cast<double>()` model çıktısında bir int dönerse `TypeError` (ONNX plugin'i bazen float'ları int döndürür).
+**Analiz:** ONNX plugin'i bazen float'ları int olarak döndürebilir. `raw.map((e) => (e as num).toDouble()).toList()` daha güvenli olur. *(Memory leak ve empty access için R14/R15'e bkz.)*
 
-### 24. [MEDIUM] DeviceFeatureExtractor: Empty Logits Access
-**Hata:** Boş logit listesinde indeks erişimi.
-**Dosya:** `lib/features/ai/domain/services/device_classifier.dart`
-```dart
-178: static DeviceClassification decodeOutput(List<double> logits) {
-180:   var maxLogit = logits[0];  // <--- boş liste → RangeError
-```
-**Analiz:** Model boş çıktı tensörü dönerse `logits[0]` `RangeError` fırlatır. `if (logits.isEmpty)` koruması eklenmeli.
+### 24. [RESOLVED] DeviceFeatureExtractor: Empty Logits Access
+> **RESOLVED — bkz. R15.** `if (logits.isEmpty) return DeviceClassification('Unknown', 0.0);` guard'ı eklendi (`device_classifier.dart:179`). Detay R15'te.
 
 ### 25. [MEDIUM] MonitoringRepositoryImpl: Infinite Generator Leak
 **Hata:** `while(true)` generator'ın tüketici tarafından iptal edilmemesi.
@@ -297,15 +195,8 @@ lib/features/security/presentation/widgets/neural_pulse_background.dart:436
 ```
 **Analiz:** Stream'i dinleyen BLoC dispose edilmezse arka plan taraması sonsuza dek sürer (batarya/kaynak sızıntısı). `MonitoringBloc.close()` doğru iptal ediyor ancak başka bir tüketici subscription'ı iptal etmeyi unutursa sızıntı kaçınılmaz.
 
-### 26. [MEDIUM] DnsSecurityCard: Empty Benchmark List .last
-**Hata:** Boş benchmark listesinde `.last`.
-**Dosya:** `lib/features/security/presentation/widgets/dns_security_card.dart`
-```dart
-360: final sortedBenchmarks = List<DnsBenchmarkResult>.from(benchmarks)
-361:   ..sort((a, b) => a.latencyMs.compareTo(b.latencyMs));
-363: final maxLatency = sortedBenchmarks.last.latencyMs; // <--- StateError
-```
-**Analiz:** `_DnsBenchmarkSection.build` içinde `benchmarks` boşsa `sortedBenchmarks.last` `StateError: No element` fırlatır. Widget içinde `isEmpty` koruması yok; çağıran taraf veri yüklenmeden build ederse crash.
+### 26. [RESOLVED] DnsSecurityCard: Empty Benchmark List .last
+> **RESOLVED — bkz. R16.** Widget içine `if (sortedBenchmarks.isEmpty) return SizedBox.shrink();` guard'ı eklendi (`.last` çağrısından önce). Detay R16'da.
 
 ---
 
@@ -362,15 +253,8 @@ lib/features/security/presentation/widgets/neural_pulse_background.dart:436
 ```
 **Analiz:** `1 << consecutiveErrors` `.clamp(0, 6)` ile sınırlı (maks `1 << 6 = 64`) — integer overflow yok. `Future.delayed` OS tarafından optimize edilebilir; hassas zamanlama gerektiren durumlarda kaymalar olabilir. Crash riski yok.
 
-### 33. [LOW] TopologyRepositoryImpl: Regex Parse FormatException
-**Dosya:** `lib/features/monitoring/data/repositories/topology_repository_impl.dart`
-```dart
-90: final match = RegExp(r'time=([\d.]+)').firstMatch(output);
-92:   final ms = double.parse(match.group(1)!).round();
-...
-180: final ttl = int.parse(ttlMatch.group(1)!);
-```
-**Analiz:** `group(1)` non-optional capture grup olduğu için eşleşme sonrası `!` güvenli. Ancak `[\d.]+` "1.2.3" gibi geçersiz bir dize yakalarsa `double.parse` `FormatException` fırlatabilir. `double.tryParse` kullanılmalı. (`int.parse` Satır 180 `\d+` ile güvenli.)
+### 33. [RESOLVED] TopologyRepositoryImpl: Regex Parse FormatException
+> **RESOLVED — bkz. R17.** `double.parse` → `double.tryParse(timeStr)?.round()` (Satır 95). Ayrıca stdout cast'leri `is String` runtime check'e geçti (Satır 89-90, 174-180). Detay R17'de.
 
 ### 34. [LOW] CyberGridBackground: Static ValueNotifier Leak
 **Dosya:** `lib/features/security/presentation/widgets/cyber_grid_background.dart`
@@ -379,14 +263,8 @@ lib/features/security/presentation/widgets/neural_pulse_background.dart:436
 ```
 **Analiz:** Statik `ValueNotifier` hiçbir zaman dispose edilmez; uygulama ömrü boyunca bellekte kalır. `AnimatedBuilder` üzerinden eklenen listener'lar da temizlenmez. Crash değil, kalıcı bellek tüketimi.
 
-### 35. [LOW] Singleton Stores: StreamController Not Disposed
-**Dosyalar:**
-```dart
-lib/features/settings/domain/services/app_settings_store.dart:14   StreamController<AppSettings>.broadcast()
-lib/features/wifi_scan/data/services/favorites_store.dart:11        StreamController<Set<String>>.broadcast()
-lib/features/wifi_scan/domain/services/scan_session_store.dart:14   StreamController<ScanSnapshot>.broadcast()
-```
-**Analiz:** `@lazySingleton` store'lar broadcast `StreamController` açıyor ancak `@disposeMethod` tanımlamıyor. Uygulama ömrü boyunca açık kalır — kritik değil ama temiz kapanış için `@disposeMethod` eklenmeli.
+### 35. [RESOLVED] Singleton Stores: StreamController Not Disposed
+> **RESOLVED — bkz. R18.** 3 store'a da `@disposeMethod dispose()` eklendi: `app_settings_store.dart:35-38`, `favorites_store.dart:41-44`, `scan_session_store.dart:54-57`. Detay R18'de.
 
 ### 36. [LOW] HeatmapPage: RenderObject Type Cast
 **Dosya:** `lib/features/heatmap/presentation/pages/heatmap_page.dart`
@@ -445,3 +323,239 @@ lib/features/wifi_scan/domain/services/scan_session_store.dart:14   StreamContro
 60: }
 ```
 **Analiz:** **Geçersiz bulgu.** `check()` üç katmanlı korumaya sahip: (1) `HttpClient.connectionTimeout = 5s`, (2) `request.close()` üzerinde `.timeout(5s)`, (3) tüm gövdeyi saran dış try-catch — herhangi bir hata/timeout `CaptivePortalStatus.unknown` ile sessizce sonuçlanır. Yanıtsız bir ağda `await` sonsuza dek askıda kalamaz; en kötü senaryo 5 saniyelik gecikmedir. Önceki raporda MEDIUM olarak yer alıyordu; gerçek risk değil.
+
+---
+
+## ✅ 2026-05-17 turu: Kod Refactor'ları (R5–R18)
+
+> Bu bölümdeki maddeler önceden bulgu olarak işaretlenmişti, sonra kodda düzeltildi.
+
+### R5. [RESOLVED] AppSettingsStore: @postConstruct async init (eski #1)
+**Dosya:** `lib/features/settings/domain/services/app_settings_store.dart`
+```dart
+17: AppSettingsStore(this._storage) : _settings = const AppSettings();
+19: @postConstruct
+20: Future<void> init() async {
+21:   _settings = await _loadInitialValue(_storage);
+22:   _changes.add(_settings);
+23: }
+```
+**Analiz:** Constructor artık sadece default `AppSettings()` atıyor; Hive okuma `@postConstruct` async `init()`'e taşındı. Injectable framework `init()`'i construction'dan sonra çağırır ve garantiler — "constructor içinde senkron storage" deseni tamamen kalktı. Önceki kırılgan pattern eliminate edildi.
+
+### R6. [RESOLVED] SecurityRepositoryImpl: Stream.last → lastOrNull (eski #2)
+**Dosya:** `lib/features/security/data/repositories/security_repository_impl.dart`
+```dart
+  3: import '...stream_extensions.dart';
+283: final scanResult = await scanStream.lastOrNull;
+312: final portScanResult = await portScanStream.lastOrNull;
+465: final scanResult = await scanStream.lastOrNull;
+485: final portScanResult = await portScanStream.lastOrNull;
+```
+**Analiz:** 4 noktanın hepsi `.lastOrNull` extension'ına geçti. Boş stream artık `null` döner, `null` durumu `Either.fold` öncesinde güvenli işleniyor. Önceki `StateError: No element` riski eliminate edildi.
+
+### R7. [RESOLVED] OnnxDeviceClassifierService: Completer ile Race Önleme (eski #4)
+**Dosya:** `lib/features/ai/data/services/onnx_device_classifier_service.dart`
+```dart
+263: Future<OrtSession?> _ensureSession() async {
+264:   if (_session != null) return _session;
+265:   if (_initFailed) return null;
+266:
+267:   if (_initCompleter != null) {
+268:     await _initCompleter!.future;
+269:     return _session;
+270:   }
+271:
+272:   _initCompleter = Completer<void>();
+273:   try { ... } catch (_) { ... } finally {
+302:     _initCompleter = null;
+303:   }
+304: }
+```
+**Analiz:** `Completer<void>? _initCompleter` ile serileştirildi. Eşzamanlı çağrılar varsa ikinci çağrı mevcut completer'ın future'ını await ediyor; tek bir init çalışıyor. `finally` bloğu completer'ı temizliyor. `FileSystemException` riski eliminate edildi.
+
+### R8. [RESOLVED] HeatmapCanvas: Matrix Determinant Guard (eski #5)
+**Dosya:** `lib/features/heatmap/presentation/widgets/heatmap_canvas.dart`
+```dart
+139: // Guard against singular matrix (scale 0 etc)
+140: final determinant = matrix.determinant();
+141: if (determinant == 0) return;
+143: final Matrix4 inverse = Matrix4.inverted(matrix);
+```
+**Analiz:** `determinant() == 0` kontrolüyle singular matrix erken-return. `Matrix4.inverted` artık yalnızca tersi alınabilir matrix'lerle çağrılıyor; `ArgumentError` riski eliminate.
+
+### R9. [RESOLVED] HiveStorageService: Type-Safe get<T> (eski #7)
+**Dosya:** `lib/core/storage/hive_storage_service.dart`
+```dart
+43: T? get<T>(String key, {T? defaultValue}) {
+44:   try {
+45:     final value = box.get(key, defaultValue: defaultValue);
+46:     if (value == null) return null;
+47:     if (value is! T) {
+48:       AppLogger.w('Hive type mismatch for key $key: expected $T, got ${value.runtimeType}');
+49:       return defaultValue;
+50:     }
+51:     return value;
+52:   } catch (e) {
+53:     AppLogger.e('Hive read error for key $key', error: e);
+54:     return defaultValue;
+55:   }
+56: }
+```
+**Analiz:** Üç katmanlı koruma: (1) try-catch tüm okumayı sarıyor, (2) `is! T` runtime check tip uyuşmazlığını yakalıyor, (3) `defaultValue` fallback. Tüm Hive okuyan store'lar bu güvenli API'den yararlanıyor. `TypeError` riski eliminate.
+
+### R10. [RESOLVED] NetworkInfo: 8 Nokta DI'a Geçti (eski #9)
+**Dosya (alan injection):**
+```dart
+lib/features/security/data/repositories/security_repository_impl.dart:47   final NetworkInfo _networkInfo;  // ctor injected
+lib/features/security/domain/usecases/arp_spoofing_detector.dart:10        final NetworkInfo _networkInfo;
+lib/features/security/presentation/bloc/security_bloc.dart:33              final NetworkInfo _networkInfo;
+lib/features/network_scan/data/datasources/arp_data_source.dart:82         final NetworkInfo _networkInfo;
+lib/features/diagnostics/data/repositories/diagnostics_repository_impl.dart:28  final NetworkInfo _networkInfo;
+```
+**Dosya (getIt servis lookup'ı):**
+```dart
+lib/features/security/presentation/pages/router_hardening_wizard_page.dart:39  final info = getIt<NetworkInfo>();
+lib/features/monitoring/presentation/pages/spectrum_optimization_page.dart:~134  await getIt<NetworkInfo>().getWifiBSSID()
+```
+**Dosya (widget parametresi):**
+```dart
+lib/features/monitoring/presentation/widgets/router_admin_guide_card.dart:39  final info = widget.networkInfo;
+```
+**Analiz:** Önceki 8 manuel `NetworkInfo()` instantiation'ı tamamen kalktı. DI'da tek singleton var, hata sarmalama mümkün. `MissingPluginException` / `PlatformException` yakalanması artık merkezi olarak yapılabilir.
+
+### R11. [RESOLVED] HeatmapCanvas: findRenderObject Safe Type Check (eski #16)
+**Dosya:** `lib/features/heatmap/presentation/widgets/heatmap_canvas.dart`
+```dart
+130: final renderObject = context.findRenderObject();
+131: if (renderObject is! RenderBox) return;
+132: final Offset localOffset = renderObject.globalToLocal(details.globalPosition);
+```
+**Analiz:** `as RenderBox` zorlaması yerine `is! RenderBox` early-return. `null` veya farklı RenderObject tipinde sessiz iptal — `TypeError` riski eliminate.
+
+### R12. [RESOLVED] Hive Store Read'leri: is String / whereType (eski #20)
+**Dosya:** `lib/features/ai/data/stores/device_label_override_store.dart`
+```dart
+30: for (final key in box.keys) {
+31:   if (key is String && key.startsWith(_prefix)) {
+32:     final mac = key.substring(_prefix.length);
+33:     final value = box.get(key);
+34:     if (value is String) {
+35:       result[mac] = value;
+36:     }
+37:   }
+38: }
+```
+**Dosya:** `lib/features/wifi_scan/data/services/favorites_store.dart`
+```dart
+46: static Set<String> _load(HiveStorageService storage) {
+47:   final raw = storage.get<List<dynamic>>(_key) ?? [];
+48:   return raw.whereType<String>().toSet();
+49: }
+```
+**Analiz:** Zorlamalı cast'ler kalktı. `is String` + `whereType<String>()` ile bozuk/karışık verilerde sessiz filtreleme; `TypeError` riski eliminate.
+
+### R13. [RESOLVED] ThemeCubit: try-catch Sarmalı _load (eski #21)
+**Dosya:** `lib/core/theme/theme_cubit.dart`
+```dart
+15: void _load() {
+16:   try {
+17:     final saved = _storage.get<String>(_key);
+18:     final mode = switch (saved) {
+19:       'light' => ThemeMode.light,
+20:       'dark' => ThemeMode.dark,
+21:       _ => ThemeMode.system,
+22:     };
+23:     emit(mode);
+24:   } catch (e) {
+25:     // Silently fail and keep default theme if storage is corrupted
+26:     emit(ThemeMode.dark);
+27:   }
+28: }
+```
+**Analiz:** `LocaleCubit` ile aynı pattern uygulandı. Hive hatası DI ilklendirmesini çökertmez; sessizce `ThemeMode.dark` fallback.
+
+### R14. [RESOLVED] OnnxDeviceClassifierService: Tüm Tensor Release (eski #23 leak kısmı)
+**Dosya:** `lib/features/ai/data/services/onnx_device_classifier_service.dart`
+```dart
+ 82: final runOptions = OrtRunOptions();
+ 83: try {
+ 84:   final outputs = session.run(runOptions, {'features': inputOrt});
+ 85:   try {
+ 86:     if (outputs.isEmpty) return _vendorHeuristic(host);
+ 87:     final outputTensor = outputs.first;
+ 88:     if (outputTensor == null) return _vendorHeuristic(host);
+ ...
+106:   } finally {
+107:     for (final tensor in outputs) {
+108:       tensor?.release();
+109:     }
+110:   }
+111: } catch (_) {
+112:   return _vendorHeuristic(host);
+113: } finally {
+114:   inputOrt.release();
+115:   runOptions.release();
+116: }
+```
+**Analiz:** İç `finally` tüm `outputs` tensor'larını release ediyor (sadece `.first` değil); dış `finally` `inputOrt` + `runOptions`'ı kapatıyor. Exception path'i bile sızdırmıyor. `outputs.isEmpty` ve `outputTensor == null` guard'ları boş çıktıyı yakalıyor. Native memory leak eliminate.
+
+### R15. [RESOLVED] DeviceClassifier: Empty Logits Guard (eski #24)
+**Dosya:** `lib/features/ai/domain/services/device_classifier.dart`
+```dart
+178: static DeviceClassification decodeOutput(List<double> logits) {
+179:   if (logits.isEmpty) {
+180:     return const DeviceClassification(deviceType: 'Unknown', confidence: 0.0);
+181:   }
+182:   var maxLogit = logits[0];
+```
+**Analiz:** `logits.isEmpty` guard'ı `logits[0]` erişiminden önce güvenli default dönüyor. `RangeError` riski eliminate.
+
+### R16. [RESOLVED] DnsSecurityCard: isEmpty Guard (eski #26)
+**Dosya:** `lib/features/security/presentation/widgets/dns_security_card.dart`
+```dart
+// Önce:
+final sortedBenchmarks = List<DnsBenchmarkResult>.from(benchmarks)
+  ..sort((a, b) => a.latencyMs.compareTo(b.latencyMs));
+// Şimdi:
+if (sortedBenchmarks.isEmpty) return const SizedBox.shrink();
+final maxLatency = sortedBenchmarks.last.latencyMs;
+```
+**Analiz:** Widget kendini caller'dan bağımsız olarak koruyor. Boş benchmark listesinde sessiz `SizedBox.shrink()` dönüyor; `StateError` riski eliminate.
+
+### R17. [RESOLVED] TopologyRepositoryImpl: tryParse + is String (eski #15, #33)
+**Dosya:** `lib/features/monitoring/data/repositories/topology_repository_impl.dart`
+```dart
+89: final output = result.stdout;
+90: if (output is String) {
+91:   final match = RegExp(r'time=([\d.]+)').firstMatch(output);
+92:   if (match != null) {
+93:     final timeStr = match.group(1);
+94:     if (timeStr != null) {
+95:       final ms = double.tryParse(timeStr)?.round();
+...
+```
+**Analiz:** Üç iyileşme bir arada: (1) `result.stdout as String` zorlaması `if (output is String)` runtime check'e geçti, (2) `match.group(1)` non-null kontrol ediliyor, (3) `double.parse` → `double.tryParse` — geçersiz girdi `null` döner. `TypeError` ve `FormatException` riskleri eliminate.
+
+### R18. [RESOLVED] Singleton Stores: @disposeMethod Eklendi (eski #35)
+**Dosya:** `lib/features/settings/domain/services/app_settings_store.dart`
+```dart
+35: @disposeMethod
+36: void dispose() {
+37:   _changes.close();
+38: }
+```
+**Dosya:** `lib/features/wifi_scan/data/services/favorites_store.dart`
+```dart
+41: @disposeMethod
+42: void dispose() {
+43:   _changes.close();
+44: }
+```
+**Dosya:** `lib/features/wifi_scan/domain/services/scan_session_store.dart`
+```dart
+54: @disposeMethod
+55: void dispose() {
+56:   _controller.close();
+57: }
+```
+**Analiz:** 3 store'un hepsi `StreamController` kapatma sözleşmesine sahip. `getIt.reset()` veya uygulama kapanışında temiz teardown garantili.

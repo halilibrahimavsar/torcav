@@ -38,7 +38,13 @@ class FavoritesStore {
     await _storage.delete(_key);
   }
 
+  @disposeMethod
+  void dispose() {
+    _changes.close();
+  }
+
   static Set<String> _load(HiveStorageService storage) {
-    return (storage.get<List<dynamic>>(_key) ?? []).cast<String>().toSet();
+    final raw = storage.get<List<dynamic>>(_key) ?? [];
+    return raw.whereType<String>().toSet();
   }
 }

@@ -13,13 +13,18 @@ class ThemeCubit extends Cubit<ThemeMode> {
   }
 
   void _load() {
-    final saved = _storage.get<String>(_key);
-    final mode = switch (saved) {
-      'light' => ThemeMode.light,
-      'dark' => ThemeMode.dark,
-      _ => ThemeMode.system,
-    };
-    emit(mode);
+    try {
+      final saved = _storage.get<String>(_key);
+      final mode = switch (saved) {
+        'light' => ThemeMode.light,
+        'dark' => ThemeMode.dark,
+        _ => ThemeMode.system,
+      };
+      emit(mode);
+    } catch (e) {
+      // Silently fail and keep default theme if storage is corrupted
+      emit(ThemeMode.dark);
+    }
   }
 
   void setTheme(ThemeMode mode) {

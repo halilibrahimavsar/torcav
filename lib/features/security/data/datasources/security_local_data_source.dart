@@ -198,19 +198,34 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
     }
 
     final row = rows.first;
-    return AssessmentSession.fromJson({
+    Map<String, dynamic> sessionMap = {
       'sessionKey': row['session_key'],
       'createdAt': row['created_at'],
       'overallScore': row['overall_score'],
       'overallStatus': row['overall_status'],
-      'wifiFindings': jsonDecode(row['wifi_findings_json'] as String? ?? '[]'),
-      'lanFindings': jsonDecode(row['lan_findings_json'] as String? ?? '[]'),
-      'dnsResult':
-          row['dns_result_json'] == null
-              ? null
-              : jsonDecode(row['dns_result_json'] as String),
       'trustedProfileCount': row['trusted_profile_count'],
-    });
+    };
+
+    try {
+      sessionMap['wifiFindings'] = jsonDecode(row['wifi_findings_json'] as String? ?? '[]');
+    } catch (_) {
+      sessionMap['wifiFindings'] = [];
+    }
+
+    try {
+      sessionMap['lanFindings'] = jsonDecode(row['lan_findings_json'] as String? ?? '[]');
+    } catch (_) {
+      sessionMap['lanFindings'] = [];
+    }
+
+    try {
+      final dnsJson = row['dns_result_json'] as String?;
+      sessionMap['dnsResult'] = (dnsJson == null) ? null : jsonDecode(dnsJson);
+    } catch (_) {
+      sessionMap['dnsResult'] = null;
+    }
+
+    return AssessmentSession.fromJson(sessionMap);
   }
 
   @override
@@ -263,15 +278,23 @@ class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
     'last_confirmed_at': profile.lastConfirmedAt.toIso8601String(),
   };
 
-  TrustedNetworkProfile _mapToTrustedProfile(Map<String, dynamic> map) =>
-      TrustedNetworkProfile.fromJson({
-        'ssid': map['ssid'],
-        'bssid': map['bssid'],
-        'fingerprint': jsonDecode(map['fingerprint_json'] as String? ?? '{}'),
-        'notes': map['notes'],
-        'trustedAt': map['trusted_at'],
-        'lastConfirmedAt': map['last_confirmed_at'],
-      });
+  TrustedNetworkProfile _mapToTrustedProfile(Map<String, dynamic> map) {
+    dynamic fingerprint;
+    try {
+      fingerprint = jsonDecode(map['fingerprint_json'] as String? ?? '{}');
+    } catch (_) {
+      fingerprint = {};
+    }
+
+    return TrustedNetworkProfile.fromJson({
+      'ssid': map['ssid'],
+      'bssid': map['bssid'],
+      'fingerprint': fingerprint,
+      'notes': map['notes'],
+      'trustedAt': map['trusted_at'],
+      'lastConfirmedAt': map['last_confirmed_at'],
+    });
+  }
 
   Map<String, dynamic> _eventToMap(SecurityEvent event) => {
     'type': event.type.name,

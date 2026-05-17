@@ -15,7 +15,8 @@ import '../../../../core/utils/oui_lookup.dart';
 /// via OUI lookup, and shows the matching admin URL + menu path along with
 /// a 20/40/80/160 MHz explanation and a safety note.
 class RouterAdminGuideCard extends StatefulWidget {
-  const RouterAdminGuideCard({super.key});
+  final NetworkInfo networkInfo;
+  const RouterAdminGuideCard({super.key, required this.networkInfo});
 
   @override
   State<RouterAdminGuideCard> createState() => _RouterAdminGuideCardState();
@@ -36,7 +37,7 @@ class _RouterAdminGuideCardState extends State<RouterAdminGuideCard> {
 
   Future<void> _detect() async {
     try {
-      final info = NetworkInfo();
+      final info = widget.networkInfo;
       final results = await Future.wait([
         info.getWifiName(),
         info.getWifiBSSID(),

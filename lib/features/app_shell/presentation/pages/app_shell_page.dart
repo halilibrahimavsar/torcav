@@ -104,7 +104,9 @@ class _AppShellPageState extends State<AppShellPage> with RestorationMixin {
             onOpenDrawer: () => _scaffoldKey.currentState?.openDrawer(),
           ),
           const _DiscoveryTabPage(),
-          OperationsHubPage(onNavigate: _navigateTo),
+          OperationsHubPage(
+            onNavigate: _navigateTo,
+          ),
         ],
       ),
       extendBody: true,
@@ -146,17 +148,12 @@ class _AppShellPageState extends State<AppShellPage> with RestorationMixin {
           context,
         ).push(MaterialPageRoute(builder: (context) => const TopologyRoute()));
       case 'monitor/channels':
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const SpectrumOptimizationPage(),
-          ),
-        );
       case 'monitor/signal':
         // Signal Graph requires a selected network; route to the Spectrum
         // page which surfaces the connected radio across bands.
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => const SpectrumOptimizationPage(),
+            builder: (context) => getIt<SpectrumOptimizationPage>(),
           ),
         );
       case 'performance':
@@ -174,15 +171,17 @@ class _AppShellPageState extends State<AppShellPage> with RestorationMixin {
       case 'reports':
         Navigator.of(
           context,
-        ).push(MaterialPageRoute(builder: (context) => const ReportsPage()));
+        ).push(MaterialPageRoute(builder: (context) => getIt<ReportsPage>()));
       case 'settings':
         Navigator.of(
           context,
         ).push(MaterialPageRoute(builder: (context) => const SettingsPage()));
       case 'profile':
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (context) => const ProfileHubPage()));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const ProfileHubPage(),
+          ),
+        );
       case 'ping_stabilizer':
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => const PingStabilizerPage()),

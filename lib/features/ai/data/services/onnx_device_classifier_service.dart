@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:typed_data';
@@ -22,6 +23,7 @@ class OnnxDeviceClassifierService {
   final DeviceLabelOverrideStore _overrideStore;
   OrtSession? _session;
   bool _initFailed = false;
+  Completer<void>? _initCompleter;
 
   /// Classify a single host.
   ///
@@ -79,29 +81,36 @@ class OnnxDeviceClassifierService {
       final runOptions = OrtRunOptions();
       try {
         final outputs = session.run(runOptions, {'features': inputOrt});
-        inputOrt.release();
-        runOptions.release();
+        try {
+          if (outputs.isEmpty) return _vendorHeuristic(host);
 
-        final outputTensor = outputs.first;
-        if (outputTensor != null) {
+          final outputTensor = outputs.first;
+          if (outputTensor == null) return _vendorHeuristic(host);
+
           final raw = outputTensor.value;
-          outputTensor.release();
-
           final List<double> logits;
-          if (raw is List<List<double>>) {
+
+          if (raw is List<List<double>> && raw.isNotEmpty) {
             logits = raw.first;
           } else if (raw is List) {
-            logits = raw.cast<double>();
+            logits = raw.map((e) => (e as num).toDouble()).toList();
           } else {
             return _vendorHeuristic(host);
           }
 
+          if (logits.isEmpty) return _vendorHeuristic(host);
+
           final result = DeviceFeatureExtractor.decodeOutput(logits);
           if (result.confidence >= _confidenceThreshold) return result;
-          // Low-confidence: blend model label with vendor heuristic
           return _vendorHeuristic(host) ?? result;
+        } finally {
+          for (final tensor in outputs) {
+            tensor?.release();
+          }
         }
       } catch (_) {
+        return _vendorHeuristic(host);
+      } finally {
         inputOrt.release();
         runOptions.release();
       }
@@ -255,6 +264,12 @@ class OnnxDeviceClassifierService {
     if (_session != null) return _session;
     if (_initFailed) return null;
 
+    if (_initCompleter != null) {
+      await _initCompleter!.future;
+      return _session;
+    }
+
+    _initCompleter = Completer<void>();
     try {
       OrtEnv.instance.init();
 
@@ -264,18 +279,26 @@ class OnnxDeviceClassifierService {
       );
       final tempDir = await getTemporaryDirectory();
       final modelFile = File(p.join(tempDir.path, 'device_classifier.onnx'));
-      await modelFile.writeAsBytes(
-        modelBytes.buffer.asUint8List(),
-        flush: true,
-      );
+
+      // Check if file already exists to avoid redundant writes
+      if (!await modelFile.exists()) {
+        await modelFile.writeAsBytes(
+          modelBytes.buffer.asUint8List(),
+          flush: true,
+        );
+      }
 
       final sessionOptions = OrtSessionOptions();
       _session = OrtSession.fromFile(modelFile, sessionOptions);
       sessionOptions.release();
+      _initCompleter!.complete();
       return _session;
     } catch (_) {
       _initFailed = true;
+      _initCompleter!.complete();
       return null;
+    } finally {
+      _initCompleter = null;
     }
   }
 

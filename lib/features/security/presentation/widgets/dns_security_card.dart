@@ -360,6 +360,7 @@ class _DnsBenchmarkSection extends StatelessWidget {
     final sortedBenchmarks = List<DnsBenchmarkResult>.from(benchmarks)
       ..sort((a, b) => a.latencyMs.compareTo(b.latencyMs));
 
+    if (sortedBenchmarks.isEmpty) return const SizedBox.shrink();
     final maxLatency = sortedBenchmarks.last.latencyMs;
 
     return Column(

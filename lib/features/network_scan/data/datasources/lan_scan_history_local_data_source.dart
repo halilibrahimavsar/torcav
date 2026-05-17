@@ -80,11 +80,17 @@ class LanScanHistoryLocalDataSourceImpl
     }
 
     final row = rows.first;
-    final hosts =
-        (jsonDecode(row['payload_json'] as String? ?? '[]') as List<dynamic>)
-            .whereType<Map<String, dynamic>>()
-            .map(_hostFromJson)
-            .toList();
+    List<HostScanResult> hosts = [];
+    try {
+      final raw = row['payload_json'] as String? ?? '[]';
+      final decoded = jsonDecode(raw) as List<dynamic>;
+      hosts = decoded
+          .whereType<Map<String, dynamic>>()
+          .map(_hostFromJson)
+          .toList();
+    } catch (_) {
+      // Return empty list on corruption
+    }
 
     return LanScanSession(
       sessionKey: row['session_key'] as String? ?? '',

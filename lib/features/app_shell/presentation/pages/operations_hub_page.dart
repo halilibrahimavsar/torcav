@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:torcav/core/l10n/app_localizations.dart';
+
+import '../../../../core/presentation/widgets/cyber_neomorphic_button.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../diagnostics/presentation/pages/speed_doctor_page.dart';
+import '../../../heatmap/presentation/pages/heatmap_page.dart';
+import '../../../monitoring/presentation/pages/spectrum_optimization_page.dart';
+import '../../../monitoring/presentation/pages/topology_page.dart';
 import '../../../performance/presentation/pages/performance_page.dart';
+import '../../../ping_stabilizer/presentation/pages/ping_stabilizer_page.dart';
 import '../../../reports/presentation/pages/reports_page.dart';
 import '../../../security/presentation/pages/router_hardening_wizard_page.dart';
 import '../../../security/presentation/pages/security_center_page.dart';
-import '../../../monitoring/presentation/pages/topology_page.dart';
-import '../../../monitoring/presentation/pages/spectrum_optimization_page.dart';
 import '../../../security/presentation/pages/vulnerability_lab_page.dart';
-import '../../../heatmap/presentation/pages/heatmap_page.dart';
-import '../../../ping_stabilizer/presentation/pages/ping_stabilizer_page.dart';
-import 'package:torcav/core/l10n/app_localizations.dart';
-import '../../../../core/presentation/widgets/cyber_neomorphic_button.dart';
-import '../../../../core/theme/app_theme.dart';
 
 class OperationsHubPage extends StatelessWidget {
-  const OperationsHubPage({super.key, required this.onNavigate});
+  const OperationsHubPage({
+    super.key,
+    required this.onNavigate,
+  });
 
   final Function(String route) onNavigate;
 
@@ -81,7 +85,7 @@ class OperationsHubPage extends StatelessWidget {
                 onTap:
                     () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const TopologyRoute(),
+                        builder: (context) => const TopologyPage(),
                       ),
                     ),
                 delay: 300,
@@ -159,7 +163,7 @@ class OperationsHubPage extends StatelessWidget {
                 onTap:
                     () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) => const SpeedDoctorPage(),
+                        builder: (context) => const SpeedDoctorPage(),
                       ),
                     ),
                 delay: 650,

@@ -20,8 +20,9 @@ import '../../domain/entities/service_fingerprint.dart';
 @LazySingleton()
 class ArpDataSource {
   final OuiLookup _ouiLookup;
+  final NetworkInfo _networkInfo;
 
-  ArpDataSource(this._ouiLookup);
+  ArpDataSource(this._ouiLookup, this._networkInfo);
 
   /// Reads the ARP table. Wrapper for static method to allow injection and mocking.
   Future<Either<Failure, List<ArpEntry>>> readArpTable() =>
@@ -79,9 +80,8 @@ class ArpDataSource {
 
   Future<_GatewayIdentity?> _connectedGatewayIdentity() async {
     try {
-      final info = NetworkInfo();
-      final gatewayIp = await info.getWifiGatewayIP();
-      final bssid = await info.getWifiBSSID();
+      final gatewayIp = await _networkInfo.getWifiGatewayIP();
+      final bssid = await _networkInfo.getWifiBSSID();
       if (gatewayIp == null ||
           gatewayIp.isEmpty ||
           bssid == null ||

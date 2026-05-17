@@ -50,4 +50,9 @@ class ScanSessionStore {
     _snapshots.clear();
     unawaited(_history.clear());
   }
+
+  @disposeMethod
+  void dispose() {
+    _controller.close();
+  }
 }

@@ -7,9 +7,9 @@ import '../entities/security_event.dart';
 @lazySingleton
 class ArpSpoofingDetector {
   final ArpDataSource _arpDataSource;
-  final NetworkInfo _networkInfo = NetworkInfo();
+  final NetworkInfo _networkInfo;
 
-  ArpSpoofingDetector(this._arpDataSource);
+  ArpSpoofingDetector(this._arpDataSource, this._networkInfo);
 
   /// Analyzes the current ARP table for spoofing signatures.
   ///

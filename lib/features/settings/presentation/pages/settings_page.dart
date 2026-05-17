@@ -778,7 +778,9 @@ class _SettingsPageState extends State<SettingsPage> {
     );
     unawaited(
       navigator.pushReplacement(
-        MaterialPageRoute(builder: (_) => const OnboardingPage()),
+        MaterialPageRoute(
+          builder: (_) => const OnboardingPage(),
+        ),
       ),
     );
   }

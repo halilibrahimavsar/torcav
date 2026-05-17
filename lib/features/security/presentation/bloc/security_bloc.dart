@@ -30,7 +30,7 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
   final DnsLeakTestUsecase _dnsLeakTestUsecase;
   final AppSettingsStore _settingsStore;
   final NetworkContextResolver _contextResolver;
-  final NetworkInfo _networkInfo = NetworkInfo();
+  final NetworkInfo _networkInfo;
   StreamSubscription? _scanSubscription;
   StreamSubscription? _settingsSubscription;
 
@@ -44,6 +44,7 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
     this._dnsLeakTestUsecase,
     this._settingsStore,
     this._contextResolver,
+    this._networkInfo,
   ) : super(SecurityInitial()) {
     on<SecurityStarted>(_onStarted);
     on<SecurityAnalyzeRequested>(_onAnalyzeRequested);

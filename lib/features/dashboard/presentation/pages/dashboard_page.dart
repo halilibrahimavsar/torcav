@@ -1,35 +1,23 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:network_info_plus/network_info_plus.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../diagnostics/presentation/pages/speed_doctor_page.dart';
-import '../../../heatmap/domain/entities/connected_signal.dart';
-import '../../../heatmap/domain/services/connected_signal_service.dart';
-import '../../../performance/domain/entities/speed_test_result.dart';
 import '../../../ping_stabilizer/presentation/bloc/ping_stabilizer_cubit.dart';
 import '../../../ping_stabilizer/presentation/widgets/stabilizer_toggle_card.dart';
-import '../../../performance/domain/repositories/speed_test_history_repository.dart';
 import '../../../security/domain/entities/network_context_type.dart';
 import '../../../security/domain/entities/security_assessment.dart';
-import '../../../security/domain/entities/security_event.dart';
-import '../../../security/domain/repositories/security_repository.dart';
 import '../../../security/domain/services/network_context_resolver.dart';
-import '../../../security/domain/usecases/security_analyzer.dart';
 import '../../../security/presentation/bloc/notification/notification_bloc.dart';
 import '../../../security/presentation/extensions/vulnerability_extensions.dart';
 import '../../../wifi_scan/domain/entities/channel_rating.dart';
-import '../../../wifi_scan/domain/entities/scan_snapshot.dart';
-import '../../../wifi_scan/domain/entities/wifi_network.dart';
-import '../../../wifi_scan/domain/services/channel_rating_engine.dart';
-import '../../../wifi_scan/domain/services/scan_session_store.dart';
-import '../../data/datasources/score_history_local_data_source.dart';
+import '../bloc/dashboard_cubit.dart';
+import '../bloc/dashboard_state.dart';
 import '../widgets/activity_timeline.dart';
 import '../widgets/live_metrics_bento.dart';
 import '../widgets/radial_dashboard_core.dart';
@@ -38,256 +26,46 @@ import 'notification_sheet.dart';
 /// Dashboard — radial hero + bento metrics + activity timeline. Pulls live
 /// data from every major feature (security, wifi scan, signal, speed test,
 /// notifications) and animates value transitions.
-class DashboardPage extends StatefulWidget {
+class DashboardPage extends StatelessWidget {
   final void Function(String destination) onNavigate;
   final VoidCallback? onOpenDrawer;
 
-  const DashboardPage({super.key, required this.onNavigate, this.onOpenDrawer});
-
-  @override
-  State<DashboardPage> createState() => _DashboardPageState();
-}
-
-class _DashboardPageState extends State<DashboardPage> {
-  String _ssid = '—';
-  String _ip = '—';
-  String _gateway = '—';
-  int _networkCount = 0;
-  bool _loading = true;
-  int _securityScore = 100;
-  int? _signalQualityPct;
-  int _threatCount = 0;
-  int _newDeviceCount = 0;
-
-  ChannelRating? _bestChannel;
-  int? _currentChannel;
-  List<ChannelRating> _channelRatings = const [];
-
-  SecurityAssessment? _worstAssessment;
-  NetworkContextType? _connectedContext;
-  String? _connectedBssid;
-  List<int> _scoreHistory = const [];
-  List<int> _rssiHistory = const [];
-  List<SecurityEvent> _recentEvents = const [];
-  List<ScanSnapshot> _recentSnapshots = const [];
-  SpeedTestResult? _lastSpeedTest;
-
-  StreamSubscription<ScanSnapshot>? _scanSub;
-  late final NotificationBloc _notificationBloc;
-
-  @override
-  void initState() {
-    super.initState();
-    _notificationBloc = getIt<NotificationBloc>()..add(LoadNotifications());
-    _loadNetworkInfo();
-    _scanSub = getIt<ScanSessionStore>().snapshots.listen(
-      (_) => _loadNetworkInfo(),
-    );
-  }
-
-  @override
-  void dispose() {
-    _scanSub?.cancel();
-    _notificationBloc.close();
-    super.dispose();
-  }
-
-  Future<void> _loadNetworkInfo() async {
-    try {
-      final info = getIt<NetworkInfo>();
-      final results = await Future.wait([
-        info.getWifiName(),
-        info.getWifiIP(),
-        info.getWifiGatewayIP(),
-      ]);
-
-      final store = getIt<ScanSessionStore>();
-      final allSnapshots = store.all;
-      final latestSnapshot = store.latest;
-      final networks =
-          latestSnapshot?.networks.map((n) => n.toWifiNetwork()).toList() ??
-          <WifiNetwork>[];
-
-      // ── Security score (context-aware) ──
-      int secScore = 100;
-      SecurityAssessment? worstAssessment;
-      final ssidForCtx = _cleanSsid(results[0]) ?? '';
-      WifiNetwork? connectedNet;
-      NetworkContextType? connectedCtx;
-      if (networks.isNotEmpty) {
-        final analyzer = getIt<SecurityAnalyzer>();
-        final resolver = getIt<NetworkContextResolver>();
-        final contexts = await Future.wait(
-          networks.map((n) => resolver.resolve(n)),
-        );
-        final assessments = <SecurityAssessment>[];
-        for (var i = 0; i < networks.length; i++) {
-          assessments.add(
-            analyzer.assess(
-              networks[i],
-              localBaseline: networks,
-              context: contexts[i],
-            ),
-          );
-        }
-        worstAssessment = assessments.reduce(
-          (a, b) => a.score < b.score ? a : b,
-        );
-        secScore = worstAssessment.score;
-
-        if (ssidForCtx.isNotEmpty) {
-          for (var i = 0; i < networks.length; i++) {
-            if (networks[i].ssid == ssidForCtx) {
-              connectedNet = networks[i];
-              connectedCtx = contexts[i];
-              break;
-            }
-          }
-        }
-      }
-
-      // ── Snapshot diff ──
-      int newDeviceCount = 0;
-      if (allSnapshots.length >= 2) {
-        final prev = allSnapshots[allSnapshots.length - 2];
-        final prevBssids = prev.networks.map((n) => n.bssid).toSet();
-        final latestBssids =
-            latestSnapshot!.networks.map((n) => n.bssid).toSet();
-        newDeviceCount = latestBssids.difference(prevBssids).length;
-      }
-
-      // ── Score history ──
-      final scoreStore = getIt<ScoreHistoryLocalDataSource>();
-      if (networks.isNotEmpty) {
-        await scoreStore.saveScore(secScore);
-      }
-      final recentScores = await scoreStore.getRecentScores();
-      final scoreHistory = recentScores.map((e) => e.score).toList();
-
-      // ── Channel ratings + best-channel recommendation ──
-      List<ChannelRating> ratings = const [];
-      ChannelRating? bestCh;
-      int? currentCh;
-      final ssid = _cleanSsid(results[0]) ?? '';
-      if (networks.isNotEmpty) {
-        final engine = getIt<ChannelRatingEngine>();
-        ratings = engine.calculateRatings(networks);
-        final connected = networks.where((n) => n.ssid == ssid).toList();
-        if (connected.isNotEmpty) {
-          currentCh = connected.first.channel;
-          final band24 =
-              ratings.where((r) => r.frequency < 4000).toList()
-                ..sort((a, b) => b.rating.compareTo(a.rating));
-          final band5 =
-              ratings
-                  .where((r) => r.frequency >= 4000 && r.frequency < 6000)
-                  .toList()
-                ..sort((a, b) => b.rating.compareTo(a.rating));
-          final sameBand = connected.first.frequency < 4000 ? band24 : band5;
-          if (sameBand.isNotEmpty &&
-              sameBand.first.channel != currentCh &&
-              sameBand.first.rating > 7.0) {
-            bestCh = sameBand.first;
-          }
-        }
-      }
-
-      // ── Connected signal RSSI ──
-      ConnectedSignal? signal;
-      try {
-        signal = await getIt<ConnectedSignalService>().getConnectedSignal();
-      } catch (_) {
-        signal = null;
-      }
-      final qualityPct =
-          signal == null
-              ? null
-              : (((signal.rssi + 100) / 70) * 100).clamp(0.0, 100.0).round();
-      final rssiHistory = List<int>.from(_rssiHistory);
-      if (signal != null) {
-        rssiHistory.add(signal.rssi);
-        if (rssiHistory.length > 20) {
-          rssiHistory.removeRange(0, rssiHistory.length - 20);
-        }
-      }
-
-      // ── Recent security events ──
-      List<SecurityEvent> events = const [];
-      try {
-        final eventsResult =
-            await getIt<SecurityRepository>().getSecurityEvents();
-        events = eventsResult.fold<List<SecurityEvent>>(
-          (_) => const [],
-          (list) => list,
-        );
-      } catch (_) {
-        events = const [];
-      }
-      final unread = events.where((e) => !e.isRead).toList();
-
-      // ── Latest speed test ──
-      SpeedTestResult? lastSpeed;
-      try {
-        final list = await getIt<SpeedTestHistoryRepository>().getRecent(
-          limit: 1,
-        );
-        lastSpeed = list.isEmpty ? null : list.first;
-      } catch (_) {
-        lastSpeed = null;
-      }
-
-      // ── Recent snapshots (newest-first slice) ──
-      final recentSnapshots = allSnapshots.reversed.take(6).toList();
-
-      if (!mounted) return;
-      setState(() {
-        _ssid = _cleanSsid(results[0]) ?? '—';
-        _ip = results[1] ?? '—';
-        _gateway = results[2] ?? '—';
-        _networkCount = latestSnapshot?.networks.length ?? 0;
-        _securityScore = secScore;
-        _bestChannel = bestCh;
-        _currentChannel = currentCh;
-        _channelRatings = ratings;
-        _newDeviceCount = newDeviceCount;
-        _worstAssessment = worstAssessment;
-        _connectedContext = connectedCtx;
-        _connectedBssid = connectedNet?.bssid;
-        _scoreHistory = scoreHistory;
-        _signalQualityPct = qualityPct;
-        _rssiHistory = rssiHistory;
-        _recentEvents = events.take(20).toList();
-        _threatCount = unread.length;
-        _lastSpeedTest = lastSpeed;
-        _recentSnapshots = recentSnapshots;
-        _loading = false;
-      });
-    } catch (_) {
-      if (!mounted) return;
-      setState(() => _loading = false);
-    }
-  }
-
-  String? _cleanSsid(String? raw) => raw?.replaceAll('"', '');
+  const DashboardPage({
+    super.key,
+    required this.onNavigate,
+    this.onOpenDrawer,
+  });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final scheme = Theme.of(context).colorScheme;
-    final isConnected = _ssid != '—' && _ssid.isNotEmpty;
-    final accentColor = isConnected ? scheme.primary : scheme.error;
-    final statusLabel =
-        isConnected ? l10n.connectedStatusCaps : l10n.disconnectedStatusCaps;
 
-    return BlocProvider.value(
-      value: _notificationBloc,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          centerTitle: true,
-          leading: Builder(
-            builder:
-                (context) => IconButton(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<DashboardCubit>(
+          create: (_) => getIt<DashboardCubit>()..load(),
+        ),
+        BlocProvider<NotificationBloc>(
+          create: (_) => getIt<NotificationBloc>()..add(LoadNotifications()),
+        ),
+      ],
+      child: BlocBuilder<DashboardCubit, DashboardState>(
+        builder: (context, state) {
+          final isConnected = state is DashboardSuccess &&
+              state.ssid != '—' &&
+              state.ssid.isNotEmpty;
+          final accentColor = isConnected ? scheme.primary : scheme.error;
+          final statusLabel = isConnected
+              ? l10n.connectedStatusCaps
+              : l10n.disconnectedStatusCaps;
+
+          return Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              centerTitle: true,
+              leading: Builder(
+                builder: (context) => IconButton(
                   icon: Container(
                     width: 32,
                     height: 32,
@@ -300,222 +78,232 @@ class _DashboardPageState extends State<DashboardPage> {
                     child: const Icon(Icons.menu_rounded, size: 18),
                   ),
                   onPressed:
-                      widget.onOpenDrawer ??
-                      () => Scaffold.of(context).openDrawer(),
-                ),
-          ),
-          title: NeonText(
-            l10n.appTitle,
-            style: GoogleFonts.orbitron(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              letterSpacing: 4,
-              color: scheme.primary,
-            ),
-            glowRadius: 15,
-          ),
-          actions: [
-            BlocConsumer<NotificationBloc, NotificationState>(
-              listener: (context, state) {
-                if (state is NotificationError) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.message),
-                      backgroundColor: Colors.redAccent,
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                }
-              },
-              builder: (context, state) {
-                int unreadCount = 0;
-                if (state is NotificationLoaded) {
-                  unreadCount = state.unreadCount;
-                }
-                return Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    NeonIconButton(
-                      icon: Icons.notifications_none_rounded,
-                      onTap: () => _showNotificationSheet(context),
-                      tooltip: l10n.securityAlertsTooltip,
-                    ),
-                    if (unreadCount > 0)
-                      Positioned(
-                        right: 8,
-                        top: 8,
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: scheme.error,
-                            shape: BoxShape.circle,
-                          ),
-                          constraints: const BoxConstraints(
-                            minWidth: 16,
-                            minHeight: 16,
-                          ),
-                          child: Text(
-                            unreadCount > 9 ? '9+' : unreadCount.toString(),
-                            style: GoogleFonts.rajdhani(
-                              color: scheme.onError,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                  ],
-                );
-              },
-            ),
-            const SizedBox(width: 8),
-          ],
-        ),
-        body: RefreshIndicator(
-          color: scheme.primary,
-          backgroundColor: scheme.surfaceContainerHigh,
-          onRefresh: _loadNetworkInfo,
-          child: ListView(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
-            children: [
-              // ── Hero: radial dashboard core with orbital gauges ──
-              StaggeredEntry(
-                delay: const Duration(milliseconds: 80),
-                child: Center(
-                  child: RadialDashboardCore(
-                    statusColor: accentColor,
-                    label: statusLabel,
-                    subLabel: _ssid,
-                    isLoading: _loading,
-                    securityScore: _securityScore,
-                    signalQualityPct: _signalQualityPct,
-                    threatCount: _threatCount,
-                    deviceCount: _networkCount,
-                    onTapSecurity: () => widget.onNavigate('security'),
-                    onTapSignal: () => widget.onNavigate('monitor/channels'),
-                    onTapThreats: () => _showNotificationSheet(context),
-                    onTapDevices: () => widget.onNavigate('wifi'),
-                  ),
+                      onOpenDrawer ?? () => Scaffold.of(context).openDrawer(),
                 ),
               ),
-
-              const SizedBox(height: 16),
-
-              // ── IP / Gateway compact strip ──
-              StaggeredEntry(
-                delay: const Duration(milliseconds: 200),
-                child: _NetworkIdStrip(ssid: _ssid, ip: _ip, gateway: _gateway),
-              ),
-
-              if (_connectedBssid != null) ...[
-                const SizedBox(height: 8),
-                StaggeredEntry(
-                  delay: const Duration(milliseconds: 240),
-                  child: _NetworkContextBadge(
-                    context: _connectedContext ?? NetworkContextType.unknown,
-                    onTap: _showContextOverrideSheet,
-                  ),
-                ),
-              ],
-
-              const SizedBox(height: 24),
-
-              // ── Live Pulse: bento of mini metrics ──
-              StaggeredEntry(
-                delay: const Duration(milliseconds: 280),
-                child: NeonSectionHeader(
-                  label: l10n.livePulse,
+              title: NeonText(
+                l10n.appTitle,
+                style: GoogleFonts.orbitron(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  letterSpacing: 4,
                   color: scheme.primary,
-                  icon: Icons.monitor_heart_rounded,
                 ),
+                glowRadius: 15,
               ),
-              const SizedBox(height: 12),
-
-              LiveMetricsBento(
-                signalQualityPct: _signalQualityPct,
-                rssiHistory: _rssiHistory,
-                scoreHistory: _scoreHistory,
-                channelRatings: _channelRatings,
-                newDeviceCount: _newDeviceCount,
-                recentEvents: _recentEvents,
-                lastDownloadMbps: _lastSpeedTest?.downloadMbps,
-                lastUploadMbps: _lastSpeedTest?.uploadMbps,
-                lastSpeedTestAt: _lastSpeedTest?.recordedAt,
-                onTapSignal: () => widget.onNavigate('monitor/channels'),
-                onTapScore:
-                    () =>
-                        _worstAssessment != null
-                            ? _showScoreExplanation(context, _worstAssessment!)
-                            : widget.onNavigate('security'),
-                onTapChannels: () => widget.onNavigate('monitor/channels'),
-                onTapDevices: () => widget.onNavigate('wifi'),
-                onTapThreats: () => _showNotificationSheet(context),
-                onTapSpeed: () => widget.onNavigate('performance'),
-              ),
-
-              const SizedBox(height: 20),
-
-              // ── Ping Stabilizer quick-toggle ──
-              StaggeredEntry(
-                delay: const Duration(milliseconds: 320),
-                child: BlocProvider<PingStabilizerCubit>.value(
-                  value: getIt<PingStabilizerCubit>()..bootstrap(),
-                  child: StabilizerToggleCard(
-                    onTap: () => widget.onNavigate('ping_stabilizer'),
-                  ),
+              actions: [
+                BlocConsumer<NotificationBloc, NotificationState>(
+                  listener: (context, state) {
+                    if (state is NotificationError) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(state.message),
+                          backgroundColor: Colors.redAccent,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    }
+                  },
+                  builder: (context, state) {
+                    int unreadCount = 0;
+                    if (state is NotificationLoaded) {
+                      unreadCount = state.unreadCount;
+                    }
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        NeonIconButton(
+                          icon: Icons.notifications_none_rounded,
+                          onTap: () => _showNotificationSheet(context),
+                          tooltip: l10n.securityAlertsTooltip,
+                        ),
+                        if (unreadCount > 0)
+                          Positioned(
+                            right: 8,
+                            top: 8,
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: scheme.error,
+                                shape: BoxShape.circle,
+                              ),
+                              constraints: const BoxConstraints(
+                                minWidth: 16,
+                                minHeight: 16,
+                              ),
+                              child: Text(
+                                unreadCount > 9 ? '9+' : unreadCount.toString(),
+                                style: GoogleFonts.rajdhani(
+                                  color: scheme.onError,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                      ],
+                    );
+                  },
                 ),
-              ),
-
-              const SizedBox(height: 28),
-
-              // ── Activity Timeline ──
-              StaggeredEntry(
-                delay: const Duration(milliseconds: 360),
-                child: NeonSectionHeader(
-                  label: l10n.networkLogs,
-                  color: scheme.tertiary,
-                  icon: Icons.timeline_rounded,
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              StaggeredEntry(
-                delay: const Duration(milliseconds: 440),
-                child: ActivityTimeline(
-                  snapshots: _recentSnapshots,
-                  events: _recentEvents,
-                  onNavigate: widget.onNavigate,
-                ),
-              ),
-
-              if (_bestChannel != null) ...[
-                const SizedBox(height: 20),
-                StaggeredEntry(
-                  delay: const Duration(milliseconds: 520),
-                  child: _ChannelRecommendationCard(
-                    best: _bestChannel!,
-                    currentChannel: _currentChannel,
-                    onTap: () => widget.onNavigate('monitor/channels'),
-                  ),
-                ),
+                const SizedBox(width: 8),
               ],
-              const SizedBox(height: 20),
-              StaggeredEntry(
-                delay: const Duration(milliseconds: 580),
-                child: _SpeedDoctorTile(
-                  onTap:
-                      () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const SpeedDoctorPage(),
+            ),
+            body: RefreshIndicator(
+              color: scheme.primary,
+              backgroundColor: scheme.surfaceContainerHigh,
+              onRefresh: () => context.read<DashboardCubit>().load(),
+              child: ListView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
+                children: [
+                  if (state is DashboardLoading || state is DashboardInitial)
+                    const Center(child: CircularProgressIndicator())
+                  else if (state is DashboardSuccess) ...[
+                    // ── Hero: radial dashboard core with orbital gauges ──
+                    StaggeredEntry(
+                      delay: const Duration(milliseconds: 80),
+                      child: Center(
+                        child: RadialDashboardCore(
+                          statusColor: accentColor,
+                          label: statusLabel,
+                          subLabel: state.ssid,
+                          securityScore: state.securityScore,
+                          signalQualityPct: state.signalQualityPct,
+                          threatCount: state.threatCount,
+                          deviceCount: state.networkCount,
+                          onTapSecurity: () => onNavigate('security'),
+                          onTapSignal: () => onNavigate('monitor/channels'),
+                          onTapThreats: () => _showNotificationSheet(context),
+                          onTapDevices: () => onNavigate('wifi'),
                         ),
                       ),
-                ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // ── IP / Gateway compact strip ──
+                    StaggeredEntry(
+                      delay: const Duration(milliseconds: 200),
+                      child: _NetworkIdStrip(
+                        ssid: state.ssid,
+                        ip: state.ip,
+                        gateway: state.gateway,
+                      ),
+                    ),
+
+                    if (state.connectedBssid != null) ...[
+                      const SizedBox(height: 8),
+                      StaggeredEntry(
+                        delay: const Duration(milliseconds: 240),
+                        child: _NetworkContextBadge(
+                          context:
+                              state.connectedContext ?? NetworkContextType.unknown,
+                          onTap: () => _showContextOverrideSheet(context, state),
+                        ),
+                      ),
+                    ],
+
+                    const SizedBox(height: 24),
+
+                    // ── Live Pulse: bento of mini metrics ──
+                    StaggeredEntry(
+                      delay: const Duration(milliseconds: 280),
+                      child: NeonSectionHeader(
+                        label: l10n.livePulse,
+                        color: scheme.primary,
+                        icon: Icons.monitor_heart_rounded,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    LiveMetricsBento(
+                      signalQualityPct: state.signalQualityPct,
+                      rssiHistory: state.rssiHistory,
+                      scoreHistory: state.scoreHistory,
+                      channelRatings: state.channelRatings,
+                      newDeviceCount: state.newDeviceCount,
+                      recentEvents: state.recentEvents,
+                      lastDownloadMbps: state.lastSpeedTest?.downloadMbps,
+                      lastUploadMbps: state.lastSpeedTest?.uploadMbps,
+                      lastSpeedTestAt: state.lastSpeedTest?.recordedAt,
+                      onTapSignal: () => onNavigate('monitor/channels'),
+                      onTapScore: () => state.worstAssessment != null
+                          ? _showScoreExplanation(context, state.worstAssessment!)
+                          : onNavigate('security'),
+                      onTapChannels: () => onNavigate('monitor/channels'),
+                      onTapDevices: () => onNavigate('wifi'),
+                      onTapThreats: () => _showNotificationSheet(context),
+                      onTapSpeed: () => onNavigate('performance'),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // ── Ping Stabilizer quick-toggle ──
+                    StaggeredEntry(
+                      delay: const Duration(milliseconds: 320),
+                      child: BlocProvider<PingStabilizerCubit>.value(
+                        value: getIt<PingStabilizerCubit>()..bootstrap(),
+                        child: StabilizerToggleCard(
+                          onTap: () => onNavigate('ping_stabilizer'),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 28),
+
+                    // ── Activity Timeline ──
+                    StaggeredEntry(
+                      delay: const Duration(milliseconds: 360),
+                      child: NeonSectionHeader(
+                        label: l10n.networkLogs,
+                        color: scheme.tertiary,
+                        icon: Icons.timeline_rounded,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    StaggeredEntry(
+                      delay: const Duration(milliseconds: 440),
+                      child: ActivityTimeline(
+                        snapshots: state.recentSnapshots,
+                        events: state.recentEvents,
+                        onNavigate: onNavigate,
+                      ),
+                    ),
+
+                    if (state.bestChannel != null) ...[
+                      const SizedBox(height: 20),
+                      StaggeredEntry(
+                        delay: const Duration(milliseconds: 520),
+                        child: _ChannelRecommendationCard(
+                          best: state.bestChannel!,
+                          currentChannel: state.currentChannel,
+                          onTap: () => onNavigate('monitor/channels'),
+                        ),
+                      ),
+                    ],
+                  ] else if (state is DashboardFailure)
+                    Center(child: Text(state.failure.message)),
+
+                  const SizedBox(height: 20),
+                  StaggeredEntry(
+                    delay: const Duration(milliseconds: 580),
+                    child: _SpeedDoctorTile(
+                      onTap: () {
+                        unawaited(Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const SpeedDoctorPage(),
+                          ),
+                        ),);
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -537,27 +325,28 @@ class _DashboardPageState extends State<DashboardPage> {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder:
-          (sheetContext) => BlocProvider.value(
-            value: _notificationBloc,
-            child: const NotificationSheet(),
-          ),
+      builder: (sheetContext) => BlocProvider.value(
+        value: context.read<NotificationBloc>(),
+        child: const NotificationSheet(),
+      ),
     );
   }
 
-  Future<void> _showContextOverrideSheet() async {
-    final bssid = _connectedBssid;
+  Future<void> _showContextOverrideSheet(
+    BuildContext context,
+    DashboardSuccess state,
+  ) async {
+    final bssid = state.connectedBssid;
     if (bssid == null) return;
     final resolver = getIt<NetworkContextResolver>();
     final selected = await showModalBottomSheet<_ContextSheetResult>(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder:
-          (_) => _NetworkContextSheet(
-            current: _connectedContext ?? NetworkContextType.unknown,
-            ssid: _ssid,
-          ),
+      builder: (_) => _NetworkContextSheet(
+        current: state.connectedContext ?? NetworkContextType.unknown,
+        ssid: state.ssid,
+      ),
     );
     if (selected == null) return;
     if (selected.reset) {
@@ -565,8 +354,8 @@ class _DashboardPageState extends State<DashboardPage> {
     } else if (selected.context != null) {
       await resolver.setOverride(bssid, selected.context!);
     }
-    if (!mounted) return;
-    await _loadNetworkInfo();
+    if (!context.mounted) return;
+    unawaited(context.read<DashboardCubit>().load());
   }
 }
 
@@ -754,79 +543,77 @@ class _ScoreExplanationSheet extends StatelessWidget {
               const SizedBox(height: 12),
               const Divider(height: 1),
               Expanded(
-                child:
-                    findings.isEmpty
-                        ? Center(
-                          child: Text(
-                            context.l10n.noSecurityFindings,
-                            style: GoogleFonts.rajdhani(
-                              color: scheme.onSurfaceVariant,
-                              fontSize: 14,
-                            ),
+                child: findings.isEmpty
+                    ? Center(
+                        child: Text(
+                          context.l10n.noSecurityFindings,
+                          style: GoogleFonts.rajdhani(
+                            color: scheme.onSurfaceVariant,
+                            fontSize: 14,
                           ),
-                        )
-                        : ListView.separated(
-                          controller: scrollController,
-                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-                          itemCount: findings.length,
-                          separatorBuilder:
-                              (_, __) => const SizedBox(height: 8),
-                          itemBuilder: (context, i) {
-                            final f = findings[i];
-                            final vulnerability = f.toVulnerability();
-                            final title = vulnerability.localizedTitle(context);
-                            final recommendation = vulnerability
-                                .localizedRecommendation(context);
-                            final color = _severityColor(
-                              f.severity.name,
-                              scheme,
-                            );
-                            return GlassmorphicContainer(
-                              borderColor: color.withValues(alpha: 0.25),
-                              padding: const EdgeInsets.all(12),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 8,
-                                    height: 8,
-                                    margin: const EdgeInsets.only(top: 4),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: color,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          title,
-                                          style: GoogleFonts.orbitron(
-                                            color: scheme.onSurface,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
-                                            letterSpacing: 0.5,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          recommendation,
-                                          style: GoogleFonts.rajdhani(
-                                            color: scheme.onSurfaceVariant,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
                         ),
+                      )
+                    : ListView.separated(
+                        controller: scrollController,
+                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+                        itemCount: findings.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 8),
+                        itemBuilder: (context, i) {
+                          final f = findings[i];
+                          final vulnerability = f.toVulnerability();
+                          final title = vulnerability.localizedTitle(context);
+                          final recommendation =
+                              vulnerability.localizedRecommendation(context);
+                          final color = _severityColor(
+                            f.severity.name,
+                            scheme,
+                          );
+                          return GlassmorphicContainer(
+                            borderColor: color.withValues(alpha: 0.25),
+                            padding: const EdgeInsets.all(12),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 8,
+                                  height: 8,
+                                  margin: const EdgeInsets.only(top: 4),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: color,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        title,
+                                        style: GoogleFonts.orbitron(
+                                          color: scheme.onSurface,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        recommendation,
+                                        style: GoogleFonts.rajdhani(
+                                          color: scheme.onSurfaceVariant,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
               ),
             ],
           ),
@@ -961,11 +748,11 @@ Color _contextColor(NetworkContextType ctx, ColorScheme scheme) =>
     };
 
 IconData _contextIcon(NetworkContextType ctx) => switch (ctx) {
-  NetworkContextType.home => Icons.home_rounded,
-  NetworkContextType.public => Icons.public_rounded,
-  NetworkContextType.guest => Icons.group_rounded,
-  NetworkContextType.unknown => Icons.help_outline_rounded,
-};
+      NetworkContextType.home => Icons.home_rounded,
+      NetworkContextType.public => Icons.public_rounded,
+      NetworkContextType.guest => Icons.group_rounded,
+      NetworkContextType.unknown => Icons.help_outline_rounded,
+    };
 
 class _NetworkContextBadge extends StatelessWidget {
   final NetworkContextType context;
@@ -1021,11 +808,11 @@ class _NetworkContextSheet extends StatelessWidget {
   const _NetworkContextSheet({required this.current, required this.ssid});
 
   List<(NetworkContextType, String)> _options(AppLocalizations l10n) => [
-    (NetworkContextType.home, l10n.networkContextHomeDesc),
-    (NetworkContextType.public, l10n.networkContextPublicDesc),
-    (NetworkContextType.guest, l10n.networkContextGuestDesc),
-    (NetworkContextType.unknown, l10n.networkContextUnknownDesc),
-  ];
+        (NetworkContextType.home, l10n.networkContextHomeDesc),
+        (NetworkContextType.public, l10n.networkContextPublicDesc),
+        (NetworkContextType.guest, l10n.networkContextGuestDesc),
+        (NetworkContextType.unknown, l10n.networkContextUnknownDesc),
+      ];
 
   @override
   Widget build(BuildContext buildContext) {
@@ -1144,10 +931,9 @@ class _ContextOption extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color:
-                  selected
-                      ? color.withValues(alpha: 0.6)
-                      : scheme.outlineVariant.withValues(alpha: 0.3),
+              color: selected
+                  ? color.withValues(alpha: 0.6)
+                  : scheme.outlineVariant.withValues(alpha: 0.3),
               width: selected ? 2 : 1,
             ),
             color: selected ? color.withValues(alpha: 0.06) : null,

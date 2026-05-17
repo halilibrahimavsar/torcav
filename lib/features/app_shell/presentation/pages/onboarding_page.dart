@@ -57,7 +57,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
     if (mounted) {
       unawaited(
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const AppShellPage()),
+          MaterialPageRoute(
+            builder: (_) => const AppShellPage(),
+          ),
         ),
       );
     }

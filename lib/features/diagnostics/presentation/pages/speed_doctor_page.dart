@@ -178,7 +178,10 @@ class _RunningBody extends StatelessWidget {
 }
 
 class _ResultBody extends StatelessWidget {
-  const _ResultBody({required this.state, required this.onRerun});
+  const _ResultBody({
+    required this.state,
+    required this.onRerun,
+  });
 
   final DiagnosticsState state;
   final VoidCallback onRerun;

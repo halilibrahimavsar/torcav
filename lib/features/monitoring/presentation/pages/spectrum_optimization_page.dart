@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
+import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -38,10 +38,13 @@ class SpectrumOptimizationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final monitoringBloc = getIt<MonitoringBloc>();
+    final wifiScanBloc = getIt<WifiScanBloc>();
+
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => GetIt.I<MonitoringBloc>()),
-        BlocProvider.value(value: GetIt.I<WifiScanBloc>()),
+        BlocProvider.value(value: monitoringBloc),
+        BlocProvider.value(value: wifiScanBloc),
       ],
       child: const _SpectrumView(),
     );
@@ -118,7 +121,7 @@ class _SpectrumViewState extends State<_SpectrumView> {
     if (best.channel == ratingForConnected.channel) return;
     if (best.rating - ratingForConnected.rating < 1.0) return;
 
-    GetIt.I<NotificationService>().showSpectrumChannelAlert(
+    getIt<NotificationService>().showSpectrumChannelAlert(
       channel: ratingForConnected.channel,
       rating: ratingForConnected.rating,
       recommendedChannel: best.channel,
@@ -128,7 +131,7 @@ class _SpectrumViewState extends State<_SpectrumView> {
 
   Future<void> _detectConnectedBssid() async {
     try {
-      final bssid = await NetworkInfo().getWifiBSSID();
+      final bssid = await getIt<NetworkInfo>().getWifiBSSID();
       if (mounted) setState(() => _connectedBssid = bssid);
     } catch (_) {
       // Permission denied or platform error — silently ignore; the page
@@ -286,7 +289,9 @@ class _SpectrumViewState extends State<_SpectrumView> {
                   connectedBssid: _connectedBssid,
                   region: region,
                 ),
-              _HistoryTab(connectedBssid: _connectedBssid),
+              _HistoryTab(
+                connectedBssid: _connectedBssid,
+              ),
             ],
           ),
         ),
@@ -408,7 +413,10 @@ class _ScanningPlaceholder extends StatelessWidget {
 
 class _HistoryTab extends StatefulWidget {
   final String? connectedBssid;
-  const _HistoryTab({this.connectedBssid});
+
+  const _HistoryTab({
+    this.connectedBssid,
+  });
 
   @override
   State<_HistoryTab> createState() => _HistoryTabState();
@@ -436,8 +444,9 @@ class _HistoryTabState extends State<_HistoryTab> {
   }
 
   Future<void> _reload() async {
-    final repo = GetIt.I<ChannelRatingRepository>();
-    final result = await repo.getHistory(limit: const Duration(days: 7));
+    final result = await getIt<ChannelRatingRepository>().getHistory(
+      limit: const Duration(days: 7),
+    );
     if (mounted) {
       setState(() {
         _samples = result.getOrElse(() => []);
@@ -489,7 +498,7 @@ class _HistoryTabState extends State<_HistoryTab> {
           ),
     );
     if (confirm == true) {
-      await GetIt.I<ChannelRatingRepository>().clearHistory();
+      await getIt<ChannelRatingRepository>().clearHistory();
       unawaited(_reload());
     }
   }
@@ -861,7 +870,7 @@ class _BandViewState extends State<_BandView> {
           ),
         ],
         const SizedBox(height: 16),
-        const RouterAdminGuideCard(),
+        RouterAdminGuideCard(networkInfo: getIt<NetworkInfo>()),
         // ── Cross-band router groups (dual-band detection) ──
         Builder(
           builder: (ctx) {

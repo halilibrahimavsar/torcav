@@ -143,10 +143,16 @@ class WifiScanHistoryLocalDataSourceImpl
     return WifiObservation.fromSamples(
       ssid: row['ssid'] as String? ?? '',
       bssid: row['bssid'] as String? ?? '',
-      samples:
-          (jsonDecode(row['samples_json'] as String? ?? '[]') as List<dynamic>)
+      samples: () {
+        try {
+          final raw = row['samples_json'] as String? ?? '[]';
+          return (jsonDecode(raw) as List<dynamic>)
               .map((value) => value as int)
-              .toList(),
+              .toList();
+        } catch (_) {
+          return <int>[];
+        }
+      }(),
       channel: row['channel'] as int? ?? 0,
       frequency: row['frequency'] as int? ?? 0,
       security: SecurityType.values.firstWhere(
@@ -195,41 +201,49 @@ class WifiScanHistoryLocalDataSourceImpl
   }
 
   List<ChannelOccupancyStat> _decodeChannelStats(String raw) {
-    final decoded = jsonDecode(raw) as List<dynamic>;
-    return decoded
-        .whereType<Map<String, dynamic>>()
-        .map(
-          (entry) => ChannelOccupancyStat(
-            channel: entry['channel'] as int? ?? 0,
-            frequency: entry['frequency'] as int? ?? 0,
-            networkCount: entry['networkCount'] as int? ?? 0,
-            avgSignalDbm: entry['avgSignalDbm'] as int? ?? 0,
-            congestionScore: (entry['congestionScore'] as num? ?? 0).toDouble(),
-            recommendation: entry['recommendation'] as String? ?? '',
-          ),
-        )
-        .toList();
+    try {
+      final decoded = jsonDecode(raw) as List<dynamic>;
+      return decoded
+          .whereType<Map<String, dynamic>>()
+          .map(
+            (entry) => ChannelOccupancyStat(
+              channel: entry['channel'] as int? ?? 0,
+              frequency: entry['frequency'] as int? ?? 0,
+              networkCount: entry['networkCount'] as int? ?? 0,
+              avgSignalDbm: entry['avgSignalDbm'] as int? ?? 0,
+              congestionScore: (entry['congestionScore'] as num? ?? 0).toDouble(),
+              recommendation: entry['recommendation'] as String? ?? '',
+            ),
+          )
+          .toList();
+    } catch (_) {
+      return const [];
+    }
   }
 
   List<BandAnalysisStat> _decodeBandStats(String raw) {
-    final decoded = jsonDecode(raw) as List<dynamic>;
-    return decoded
-        .whereType<Map<String, dynamic>>()
-        .map(
-          (entry) => BandAnalysisStat(
-            band: WifiBand.values.firstWhere(
-              (value) => value.name == entry['band'],
-              orElse: () => WifiBand.ghz24,
+    try {
+      final decoded = jsonDecode(raw) as List<dynamic>;
+      return decoded
+          .whereType<Map<String, dynamic>>()
+          .map(
+            (entry) => BandAnalysisStat(
+              band: WifiBand.values.firstWhere(
+                (value) => value.name == entry['band'],
+                orElse: () => WifiBand.ghz24,
+              ),
+              networkCount: entry['networkCount'] as int? ?? 0,
+              avgSignalDbm: entry['avgSignalDbm'] as int? ?? 0,
+              recommendedChannels:
+                  (entry['recommendedChannels'] as List<dynamic>? ?? const [])
+                      .whereType<int>()
+                      .toList(),
+              recommendation: entry['recommendation'] as String? ?? '',
             ),
-            networkCount: entry['networkCount'] as int? ?? 0,
-            avgSignalDbm: entry['avgSignalDbm'] as int? ?? 0,
-            recommendedChannels:
-                (entry['recommendedChannels'] as List<dynamic>? ?? const [])
-                    .map((value) => value as int)
-                    .toList(),
-            recommendation: entry['recommendation'] as String? ?? '',
-          ),
-        )
-        .toList();
+          )
+          .toList();
+    } catch (_) {
+      return const [];
+    }
   }
 }

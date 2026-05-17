@@ -86,11 +86,16 @@ class TopologyRepositoryImpl implements TopologyRepository {
       final result = await Process.run('ping', ['-c', '1', '-W', '1', ip]);
 
       if (result.exitCode == 0) {
-        final output = result.stdout as String;
-        final match = RegExp(r'time=([\d.]+)').firstMatch(output);
-        if (match != null) {
-          final ms = double.parse(match.group(1)!).round();
-          return Right(ms);
+        final output = result.stdout;
+        if (output is String) {
+          final match = RegExp(r'time=([\d.]+)').firstMatch(output);
+          if (match != null) {
+            final timeStr = match.group(1);
+            if (timeStr != null) {
+              final ms = double.tryParse(timeStr)?.round();
+              if (ms != null) return Right(ms);
+            }
+          }
         }
       }
 
@@ -171,17 +176,24 @@ class TopologyRepositoryImpl implements TopologyRepository {
     try {
       final result = await Process.run('ping', ['-c', '1', '-W', '1', ip]);
       if (result.exitCode == 0) {
-        final output = result.stdout as String;
-        final ttlMatch = RegExp(
-          r'ttl=(\d+)',
-          caseSensitive: false,
-        ).firstMatch(output);
-        if (ttlMatch != null) {
-          final ttl = int.parse(ttlMatch.group(1)!);
-          if (ttl >= 240) return const Right('osNetworkDevice');
-          if (ttl >= 110) return const Right('osWindows');
-          if (ttl >= 50) return const Right('osLinuxMacOS');
-          return const Right('osUnknown');
+        final output = result.stdout;
+        if (output is String) {
+          final ttlMatch = RegExp(
+            r'ttl=(\d+)',
+            caseSensitive: false,
+          ).firstMatch(output);
+          if (ttlMatch != null) {
+            final ttlStr = ttlMatch.group(1);
+            if (ttlStr != null) {
+              final ttl = int.tryParse(ttlStr);
+              if (ttl != null) {
+                if (ttl >= 240) return const Right('osNetworkDevice');
+                if (ttl >= 110) return const Right('osWindows');
+                if (ttl >= 50) return const Right('osLinuxMacOS');
+                return const Right('osUnknown');
+              }
+            }
+          }
         }
       }
       return const Left(ServerFailure('Could not determine OS'));

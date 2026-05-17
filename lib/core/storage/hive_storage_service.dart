@@ -39,9 +39,20 @@ class HiveStorageService {
     await box.put(key, value);
   }
 
-  /// Retrieves a value from the default box.
+  /// Retrieves a value from the default box with safety guards.
   T? get<T>(String key, {T? defaultValue}) {
-    return box.get(key, defaultValue: defaultValue) as T?;
+    try {
+      final value = box.get(key, defaultValue: defaultValue);
+      if (value == null) return null;
+      if (value is! T) {
+        AppLogger.w('Hive type mismatch for key $key: expected $T, got ${value.runtimeType}');
+        return defaultValue;
+      }
+      return value;
+    } catch (e) {
+      AppLogger.e('Hive read error for key $key', error: e);
+      return defaultValue;
+    }
   }
 
   /// Deletes a key from the default box.
