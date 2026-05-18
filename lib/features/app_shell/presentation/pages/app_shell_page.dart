@@ -171,7 +171,7 @@ class _AppShellPageState extends State<AppShellPage> with RestorationMixin {
       case 'reports':
         Navigator.of(
           context,
-        ).push(MaterialPageRoute(builder: (context) => getIt<ReportsPage>()));
+        ).push(MaterialPageRoute(builder: (context) => const ReportsPage()));
       case 'settings':
         Navigator.of(
           context,
