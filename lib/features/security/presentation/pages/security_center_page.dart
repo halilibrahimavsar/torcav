@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../core/extensions/notification_context_extensions.dart';
 import '../../domain/entities/network_context_type.dart';
 import '../bloc/security_bloc.dart';
 import '../../../../core/theme/neon_widgets.dart';
@@ -94,21 +95,7 @@ class _SecurityCenterView extends StatelessWidget {
               ctx == NetworkContextType.public
                   ? l10n.publicContextLabel
                   : l10n.guestContextLabel;
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                duration: const Duration(seconds: 5),
-                backgroundColor: scheme.error.withValues(alpha: 0.92),
-                content: Text(
-                  l10n.deepScanSuppressed(label),
-                  style: GoogleFonts.rajdhani(
-                    color: scheme.onError,
-                    fontSize: 13,
-                  ),
-                ),
-              ),
-            );
+          context.showWarning(l10n.deepScanSuppressed(label));
         },
         builder: (context, state) {
           if (state is SecurityInitial || state is SecurityLoading) {

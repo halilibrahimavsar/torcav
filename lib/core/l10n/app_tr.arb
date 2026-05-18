@@ -6993,5 +6993,25 @@
             }
         },
         "description": "Label for openServiceDetectedDesc"
+    },
+    "genericErrorMessage": "Bir hata oluştu.",
+    "@genericErrorMessage": {
+        "description": "Generic fallback error message shown to users."
+    },
+    "networkErrorMessage": "Ağ hatası — bağlantınızı kontrol edin.",
+    "@networkErrorMessage": {
+        "description": "Shown when a network/scan/server failure surfaces."
+    },
+    "permissionDeniedMessage": "İzin reddedildi.",
+    "@permissionDeniedMessage": {
+        "description": "Shown when a PermissionFailure surfaces."
+    },
+    "storageErrorMessage": "Depolama hatası.",
+    "@storageErrorMessage": {
+        "description": "Shown when a database/cache failure surfaces."
+    },
+    "securityErrorMessage": "Güvenlik kontrolü başarısız.",
+    "@securityErrorMessage": {
+        "description": "Shown when a SecurityFailure surfaces."
     }
 }

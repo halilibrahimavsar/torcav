@@ -6993,5 +6993,25 @@
             }
         },
         "description": "Label for openServiceDetectedDesc"
+    },
+    "genericErrorMessage": "An error occurred.",
+    "@genericErrorMessage": {
+        "description": "Generic fallback error message shown to users."
+    },
+    "networkErrorMessage": "Network error — please check your connection.",
+    "@networkErrorMessage": {
+        "description": "Shown when a network/scan/server failure surfaces."
+    },
+    "permissionDeniedMessage": "Permission denied.",
+    "@permissionDeniedMessage": {
+        "description": "Shown when a PermissionFailure surfaces."
+    },
+    "storageErrorMessage": "Storage error.",
+    "@storageErrorMessage": {
+        "description": "Shown when a database/cache failure surfaces."
+    },
+    "securityErrorMessage": "Security check failed.",
+    "@securityErrorMessage": {
+        "description": "Shown when a SecurityFailure surfaces."
     }
 }

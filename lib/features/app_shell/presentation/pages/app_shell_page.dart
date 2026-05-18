@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:torcav/core/di/injection.dart';
+import 'package:torcav/core/extensions/notification_context_extensions.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
 import 'package:torcav/core/storage/app_database.dart';
 import 'package:torcav/core/storage/hive_storage_service.dart';
@@ -62,12 +63,7 @@ class _AppShellPageState extends State<AppShellPage> with RestorationMixin {
     if (healedAt == null || !mounted) return;
     await hive.delete(AppDatabase.healedFlagKey);
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context)!.dbHealedNotice),
-        duration: const Duration(seconds: 6),
-      ),
-    );
+    context.showWarning(AppLocalizations.of(context)!.dbHealedNotice);
   }
 
   @override

@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/di/injection.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/extensions/notification_context_extensions.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../data/stores/router_hardening_store.dart';
 import '../../domain/entities/hardening_check.dart';
@@ -90,17 +91,7 @@ class _RouterHardeningWizardPageState extends State<RouterHardeningWizardPage> {
     if (!mounted || launched) return;
     await Clipboard.setData(ClipboardData(text: gateway));
     if (!mounted) return;
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          duration: const Duration(seconds: 6),
-          content: Text(
-            context.l10n.gatewayCopyError(gateway),
-            style: GoogleFonts.rajdhani(fontSize: 13),
-          ),
-        ),
-      );
+    context.showWarning(context.l10n.gatewayCopyError(gateway));
   }
 
   Future<void> _copyGateway() async {
@@ -108,17 +99,7 @@ class _RouterHardeningWizardPageState extends State<RouterHardeningWizardPage> {
     if (gateway == null) return;
     await Clipboard.setData(ClipboardData(text: gateway));
     if (!mounted) return;
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          duration: const Duration(seconds: 3),
-          content: Text(
-            context.l10n.gatewayCopied(gateway),
-            style: GoogleFonts.rajdhani(fontSize: 13),
-          ),
-        ),
-      );
+    context.showSuccess(context.l10n.gatewayCopied(gateway));
   }
 
   @override

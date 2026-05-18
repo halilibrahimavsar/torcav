@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/extensions/notification_context_extensions.dart';
 import '../widgets/topology_graph_painter.dart';
 import '../widgets/topology_view_data.dart';
 import '../widgets/topology_info_sheet.dart';
@@ -38,16 +39,7 @@ class TopologyPage extends StatelessWidget {
     return BlocListener<TopologyBloc, TopologyState>(
       listener: (context, state) {
         if (state is TopologyLoaded && state.lastErrorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.lastErrorMessage!),
-              backgroundColor: Theme.of(context).colorScheme.error,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          );
+          context.showError(state.lastErrorMessage!);
         }
       },
       child: const _TopologyPageContent(),

@@ -4916,4 +4916,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String openServiceDetectedDesc(String ip, String service, int port) {
     return 'Host $ip, $port portunda $service çalıştırıyor.';
   }
+
+  @override
+  String get genericErrorMessage => 'Bir hata oluştu.';
+
+  @override
+  String get networkErrorMessage => 'Ağ hatası — bağlantınızı kontrol edin.';
+
+  @override
+  String get permissionDeniedMessage => 'İzin reddedildi.';
+
+  @override
+  String get storageErrorMessage => 'Depolama hatası.';
+
+  @override
+  String get securityErrorMessage => 'Güvenlik kontrolü başarısız.';
 }

@@ -7,6 +7,7 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/extensions/notification_context_extensions.dart';
 import '../../../diagnostics/presentation/pages/speed_doctor_page.dart';
 import '../../../ping_stabilizer/presentation/bloc/ping_stabilizer_cubit.dart';
 import '../../../ping_stabilizer/presentation/widgets/stabilizer_toggle_card.dart';
@@ -95,13 +96,7 @@ class DashboardPage extends StatelessWidget {
                 BlocConsumer<NotificationBloc, NotificationState>(
                   listener: (context, state) {
                     if (state is NotificationError) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(state.message),
-                          backgroundColor: Colors.redAccent,
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
+                      context.showError(state.message);
                     }
                   },
                   builder: (context, state) {

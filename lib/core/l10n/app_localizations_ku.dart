@@ -4914,4 +4914,19 @@ class AppLocalizationsKu extends AppLocalizations {
   String openServiceDetectedDesc(String ip, String service, int port) {
     return 'Host $ip is running $service on port $port.';
   }
+
+  @override
+  String get genericErrorMessage => 'Çewtiyek çêbû.';
+
+  @override
+  String get networkErrorMessage => 'Çewtiya torê — ji kerema xwe girêdana xwe kontrol bike.';
+
+  @override
+  String get permissionDeniedMessage => 'Destûr hat redkirin.';
+
+  @override
+  String get storageErrorMessage => 'Çewtiya bîrê.';
+
+  @override
+  String get securityErrorMessage => 'Kontrola ewlehiyê bi ser neket.';
 }

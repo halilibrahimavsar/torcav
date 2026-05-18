@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/notifications/app_notifier.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/l10n/locale_cubit.dart';
@@ -840,8 +841,6 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _confirmWipeAll(BuildContext context) async {
-    final messenger = ScaffoldMessenger.of(context);
-    final errorColor = Theme.of(context).colorScheme.error;
     // Capture l10n before async gap to satisfy use_build_context_synchronously.
     final allDataWipedMsg = context.l10n.allDataWiped;
 
@@ -906,16 +905,8 @@ class _SettingsPageState extends State<SettingsPage> {
     ]);
 
     if (!mounted) return;
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(
-          allDataWipedMsg,
-          style: GoogleFonts.rajdhani(fontWeight: FontWeight.w600),
-        ),
-        backgroundColor: errorColor,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    // Destructive completion — warning severity (turuncu) for emphasis.
+    AppNotifier.warning(allDataWipedMsg);
   }
 
   Widget _buildThemeToggle(ThemeCubit themeCubit) {

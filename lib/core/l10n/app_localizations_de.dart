@@ -4914,4 +4914,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String openServiceDetectedDesc(String ip, String service, int port) {
     return 'Host $ip is running $service on port $port.';
   }
+
+  @override
+  String get genericErrorMessage => 'Ein Fehler ist aufgetreten.';
+
+  @override
+  String get networkErrorMessage => 'Netzwerkfehler — bitte Verbindung prüfen.';
+
+  @override
+  String get permissionDeniedMessage => 'Berechtigung verweigert.';
+
+  @override
+  String get storageErrorMessage => 'Speicherfehler.';
+
+  @override
+  String get securityErrorMessage => 'Sicherheitsprüfung fehlgeschlagen.';
 }

@@ -6993,5 +6993,25 @@
             }
         },
         "description": "Label for openServiceDetectedDesc"
+    },
+    "genericErrorMessage": "Ein Fehler ist aufgetreten.",
+    "@genericErrorMessage": {
+        "description": "Generic fallback error message shown to users."
+    },
+    "networkErrorMessage": "Netzwerkfehler — bitte Verbindung prüfen.",
+    "@networkErrorMessage": {
+        "description": "Shown when a network/scan/server failure surfaces."
+    },
+    "permissionDeniedMessage": "Berechtigung verweigert.",
+    "@permissionDeniedMessage": {
+        "description": "Shown when a PermissionFailure surfaces."
+    },
+    "storageErrorMessage": "Speicherfehler.",
+    "@storageErrorMessage": {
+        "description": "Shown when a database/cache failure surfaces."
+    },
+    "securityErrorMessage": "Sicherheitsprüfung fehlgeschlagen.",
+    "@securityErrorMessage": {
+        "description": "Shown when a SecurityFailure surfaces."
     }
 }

@@ -8,6 +8,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/extensions/notification_context_extensions.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../domain/entities/user_data_category.dart';
 import '../../domain/services/local_data_export_service.dart';
@@ -66,16 +67,7 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
       if (_format == ExportFormat.json &&
           _selected != null &&
           _isEmptyPayload(document)) {
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              content: Text(
-                noDataMsg,
-                style: GoogleFonts.rajdhani(fontSize: 13),
-              ),
-            ),
-          );
+        context.showWarning(noDataMsg);
         return;
       }
 
@@ -98,16 +90,7 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            content: Text(
-              '$failPrefix$e',
-              style: GoogleFonts.rajdhani(fontSize: 13),
-            ),
-          ),
-        );
+      context.showError('$failPrefix$e');
     } finally {
       if (mounted) setState(() => _busy = false);
     }

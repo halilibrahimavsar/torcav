@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/extensions/notification_context_extensions.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/neon_widgets.dart';
@@ -146,13 +147,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 count == 1
                     ? context.l10n.newDeviceFound(state.newDevices.first.ip)
                     : context.l10n.newDevicesFound(count);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(label),
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
+            context.showInfo(label);
           }
         },
         builder: (context, state) {

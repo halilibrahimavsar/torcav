@@ -9,7 +9,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/extensions/context_extensions.dart';
 
+import 'package:torcav/core/bloc/app_bloc_observer.dart';
 import 'package:torcav/core/logging/app_logger.dart';
+import 'package:torcav/core/notifications/app_notifier.dart';
 import 'package:torcav/core/di/injection.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
 import 'package:torcav/core/l10n/locale_cubit.dart';
@@ -33,14 +35,29 @@ void main() {
         error: details.exception,
         stackTrace: details.stack,
       );
+      // Debug-only snackbar: geliştirici framework hatasını anında görür.
+      // Release'de sessiz log — kullanıcıyı framework noise'uyla rahatsız etme.
+      if (kDebugMode) {
+        final summary = details.exceptionAsString();
+        AppNotifier.error(
+          '[DEBUG] ${summary.length > 100 ? '${summary.substring(0, 97)}...' : summary}',
+        );
+      }
     };
 
     PlatformDispatcher.instance.onError = (error, stack) {
       AppLogger.e('Uncaught Error', error: error, stackTrace: stack);
+      if (kDebugMode) {
+        AppNotifier.error('[DEBUG] Uncaught: $error');
+      }
       return true;
     };
 
     ErrorWidget.builder = (details) => _NeonErrorWidget(details: details);
+
+    // Tüm BLoC/Cubit handler'larındaki yakalanmamış throw'lar için merkezi
+    // güvenlik ağı — sanitize edilmiş snackbar + full log.
+    Bloc.observer = const AppBlocObserver();
 
     // Core initialization that must happen before runApp.
     // Hive's encryption key lives in flutter_secure_storage, so we resolve it
@@ -141,6 +158,9 @@ class TorcavApp extends StatelessWidget {
                   onGenerateTitle: (context) => context.l10n.appTitleLong,
                   debugShowCheckedModeBanner: false,
                   restorationScopeId: 'torcav',
+                  // Merkezi snackbar erişimi — AppNotifier.show() context'siz
+                  // çağrılabilir (BlocObserver, global FlutterError hook vs).
+                  scaffoldMessengerKey: AppNotifier.messengerKey,
 
                   // Theme Configuration
                   theme: AppTheme.lightTheme,

@@ -6993,5 +6993,25 @@
             }
         },
         "description": "Label for openServiceDetectedDesc"
+    },
+    "genericErrorMessage": "Çewtiyek çêbû.",
+    "@genericErrorMessage": {
+        "description": "Generic fallback error message shown to users."
+    },
+    "networkErrorMessage": "Çewtiya torê — ji kerema xwe girêdana xwe kontrol bike.",
+    "@networkErrorMessage": {
+        "description": "Shown when a network/scan/server failure surfaces."
+    },
+    "permissionDeniedMessage": "Destûr hat redkirin.",
+    "@permissionDeniedMessage": {
+        "description": "Shown when a PermissionFailure surfaces."
+    },
+    "storageErrorMessage": "Çewtiya bîrê.",
+    "@storageErrorMessage": {
+        "description": "Shown when a database/cache failure surfaces."
+    },
+    "securityErrorMessage": "Kontrola ewlehiyê bi ser neket.",
+    "@securityErrorMessage": {
+        "description": "Shown when a SecurityFailure surfaces."
     }
 }

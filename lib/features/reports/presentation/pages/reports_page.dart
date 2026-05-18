@@ -10,6 +10,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/extensions/notification_context_extensions.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../wifi_scan/domain/entities/scan_snapshot.dart';
 import '../../../wifi_scan/domain/entities/wifi_observation.dart';
@@ -101,20 +102,7 @@ class _ReportsViewState extends State<ReportsView> {
         if (state is ReportGenerated) {
           _handleGeneratedReport(context, state);
         } else if (state is ReportsFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Theme.of(
-                context,
-              ).colorScheme.error.withValues(alpha: 0.8),
-              content: Text(
-                '${l10n.errorLabel}: ${state.message}',
-                style: GoogleFonts.rajdhani(
-                  color: Theme.of(context).colorScheme.onError,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          );
+          context.showError('${l10n.errorLabel}: ${state.message}');
         }
       },
       child: Scaffold(
@@ -489,20 +477,7 @@ class _ReportsViewState extends State<ReportsView> {
   }
 
   void _toast(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: Theme.of(
-          context,
-        ).colorScheme.tertiary.withValues(alpha: 0.8),
-        content: Text(
-          message,
-          style: GoogleFonts.rajdhani(
-            color: Theme.of(context).colorScheme.onTertiary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
+    context.showInfo(message);
   }
 }
 

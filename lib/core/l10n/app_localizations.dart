@@ -9278,6 +9278,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Host {ip} is running {service} on port {port}.'**
   String openServiceDetectedDesc(String ip, String service, int port);
+
+  /// Generic fallback error message shown to users.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred.'**
+  String get genericErrorMessage;
+
+  /// Shown when a network/scan/server failure surfaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Network error — please check your connection.'**
+  String get networkErrorMessage;
+
+  /// Shown when a PermissionFailure surfaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission denied.'**
+  String get permissionDeniedMessage;
+
+  /// Shown when a database/cache failure surfaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage error.'**
+  String get storageErrorMessage;
+
+  /// Shown when a SecurityFailure surfaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Security check failed.'**
+  String get securityErrorMessage;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

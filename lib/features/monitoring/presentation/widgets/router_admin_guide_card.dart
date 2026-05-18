@@ -6,6 +6,7 @@ import 'package:network_info_plus/network_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/extensions/notification_context_extensions.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/oui_lookup.dart';
 
@@ -362,7 +363,6 @@ class _AdminAddressRow extends StatelessWidget {
   const _AdminAddressRow({required this.address, required this.color});
 
   Future<void> _open(BuildContext context) async {
-    final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
     final uri = Uri.parse(
       address.startsWith(RegExp(r'https?://')) ? address : 'http://$address',
@@ -373,26 +373,17 @@ class _AdminAddressRow extends StatelessWidget {
     } catch (_) {
       launched = false;
     }
-    if (!launched) {
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(l10n.guideOpenFailedMessage),
-          duration: const Duration(seconds: 3),
-        ),
-      );
+    if (!launched && context.mounted) {
+      context.showWarning(l10n.guideOpenFailedMessage);
     }
   }
 
   Future<void> _copy(BuildContext context) async {
-    final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
     await Clipboard.setData(ClipboardData(text: address));
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(l10n.guideAddressCopied),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    if (context.mounted) {
+      context.showSuccess(l10n.guideAddressCopied);
+    }
   }
 
   @override

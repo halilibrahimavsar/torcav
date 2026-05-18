@@ -4923,4 +4923,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String openServiceDetectedDesc(String ip, String service, int port) {
     return 'Host $ip is running $service on port $port.';
   }
+
+  @override
+  String get genericErrorMessage => 'An error occurred.';
+
+  @override
+  String get networkErrorMessage => 'Network error — please check your connection.';
+
+  @override
+  String get permissionDeniedMessage => 'Permission denied.';
+
+  @override
+  String get storageErrorMessage => 'Storage error.';
+
+  @override
+  String get securityErrorMessage => 'Security check failed.';
 }
