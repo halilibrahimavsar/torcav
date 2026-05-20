@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../network_scan/domain/entities/network_device.dart';
 import '../../domain/entities/network_topology.dart';
 import '../../domain/repositories/topology_repository.dart';
 import '../../domain/usecases/get_topology_usecase.dart';
@@ -16,6 +17,17 @@ abstract class TopologyEvent extends Equatable {
 
 class LoadTopologyEvent extends TopologyEvent {
   const LoadTopologyEvent();
+}
+
+/// Rebuilds the topology graph from an already-scanned device list
+/// (shared with the LAN list view) instead of running a fresh scan.
+class BuildTopologyFromScanEvent extends TopologyEvent {
+  final List<NetworkDevice> devices;
+
+  const BuildTopologyFromScanEvent(this.devices);
+
+  @override
+  List<Object?> get props => [devices];
 }
 
 class PingNodeEvent extends TopologyEvent {
@@ -183,6 +195,7 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
   TopologyBloc(this._getTopology, this._pingNode, this._repository)
     : super(TopologyInitial()) {
     on<LoadTopologyEvent>(_onLoadTopology);
+    on<BuildTopologyFromScanEvent>(_onBuildFromScan);
     on<PingNodeEvent>(_onPingNode);
     on<ScanPortsEvent>(_onScanPorts);
     on<LookupHostnameEvent>(_onLookupHostname);
@@ -218,6 +231,28 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
         emit(TopologyError(e.toString()));
       }
     }
+  }
+
+  Future<void> _onBuildFromScan(
+    BuildTopologyFromScanEvent event,
+    Emitter<TopologyState> emit,
+  ) async {
+    final result = await _repository.buildFromDevices(event.devices);
+    result.fold(
+      (failure) {
+        if (state is! TopologyLoaded) {
+          emit(TopologyError(failure.message));
+        }
+      },
+      (topology) {
+        final currentState = state;
+        if (currentState is TopologyLoaded) {
+          emit(currentState.copyWith(topology: topology));
+        } else {
+          emit(TopologyLoaded(topology: topology));
+        }
+      },
+    );
   }
 
   Future<void> _onPingNode(

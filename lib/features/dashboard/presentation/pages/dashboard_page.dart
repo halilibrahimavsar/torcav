@@ -8,7 +8,7 @@ import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/notification_context_extensions.dart';
-import '../../../diagnostics/presentation/pages/speed_doctor_page.dart';
+import '../../../performance/presentation/pages/speed_hub_page.dart';
 import '../../../ping_stabilizer/presentation/bloc/ping_stabilizer_cubit.dart';
 import '../../../ping_stabilizer/presentation/widgets/stabilizer_toggle_card.dart';
 import '../../../security/domain/entities/network_context_type.dart';
@@ -22,6 +22,7 @@ import '../bloc/dashboard_state.dart';
 import '../widgets/activity_timeline.dart';
 import '../widgets/live_metrics_bento.dart';
 import '../widgets/radial_dashboard_core.dart';
+import '../widgets/gamification_tasks_card.dart';
 import 'notification_sheet.dart';
 
 /// Dashboard — radial hero + bento metrics + activity timeline. Pulls live
@@ -31,11 +32,7 @@ class DashboardPage extends StatelessWidget {
   final void Function(String destination) onNavigate;
   final VoidCallback? onOpenDrawer;
 
-  const DashboardPage({
-    super.key,
-    required this.onNavigate,
-    this.onOpenDrawer,
-  });
+  const DashboardPage({super.key, required this.onNavigate, this.onOpenDrawer});
 
   @override
   Widget build(BuildContext context) {
@@ -53,34 +50,38 @@ class DashboardPage extends StatelessWidget {
       ],
       child: BlocBuilder<DashboardCubit, DashboardState>(
         builder: (context, state) {
-          final isConnected = state is DashboardSuccess &&
+          final isConnected =
+              state is DashboardSuccess &&
               state.ssid != '—' &&
               state.ssid.isNotEmpty;
           final accentColor = isConnected ? scheme.primary : scheme.error;
-          final statusLabel = isConnected
-              ? l10n.connectedStatusCaps
-              : l10n.disconnectedStatusCaps;
+          final statusLabel =
+              isConnected
+                  ? l10n.connectedStatusCaps
+                  : l10n.disconnectedStatusCaps;
 
           return Scaffold(
             backgroundColor: Colors.transparent,
             appBar: AppBar(
               centerTitle: true,
               leading: Builder(
-                builder: (context) => IconButton(
-                  icon: Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: scheme.primary.withValues(alpha: 0.3),
+                builder:
+                    (context) => IconButton(
+                      icon: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: scheme.primary.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: const Icon(Icons.menu_rounded, size: 18),
                       ),
+                      onPressed:
+                          onOpenDrawer ??
+                          () => Scaffold.of(context).openDrawer(),
                     ),
-                    child: const Icon(Icons.menu_rounded, size: 18),
-                  ),
-                  onPressed:
-                      onOpenDrawer ?? () => Scaffold.of(context).openDrawer(),
-                ),
               ),
               title: NeonText(
                 l10n.appTitle,
@@ -163,11 +164,20 @@ class DashboardPage extends StatelessWidget {
                           statusColor: accentColor,
                           label: statusLabel,
                           subLabel: state.ssid,
-                          securityScore: state.securityScore,
+                          healthScore:
+                              state.networkHealthScore?.totalScore ??
+                              state.securityScore,
                           signalQualityPct: state.signalQualityPct,
                           threatCount: state.threatCount,
                           deviceCount: state.networkCount,
-                          onTapSecurity: () => onNavigate('security'),
+                          onTapHealth:
+                              () =>
+                                  state.worstAssessment != null
+                                      ? _showScoreExplanation(
+                                        context,
+                                        state.worstAssessment!,
+                                      )
+                                      : onNavigate('security'),
                           onTapSignal: () => onNavigate('monitor/channels'),
                           onTapThreats: () => _showNotificationSheet(context),
                           onTapDevices: () => onNavigate('wifi'),
@@ -193,13 +203,35 @@ class DashboardPage extends StatelessWidget {
                         delay: const Duration(milliseconds: 240),
                         child: _NetworkContextBadge(
                           context:
-                              state.connectedContext ?? NetworkContextType.unknown,
-                          onTap: () => _showContextOverrideSheet(context, state),
+                              state.connectedContext ??
+                              NetworkContextType.unknown,
+                          onTap:
+                              () => _showContextOverrideSheet(context, state),
                         ),
                       ),
                     ],
 
                     const SizedBox(height: 24),
+
+                    // ── Gamification Recommended Tasks ──
+                    if (state.networkHealthScore != null &&
+                        state
+                            .networkHealthScore!
+                            .recommendedTasks
+                            .isNotEmpty) ...[
+                      StaggeredEntry(
+                        delay: const Duration(milliseconds: 260),
+                        child: GamificationTasksCard(
+                          tasks: state.networkHealthScore!.recommendedTasks,
+                          onTapTask: (task) {
+                            if (task.deepLinkRoute != null) {
+                              onNavigate(task.deepLinkRoute!);
+                            }
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
 
                     // ── Live Pulse: bento of mini metrics ──
                     StaggeredEntry(
@@ -223,9 +255,14 @@ class DashboardPage extends StatelessWidget {
                       lastUploadMbps: state.lastSpeedTest?.uploadMbps,
                       lastSpeedTestAt: state.lastSpeedTest?.recordedAt,
                       onTapSignal: () => onNavigate('monitor/channels'),
-                      onTapScore: () => state.worstAssessment != null
-                          ? _showScoreExplanation(context, state.worstAssessment!)
-                          : onNavigate('security'),
+                      onTapScore:
+                          () =>
+                              state.worstAssessment != null
+                                  ? _showScoreExplanation(
+                                    context,
+                                    state.worstAssessment!,
+                                  )
+                                  : onNavigate('security'),
                       onTapChannels: () => onNavigate('monitor/channels'),
                       onTapDevices: () => onNavigate('wifi'),
                       onTapThreats: () => _showNotificationSheet(context),
@@ -286,11 +323,15 @@ class DashboardPage extends StatelessWidget {
                     delay: const Duration(milliseconds: 580),
                     child: _SpeedDoctorTile(
                       onTap: () {
-                        unawaited(Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const SpeedDoctorPage(),
+                        unawaited(
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder:
+                                (_) =>
+                                    const SpeedHubPage(initialDiagnose: true),
+                            ),
                           ),
-                        ),);
+                        );
                       },
                     ),
                   ),
@@ -320,10 +361,11 @@ class DashboardPage extends StatelessWidget {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (sheetContext) => BlocProvider.value(
-        value: context.read<NotificationBloc>(),
-        child: const NotificationSheet(),
-      ),
+      builder:
+          (sheetContext) => BlocProvider.value(
+            value: context.read<NotificationBloc>(),
+            child: const NotificationSheet(),
+          ),
     );
   }
 
@@ -338,10 +380,11 @@ class DashboardPage extends StatelessWidget {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (_) => _NetworkContextSheet(
-        current: state.connectedContext ?? NetworkContextType.unknown,
-        ssid: state.ssid,
-      ),
+      builder:
+          (_) => _NetworkContextSheet(
+            current: state.connectedContext ?? NetworkContextType.unknown,
+            ssid: state.ssid,
+          ),
     );
     if (selected == null) return;
     if (selected.reset) {
@@ -490,9 +533,7 @@ class _ScoreExplanationSheet extends StatelessWidget {
             color: scheme.surface,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
             border: Border(
-              top: BorderSide(
-                color: scheme.primary.withValues(alpha: 0.2),
-              ),
+              top: BorderSide(color: scheme.primary.withValues(alpha: 0.2)),
             ),
           ),
           child: Column(
@@ -538,77 +579,79 @@ class _ScoreExplanationSheet extends StatelessWidget {
               const SizedBox(height: 12),
               const Divider(height: 1),
               Expanded(
-                child: findings.isEmpty
-                    ? Center(
-                        child: Text(
-                          context.l10n.noSecurityFindings,
-                          style: GoogleFonts.rajdhani(
-                            color: scheme.onSurfaceVariant,
-                            fontSize: 14,
-                          ),
-                        ),
-                      )
-                    : ListView.separated(
-                        controller: scrollController,
-                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-                        itemCount: findings.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 8),
-                        itemBuilder: (context, i) {
-                          final f = findings[i];
-                          final vulnerability = f.toVulnerability();
-                          final title = vulnerability.localizedTitle(context);
-                          final recommendation =
-                              vulnerability.localizedRecommendation(context);
-                          final color = _severityColor(
-                            f.severity.name,
-                            scheme,
-                          );
-                          return GlassmorphicContainer(
-                            borderColor: color.withValues(alpha: 0.25),
-                            padding: const EdgeInsets.all(12),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 8,
-                                  height: 8,
-                                  margin: const EdgeInsets.only(top: 4),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: color,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        title,
-                                        style: GoogleFonts.orbitron(
-                                          color: scheme.onSurface,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.5,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        recommendation,
-                                        style: GoogleFonts.rajdhani(
-                                          color: scheme.onSurfaceVariant,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                child:
+                    findings.isEmpty
+                        ? Center(
+                          child: Text(
+                            context.l10n.noSecurityFindings,
+                            style: GoogleFonts.rajdhani(
+                              color: scheme.onSurfaceVariant,
+                              fontSize: 14,
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        )
+                        : ListView.separated(
+                          controller: scrollController,
+                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+                          itemCount: findings.length,
+                          separatorBuilder:
+                              (_, __) => const SizedBox(height: 8),
+                          itemBuilder: (context, i) {
+                            final f = findings[i];
+                            final vulnerability = f.toVulnerability();
+                            final title = vulnerability.localizedTitle(context);
+                            final recommendation = vulnerability
+                                .localizedRecommendation(context);
+                            final color = _severityColor(
+                              f.severity.name,
+                              scheme,
+                            );
+                            return GlassmorphicContainer(
+                              borderColor: color.withValues(alpha: 0.25),
+                              padding: const EdgeInsets.all(12),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 8,
+                                    height: 8,
+                                    margin: const EdgeInsets.only(top: 4),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: color,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          title,
+                                          style: GoogleFonts.orbitron(
+                                            color: scheme.onSurface,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          recommendation,
+                                          style: GoogleFonts.rajdhani(
+                                            color: scheme.onSurfaceVariant,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
               ),
             ],
           ),
@@ -743,11 +786,11 @@ Color _contextColor(NetworkContextType ctx, ColorScheme scheme) =>
     };
 
 IconData _contextIcon(NetworkContextType ctx) => switch (ctx) {
-      NetworkContextType.home => Icons.home_rounded,
-      NetworkContextType.public => Icons.public_rounded,
-      NetworkContextType.guest => Icons.group_rounded,
-      NetworkContextType.unknown => Icons.help_outline_rounded,
-    };
+  NetworkContextType.home => Icons.home_rounded,
+  NetworkContextType.public => Icons.public_rounded,
+  NetworkContextType.guest => Icons.group_rounded,
+  NetworkContextType.unknown => Icons.help_outline_rounded,
+};
 
 class _NetworkContextBadge extends StatelessWidget {
   final NetworkContextType context;
@@ -803,11 +846,11 @@ class _NetworkContextSheet extends StatelessWidget {
   const _NetworkContextSheet({required this.current, required this.ssid});
 
   List<(NetworkContextType, String)> _options(AppLocalizations l10n) => [
-        (NetworkContextType.home, l10n.networkContextHomeDesc),
-        (NetworkContextType.public, l10n.networkContextPublicDesc),
-        (NetworkContextType.guest, l10n.networkContextGuestDesc),
-        (NetworkContextType.unknown, l10n.networkContextUnknownDesc),
-      ];
+    (NetworkContextType.home, l10n.networkContextHomeDesc),
+    (NetworkContextType.public, l10n.networkContextPublicDesc),
+    (NetworkContextType.guest, l10n.networkContextGuestDesc),
+    (NetworkContextType.unknown, l10n.networkContextUnknownDesc),
+  ];
 
   @override
   Widget build(BuildContext buildContext) {
@@ -823,9 +866,7 @@ class _NetworkContextSheet extends StatelessWidget {
             color: scheme.surface,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
             border: Border(
-              top: BorderSide(
-                color: scheme.primary.withValues(alpha: 0.2),
-              ),
+              top: BorderSide(color: scheme.primary.withValues(alpha: 0.2)),
             ),
           ),
           child: ListView(
@@ -926,9 +967,10 @@ class _ContextOption extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: selected
-                  ? color.withValues(alpha: 0.6)
-                  : scheme.outlineVariant.withValues(alpha: 0.3),
+              color:
+                  selected
+                      ? color.withValues(alpha: 0.6)
+                      : scheme.outlineVariant.withValues(alpha: 0.3),
               width: selected ? 2 : 1,
             ),
             color: selected ? color.withValues(alpha: 0.06) : null,

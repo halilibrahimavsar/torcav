@@ -7,12 +7,17 @@ import 'package:network_info_plus/network_info_plus.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../heatmap/domain/services/connected_signal_service.dart';
 import '../../../performance/domain/repositories/speed_test_history_repository.dart';
+import '../../../security/domain/entities/network_context_type.dart';
 import '../../../security/domain/repositories/security_repository.dart';
 import '../../../security/domain/services/network_context_resolver.dart';
 import '../../../security/domain/usecases/security_analyzer.dart';
 import '../../../wifi_scan/domain/entities/wifi_network.dart';
 import '../../../wifi_scan/domain/services/channel_rating_engine.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
+import '../../../diagnostics/domain/entities/diagnosis_inputs.dart';
+import '../../../diagnostics/domain/usecases/diagnose_usecase.dart';
+import '../../../diagnostics/domain/usecases/get_network_health_score_usecase.dart';
+import '../../../diagnostics/domain/entities/network_health_score.dart';
 import '../../data/datasources/score_history_local_data_source.dart';
 import '../../../security/domain/entities/security_event.dart';
 import '../../../wifi_scan/domain/entities/channel_rating.dart';
@@ -29,6 +34,8 @@ class DashboardCubit extends Cubit<DashboardState> {
   final ConnectedSignalService _signalService;
   final SecurityRepository _securityRepository;
   final SpeedTestHistoryRepository _speedRepository;
+  final DiagnoseUseCase _diagnoseUseCase;
+  final GetNetworkHealthScoreUseCase _healthScoreUseCase;
 
   StreamSubscription<void>? _scanSubscription;
 
@@ -42,6 +49,8 @@ class DashboardCubit extends Cubit<DashboardState> {
     this._signalService,
     this._securityRepository,
     this._speedRepository,
+    this._diagnoseUseCase,
+    this._healthScoreUseCase,
   ) : super(const DashboardInitial()) {
     _scanSubscription = _scanStore.snapshots.listen((_) => load());
   }
@@ -62,6 +71,10 @@ class DashboardCubit extends Cubit<DashboardState> {
       final networks =
           latestSnapshot?.networks.map((n) => n.toWifiNetwork()).toList() ??
               const <WifiNetwork>[];
+
+      // Speed test (Needed early for Health Score)
+      final speedResults = await _speedRepository.getRecent(limit: 1);
+      final lastSpeed = speedResults.isEmpty ? null : speedResults.first;
 
       // Security assessment
       int secScore = 100;
@@ -173,9 +186,23 @@ class DashboardCubit extends Cubit<DashboardState> {
       final List<SecurityEvent> events = eventsResult.fold((_) => <SecurityEvent>[], (list) => list);
       final unreadCount = events.where((e) => !e.isRead).length;
 
-      // Speed test
-      final speedResults = await _speedRepository.getRecent(limit: 1);
-      final lastSpeed = speedResults.isEmpty ? null : speedResults.first;
+      // Network Health Score
+      NetworkHealthScore? healthScore;
+      if (worstAssessment != null) {
+        final diagInputs = DiagnosisInputs(
+          connectedNetwork: connectedNet,
+          visibleNetworks: networks,
+          speedTest: lastSpeed,
+          gatewayPingMs: null,
+          dnsBenchmark: null,
+          context: connectedCtx ?? NetworkContextType.unknown,
+        );
+        final diagnosisResult = _diagnoseUseCase(diagInputs);
+        healthScore = _healthScoreUseCase(
+          securityAssessment: worstAssessment,
+          diagnosisResult: diagnosisResult,
+        );
+      }
 
       emit(DashboardSuccess(
         ssid: _cleanSsid(results[0]) ?? '—',
@@ -197,6 +224,7 @@ class DashboardCubit extends Cubit<DashboardState> {
         recentEvents: events.take(20).toList(),
         recentSnapshots: allSnapshots.reversed.take(6).toList(),
         lastSpeedTest: lastSpeed,
+        networkHealthScore: healthScore,
       ),);
     } catch (e) {
       emit(DashboardFailure(ServerFailure(e.toString())));

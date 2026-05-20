@@ -121,8 +121,8 @@ void main() {
     await tester.pumpWidget(wrap(const ArHudOverlay()));
     await tester.pump();
 
-    // SurveyPilotCard emits the 'COMPLETE' suffix next to the progress %.
-    expect(find.text('COMPLETE'), findsOneWidget);
+    // SurveyPilotCard emits the 'SURVEY COMPLETE' suffix next to the progress %.
+    expect(find.text('SURVEY COMPLETE'), findsOneWidget);
   });
 
   testWidgets('hides SurveyPilotCard when the lock banner is visible', (
@@ -140,6 +140,6 @@ void main() {
     await tester.pump();
 
     expect(find.text('MEASUREMENT LOCKED'), findsOneWidget);
-    expect(find.text('COMPLETE'), findsNothing);
+    expect(find.text('SURVEY COMPLETE'), findsNothing);
   });
 }

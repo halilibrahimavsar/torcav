@@ -3628,10 +3628,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get heatmapSave => 'Save';
 
   @override
-  String get heatmapShareSubject => 'Torcav WiFi Heatmap';
+  String get heatmapShareSubject => 'Mein Torcav AR WLAN-Scan';
 
   @override
-  String get heatmapShareText => 'Sharing my WiFi heatmap result.';
+  String get heatmapShareText => 'Ich habe gerade mein Heim-WLAN mit Torcav kartiert! Schau dir die toten Winkel an. Finde heraus, warum dein Internet langsam ist und lade Torcav herunter: torcav.com';
 
   @override
   String get heatmapIssueTitle => 'Issue';
@@ -4929,4 +4929,85 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get securityErrorMessage => 'Sicherheitsprüfung fehlgeschlagen.';
+
+  @override
+  String get recommendedActionsTitle => 'EMPFOHLENE AKTIONEN';
+
+  @override
+  String get ptsLabel => 'PKT';
+
+  @override
+  String get hardenRouterTaskTitle => 'Router härten';
+
+  @override
+  String get hardenRouterTaskDesc => 'Sichern Sie Ihren Router gegen häufige Schwachstellen.';
+
+  @override
+  String get enableWpa3TaskTitle => 'WPA3 aktivieren';
+
+  @override
+  String get enableWpa3TaskDesc => 'Wechseln Sie zu WPA3 für stärkere Verschlüsselung.';
+
+  @override
+  String get disableWpsTaskTitle => 'WPS deaktivieren';
+
+  @override
+  String get disableWpsTaskDesc => 'Deaktivieren Sie WPS, um Brute-Force-Angriffe zu verhindern.';
+
+  @override
+  String get changeDefaultPasswordsTaskTitle => 'Standardpasswörter ändern';
+
+  @override
+  String get changeDefaultPasswordsTaskDesc => 'Ändern Sie die standardmäßigen Admin-Zugangsdaten.';
+
+  @override
+  String get runSpeedTestTaskTitle => 'Geschwindigkeitstest durchführen';
+
+  @override
+  String get runSpeedTestTaskDesc => 'Überprüfen Sie, ob Sie die bezahlte Geschwindigkeit erhalten.';
+
+  @override
+  String get optimizeChannelTaskTitle => 'WLAN-Kanal optimieren';
+
+  @override
+  String get optimizeChannelTaskDesc => 'Wechseln Sie zu einem weniger überlasteten WLAN-Kanal.';
+
+  @override
+  String get lanViewListLabel => 'Liste';
+
+  @override
+  String get lanViewMapLabel => 'Karte';
+
+  @override
+  String get speedHubTitle => 'GESCHWINDIGKEIT';
+
+  @override
+  String get speedModeQuickTest => 'Schnelltest';
+
+  @override
+  String get speedModeDiagnose => 'Diagnose';
+
+  @override
+  String get opsGroupSecurity => 'SICHERHEIT';
+
+  @override
+  String get opsGroupSpeed => 'GESCHWINDIGKEIT & VERBINDUNG';
+
+  @override
+  String get opsGroupCoverage => 'ABDECKUNG';
+
+  @override
+  String get opsGroupReports => 'BERICHTE';
+
+  @override
+  String get opsSpeedSubtitle => 'Geschwindigkeitstest & Diagnose bei langsamem Internet';
+
+  @override
+  String get opsSecuritySubtitle => 'Bedrohungen, Verschlüsselung & Tiefenprüfung';
+
+  @override
+  String get opsHeatmapSubtitle => 'Abdeckung kartieren, Funklöcher finden';
+
+  @override
+  String get opsReportsSubtitle => 'Netzwerk-Zustandsbericht exportieren';
 }

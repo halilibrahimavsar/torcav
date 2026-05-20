@@ -1,10 +1,17 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../network_scan/domain/entities/network_device.dart';
 import '../entities/network_topology.dart';
 
 abstract class TopologyRepository {
   /// Fetches the current network topology mapping as a stream.
   Stream<Either<Failure, NetworkTopology>> getTopologyStream();
+
+  /// Builds a topology snapshot from an already-discovered device list
+  /// (e.g. results of a LAN scan) without performing a new network scan.
+  Future<Either<Failure, NetworkTopology>> buildFromDevices(
+    List<NetworkDevice> devices,
+  );
 
   /// Pings a node by its IP address and returns the latency in milliseconds.
   /// Uses ICMP if available, falls back to TCP connection.

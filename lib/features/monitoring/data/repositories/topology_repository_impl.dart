@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
 import '../../../../core/errors/failures.dart';
+import '../../../network_scan/domain/entities/network_device.dart';
 import '../../../network_scan/domain/repositories/network_scan_repository.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
 import '../../domain/entities/network_topology.dart';
@@ -76,6 +77,41 @@ class TopologyRepositoryImpl implements TopologyRepository {
       }
     } catch (e) {
       yield Left(ScanFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, NetworkTopology>> buildFromDevices(
+    List<NetworkDevice> devices,
+  ) async {
+    try {
+      final results = await Future.wait([
+        _networkInfo.getWifiIP(),
+        _networkInfo.getWifiGatewayIP(),
+        _networkInfo.getWifiName(),
+        _networkInfo.getWifiBSSID(),
+      ]);
+
+      final currentIp = results[0];
+      final gatewayIp = results[1];
+      final ssid = (results[2] ?? '').replaceAll('"', '');
+      final bssid = results[3];
+
+      final latestSnapshot = _scanStore.latest;
+      final wifiNetworks = latestSnapshot?.toLegacyNetworks() ?? [];
+
+      return Right(
+        _topologyBuilder.build(
+          wifiNetworks: wifiNetworks,
+          lanDevices: devices,
+          currentIp: currentIp,
+          gatewayIp: gatewayIp,
+          connectedSsid: ssid,
+          connectedBssid: bssid,
+        ),
+      );
+    } catch (e) {
+      return Left(ScanFailure(e.toString()));
     }
   }
 

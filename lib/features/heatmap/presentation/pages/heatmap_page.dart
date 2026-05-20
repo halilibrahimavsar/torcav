@@ -15,6 +15,7 @@ import 'package:torcav/core/storage/hive_storage_service.dart';
 import 'package:torcav/core/di/injection.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
+import 'package:torcav/core/services/image_watermark_service.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
 import 'package:torcav/features/heatmap/presentation/bloc/heatmap_bloc.dart';
@@ -528,7 +529,18 @@ class _HeatmapViewState extends State<_HeatmapView> {
       final boundary = renderObject;
 
       final image = await boundary.toImage(pixelRatio: 3.0);
-      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+
+      // Add Torcav watermark
+      final watermarkService = getIt<ImageWatermarkService>();
+      final watermarkedImage = await watermarkService.addWatermark(
+        image,
+        titleText: copy.shareSubject,
+        subtitleText: copy.shareText,
+      );
+
+      final byteData = await watermarkedImage.toByteData(
+        format: ui.ImageByteFormat.png,
+      );
       if (byteData == null) return;
 
       final buffer = byteData.buffer.asUint8List();

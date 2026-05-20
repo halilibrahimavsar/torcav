@@ -5003,11 +5003,11 @@
     "@heatmapSave": {
         "description": "Label for heatmapSave"
     },
-    "heatmapShareSubject": "Torcav WiFi Heatmap",
+    "heatmapShareSubject": "Lêgerîna Min a Torcav AR Wi-Fi",
     "@heatmapShareSubject": {
         "description": "Label for heatmapShareSubject"
     },
-    "heatmapShareText": "Sharing my WiFi heatmap result.",
+    "heatmapShareText": "Min nexşeya Wi-Fi ya mala xwe bi Torcav çêkir! Li xalên mirî binêre. Bibîne çima înterneta te hêdî ye û Torcav daxîne: torcav.com",
     "@heatmapShareText": {
         "description": "Label for heatmapShareText"
     },
@@ -7013,5 +7013,32 @@
     "securityErrorMessage": "Kontrola ewlehiyê bi ser neket.",
     "@securityErrorMessage": {
         "description": "Shown when a SecurityFailure surfaces."
-    }
+    },
+    "recommendedActionsTitle": "ÇALAKIYÊN TÊNE PÊŞNIYARKIRIN",
+    "ptsLabel": "XAL",
+    "hardenRouterTaskTitle": "Routerê Xurt Bike",
+    "hardenRouterTaskDesc": "Routera xwe li hember xalên qels ên belavbûyî biparêze.",
+    "enableWpa3TaskTitle": "WPA3 Çalak Bike",
+    "enableWpa3TaskDesc": "Ji bo şîfrekirina xurttir derbasî WPA3 bibe.",
+    "disableWpsTaskTitle": "WPS Bide Sekinandin",
+    "disableWpsTaskDesc": "WPS rawestîne daku êrîşên şîfreya PIN werin astengkirin.",
+    "changeDefaultPasswordsTaskTitle": "Şîfreyên Bingehîn Biguherîne",
+    "changeDefaultPasswordsTaskDesc": "Agahiyên têketinê yên rêveberiyê biguherîne.",
+    "runSpeedTestTaskTitle": "Testa Lezê Bike",
+    "runSpeedTestTaskDesc": "Kontrol bike ka leza te wekî ya tê xwestin e yan na.",
+    "optimizeChannelTaskTitle": "Qanala WiFi Baştir Bike",
+    "optimizeChannelTaskDesc": "Derbasî qanaleke WiFi ya kêmtir qelebalix bibe.",
+    "lanViewListLabel": "Lîste",
+    "lanViewMapLabel": "Nexşe",
+    "speedHubTitle": "LEZ",
+    "speedModeQuickTest": "Testa Bilez",
+    "speedModeDiagnose": "Teşhîs",
+    "opsGroupSecurity": "EWLEHÎ",
+    "opsGroupSpeed": "LEZ Û GIRÊDAN",
+    "opsGroupCoverage": "BERFIREHÎ",
+    "opsGroupReports": "RAPOR",
+    "opsSpeedSubtitle": "Testa lezê û teşhîsa înterneta hêdî",
+    "opsSecuritySubtitle": "Tehdîd, şîfrekirin û vekolîna kûr",
+    "opsHeatmapSubtitle": "Berfirehiyê nexşe bike, deverên mirî bibîne",
+    "opsReportsSubtitle": "Raporta tenduristiya torê derxe"
 }

@@ -3637,10 +3637,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get heatmapSave => 'Save';
 
   @override
-  String get heatmapShareSubject => 'Torcav WiFi Heatmap';
+  String get heatmapShareSubject => 'My Torcav AR Wi-Fi Scan';
 
   @override
-  String get heatmapShareText => 'Sharing my WiFi heatmap result.';
+  String get heatmapShareText => 'I just mapped my home Wi-Fi with Torcav! Check out the dead zones. Find out why your internet is slow and download Torcav today: torcav.com';
 
   @override
   String get heatmapIssueTitle => 'Issue';
@@ -4938,4 +4938,85 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get securityErrorMessage => 'Security check failed.';
+
+  @override
+  String get recommendedActionsTitle => 'RECOMMENDED ACTIONS';
+
+  @override
+  String get ptsLabel => 'PTS';
+
+  @override
+  String get hardenRouterTaskTitle => 'Harden Router';
+
+  @override
+  String get hardenRouterTaskDesc => 'Secure your router against common vulnerabilities.';
+
+  @override
+  String get enableWpa3TaskTitle => 'Enable WPA3';
+
+  @override
+  String get enableWpa3TaskDesc => 'Upgrade to WPA3 for stronger encryption.';
+
+  @override
+  String get disableWpsTaskTitle => 'Disable WPS';
+
+  @override
+  String get disableWpsTaskDesc => 'Disable WPS to prevent brute-force PIN attacks.';
+
+  @override
+  String get changeDefaultPasswordsTaskTitle => 'Change Default Passwords';
+
+  @override
+  String get changeDefaultPasswordsTaskDesc => 'Change default admin credentials.';
+
+  @override
+  String get runSpeedTestTaskTitle => 'Run Speed Test';
+
+  @override
+  String get runSpeedTestTaskDesc => 'Check if you are getting the speed you pay for.';
+
+  @override
+  String get optimizeChannelTaskTitle => 'Optimize WiFi Channel';
+
+  @override
+  String get optimizeChannelTaskDesc => 'Switch to a less congested WiFi channel.';
+
+  @override
+  String get lanViewListLabel => 'List';
+
+  @override
+  String get lanViewMapLabel => 'Map';
+
+  @override
+  String get speedHubTitle => 'SPEED';
+
+  @override
+  String get speedModeQuickTest => 'Quick Test';
+
+  @override
+  String get speedModeDiagnose => 'Diagnose';
+
+  @override
+  String get opsGroupSecurity => 'SECURITY';
+
+  @override
+  String get opsGroupSpeed => 'SPEED & CONNECTION';
+
+  @override
+  String get opsGroupCoverage => 'COVERAGE';
+
+  @override
+  String get opsGroupReports => 'REPORTS';
+
+  @override
+  String get opsSpeedSubtitle => 'Speed test & slow-internet diagnosis';
+
+  @override
+  String get opsSecuritySubtitle => 'Threats, encryption & deep audit';
+
+  @override
+  String get opsHeatmapSubtitle => 'Map coverage, find dead zones';
+
+  @override
+  String get opsReportsSubtitle => 'Export a network health report';
 }

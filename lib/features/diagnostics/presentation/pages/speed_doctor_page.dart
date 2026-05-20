@@ -16,36 +16,46 @@ import '../widgets/progress_steps.dart';
 /// One-tap "why is the internet slow?" diagnostic. Combines signal, channel,
 /// speed test and DNS benchmark into a single root-cause classification.
 class SpeedDoctorPage extends StatelessWidget {
-  const SpeedDoctorPage({super.key});
+  /// When [showAppBar] is false the page omits its own [AppBar] — used when it
+  /// is embedded as the Diagnose tab of the unified Speed hub.
+  const SpeedDoctorPage({super.key, this.showAppBar = true});
+
+  final bool showAppBar;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<DiagnosticsBloc>(),
-      child: const _SpeedDoctorView(),
+      child: _SpeedDoctorView(showAppBar: showAppBar),
     );
   }
 }
 
 class _SpeedDoctorView extends StatelessWidget {
-  const _SpeedDoctorView();
+  const _SpeedDoctorView({required this.showAppBar});
+
+  final bool showAppBar;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          l10n.speedDoctorTitle,
-          style: GoogleFonts.orbitron(
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1.4,
-            fontSize: 16,
-          ),
-        ),
-        backgroundColor: Colors.transparent,
-      ),
+      backgroundColor: Colors.transparent,
+      appBar:
+          showAppBar
+              ? AppBar(
+                title: Text(
+                  l10n.speedDoctorTitle,
+                  style: GoogleFonts.orbitron(
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.4,
+                    fontSize: 16,
+                  ),
+                ),
+                backgroundColor: Colors.transparent,
+              )
+              : null,
       body: BlocBuilder<DiagnosticsBloc, DiagnosticsState>(
         builder: (context, state) {
           return SingleChildScrollView(

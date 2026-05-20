@@ -3628,10 +3628,10 @@ class AppLocalizationsKu extends AppLocalizations {
   String get heatmapSave => 'Save';
 
   @override
-  String get heatmapShareSubject => 'Torcav WiFi Heatmap';
+  String get heatmapShareSubject => 'Lêgerîna Min a Torcav AR Wi-Fi';
 
   @override
-  String get heatmapShareText => 'Sharing my WiFi heatmap result.';
+  String get heatmapShareText => 'Min nexşeya Wi-Fi ya mala xwe bi Torcav çêkir! Li xalên mirî binêre. Bibîne çima înterneta te hêdî ye û Torcav daxîne: torcav.com';
 
   @override
   String get heatmapIssueTitle => 'Issue';
@@ -4929,4 +4929,85 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get securityErrorMessage => 'Kontrola ewlehiyê bi ser neket.';
+
+  @override
+  String get recommendedActionsTitle => 'ÇALAKIYÊN TÊNE PÊŞNIYARKIRIN';
+
+  @override
+  String get ptsLabel => 'XAL';
+
+  @override
+  String get hardenRouterTaskTitle => 'Routerê Xurt Bike';
+
+  @override
+  String get hardenRouterTaskDesc => 'Routera xwe li hember xalên qels ên belavbûyî biparêze.';
+
+  @override
+  String get enableWpa3TaskTitle => 'WPA3 Çalak Bike';
+
+  @override
+  String get enableWpa3TaskDesc => 'Ji bo şîfrekirina xurttir derbasî WPA3 bibe.';
+
+  @override
+  String get disableWpsTaskTitle => 'WPS Bide Sekinandin';
+
+  @override
+  String get disableWpsTaskDesc => 'WPS rawestîne daku êrîşên şîfreya PIN werin astengkirin.';
+
+  @override
+  String get changeDefaultPasswordsTaskTitle => 'Şîfreyên Bingehîn Biguherîne';
+
+  @override
+  String get changeDefaultPasswordsTaskDesc => 'Agahiyên têketinê yên rêveberiyê biguherîne.';
+
+  @override
+  String get runSpeedTestTaskTitle => 'Testa Lezê Bike';
+
+  @override
+  String get runSpeedTestTaskDesc => 'Kontrol bike ka leza te wekî ya tê xwestin e yan na.';
+
+  @override
+  String get optimizeChannelTaskTitle => 'Qanala WiFi Baştir Bike';
+
+  @override
+  String get optimizeChannelTaskDesc => 'Derbasî qanaleke WiFi ya kêmtir qelebalix bibe.';
+
+  @override
+  String get lanViewListLabel => 'Lîste';
+
+  @override
+  String get lanViewMapLabel => 'Nexşe';
+
+  @override
+  String get speedHubTitle => 'LEZ';
+
+  @override
+  String get speedModeQuickTest => 'Testa Bilez';
+
+  @override
+  String get speedModeDiagnose => 'Teşhîs';
+
+  @override
+  String get opsGroupSecurity => 'EWLEHÎ';
+
+  @override
+  String get opsGroupSpeed => 'LEZ Û GIRÊDAN';
+
+  @override
+  String get opsGroupCoverage => 'BERFIREHÎ';
+
+  @override
+  String get opsGroupReports => 'RAPOR';
+
+  @override
+  String get opsSpeedSubtitle => 'Testa lezê û teşhîsa înterneta hêdî';
+
+  @override
+  String get opsSecuritySubtitle => 'Tehdîd, şîfrekirin û vekolîna kûr';
+
+  @override
+  String get opsHeatmapSubtitle => 'Berfirehiyê nexşe bike, deverên mirî bibîne';
+
+  @override
+  String get opsReportsSubtitle => 'Raporta tenduristiya torê derxe';
 }

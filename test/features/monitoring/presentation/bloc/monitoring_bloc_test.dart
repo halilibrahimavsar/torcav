@@ -66,6 +66,9 @@ void main() {
       () => getHistory.call(limit: any(named: 'limit')),
     ).thenAnswer((_) async => {});
     when(
+      () => historyRepo.getHistory(limit: any(named: 'limit')),
+    ).thenAnswer((_) async => const Right([]));
+    when(
       () => historyRepo.saveRatings(any()),
     ).thenAnswer((_) async => const Right(null));
     when(

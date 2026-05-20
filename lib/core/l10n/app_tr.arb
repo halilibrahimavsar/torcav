@@ -5003,11 +5003,11 @@
     "@heatmapSave": {
         "description": "Label for heatmapSave"
     },
-    "heatmapShareSubject": "Torcav WiFi Heatmap",
+    "heatmapShareSubject": "Torcav AR Wi-Fi Taramam",
     "@heatmapShareSubject": {
         "description": "Label for heatmapShareSubject"
     },
-    "heatmapShareText": "Sharing my WiFi heatmap result.",
+    "heatmapShareText": "Torcav ile evimin Wi-Fi haritasını çıkardım ve ölü noktaları buldum! Sizin internetiniz neden yavaş? Torcav'ı indirin ve keşfedin: torcav.com",
     "@heatmapShareText": {
         "description": "Label for heatmapShareText"
     },
@@ -7013,5 +7013,32 @@
     "securityErrorMessage": "Güvenlik kontrolü başarısız.",
     "@securityErrorMessage": {
         "description": "Shown when a SecurityFailure surfaces."
-    }
+    },
+    "recommendedActionsTitle": "ÖNERİLEN EYLEMLER",
+    "ptsLabel": "PUAN",
+    "hardenRouterTaskTitle": "Yönlendiriciyi Güçlendir",
+    "hardenRouterTaskDesc": "Yönlendiricinizi yaygın güvenlik açıklarına karşı güvenceye alın.",
+    "enableWpa3TaskTitle": "WPA3'ü Etkinleştir",
+    "enableWpa3TaskDesc": "Daha güçlü şifreleme için WPA3'e yükseltin.",
+    "disableWpsTaskTitle": "WPS'i Devre Dışı Bırak",
+    "disableWpsTaskDesc": "Kaba kuvvet PIN saldırılarını önlemek için WPS'i devre dışı bırakın.",
+    "changeDefaultPasswordsTaskTitle": "Varsayılan Şifreleri Değiştir",
+    "changeDefaultPasswordsTaskDesc": "Varsayılan yönetici kimlik bilgilerini değiştirin.",
+    "runSpeedTestTaskTitle": "Hız Testi Çalıştır",
+    "runSpeedTestTaskDesc": "Ödediğiniz hızı alıp almadığınızı kontrol edin.",
+    "optimizeChannelTaskTitle": "WiFi Kanalını Optimize Et",
+    "optimizeChannelTaskDesc": "Daha az sıkışık bir WiFi kanalına geçiş yapın.",
+    "lanViewListLabel": "Liste",
+    "lanViewMapLabel": "Harita",
+    "speedHubTitle": "HIZ",
+    "speedModeQuickTest": "Hızlı Test",
+    "speedModeDiagnose": "Teşhis",
+    "opsGroupSecurity": "GÜVENLİK",
+    "opsGroupSpeed": "HIZ VE BAĞLANTI",
+    "opsGroupCoverage": "KAPSAMA",
+    "opsGroupReports": "RAPORLAR",
+    "opsSpeedSubtitle": "Hız testi ve yavaş internet teşhisi",
+    "opsSecuritySubtitle": "Tehditler, şifreleme ve derin denetim",
+    "opsHeatmapSubtitle": "Kapsamı haritalayın, ölü bölgeleri bulun",
+    "opsReportsSubtitle": "Ağ sağlık raporunu dışa aktarın"
 }

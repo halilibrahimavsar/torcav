@@ -7026,13 +7026,13 @@ abstract class AppLocalizations {
   /// Label for heatmapShareSubject
   ///
   /// In en, this message translates to:
-  /// **'Torcav WiFi Heatmap'**
+  /// **'My Torcav AR Wi-Fi Scan'**
   String get heatmapShareSubject;
 
   /// Label for heatmapShareText
   ///
   /// In en, this message translates to:
-  /// **'Sharing my WiFi heatmap result.'**
+  /// **'I just mapped my home Wi-Fi with Torcav! Check out the dead zones. Find out why your internet is slow and download Torcav today: torcav.com'**
   String get heatmapShareText;
 
   /// Label for heatmapIssueTitle
@@ -9308,6 +9308,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Security check failed.'**
   String get securityErrorMessage;
+
+  /// No description provided for @recommendedActionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'RECOMMENDED ACTIONS'**
+  String get recommendedActionsTitle;
+
+  /// No description provided for @ptsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'PTS'**
+  String get ptsLabel;
+
+  /// No description provided for @hardenRouterTaskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Harden Router'**
+  String get hardenRouterTaskTitle;
+
+  /// No description provided for @hardenRouterTaskDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Secure your router against common vulnerabilities.'**
+  String get hardenRouterTaskDesc;
+
+  /// No description provided for @enableWpa3TaskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable WPA3'**
+  String get enableWpa3TaskTitle;
+
+  /// No description provided for @enableWpa3TaskDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to WPA3 for stronger encryption.'**
+  String get enableWpa3TaskDesc;
+
+  /// No description provided for @disableWpsTaskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable WPS'**
+  String get disableWpsTaskTitle;
+
+  /// No description provided for @disableWpsTaskDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable WPS to prevent brute-force PIN attacks.'**
+  String get disableWpsTaskDesc;
+
+  /// No description provided for @changeDefaultPasswordsTaskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Default Passwords'**
+  String get changeDefaultPasswordsTaskTitle;
+
+  /// No description provided for @changeDefaultPasswordsTaskDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Change default admin credentials.'**
+  String get changeDefaultPasswordsTaskDesc;
+
+  /// No description provided for @runSpeedTestTaskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Run Speed Test'**
+  String get runSpeedTestTaskTitle;
+
+  /// No description provided for @runSpeedTestTaskDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Check if you are getting the speed you pay for.'**
+  String get runSpeedTestTaskDesc;
+
+  /// No description provided for @optimizeChannelTaskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Optimize WiFi Channel'**
+  String get optimizeChannelTaskTitle;
+
+  /// No description provided for @optimizeChannelTaskDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to a less congested WiFi channel.'**
+  String get optimizeChannelTaskDesc;
+
+  /// No description provided for @lanViewListLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get lanViewListLabel;
+
+  /// No description provided for @lanViewMapLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get lanViewMapLabel;
+
+  /// No description provided for @speedHubTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SPEED'**
+  String get speedHubTitle;
+
+  /// No description provided for @speedModeQuickTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Test'**
+  String get speedModeQuickTest;
+
+  /// No description provided for @speedModeDiagnose.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnose'**
+  String get speedModeDiagnose;
+
+  /// No description provided for @opsGroupSecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'SECURITY'**
+  String get opsGroupSecurity;
+
+  /// No description provided for @opsGroupSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'SPEED & CONNECTION'**
+  String get opsGroupSpeed;
+
+  /// No description provided for @opsGroupCoverage.
+  ///
+  /// In en, this message translates to:
+  /// **'COVERAGE'**
+  String get opsGroupCoverage;
+
+  /// No description provided for @opsGroupReports.
+  ///
+  /// In en, this message translates to:
+  /// **'REPORTS'**
+  String get opsGroupReports;
+
+  /// No description provided for @opsSpeedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed test & slow-internet diagnosis'**
+  String get opsSpeedSubtitle;
+
+  /// No description provided for @opsSecuritySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Threats, encryption & deep audit'**
+  String get opsSecuritySubtitle;
+
+  /// No description provided for @opsHeatmapSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Map coverage, find dead zones'**
+  String get opsHeatmapSubtitle;
+
+  /// No description provided for @opsReportsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export a network health report'**
+  String get opsReportsSubtitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

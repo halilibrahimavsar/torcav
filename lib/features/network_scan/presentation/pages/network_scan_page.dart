@@ -19,10 +19,16 @@ import '../../../../core/theme/prominent_disclosure_dialog.dart';
 import '../../data/datasources/lan_scan_history_local_data_source.dart';
 
 class NetworkScanPage extends StatelessWidget {
-  const NetworkScanPage({super.key});
+  /// When [provideBloc] is false the page expects a [NetworkScanBloc] to be
+  /// supplied by an ancestor (e.g. the shared LAN discovery shell), so the
+  /// list and map views can share a single scan.
+  const NetworkScanPage({super.key, this.provideBloc = true});
+
+  final bool provideBloc;
 
   @override
   Widget build(BuildContext context) {
+    if (!provideBloc) return const _NetworkScanView();
     return BlocProvider(
       create: (_) => getIt<NetworkScanBloc>(),
       child: const _NetworkScanView(),

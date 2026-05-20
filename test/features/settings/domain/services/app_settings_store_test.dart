@@ -20,6 +20,7 @@ void main() {
       when(() => mockStorage.get<String>(any())).thenReturn(null);
 
       final store = AppSettingsStore(mockStorage);
+      await store.init();
 
       expect(store.value, const AppSettings());
     });
@@ -34,6 +35,8 @@ void main() {
       ).thenAnswer((_) => persistedData);
 
       final store = AppSettingsStore(mockStorage);
+      await store.init();
+      
       const updated = AppSettings(
         scanIntervalSeconds: 12,
         defaultScanPasses: 4,
@@ -45,6 +48,7 @@ void main() {
       await Future<void>.delayed(Duration.zero);
 
       final reloaded = AppSettingsStore(mockStorage);
+      await reloaded.init();
 
       expect(reloaded.value, updated);
     });
@@ -55,6 +59,7 @@ void main() {
         when(() => mockStorage.get<String>(any())).thenReturn('{not-json');
 
         final store = AppSettingsStore(mockStorage);
+        await store.init();
 
         expect(store.value, const AppSettings());
       },

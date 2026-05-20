@@ -25,72 +25,76 @@ import 'package:torcav/features/security/presentation/widgets/cyber_grid_backgro
 import 'package:torcav/features/splash/presentation/pages/splash_page.dart';
 
 void main() {
-  runZonedGuarded(() async {
-    WidgetsFlutterBinding.ensureInitialized();
+  runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
 
-    FlutterError.onError = (details) {
-      FlutterError.presentError(details);
-      AppLogger.e(
-        'FlutterError',
-        error: details.exception,
-        stackTrace: details.stack,
-      );
-      // Debug-only snackbar: geliştirici framework hatasını anında görür.
-      // Release'de sessiz log — kullanıcıyı framework noise'uyla rahatsız etme.
-      if (kDebugMode) {
-        final summary = details.exceptionAsString();
-        AppNotifier.error(
-          '[DEBUG] ${summary.length > 100 ? '${summary.substring(0, 97)}...' : summary}',
+      FlutterError.onError = (details) {
+        FlutterError.presentError(details);
+        AppLogger.e(
+          'FlutterError',
+          error: details.exception,
+          stackTrace: details.stack,
         );
-      }
-    };
+        // Debug-only snackbar: geliştirici framework hatasını anında görür.
+        // Release'de sessiz log — kullanıcıyı framework noise'uyla rahatsız etme.
+        if (kDebugMode) {
+          final summary = details.exceptionAsString();
+          AppNotifier.error(
+            '[DEBUG] ${summary.length > 100 ? '${summary.substring(0, 97)}...' : summary}',
+          );
+        }
+      };
 
-    PlatformDispatcher.instance.onError = (error, stack) {
-      AppLogger.e('Uncaught Error', error: error, stackTrace: stack);
-      if (kDebugMode) {
-        AppNotifier.error('[DEBUG] Uncaught: $error');
-      }
-      return true;
-    };
+      PlatformDispatcher.instance.onError = (error, stack) {
+        AppLogger.e('Uncaught Error', error: error, stackTrace: stack);
+        if (kDebugMode) {
+          AppNotifier.error('[DEBUG] Uncaught: $error');
+        }
+        return true;
+      };
 
-    ErrorWidget.builder = (details) => _NeonErrorWidget(details: details);
+      ErrorWidget.builder = (details) => _NeonErrorWidget(details: details);
 
-    // Tüm BLoC/Cubit handler'larındaki yakalanmamış throw'lar için merkezi
-    // güvenlik ağı — sanitize edilmiş snackbar + full log.
-    Bloc.observer = const AppBlocObserver();
+      // Tüm BLoC/Cubit handler'larındaki yakalanmamış throw'lar için merkezi
+      // güvenlik ağı — sanitize edilmiş snackbar + full log.
+      Bloc.observer = const AppBlocObserver();
 
-    // Core initialization that must happen before runApp.
-    // Hive's encryption key lives in flutter_secure_storage, so we resolve it
-    // here directly (DI is not configured yet at this point).
-    const secureStorage = FlutterSecureStorage(
-      iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
-    );
-    List<int> hiveKey;
-    try {
-      hiveKey = await const SecureStorageService(
-        secureStorage,
-      ).getOrCreateHiveBoxKey();
-    } catch (e, stack) {
-      // Keystore tamamen başarısız olursa (örn. Android keychain bozulması,
-      // iOS Keychain access denied) uygulamayı çökertmek yerine ephemeral
-      // (session-only) anahtarla devam et. Önceki session verisi okunamaz
-      // ama uygulama açılır ve kullanıcı yeniden yapılandırabilir.
-      AppLogger.e(
-        'SecureStorage init failed — using ephemeral Hive key '
-        '(previous session data will be unreadable)',
-        error: e,
-        stackTrace: stack,
+      // Core initialization that must happen before runApp.
+      // Hive's encryption key lives in flutter_secure_storage, so we resolve it
+      // here directly (DI is not configured yet at this point).
+      const secureStorage = FlutterSecureStorage(
+        iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
       );
-      final rng = Random.secure();
-      hiveKey = List<int>.generate(32, (_) => rng.nextInt(256));
-    }
-    await HiveStorageService.init(hiveKey);
-    await configureDependencies();
+      List<int> hiveKey;
+      try {
+        hiveKey =
+            await const SecureStorageService(
+              secureStorage,
+            ).getOrCreateHiveBoxKey();
+      } catch (e, stack) {
+        // Keystore tamamen başarısız olursa (örn. Android keychain bozulması,
+        // iOS Keychain access denied) uygulamayı çökertmek yerine ephemeral
+        // (session-only) anahtarla devam et. Önceki session verisi okunamaz
+        // ama uygulama açılır ve kullanıcı yeniden yapılandırabilir.
+        AppLogger.e(
+          'SecureStorage init failed — using ephemeral Hive key '
+          '(previous session data will be unreadable)',
+          error: e,
+          stackTrace: stack,
+        );
+        final rng = Random.secure();
+        hiveKey = List<int>.generate(32, (_) => rng.nextInt(256));
+      }
+      await HiveStorageService.init(hiveKey);
+      await configureDependencies();
 
-    runApp(const TorcavApp());
-  }, (error, stack) {
-    AppLogger.e('Zone error', error: error, stackTrace: stack);
-  });
+      runApp(const TorcavApp());
+    },
+    (error, stack) {
+      AppLogger.e('Zone error', error: error, stackTrace: stack);
+    },
+  );
 }
 
 class _NeonErrorWidget extends StatelessWidget {
@@ -99,6 +103,7 @@ class _NeonErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Material(
       color: const Color(0xFF0A0A0F),
       child: Padding(
@@ -113,7 +118,7 @@ class _NeonErrorWidget extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              context.l10n.renderingErrorTitle,
+              l10n?.renderingErrorTitle ?? 'RENDERING FAILURE',
               style: GoogleFonts.orbitron(
                 color: const Color(0xFFFF4444),
                 fontSize: 14,
@@ -124,7 +129,8 @@ class _NeonErrorWidget extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               kReleaseMode
-                  ? context.l10n.renderingErrorBody
+                  ? (l10n?.renderingErrorBody ??
+                      'An unexpected system error occurred.')
                   : details.exceptionAsString(),
               style: GoogleFonts.rajdhani(
                 color: const Color(0xFF888888),

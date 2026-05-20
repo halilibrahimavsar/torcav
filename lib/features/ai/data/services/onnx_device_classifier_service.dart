@@ -13,6 +13,18 @@ import '../../../network_scan/domain/entities/host_scan_result.dart';
 import '../../domain/services/device_classifier.dart';
 import '../stores/device_label_override_store.dart';
 
+/// Parameters for running the ONNX batch inference in an isolate.
+class _IsolateInferenceParams {
+  const _IsolateInferenceParams({
+    required this.modelPath,
+    required this.hosts,
+    required this.features,
+  });
+  final String modelPath;
+  final List<HostScanResult> hosts;
+  final List<Float32List> features;
+}
+
 /// Runs the device classifier ONNX model on-device.
 ///
 /// Loaded once as a lazy singleton and reused for all classifications.
@@ -22,6 +34,7 @@ class OnnxDeviceClassifierService {
 
   final DeviceLabelOverrideStore _overrideStore;
   OrtSession? _session;
+  String? _modelPath;
   bool _initFailed = false;
   Completer<void>? _initCompleter;
 
@@ -48,18 +61,132 @@ class OnnxDeviceClassifierService {
   ) async {
     if (hosts.isEmpty) return [];
 
-    // Feature extraction is pure Dart — safe to run in an isolate.
-    // ONNX inference must stay on the main isolate (native handle), so we
-    // extract features in parallel and run inference sequentially.
-    final features = await Isolate.run(() {
-      return hosts.map(DeviceFeatureExtractor.extractFeatures).toList();
+    // Ensure session is initialized to get the model path
+    await _ensureSession();
+
+    final overrides = <String, String?>{};
+    for (final host in hosts) {
+      overrides[host.mac] = await _overrideStore.get(host.mac);
+    }
+
+    if (_modelPath == null) {
+      // Fallback if model failed to load
+      return hosts.map((h) {
+        final override = overrides[h.mac];
+        if (override != null) {
+          return DeviceClassification(deviceType: override, confidence: 1.0);
+        }
+        return _vendorHeuristic(h);
+      }).toList();
+    }
+
+    // Run feature extraction and ONNX inference in a single background isolate.
+    // Copy the model path into a local so the closure does not capture `this`
+    // (which holds the non-sendable OrtSession native handle).
+    final modelPath = _modelPath!;
+    final batchResults = await Isolate.run(() {
+      final features =
+          hosts.map(DeviceFeatureExtractor.extractFeatures).toList();
+      return _runBatchInferenceInIsolate(
+        _IsolateInferenceParams(
+          modelPath: modelPath,
+          hosts: hosts,
+          features: features,
+        ),
+      );
     });
 
     final results = <DeviceClassification?>[];
     for (var i = 0; i < hosts.length; i++) {
-      final result = await _classifyFeatures(features[i], hosts[i]);
-      results.add(result);
+      final override = overrides[hosts[i].mac];
+      if (override != null) {
+        results.add(
+          DeviceClassification(deviceType: override, confidence: 1.0),
+        );
+      } else {
+        results.add(batchResults[i]);
+      }
     }
+    return results;
+  }
+
+  static List<DeviceClassification?> _runBatchInferenceInIsolate(
+    _IsolateInferenceParams params,
+  ) {
+    OrtEnv.instance.init();
+    OrtSession? session;
+    OrtSessionOptions? sessionOptions;
+
+    try {
+      sessionOptions = OrtSessionOptions();
+      session = OrtSession.fromFile(File(params.modelPath), sessionOptions);
+    } catch (_) {
+      // Failed to load model in isolate, fallback to heuristic for all
+      return params.hosts.map((h) => _vendorHeuristic(h)).toList();
+    }
+
+    final results = <DeviceClassification?>[];
+
+    try {
+      for (var i = 0; i < params.hosts.length; i++) {
+        final host = params.hosts[i];
+        final features = params.features[i];
+
+        final inputOrt = OrtValueTensor.createTensorWithDataList(features, [
+          1,
+          DeviceFeatureExtractor.featureDim,
+        ]);
+        final runOptions = OrtRunOptions();
+        try {
+          final outputs = session.run(runOptions, {'features': inputOrt});
+          try {
+            if (outputs.isEmpty || outputs.first == null) {
+              results.add(_vendorHeuristic(host));
+              continue;
+            }
+
+            final raw = outputs.first!.value;
+            List<double> logits;
+
+            if (raw is List<List<double>> && raw.isNotEmpty) {
+              logits = raw.first;
+            } else if (raw is List) {
+              logits = raw.map((e) => e is num ? e.toDouble() : 0.0).toList();
+            } else {
+              results.add(_vendorHeuristic(host));
+              continue;
+            }
+
+            if (logits.isEmpty) {
+              results.add(_vendorHeuristic(host));
+              continue;
+            }
+
+            final result = DeviceFeatureExtractor.decodeOutput(logits);
+            if (result.confidence >= _confidenceThreshold) {
+              results.add(result);
+            } else {
+              results.add(_vendorHeuristic(host) ?? result);
+            }
+          } finally {
+            for (final tensor in outputs) {
+              tensor?.release();
+            }
+          }
+        } catch (_) {
+          results.add(_vendorHeuristic(host));
+        } finally {
+          inputOrt.release();
+          runOptions.release();
+        }
+      }
+    } finally {
+      session.release();
+      sessionOptions.release();
+      // We don't release OrtEnv in the isolate as it could be tricky,
+      // but the isolate will die anyway.
+    }
+
     return results;
   }
 
@@ -281,6 +408,8 @@ class OnnxDeviceClassifierService {
       );
       final tempDir = await getTemporaryDirectory();
       final modelFile = File(p.join(tempDir.path, 'device_classifier.onnx'));
+
+      _modelPath = modelFile.path;
 
       // Check if file already exists to avoid redundant writes
       if (!await modelFile.exists()) {

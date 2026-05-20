@@ -1,25 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../core/extensions/context_extensions.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../wifi_scan/domain/entities/wifi_network.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';
-import '../../domain/entities/vulnerability.dart';
-import '../../domain/usecases/security_analyzer.dart';
-import '../../domain/usecases/dns_leak_test_usecase.dart';
 import '../../domain/entities/dns_test_result.dart';
+import '../../domain/entities/vulnerability.dart';
+import '../../domain/usecases/dns_leak_test_usecase.dart';
+import '../../domain/usecases/security_analyzer.dart';
 import '../extensions/vulnerability_extensions.dart';
 
-class VulnerabilityLabPage extends StatefulWidget {
-  const VulnerabilityLabPage({super.key});
+/// On-demand deep security audit, embedded inside the Security Center.
+///
+/// Runs the encryption, DNS-leak and network-environment tests that used to
+/// live in the standalone Vulnerability Lab. The always-on Security Center
+/// covers live posture; this section is the manual, comprehensive sweep.
+class SecurityAuditSection extends StatefulWidget {
+  const SecurityAuditSection({super.key});
 
   @override
-  State<VulnerabilityLabPage> createState() => _VulnerabilityLabPageState();
+  State<SecurityAuditSection> createState() => _SecurityAuditSectionState();
 }
 
-class _VulnerabilityLabPageState extends State<VulnerabilityLabPage> {
+class _SecurityAuditSectionState extends State<SecurityAuditSection> {
   final SecurityAnalyzer _analyzer = getIt<SecurityAnalyzer>();
   final ScanSessionStore _sessionStore = getIt<ScanSessionStore>();
   final DnsLeakTestUsecase _dnsTest = getIt<DnsLeakTestUsecase>();
@@ -50,7 +55,6 @@ class _VulnerabilityLabPageState extends State<VulnerabilityLabPage> {
       final assessment = _analyzer.assess(net, localBaseline: networks);
       encryptionFindings.addAll(assessment.findings);
     }
-    // Deduplicate by title
     final seen = <String>{};
     final uniqueFindings =
         encryptionFindings.where((v) {
@@ -172,139 +176,119 @@ class _VulnerabilityLabPageState extends State<VulnerabilityLabPage> {
       (sum, s) => sum + s.findings.length,
     );
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          l10n.vulnLabTitle,
-          style: GoogleFonts.orbitron(
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        NeonSectionHeader(
+          label: l10n.vulnLabTitle,
+          icon: Icons.biotech_rounded,
+          color: scheme.secondary,
+        ),
+        const SizedBox(height: 12),
+
+        // ── Run control ──
+        NeonCard(
+          glowColor: scheme.primary,
+          glowIntensity: 0.08,
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Text(
+                l10n.vulnLabSubtitle,
+                style: GoogleFonts.rajdhani(
+                  color: scheme.onSurfaceVariant,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              if (networks.isEmpty)
+                Text(
+                  l10n.vulnLabNoNetwork,
+                  style: GoogleFonts.rajdhani(
+                    color: scheme.error,
+                    fontSize: 13,
+                  ),
+                  textAlign: TextAlign.center,
+                )
+              else
+                _isRunning
+                    ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: scheme.primary,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          l10n.vulnLabRunning,
+                          style: GoogleFonts.orbitron(
+                            color: scheme.primary.withValues(alpha: 0.6),
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    )
+                    : NeonButton(
+                      onPressed: _runAllTests,
+                      label: l10n.vulnLabRunAll,
+                      icon: Icons.play_arrow_rounded,
+                      color: scheme.primary,
+                    ),
+            ],
           ),
         ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-        children: [
-          // ── Header card ──
-          StaggeredEntry(
-            delay: const Duration(milliseconds: 50),
-            child: NeonCard(
-              glowColor: scheme.primary,
-              glowIntensity: 0.08,
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  Icon(Icons.biotech_rounded, color: scheme.primary, size: 48),
-                  const SizedBox(height: 12),
-                  Text(
-                    l10n.vulnLabSubtitle,
-                    style: GoogleFonts.rajdhani(
-                      color: scheme.onSurfaceVariant,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+
+        // ── Summary ──
+        if (_hasRun && !_isRunning) ...[
+          const SizedBox(height: 16),
+          NeonCard(
+            glowColor: totalFindings > 0 ? scheme.error : scheme.tertiary,
+            glowIntensity: 0.10,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              children: [
+                Icon(
+                  totalFindings > 0
+                      ? Icons.warning_amber_rounded
+                      : Icons.verified_rounded,
+                  color: totalFindings > 0 ? scheme.error : scheme.tertiary,
+                  size: 28,
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Text(
+                    totalFindings > 0
+                        ? l10n.vulnLabFoundCount(totalFindings)
+                        : l10n.vulnLabAllClear,
+                    style: GoogleFonts.orbitron(
+                      color:
+                          totalFindings > 0 ? scheme.error : scheme.tertiary,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 16),
-                  if (networks.isEmpty)
-                    Text(
-                      l10n.vulnLabNoNetwork,
-                      style: GoogleFonts.rajdhani(
-                        color: scheme.error,
-                        fontSize: 13,
-                      ),
-                      textAlign: TextAlign.center,
-                    )
-                  else
-                    _isRunning
-                        ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: scheme.primary,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Text(
-                              l10n.vulnLabRunning,
-                              style: GoogleFonts.orbitron(
-                                color: scheme.primary.withValues(alpha: 0.6),
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        )
-                        : NeonButton(
-                          onPressed: _runAllTests,
-                          label: l10n.vulnLabRunAll,
-                          icon: Icons.play_arrow_rounded,
-                          color: scheme.primary,
-                        ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 20),
-
-          // ── Summary ──
-          if (_hasRun && !_isRunning) ...[
-            StaggeredEntry(
-              delay: const Duration(milliseconds: 100),
-              child: NeonCard(
-                glowColor: totalFindings > 0 ? scheme.error : scheme.tertiary,
-                glowIntensity: 0.10,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      totalFindings > 0
-                          ? Icons.warning_amber_rounded
-                          : Icons.verified_rounded,
-                      color: totalFindings > 0 ? scheme.error : scheme.tertiary,
-                      size: 28,
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Text(
-                        totalFindings > 0
-                            ? l10n.vulnLabFoundCount(totalFindings)
-                            : l10n.vulnLabAllClear,
-                        style: GoogleFonts.orbitron(
-                          color:
-                              totalFindings > 0
-                                  ? scheme.error
-                                  : scheme.tertiary,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-          ],
-
-          // ── Test sections ──
-          ..._results.asMap().entries.map((entry) {
-            final idx = entry.key;
-            final section = entry.value;
-            return StaggeredEntry(
-              delay: Duration(milliseconds: 150 + idx * 100),
-              child: _buildTestSection(context, section),
-            );
-          }),
         ],
-      ),
+
+        // ── Test sections ──
+        ..._results.map(
+          (section) => Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: _buildTestSection(context, section),
+          ),
+        ),
+      ],
     );
   }
 
@@ -354,7 +338,6 @@ class _VulnerabilityLabPageState extends State<VulnerabilityLabPage> {
               child: _VulnerabilityCard(vulnerability: v),
             ),
           ),
-        const SizedBox(height: 20),
       ],
     );
   }
@@ -387,9 +370,6 @@ class _VulnerabilityCard extends StatelessWidget {
     };
   }
 
-  String _severityLabel(BuildContext context) =>
-      vulnerability.severity.localized(context);
-
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
@@ -412,7 +392,7 @@ class _VulnerabilityCard extends StatelessWidget {
                   border: Border.all(color: color.withValues(alpha: 0.4)),
                 ),
                 child: Text(
-                  _severityLabel(context),
+                  vulnerability.severity.localized(context),
                   style: GoogleFonts.orbitron(
                     color: color,
                     fontSize: 8,

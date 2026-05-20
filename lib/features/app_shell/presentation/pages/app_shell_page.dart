@@ -10,13 +10,12 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../dashboard/presentation/pages/dashboard_page.dart';
-import '../../../network_scan/presentation/pages/network_scan_page.dart';
+import '../../../network_scan/presentation/pages/lan_discovery_page.dart';
 import '../../../reports/presentation/pages/reports_page.dart';
 import '../../../security/presentation/pages/security_center_page.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
-import '../../../monitoring/presentation/pages/topology_page.dart';
 import '../../../monitoring/presentation/pages/spectrum_optimization_page.dart';
-import '../../../performance/presentation/pages/performance_page.dart';
+import '../../../performance/presentation/pages/speed_hub_page.dart';
 import '../../../ping_stabilizer/presentation/pages/ping_stabilizer_page.dart';
 import '../../../heatmap/presentation/pages/heatmap_page.dart';
 import '../../../wifi_scan/presentation/pages/wifi_scan_page.dart';
@@ -140,9 +139,8 @@ class _AppShellPageState extends State<AppShellPage> with RestorationMixin {
       case 'operations':
         _onTabSelected(2);
       case 'monitor/topology':
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (context) => const TopologyRoute()));
+        // Topology is now the Map view of the LAN discovery tab.
+        _onTabSelected(1);
       case 'monitor/channels':
       case 'monitor/signal':
         // Signal Graph requires a selected network; route to the Spectrum
@@ -154,7 +152,7 @@ class _AppShellPageState extends State<AppShellPage> with RestorationMixin {
         );
       case 'performance':
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const PerformancePage()),
+          MaterialPageRoute(builder: (context) => const SpeedHubPage()),
         );
       case 'heatmap':
         Navigator.of(
@@ -308,7 +306,7 @@ class _DiscoveryTabPageState extends State<_DiscoveryTabPage>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [WifiScanPage(), NetworkScanPage()],
+        children: const [WifiScanPage(), LanDiscoveryPage()],
       ),
     );
   }

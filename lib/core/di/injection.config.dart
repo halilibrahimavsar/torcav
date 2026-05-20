@@ -31,6 +31,8 @@ import '../../features/diagnostics/domain/services/diagnosis_explainer.dart'
     as _i972;
 import '../../features/diagnostics/domain/usecases/diagnose_usecase.dart'
     as _i350;
+import '../../features/diagnostics/domain/usecases/get_network_health_score_usecase.dart'
+    as _i856;
 import '../../features/diagnostics/presentation/bloc/diagnostics_bloc.dart'
     as _i516;
 import '../../features/heatmap/data/datasources/ar_camera_pose_datasource.dart'
@@ -241,6 +243,7 @@ import '../../features/wifi_scan/presentation/bloc/wifi_scan_bloc.dart'
     as _i968;
 import '../l10n/locale_cubit.dart' as _i171;
 import '../services/data_retention_service.dart' as _i533;
+import '../services/image_watermark_service.dart' as _i429;
 import '../services/notification_service.dart' as _i941;
 import '../storage/app_database.dart' as _i690;
 import '../storage/hive_storage_service.dart' as _i131;
@@ -323,6 +326,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1014.PingStabilizerChannel>(
       () => _i1014.PingStabilizerChannel(),
       dispose: (i) => i.dispose(),
+    );
+    gh.lazySingleton<_i856.GetNetworkHealthScoreUseCase>(
+      () => _i856.GetNetworkHealthScoreUseCase(),
+    );
+    gh.lazySingleton<_i429.ImageWatermarkService>(
+      () => _i429.ImageWatermarkService(),
     );
     gh.lazySingleton<_i683.OuiLookup>(
       () => _i683.OuiLookup(gh<_i1050.OuiDatabaseService>()),
@@ -644,19 +653,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i131.HiveStorageService>(),
       ),
     );
-    gh.factory<_i58.DashboardCubit>(
-      () => _i58.DashboardCubit(
-        gh<_i846.NetworkInfo>(),
-        gh<_i797.ScanSessionStore>(),
-        gh<_i471.SecurityAnalyzer>(),
-        gh<_i640.NetworkContextResolver>(),
-        gh<_i955.ScoreHistoryLocalDataSource>(),
-        gh<_i969.ChannelRatingEngine>(),
-        gh<_i192.ConnectedSignalService>(),
-        gh<_i578.SecurityRepository>(),
-        gh<_i885.SpeedTestHistoryRepository>(),
-      ),
-    );
     gh.lazySingleton<_i422.GetTopologyUseCase>(
       () => _i422.GetTopologyUseCase(gh<_i244.TopologyRepository>()),
     );
@@ -688,6 +684,21 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i869.HeatmapManager>(),
         gh<_i1072.SignalTracker>(),
         gh<_i904.SurveyGuidanceService>(),
+      ),
+    );
+    gh.factory<_i58.DashboardCubit>(
+      () => _i58.DashboardCubit(
+        gh<_i846.NetworkInfo>(),
+        gh<_i797.ScanSessionStore>(),
+        gh<_i471.SecurityAnalyzer>(),
+        gh<_i640.NetworkContextResolver>(),
+        gh<_i955.ScoreHistoryLocalDataSource>(),
+        gh<_i969.ChannelRatingEngine>(),
+        gh<_i192.ConnectedSignalService>(),
+        gh<_i578.SecurityRepository>(),
+        gh<_i885.SpeedTestHistoryRepository>(),
+        gh<_i350.DiagnoseUseCase>(),
+        gh<_i856.GetNetworkHealthScoreUseCase>(),
       ),
     );
     gh.lazySingleton<_i332.ChannelRatingRepository>(

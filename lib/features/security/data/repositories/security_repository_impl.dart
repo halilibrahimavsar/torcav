@@ -412,25 +412,21 @@ class SecurityRepositoryImpl implements SecurityRepository {
         final trustedNow = trustedProfilesNow.firstWhere(
           (p) => p.bssid.toLowerCase() == connectedBssid.toLowerCase(),
           orElse:
-              () => trustedProfilesNow.firstWhere(
-                (_) => false,
-                orElse:
-                    () => TrustedNetworkProfile(
-                      ssid: '',
-                      bssid: '',
-                      fingerprint: const NetworkFingerprint(
-                        ssid: '',
-                        bssid: '',
-                        security: '',
-                        vendor: '',
-                        isHidden: false,
-                        channel: 0,
-                        frequency: 0,
-                        bandLabel: '',
-                      ),
-                      trustedAt: DateTime.fromMillisecondsSinceEpoch(0),
-                      lastConfirmedAt: DateTime.fromMillisecondsSinceEpoch(0),
-                    ),
+              () => TrustedNetworkProfile(
+                ssid: '',
+                bssid: '',
+                fingerprint: const NetworkFingerprint(
+                  ssid: '',
+                  bssid: '',
+                  security: '',
+                  vendor: '',
+                  isHidden: false,
+                  channel: 0,
+                  frequency: 0,
+                  bandLabel: '',
+                ),
+                trustedAt: DateTime.fromMillisecondsSinceEpoch(0),
+                lastConfirmedAt: DateTime.fromMillisecondsSinceEpoch(0),
               ),
         );
         if (trustedNow.bssid.isNotEmpty) {

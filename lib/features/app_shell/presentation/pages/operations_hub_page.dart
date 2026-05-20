@@ -5,17 +5,15 @@ import 'package:torcav/core/l10n/app_localizations.dart';
 import '../../../../core/presentation/widgets/cyber_neomorphic_button.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
-import '../../../diagnostics/presentation/pages/speed_doctor_page.dart';
 import '../../../heatmap/presentation/pages/heatmap_page.dart';
 import '../../../monitoring/presentation/pages/spectrum_optimization_page.dart';
-import '../../../monitoring/presentation/pages/topology_page.dart';
-import '../../../performance/presentation/pages/performance_page.dart';
+import '../../../performance/presentation/pages/speed_hub_page.dart';
 import '../../../ping_stabilizer/presentation/pages/ping_stabilizer_page.dart';
 import '../../../reports/presentation/pages/reports_page.dart';
-import '../../../security/presentation/pages/router_hardening_wizard_page.dart';
 import '../../../security/presentation/pages/security_center_page.dart';
-import '../../../security/presentation/pages/vulnerability_lab_page.dart';
 
+/// Operations hub — every command center grouped by the question it answers,
+/// so the user can find a feature by its purpose rather than scan a flat grid.
 class OperationsHubPage extends StatelessWidget {
   const OperationsHubPage({
     super.key,
@@ -27,159 +25,86 @@ class OperationsHubPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
         children: [
-          // ── COMMAND CENTERS ──
-          StaggeredEntry(
-            delay: const Duration(milliseconds: 50),
-            child: NeonSectionHeader(
-              label: l10n.commandCenters,
-              icon: Icons.hub_rounded,
-              color: Theme.of(context).colorScheme.secondary,
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          GridView.count(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: 2,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
-            children: [
+          // ── SECURITY ──
+          _GroupHeader(label: l10n.opsGroupSecurity, color: scheme.secondary),
+          _CardGrid(
+            cards: [
               _OperationCard(
-                title: l10n.performanceTitle,
-                subtitle: l10n.speedTestHeader,
-                icon: Icons.speed_rounded,
-                color: Theme.of(context).colorScheme.primary,
-                onTap:
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const PerformancePage(),
-                      ),
-                    ),
-                delay: 100,
-              ),
-              _OperationCard(
-                title: l10n.defenseTitle,
-                subtitle: l10n.activeShielding,
+                title: l10n.securityLabel,
+                subtitle: l10n.opsSecuritySubtitle,
                 icon: Icons.security_rounded,
                 color: Colors.indigoAccent,
-                onTap:
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const SecurityCenterPage(),
-                      ),
-                    ),
-                delay: 200,
+                onTap: () => _push(context, const SecurityCenterPage()),
+                delay: 100,
               ),
+            ],
+          ),
+
+          // ── SPEED & CONNECTION ──
+          _GroupHeader(label: l10n.opsGroupSpeed, color: scheme.primary),
+          _CardGrid(
+            cards: [
               _OperationCard(
-                title: l10n.topologyLabel,
-                subtitle: l10n.networkMesh,
-                icon: Icons.device_hub_rounded,
-                color: Theme.of(context).colorScheme.tertiary,
-                onTap:
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const TopologyPage(),
-                      ),
-                    ),
-                delay: 300,
-              ),
-              _OperationCard(
-                title: l10n.logisticsTitle,
-                subtitle: l10n.intelMetrics,
-                icon: Icons.analytics_outlined,
-                color: Theme.of(context).colorScheme.outline,
-                onTap:
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const ReportsPage(),
-                      ),
-                    ),
-                delay: 400,
-              ),
-              _OperationCard(
-                title: l10n.heatmapTooltip,
-                subtitle: l10n.temporalHeatmap,
-                icon: Icons.map_rounded,
-                color: Colors.cyanAccent,
-                onTap:
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const HeatmapPage(),
-                      ),
-                    ),
-                delay: 450,
-              ),
-              _OperationCard(
-                title: l10n.vulnLabTitle,
-                subtitle: l10n.vulnLabSubtitle,
-                icon: Icons.biotech_rounded,
-                color: const Color(0xFFFF6B35),
-                onTap:
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const VulnerabilityLabPage(),
-                      ),
-                    ),
-                delay: 500,
-              ),
-              _OperationCard(
-                title: l10n.spectrumOptimizationCaps,
-                subtitle: l10n.spectrumOptimizationOpsSubtitle,
-                icon: Icons.auto_graph_rounded,
-                color: AppColors.neonPurple,
-                onTap:
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const SpectrumOptimizationPage(),
-                      ),
-                    ),
-                delay: 550,
-              ),
-              _OperationCard(
-                title: l10n.hardenRouterTitle,
-                subtitle: l10n.hardenRouterSubtitle,
-                icon: Icons.shield_moon_rounded,
-                color: Colors.greenAccent,
-                onTap:
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const RouterHardeningWizardPage(),
-                      ),
-                    ),
-                delay: 600,
-              ),
-              _OperationCard(
-                title: l10n.speedDoctorOpsTile,
-                subtitle: l10n.speedDoctorOpsSubtitle,
-                icon: Icons.medical_services_rounded,
-                color: AppColors.neonPurple,
-                onTap:
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const SpeedDoctorPage(),
-                      ),
-                    ),
-                delay: 650,
+                title: l10n.speedHubTitle,
+                subtitle: l10n.opsSpeedSubtitle,
+                icon: Icons.speed_rounded,
+                color: scheme.primary,
+                onTap: () => _push(context, const SpeedHubPage()),
+                delay: 150,
               ),
               _OperationCard(
                 title: l10n.pingStabilizerTitle,
                 subtitle: l10n.pingStabilizerSubtitle,
                 icon: Icons.shield_rounded,
                 color: AppColors.neonPurple,
+                onTap: () => _push(context, const PingStabilizerPage()),
+                delay: 200,
+              ),
+            ],
+          ),
+
+          // ── COVERAGE ──
+          _GroupHeader(label: l10n.opsGroupCoverage, color: scheme.tertiary),
+          _CardGrid(
+            cards: [
+              _OperationCard(
+                title: l10n.spectrumOptimizationCaps,
+                subtitle: l10n.spectrumOptimizationOpsSubtitle,
+                icon: Icons.auto_graph_rounded,
+                color: AppColors.neonPurple,
                 onTap:
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const PingStabilizerPage(),
-                      ),
-                    ),
-                delay: 700,
+                    () => _push(context, const SpectrumOptimizationPage()),
+                delay: 250,
+              ),
+              _OperationCard(
+                title: l10n.heatmapTooltip,
+                subtitle: l10n.opsHeatmapSubtitle,
+                icon: Icons.map_rounded,
+                color: Colors.cyanAccent,
+                onTap: () => _push(context, const HeatmapPage()),
+                delay: 300,
+              ),
+            ],
+          ),
+
+          // ── REPORTS ──
+          _GroupHeader(label: l10n.opsGroupReports, color: scheme.outline),
+          _CardGrid(
+            cards: [
+              _OperationCard(
+                title: l10n.reportsTitle,
+                subtitle: l10n.opsReportsSubtitle,
+                icon: Icons.analytics_outlined,
+                color: scheme.outline,
+                onTap: () => _push(context, const ReportsPage()),
+                delay: 350,
               ),
             ],
           ),
@@ -187,9 +112,53 @@ class OperationsHubPage extends StatelessWidget {
       ),
     );
   }
+
+  void _push(BuildContext context, Widget page) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+  }
 }
 
-// ── Existing widgets ────────────────────────────────────────────────────────
+class _GroupHeader extends StatelessWidget {
+  const _GroupHeader({required this.label, required this.color});
+
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8, bottom: 16),
+      child: StaggeredEntry(
+        delay: const Duration(milliseconds: 50),
+        child: NeonSectionHeader(
+          label: label,
+          icon: Icons.hub_rounded,
+          color: color,
+        ),
+      ),
+    );
+  }
+}
+
+class _CardGrid extends StatelessWidget {
+  const _CardGrid({required this.cards});
+
+  final List<Widget> cards;
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 2,
+      mainAxisSpacing: 16,
+      crossAxisSpacing: 16,
+      children: cards,
+    );
+  }
+}
+
+// ── Operation card ──────────────────────────────────────────────────────────
 
 class _OperationCard extends StatelessWidget {
   final String title;
@@ -240,14 +209,17 @@ class _OperationCard extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 2),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.rajdhani(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                fontSize: 9,
-                fontWeight: FontWeight.w600,
+            const SizedBox(height: 4),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: Text(
+                subtitle,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.rajdhani(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],

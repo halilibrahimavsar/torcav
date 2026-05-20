@@ -5003,11 +5003,11 @@
     "@heatmapSave": {
         "description": "Label for heatmapSave"
     },
-    "heatmapShareSubject": "Torcav WiFi Heatmap",
+    "heatmapShareSubject": "Mein Torcav AR WLAN-Scan",
     "@heatmapShareSubject": {
         "description": "Label for heatmapShareSubject"
     },
-    "heatmapShareText": "Sharing my WiFi heatmap result.",
+    "heatmapShareText": "Ich habe gerade mein Heim-WLAN mit Torcav kartiert! Schau dir die toten Winkel an. Finde heraus, warum dein Internet langsam ist und lade Torcav herunter: torcav.com",
     "@heatmapShareText": {
         "description": "Label for heatmapShareText"
     },
@@ -7013,5 +7013,32 @@
     "securityErrorMessage": "Sicherheitsprüfung fehlgeschlagen.",
     "@securityErrorMessage": {
         "description": "Shown when a SecurityFailure surfaces."
-    }
+    },
+    "recommendedActionsTitle": "EMPFOHLENE AKTIONEN",
+    "ptsLabel": "PKT",
+    "hardenRouterTaskTitle": "Router härten",
+    "hardenRouterTaskDesc": "Sichern Sie Ihren Router gegen häufige Schwachstellen.",
+    "enableWpa3TaskTitle": "WPA3 aktivieren",
+    "enableWpa3TaskDesc": "Wechseln Sie zu WPA3 für stärkere Verschlüsselung.",
+    "disableWpsTaskTitle": "WPS deaktivieren",
+    "disableWpsTaskDesc": "Deaktivieren Sie WPS, um Brute-Force-Angriffe zu verhindern.",
+    "changeDefaultPasswordsTaskTitle": "Standardpasswörter ändern",
+    "changeDefaultPasswordsTaskDesc": "Ändern Sie die standardmäßigen Admin-Zugangsdaten.",
+    "runSpeedTestTaskTitle": "Geschwindigkeitstest durchführen",
+    "runSpeedTestTaskDesc": "Überprüfen Sie, ob Sie die bezahlte Geschwindigkeit erhalten.",
+    "optimizeChannelTaskTitle": "WLAN-Kanal optimieren",
+    "optimizeChannelTaskDesc": "Wechseln Sie zu einem weniger überlasteten WLAN-Kanal.",
+    "lanViewListLabel": "Liste",
+    "lanViewMapLabel": "Karte",
+    "speedHubTitle": "GESCHWINDIGKEIT",
+    "speedModeQuickTest": "Schnelltest",
+    "speedModeDiagnose": "Diagnose",
+    "opsGroupSecurity": "SICHERHEIT",
+    "opsGroupSpeed": "GESCHWINDIGKEIT & VERBINDUNG",
+    "opsGroupCoverage": "ABDECKUNG",
+    "opsGroupReports": "BERICHTE",
+    "opsSpeedSubtitle": "Geschwindigkeitstest & Diagnose bei langsamem Internet",
+    "opsSecuritySubtitle": "Bedrohungen, Verschlüsselung & Tiefenprüfung",
+    "opsHeatmapSubtitle": "Abdeckung kartieren, Funklöcher finden",
+    "opsReportsSubtitle": "Netzwerk-Zustandsbericht exportieren"
 }

@@ -5003,11 +5003,11 @@
     "@heatmapSave": {
         "description": "Label for heatmapSave"
     },
-    "heatmapShareSubject": "Torcav WiFi Heatmap",
+    "heatmapShareSubject": "My Torcav AR Wi-Fi Scan",
     "@heatmapShareSubject": {
         "description": "Label for heatmapShareSubject"
     },
-    "heatmapShareText": "Sharing my WiFi heatmap result.",
+    "heatmapShareText": "I just mapped my home Wi-Fi with Torcav! Check out the dead zones. Find out why your internet is slow and download Torcav today: torcav.com",
     "@heatmapShareText": {
         "description": "Label for heatmapShareText"
     },
@@ -7013,5 +7013,32 @@
     "securityErrorMessage": "Security check failed.",
     "@securityErrorMessage": {
         "description": "Shown when a SecurityFailure surfaces."
-    }
+    },
+    "recommendedActionsTitle": "RECOMMENDED ACTIONS",
+    "ptsLabel": "PTS",
+    "hardenRouterTaskTitle": "Harden Router",
+    "hardenRouterTaskDesc": "Secure your router against common vulnerabilities.",
+    "enableWpa3TaskTitle": "Enable WPA3",
+    "enableWpa3TaskDesc": "Upgrade to WPA3 for stronger encryption.",
+    "disableWpsTaskTitle": "Disable WPS",
+    "disableWpsTaskDesc": "Disable WPS to prevent brute-force PIN attacks.",
+    "changeDefaultPasswordsTaskTitle": "Change Default Passwords",
+    "changeDefaultPasswordsTaskDesc": "Change default admin credentials.",
+    "runSpeedTestTaskTitle": "Run Speed Test",
+    "runSpeedTestTaskDesc": "Check if you are getting the speed you pay for.",
+    "optimizeChannelTaskTitle": "Optimize WiFi Channel",
+    "optimizeChannelTaskDesc": "Switch to a less congested WiFi channel.",
+    "lanViewListLabel": "List",
+    "lanViewMapLabel": "Map",
+    "speedHubTitle": "SPEED",
+    "speedModeQuickTest": "Quick Test",
+    "speedModeDiagnose": "Diagnose",
+    "opsGroupSecurity": "SECURITY",
+    "opsGroupSpeed": "SPEED & CONNECTION",
+    "opsGroupCoverage": "COVERAGE",
+    "opsGroupReports": "REPORTS",
+    "opsSpeedSubtitle": "Speed test & slow-internet diagnosis",
+    "opsSecuritySubtitle": "Threats, encryption & deep audit",
+    "opsHeatmapSubtitle": "Map coverage, find dead zones",
+    "opsReportsSubtitle": "Export a network health report"
 }

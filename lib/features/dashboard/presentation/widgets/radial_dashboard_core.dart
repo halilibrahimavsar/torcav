@@ -7,7 +7,7 @@ import '../../../../core/theme/app_theme.dart';
 import 'security_core.dart';
 
 /// Hero widget for the dashboard: the existing animated SecurityCore in the
-/// center, surrounded by four orbital arc-gauges representing security score,
+/// center, surrounded by four orbital arc-gauges representing health score,
 /// signal quality, threat count, and device count. Each gauge animates its
 /// fill on data change and runs a continuous tracker dot.
 class RadialDashboardCore extends StatefulWidget {
@@ -17,7 +17,7 @@ class RadialDashboardCore extends StatefulWidget {
   final bool isLoading;
 
   /// 0..100
-  final int securityScore;
+  final int healthScore;
 
   /// 0..100 (RSSI mapped to percent; null if unknown)
   final int? signalQualityPct;
@@ -28,7 +28,7 @@ class RadialDashboardCore extends StatefulWidget {
   /// Discovered device / network count from latest snapshot
   final int deviceCount;
 
-  final VoidCallback? onTapSecurity;
+  final VoidCallback? onTapHealth;
   final VoidCallback? onTapSignal;
   final VoidCallback? onTapThreats;
   final VoidCallback? onTapDevices;
@@ -39,11 +39,11 @@ class RadialDashboardCore extends StatefulWidget {
     required this.label,
     required this.subLabel,
     this.isLoading = false,
-    required this.securityScore,
+    required this.healthScore,
     required this.signalQualityPct,
     required this.threatCount,
     required this.deviceCount,
-    this.onTapSecurity,
+    this.onTapHealth,
     this.onTapSignal,
     this.onTapThreats,
     this.onTapDevices,
@@ -90,7 +90,7 @@ class _RadialDashboardCoreState extends State<RadialDashboardCore>
     final scheme = Theme.of(context).colorScheme;
     const size = 320.0;
 
-    final secColor = _scoreColor(widget.securityScore, scheme);
+    final secColor = _scoreColor(widget.healthScore, scheme);
     final sigColor = _signalColor(widget.signalQualityPct);
     final threatColor =
         widget.threatCount > 0
@@ -101,12 +101,12 @@ class _RadialDashboardCoreState extends State<RadialDashboardCore>
     final gauges = <_GaugeSpec>[
       _GaugeSpec(
         anglePos: -math.pi / 2, // top
-        valuePct: widget.securityScore / 100,
+        valuePct: widget.healthScore / 100,
         color: secColor,
-        icon: Icons.shield_rounded,
-        label: '${widget.securityScore}',
+        icon: Icons.health_and_safety_rounded,
+        label: '${widget.healthScore}',
         unit: '%',
-        onTap: widget.onTapSecurity,
+        onTap: widget.onTapHealth,
       ),
       _GaugeSpec(
         anglePos: 0, // right

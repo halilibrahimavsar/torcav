@@ -3630,10 +3630,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get heatmapSave => 'Save';
 
   @override
-  String get heatmapShareSubject => 'Torcav WiFi Heatmap';
+  String get heatmapShareSubject => 'Torcav AR Wi-Fi Taramam';
 
   @override
-  String get heatmapShareText => 'Sharing my WiFi heatmap result.';
+  String get heatmapShareText => 'Torcav ile evimin Wi-Fi haritasını çıkardım ve ölü noktaları buldum! Sizin internetiniz neden yavaş? Torcav\'ı indirin ve keşfedin: torcav.com';
 
   @override
   String get heatmapIssueTitle => 'Issue';
@@ -4931,4 +4931,85 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get securityErrorMessage => 'Güvenlik kontrolü başarısız.';
+
+  @override
+  String get recommendedActionsTitle => 'ÖNERİLEN EYLEMLER';
+
+  @override
+  String get ptsLabel => 'PUAN';
+
+  @override
+  String get hardenRouterTaskTitle => 'Yönlendiriciyi Güçlendir';
+
+  @override
+  String get hardenRouterTaskDesc => 'Yönlendiricinizi yaygın güvenlik açıklarına karşı güvenceye alın.';
+
+  @override
+  String get enableWpa3TaskTitle => 'WPA3\'ü Etkinleştir';
+
+  @override
+  String get enableWpa3TaskDesc => 'Daha güçlü şifreleme için WPA3\'e yükseltin.';
+
+  @override
+  String get disableWpsTaskTitle => 'WPS\'i Devre Dışı Bırak';
+
+  @override
+  String get disableWpsTaskDesc => 'Kaba kuvvet PIN saldırılarını önlemek için WPS\'i devre dışı bırakın.';
+
+  @override
+  String get changeDefaultPasswordsTaskTitle => 'Varsayılan Şifreleri Değiştir';
+
+  @override
+  String get changeDefaultPasswordsTaskDesc => 'Varsayılan yönetici kimlik bilgilerini değiştirin.';
+
+  @override
+  String get runSpeedTestTaskTitle => 'Hız Testi Çalıştır';
+
+  @override
+  String get runSpeedTestTaskDesc => 'Ödediğiniz hızı alıp almadığınızı kontrol edin.';
+
+  @override
+  String get optimizeChannelTaskTitle => 'WiFi Kanalını Optimize Et';
+
+  @override
+  String get optimizeChannelTaskDesc => 'Daha az sıkışık bir WiFi kanalına geçiş yapın.';
+
+  @override
+  String get lanViewListLabel => 'Liste';
+
+  @override
+  String get lanViewMapLabel => 'Harita';
+
+  @override
+  String get speedHubTitle => 'HIZ';
+
+  @override
+  String get speedModeQuickTest => 'Hızlı Test';
+
+  @override
+  String get speedModeDiagnose => 'Teşhis';
+
+  @override
+  String get opsGroupSecurity => 'GÜVENLİK';
+
+  @override
+  String get opsGroupSpeed => 'HIZ VE BAĞLANTI';
+
+  @override
+  String get opsGroupCoverage => 'KAPSAMA';
+
+  @override
+  String get opsGroupReports => 'RAPORLAR';
+
+  @override
+  String get opsSpeedSubtitle => 'Hız testi ve yavaş internet teşhisi';
+
+  @override
+  String get opsSecuritySubtitle => 'Tehditler, şifreleme ve derin denetim';
+
+  @override
+  String get opsHeatmapSubtitle => 'Kapsamı haritalayın, ölü bölgeleri bulun';
+
+  @override
+  String get opsReportsSubtitle => 'Ağ sağlık raporunu dışa aktarın';
 }
