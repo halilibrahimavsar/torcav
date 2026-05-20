@@ -87,8 +87,10 @@ void main() {
       expect:
           () => [
             NetworkScanInitial(),
-            NetworkScanLoading(),
-            const NetworkScanLoaded(devices: [], hosts: []),
+            isA<NetworkScanLoading>(),
+            isA<NetworkScanLoaded>()
+                .having((s) => s.devices, 'devices', isEmpty)
+                .having((s) => s.hosts, 'hosts', isEmpty),
           ],
     );
   });

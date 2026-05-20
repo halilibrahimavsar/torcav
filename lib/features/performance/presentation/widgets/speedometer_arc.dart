@@ -34,13 +34,28 @@ class _SpeedometerArcState extends State<SpeedometerArc>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
+  bool get _isRunning =>
+      widget.phase != SpeedTestPhase.idle &&
+      widget.phase != SpeedTestPhase.done;
+
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
-    )..repeat();
+    );
+    if (_isRunning) _controller.repeat();
+  }
+
+  @override
+  void didUpdateWidget(covariant SpeedometerArc oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_isRunning && !_controller.isAnimating) {
+      _controller.repeat();
+    } else if (!_isRunning && _controller.isAnimating) {
+      _controller.stop();
+    }
   }
 
   @override
@@ -53,6 +68,7 @@ class _SpeedometerArcState extends State<SpeedometerArc>
   Widget build(BuildContext context) {
     final dlColor = widget.downloadColor ?? AppColors.neonCyan;
     final ulColor = widget.uploadColor ?? AppColors.neonPurple;
+    final scheme = Theme.of(context).colorScheme;
 
     return TweenAnimationBuilder<double>(
       duration: const Duration(milliseconds: 800),
@@ -89,6 +105,20 @@ class _SpeedometerArcState extends State<SpeedometerArc>
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
+                      // ── Solid Backing Disc (occludes the animated bg) ──
+                      Positioned.fill(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: scheme.surface,
+                            border: Border.all(
+                              color: scheme.primary.withValues(alpha: 0.18),
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                      ),
+
                       // ── Gauge Base ──
                       AnimatedBuilder(
                         animation: _controller,
@@ -170,7 +200,7 @@ class _SpeedometerArcState extends State<SpeedometerArc>
             color: Colors.white,
           ),
           glowColor: centerColor,
-          glowRadius: 15,
+          glowRadius: 6,
         ),
         Text(
           'MBPS $centerLabel',
@@ -267,9 +297,6 @@ class _SpeedometerPainter extends CustomPainter {
     final dlProgress = (download / maxSpeed).clamp(0.0, 1.0);
     final ulProgress = (upload / maxSpeed).clamp(0.0, 1.0);
 
-    // ── Background Scanning Grid ──
-    _drawScanningGrid(canvas, center, radius, animationValue);
-
     // ── Outer Track Base ──
     final trackPaint =
         Paint()
@@ -342,42 +369,6 @@ class _SpeedometerPainter extends CustomPainter {
     _drawScale(canvas, center, radius, startAngle, sweepAngle);
   }
 
-  void _drawScanningGrid(
-    Canvas canvas,
-    Offset center,
-    double radius,
-    double anim,
-  ) {
-    final gridOpacity = 0.05 + (0.05 * math.sin(anim * math.pi * 2));
-    final gridPaint =
-        Paint()
-          ..color = dlColor.withValues(alpha: gridOpacity)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 0.5;
-
-    // Concentric circles
-    for (int i = 1; i <= 5; i++) {
-      canvas.drawCircle(center, radius * (i / 5), gridPaint);
-    }
-
-    // Radial scanning line
-    final scanAngle = (anim * 2 * math.pi);
-    final scanPaint =
-        Paint()
-          ..shader = SweepGradient(
-            colors: [
-              dlColor.withValues(alpha: 0),
-              dlColor.withValues(alpha: 0.15),
-              dlColor.withValues(alpha: 0),
-            ],
-            stops: const [0.0, 0.5, 1.0],
-            transform: GradientRotation(scanAngle - math.pi / 2),
-          ).createShader(Rect.fromCircle(center: center, radius: radius))
-          ..style = PaintingStyle.fill;
-
-    canvas.drawCircle(center, radius, scanPaint);
-  }
-
   void _drawProgressArc({
     required Canvas canvas,
     required Offset center,
@@ -396,10 +387,10 @@ class _SpeedometerPainter extends CustomPainter {
       sweepAngle,
       false,
       Paint()
-        ..color = color.withValues(alpha: 0.3)
+        ..color = color.withValues(alpha: 0.22)
         ..style = PaintingStyle.stroke
         ..strokeWidth = strokeWidth + 10
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8),
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3),
     );
 
     // 2. Main Gradient Arc
@@ -439,10 +430,10 @@ class _SpeedometerPainter extends CustomPainter {
     // Outer flare
     canvas.drawCircle(
       headPos,
-      strokeWidth * 1.5,
+      strokeWidth * 1.1,
       Paint()
         ..color = color.withValues(alpha: 0.5)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10),
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
     );
   }
 

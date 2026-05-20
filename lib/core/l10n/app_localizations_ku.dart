@@ -894,6 +894,12 @@ class AppLocalizationsKu extends AppLocalizations {
   String get nodesLabel => 'Navend';
 
   @override
+  String get scanElapsedLabel => 'Dem';
+
+  @override
+  String get scanRateLabel => 'Lez';
+
+  @override
   String get riskAvgLabel => 'Navîna Rîskê';
 
   @override

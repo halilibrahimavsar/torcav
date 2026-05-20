@@ -17,9 +17,6 @@ abstract class TopologyRepository {
   /// Uses ICMP if available, falls back to TCP connection.
   Future<Either<Failure, int>> pingNode(String ip);
 
-  /// Scans specific ports or a range on a host.
-  Future<Either<Failure, List<int>>> scanPorts(String ip, {List<int>? ports});
-
   /// Performs a reverse DNS lookup to find the hostname of an IP.
   Future<Either<Failure, String>> reverseLookup(String ip);
 

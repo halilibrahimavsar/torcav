@@ -894,6 +894,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get nodesLabel => 'Knoten';
 
   @override
+  String get scanElapsedLabel => 'Verstrichen';
+
+  @override
+  String get scanRateLabel => 'Rate';
+
+  @override
   String get riskAvgLabel => 'Risiko-Schnitt';
 
   @override

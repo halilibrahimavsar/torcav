@@ -162,38 +162,6 @@ class TopologyRepositoryImpl implements TopologyRepository {
   }
 
   @override
-  Future<Either<Failure, List<int>>> scanPorts(
-    String ip, {
-    List<int>? ports,
-  }) async {
-    final targetPorts = ports ?? [21, 22, 53, 80, 443, 3000, 8080];
-    final openPorts = <int>[];
-
-    try {
-      // Use shorter timeout for scanning to keep it responsive
-      final futures = targetPorts.map((port) async {
-        try {
-          final socket = await Socket.connect(
-            ip,
-            port,
-            timeout: const Duration(milliseconds: 300),
-          );
-          socket.destroy();
-          return port;
-        } catch (_) {
-          return null;
-        }
-      });
-
-      final results = await Future.wait(futures);
-      openPorts.addAll(results.whereType<int>());
-      return Right(openPorts);
-    } catch (e) {
-      return Left(ServerFailure(e.toString()));
-    }
-  }
-
-  @override
   Future<Either<Failure, String>> reverseLookup(String ip) async {
     try {
       final addresses = await InternetAddress.lookup(ip);

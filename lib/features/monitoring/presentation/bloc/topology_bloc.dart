@@ -40,21 +40,6 @@ class PingNodeEvent extends TopologyEvent {
   List<Object?> get props => [nodeId, ip];
 }
 
-class ScanPortsEvent extends TopologyEvent {
-  final String nodeId;
-  final String ip;
-  final String? customPorts;
-
-  const ScanPortsEvent({
-    required this.nodeId,
-    required this.ip,
-    this.customPorts,
-  });
-
-  @override
-  List<Object?> get props => [nodeId, ip, customPorts];
-}
-
 class LookupHostnameEvent extends TopologyEvent {
   final String nodeId;
   final String ip;
@@ -89,11 +74,8 @@ class TopologyLoading extends TopologyState {}
 class TopologyLoaded extends TopologyState {
   final NetworkTopology topology;
   final String? pingingNodeId;
-  final String? scanningNodeId;
-  final List<int>? openPorts;
   final String? lookingUpNodeId;
   final String? hostname;
-  final bool isScanningPorts;
   final bool isLookingUpHostname;
   final String? osHint;
   final String? detectingOsNodeId;
@@ -103,11 +85,8 @@ class TopologyLoaded extends TopologyState {
   const TopologyLoaded({
     required this.topology,
     this.pingingNodeId,
-    this.scanningNodeId,
-    this.openPorts,
     this.lookingUpNodeId,
     this.hostname,
-    this.isScanningPorts = false,
     this.isLookingUpHostname = false,
     this.osHint,
     this.detectingOsNodeId,
@@ -119,15 +98,10 @@ class TopologyLoaded extends TopologyState {
     NetworkTopology? topology,
     String? pingingNodeId,
     bool clearPinging = false,
-    String? scanningNodeId,
-    bool clearScanning = false,
-    List<int>? openPorts,
-    bool clearOpenPorts = false,
     String? lookingUpNodeId,
     bool clearLookingUp = false,
     String? hostname,
     bool clearHostname = false,
-    bool? isScanningPorts,
     bool? isLookingUpHostname,
     String? osHint,
     bool clearOsHint = false,
@@ -141,13 +115,9 @@ class TopologyLoaded extends TopologyState {
       topology: topology ?? this.topology,
       pingingNodeId:
           clearPinging ? null : (pingingNodeId ?? this.pingingNodeId),
-      scanningNodeId:
-          clearScanning ? null : (scanningNodeId ?? this.scanningNodeId),
-      openPorts: clearOpenPorts ? null : (openPorts ?? this.openPorts),
       lookingUpNodeId:
           clearLookingUp ? null : (lookingUpNodeId ?? this.lookingUpNodeId),
       hostname: clearHostname ? null : (hostname ?? this.hostname),
-      isScanningPorts: isScanningPorts ?? this.isScanningPorts,
       isLookingUpHostname: isLookingUpHostname ?? this.isLookingUpHostname,
       osHint: clearOsHint ? null : (osHint ?? this.osHint),
       detectingOsNodeId:
@@ -166,11 +136,8 @@ class TopologyLoaded extends TopologyState {
   List<Object?> get props => [
     topology,
     pingingNodeId,
-    scanningNodeId,
-    openPorts,
     lookingUpNodeId,
     hostname,
-    isScanningPorts,
     isLookingUpHostname,
     osHint,
     detectingOsNodeId,
@@ -197,7 +164,6 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
     on<LoadTopologyEvent>(_onLoadTopology);
     on<BuildTopologyFromScanEvent>(_onBuildFromScan);
     on<PingNodeEvent>(_onPingNode);
-    on<ScanPortsEvent>(_onScanPorts);
     on<LookupHostnameEvent>(_onLookupHostname);
     on<DetectOsEvent>(_onDetectOs);
   }
@@ -310,75 +276,6 @@ class TopologyBloc extends Bloc<TopologyEvent, TopologyState> {
           ),
         );
       },
-    );
-  }
-
-  Future<void> _onScanPorts(
-    ScanPortsEvent event,
-    Emitter<TopologyState> emit,
-  ) async {
-    if (state is! TopologyLoaded) return;
-    final currentState = state as TopologyLoaded;
-
-    emit(
-      currentState.copyWith(
-        scanningNodeId: event.nodeId,
-        isScanningPorts: true,
-        clearOpenPorts: true,
-        clearErrorMessage: true,
-      ),
-    );
-
-    List<int>? targetPorts;
-    if (event.customPorts != null && event.customPorts!.isNotEmpty) {
-      targetPorts = [];
-      final parts = event.customPorts!.split(',');
-      for (final part in parts) {
-        final trimmed = part.trim();
-        if (trimmed.contains('-')) {
-          final range = trimmed.split('-');
-          if (range.length == 2) {
-            final start = int.tryParse(range[0].trim());
-            final end = int.tryParse(range[1].trim());
-            if (start != null && end != null) {
-              for (int i = start; i <= end; i++) {
-                if (i > 0 && i < 65536) targetPorts.add(i);
-              }
-            }
-          }
-        } else {
-          final port = int.tryParse(trimmed);
-          if (port != null && port > 0 && port < 65536) {
-            targetPorts.add(port);
-          }
-        }
-      }
-      // Remove duplicates and sort
-      targetPorts = targetPorts.toSet().toList()..sort();
-      // Safety limit for reasonable scan time
-      if (targetPorts.length > 500) {
-        targetPorts = targetPorts.sublist(0, 500);
-      }
-    }
-
-    final result = await _repository.scanPorts(event.ip, ports: targetPorts);
-    final afterState =
-        state is TopologyLoaded ? state as TopologyLoaded : currentState;
-
-    result.fold(
-      (f) => emit(
-        afterState.copyWith(
-          isScanningPorts: false,
-          lastErrorMessage: f.message,
-        ),
-      ),
-      (ports) => emit(
-        afterState.copyWith(
-          isScanningPorts: false,
-          openPorts: ports,
-          clearErrorMessage: true,
-        ),
-      ),
     );
   }
 

@@ -1252,6 +1252,14 @@
     "@nodesLabel": {
         "description": "Nodes Label"
     },
+    "scanElapsedLabel": "Elapsed",
+    "@scanElapsedLabel": {
+        "description": "Live scan elapsed time label"
+    },
+    "scanRateLabel": "Rate",
+    "@scanRateLabel": {
+        "description": "Live scan discovery rate label"
+    },
     "riskAvgLabel": "Risk Avg",
     "@riskAvgLabel": {
         "description": "Risk Avg Label"

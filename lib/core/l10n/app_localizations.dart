@@ -1761,6 +1761,18 @@ abstract class AppLocalizations {
   /// **'Nodes'**
   String get nodesLabel;
 
+  /// Live scan elapsed time label
+  ///
+  /// In en, this message translates to:
+  /// **'Elapsed'**
+  String get scanElapsedLabel;
+
+  /// Live scan discovery rate label
+  ///
+  /// In en, this message translates to:
+  /// **'Rate'**
+  String get scanRateLabel;
+
   /// Risk Avg Label
   ///
   /// In en, this message translates to:

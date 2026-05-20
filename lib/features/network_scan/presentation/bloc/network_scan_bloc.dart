@@ -79,7 +79,16 @@ class NetworkScanInitial extends NetworkScanState {}
 
 class NetworkScanConsentRequired extends NetworkScanState {}
 
-class NetworkScanLoading extends NetworkScanState {}
+class NetworkScanLoading extends NetworkScanState {
+  /// Wall-clock time the scan started — used to surface live elapsed-time
+  /// and discovery-rate metrics so scan profiles feel measurably different.
+  final DateTime startedAt;
+
+  const NetworkScanLoading(this.startedAt);
+
+  @override
+  List<Object?> get props => [startedAt];
+}
 
 class NetworkScanLoaded extends NetworkScanState {
   final List<NetworkDevice> devices;
@@ -87,15 +96,26 @@ class NetworkScanLoaded extends NetworkScanState {
   final List<HostScanResult> newDevices;
   final bool isScanning;
 
+  /// When the in-progress (or just-finished) scan started. Null once a fresh
+  /// session has not been run yet.
+  final DateTime? scanStartedAt;
+
   const NetworkScanLoaded({
     required this.devices,
     required this.hosts,
     this.newDevices = const [],
     this.isScanning = false,
+    this.scanStartedAt,
   });
 
   @override
-  List<Object?> get props => [devices, hosts, newDevices, isScanning];
+  List<Object?> get props => [
+    devices,
+    hosts,
+    newDevices,
+    isScanning,
+    scanStartedAt,
+  ];
 }
 
 class NetworkScanError extends NetworkScanState {
@@ -118,6 +138,7 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
   final List<HostScanResult> _activeHosts = [];
   final List<NetworkDevice> _activeDevices = [];
   List<HostScanResult> _activeNewDevices = [];
+  DateTime _scanStartedAt = DateTime.now();
 
   NetworkScanBloc(
     this._repository,
@@ -181,8 +202,9 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
     _activeHosts.clear();
     _activeDevices.clear();
     _activeNewDevices = [];
+    _scanStartedAt = DateTime.now();
 
-    emit(NetworkScanLoading());
+    emit(NetworkScanLoading(_scanStartedAt));
 
     _scanSubscription = _repository
         .scanWithProfile(
@@ -211,6 +233,7 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
         devices: List.from(_activeDevices),
         hosts: List.from(_activeHosts),
         newDevices: List.from(_activeNewDevices),
+        scanStartedAt: _scanStartedAt,
       ),
     );
   }
@@ -247,6 +270,7 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
         hosts: List.from(_activeHosts),
         newDevices: List.from(_activeNewDevices),
         isScanning: true,
+        scanStartedAt: _scanStartedAt,
       ),
     );
   }
@@ -257,6 +281,7 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
         devices: List.from(_activeDevices),
         hosts: List.from(_activeHosts),
         newDevices: List.from(_activeNewDevices),
+        scanStartedAt: _scanStartedAt,
       ),
     );
   }

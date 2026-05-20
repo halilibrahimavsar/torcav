@@ -3,14 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/notification_context_extensions.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../domain/entities/host_scan_result.dart';
-import '../../domain/entities/network_scan_profile.dart';
 
 import '../../../../features/network_scan/presentation/widgets/network_scanner_radar.dart';
 import '../bloc/network_scan_bloc.dart';
@@ -19,36 +17,46 @@ import '../../../../core/theme/prominent_disclosure_dialog.dart';
 import '../../data/datasources/lan_scan_history_local_data_source.dart';
 
 class NetworkScanPage extends StatelessWidget {
-  /// When [provideBloc] is false the page expects a [NetworkScanBloc] to be
-  /// supplied by an ancestor (e.g. the shared LAN discovery shell), so the
-  /// list and map views can share a single scan.
-  const NetworkScanPage({super.key, this.provideBloc = true});
+  /// The list view of the shared LAN discovery shell. A [NetworkScanBloc] must
+  /// be supplied by an ancestor so the list and map views share one scan.
+  const NetworkScanPage({
+    super.key,
+    required this.targetController,
+    required this.onRescan,
+  });
 
-  final bool provideBloc;
+  /// Shared target subnet field, owned by the LAN discovery shell.
+  final TextEditingController targetController;
+
+  /// Re-runs the scan using the shell's current target + profile.
+  final VoidCallback onRescan;
 
   @override
   Widget build(BuildContext context) {
-    if (!provideBloc) return const _NetworkScanView();
-    return BlocProvider(
-      create: (_) => getIt<NetworkScanBloc>(),
-      child: const _NetworkScanView(),
+    return _NetworkScanView(
+      targetController: targetController,
+      onRescan: onRescan,
     );
   }
 }
 
 class _NetworkScanView extends StatefulWidget {
-  const _NetworkScanView();
+  const _NetworkScanView({
+    required this.targetController,
+    required this.onRescan,
+  });
+
+  final TextEditingController targetController;
+  final VoidCallback onRescan;
 
   @override
   State<_NetworkScanView> createState() => _NetworkScanViewState();
 }
 
 class _NetworkScanViewState extends State<_NetworkScanView> {
-  final _targetController = TextEditingController(text: '192.168.1.0/24');
   final _searchController = TextEditingController();
   bool _vulnOnly = false;
   String _searchQuery = '';
-  NetworkScanProfile _profile = NetworkScanProfile.fast;
 
   @override
   void initState() {
@@ -62,7 +70,6 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
 
   @override
   void dispose() {
-    _targetController.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -157,10 +164,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
           }
         },
         builder: (context, state) {
-          final loadedState = state is NetworkScanLoaded ? state : null;
-          final isActivelyScanning =
-              state is NetworkScanLoading ||
-              (loadedState != null && loadedState.isScanning);
+          // Scan control + profile live in the shared LAN discovery bar above.
           return ListView(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
             children: [
@@ -168,50 +172,6 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 _LanPlatformNotice(
                   message: context.l10n.iosLanDiscoveryLimited,
                 ),
-              // ── Section 1: SCAN CONTROL ──
-              StaggeredEntry(
-                delay: const Duration(milliseconds: 50),
-                child: NeonSectionHeader(
-                  label: context.l10n.networkReconTitle,
-                  icon: Icons.radar_rounded,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              StaggeredEntry(
-                delay: const Duration(milliseconds: 100),
-                child: _ScanControlPanel(
-                  controller: _targetController,
-                  isScanning: isActivelyScanning,
-                  profile: _profile,
-                  onProfileChanged: (p) => setState(() => _profile = p),
-                  onScan: () {
-                    context.read<NetworkScanBloc>().add(
-                      StartNetworkScan(
-                        target: _targetController.text,
-                        profile: _profile,
-                      ),
-                    );
-                  },
-                  onCancel: () {
-                    context.read<NetworkScanBloc>().add(
-                      const CancelNetworkScan(),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // ── Scanning Banner (compact, shown while scanning) ──
-              Visibility(
-                visible: isActivelyScanning,
-                maintainState: true,
-                maintainAnimation: true,
-                child: _ScanningBanner(
-                  foundCount: loadedState?.hosts.length ?? 0,
-                ),
-              ),
 
               // ── Full-screen radar (only when no results yet) ──
               if (state is NetworkScanLoading) const _ScanningIndicator(),
@@ -248,7 +208,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 _NetworkBentoHeader(
                   devices: loaded.devices,
                   hosts: loaded.hosts,
-                  target: _targetController.text,
+                  target: widget.targetController.text,
                 ),
                 if (Platform.isAndroid &&
                     loaded.hosts.any(
@@ -315,10 +275,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                   delay: const Duration(milliseconds: 200),
                   child: NeonErrorCard(
                     message: state.message,
-                    onRetry:
-                        () => context.read<NetworkScanBloc>().add(
-                          StartNetworkScan(target: _targetController.text),
-                        ),
+                    onRetry: widget.onRescan,
                   ),
                 ),
               ],
@@ -359,273 +316,6 @@ class _LanPlatformNotice extends StatelessWidget {
                 height: 1.3,
                 fontWeight: FontWeight.w600,
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ScanControlPanel extends StatelessWidget {
-  final TextEditingController controller;
-  final bool isScanning;
-  final VoidCallback onScan;
-  final VoidCallback onCancel;
-  final NetworkScanProfile profile;
-  final ValueChanged<NetworkScanProfile> onProfileChanged;
-
-  const _ScanControlPanel({
-    required this.controller,
-    required this.isScanning,
-    required this.onScan,
-    required this.onCancel,
-    required this.profile,
-    required this.onProfileChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    final scheme = Theme.of(context).colorScheme;
-
-    return NeonCard(
-      glowColor: scheme.primary,
-      glowIntensity: 0.06,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          NeonText(
-            l10n.lanReconTitle,
-            style: GoogleFonts.orbitron(
-              color: scheme.primary,
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 2,
-            ),
-            glowRadius: 6,
-          ),
-          const SizedBox(height: 14),
-          TextField(
-            controller: controller,
-            style: GoogleFonts.sourceCodePro(
-              color: Theme.of(context).colorScheme.onSurface,
-              fontSize: 15,
-            ),
-            decoration: InputDecoration(
-              labelText: l10n.targetSubnet,
-              prefixIcon: Icon(
-                Icons.network_check_rounded,
-                color: scheme.primary.withValues(alpha: 0.6),
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          // ── Scan Profile Selector ──
-          Row(
-            children: [
-              Icon(
-                Icons.tune_rounded,
-                size: 16,
-                color: scheme.primary.withValues(alpha: 0.6),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                l10n.scanProfileLabel,
-                style: GoogleFonts.orbitron(
-                  fontSize: 11,
-                  color: scheme.primary.withValues(alpha: 0.7),
-                  letterSpacing: 1,
-                ),
-              ),
-              const SizedBox(width: 4),
-              InfoIconButton(
-                title: l10n.infoScanProfilesTitle,
-                body:
-                    '${l10n.infoScanProfileFastDesc}\n\n'
-                    '${l10n.infoScanProfileBalancedDesc}\n\n'
-                    '${l10n.infoScanProfileAggressiveDesc}',
-                color: scheme.primary,
-              ),
-              const Spacer(),
-              DropdownButton<NetworkScanProfile>(
-                value: profile,
-                underline: const SizedBox.shrink(),
-                style: GoogleFonts.rajdhani(
-                  color: scheme.primary,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-                dropdownColor: scheme.surfaceContainer,
-                items:
-                    NetworkScanProfile.values
-                        .map(
-                          (p) => DropdownMenuItem(
-                            value: p,
-                            child: Text(p.name.toUpperCase()),
-                          ),
-                        )
-                        .toList(),
-                onChanged:
-                    isScanning
-                        ? null
-                        : (p) {
-                          if (p != null) onProfileChanged(p);
-                        },
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
-          Row(
-            children: [
-              Expanded(
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: isScanning ? null : onScan,
-                    borderRadius: BorderRadius.circular(12),
-                    splashColor: scheme.primary.withValues(alpha: 0.1),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color:
-                            isScanning
-                                ? scheme.surfaceContainerHighest
-                                : scheme.primary.withValues(alpha: 0.12),
-                        border: Border.all(
-                          color: scheme.primary.withValues(
-                            alpha: isScanning ? 0.1 : 0.3,
-                          ),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (isScanning)
-                            SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: scheme.primary,
-                              ),
-                            )
-                          else
-                            Icon(
-                              Icons.radar_rounded,
-                              color: scheme.primary,
-                              size: 20,
-                            ),
-                          const SizedBox(width: 10),
-                          Text(
-                            isScanning
-                                ? l10n.analyzing.toUpperCase()
-                                : l10n.scanAllCaps,
-                            style: GoogleFonts.orbitron(
-                              color: scheme.primary,
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.5,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              if (isScanning) ...[
-                const SizedBox(width: 10),
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: onCancel,
-                    borderRadius: BorderRadius.circular(12),
-                    splashColor: scheme.error.withValues(alpha: 0.1),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 14,
-                        horizontal: 18,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: scheme.error.withValues(alpha: 0.08),
-                        border: Border.all(
-                          color: scheme.error.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.stop_rounded,
-                        color: scheme.error,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ScanningBanner extends StatelessWidget {
-  final int foundCount;
-  const _ScanningBanner({required this.foundCount});
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: scheme.primary.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: scheme.primary.withValues(alpha: 0.2)),
-      ),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 36,
-            height: 36,
-            child: NetworkScannerRadar(isScanning: true, color: scheme.primary),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  context.l10n.activeNodeRecon,
-                  style: GoogleFonts.orbitron(
-                    color: scheme.primary,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.5,
-                  ),
-                ),
-                if (foundCount > 0)
-                  Text(
-                    '$foundCount ${context.l10n.nodesLabel.toLowerCase()} found...',
-                    style: GoogleFonts.rajdhani(
-                      color: scheme.onSurfaceVariant,
-                      fontSize: 12,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          SizedBox(
-            width: 18,
-            height: 18,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: scheme.primary,
             ),
           ),
         ],

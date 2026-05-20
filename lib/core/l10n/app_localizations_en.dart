@@ -901,6 +901,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nodesLabel => 'Nodes';
 
   @override
+  String get scanElapsedLabel => 'Elapsed';
+
+  @override
+  String get scanRateLabel => 'Rate';
+
+  @override
   String get riskAvgLabel => 'Risk Avg';
 
   @override

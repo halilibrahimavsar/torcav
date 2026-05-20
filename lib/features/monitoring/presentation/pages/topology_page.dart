@@ -14,6 +14,7 @@ import '../widgets/topology_info_sheet.dart';
 import '../bloc/topology_bloc.dart';
 import '../../../../core/di/injection.dart';
 import '../../domain/entities/network_topology.dart';
+import '../../../network_scan/presentation/widgets/port_scan_panel.dart';
 
 /// Route-level wrapper that owns the [TopologyBloc] lifetime.
 ///
@@ -65,7 +66,6 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
   late AnimationController _pulseController;
   late AnimationController _positionController;
   final TextEditingController _searchController = TextEditingController();
-  final TextEditingController _portController = TextEditingController();
 
   Map<String, Offset>? _oldPositions;
   Map<String, Offset>? _targetPositions;
@@ -104,7 +104,6 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
     _pulseController.dispose();
     _positionController.dispose();
     _searchController.dispose();
-    _portController.dispose();
     super.dispose();
   }
 
@@ -873,9 +872,6 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
               if (node.ip != null && !node.isCurrentDevice) ...[
                 _buildDiagnosticActions(context, node, blocState, isPinging),
               ],
-
-              // ── Port Scan results ──
-              _buildPortScanResults(blocState, node),
             ],
           ),
         ),
@@ -929,10 +925,6 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
     bool isPinging,
   ) {
     final l10n = context.l10n;
-    final isScanning =
-        blocState is TopologyLoaded &&
-        blocState.scanningNodeId == node.id &&
-        blocState.isScanningPorts;
     final isLookingUp =
         blocState is TopologyLoaded &&
         blocState.lookingUpNodeId == node.id &&
@@ -993,7 +985,7 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
           ],
         ),
         const SizedBox(height: 12),
-        // ── Port Scan Section ──
+        // ── Port Scan Section (shared advanced panel) ──
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
@@ -1005,47 +997,7 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
               ).colorScheme.primary.withValues(alpha: 0.1),
             ),
           ),
-          child: Column(
-            children: [
-              TextField(
-                controller: _portController,
-                style: GoogleFonts.shareTechMono(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontSize: 12,
-                ),
-                decoration: InputDecoration(
-                  isDense: true,
-                  hintText: l10n.portRangeHint,
-                  hintStyle: GoogleFonts.shareTechMono(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withValues(alpha: 0.3),
-                    fontSize: 10,
-                  ),
-                  border: InputBorder.none,
-                ),
-              ),
-              const SizedBox(height: 8),
-              SizedBox(
-                width: double.infinity,
-                child: _NodeActionButton(
-                  label: l10n.portScanAction,
-                  icon: Icons.radar_rounded,
-                  color: Theme.of(context).colorScheme.primary,
-                  isLoading: isScanning,
-                  onTap: () {
-                    context.read<TopologyBloc>().add(
-                      ScanPortsEvent(
-                        nodeId: node.id,
-                        ip: node.ip!,
-                        customPorts: _portController.text,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
+          child: PortScanPanel(key: ValueKey(node.id), ip: node.ip!),
         ),
       ],
     );
@@ -1159,85 +1111,6 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
               ),
             ),
           ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPortScanResults(TopologyState state, TopologyNode node) {
-    if (state is! TopologyLoaded) return const SizedBox.shrink();
-    if (state.scanningNodeId != node.id || state.openPorts == null) {
-      return const SizedBox.shrink();
-    }
-
-    final ports = state.openPorts!;
-    final l10n = context.l10n;
-
-    return AnimatedSize(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOut,
-      child: Column(
-        children: [
-          const SizedBox(height: 16),
-          const NeonDivider(),
-          const SizedBox(height: 12),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              l10n.portsFoundLabel,
-              style: GoogleFonts.orbitron(
-                color: Theme.of(
-                  context,
-                ).colorScheme.onSurface.withValues(alpha: 0.4),
-                fontSize: 8,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          if (ports.isEmpty)
-            Text(
-              l10n.noPortsFound,
-              style: GoogleFonts.shareTechMono(
-                color: Theme.of(
-                  context,
-                ).colorScheme.onSurface.withValues(alpha: 0.4),
-                fontSize: 11,
-              ),
-            )
-          else
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children:
-                  ports.map((port) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.primary.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      child: Text(
-                        l10n.portLabel(port),
-                        style: GoogleFonts.shareTechMono(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-            ),
         ],
       ),
     );

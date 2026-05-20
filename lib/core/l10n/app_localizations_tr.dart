@@ -894,6 +894,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get nodesLabel => 'Düğümler';
 
   @override
+  String get scanElapsedLabel => 'Süre';
+
+  @override
+  String get scanRateLabel => 'Hız';
+
+  @override
   String get riskAvgLabel => 'Risk Ort.';
 
   @override

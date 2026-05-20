@@ -1252,6 +1252,14 @@
     "@nodesLabel": {
         "description": "Nodes Label"
     },
+    "scanElapsedLabel": "Dem",
+    "@scanElapsedLabel": {
+        "description": "Live scan elapsed time label"
+    },
+    "scanRateLabel": "Lez",
+    "@scanRateLabel": {
+        "description": "Live scan discovery rate label"
+    },
     "riskAvgLabel": "Navîna Rîskê",
     "@riskAvgLabel": {
         "description": "Risk Avg Label"

@@ -111,8 +111,12 @@ class ArpDataSource {
       final baseIp = _extractBaseIp(targetSubnet);
 
       // Step 1: Ping-sweep the subnet to populate the kernel ARP cache.
-      // Batch size and parallelism vary by profile to create meaningful speed differences:
-      //   fast       – large batches (50), short ICMP timeout (500ms) → ~3-5 s
+      //
+      // Each live host is streamed back to the UI the instant its own ping
+      // resolves — so devices appear one-by-one during the scan instead of all
+      // at once when it finishes. Batch size and timeout vary by profile to
+      // create meaningful speed differences:
+      //   fast       – large batches (50), 1 s ICMP timeout → ~3-5 s
       //   balanced   – medium batches (30), 1 s ICMP timeout → ~8-10 s
       //   aggressive – small batches (15), 2 s ICMP timeout → slower but catches more hosts
       final liveIps = <String, double>{};
@@ -128,21 +132,36 @@ class ArpDataSource {
           NetworkScanProfile.aggressive => '2',
         };
         for (var i = 1; i < 255; i += parallelBatches) {
-          final futures = <Future<_PingResult?>>[];
+          final futures = <Future<void>>[];
           for (var j = 0; j < parallelBatches; j++) {
             final hostPart = i + j;
             if (hostPart > 254) break;
+            final ip = '$baseIp.$hostPart';
             futures.add(
-              _pingResultStatic(
-                '$baseIp.$hostPart',
-                pingTimeoutSec: pingTimeoutSec,
-              ),
+              _pingResultStatic(ip, pingTimeoutSec: pingTimeoutSec).then((r) {
+                if (r == null) return;
+                liveIps[r.ip] = r.latencyMs;
+                // Provisional result — the real MAC, vendor and services are
+                // filled in by the enrichment pass (steps 2-3) below.
+                sendPort.send(
+                  HostScanResult(
+                    ip: r.ip,
+                    mac: '00:00:00:00:00:00',
+                    vendor:
+                        canReadArp ? 'Unknown' : 'Unknown (Android Limited)',
+                    hostName: '',
+                    osGuess: '',
+                    latency: r.latencyMs,
+                    services: const [],
+                    exposureFindings: const [],
+                    exposureScore: 0,
+                    deviceType: 'Unknown',
+                  ),
+                );
+              }),
             );
           }
-          final results = await Future.wait(futures);
-          for (final r in results) {
-            if (r != null) liveIps[r.ip] = r.latencyMs;
-          }
+          await Future.wait(futures);
         }
       }
 
