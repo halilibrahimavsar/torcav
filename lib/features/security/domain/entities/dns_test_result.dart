@@ -75,6 +75,13 @@ class DnsTestResult extends Equatable {
   final List<String> detectedServers;
   final bool encryptedDnsActive;
   final String encryptedProtocol;
+
+  /// True if a live RFC 8484 DoH query succeeded on the current network.
+  final bool dohReachable;
+
+  /// True if a live TLS handshake on TCP 853 (DoT) succeeded on the
+  /// current network.
+  final bool dotReachable;
   final bool resolverDriftDetected;
   final bool dnssecSupported;
   final String evidence;
@@ -89,6 +96,8 @@ class DnsTestResult extends Equatable {
     required this.detectedServers,
     this.encryptedDnsActive = false,
     this.encryptedProtocol = 'unknown',
+    this.dohReachable = false,
+    this.dotReachable = false,
     this.resolverDriftDetected = false,
     this.dnssecSupported = false,
     this.evidence = '',
@@ -104,6 +113,8 @@ class DnsTestResult extends Equatable {
     List<String>? detectedServers,
     bool? encryptedDnsActive,
     String? encryptedProtocol,
+    bool? dohReachable,
+    bool? dotReachable,
     bool? resolverDriftDetected,
     bool? dnssecSupported,
     String? evidence,
@@ -118,6 +129,8 @@ class DnsTestResult extends Equatable {
       detectedServers: detectedServers ?? this.detectedServers,
       encryptedDnsActive: encryptedDnsActive ?? this.encryptedDnsActive,
       encryptedProtocol: encryptedProtocol ?? this.encryptedProtocol,
+      dohReachable: dohReachable ?? this.dohReachable,
+      dotReachable: dotReachable ?? this.dotReachable,
       resolverDriftDetected:
           resolverDriftDetected ?? this.resolverDriftDetected,
       dnssecSupported: dnssecSupported ?? this.dnssecSupported,
@@ -142,6 +155,8 @@ class DnsTestResult extends Equatable {
               .toList(),
       encryptedDnsActive: json['encryptedDnsActive'] as bool? ?? false,
       encryptedProtocol: json['encryptedProtocol'] as String? ?? 'unknown',
+      dohReachable: json['dohReachable'] as bool? ?? false,
+      dotReachable: json['dotReachable'] as bool? ?? false,
       resolverDriftDetected: json['resolverDriftDetected'] as bool? ?? false,
       dnssecSupported: json['dnssecSupported'] as bool? ?? false,
       evidence: json['evidence'] as String? ?? '',
@@ -164,6 +179,8 @@ class DnsTestResult extends Equatable {
       'detectedServers': detectedServers,
       'encryptedDnsActive': encryptedDnsActive,
       'encryptedProtocol': encryptedProtocol,
+      'dohReachable': dohReachable,
+      'dotReachable': dotReachable,
       'resolverDriftDetected': resolverDriftDetected,
       'dnssecSupported': dnssecSupported,
       'evidence': evidence,
@@ -181,6 +198,8 @@ class DnsTestResult extends Equatable {
     detectedServers,
     encryptedDnsActive,
     encryptedProtocol,
+    dohReachable,
+    dotReachable,
     resolverDriftDetected,
     dnssecSupported,
     evidence,

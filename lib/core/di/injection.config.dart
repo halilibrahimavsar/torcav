@@ -161,6 +161,8 @@ import '../../features/reports/domain/services/local_data_export_service.dart'
 import '../../features/reports/domain/usecases/generate_report_usecase.dart'
     as _i367;
 import '../../features/reports/presentation/bloc/reports_bloc.dart' as _i554;
+import '../../features/security/data/datasources/breach_data_source.dart'
+    as _i876;
 import '../../features/security/data/datasources/dns_test_data_source.dart'
     as _i991;
 import '../../features/security/data/datasources/security_local_data_source.dart'
@@ -195,6 +197,8 @@ import '../../features/security/domain/usecases/analyze_network_security_usecase
     as _i87;
 import '../../features/security/domain/usecases/arp_spoofing_detector.dart'
     as _i151;
+import '../../features/security/domain/usecases/check_password_breach_usecase.dart'
+    as _i130;
 import '../../features/security/domain/usecases/check_router_vulnerability_usecase.dart'
     as _i923;
 import '../../features/security/domain/usecases/deauth_detector.dart' as _i363;
@@ -204,6 +208,8 @@ import '../../features/security/domain/usecases/dns_security_usecase.dart'
     as _i927;
 import '../../features/security/domain/usecases/security_analyzer.dart'
     as _i471;
+import '../../features/security/presentation/bloc/breach_monitor_cubit.dart'
+    as _i712;
 import '../../features/security/presentation/bloc/notification/notification_bloc.dart'
     as _i796;
 import '../../features/security/presentation/bloc/security_bloc.dart' as _i676;
@@ -333,6 +339,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i429.ImageWatermarkService>(
       () => _i429.ImageWatermarkService(),
     );
+    gh.lazySingleton<_i876.BreachDataSource>(() => _i876.BreachDataSource());
     gh.lazySingleton<_i683.OuiLookup>(
       () => _i683.OuiLookup(gh<_i1050.OuiDatabaseService>()),
     );
@@ -371,6 +378,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i544.PingStabilizerSettingsStore>(
       () => _i544.PingStabilizerSettingsStore(gh<_i131.HiveStorageService>()),
+    );
+    gh.lazySingleton<_i130.CheckPasswordBreachUsecase>(
+      () => _i130.CheckPasswordBreachUsecase(gh<_i876.BreachDataSource>()),
     );
     gh.lazySingleton<_i611.ThemeCubit>(
       () => _i611.ThemeCubit(gh<_i131.HiveStorageService>()),
@@ -445,6 +455,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i315.DnsLeakTestUsecase>(
       () => _i315.DnsLeakTestUsecase(gh<_i991.DnsDataSource>()),
+    );
+    gh.factory<_i712.BreachMonitorCubit>(
+      () => _i712.BreachMonitorCubit(gh<_i130.CheckPasswordBreachUsecase>()),
     );
     gh.lazySingleton<_i978.PortScanDataSource>(
       () => _i978.PortScanDataSource(gh<_i552.AppSettingsStore>()),

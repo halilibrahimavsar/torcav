@@ -43,6 +43,8 @@ class DnsDataSource {
     var status = DnsSecurityStatus.secure;
     bool dnssecSupported = false;
     bool encryptedDnsActive = false;
+    bool dohReachable = false;
+    bool dotReachable = false;
     String encryptedProtocol = 'UDP/Basic';
     String ispName = 'Identifying...';
 
@@ -82,10 +84,28 @@ class DnsDataSource {
         }
       }
 
-      // 3. Encrypted DNS & Protocol Detection
-      final encryptionInfo = await _detectEncryptedDns(akamaiIp);
-      encryptedProtocol = encryptionInfo['status'] as String;
-      encryptedDnsActive = encryptionInfo['active'] as bool;
+      // 3. Encrypted DNS: known-resolver shortcut + live transport probes.
+      // The probes confirm whether this network actually *permits* encrypted
+      // DNS — a network that blocks both DoH and DoT is forcing plaintext.
+      final knownResolver = _classifyKnownResolver(akamaiIp);
+      final transports = await _probeEncryptedTransports();
+      dohReachable = transports['doh']!;
+      dotReachable = transports['dot']!;
+      encryptedDnsActive =
+          (knownResolver['active'] as bool) || dohReachable || dotReachable;
+      encryptedProtocol = _describeProtocol(
+        knownStatus: knownResolver['status'] as String,
+        doh: dohReachable,
+        dot: dotReachable,
+      );
+      if (dohReachable) evidence.add('DoH (RFC 8484) reachable');
+      if (dotReachable) evidence.add('DoT (TCP 853) reachable');
+      if (!dohReachable && !dotReachable) {
+        evidence.add('Encrypted DNS blocked: network permits only plaintext');
+        if (status == DnsSecurityStatus.secure) {
+          status = DnsSecurityStatus.warning;
+        }
+      }
 
       // 4. DNSSEC Verification on System Resolver
       final systemDnssec = await _checkSystemDnssec();
@@ -119,6 +139,8 @@ class DnsDataSource {
         detectedServers: detectedServers,
         encryptedDnsActive: encryptedDnsActive,
         encryptedProtocol: encryptedProtocol,
+        dohReachable: dohReachable,
+        dotReachable: dotReachable,
         dnssecSupported: dnssecSupported,
         evidence: evidence.join(' | '),
         benchmarks: benchmarks,
@@ -174,48 +196,92 @@ class DnsDataSource {
     );
   }
 
-  Future<Map<String, dynamic>> _detectEncryptedDns(String? resolverIp) async {
-    try {
-      // 1. Check known providers
-      if (resolverIp != null) {
-        if (resolverIp == '1.1.1.1' ||
-            resolverIp == '1.0.0.1' ||
-            resolverIp.startsWith('172.64.') ||
-            resolverIp.startsWith('162.159.')) {
-          return {'active': true, 'status': 'Cloudflare DoH/DoT'};
-        }
-        if (resolverIp == '8.8.8.8' || resolverIp == '8.8.4.4') {
-          return {'active': true, 'status': 'Google DoH/DoT'};
-        }
-        if (resolverIp == '9.9.9.9' || resolverIp == '149.112.112.112') {
-          return {'active': true, 'status': 'Quad9 Encrypted'};
-        }
-        if (resolverIp.startsWith('94.140.')) {
-          return {'active': true, 'status': 'AdGuard Encrypted'};
-        }
-      }
-
-      // 2. HTTP Probe to Cloudflare (Common way to check if system is using DoH)
-      final client =
-          HttpClient()..connectionTimeout = const Duration(seconds: 2);
-      try {
-        final request = await client.getUrl(
-          Uri.parse('https://1.1.1.1/cdn-cgi/trace'),
-        );
-        final response = await request.close();
-        final body =
-            await response.transform(const SystemEncoding().decoder).join();
-        if (body.contains('doh=on')) {
-          return {'active': true, 'status': 'DoH Enabled'};
-        }
-        if (body.contains('dot=on')) {
-          return {'active': true, 'status': 'DoT Enabled'};
-        }
-      } catch (_) {}
-
+  /// Maps a detected resolver IP to a known encrypted-DNS provider.
+  /// Synchronous fast path — does not prove encryption is in use, only that
+  /// the resolver belongs to a provider that offers DoH/DoT.
+  Map<String, dynamic> _classifyKnownResolver(String? resolverIp) {
+    if (resolverIp == null) {
       return {'active': false, 'status': 'UDP/Unencrypted'};
+    }
+    if (resolverIp == '1.1.1.1' ||
+        resolverIp == '1.0.0.1' ||
+        resolverIp.startsWith('172.64.') ||
+        resolverIp.startsWith('162.159.')) {
+      return {'active': true, 'status': 'Cloudflare'};
+    }
+    if (resolverIp == '8.8.8.8' || resolverIp == '8.8.4.4') {
+      return {'active': true, 'status': 'Google'};
+    }
+    if (resolverIp == '9.9.9.9' || resolverIp == '149.112.112.112') {
+      return {'active': true, 'status': 'Quad9'};
+    }
+    if (resolverIp.startsWith('94.140.')) {
+      return {'active': true, 'status': 'AdGuard'};
+    }
+    return {'active': false, 'status': 'UDP/Unencrypted'};
+  }
+
+  /// Builds a human-readable protocol label from the live probe results.
+  String _describeProtocol({
+    required String knownStatus,
+    required bool doh,
+    required bool dot,
+  }) {
+    final transports = <String>[];
+    if (doh) transports.add('DoH');
+    if (dot) transports.add('DoT');
+    if (transports.isEmpty) return 'UDP/Unencrypted';
+    final prefix = knownStatus == 'UDP/Unencrypted' ? '' : '$knownStatus ';
+    return '$prefix${transports.join('/')}';
+  }
+
+  /// Actively verifies whether encrypted DNS transports are usable on the
+  /// current network. Returns reachability for DoH (RFC 8484) and DoT (853).
+  Future<Map<String, bool>> _probeEncryptedTransports() async {
+    final results = await Future.wait([_probeDoh(), _probeDot()]);
+    return {'doh': results[0], 'dot': results[1]};
+  }
+
+  /// RFC 8484 DoH query (JSON variant) against Cloudflare. A network that
+  /// strips or blocks DoH causes this to fail.
+  Future<bool> _probeDoh() async {
+    final client =
+        HttpClient()..connectionTimeout = const Duration(seconds: 3);
+    try {
+      final request = await client.getUrl(
+        Uri.parse(
+          'https://cloudflare-dns.com/dns-query?name=example.com&type=A',
+        ),
+      );
+      request.headers.set(HttpHeaders.acceptHeader, 'application/dns-json');
+      final response = await request.close().timeout(
+        const Duration(seconds: 3),
+      );
+      if (response.statusCode != 200) return false;
+      final body =
+          await response.transform(const SystemEncoding().decoder).join();
+      // A valid DoH JSON answer always carries a "Status" field.
+      return body.contains('"Status"');
     } catch (_) {
-      return {'active': false, 'status': 'Basic UDP'};
+      return false;
+    } finally {
+      client.close(force: true);
+    }
+  }
+
+  /// TLS handshake on TCP 853 (DoT) against Cloudflare 1.1.1.1. A network
+  /// that blocks port 853 causes the handshake to fail.
+  Future<bool> _probeDot() async {
+    try {
+      final socket = await SecureSocket.connect(
+        '1.1.1.1',
+        853,
+        timeout: const Duration(seconds: 3),
+      );
+      socket.destroy();
+      return true;
+    } catch (_) {
+      return false;
     }
   }
 

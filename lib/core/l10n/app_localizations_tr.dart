@@ -1359,6 +1359,21 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dnsSsec => 'DNSSEC';
 
   @override
+  String get dnsDohLabel => 'DoH';
+
+  @override
+  String get dnsDotLabel => 'DoT';
+
+  @override
+  String get dnsReachable => 'Erişilebilir';
+
+  @override
+  String get dnsBlocked => 'Engelli';
+
+  @override
+  String get dnsEncryptedBlocked => 'Bu ağ şifreli DNS\'i engelliyor — sorguların düz metin olarak iletiliyor.';
+
+  @override
   String get dnsInfoHijackingTitle => 'DNS Ele Geçirme (Hijacking)';
 
   @override
@@ -5018,4 +5033,99 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get opsReportsSubtitle => 'Ağ sağlık raporunu dışa aktarın';
+
+  @override
+  String get breachMonitorTitle => 'Sızıntı Monitörü';
+
+  @override
+  String get breachMonitorSubtitle => 'Bir parola sızmış mı kontrol et';
+
+  @override
+  String get breachMonitorIntro => 'Herhangi bir parolayı bilinen veri sızıntılarına karşı kontrol etmek için girin. Hash\'inin yalnızca ilk 5 karakteri gönderilir — parolanın kendisi cihazınızdan asla çıkmaz.';
+
+  @override
+  String get breachInputLabel => 'Kontrol edilecek parola';
+
+  @override
+  String get breachCheckButton => 'Parolayı Kontrol Et';
+
+  @override
+  String get breachCheckingButton => 'Kontrol ediliyor...';
+
+  @override
+  String get breachResultSafeTitle => 'Bulunamadı';
+
+  @override
+  String get breachResultCompromisedTitle => 'Ele Geçirilmiş';
+
+  @override
+  String get breachResultSafe => 'Bu parola bilinen hiçbir veri sızıntısında bulunamadı. Bu, güçlü olduğunu garanti etmez — uzun ve benzersiz parolalar seçin.';
+
+  @override
+  String breachResultCompromised(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Bu parola, bilinen $countString sızıntı kaydında görünüyor. Her yerde kullanmayı bırakın ve hemen değiştirin.';
+  }
+
+  @override
+  String get breachAdvice => 'Benzersiz bir parolayla değiştirin ve etkilenen hesaplarda iki adımlı doğrulamayı etkinleştirin.';
+
+  @override
+  String get breachError => 'Sızıntı kontrolü başarısız. Bağlantınızı kontrol edip tekrar deneyin.';
+
+  @override
+  String get breachPrivacyNote => 'Yalnızca 5 karakterlik hash öneki gönderilir. Parolanız bu cihazdan asla çıkmaz.';
+
+  @override
+  String get breachWhatTitle => 'Bu nedir?';
+
+  @override
+  String get breachWhatBody => 'Yıllar içinde sayısız web sitesi saldırıya uğradı; milyarlarca parola çalınarak internete sızdırıldı. Saldırganlar bu hazır listeleri kullanarak hesapları ele geçiriyor. Bu araç, kullandığın bir parolanın o sızıntı listelerinde olup olmadığını söyler. Listedeyse, o parola artık güvenli değildir ve değiştirilmelidir.';
+
+  @override
+  String get breachHowTitle => 'Nasıl çalışıyor?';
+
+  @override
+  String get breachStep1 => 'Girdiğin parola bu cihazda geri döndürülemez bir parmak izine (SHA-1 özeti) çevrilir.';
+
+  @override
+  String get breachStep2 => 'Bu parmak izinin yalnızca ilk 5 karakteri \'Have I Been Pwned\' servisine gönderilir. Servis, o 5 karakterle başlayan binlerce olası parmak izini geri yollar.';
+
+  @override
+  String get breachStep3 => 'Hangi parmak izinin senin parolana ait olduğu tamamen bu cihazda karşılaştırılır. Servis, hangi parolayı sorduğunu asla öğrenemez.';
+
+  @override
+  String get breachSafetyTitle => 'Parolanı neden güvenle girebilirsin';
+
+  @override
+  String get breachSafety1 => 'Parolanın kendisi cihazından asla çıkmaz — internete yalnızca 5 karakterlik bir parmak izi öneki gider.';
+
+  @override
+  String get breachSafety2 => 'Bu 5 karakterlik önek binlerce farklı parolayla ortaktır; ne kimliğini ne de parolanı ele verir (k-anonimlik).';
+
+  @override
+  String get breachSafety3 => 'Parola hiçbir yere kaydedilmez, kayıt altına alınmaz ve kontrol biter bitmez ekrandan silinir.';
+
+  @override
+  String get breachTransparencyLabel => 'İnternete gönderilen tek şey';
+
+  @override
+  String get breachTransparencyEmpty => 'Bir parola yaz; gönderilecek 5 karakter burada canlı olarak görünecek.';
+
+  @override
+  String get breachTransparencyHint => 'Bu 5 karakter, parolanın parmak izinin yalnızca başlangıcıdır — parola bunlardan geri elde edilemez.';
+
+  @override
+  String get dnsInfoDohTitle => 'DNS over HTTPS (DoH)';
+
+  @override
+  String get dnsInfoDohDesc => 'DoH, hangi siteleri ziyaret ettiğini belirleyen DNS sorgularını sıradan HTTPS web trafiğinin içine gizleyerek şifreler. Böylece internet sağlayıcın ya da ağdaki bir saldırgan sorgularını göremez veya seni sahte bir siteye yönlendiremez. \'Erişilebilir\' yazıyorsa bu ağ DoH\'a izin veriyor demektir.';
+
+  @override
+  String get dnsInfoDotTitle => 'DNS over TLS (DoT)';
+
+  @override
+  String get dnsInfoDotDesc => 'DoT da DNS sorgularını şifreler, ancak bunu 853 portu üzerinden ayrı bir şifreli kanaldan yapar. Amaç aynıdır: DNS sorgularının gizliliği. Bazı ağlar 853 portunu engeller — o zaman \'Engelli\' görürsün ve cihazın şifresiz DNS\'e geri düşebilir.';
 }

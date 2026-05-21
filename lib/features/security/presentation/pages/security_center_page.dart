@@ -6,6 +6,7 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/notification_context_extensions.dart';
 import '../../domain/entities/network_context_type.dart';
 import '../bloc/security_bloc.dart';
+import 'breach_monitor_page.dart';
 import 'router_hardening_wizard_page.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../widgets/dns_security_card.dart';
@@ -184,6 +185,56 @@ class _SecurityCenterView extends StatelessWidget {
                               const SizedBox(height: 4),
                               Text(
                                 l10n.hardenRouterSubtitle,
+                                style: GoogleFonts.rajdhani(
+                                  color: scheme.onSurfaceVariant,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // ── Credential breach monitor entry point ──
+                  NeonCard(
+                    glowColor: scheme.secondary,
+                    glowIntensity: 0.06,
+                    onTap:
+                        () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const BreachMonitorPage(),
+                          ),
+                        ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.travel_explore_rounded,
+                          color: scheme.secondary,
+                          size: 28,
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                l10n.breachMonitorTitle,
+                                style: GoogleFonts.orbitron(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                l10n.breachMonitorSubtitle,
                                 style: GoogleFonts.rajdhani(
                                   color: scheme.onSurfaceVariant,
                                   fontSize: 13,

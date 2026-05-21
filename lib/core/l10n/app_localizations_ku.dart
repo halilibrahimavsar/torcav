@@ -1357,6 +1357,21 @@ class AppLocalizationsKu extends AppLocalizations {
   String get dnsSsec => 'DNSSEC';
 
   @override
+  String get dnsDohLabel => 'DoH';
+
+  @override
+  String get dnsDotLabel => 'DoT';
+
+  @override
+  String get dnsReachable => 'Gihîştî';
+
+  @override
+  String get dnsBlocked => 'Astengkirî';
+
+  @override
+  String get dnsEncryptedBlocked => 'Ev tor DNSa şîfrekirî asteng dike — lêgerînên te wek nivîsa zelal têne şandin.';
+
+  @override
   String get dnsInfoHijackingTitle => 'DNS Hijacking';
 
   @override
@@ -5016,4 +5031,99 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get opsReportsSubtitle => 'Raporta tenduristiya torê derxe';
+
+  @override
+  String get breachMonitorTitle => 'Çavdêra Derketinê';
+
+  @override
+  String get breachMonitorSubtitle => 'Kontrol bike ka şîfreyek derketiye';
+
+  @override
+  String get breachMonitorIntro => 'Şîfreyek binivîse da ku li hember derketinên daneyên naskirî were kontrolkirin. Tenê 5 tîpên pêşîn ên hash têne şandin — şîfre bi xwe qet ji cîhaza te dernakeve.';
+
+  @override
+  String get breachInputLabel => 'Şîfreya ku tê kontrolkirin';
+
+  @override
+  String get breachCheckButton => 'Şîfreyê Kontrol Bike';
+
+  @override
+  String get breachCheckingButton => 'Tê kontrolkirin...';
+
+  @override
+  String get breachResultSafeTitle => 'Nehat dîtin';
+
+  @override
+  String get breachResultCompromisedTitle => 'Xeternak';
+
+  @override
+  String get breachResultSafe => 'Ev şîfre di tu derketina daneyên naskirî de nehat dîtin. Ev garantî nake ku ew bihêz e — şîfreyên dirêj û yekta hilbijêre.';
+
+  @override
+  String breachResultCompromised(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Ev şîfre di $countString tomarên derketinê yên naskirî de xuya dibe. Li her derê bikaranîna wê rawestîne û tavilê biguherîne.';
+  }
+
+  @override
+  String get breachAdvice => 'Bi şîfreyek yekta biguherîne û li ser hesabên bandorbûyî pejirandina du-gavî çalak bike.';
+
+  @override
+  String get breachError => 'Kontrola derketinê biserneket. Girêdana xwe kontrol bike û dîsa biceribîne.';
+
+  @override
+  String get breachPrivacyNote => 'Tenê pêşgireke hash ya 5-tîpî tê şandin. Şîfreya te qet ji vê cîhazê dernakeve.';
+
+  @override
+  String get breachWhatTitle => 'Ev çi ye?';
+
+  @override
+  String get breachWhatBody => 'Bi salan re gelek malper hatin hakkirin, û milyaran şîfre hatin dizîn û li înternetê belav bûn. Êrîşkar van lîsteyên amade bikar tînin da ku hesaban dest bixin. Ev amûr ji te re dibêje ka şîfreyek ku tu bikar tînî di wan lîsteyên derketinê de heye yan na. Ger hebe, ew şîfre êdî ne ewle ye û divê were guhertin.';
+
+  @override
+  String get breachHowTitle => 'Çawa dixebite?';
+
+  @override
+  String get breachStep1 => 'Şîfreya ku tu dinivîsî li ser vê cîhazê dibe şopek vegernebar (hashek SHA-1).';
+
+  @override
+  String get breachStep2 => 'Tenê 5 tîpên pêşîn ên wê şopê ji servîsa \'Have I Been Pwned\' re têne şandin. Servîs bi hezaran şopên gengaz ên ku bi wan 5 tîpan dest pê dikin vedigerîne.';
+
+  @override
+  String get breachStep3 => 'Kîjan şop a şîfreya te ye bi tevahî li ser vê cîhazê tê berhevkirin. Servîs qet nikare fêr bibe ku te kîjan şîfre pirsî.';
+
+  @override
+  String get breachSafetyTitle => 'Çima nivîsandina şîfreya te ewle ye';
+
+  @override
+  String get breachSafety1 => 'Şîfre bi xwe qet ji cîhaza te dernakeve — tenê pêşgireke şopê ya 5-tîpî bi înternetê re tê şandin.';
+
+  @override
+  String get breachSafety2 => 'Ev pêşgira 5-tîpî bi hezaran şîfreyên cuda re hevpar e; ne nasnameya te ne jî şîfreya te eşkere dike (k-anonîmî).';
+
+  @override
+  String get breachSafety3 => 'Şîfre qet nayê tomarkirin an qeydkirin, û gava ku kontrol diqede tavilê ji ekranê tê jêbirin.';
+
+  @override
+  String get breachTransparencyLabel => 'Tişta tenê ku tê şandin';
+
+  @override
+  String get breachTransparencyEmpty => 'Şîfreyek binivîse; 5 tîpên ku dê werin şandin dê li vir zindî xuya bibin.';
+
+  @override
+  String get breachTransparencyHint => 'Ev 5 tîp tenê destpêka şopa şîfreya te ne — şîfre ji wan nayê ji nû ve avakirin.';
+
+  @override
+  String get dnsInfoDohTitle => 'DNS over HTTPS (DoH)';
+
+  @override
+  String get dnsInfoDohDesc => 'DoH lêgerînên DNSê yên ku diyar dikin tu kîjan malperan diçî şîfre dike û wan di nav trafîka tora HTTPS ya asayî de vedişêre. Bi vî awayî peydakerê înternetê yan êrîşkarek di torê de nikare lêgerînên te bibîne yan te biçe malperek sexte. Heke \'Gihîştî\' nivîsî be, ev tor destûrê dide DoH.';
+
+  @override
+  String get dnsInfoDotTitle => 'DNS over TLS (DoT)';
+
+  @override
+  String get dnsInfoDotDesc => 'DoT jî lêgerînên DNSê yên te şîfre dike, lê vê yekê li ser kanalek şîfrekirî ya cuda li portê 853 dike. Armanc heman e: parastina nepenîtiya lêgerînên DNSê. Hin tor portê 853 asteng dikin — wê demê tu \'Astengkirî\' dibînî û cîhaza te dibe ku vegere DNSa neşîfrekirî.';
 }

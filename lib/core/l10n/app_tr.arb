@@ -1886,6 +1886,26 @@
     "@dnsSsec": {
         "description": "Dns ssec"
     },
+    "dnsDohLabel": "DoH",
+    "@dnsDohLabel": {
+        "description": "Label for DNS-over-HTTPS transport"
+    },
+    "dnsDotLabel": "DoT",
+    "@dnsDotLabel": {
+        "description": "Label for DNS-over-TLS transport"
+    },
+    "dnsReachable": "Erişilebilir",
+    "@dnsReachable": {
+        "description": "Encrypted DNS transport reachable on this network"
+    },
+    "dnsBlocked": "Engelli",
+    "@dnsBlocked": {
+        "description": "Encrypted DNS transport blocked on this network"
+    },
+    "dnsEncryptedBlocked": "Bu ağ şifreli DNS'i engelliyor — sorguların düz metin olarak iletiliyor.",
+    "@dnsEncryptedBlocked": {
+        "description": "Warning shown when both DoH and DoT are unreachable"
+    },
     "dnsInfoHijackingTitle": "DNS Ele Geçirme (Hijacking)",
     "@dnsInfoHijackingTitle": {
         "description": "Dns info hijacking title"
@@ -7048,5 +7068,35 @@
     "opsSpeedSubtitle": "Hız testi ve yavaş internet teşhisi",
     "opsSecuritySubtitle": "Tehditler, şifreleme ve derin denetim",
     "opsHeatmapSubtitle": "Kapsamı haritalayın, ölü bölgeleri bulun",
-    "opsReportsSubtitle": "Ağ sağlık raporunu dışa aktarın"
+    "opsReportsSubtitle": "Ağ sağlık raporunu dışa aktarın",
+    "breachMonitorTitle": "Sızıntı Monitörü",
+    "breachMonitorSubtitle": "Bir parola sızmış mı kontrol et",
+    "breachMonitorIntro": "Herhangi bir parolayı bilinen veri sızıntılarına karşı kontrol etmek için girin. Hash'inin yalnızca ilk 5 karakteri gönderilir — parolanın kendisi cihazınızdan asla çıkmaz.",
+    "breachInputLabel": "Kontrol edilecek parola",
+    "breachCheckButton": "Parolayı Kontrol Et",
+    "breachCheckingButton": "Kontrol ediliyor...",
+    "breachResultSafeTitle": "Bulunamadı",
+    "breachResultCompromisedTitle": "Ele Geçirilmiş",
+    "breachResultSafe": "Bu parola bilinen hiçbir veri sızıntısında bulunamadı. Bu, güçlü olduğunu garanti etmez — uzun ve benzersiz parolalar seçin.",
+    "breachResultCompromised": "Bu parola, bilinen {count} sızıntı kaydında görünüyor. Her yerde kullanmayı bırakın ve hemen değiştirin.",
+    "breachAdvice": "Benzersiz bir parolayla değiştirin ve etkilenen hesaplarda iki adımlı doğrulamayı etkinleştirin.",
+    "breachError": "Sızıntı kontrolü başarısız. Bağlantınızı kontrol edip tekrar deneyin.",
+    "breachPrivacyNote": "Yalnızca 5 karakterlik hash öneki gönderilir. Parolanız bu cihazdan asla çıkmaz.",
+    "breachWhatTitle": "Bu nedir?",
+    "breachWhatBody": "Yıllar içinde sayısız web sitesi saldırıya uğradı; milyarlarca parola çalınarak internete sızdırıldı. Saldırganlar bu hazır listeleri kullanarak hesapları ele geçiriyor. Bu araç, kullandığın bir parolanın o sızıntı listelerinde olup olmadığını söyler. Listedeyse, o parola artık güvenli değildir ve değiştirilmelidir.",
+    "breachHowTitle": "Nasıl çalışıyor?",
+    "breachStep1": "Girdiğin parola bu cihazda geri döndürülemez bir parmak izine (SHA-1 özeti) çevrilir.",
+    "breachStep2": "Bu parmak izinin yalnızca ilk 5 karakteri 'Have I Been Pwned' servisine gönderilir. Servis, o 5 karakterle başlayan binlerce olası parmak izini geri yollar.",
+    "breachStep3": "Hangi parmak izinin senin parolana ait olduğu tamamen bu cihazda karşılaştırılır. Servis, hangi parolayı sorduğunu asla öğrenemez.",
+    "breachSafetyTitle": "Parolanı neden güvenle girebilirsin",
+    "breachSafety1": "Parolanın kendisi cihazından asla çıkmaz — internete yalnızca 5 karakterlik bir parmak izi öneki gider.",
+    "breachSafety2": "Bu 5 karakterlik önek binlerce farklı parolayla ortaktır; ne kimliğini ne de parolanı ele verir (k-anonimlik).",
+    "breachSafety3": "Parola hiçbir yere kaydedilmez, kayıt altına alınmaz ve kontrol biter bitmez ekrandan silinir.",
+    "breachTransparencyLabel": "İnternete gönderilen tek şey",
+    "breachTransparencyEmpty": "Bir parola yaz; gönderilecek 5 karakter burada canlı olarak görünecek.",
+    "breachTransparencyHint": "Bu 5 karakter, parolanın parmak izinin yalnızca başlangıcıdır — parola bunlardan geri elde edilemez.",
+    "dnsInfoDohTitle": "DNS over HTTPS (DoH)",
+    "dnsInfoDohDesc": "DoH, hangi siteleri ziyaret ettiğini belirleyen DNS sorgularını sıradan HTTPS web trafiğinin içine gizleyerek şifreler. Böylece internet sağlayıcın ya da ağdaki bir saldırgan sorgularını göremez veya seni sahte bir siteye yönlendiremez. 'Erişilebilir' yazıyorsa bu ağ DoH'a izin veriyor demektir.",
+    "dnsInfoDotTitle": "DNS over TLS (DoT)",
+    "dnsInfoDotDesc": "DoT da DNS sorgularını şifreler, ancak bunu 853 portu üzerinden ayrı bir şifreli kanaldan yapar. Amaç aynıdır: DNS sorgularının gizliliği. Bazı ağlar 853 portunu engeller — o zaman 'Engelli' görürsün ve cihazın şifresiz DNS'e geri düşebilir."
 }

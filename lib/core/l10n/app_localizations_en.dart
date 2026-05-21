@@ -1366,6 +1366,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dnsSsec => 'DNSSEC';
 
   @override
+  String get dnsDohLabel => 'DoH';
+
+  @override
+  String get dnsDotLabel => 'DoT';
+
+  @override
+  String get dnsReachable => 'Reachable';
+
+  @override
+  String get dnsBlocked => 'Blocked';
+
+  @override
+  String get dnsEncryptedBlocked => 'This network blocks encrypted DNS — your lookups travel in plain text.';
+
+  @override
   String get dnsInfoHijackingTitle => 'DNS Hijacking';
 
   @override
@@ -5025,4 +5040,99 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get opsReportsSubtitle => 'Export a network health report';
+
+  @override
+  String get breachMonitorTitle => 'Breach Monitor';
+
+  @override
+  String get breachMonitorSubtitle => 'Check if a password has leaked';
+
+  @override
+  String get breachMonitorIntro => 'Enter any password to check it against known data breaches. Only the first 5 characters of its hash are sent — the password itself never leaves your device.';
+
+  @override
+  String get breachInputLabel => 'Password to check';
+
+  @override
+  String get breachCheckButton => 'Check Password';
+
+  @override
+  String get breachCheckingButton => 'Checking...';
+
+  @override
+  String get breachResultSafeTitle => 'Not Found';
+
+  @override
+  String get breachResultCompromisedTitle => 'Compromised';
+
+  @override
+  String get breachResultSafe => 'This password was not found in any known data breach. That does not guarantee it is strong — choose long, unique passwords.';
+
+  @override
+  String breachResultCompromised(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'This password appears in $countString known breach records. Stop using it everywhere and change it immediately.';
+  }
+
+  @override
+  String get breachAdvice => 'Replace it with a unique password and enable two-factor authentication on affected accounts.';
+
+  @override
+  String get breachError => 'Breach check failed. Check your connection and try again.';
+
+  @override
+  String get breachPrivacyNote => 'Only a 5-character hash prefix is sent. Your password never leaves this device.';
+
+  @override
+  String get breachWhatTitle => 'What is this?';
+
+  @override
+  String get breachWhatBody => 'Over the years countless websites have been hacked, and billions of passwords were stolen and leaked online. Attackers reuse these ready-made lists to break into accounts. This tool tells you whether a password you use appears in those leak lists. If it does, that password is no longer safe and should be changed.';
+
+  @override
+  String get breachHowTitle => 'How does it work?';
+
+  @override
+  String get breachStep1 => 'The password you enter is turned into an irreversible fingerprint (a SHA-1 hash) on this device.';
+
+  @override
+  String get breachStep2 => 'Only the first 5 characters of that fingerprint are sent to the Have I Been Pwned service. It returns thousands of possible fingerprints starting with those 5 characters.';
+
+  @override
+  String get breachStep3 => 'Which fingerprint belongs to your password is matched entirely on this device. The service can never learn which password you asked about.';
+
+  @override
+  String get breachSafetyTitle => 'Why it is safe to type your password';
+
+  @override
+  String get breachSafety1 => 'The password itself never leaves your device — only a 5-character fingerprint prefix is sent over the internet.';
+
+  @override
+  String get breachSafety2 => 'That 5-character prefix is shared by thousands of different passwords, so it reveals neither your identity nor your password (k-anonymity).';
+
+  @override
+  String get breachSafety3 => 'The password is never saved or logged, and it is wiped from the screen the moment the check finishes.';
+
+  @override
+  String get breachTransparencyLabel => 'The only thing sent online';
+
+  @override
+  String get breachTransparencyEmpty => 'Type a password and the 5 characters that will be sent appear here live.';
+
+  @override
+  String get breachTransparencyHint => 'These 5 characters are only the start of your password\'s fingerprint — the password cannot be reconstructed from them.';
+
+  @override
+  String get dnsInfoDohTitle => 'DNS over HTTPS (DoH)';
+
+  @override
+  String get dnsInfoDohDesc => 'DoH encrypts the DNS queries that reveal which sites you visit, hiding them inside ordinary HTTPS web traffic. This stops your internet provider or an attacker on the network from seeing your queries or redirecting you to a fake site. \'Reachable\' means this network allows DoH.';
+
+  @override
+  String get dnsInfoDotTitle => 'DNS over TLS (DoT)';
+
+  @override
+  String get dnsInfoDotDesc => 'DoT also encrypts your DNS queries, but over a separate encrypted channel on port 853. The goal is the same: keeping DNS lookups private. Some networks block port 853 — then you see \'Blocked\' and your device may fall back to unencrypted DNS.';
 }

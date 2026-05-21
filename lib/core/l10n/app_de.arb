@@ -1886,6 +1886,26 @@
     "@dnsSsec": {
         "description": "Dns ssec"
     },
+    "dnsDohLabel": "DoH",
+    "@dnsDohLabel": {
+        "description": "Label for DNS-over-HTTPS transport"
+    },
+    "dnsDotLabel": "DoT",
+    "@dnsDotLabel": {
+        "description": "Label for DNS-over-TLS transport"
+    },
+    "dnsReachable": "Erreichbar",
+    "@dnsReachable": {
+        "description": "Encrypted DNS transport reachable on this network"
+    },
+    "dnsBlocked": "Blockiert",
+    "@dnsBlocked": {
+        "description": "Encrypted DNS transport blocked on this network"
+    },
+    "dnsEncryptedBlocked": "Dieses Netzwerk blockiert verschlüsseltes DNS — Ihre Anfragen werden im Klartext übertragen.",
+    "@dnsEncryptedBlocked": {
+        "description": "Warning shown when both DoH and DoT are unreachable"
+    },
     "dnsInfoHijackingTitle": "DNS Hijacking",
     "@dnsInfoHijackingTitle": {
         "description": "Dns info hijacking title"
@@ -7048,5 +7068,35 @@
     "opsSpeedSubtitle": "Geschwindigkeitstest & Diagnose bei langsamem Internet",
     "opsSecuritySubtitle": "Bedrohungen, Verschlüsselung & Tiefenprüfung",
     "opsHeatmapSubtitle": "Abdeckung kartieren, Funklöcher finden",
-    "opsReportsSubtitle": "Netzwerk-Zustandsbericht exportieren"
+    "opsReportsSubtitle": "Netzwerk-Zustandsbericht exportieren",
+    "breachMonitorTitle": "Leck-Monitor",
+    "breachMonitorSubtitle": "Prüfen, ob ein Passwort geleakt wurde",
+    "breachMonitorIntro": "Geben Sie ein beliebiges Passwort ein, um es gegen bekannte Datenlecks zu prüfen. Nur die ersten 5 Zeichen seines Hashes werden gesendet — das Passwort selbst verlässt Ihr Gerät nie.",
+    "breachInputLabel": "Zu prüfendes Passwort",
+    "breachCheckButton": "Passwort prüfen",
+    "breachCheckingButton": "Wird geprüft...",
+    "breachResultSafeTitle": "Nicht gefunden",
+    "breachResultCompromisedTitle": "Kompromittiert",
+    "breachResultSafe": "Dieses Passwort wurde in keinem bekannten Datenleck gefunden. Das garantiert keine Stärke — wählen Sie lange, einzigartige Passwörter.",
+    "breachResultCompromised": "Dieses Passwort erscheint in {count} bekannten Leck-Datensätzen. Verwenden Sie es nicht mehr und ändern Sie es sofort.",
+    "breachAdvice": "Ersetzen Sie es durch ein einzigartiges Passwort und aktivieren Sie die Zwei-Faktor-Authentifizierung für betroffene Konten.",
+    "breachError": "Leck-Prüfung fehlgeschlagen. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+    "breachPrivacyNote": "Es wird nur ein 5-Zeichen-Hash-Präfix gesendet. Ihr Passwort verlässt dieses Gerät nie.",
+    "breachWhatTitle": "Was ist das?",
+    "breachWhatBody": "Im Laufe der Jahre wurden unzählige Websites gehackt, und Milliarden von Passwörtern wurden gestohlen und online geleakt. Angreifer nutzen diese fertigen Listen, um in Konten einzubrechen. Dieses Werkzeug zeigt Ihnen, ob ein von Ihnen verwendetes Passwort in diesen Leak-Listen vorkommt. Falls ja, ist dieses Passwort nicht mehr sicher und sollte geändert werden.",
+    "breachHowTitle": "Wie funktioniert es?",
+    "breachStep1": "Das eingegebene Passwort wird auf diesem Gerät in einen unumkehrbaren Fingerabdruck (einen SHA-1-Hash) umgewandelt.",
+    "breachStep2": "Nur die ersten 5 Zeichen dieses Fingerabdrucks werden an den Dienst Have I Been Pwned gesendet. Er liefert Tausende möglicher Fingerabdrücke zurück, die mit diesen 5 Zeichen beginnen.",
+    "breachStep3": "Welcher Fingerabdruck zu Ihrem Passwort gehört, wird vollständig auf diesem Gerät abgeglichen. Der Dienst kann nie erfahren, nach welchem Passwort Sie gefragt haben.",
+    "breachSafetyTitle": "Warum die Eingabe Ihres Passworts sicher ist",
+    "breachSafety1": "Das Passwort selbst verlässt Ihr Gerät nie — nur ein 5-Zeichen-Fingerabdruck-Präfix wird über das Internet gesendet.",
+    "breachSafety2": "Dieses 5-Zeichen-Präfix wird von Tausenden verschiedener Passwörter geteilt und verrät weder Ihre Identität noch Ihr Passwort (k-Anonymität).",
+    "breachSafety3": "Das Passwort wird nie gespeichert oder protokolliert und wird vom Bildschirm gelöscht, sobald die Prüfung abgeschlossen ist.",
+    "breachTransparencyLabel": "Das Einzige, was online gesendet wird",
+    "breachTransparencyEmpty": "Geben Sie ein Passwort ein; die 5 zu sendenden Zeichen erscheinen hier live.",
+    "breachTransparencyHint": "Diese 5 Zeichen sind nur der Anfang des Fingerabdrucks Ihres Passworts — das Passwort lässt sich daraus nicht rekonstruieren.",
+    "dnsInfoDohTitle": "DNS over HTTPS (DoH)",
+    "dnsInfoDohDesc": "DoH verschlüsselt die DNS-Anfragen, die verraten, welche Seiten Sie besuchen, und verbirgt sie im gewöhnlichen HTTPS-Web-Verkehr. So können Ihr Internetanbieter oder ein Angreifer im Netzwerk Ihre Anfragen weder sehen noch Sie auf eine gefälschte Seite umleiten. 'Erreichbar' bedeutet, dass dieses Netzwerk DoH zulässt.",
+    "dnsInfoDotTitle": "DNS over TLS (DoT)",
+    "dnsInfoDotDesc": "DoT verschlüsselt Ihre DNS-Anfragen ebenfalls, jedoch über einen separaten verschlüsselten Kanal auf Port 853. Das Ziel ist dasselbe: DNS-Abfragen privat zu halten. Manche Netzwerke blockieren Port 853 — dann sehen Sie 'Blockiert' und Ihr Gerät greift möglicherweise auf unverschlüsseltes DNS zurück."
 }

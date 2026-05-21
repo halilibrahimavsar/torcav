@@ -1357,6 +1357,21 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dnsSsec => 'DNSSEC';
 
   @override
+  String get dnsDohLabel => 'DoH';
+
+  @override
+  String get dnsDotLabel => 'DoT';
+
+  @override
+  String get dnsReachable => 'Erreichbar';
+
+  @override
+  String get dnsBlocked => 'Blockiert';
+
+  @override
+  String get dnsEncryptedBlocked => 'Dieses Netzwerk blockiert verschlüsseltes DNS — Ihre Anfragen werden im Klartext übertragen.';
+
+  @override
   String get dnsInfoHijackingTitle => 'DNS Hijacking';
 
   @override
@@ -5016,4 +5031,99 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get opsReportsSubtitle => 'Netzwerk-Zustandsbericht exportieren';
+
+  @override
+  String get breachMonitorTitle => 'Leck-Monitor';
+
+  @override
+  String get breachMonitorSubtitle => 'Prüfen, ob ein Passwort geleakt wurde';
+
+  @override
+  String get breachMonitorIntro => 'Geben Sie ein beliebiges Passwort ein, um es gegen bekannte Datenlecks zu prüfen. Nur die ersten 5 Zeichen seines Hashes werden gesendet — das Passwort selbst verlässt Ihr Gerät nie.';
+
+  @override
+  String get breachInputLabel => 'Zu prüfendes Passwort';
+
+  @override
+  String get breachCheckButton => 'Passwort prüfen';
+
+  @override
+  String get breachCheckingButton => 'Wird geprüft...';
+
+  @override
+  String get breachResultSafeTitle => 'Nicht gefunden';
+
+  @override
+  String get breachResultCompromisedTitle => 'Kompromittiert';
+
+  @override
+  String get breachResultSafe => 'Dieses Passwort wurde in keinem bekannten Datenleck gefunden. Das garantiert keine Stärke — wählen Sie lange, einzigartige Passwörter.';
+
+  @override
+  String breachResultCompromised(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Dieses Passwort erscheint in $countString bekannten Leck-Datensätzen. Verwenden Sie es nicht mehr und ändern Sie es sofort.';
+  }
+
+  @override
+  String get breachAdvice => 'Ersetzen Sie es durch ein einzigartiges Passwort und aktivieren Sie die Zwei-Faktor-Authentifizierung für betroffene Konten.';
+
+  @override
+  String get breachError => 'Leck-Prüfung fehlgeschlagen. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.';
+
+  @override
+  String get breachPrivacyNote => 'Es wird nur ein 5-Zeichen-Hash-Präfix gesendet. Ihr Passwort verlässt dieses Gerät nie.';
+
+  @override
+  String get breachWhatTitle => 'Was ist das?';
+
+  @override
+  String get breachWhatBody => 'Im Laufe der Jahre wurden unzählige Websites gehackt, und Milliarden von Passwörtern wurden gestohlen und online geleakt. Angreifer nutzen diese fertigen Listen, um in Konten einzubrechen. Dieses Werkzeug zeigt Ihnen, ob ein von Ihnen verwendetes Passwort in diesen Leak-Listen vorkommt. Falls ja, ist dieses Passwort nicht mehr sicher und sollte geändert werden.';
+
+  @override
+  String get breachHowTitle => 'Wie funktioniert es?';
+
+  @override
+  String get breachStep1 => 'Das eingegebene Passwort wird auf diesem Gerät in einen unumkehrbaren Fingerabdruck (einen SHA-1-Hash) umgewandelt.';
+
+  @override
+  String get breachStep2 => 'Nur die ersten 5 Zeichen dieses Fingerabdrucks werden an den Dienst Have I Been Pwned gesendet. Er liefert Tausende möglicher Fingerabdrücke zurück, die mit diesen 5 Zeichen beginnen.';
+
+  @override
+  String get breachStep3 => 'Welcher Fingerabdruck zu Ihrem Passwort gehört, wird vollständig auf diesem Gerät abgeglichen. Der Dienst kann nie erfahren, nach welchem Passwort Sie gefragt haben.';
+
+  @override
+  String get breachSafetyTitle => 'Warum die Eingabe Ihres Passworts sicher ist';
+
+  @override
+  String get breachSafety1 => 'Das Passwort selbst verlässt Ihr Gerät nie — nur ein 5-Zeichen-Fingerabdruck-Präfix wird über das Internet gesendet.';
+
+  @override
+  String get breachSafety2 => 'Dieses 5-Zeichen-Präfix wird von Tausenden verschiedener Passwörter geteilt und verrät weder Ihre Identität noch Ihr Passwort (k-Anonymität).';
+
+  @override
+  String get breachSafety3 => 'Das Passwort wird nie gespeichert oder protokolliert und wird vom Bildschirm gelöscht, sobald die Prüfung abgeschlossen ist.';
+
+  @override
+  String get breachTransparencyLabel => 'Das Einzige, was online gesendet wird';
+
+  @override
+  String get breachTransparencyEmpty => 'Geben Sie ein Passwort ein; die 5 zu sendenden Zeichen erscheinen hier live.';
+
+  @override
+  String get breachTransparencyHint => 'Diese 5 Zeichen sind nur der Anfang des Fingerabdrucks Ihres Passworts — das Passwort lässt sich daraus nicht rekonstruieren.';
+
+  @override
+  String get dnsInfoDohTitle => 'DNS over HTTPS (DoH)';
+
+  @override
+  String get dnsInfoDohDesc => 'DoH verschlüsselt die DNS-Anfragen, die verraten, welche Seiten Sie besuchen, und verbirgt sie im gewöhnlichen HTTPS-Web-Verkehr. So können Ihr Internetanbieter oder ein Angreifer im Netzwerk Ihre Anfragen weder sehen noch Sie auf eine gefälschte Seite umleiten. \'Erreichbar\' bedeutet, dass dieses Netzwerk DoH zulässt.';
+
+  @override
+  String get dnsInfoDotTitle => 'DNS over TLS (DoT)';
+
+  @override
+  String get dnsInfoDotDesc => 'DoT verschlüsselt Ihre DNS-Anfragen ebenfalls, jedoch über einen separaten verschlüsselten Kanal auf Port 853. Das Ziel ist dasselbe: DNS-Abfragen privat zu halten. Manche Netzwerke blockieren Port 853 — dann sehen Sie \'Blockiert\' und Ihr Gerät greift möglicherweise auf unverschlüsseltes DNS zurück.';
 }

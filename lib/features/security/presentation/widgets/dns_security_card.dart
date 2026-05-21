@@ -128,6 +128,9 @@ class DnsSecurityCard extends StatelessWidget {
                   protocol:
                       dnsResult?.encryptedProtocol ?? l10n.notAvailableCaps,
                   dnssec: dnsResult?.dnssecSupported ?? false,
+                  dohReachable: dnsResult?.dohReachable ?? false,
+                  dotReachable: dnsResult?.dotReachable ?? false,
+                  tested: dnsResult != null,
                   color: dnsResult != null ? statusColor : scheme.outline,
                 ),
 
@@ -561,11 +564,17 @@ class _BenchmarkItem extends StatelessWidget {
 class _DnsProtocolSection extends StatelessWidget {
   final String protocol;
   final bool dnssec;
+  final bool dohReachable;
+  final bool dotReachable;
+  final bool tested;
   final Color color;
 
   const _DnsProtocolSection({
     required this.protocol,
     required this.dnssec,
+    required this.dohReachable,
+    required this.dotReachable,
+    required this.tested,
     required this.color,
   });
 
@@ -581,7 +590,9 @@ class _DnsProtocolSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color.withValues(alpha: 0.15)),
       ),
-      child: Row(
+      child: Column(
+        children: [
+          Row(
         children: [
           Expanded(
             child: Column(
@@ -665,8 +676,127 @@ class _DnsProtocolSection extends StatelessWidget {
               ],
             ),
           ),
+            ],
+          ),
+          if (tested) ...[
+            const SizedBox(height: 12),
+            Divider(height: 1, color: color.withValues(alpha: 0.15)),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: _TransportStatus(
+                    label: l10n.dnsDohLabel,
+                    reachable: dohReachable,
+                    color: color,
+                    infoTitle: l10n.dnsInfoDohTitle,
+                    infoBody: l10n.dnsInfoDohDesc,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _TransportStatus(
+                    label: l10n.dnsDotLabel,
+                    reachable: dotReachable,
+                    color: color,
+                    infoTitle: l10n.dnsInfoDotTitle,
+                    infoBody: l10n.dnsInfoDotDesc,
+                  ),
+                ),
+              ],
+            ),
+            if (!dohReachable && !dotReachable) ...[
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(
+                    Icons.lock_open_rounded,
+                    size: 12,
+                    color: scheme.error,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      l10n.dnsEncryptedBlocked,
+                      style: GoogleFonts.rajdhani(
+                        color: scheme.error,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ],
         ],
       ),
+    );
+  }
+}
+
+class _TransportStatus extends StatelessWidget {
+  final String label;
+  final bool reachable;
+  final Color color;
+  final String infoTitle;
+  final String infoBody;
+
+  const _TransportStatus({
+    required this.label,
+    required this.reachable,
+    required this.color,
+    required this.infoTitle,
+    required this.infoBody,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final scheme = Theme.of(context).colorScheme;
+    final statusColor = reachable ? color : scheme.onSurfaceVariant;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              label.toUpperCase(),
+              style: GoogleFonts.rajdhani(
+                color: scheme.onSurfaceVariant,
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.5,
+              ),
+            ),
+            InfoIconButton(
+              title: infoTitle,
+              body: infoBody,
+              color: color,
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Row(
+          children: [
+            Icon(
+              reachable ? Icons.check_circle_rounded : Icons.block_rounded,
+              size: 14,
+              color: statusColor,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              reachable ? l10n.dnsReachable : l10n.dnsBlocked,
+              style: GoogleFonts.orbitron(
+                fontSize: 10,
+                fontWeight: FontWeight.w800,
+                color: statusColor,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

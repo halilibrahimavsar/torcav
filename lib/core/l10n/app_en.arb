@@ -1886,6 +1886,26 @@
     "@dnsSsec": {
         "description": "Dns ssec"
     },
+    "dnsDohLabel": "DoH",
+    "@dnsDohLabel": {
+        "description": "Label for DNS-over-HTTPS transport"
+    },
+    "dnsDotLabel": "DoT",
+    "@dnsDotLabel": {
+        "description": "Label for DNS-over-TLS transport"
+    },
+    "dnsReachable": "Reachable",
+    "@dnsReachable": {
+        "description": "Encrypted DNS transport reachable on this network"
+    },
+    "dnsBlocked": "Blocked",
+    "@dnsBlocked": {
+        "description": "Encrypted DNS transport blocked on this network"
+    },
+    "dnsEncryptedBlocked": "This network blocks encrypted DNS — your lookups travel in plain text.",
+    "@dnsEncryptedBlocked": {
+        "description": "Warning shown when both DoH and DoT are unreachable"
+    },
     "dnsInfoHijackingTitle": "DNS Hijacking",
     "@dnsInfoHijackingTitle": {
         "description": "Dns info hijacking title"
@@ -7048,5 +7068,40 @@
     "opsSpeedSubtitle": "Speed test & slow-internet diagnosis",
     "opsSecuritySubtitle": "Threats, encryption & deep audit",
     "opsHeatmapSubtitle": "Map coverage, find dead zones",
-    "opsReportsSubtitle": "Export a network health report"
+    "opsReportsSubtitle": "Export a network health report",
+    "breachMonitorTitle": "Breach Monitor",
+    "breachMonitorSubtitle": "Check if a password has leaked",
+    "breachMonitorIntro": "Enter any password to check it against known data breaches. Only the first 5 characters of its hash are sent — the password itself never leaves your device.",
+    "breachInputLabel": "Password to check",
+    "breachCheckButton": "Check Password",
+    "breachCheckingButton": "Checking...",
+    "breachResultSafeTitle": "Not Found",
+    "breachResultCompromisedTitle": "Compromised",
+    "breachResultSafe": "This password was not found in any known data breach. That does not guarantee it is strong — choose long, unique passwords.",
+    "breachResultCompromised": "This password appears in {count} known breach records. Stop using it everywhere and change it immediately.",
+    "@breachResultCompromised": {
+        "placeholders": {
+            "count": { "type": "int", "format": "decimalPattern" }
+        }
+    },
+    "breachAdvice": "Replace it with a unique password and enable two-factor authentication on affected accounts.",
+    "breachError": "Breach check failed. Check your connection and try again.",
+    "breachPrivacyNote": "Only a 5-character hash prefix is sent. Your password never leaves this device.",
+    "breachWhatTitle": "What is this?",
+    "breachWhatBody": "Over the years countless websites have been hacked, and billions of passwords were stolen and leaked online. Attackers reuse these ready-made lists to break into accounts. This tool tells you whether a password you use appears in those leak lists. If it does, that password is no longer safe and should be changed.",
+    "breachHowTitle": "How does it work?",
+    "breachStep1": "The password you enter is turned into an irreversible fingerprint (a SHA-1 hash) on this device.",
+    "breachStep2": "Only the first 5 characters of that fingerprint are sent to the Have I Been Pwned service. It returns thousands of possible fingerprints starting with those 5 characters.",
+    "breachStep3": "Which fingerprint belongs to your password is matched entirely on this device. The service can never learn which password you asked about.",
+    "breachSafetyTitle": "Why it is safe to type your password",
+    "breachSafety1": "The password itself never leaves your device — only a 5-character fingerprint prefix is sent over the internet.",
+    "breachSafety2": "That 5-character prefix is shared by thousands of different passwords, so it reveals neither your identity nor your password (k-anonymity).",
+    "breachSafety3": "The password is never saved or logged, and it is wiped from the screen the moment the check finishes.",
+    "breachTransparencyLabel": "The only thing sent online",
+    "breachTransparencyEmpty": "Type a password and the 5 characters that will be sent appear here live.",
+    "breachTransparencyHint": "These 5 characters are only the start of your password's fingerprint — the password cannot be reconstructed from them.",
+    "dnsInfoDohTitle": "DNS over HTTPS (DoH)",
+    "dnsInfoDohDesc": "DoH encrypts the DNS queries that reveal which sites you visit, hiding them inside ordinary HTTPS web traffic. This stops your internet provider or an attacker on the network from seeing your queries or redirecting you to a fake site. 'Reachable' means this network allows DoH.",
+    "dnsInfoDotTitle": "DNS over TLS (DoT)",
+    "dnsInfoDotDesc": "DoT also encrypts your DNS queries, but over a separate encrypted channel on port 853. The goal is the same: keeping DNS lookups private. Some networks block port 853 — then you see 'Blocked' and your device may fall back to unencrypted DNS."
 }

@@ -1886,6 +1886,26 @@
     "@dnsSsec": {
         "description": "Dns ssec"
     },
+    "dnsDohLabel": "DoH",
+    "@dnsDohLabel": {
+        "description": "Label for DNS-over-HTTPS transport"
+    },
+    "dnsDotLabel": "DoT",
+    "@dnsDotLabel": {
+        "description": "Label for DNS-over-TLS transport"
+    },
+    "dnsReachable": "Gihîştî",
+    "@dnsReachable": {
+        "description": "Encrypted DNS transport reachable on this network"
+    },
+    "dnsBlocked": "Astengkirî",
+    "@dnsBlocked": {
+        "description": "Encrypted DNS transport blocked on this network"
+    },
+    "dnsEncryptedBlocked": "Ev tor DNSa şîfrekirî asteng dike — lêgerînên te wek nivîsa zelal têne şandin.",
+    "@dnsEncryptedBlocked": {
+        "description": "Warning shown when both DoH and DoT are unreachable"
+    },
     "dnsInfoHijackingTitle": "DNS Hijacking",
     "@dnsInfoHijackingTitle": {
         "description": "Dns info hijacking title"
@@ -7048,5 +7068,35 @@
     "opsSpeedSubtitle": "Testa lezê û teşhîsa înterneta hêdî",
     "opsSecuritySubtitle": "Tehdîd, şîfrekirin û vekolîna kûr",
     "opsHeatmapSubtitle": "Berfirehiyê nexşe bike, deverên mirî bibîne",
-    "opsReportsSubtitle": "Raporta tenduristiya torê derxe"
+    "opsReportsSubtitle": "Raporta tenduristiya torê derxe",
+    "breachMonitorTitle": "Çavdêra Derketinê",
+    "breachMonitorSubtitle": "Kontrol bike ka şîfreyek derketiye",
+    "breachMonitorIntro": "Şîfreyek binivîse da ku li hember derketinên daneyên naskirî were kontrolkirin. Tenê 5 tîpên pêşîn ên hash têne şandin — şîfre bi xwe qet ji cîhaza te dernakeve.",
+    "breachInputLabel": "Şîfreya ku tê kontrolkirin",
+    "breachCheckButton": "Şîfreyê Kontrol Bike",
+    "breachCheckingButton": "Tê kontrolkirin...",
+    "breachResultSafeTitle": "Nehat dîtin",
+    "breachResultCompromisedTitle": "Xeternak",
+    "breachResultSafe": "Ev şîfre di tu derketina daneyên naskirî de nehat dîtin. Ev garantî nake ku ew bihêz e — şîfreyên dirêj û yekta hilbijêre.",
+    "breachResultCompromised": "Ev şîfre di {count} tomarên derketinê yên naskirî de xuya dibe. Li her derê bikaranîna wê rawestîne û tavilê biguherîne.",
+    "breachAdvice": "Bi şîfreyek yekta biguherîne û li ser hesabên bandorbûyî pejirandina du-gavî çalak bike.",
+    "breachError": "Kontrola derketinê biserneket. Girêdana xwe kontrol bike û dîsa biceribîne.",
+    "breachPrivacyNote": "Tenê pêşgireke hash ya 5-tîpî tê şandin. Şîfreya te qet ji vê cîhazê dernakeve.",
+    "breachWhatTitle": "Ev çi ye?",
+    "breachWhatBody": "Bi salan re gelek malper hatin hakkirin, û milyaran şîfre hatin dizîn û li înternetê belav bûn. Êrîşkar van lîsteyên amade bikar tînin da ku hesaban dest bixin. Ev amûr ji te re dibêje ka şîfreyek ku tu bikar tînî di wan lîsteyên derketinê de heye yan na. Ger hebe, ew şîfre êdî ne ewle ye û divê were guhertin.",
+    "breachHowTitle": "Çawa dixebite?",
+    "breachStep1": "Şîfreya ku tu dinivîsî li ser vê cîhazê dibe şopek vegernebar (hashek SHA-1).",
+    "breachStep2": "Tenê 5 tîpên pêşîn ên wê şopê ji servîsa 'Have I Been Pwned' re têne şandin. Servîs bi hezaran şopên gengaz ên ku bi wan 5 tîpan dest pê dikin vedigerîne.",
+    "breachStep3": "Kîjan şop a şîfreya te ye bi tevahî li ser vê cîhazê tê berhevkirin. Servîs qet nikare fêr bibe ku te kîjan şîfre pirsî.",
+    "breachSafetyTitle": "Çima nivîsandina şîfreya te ewle ye",
+    "breachSafety1": "Şîfre bi xwe qet ji cîhaza te dernakeve — tenê pêşgireke şopê ya 5-tîpî bi înternetê re tê şandin.",
+    "breachSafety2": "Ev pêşgira 5-tîpî bi hezaran şîfreyên cuda re hevpar e; ne nasnameya te ne jî şîfreya te eşkere dike (k-anonîmî).",
+    "breachSafety3": "Şîfre qet nayê tomarkirin an qeydkirin, û gava ku kontrol diqede tavilê ji ekranê tê jêbirin.",
+    "breachTransparencyLabel": "Tişta tenê ku tê şandin",
+    "breachTransparencyEmpty": "Şîfreyek binivîse; 5 tîpên ku dê werin şandin dê li vir zindî xuya bibin.",
+    "breachTransparencyHint": "Ev 5 tîp tenê destpêka şopa şîfreya te ne — şîfre ji wan nayê ji nû ve avakirin.",
+    "dnsInfoDohTitle": "DNS over HTTPS (DoH)",
+    "dnsInfoDohDesc": "DoH lêgerînên DNSê yên ku diyar dikin tu kîjan malperan diçî şîfre dike û wan di nav trafîka tora HTTPS ya asayî de vedişêre. Bi vî awayî peydakerê înternetê yan êrîşkarek di torê de nikare lêgerînên te bibîne yan te biçe malperek sexte. Heke 'Gihîştî' nivîsî be, ev tor destûrê dide DoH.",
+    "dnsInfoDotTitle": "DNS over TLS (DoT)",
+    "dnsInfoDotDesc": "DoT jî lêgerînên DNSê yên te şîfre dike, lê vê yekê li ser kanalek şîfrekirî ya cuda li portê 853 dike. Armanc heman e: parastina nepenîtiya lêgerînên DNSê. Hin tor portê 853 asteng dikin — wê demê tu 'Astengkirî' dibînî û cîhaza te dibe ku vegere DNSa neşîfrekirî."
 }

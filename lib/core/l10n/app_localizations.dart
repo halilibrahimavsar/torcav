@@ -2613,6 +2613,36 @@ abstract class AppLocalizations {
   /// **'DNSSEC'**
   String get dnsSsec;
 
+  /// Label for DNS-over-HTTPS transport
+  ///
+  /// In en, this message translates to:
+  /// **'DoH'**
+  String get dnsDohLabel;
+
+  /// Label for DNS-over-TLS transport
+  ///
+  /// In en, this message translates to:
+  /// **'DoT'**
+  String get dnsDotLabel;
+
+  /// Encrypted DNS transport reachable on this network
+  ///
+  /// In en, this message translates to:
+  /// **'Reachable'**
+  String get dnsReachable;
+
+  /// Encrypted DNS transport blocked on this network
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked'**
+  String get dnsBlocked;
+
+  /// Warning shown when both DoH and DoT are unreachable
+  ///
+  /// In en, this message translates to:
+  /// **'This network blocks encrypted DNS — your lookups travel in plain text.'**
+  String get dnsEncryptedBlocked;
+
   /// Dns info hijacking title
   ///
   /// In en, this message translates to:
@@ -9482,6 +9512,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Export a network health report'**
   String get opsReportsSubtitle;
+
+  /// No description provided for @breachMonitorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Breach Monitor'**
+  String get breachMonitorTitle;
+
+  /// No description provided for @breachMonitorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check if a password has leaked'**
+  String get breachMonitorSubtitle;
+
+  /// No description provided for @breachMonitorIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter any password to check it against known data breaches. Only the first 5 characters of its hash are sent — the password itself never leaves your device.'**
+  String get breachMonitorIntro;
+
+  /// No description provided for @breachInputLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password to check'**
+  String get breachInputLabel;
+
+  /// No description provided for @breachCheckButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Check Password'**
+  String get breachCheckButton;
+
+  /// No description provided for @breachCheckingButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking...'**
+  String get breachCheckingButton;
+
+  /// No description provided for @breachResultSafeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Found'**
+  String get breachResultSafeTitle;
+
+  /// No description provided for @breachResultCompromisedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compromised'**
+  String get breachResultCompromisedTitle;
+
+  /// No description provided for @breachResultSafe.
+  ///
+  /// In en, this message translates to:
+  /// **'This password was not found in any known data breach. That does not guarantee it is strong — choose long, unique passwords.'**
+  String get breachResultSafe;
+
+  /// No description provided for @breachResultCompromised.
+  ///
+  /// In en, this message translates to:
+  /// **'This password appears in {count} known breach records. Stop using it everywhere and change it immediately.'**
+  String breachResultCompromised(int count);
+
+  /// No description provided for @breachAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace it with a unique password and enable two-factor authentication on affected accounts.'**
+  String get breachAdvice;
+
+  /// No description provided for @breachError.
+  ///
+  /// In en, this message translates to:
+  /// **'Breach check failed. Check your connection and try again.'**
+  String get breachError;
+
+  /// No description provided for @breachPrivacyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Only a 5-character hash prefix is sent. Your password never leaves this device.'**
+  String get breachPrivacyNote;
+
+  /// No description provided for @breachWhatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What is this?'**
+  String get breachWhatTitle;
+
+  /// No description provided for @breachWhatBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Over the years countless websites have been hacked, and billions of passwords were stolen and leaked online. Attackers reuse these ready-made lists to break into accounts. This tool tells you whether a password you use appears in those leak lists. If it does, that password is no longer safe and should be changed.'**
+  String get breachWhatBody;
+
+  /// No description provided for @breachHowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How does it work?'**
+  String get breachHowTitle;
+
+  /// No description provided for @breachStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'The password you enter is turned into an irreversible fingerprint (a SHA-1 hash) on this device.'**
+  String get breachStep1;
+
+  /// No description provided for @breachStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the first 5 characters of that fingerprint are sent to the Have I Been Pwned service. It returns thousands of possible fingerprints starting with those 5 characters.'**
+  String get breachStep2;
+
+  /// No description provided for @breachStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Which fingerprint belongs to your password is matched entirely on this device. The service can never learn which password you asked about.'**
+  String get breachStep3;
+
+  /// No description provided for @breachSafetyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Why it is safe to type your password'**
+  String get breachSafetyTitle;
+
+  /// No description provided for @breachSafety1.
+  ///
+  /// In en, this message translates to:
+  /// **'The password itself never leaves your device — only a 5-character fingerprint prefix is sent over the internet.'**
+  String get breachSafety1;
+
+  /// No description provided for @breachSafety2.
+  ///
+  /// In en, this message translates to:
+  /// **'That 5-character prefix is shared by thousands of different passwords, so it reveals neither your identity nor your password (k-anonymity).'**
+  String get breachSafety2;
+
+  /// No description provided for @breachSafety3.
+  ///
+  /// In en, this message translates to:
+  /// **'The password is never saved or logged, and it is wiped from the screen the moment the check finishes.'**
+  String get breachSafety3;
+
+  /// No description provided for @breachTransparencyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'The only thing sent online'**
+  String get breachTransparencyLabel;
+
+  /// No description provided for @breachTransparencyEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a password and the 5 characters that will be sent appear here live.'**
+  String get breachTransparencyEmpty;
+
+  /// No description provided for @breachTransparencyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'These 5 characters are only the start of your password\'s fingerprint — the password cannot be reconstructed from them.'**
+  String get breachTransparencyHint;
+
+  /// No description provided for @dnsInfoDohTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'DNS over HTTPS (DoH)'**
+  String get dnsInfoDohTitle;
+
+  /// No description provided for @dnsInfoDohDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'DoH encrypts the DNS queries that reveal which sites you visit, hiding them inside ordinary HTTPS web traffic. This stops your internet provider or an attacker on the network from seeing your queries or redirecting you to a fake site. \'Reachable\' means this network allows DoH.'**
+  String get dnsInfoDohDesc;
+
+  /// No description provided for @dnsInfoDotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'DNS over TLS (DoT)'**
+  String get dnsInfoDotTitle;
+
+  /// No description provided for @dnsInfoDotDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'DoT also encrypts your DNS queries, but over a separate encrypted channel on port 853. The goal is the same: keeping DNS lookups private. Some networks block port 853 — then you see \'Blocked\' and your device may fall back to unencrypted DNS.'**
+  String get dnsInfoDotDesc;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
