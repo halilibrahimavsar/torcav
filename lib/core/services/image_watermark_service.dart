@@ -39,6 +39,8 @@ class ImageWatermarkService {
               Colors.black.withValues(alpha: 0.8),
               Colors.black,
             ],
+            // 3 renk → 3 stop zorunlu; stops verilmezse colors tam 2 olmalı.
+            const [0.0, 0.7, 1.0],
           );
     canvas.drawRect(gradientRect, gradientPaint);
 
