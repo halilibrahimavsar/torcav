@@ -160,17 +160,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
     await _heatmapManager.startSession(name, null, null);
   }
 
-  void syncPositionFromAr(double x, double y) {
-    _heatmapManager.syncPosition(x, y);
-    emit(state.copyWith(currentPosition: Offset(x, y)));
-  }
-
-  void pauseScanning() => emit(state.copyWith(phase: ScanPhase.paused));
-
-  void resumeScanning() {
-    emit(state.copyWith(phase: ScanPhase.scanning));
-  }
-
   Future<void> stopScanning() async {
     if (!state.isRecording) return;
     await _arCameraPose.stop();
@@ -260,8 +249,6 @@ class HeatmapBloc extends Cubit<HeatmapState> {
   void startSession(String name) => unawaited(startScanning(name));
   void stopSession() => unawaited(stopScanning());
   void discardSession() => unawaited(_discardScanning());
-
-  void abortSession() => unawaited(_discardScanning());
 
   void restartSurvey() {
     final oldName = state.currentSession?.name ?? 'Survey';

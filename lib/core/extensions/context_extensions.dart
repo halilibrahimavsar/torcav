@@ -85,7 +85,4 @@ extension ThemeX on BuildContext {
 
   /// Access [ColorScheme] from [BuildContext].
   ColorScheme get colorScheme => theme.colorScheme;
-
-  /// Access [TextTheme] from [BuildContext].
-  TextTheme get textTheme => theme.textTheme;
 }

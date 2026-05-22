@@ -147,20 +147,4 @@ class TopologyViewData {
       TopologyNodeVisualKind.unknown => Icons.help_outline,
     };
   }
-
-  static int signalLevel(int? rssi) {
-    if (rssi == null) return 0;
-    if (rssi >= -50) return 4;
-    if (rssi >= -60) return 3;
-    if (rssi >= -70) return 2;
-    if (rssi >= -80) return 1;
-    return 0;
-  }
-
-  static String formatFrequency(int? frequency) {
-    if (frequency == null) return 'N/A';
-    if (frequency >= 5000) return '5 GHz';
-    if (frequency >= 2400) return '2.4 GHz';
-    return '$frequency MHz';
-  }
 }

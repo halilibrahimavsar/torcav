@@ -2,7 +2,6 @@ import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
 
-import '../../../performance/domain/entities/speed_test_result.dart';
 import 'dns_candidate.dart';
 import 'jitter_sample.dart';
 
@@ -80,18 +79,6 @@ class LiveStats extends Equatable {
     final tail = samples.sublist(samples.length - consecutiveSamples);
     return tail.every((s) => s.jitterMs > thresholdMs);
   }
-
-  /// Convenience adapter so existing perf-history widgets that consume
-  /// [SpeedTestResult] can render a live snapshot without a new mapper.
-  SpeedTestResult toSpeedTestSnapshot() => SpeedTestResult(
-    recordedAt: DateTime.now(),
-    latencyMs: ewmaLatencyMs,
-    jitterMs: ewmaJitterMs,
-    downloadMbps: 0,
-    uploadMbps: 0,
-    packetLoss: lossPct,
-    loadedLatencyMs: ewmaLatencyMs,
-  );
 
   @override
   List<Object?> get props => [

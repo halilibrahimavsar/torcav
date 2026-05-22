@@ -15,15 +15,4 @@ extension StreamX<T> on Stream<T> {
     }
     return found ? lastValue : null;
   }
-
-  /// Returns the first element of the stream, or `null` if the stream is empty.
-  ///
-  /// This is a safer alternative to [Stream.first] which throws a [StateError]
-  /// if the stream contains no elements.
-  Future<T?> get firstOrNull async {
-    await for (final value in this) {
-      return value;
-    }
-    return null;
-  }
 }

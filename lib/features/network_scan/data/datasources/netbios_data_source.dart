@@ -47,17 +47,6 @@ class NetbiosDataSource {
     }
   }
 
-  /// Resolves NetBIOS names for a batch of IPs in parallel.
-  Future<Map<String, String>> queryBatch(Iterable<String> ips) async {
-    final results = <String, String>{};
-    final futures = ips.map((ip) async {
-      final name = await queryName(ip);
-      if (name != null && name.isNotEmpty) results[ip] = name;
-    });
-    await Future.wait(futures);
-    return results;
-  }
-
   /// Build an NBSTAT node-status request for the wildcard name `*`.
   Uint8List _buildNodeStatusQuery() {
     // Transaction ID (random-ish), flags = 0x0000 (query), 1 question.

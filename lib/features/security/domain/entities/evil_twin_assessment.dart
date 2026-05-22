@@ -67,20 +67,6 @@ extension EvilTwinSignalWeight on EvilTwinSignal {
     EvilTwinSignal.crossBandSibling => 0.40,
     EvilTwinSignal.knownMeshVendor => 0.50,
   };
-
-  bool get isSuspicion => switch (this) {
-    EvilTwinSignal.ouiMismatch ||
-    EvilTwinSignal.securityDowngrade ||
-    EvilTwinSignal.sameBandChannelDrift ||
-    EvilTwinSignal.channelWidthMismatch ||
-    EvilTwinSignal.wpsToggleMismatch ||
-    EvilTwinSignal.pmfToggleMismatch ||
-    EvilTwinSignal.hiddenVsVisible => true,
-    EvilTwinSignal.sharedMldMac ||
-    EvilTwinSignal.bssidProximity ||
-    EvilTwinSignal.crossBandSibling ||
-    EvilTwinSignal.knownMeshVendor => false,
-  };
 }
 
 /// Result of comparing one [WifiNetwork] against one peer carrying the

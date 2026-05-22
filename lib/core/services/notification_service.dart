@@ -25,9 +25,7 @@ class NotificationService {
     const androidSettings = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
     );
-    const iosSettings = DarwinInitializationSettings(
-      
-    );
+    const iosSettings = DarwinInitializationSettings();
     final linuxSettings = LinuxInitializationSettings(
       defaultActionName: _l10n.notificationOpenAction,
     );
@@ -52,11 +50,12 @@ class NotificationService {
   Future<bool> requestAndroidNotificationPermission() async {
     if (!_initialized) await initialize();
     if (kIsWeb || !defaultTargetPlatformIsAndroid) return true;
-    final granted = await _plugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.requestNotificationsPermission();
+    final granted =
+        await _plugin
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >()
+            ?.requestNotificationsPermission();
     return granted ?? false;
   }
 
@@ -73,7 +72,10 @@ class NotificationService {
     final title = _getTitleForEvent(event.type);
     final body =
         event.evidence.isNotEmpty
-            ? SecurityLocalizationHelper.translateEvidence(_l10n, event.evidence)
+            ? SecurityLocalizationHelper.translateEvidence(
+              _l10n,
+              event.evidence,
+            )
             : '${event.ssid} (${event.bssid})';
 
     await _plugin.show(
@@ -82,17 +84,6 @@ class NotificationService {
       body,
       _buildNotificationDetails(event.severity),
       payload: '${event.type.name}|${event.bssid}',
-    );
-  }
-
-  Future<void> showScanComplete(int networkCount, Duration duration) async {
-    if (!_initialized) await initialize();
-
-    await _plugin.show(
-      DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      _l10n.scanCompleteTitle,
-      _l10n.scanCompleteBody(networkCount, duration.inSeconds),
-      _buildNotificationDetails(SecurityEventSeverity.info),
     );
   }
 
@@ -136,17 +127,6 @@ class NotificationService {
       body,
       _buildNotificationDetails(severity),
       payload: 'ping_stabilizer',
-    );
-  }
-
-  Future<void> showAttackDetected(String attackType, String details) async {
-    if (!_initialized) await initialize();
-
-    await _plugin.show(
-      999999,
-      _l10n.attackDetectedTitle(attackType),
-      SecurityLocalizationHelper.translateEvidence(_l10n, details),
-      _buildNotificationDetails(SecurityEventSeverity.critical),
     );
   }
 
@@ -235,13 +215,5 @@ class NotificationService {
 
   String _getTitleForEvent(SecurityEventType type) {
     return _l10n.securityEventType(type.name);
-  }
-
-  Future<void> cancelAll() async {
-    await _plugin.cancelAll();
-  }
-
-  Future<List<PendingNotificationRequest>> getPendingNotifications() async {
-    return _plugin.pendingNotificationRequests();
   }
 }

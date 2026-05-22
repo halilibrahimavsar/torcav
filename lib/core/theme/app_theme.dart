@@ -35,7 +35,7 @@ class AppColors {
   static const Color deepBlack = Color(0xFF040506);
   static const Color darkSurface = Color(0xFF0A0F1E);
   static const Color darkSurfaceLight = Color(0xFF141F33);
-  static const Color darkSurfaceLighter = Color(0xFF1C2A45);
+
   static const Color glassWhite = Color(0x0DFFFFFF);
   static const Color glassWhiteBorder = Color(0x1AFFFFFF);
 
@@ -46,7 +46,7 @@ class AppColors {
 
   // ── Light Mode Tokens (Clean & High Contrast) ──
   static const Color lightBg = Color(0xFFCBD5E1); // Slate-300
-  static const Color lightBgSecondary = Color(0xFFE2E8F0); // Slate-200
+  // Slate-200
   static const Color lightSurface = Color(0xFFE2E8F0); // Slate-200
   static const Color lightSurfaceSecondary = Color(0xFFCBD5E1); // Slate-300
   static const Color lightSurfaceTertiary = Color(0xFF94A3B8); // Slate-400
@@ -54,10 +54,10 @@ class AppColors {
   static const Color lightGlassBorder = Color(0x33006064); // Hint of Ink Cyan
 
   // ── Mesh Gradient Pastels (Premium Fluid Background) ──
-  static const Color meshIndigo = Color(0xFFE0E7FF); // Indigo-100
-  static const Color meshMint = Color(0xFFD1FAE5); // Emerald-100
-  static const Color meshRose = Color(0xFFFFE4E6); // Rose-100
-  static const Color meshCyan = Color(0xFFCFFAFE); // Cyan-100
+  // Indigo-100
+  // Emerald-100
+  // Rose-100
+  // Cyan-100
 
   static const Color textPrimaryLight = Color(0xFF0F172A);
   static const Color textSecondaryLight = Color(0xFF334155);
@@ -67,10 +67,7 @@ class AppColors {
   static final Map<GlowTier, List<BoxShadow> Function(Color)> glowTiers = {
     GlowTier.low:
         (Color color) => [
-          BoxShadow(
-            color: color.withValues(alpha: 0.15),
-            blurRadius: 12,
-          ),
+          BoxShadow(color: color.withValues(alpha: 0.15), blurRadius: 12),
         ],
     GlowTier.med:
         (Color color) => [
@@ -92,26 +89,13 @@ class AppColors {
             blurRadius: 40,
             spreadRadius: 4,
           ),
-          BoxShadow(
-            color: color.withValues(alpha: 0.2),
-            blurRadius: 12,
-          ),
+          BoxShadow(color: color.withValues(alpha: 0.2), blurRadius: 12),
         ],
   };
 
   // ── Legacy Aliases ──
-  static const Color darkBg = deepBlack;
-  static const Color darkBackground = deepBlack;
-  static const Color primary = neonCyan;
 
-  /// Returns a theme-aware color for signal strength.
-  static Color getSignalColor(int? signal, Brightness brightness) {
-    final isDark = brightness == Brightness.dark;
-    if (signal == null) return isDark ? textSecondary : textSecondaryLight;
-    if (signal >= -60) return isDark ? neonGreen : inkGreen;
-    if (signal >= -72) return isDark ? neonYellow : inkYellow;
-    return isDark ? neonRed : inkRed;
-  }
+  static const Color darkBackground = deepBlack;
 
   /// Returns a theme-aware color for coverage health.
   static Color getCoverageColor(
@@ -143,12 +127,9 @@ class AppColors {
 class AppSpacing {
   const AppSpacing._();
 
-  static const double xs = 4;
   static const double sm = 8;
   static const double md = 16;
   static const double lg = 24;
-  static const double xl = 32;
-  static const double xxl = 48;
 }
 
 // ── Legacy Compatibility Aliases ─────────────────────────────────────
@@ -159,11 +140,9 @@ class AppTheme {
   const AppTheme._();
 
   // — kept for backward compat — prefer AppColors going forward —
-  static const Color primaryColor = AppColors.neonCyan;
-  static const Color secondaryColor = AppColors.neonPurple;
+
   static const Color darkBackground = AppColors.deepBlack;
   static const Color darkSurface = AppColors.darkSurface;
-  static const Color errorColor = AppColors.neonRed;
 
   // ─────────────────────────────────────────────────────────────────
   //  DARK THEME

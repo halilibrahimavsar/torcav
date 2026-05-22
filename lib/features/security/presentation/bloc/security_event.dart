@@ -38,5 +38,3 @@ class SecurityUntrustRequested extends SecurityEvent {
 class SecurityDnsTestRequested extends SecurityEvent {
   const SecurityDnsTestRequested();
 }
-
-class SecurityAlertsCleared extends SecurityEvent {}
