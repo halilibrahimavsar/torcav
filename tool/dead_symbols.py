@@ -25,6 +25,7 @@ Sınır: string/reflection ile çağrı yakalanmaz (Flutter `dart:mirrors` kulla
 from __future__ import annotations
 import json
 import os
+import re
 import sys
 import time
 import threading
@@ -208,6 +209,60 @@ def read_window(file, offset, back=260):
     return src[max(0, offset - back):offset]
 
 
+_IDENT_RE = re.compile(r"[A-Za-z_$][A-Za-z0-9_$]*")
+
+
+def strip_comments(src):
+    """Dart yorumlarını (`//`, `/* */`) boşlukla değiştirir — offset korunur.
+    String içerikleri DOKUNULMAZ (string-reflection güvenliği için).
+    """
+    out = list(src)
+    i, n = 0, len(src)
+    while i < n:
+        c = src[i]
+        if c == "/" and i + 1 < n and src[i + 1] == "/":
+            while i < n and src[i] != "\n":
+                out[i] = " "
+                i += 1
+        elif c == "/" and i + 1 < n and src[i + 1] == "*":
+            depth = 1
+            out[i] = out[i + 1] = " "
+            i += 2
+            while i < n and depth:
+                if src[i] == "/" and i + 1 < n and src[i + 1] == "*":
+                    depth += 1
+                    out[i] = out[i + 1] = " "
+                    i += 2
+                    continue
+                if src[i] == "*" and i + 1 < n and src[i + 1] == "/":
+                    depth -= 1
+                    out[i] = out[i + 1] = " "
+                    i += 2
+                    continue
+                if src[i] != "\n":
+                    out[i] = " "
+                i += 1
+        elif c in ("'", '"'):
+            # String — atla (içeriğe dokunma). Üçlü ve raw'ı da kapsa.
+            raw = i > 0 and src[i - 1] in ("r", "R")
+            triple = src[i:i + 3] in ("'''", '"""')
+            quote = src[i:i + 3] if triple else c
+            i += len(quote)
+            while i < n:
+                if not raw and src[i] == "\\":
+                    i += 2
+                    continue
+                if src[i:i + len(quote)] == quote:
+                    i += len(quote)
+                    break
+                if not triple and src[i] == "\n":
+                    break
+                i += 1
+        else:
+            i += 1
+    return "".join(out)
+
+
 def main():
     pretty = "--pretty" in sys.argv
     log = lambda m: print(m, file=sys.stderr, flush=True)
@@ -280,11 +335,16 @@ def main():
                     # (rev gerçek referansları tutar — "neden ölü" için)
 
         log("referans grafiği kuruluyor (NAVIGATION)...")
+        # explained: analizcinin çözebildiği her tanımlayıcının (dosya, offset)
+        # konumu. Bir NAVIGATION region'ı = çözülmüş bir referans demektir;
+        # `dynamic` erişimler region üretmez → bu kümeye girmez.
+        explained = set()
         for f, nav in navs.items():
             nfiles = nav.get("files", [])
             targets = nav.get("targets", [])
             is_test = f.startswith(test + os.sep)
             for reg in nav.get("regions", []):
+                explained.add((f, reg["offset"]))
                 src = None if is_test else innermost(f, reg["offset"])
                 for ti in reg.get("targets", []):
                     if ti >= len(targets):
@@ -373,24 +433,74 @@ def main():
                 break
             live = sweep(live | revived)
 
-        # 6. Sınıflandırma + çıktı.
-        dead, test_only, enum_dead = [], [], []
+        # 6. Güvenlik filtresi — "açıklanamayan metinsel geçiş".
+        # Bir ad statik analizle çözülemeyen bir konumda (dynamic erişim,
+        # string literal, reflection) geçiyorsa o adı taşıyan bildirim
+        # SİLME ADAYI OLMAZ — `kept_uncertain`'e gider. Hata yönü güvenli:
+        # fazladan saklarız, asla kullanılan kodu silmeyiz.
+        log("güvenlik filtresi (metinsel mutabakat)...")
+        test_live = sweep(test_ref) - live
+        decl_offsets = {(m["file"], m["offset"]) for m in nodes.values()}
+        name_count = defaultdict(int)
+        for m in nodes.values():
+            name_count[m["name"]] += 1
+
+        unexplained = set()
+        for f in lib_files + test_files:
+            try:
+                with open(f, encoding="utf-8") as fh:
+                    src = fh.read()
+            except (OSError, UnicodeDecodeError):
+                continue
+            stripped = strip_comments(src)
+            u16, acc = [], 0          # kod-noktası index -> utf16 offset
+            for ch in src:
+                u16.append(acc)
+                acc += 2 if ord(ch) > 0xFFFF else 1
+            for mt in _IDENT_RE.finditer(stripped):
+                key = (f, u16[mt.start()])
+                if key not in explained and key not in decl_offsets:
+                    unexplained.add(mt.group())
+
+        # 7. Sınıflandırma.
+        dead, kept_uncertain, test_only, enum_dead = [], [], [], []
         for nid, meta in nodes.items():
             if nid in live:
                 continue
             entry = {k: meta[k] for k in ("name", "kind", "enclosing", "line")}
             entry["file"] = os.path.relpath(meta["file"], root)
+            entry["span"] = list(meta["span"])
+            name = meta["name"]
             srcs = rev.get(nid, set())
-            if nid in test_ref:
-                entry["reason"] = "yalnızca testten referanslı"
+            if nid in test_live:
+                entry["reason"] = "yalnızca testler tarafından kullanılıyor"
                 test_only.append(entry)
                 continue
+            if meta["kind"] == "CONSTRUCTOR":
+                entry["reason"] = "constructor — base/super zinciri; otomatik silinmez"
+                kept_uncertain.append(entry)
+                continue
+            if meta["kind"] == "ENUM_CONSTANT":
+                entry["reason"] = "enum sabiti — .values/fromJson ile erişilebilir; elle incele"
+                enum_dead.append(entry)
+                continue
+            if name_count[name] > 1:
+                entry["reason"] = (f"ad benzersiz değil ({name_count[name]} "
+                                   f"bildirim) — güvenli metinsel atıf yapılamaz")
+                kept_uncertain.append(entry)
+                continue
+            if name in unexplained:
+                entry["reason"] = ("adın açıklanamayan metinsel geçişi var — "
+                                   "dynamic erişim / string / reflection olabilir")
+                kept_uncertain.append(entry)
+                continue
+            # Güvenli silme adayı: adın HER geçişi çözülmüş referansla açıklandı.
             if not srcs:
                 entry["reason"] = "hiç referans yok"
             else:
                 ex = nodes[next(iter(srcs))]["name"]
                 entry["reason"] = f"yalnızca ölü kod tarafından kullanılıyor (ör. {ex})"
-            (enum_dead if meta["kind"] == "ENUM_CONSTANT" else dead).append(entry)
+            dead.append(entry)
 
         key = lambda x: (x["file"], x["line"])
         out = {
@@ -398,10 +508,12 @@ def main():
             "nodes": len(nodes),
             "live": len(live),
             "dead": sorted(dead, key=key),
+            "kept_uncertain": sorted(kept_uncertain, key=key),
             "enum_dead": sorted(enum_dead, key=key),
             "test_only": sorted(test_only, key=key),
         }
-        log(f"bitti: düğüm={len(nodes)} canlı={len(live)} ölü={len(dead)} "
+        log(f"bitti: düğüm={len(nodes)} canlı={len(live)} "
+            f"güvenli-ölü={len(dead)} korundu-belirsiz={len(kept_uncertain)} "
             f"enum-ölü={len(enum_dead)} test-only={len(test_only)}")
         print(json.dumps(out, indent=2 if pretty else None, ensure_ascii=False))
         return 0

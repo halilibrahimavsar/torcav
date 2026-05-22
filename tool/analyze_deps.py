@@ -141,15 +141,16 @@ def build_report(root, lib_files, prod, orphans, test_only_files, semantic):
       f"(%{100*len(prod)//max(1,len(lib_files))})")
     w(f"- **Orphan dosya** (hiç import edilmiyor): **{len(orphans)}**")
     if semantic:
-        dead = semantic["dead"]
-        l10n = [x for x in dead if "app_localizations" in x["file"]]
-        code = [x for x in dead if "app_localizations" not in x["file"]]
+        kept = semantic.get("kept_uncertain", [])
         w(f"- Bildirim (düğüm): **{semantic['nodes']}**  ·  "
           f"canlı: **{semantic['live']}**")
-        w(f"- **Kullanılmayan üye** (semantik, geçişli): **{len(code)}**")
-        w(f"- Kullanılmayan l10n anahtarı (üye): **{len(l10n)}**")
-        w(f"- Kullanılmayan enum sabiti: **{len(semantic['enum_dead'])}**")
-        w(f"- Sadece testten kullanılan üye: **{len(semantic['test_only'])}**")
+        w(f"- **🟢 Güvenli silme adayı** (her metinsel geçişi statik "
+          f"açıklandı): **{len(semantic['dead'])}**")
+        w(f"- 🟡 Korundu — belirsiz (dynamic/string/constructor/"
+          f"benzersiz-değil): **{len(kept)}**")
+        w(f"- 🔢 Kullanılmayan enum sabiti (elle incele): "
+          f"**{len(semantic['enum_dead'])}**")
+        w(f"- Sadece testlerce kullanılan üye: **{len(semantic['test_only'])}**")
     else:
         w("- _Semantik üye analizi çalıştırılmadı (`--fast`)._")
     w("")
@@ -190,26 +191,34 @@ def build_report(root, lib_files, prod, orphans, test_only_files, semantic):
     w("**Dosya seviyesi:** `import`/`export`/`part` grafiği — statik kesin.")
     w("**Üye seviyesi:** Dart Analysis Server (OUTLINE + NAVIGATION) ile tüm "
       "bildirimler düğüm, kullanımlar kenar yapılır; gerçek giriş "
-      "noktalarından (`main`, framework callback'leri, DI) erişilemeyen her "
-      "şey **mark-and-sweep** ile ölü ilan edilir — geçişli olarak eksiksiz.")
-    w("`getTypeHierarchy` ile override aileleri uzlaştırılır (interface üyesi "
-      "canlıysa override'ları da canlı).")
-    w("**Tek sınır:** string/reflection ile çağrı yakalanmaz — Flutter "
-      "`dart:mirrors` kullanmaz, pratik etki ≈ %0. Yine de silmeden önce "
-      "tabloları gözden geçirin.")
-    w("`l10n` getter'ları `app_localizations.dart` ÜRETİLEN dosyadadır — "
-      "anahtarı `.arb` kaynaklarından silip `flutter gen-l10n` çalıştırın.\n")
+      "noktalarından erişilemeyen her şey **mark-and-sweep** ile ölü işaretlenir. "
+      "`getTypeHierarchy` ile override aileleri uzlaştırılır.")
+    w("**Güvenlik filtresi:** `dynamic` erişim / string / reflection statik "
+      "analizle çözülemez. Bu yüzden bir adın kod tabanındaki HER metinsel "
+      "geçişi çözülmüş bir referansla açıklanamıyorsa o üye **silme adayı "
+      "OLMAZ** (→ Korundu). Hata yönü güvenli: fazladan saklanır, kullanılan "
+      "kod asla silinmez.")
+    w("**Sınır:** yaklaşım conservative'dir — yanlış-pozitif ≈ 0, ama bazı "
+      "gerçek ölü kod \"Korundu\"da kalır (eksiklik). Amaç güvenli silme.")
+    w("Üretilen dosyalar (`*.g.dart`, `app_localizations*`) silme dışıdır.\n")
     return "\n".join(L) + "\n"
+
+
+def _is_generated(path):
+    return (path.endswith((".g.dart", ".freezed.dart", ".config.dart"))
+            or "app_localizations" in path)
 
 
 def _write_members(w, root, semantic):
     dead = semantic["dead"]
-    l10n = sorted({x["name"] for x in dead if "app_localizations" in x["file"]})
-    code = [x for x in dead if "app_localizations" not in x["file"]]
+    generated = [x for x in dead if _is_generated(x["file"])]
+    code = [x for x in dead if not _is_generated(x["file"])]
 
-    w("## 🔴 Kullanılmayan Üyeler — Semantik (mark-and-sweep)\n")
-    w("Gerçek giriş noktalarından erişilemeyen method/getter/field/sınıf'lar. "
-      "`reason` = neden ölü.\n")
+    w("## 🟢 Güvenli Silme Adayları\n")
+    w("Mark-and-sweep ile erişilemeyen VE adının kod tabanındaki her metinsel "
+      "geçişi statik bir referansla açıklanan üyeler. `dynamic`/string/"
+      "reflection ile erişim ihtimali ELENMİŞTİR — bu liste güvenli kabul "
+      "edilir. Yine de silmeden önce her satır incelenmeli.\n")
     if not code:
         w("_Yok._\n")
     else:
@@ -237,16 +246,35 @@ def _write_members(w, root, semantic):
                 w(f"| {x['kind']} | `{full}` | `{x['file']}`:{x['line']} "
                   f"| {x['reason']} |")
             w("")
+    if generated:
+        w(f"_Not: {len(generated)} aday ÜRETİLEN dosyalarda "
+          f"(`*.g.dart`, `app_localizations*`, `*.config.dart`) — bunlar "
+          f"elle silinmez, kaynaktan yeniden üretilir; listeden çıkarıldı._\n")
 
-    w("## 🌐 Kullanılmayan l10n Anahtarları\n")
-    if not l10n:
+    kept = semantic.get("kept_uncertain", [])
+    w("## 🟡 Korundu — Belirsiz (silme adayı DEĞİL)\n")
+    w("Mark-and-sweep ölü dedi ama güvenlik filtresi eledi. Gerçekten ölü "
+      "olabilirler ama statik olarak kanıtlanamıyor — otomatik silinmez.\n")
+    if not kept:
         w("_Yok._\n")
     else:
-        w(f"{len(l10n)} anahtar. `.arb` kaynaklarından silinmeli:\n")
-        w(", ".join(f"`{n}`" for n in l10n) + "\n")
+        buckets = defaultdict(int)
+        for x in kept:
+            r = x["reason"]
+            k = ("constructor" if "constructor" in r
+                 else "ad benzersiz değil" if "benzersiz" in r
+                 else "açıklanamayan metinsel geçiş (dynamic/string)")
+            buckets[k] += 1
+        w("| Eleme nedeni | Adet |")
+        w("|--------------|------|")
+        for k, n in sorted(buckets.items(), key=lambda kv: -kv[1]):
+            w(f"| {k} | {n} |")
+        w(f"\nToplam **{len(kept)}**. Tam liste `dead_symbols.cache.json` "
+          f"→ `kept_uncertain`.\n")
 
-    w("## 🔢 Kullanılmayan Enum Sabitleri\n")
-    w("_switch exhaustiveness'i etkileyebilir — dikkatle._\n")
+    w("## 🔢 Kullanılmayan Enum Sabitleri (elle incele)\n")
+    w("`.values` / `fromJson` / kalıcı veri ile runtime'da erişilebilir — "
+      "statik sayım bunu göremez. Otomatik silinmez.\n")
     enum_dead = semantic["enum_dead"]
     if not enum_dead:
         w("_Yok._\n")
@@ -258,8 +286,8 @@ def _write_members(w, root, semantic):
               f"`{x['file']}`:{x['line']} |")
         w("")
 
-    w("## 🟡 Sadece Testten Kullanılan Üyeler\n")
-    w("Üretimde kullanılmıyor; silinmez, incelenir.\n")
+    w("## 🧪 Sadece Testlerce Kullanılan Üyeler\n")
+    w("Üretimde kullanılmıyor; silinmez (testler bozulur), incelenir.\n")
     test_only = semantic["test_only"]
     if not test_only:
         w("_Yok._\n")
@@ -308,11 +336,9 @@ def main():
     print(f"erişilebilir         : {len(prod)}")
     print(f"orphan dosya         : {len(orphans)}")
     if semantic:
-        code = [x for x in semantic["dead"]
-                if "app_localizations" not in x["file"]]
-        print(f"kullanılmayan üye    : {len(code)}")
-        print(f"kullanılmayan l10n   : {len(semantic['dead']) - len(code)}")
-        print(f"kullanılmayan enum   : {len(semantic['enum_dead'])}")
+        print(f"güvenli silme adayı  : {len(semantic['dead'])}")
+        print(f"korundu (belirsiz)   : {len(semantic.get('kept_uncertain', []))}")
+        print(f"enum sabiti (incele) : {len(semantic['enum_dead'])}")
         print(f"test-only üye        : {len(semantic['test_only'])}")
     print(f"rapor                : {os.path.relpath(out_path, root)}")
 
