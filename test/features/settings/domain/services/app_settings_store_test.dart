@@ -64,5 +64,57 @@ void main() {
         expect(store.value, const AppSettings());
       },
     );
+
+    test('init() emits the loaded value on the changes stream', () async {
+      when(() => mockStorage.get<String>(any())).thenReturn(null);
+      final store = AppSettingsStore(mockStorage);
+
+      final firstEvent = store.changes.first;
+      await store.init();
+
+      expect(await firstEvent, const AppSettings());
+    });
+
+    test('update() broadcasts on the changes stream', () async {
+      when(() => mockStorage.get<String>(any())).thenReturn(null);
+      final store = AppSettingsStore(mockStorage);
+      await store.init();
+
+      final emissions = <AppSettings>[];
+      final sub = store.changes.listen(emissions.add);
+
+      const next = AppSettings(scanIntervalSeconds: 12, autoScanEnabled: true);
+      store.update(next);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(emissions, [next]);
+      await sub.cancel();
+    });
+
+    test('update() mutates value synchronously', () async {
+      when(() => mockStorage.get<String>(any())).thenReturn(null);
+      final store = AppSettingsStore(mockStorage);
+      await store.init();
+
+      const next = AppSettings(scanIntervalSeconds: 99);
+      store.update(next);
+
+      expect(store.value, next);
+    });
+
+    test('update() persists JSON to storage with the configured key', () async {
+      when(() => mockStorage.get<String>(any())).thenReturn(null);
+      final store = AppSettingsStore(mockStorage);
+      await store.init();
+
+      const next = AppSettings(scanIntervalSeconds: 77, strictSafetyMode: false);
+      store.update(next);
+      await Future<void>.delayed(Duration.zero);
+
+      final captured =
+          verify(() => mockStorage.save(captureAny(), captureAny())).captured;
+      expect(captured.first, 'scan_behavior_settings');
+      expect(captured.last, contains('"scanIntervalSeconds":77'));
+    });
   });
 }
