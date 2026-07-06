@@ -58,11 +58,13 @@ class MainActivity : FlutterActivity() {
             when (call.method) {
                 "start" -> {
                     val tickMs = (call.argument<Number>("tickMs") ?: 1_800_000L).toLong()
-                    MonitoringService.start(applicationContext, tickMs)
+                    val strings =
+                        call.argument<Map<String, String>>("strings") ?: emptyMap()
+                    MonitoringWorker.schedule(applicationContext, tickMs, strings)
                     result.success(true)
                 }
                 "stop" -> {
-                    MonitoringService.stop(applicationContext)
+                    MonitoringWorker.cancel(applicationContext)
                     result.success(true)
                 }
                 else -> result.notImplemented()

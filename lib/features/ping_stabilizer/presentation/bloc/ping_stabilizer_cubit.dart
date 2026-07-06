@@ -9,9 +9,9 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/l10n/locale_cubit.dart';
 import '../../../../core/logging/app_logger.dart';
-import '../../../../core/services/notification_service.dart';
 import '../../data/datasources/ping_stabilizer_settings_store.dart';
 import '../../domain/entities/dns_candidate.dart';
+import '../../domain/entities/jitter_sample.dart';
 import '../../domain/entities/live_stats.dart';
 import '../../domain/entities/stabilization_profile.dart';
 import '../../domain/entities/stabilizer_recommendation.dart';
@@ -37,13 +37,11 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
   final ApplyDnsUseCase _applyDns;
   final ListProfilesUseCase _listProfiles;
   final BaselinePingUseCase _baseline;
-  final NotificationService _notifications;
   final PingStabilizerRepository _repository;
   final PingStabilizerSettingsStore _settings;
 
   StreamSubscription? _statsSub;
   StreamSubscription? _stoppedSub;
-  final Set<String> _notifiedKeys = {};
   bool _bootstrapped = false;
 
   /// Number of consecutive over-threshold samples before a reconnect
@@ -68,7 +66,6 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
     this._applyDns,
     this._listProfiles,
     this._baseline,
-    this._notifications,
     this._repository,
     this._settings,
   ) : super(
@@ -91,7 +88,6 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
     _healthCheckTimer = null;
     _statsSub?.cancel();
     _statsSub = null;
-    _notifiedKeys.clear();
     emit(
       state.copyWith(
         status: StabilizerStatus.idle,
@@ -216,8 +212,62 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
         if (dns != null) {
           unawaited(_applyDns(dns));
         }
+
+        // Arm the native alert engine: thresholds, candidate resolvers and
+        // localized notification strings. From here on the native service
+        // evaluates jitter/loss/DNS rules and posts alerts itself, so they
+        // keep working after this isolate is killed.
+        unawaited(_pushNativeConfig());
       },
     );
+  }
+
+  /// Ships current settings + localized notification templates to the
+  /// native alert engine. `{jitter}`, `{threshold}`, `{dns}`, `{delta}` and
+  /// `{loss}` placeholders are substituted natively at fire time.
+  Future<void> _pushNativeConfig() async {
+    Map<String, String> strings;
+    try {
+      final l10n = lookupAppLocalizations(getIt<LocaleCubit>().state);
+      strings = {
+        'jitterTitle': l10n.stabilizerJitterSpikeTitle,
+        'jitterBody': l10n.stabilizerNativeJitterBody(
+          '{jitter}',
+          '{threshold}',
+        ),
+        'dnsTitle': l10n.stabilizerFasterDnsTitle,
+        'dnsBody': l10n.stabilizerFasterDnsBody('{dns}'),
+        'dnsSwitchedTitle': l10n.stabilizerDnsSwitchedTitle,
+        'dnsSwitchedBody': l10n.stabilizerDnsSwitchedBody('{dns}', '{delta}'),
+        'lossTitle': l10n.stabilizerPacketLossTitle,
+        'lossBody': l10n.stabilizerPacketLossBody('{loss}'),
+        'alertChannelName': l10n.stabilizerAlertChannelName,
+        'alertChannelDesc': l10n.stabilizerAlertChannelDesc,
+        'hudChannelName': l10n.pingStabilizerTitle,
+        'hudChannelDesc': l10n.stabilizerHudChannelDesc,
+        'hudMeasuring': l10n.stabilizerHudMeasuring,
+        'hudBody': l10n.stabilizerHudBody('{dns}'),
+        'actionCycle': l10n.stabilizerActionCycle,
+        'actionStop': l10n.stabilizerActionStop,
+      };
+    } catch (_) {
+      // DI/locale unavailable (unit tests, early boot edge). The native
+      // engine has built-in English fallbacks for every key.
+      strings = const {};
+    }
+    try {
+      await _repository.pushNativeConfig(
+        jitterThresholdMs: state.jitterThresholdMs,
+        autoSwitchDns: state.autoSwitchDns,
+        candidates:
+            state.dnsCandidates.isNotEmpty
+                ? state.dnsCandidates
+                : DnsCandidate.defaults,
+        notificationStrings: strings,
+      );
+    } catch (e) {
+      AppLogger.d('PingStabilizer: native config push failed: $e');
+    }
   }
 
   Future<void> stopStabilizer() async {
@@ -258,11 +308,13 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
   void setAutoSwitchDns(bool enabled) {
     emit(state.copyWith(autoSwitchDns: enabled));
     unawaited(_settings.setAutoSwitchDns(enabled));
+    unawaited(_pushNativeConfig());
   }
 
   void setJitterThreshold(double ms) {
     emit(state.copyWith(jitterThresholdMs: ms));
     unawaited(_settings.setJitterThresholdMs(ms));
+    unawaited(_pushNativeConfig());
   }
 
   void dismissRecommendation(StabilizerRecommendation rec) {
@@ -290,57 +342,28 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
     dismissRecommendation(rec);
   }
 
-  void _onSample(sample) {
+  void _onSample(JitterSample sample) {
     _lastSampleTime = DateTime.now();
-    final updated = state.stats.add(sample, activeDns: state.activeDns);
-    final recs = _evaluateRecommendations(updated);
-    emit(state.copyWith(stats: updated, recommendations: recs));
 
-    final l10n = lookupAppLocalizations(getIt<LocaleCubit>().state);
-
-    // Surface new (not previously seen this session) recommendations as
-    // system notifications so the user is informed even when the page is
-    // backgrounded. Auto-dismiss-style suppression via the _notifiedKeys
-    // set prevents toast spam when the same condition holds for many
-    // consecutive samples.
-    for (final r in recs) {
-      final key = r.type.name;
-      if (_notifiedKeys.add(key)) {
-        unawaited(
-          _notifications.showStabilizerAlert(
-            title: switch (r.type) {
-              RecommendationType.switchDns => l10n.stabilizerFasterDnsTitle,
-              RecommendationType.reconnectTunnel =>
-                l10n.stabilizerJitterSpikeTitle,
-              RecommendationType.suggestDual => l10n.stabilizerPacketLossTitle,
-            },
-            body: r.message,
-            actionable: r.type != RecommendationType.suggestDual,
-          ),
-        );
-      }
-    }
-    // Clear keys whose recommendation has gone away so they can re-fire
-    // next time the condition reappears.
-    _notifiedKeys.removeWhere((k) => !recs.any((r) => r.type.name == k));
-
-    // Auto-apply DNS swap when user opted in.
-    final auto = state.autoSwitchDns;
-    if (auto) {
-      final swap = recs.firstWhere(
-        (r) => r.type == RecommendationType.switchDns,
-        orElse:
-            () => StabilizerRecommendation(
-              type: RecommendationType.switchDns,
-              severity: RecommendationSeverity.info,
-              message: '',
-            ),
+    // Mirror DNS switches made by the native alert engine (auto-switch runs
+    // natively so it survives process death; the UI just follows along).
+    var activeDns = state.activeDns;
+    final nativeIp = sample.activeDnsIp;
+    if (nativeIp != null && nativeIp.isNotEmpty && nativeIp != activeDns?.ip) {
+      activeDns = state.dnsCandidates.firstWhere(
+        (c) => c.ip == nativeIp,
+        orElse: () => DnsCandidate(ip: nativeIp, label: nativeIp),
       );
-      final ip = swap.payload['ip'] as String?;
-      if (ip != null && ip.isNotEmpty) {
-        unawaited(acceptRecommendation(swap));
-      }
     }
+
+    final updated = state.stats.add(sample, activeDns: activeDns);
+    // System notifications for these recommendations are posted by the
+    // native StabilizerAlertEngine (it outlives this isolate); here we only
+    // maintain the in-app recommendation cards.
+    final recs = _evaluateRecommendations(updated);
+    emit(
+      state.copyWith(stats: updated, recommendations: recs, activeDns: activeDns),
+    );
   }
 
   List<StabilizerRecommendation> _evaluateRecommendations(LiveStats s) {

@@ -10,6 +10,8 @@ import 'package:torcav/core/storage/hive_storage_service.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/features/app_shell/presentation/pages/app_shell_page.dart';
 import 'package:torcav/features/app_shell/presentation/pages/onboarding_page.dart';
+import 'package:torcav/features/monitoring/domain/services/background_monitor.dart';
+import 'package:torcav/features/settings/domain/services/app_settings_store.dart';
 import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
 import '../widgets/starfield_background.dart';
 
@@ -105,6 +107,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         if (mounted) setState(() => _buildVersion = 'v${info.version}');
         return 0;
       }),
+      _resumeBackgroundMonitoring(),
     ]);
 
     final prunedCount = results[1];
@@ -151,6 +154,22 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  /// Re-arms the background monitoring schedule when the user has it
+  /// enabled. WorkManager persists across reboots on its own, but this
+  /// re-sync also refreshes the tick interval and pushes notification
+  /// strings in the current in-app language after a locale change — and it
+  /// heals the schedule if the OS or a "cleaner" app wiped it.
+  Future<int> _resumeBackgroundMonitoring() async {
+    try {
+      final enabled =
+          getIt<AppSettingsStore>().value.backgroundMonitoringEnabled;
+      if (enabled) await getIt<BackgroundMonitor>().start();
+    } catch (_) {
+      // Best-effort: monitoring resume must never block app boot.
+    }
+    return 0;
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────

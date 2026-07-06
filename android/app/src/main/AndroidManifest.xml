@@ -19,13 +19,20 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 
-    <!-- Background monitoring (opt-in feature, default OFF in Settings).
-         Only used when the user explicitly enables Settings → Privacy →
-         Background monitoring. The dataSync foregroundServiceType matches
-         the actual workload (periodic Wi-Fi state sync). -->
+    <!-- FOREGROUND_SERVICE backs the Ping Stabilizer VPN (specialUse type
+         below). Background monitoring itself runs through WorkManager and
+         needs no foreground service — the old dataSync service was removed
+         because Android 14+ hard-caps that type at 6 h/24 h. -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Requested in-app (with a disclosure dialog) only when the user
+         enables background monitoring or the ping stabilizer: OEM battery
+         managers (MIUI, One UI, …) otherwise kill scheduled work and the
+         VPN's alert engine — the core, user-visible function of both
+         features. This is the Play-policy "core functionality adversely
+         affected" exemption case. -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <!-- Ping Stabilizer (opt-in, default OFF). Establishes an on-device
          VPN tunnel to perform DNS-routing + jitter monitoring. No traffic
@@ -86,12 +93,8 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
-        <!-- Background monitoring service. Only started when the user
-             enables "Background monitoring" in Settings → Privacy. -->
-        <service
-            android:name=".MonitoringService"
-            android:exported="false"
-            android:foregroundServiceType="dataSync" />
+        <!-- Background monitoring runs via WorkManager (MonitoringWorker);
+             no service declaration needed. -->
 
         <!-- Ping Stabilizer VPN. specialUse subtype because the tunnel is
              local-only (no remote relay); we are not a generic VPN client. -->

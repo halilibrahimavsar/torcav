@@ -8,6 +8,8 @@ import '../../../../core/notifications/app_notifier.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/l10n/locale_cubit.dart';
+import '../../../../core/platform/battery_optimization.dart';
+import '../../../../core/services/notification_service.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/theme/theme_cubit.dart';
 import '../../../performance/domain/repositories/speed_test_history_repository.dart';
@@ -495,11 +497,25 @@ class _SettingsPageState extends State<SettingsPage> {
                         settings.copyWith(backgroundMonitoringEnabled: value),
                       );
                       final monitor = getIt<BackgroundMonitor>();
-                      if (value) {
-                        await monitor.start();
-                      } else {
+                      if (!value) {
                         await monitor.stop();
+                        return;
                       }
+                      // Alerts ARE the feature: secure the Android 13+
+                      // notification permission before scheduling work, and
+                      // warn (not block) when the user declines.
+                      final notifWarning =
+                          l10n.backgroundMonitoringNotifWarning;
+                      final granted =
+                          await getIt<NotificationService>()
+                              .requestAndroidNotificationPermission();
+                      if (!granted) AppNotifier.warning(notifWarning);
+                      // OEM battery managers kill scheduled work; ask for
+                      // the exemption while the user's intent is explicit.
+                      if (context.mounted) {
+                        await BatteryOptimization.ensureExemption(context);
+                      }
+                      await monitor.start();
                     },
                   ),
                   Divider(

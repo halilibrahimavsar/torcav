@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/l10n/app_localizations.dart';
+import '../../../../core/platform/battery_optimization.dart';
 import '../../../../core/theme/prominent_disclosure_dialog.dart';
 import '../bloc/ping_stabilizer_cubit.dart';
 import '../bloc/ping_stabilizer_state.dart';
@@ -111,7 +112,14 @@ class StabilizerToggleCard extends StatelessWidget {
                             onCancel: () => Navigator.of(ctx).pop(false),
                           ),
                         );
-                        if (accepted == true) unawaited(cubit.startStabilizer());
+                        if (accepted != true) return;
+                        // The native alert engine delivers its value while
+                        // the app is closed — OEM battery managers must not
+                        // kill the VPN process.
+                        if (context.mounted) {
+                          await BatteryOptimization.ensureExemption(context);
+                        }
+                        unawaited(cubit.startStabilizer());
                       },
                     ),
                 ],

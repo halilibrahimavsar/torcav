@@ -5298,6 +5298,83 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String stabilizerNativeJitterBody(String jitter, String threshold) {
+    return 'Jitter is $jitter ms (threshold $threshold ms). Cycling the tunnel may break a sticky bad path.';
+  }
+
+  @override
+  String get stabilizerDnsSwitchedTitle => 'DNS switched';
+
+  @override
+  String stabilizerDnsSwitchedBody(String dns, String delta) {
+    return 'Now using $dns — it responded $delta ms faster.';
+  }
+
+  @override
+  String get stabilizerAlertChannelName => 'Stabilizer alerts';
+
+  @override
+  String get stabilizerAlertChannelDesc =>
+      'Jitter, packet-loss and DNS recommendations from the ping stabilizer.';
+
+  @override
+  String get stabilizerHudChannelDesc =>
+      'Persistent notification while the on-device ping stabilizer tunnel is active.';
+
+  @override
+  String get stabilizerHudMeasuring => 'Measuring…';
+
+  @override
+  String stabilizerHudBody(String dns) {
+    return 'DNS $dns · tap actions to control';
+  }
+
+  @override
+  String get stabilizerActionCycle => 'Cycle';
+
+  @override
+  String get stabilizerActionStop => 'Stop';
+
+  @override
+  String get batteryOptimizationTitle => 'Allow background operation';
+
+  @override
+  String get batteryOptimizationBody =>
+      'To keep alerts working while the app is closed, Torcav needs to be excluded from battery optimization. Android may otherwise silence monitoring on this device.';
+
+  @override
+  String get batteryOptimizationAction => 'Allow';
+
+  @override
+  String get batteryOptimizationLater => 'Not now';
+
+  @override
+  String get backgroundMonitoringNotifWarning =>
+      'Notifications are disabled — background monitoring will run, but alerts won\'t be visible. Enable notifications in system settings.';
+
+  @override
+  String get monitorChannelName => 'Network watch alerts';
+
+  @override
+  String get monitorChannelDesc =>
+      'Alerts from the periodic background Wi-Fi check.';
+
+  @override
+  String get monitorBssidChangedTitle => 'Connected access point changed';
+
+  @override
+  String get monitorBssidChangedBody =>
+      'Your device switched to a different access point. Open Torcav to verify it\'s still your network.';
+
+  @override
+  String get monitorEnvironmentChangedTitle => 'Wi-Fi environment changed';
+
+  @override
+  String monitorEnvironmentChangedBody(String from, String to) {
+    return 'Nearby networks moved from $from to $to. Open Torcav to review.';
+  }
+
+  @override
   String get lanDiscoveryTitle => 'LAN Devices Discovered';
 
   @override

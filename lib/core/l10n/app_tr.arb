@@ -6859,6 +6859,119 @@
         },
         "description": "Label for stabilizerPacketLossBody"
     },
+    "stabilizerNativeJitterBody": "Jitter {jitter} ms (eşik {threshold} ms). Tüneli yenilemek kötü rotayı kırabilir.",
+    "@stabilizerNativeJitterBody": {
+        "placeholders": {
+            "jitter": {
+                "type": "String"
+            },
+            "threshold": {
+                "type": "String"
+            }
+        },
+        "description": "Label for stabilizerNativeJitterBody"
+    },
+    "stabilizerDnsSwitchedTitle": "DNS değiştirildi",
+    "@stabilizerDnsSwitchedTitle": {
+        "description": "Label for stabilizerDnsSwitchedTitle"
+    },
+    "stabilizerDnsSwitchedBody": "Artık {dns} kullanılıyor — {delta} ms daha hızlı yanıt verdi.",
+    "@stabilizerDnsSwitchedBody": {
+        "placeholders": {
+            "dns": {
+                "type": "String"
+            },
+            "delta": {
+                "type": "String"
+            }
+        },
+        "description": "Label for stabilizerDnsSwitchedBody"
+    },
+    "stabilizerAlertChannelName": "Stabilizer uyarıları",
+    "@stabilizerAlertChannelName": {
+        "description": "Label for stabilizerAlertChannelName"
+    },
+    "stabilizerAlertChannelDesc": "Ping stabilizer'dan jitter, paket kaybı ve DNS önerileri.",
+    "@stabilizerAlertChannelDesc": {
+        "description": "Label for stabilizerAlertChannelDesc"
+    },
+    "stabilizerHudChannelDesc": "Cihaz üstü ping stabilizer tüneli etkinken görünen kalıcı bildirim.",
+    "@stabilizerHudChannelDesc": {
+        "description": "Label for stabilizerHudChannelDesc"
+    },
+    "stabilizerHudMeasuring": "Ölçülüyor…",
+    "@stabilizerHudMeasuring": {
+        "description": "Label for stabilizerHudMeasuring"
+    },
+    "stabilizerHudBody": "DNS {dns} · kontrol için düğmelere dokunun",
+    "@stabilizerHudBody": {
+        "placeholders": {
+            "dns": {
+                "type": "String"
+            }
+        },
+        "description": "Label for stabilizerHudBody"
+    },
+    "stabilizerActionCycle": "Yenile",
+    "@stabilizerActionCycle": {
+        "description": "Label for stabilizerActionCycle"
+    },
+    "stabilizerActionStop": "Durdur",
+    "@stabilizerActionStop": {
+        "description": "Label for stabilizerActionStop"
+    },
+    "batteryOptimizationTitle": "Arka planda çalışmaya izin ver",
+    "@batteryOptimizationTitle": {
+        "description": "Label for batteryOptimizationTitle"
+    },
+    "batteryOptimizationBody": "Uygulama kapalıyken uyarıların çalışmaya devam etmesi için Torcav'ın pil optimizasyonundan muaf tutulması gerekiyor. Aksi halde Android bu cihazda izlemeyi susturabilir.",
+    "@batteryOptimizationBody": {
+        "description": "Label for batteryOptimizationBody"
+    },
+    "batteryOptimizationAction": "İzin ver",
+    "@batteryOptimizationAction": {
+        "description": "Label for batteryOptimizationAction"
+    },
+    "batteryOptimizationLater": "Şimdi değil",
+    "@batteryOptimizationLater": {
+        "description": "Label for batteryOptimizationLater"
+    },
+    "backgroundMonitoringNotifWarning": "Bildirimler kapalı — arka plan izleme çalışacak ancak uyarılar görünmeyecek. Sistem ayarlarından bildirimleri açın.",
+    "@backgroundMonitoringNotifWarning": {
+        "description": "Label for backgroundMonitoringNotifWarning"
+    },
+    "monitorChannelName": "Ağ nöbetçisi uyarıları",
+    "@monitorChannelName": {
+        "description": "Label for monitorChannelName"
+    },
+    "monitorChannelDesc": "Periyodik arka plan Wi-Fi denetiminden gelen uyarılar.",
+    "@monitorChannelDesc": {
+        "description": "Label for monitorChannelDesc"
+    },
+    "monitorBssidChangedTitle": "Bağlı erişim noktası değişti",
+    "@monitorBssidChangedTitle": {
+        "description": "Label for monitorBssidChangedTitle"
+    },
+    "monitorBssidChangedBody": "Cihazınız farklı bir erişim noktasına geçti. Hâlâ sizin ağınız olduğunu doğrulamak için Torcav'ı açın.",
+    "@monitorBssidChangedBody": {
+        "description": "Label for monitorBssidChangedBody"
+    },
+    "monitorEnvironmentChangedTitle": "Wi-Fi ortamı değişti",
+    "@monitorEnvironmentChangedTitle": {
+        "description": "Label for monitorEnvironmentChangedTitle"
+    },
+    "monitorEnvironmentChangedBody": "Yakındaki ağ sayısı {from} → {to} oldu. İncelemek için Torcav'ı açın.",
+    "@monitorEnvironmentChangedBody": {
+        "placeholders": {
+            "from": {
+                "type": "String"
+            },
+            "to": {
+                "type": "String"
+            }
+        },
+        "description": "Label for monitorEnvironmentChangedBody"
+    },
     "lanDiscoveryTitle": "LAN Cihazları Tespit Edildi",
     "@lanDiscoveryTitle": {
         "description": "Label for lanDiscoveryTitle"

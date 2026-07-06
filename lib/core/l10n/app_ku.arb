@@ -6859,6 +6859,119 @@
         },
         "description": "Label for stabilizerPacketLossBody"
     },
+    "stabilizerNativeJitterBody": "Jitter {jitter} ms e (sînor {threshold} ms). Nûkirina tunelê dikare rêyeke xirab bişkîne.",
+    "@stabilizerNativeJitterBody": {
+        "placeholders": {
+            "jitter": {
+                "type": "String"
+            },
+            "threshold": {
+                "type": "String"
+            }
+        },
+        "description": "Label for stabilizerNativeJitterBody"
+    },
+    "stabilizerDnsSwitchedTitle": "DNS hate guhertin",
+    "@stabilizerDnsSwitchedTitle": {
+        "description": "Label for stabilizerDnsSwitchedTitle"
+    },
+    "stabilizerDnsSwitchedBody": "Niha {dns} tê bikaranîn — {delta} ms zûtir bersiv da.",
+    "@stabilizerDnsSwitchedBody": {
+        "placeholders": {
+            "dns": {
+                "type": "String"
+            },
+            "delta": {
+                "type": "String"
+            }
+        },
+        "description": "Label for stabilizerDnsSwitchedBody"
+    },
+    "stabilizerAlertChannelName": "Hişyariyên stabilizer",
+    "@stabilizerAlertChannelName": {
+        "description": "Label for stabilizerAlertChannelName"
+    },
+    "stabilizerAlertChannelDesc": "Pêşniyarên jitter, windabûna pakêtan û DNS ji ping stabilizer.",
+    "@stabilizerAlertChannelDesc": {
+        "description": "Label for stabilizerAlertChannelDesc"
+    },
+    "stabilizerHudChannelDesc": "Danezana domdar dema tunela ping stabilizer a li ser cîhazê çalak e.",
+    "@stabilizerHudChannelDesc": {
+        "description": "Label for stabilizerHudChannelDesc"
+    },
+    "stabilizerHudMeasuring": "Tê pîvandin…",
+    "@stabilizerHudMeasuring": {
+        "description": "Label for stabilizerHudMeasuring"
+    },
+    "stabilizerHudBody": "DNS {dns} · ji bo kontrolê bişkokan bikar bîne",
+    "@stabilizerHudBody": {
+        "placeholders": {
+            "dns": {
+                "type": "String"
+            }
+        },
+        "description": "Label for stabilizerHudBody"
+    },
+    "stabilizerActionCycle": "Nû bike",
+    "@stabilizerActionCycle": {
+        "description": "Label for stabilizerActionCycle"
+    },
+    "stabilizerActionStop": "Rawestîne",
+    "@stabilizerActionStop": {
+        "description": "Label for stabilizerActionStop"
+    },
+    "batteryOptimizationTitle": "Destûra xebata paşxanê bide",
+    "@batteryOptimizationTitle": {
+        "description": "Label for batteryOptimizationTitle"
+    },
+    "batteryOptimizationBody": "Ji bo ku hişyarî dema sepan girtî ye jî bixebitin, divê Torcav ji optimîzasyona bataryayê were derxistin. Wekî din Android dikare çavdêriyê li ser vê cîhazê bêdeng bike.",
+    "@batteryOptimizationBody": {
+        "description": "Label for batteryOptimizationBody"
+    },
+    "batteryOptimizationAction": "Destûr bide",
+    "@batteryOptimizationAction": {
+        "description": "Label for batteryOptimizationAction"
+    },
+    "batteryOptimizationLater": "Niha na",
+    "@batteryOptimizationLater": {
+        "description": "Label for batteryOptimizationLater"
+    },
+    "backgroundMonitoringNotifWarning": "Danezan girtî ne — çavdêriya paşxanê dê bixebite lê hişyarî nayên xuyakirin. Ji mîhengên pergalê danezanan veke.",
+    "@backgroundMonitoringNotifWarning": {
+        "description": "Label for backgroundMonitoringNotifWarning"
+    },
+    "monitorChannelName": "Hişyariyên çavdêriya torê",
+    "@monitorChannelName": {
+        "description": "Label for monitorChannelName"
+    },
+    "monitorChannelDesc": "Hişyariyên kontrola Wi-Fi ya paşxanê ya periyodîk.",
+    "@monitorChannelDesc": {
+        "description": "Label for monitorChannelDesc"
+    },
+    "monitorBssidChangedTitle": "Xala gihîştinê ya girêdayî hate guhertin",
+    "@monitorBssidChangedTitle": {
+        "description": "Label for monitorBssidChangedTitle"
+    },
+    "monitorBssidChangedBody": "Cîhaza te derbasî xaleke gihîştinê ya cuda bû. Torcav veke da ku piştrast bikî ku hîn tora te ye.",
+    "@monitorBssidChangedBody": {
+        "description": "Label for monitorBssidChangedBody"
+    },
+    "monitorEnvironmentChangedTitle": "Derdora Wi-Fi hate guhertin",
+    "@monitorEnvironmentChangedTitle": {
+        "description": "Label for monitorEnvironmentChangedTitle"
+    },
+    "monitorEnvironmentChangedBody": "Hejmara torên nêzîk ji {from} bû {to}. Ji bo vekolînê Torcav veke.",
+    "@monitorEnvironmentChangedBody": {
+        "placeholders": {
+            "from": {
+                "type": "String"
+            },
+            "to": {
+                "type": "String"
+            }
+        },
+        "description": "Label for monitorEnvironmentChangedBody"
+    },
     "lanDiscoveryTitle": "LAN Devices Discovered",
     "@lanDiscoveryTitle": {
         "description": "Label for lanDiscoveryTitle"

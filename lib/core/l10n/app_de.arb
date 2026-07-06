@@ -6859,6 +6859,119 @@
         },
         "description": "Label for stabilizerPacketLossBody"
     },
+    "stabilizerNativeJitterBody": "Jitter liegt bei {jitter} ms (Schwelle {threshold} ms). Ein Tunnel-Neustart kann einen schlechten Pfad aufbrechen.",
+    "@stabilizerNativeJitterBody": {
+        "placeholders": {
+            "jitter": {
+                "type": "String"
+            },
+            "threshold": {
+                "type": "String"
+            }
+        },
+        "description": "Label for stabilizerNativeJitterBody"
+    },
+    "stabilizerDnsSwitchedTitle": "DNS gewechselt",
+    "@stabilizerDnsSwitchedTitle": {
+        "description": "Label for stabilizerDnsSwitchedTitle"
+    },
+    "stabilizerDnsSwitchedBody": "Jetzt wird {dns} verwendet — {delta} ms schnellere Antwort.",
+    "@stabilizerDnsSwitchedBody": {
+        "placeholders": {
+            "dns": {
+                "type": "String"
+            },
+            "delta": {
+                "type": "String"
+            }
+        },
+        "description": "Label for stabilizerDnsSwitchedBody"
+    },
+    "stabilizerAlertChannelName": "Stabilizer-Warnungen",
+    "@stabilizerAlertChannelName": {
+        "description": "Label for stabilizerAlertChannelName"
+    },
+    "stabilizerAlertChannelDesc": "Jitter-, Paketverlust- und DNS-Empfehlungen des Ping-Stabilizers.",
+    "@stabilizerAlertChannelDesc": {
+        "description": "Label for stabilizerAlertChannelDesc"
+    },
+    "stabilizerHudChannelDesc": "Dauerbenachrichtigung, solange der Ping-Stabilizer-Tunnel aktiv ist.",
+    "@stabilizerHudChannelDesc": {
+        "description": "Label for stabilizerHudChannelDesc"
+    },
+    "stabilizerHudMeasuring": "Messung läuft…",
+    "@stabilizerHudMeasuring": {
+        "description": "Label for stabilizerHudMeasuring"
+    },
+    "stabilizerHudBody": "DNS {dns} · Aktionen zum Steuern antippen",
+    "@stabilizerHudBody": {
+        "placeholders": {
+            "dns": {
+                "type": "String"
+            }
+        },
+        "description": "Label for stabilizerHudBody"
+    },
+    "stabilizerActionCycle": "Neu aufbauen",
+    "@stabilizerActionCycle": {
+        "description": "Label for stabilizerActionCycle"
+    },
+    "stabilizerActionStop": "Stopp",
+    "@stabilizerActionStop": {
+        "description": "Label for stabilizerActionStop"
+    },
+    "batteryOptimizationTitle": "Hintergrundbetrieb erlauben",
+    "@batteryOptimizationTitle": {
+        "description": "Label for batteryOptimizationTitle"
+    },
+    "batteryOptimizationBody": "Damit Warnungen auch bei geschlossener App funktionieren, muss Torcav von der Akku-Optimierung ausgenommen werden. Andernfalls kann Android die Überwachung stummschalten.",
+    "@batteryOptimizationBody": {
+        "description": "Label for batteryOptimizationBody"
+    },
+    "batteryOptimizationAction": "Erlauben",
+    "@batteryOptimizationAction": {
+        "description": "Label for batteryOptimizationAction"
+    },
+    "batteryOptimizationLater": "Später",
+    "@batteryOptimizationLater": {
+        "description": "Label for batteryOptimizationLater"
+    },
+    "backgroundMonitoringNotifWarning": "Benachrichtigungen sind deaktiviert — die Hintergrundüberwachung läuft, aber Warnungen bleiben unsichtbar. Aktivieren Sie Benachrichtigungen in den Systemeinstellungen.",
+    "@backgroundMonitoringNotifWarning": {
+        "description": "Label for backgroundMonitoringNotifWarning"
+    },
+    "monitorChannelName": "Netzwerkwächter-Warnungen",
+    "@monitorChannelName": {
+        "description": "Label for monitorChannelName"
+    },
+    "monitorChannelDesc": "Warnungen der periodischen Wi-Fi-Hintergrundprüfung.",
+    "@monitorChannelDesc": {
+        "description": "Label for monitorChannelDesc"
+    },
+    "monitorBssidChangedTitle": "Verbundener Access Point gewechselt",
+    "@monitorBssidChangedTitle": {
+        "description": "Label for monitorBssidChangedTitle"
+    },
+    "monitorBssidChangedBody": "Ihr Gerät hat zu einem anderen Access Point gewechselt. Öffnen Sie Torcav, um Ihr Netzwerk zu prüfen.",
+    "@monitorBssidChangedBody": {
+        "description": "Label for monitorBssidChangedBody"
+    },
+    "monitorEnvironmentChangedTitle": "WLAN-Umgebung verändert",
+    "@monitorEnvironmentChangedTitle": {
+        "description": "Label for monitorEnvironmentChangedTitle"
+    },
+    "monitorEnvironmentChangedBody": "Anzahl der Netzwerke in der Nähe: {from} → {to}. Zum Prüfen Torcav öffnen.",
+    "@monitorEnvironmentChangedBody": {
+        "placeholders": {
+            "from": {
+                "type": "String"
+            },
+            "to": {
+                "type": "String"
+            }
+        },
+        "description": "Label for monitorEnvironmentChangedBody"
+    },
     "lanDiscoveryTitle": "LAN Devices Discovered",
     "@lanDiscoveryTitle": {
         "description": "Label for lanDiscoveryTitle"

@@ -8,7 +8,11 @@
 -keep class dev.halilibrahim.torcav.PingStabilizerVpnService { *; }
 -keep class dev.halilibrahim.torcav.PingStabilizerChannelHandler { *; }
 -keep class dev.halilibrahim.torcav.PingStabilizerStatsSink { *; }
--keep class dev.halilibrahim.torcav.MonitoringService { *; }
+# MonitoringWorker is instantiated by WorkManager via reflection (class
+# name persisted in its DB), so it must survive R8 renaming.
+-keep class dev.halilibrahim.torcav.MonitoringWorker { *; }
+-keep class dev.halilibrahim.torcav.StabilizerAlertEngine { *; }
+-keep class dev.halilibrahim.torcav.StabilizerConfig { *; }
 
 # Keep ARCore + Filament native bridges (sceneview wraps them).
 -keep class com.google.ar.** { *; }

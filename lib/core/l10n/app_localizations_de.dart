@@ -5297,6 +5297,83 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String stabilizerNativeJitterBody(String jitter, String threshold) {
+    return 'Jitter liegt bei $jitter ms (Schwelle $threshold ms). Ein Tunnel-Neustart kann einen schlechten Pfad aufbrechen.';
+  }
+
+  @override
+  String get stabilizerDnsSwitchedTitle => 'DNS gewechselt';
+
+  @override
+  String stabilizerDnsSwitchedBody(String dns, String delta) {
+    return 'Jetzt wird $dns verwendet — $delta ms schnellere Antwort.';
+  }
+
+  @override
+  String get stabilizerAlertChannelName => 'Stabilizer-Warnungen';
+
+  @override
+  String get stabilizerAlertChannelDesc =>
+      'Jitter-, Paketverlust- und DNS-Empfehlungen des Ping-Stabilizers.';
+
+  @override
+  String get stabilizerHudChannelDesc =>
+      'Dauerbenachrichtigung, solange der Ping-Stabilizer-Tunnel aktiv ist.';
+
+  @override
+  String get stabilizerHudMeasuring => 'Messung läuft…';
+
+  @override
+  String stabilizerHudBody(String dns) {
+    return 'DNS $dns · Aktionen zum Steuern antippen';
+  }
+
+  @override
+  String get stabilizerActionCycle => 'Neu aufbauen';
+
+  @override
+  String get stabilizerActionStop => 'Stopp';
+
+  @override
+  String get batteryOptimizationTitle => 'Hintergrundbetrieb erlauben';
+
+  @override
+  String get batteryOptimizationBody =>
+      'Damit Warnungen auch bei geschlossener App funktionieren, muss Torcav von der Akku-Optimierung ausgenommen werden. Andernfalls kann Android die Überwachung stummschalten.';
+
+  @override
+  String get batteryOptimizationAction => 'Erlauben';
+
+  @override
+  String get batteryOptimizationLater => 'Später';
+
+  @override
+  String get backgroundMonitoringNotifWarning =>
+      'Benachrichtigungen sind deaktiviert — die Hintergrundüberwachung läuft, aber Warnungen bleiben unsichtbar. Aktivieren Sie Benachrichtigungen in den Systemeinstellungen.';
+
+  @override
+  String get monitorChannelName => 'Netzwerkwächter-Warnungen';
+
+  @override
+  String get monitorChannelDesc =>
+      'Warnungen der periodischen Wi-Fi-Hintergrundprüfung.';
+
+  @override
+  String get monitorBssidChangedTitle => 'Verbundener Access Point gewechselt';
+
+  @override
+  String get monitorBssidChangedBody =>
+      'Ihr Gerät hat zu einem anderen Access Point gewechselt. Öffnen Sie Torcav, um Ihr Netzwerk zu prüfen.';
+
+  @override
+  String get monitorEnvironmentChangedTitle => 'WLAN-Umgebung verändert';
+
+  @override
+  String monitorEnvironmentChangedBody(String from, String to) {
+    return 'Anzahl der Netzwerke in der Nähe: $from → $to. Zum Prüfen Torcav öffnen.';
+  }
+
+  @override
   String get lanDiscoveryTitle => 'LAN Devices Discovered';
 
   @override

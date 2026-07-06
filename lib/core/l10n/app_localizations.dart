@@ -9191,6 +9191,132 @@ abstract class AppLocalizations {
   /// **'Packet loss is {loss}%. Dual-interface send (Wi-Fi + cellular) can mask transient drops.'**
   String stabilizerPacketLossBody(String loss);
 
+  /// Label for stabilizerNativeJitterBody
+  ///
+  /// In en, this message translates to:
+  /// **'Jitter is {jitter} ms (threshold {threshold} ms). Cycling the tunnel may break a sticky bad path.'**
+  String stabilizerNativeJitterBody(String jitter, String threshold);
+
+  /// Label for stabilizerDnsSwitchedTitle
+  ///
+  /// In en, this message translates to:
+  /// **'DNS switched'**
+  String get stabilizerDnsSwitchedTitle;
+
+  /// Label for stabilizerDnsSwitchedBody
+  ///
+  /// In en, this message translates to:
+  /// **'Now using {dns} — it responded {delta} ms faster.'**
+  String stabilizerDnsSwitchedBody(String dns, String delta);
+
+  /// Label for stabilizerAlertChannelName
+  ///
+  /// In en, this message translates to:
+  /// **'Stabilizer alerts'**
+  String get stabilizerAlertChannelName;
+
+  /// Label for stabilizerAlertChannelDesc
+  ///
+  /// In en, this message translates to:
+  /// **'Jitter, packet-loss and DNS recommendations from the ping stabilizer.'**
+  String get stabilizerAlertChannelDesc;
+
+  /// Label for stabilizerHudChannelDesc
+  ///
+  /// In en, this message translates to:
+  /// **'Persistent notification while the on-device ping stabilizer tunnel is active.'**
+  String get stabilizerHudChannelDesc;
+
+  /// Label for stabilizerHudMeasuring
+  ///
+  /// In en, this message translates to:
+  /// **'Measuring…'**
+  String get stabilizerHudMeasuring;
+
+  /// Label for stabilizerHudBody
+  ///
+  /// In en, this message translates to:
+  /// **'DNS {dns} · tap actions to control'**
+  String stabilizerHudBody(String dns);
+
+  /// Label for stabilizerActionCycle
+  ///
+  /// In en, this message translates to:
+  /// **'Cycle'**
+  String get stabilizerActionCycle;
+
+  /// Label for stabilizerActionStop
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get stabilizerActionStop;
+
+  /// Label for batteryOptimizationTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Allow background operation'**
+  String get batteryOptimizationTitle;
+
+  /// Label for batteryOptimizationBody
+  ///
+  /// In en, this message translates to:
+  /// **'To keep alerts working while the app is closed, Torcav needs to be excluded from battery optimization. Android may otherwise silence monitoring on this device.'**
+  String get batteryOptimizationBody;
+
+  /// Label for batteryOptimizationAction
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get batteryOptimizationAction;
+
+  /// Label for batteryOptimizationLater
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get batteryOptimizationLater;
+
+  /// Label for backgroundMonitoringNotifWarning
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are disabled — background monitoring will run, but alerts won\'t be visible. Enable notifications in system settings.'**
+  String get backgroundMonitoringNotifWarning;
+
+  /// Label for monitorChannelName
+  ///
+  /// In en, this message translates to:
+  /// **'Network watch alerts'**
+  String get monitorChannelName;
+
+  /// Label for monitorChannelDesc
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts from the periodic background Wi-Fi check.'**
+  String get monitorChannelDesc;
+
+  /// Label for monitorBssidChangedTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Connected access point changed'**
+  String get monitorBssidChangedTitle;
+
+  /// Label for monitorBssidChangedBody
+  ///
+  /// In en, this message translates to:
+  /// **'Your device switched to a different access point. Open Torcav to verify it\'s still your network.'**
+  String get monitorBssidChangedBody;
+
+  /// Label for monitorEnvironmentChangedTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi environment changed'**
+  String get monitorEnvironmentChangedTitle;
+
+  /// Label for monitorEnvironmentChangedBody
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby networks moved from {from} to {to}. Open Torcav to review.'**
+  String monitorEnvironmentChangedBody(String from, String to);
+
   /// Label for lanDiscoveryTitle
   ///
   /// In en, this message translates to:

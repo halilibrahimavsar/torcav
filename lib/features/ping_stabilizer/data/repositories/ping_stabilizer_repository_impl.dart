@@ -101,6 +101,21 @@ class PingStabilizerRepositoryImpl implements PingStabilizerRepository {
   }
 
   @override
+  Future<void> pushNativeConfig({
+    required double jitterThresholdMs,
+    required bool autoSwitchDns,
+    required List<DnsCandidate> candidates,
+    required Map<String, String> notificationStrings,
+  }) {
+    return _channel.updateConfig(
+      jitterThresholdMs: jitterThresholdMs,
+      autoSwitchDns: autoSwitchDns,
+      candidates: candidates,
+      strings: notificationStrings,
+    );
+  }
+
+  @override
   Future<Either<Failure, List<StabilizationProfile>>> listProfiles() async {
     final custom = _cachedCustomProfiles ??= _settings.loadCustomProfiles();
     return Right([...StabilizationProfile.builtIns(), ...custom]);

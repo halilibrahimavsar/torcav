@@ -1,5 +1,5 @@
-// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
 // **************************************************************************
 // InjectableConfigGenerator
@@ -274,24 +274,55 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => storageModule.secureStorage,
     );
+    gh.lazySingleton<_i429.ImageWatermarkService>(
+      () => _i429.ImageWatermarkService(),
+    );
     gh.lazySingleton<_i941.NotificationService>(
       () => _i941.NotificationService(),
-    );
-    gh.lazySingleton<_i1050.OuiDatabaseService>(
-      () => _i1050.OuiDatabaseService(),
     );
     gh.lazySingleton<_i131.HiveStorageService>(
       () => _i131.HiveStorageService(),
     );
-    gh.lazySingleton<_i969.ChannelRatingEngine>(
-      () => _i969.ChannelRatingEngine(),
+    gh.lazySingleton<_i1050.OuiDatabaseService>(
+      () => _i1050.OuiDatabaseService(),
     );
-    gh.lazySingleton<_i363.DeauthDetector>(() => _i363.DeauthDetector());
-    gh.lazySingleton<_i927.DnsSecurityUseCase>(
-      () => _i927.DnsSecurityUseCase(),
+    gh.lazySingleton<_i972.DiagnosisExplainer>(
+      () => const _i972.DiagnosisExplainer(),
     );
-    gh.lazySingleton<_i241.NetworkContextInferrer>(
-      () => const _i241.NetworkContextInferrer(),
+    gh.lazySingleton<_i856.GetNetworkHealthScoreUseCase>(
+      () => _i856.GetNetworkHealthScoreUseCase(),
+    );
+    gh.lazySingleton<_i188.ArCameraPoseDataSource>(
+      () => _i188.ArCameraPoseDataSource(),
+      dispose: (i) => i.dispose(),
+    );
+    gh.lazySingleton<_i106.ConnectedSignalSmoother>(
+      () => const _i106.ConnectedSignalSmoother(),
+    );
+    gh.lazySingleton<_i858.HeatmapPlacementService>(
+      () => const _i858.HeatmapPlacementService(),
+    );
+    gh.lazySingleton<_i904.SurveyGuidanceService>(
+      () => const _i904.SurveyGuidanceService(),
+    );
+    gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
+    gh.lazySingleton<_i165.MdnsDataSource>(() => _i165.MdnsDataSource());
+    gh.lazySingleton<_i200.NetbiosDataSource>(() => _i200.NetbiosDataSource());
+    gh.lazySingleton<_i119.UpnpDataSource>(() => _i119.UpnpDataSource());
+    gh.lazySingleton<_i970.HostTrustClassifier>(
+      () => const _i970.HostTrustClassifier(),
+    );
+    gh.lazySingleton<_i1014.PingStabilizerChannel>(
+      () => _i1014.PingStabilizerChannel(),
+      dispose: (i) => i.dispose(),
+    );
+    gh.lazySingleton<_i876.BreachDataSource>(() => _i876.BreachDataSource());
+    gh.lazySingleton<_i991.DnsDataSource>(() => _i991.DnsDataSource());
+    gh.lazySingleton<_i656.VulnerabilityDbMetaDataSource>(
+      () => _i656.VulnerabilityDbMetaDataSource(),
+    );
+    gh.lazySingleton<_i618.EvilTwinExplainer>(
+      () => const _i618.EvilTwinExplainer(),
     );
     gh.lazySingleton<_i187.GatewayDriftDetector>(
       () => const _i187.GatewayDriftDetector(),
@@ -299,47 +330,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i641.MeshVendorDatabase>(
       () => const _i641.MeshVendorDatabase(),
     );
-    gh.lazySingleton<_i618.EvilTwinExplainer>(
-      () => const _i618.EvilTwinExplainer(),
+    gh.lazySingleton<_i241.NetworkContextInferrer>(
+      () => const _i241.NetworkContextInferrer(),
     );
-    gh.lazySingleton<_i991.DnsDataSource>(() => _i991.DnsDataSource());
-    gh.lazySingleton<_i656.VulnerabilityDbMetaDataSource>(
-      () => _i656.VulnerabilityDbMetaDataSource(),
+    gh.lazySingleton<_i363.DeauthDetector>(() => _i363.DeauthDetector());
+    gh.lazySingleton<_i927.DnsSecurityUseCase>(
+      () => _i927.DnsSecurityUseCase(),
     );
-    gh.lazySingleton<_i970.HostTrustClassifier>(
-      () => const _i970.HostTrustClassifier(),
+    gh.lazySingleton<_i969.ChannelRatingEngine>(
+      () => _i969.ChannelRatingEngine(),
     );
-    gh.lazySingleton<_i119.UpnpDataSource>(() => _i119.UpnpDataSource());
-    gh.lazySingleton<_i165.MdnsDataSource>(() => _i165.MdnsDataSource());
-    gh.lazySingleton<_i200.NetbiosDataSource>(() => _i200.NetbiosDataSource());
-    gh.lazySingleton<_i892.TopologyBuilder>(() => _i892.TopologyBuilder());
-    gh.lazySingleton<_i106.ConnectedSignalSmoother>(
-      () => const _i106.ConnectedSignalSmoother(),
-    );
-    gh.lazySingleton<_i904.SurveyGuidanceService>(
-      () => const _i904.SurveyGuidanceService(),
-    );
-    gh.lazySingleton<_i858.HeatmapPlacementService>(
-      () => const _i858.HeatmapPlacementService(),
-    );
-    gh.lazySingleton<_i188.ArCameraPoseDataSource>(
-      () => _i188.ArCameraPoseDataSource(),
-      dispose: (i) => i.dispose(),
-    );
-    gh.lazySingleton<_i972.DiagnosisExplainer>(
-      () => const _i972.DiagnosisExplainer(),
-    );
-    gh.lazySingleton<_i1014.PingStabilizerChannel>(
-      () => _i1014.PingStabilizerChannel(),
-      dispose: (i) => i.dispose(),
-    );
-    gh.lazySingleton<_i856.GetNetworkHealthScoreUseCase>(
-      () => _i856.GetNetworkHealthScoreUseCase(),
-    );
-    gh.lazySingleton<_i429.ImageWatermarkService>(
-      () => _i429.ImageWatermarkService(),
-    );
-    gh.lazySingleton<_i876.BreachDataSource>(() => _i876.BreachDataSource());
     gh.lazySingleton<_i683.OuiLookup>(
       () => _i683.OuiLookup(gh<_i1050.OuiDatabaseService>()),
     );
@@ -382,24 +382,26 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i130.CheckPasswordBreachUsecase>(
       () => _i130.CheckPasswordBreachUsecase(gh<_i876.BreachDataSource>()),
     );
-    gh.lazySingleton<_i611.ThemeCubit>(
-      () => _i611.ThemeCubit(gh<_i131.HiveStorageService>()),
-    );
     gh.lazySingleton<_i171.LocaleCubit>(
       () => _i171.LocaleCubit(gh<_i131.HiveStorageService>()),
     );
-    gh.lazySingleton<_i696.FavoritesStore>(
-      () => _i696.FavoritesStore(gh<_i131.HiveStorageService>()),
-      dispose: (i) => i.dispose(),
+    gh.lazySingleton<_i611.ThemeCubit>(
+      () => _i611.ThemeCubit(gh<_i131.HiveStorageService>()),
+    );
+    gh.lazySingleton<_i391.DeviceLabelOverrideStore>(
+      () => _i391.DeviceLabelOverrideStore(gh<_i131.HiveStorageService>()),
+    );
+    gh.lazySingleton<_i652.HeatmapLocalDataSource>(
+      () => _i652.HeatmapLocalDataSource(gh<_i131.HiveStorageService>()),
+    );
+    gh.lazySingleton<_i505.NewDeviceDetector>(
+      () => _i505.NewDeviceDetector(gh<_i131.HiveStorageService>()),
     );
     gh.lazySingleton<_i256.NetworkContextOverrideStore>(
       () => _i256.NetworkContextOverrideStore(gh<_i131.HiveStorageService>()),
     );
     gh.lazySingleton<_i172.RouterHardeningStore>(
       () => _i172.RouterHardeningStore(gh<_i131.HiveStorageService>()),
-    );
-    gh.lazySingleton<_i505.NewDeviceDetector>(
-      () => _i505.NewDeviceDetector(gh<_i131.HiveStorageService>()),
     );
     await gh.lazySingletonAsync<_i552.AppSettingsStore>(
       () {
@@ -409,11 +411,9 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
       dispose: (i) => i.dispose(),
     );
-    gh.lazySingleton<_i652.HeatmapLocalDataSource>(
-      () => _i652.HeatmapLocalDataSource(gh<_i131.HiveStorageService>()),
-    );
-    gh.lazySingleton<_i391.DeviceLabelOverrideStore>(
-      () => _i391.DeviceLabelOverrideStore(gh<_i131.HiveStorageService>()),
+    gh.lazySingleton<_i696.FavoritesStore>(
+      () => _i696.FavoritesStore(gh<_i131.HiveStorageService>()),
+      dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i363.CaptivePortalDetector>(
       () => _i363.CaptivePortalDetector(gh<_i846.NetworkInfo>()),
@@ -515,6 +515,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i552.AppSettingsStore>(),
       ),
     );
+    gh.lazySingleton<_i577.ApplyDnsUseCase>(
+      () => _i577.ApplyDnsUseCase(gh<_i852.PingStabilizerRepository>()),
+    );
+    gh.lazySingleton<_i886.BenchmarkDnsUseCase>(
+      () => _i886.BenchmarkDnsUseCase(gh<_i852.PingStabilizerRepository>()),
+    );
+    gh.lazySingleton<_i613.ListProfilesUseCase>(
+      () => _i613.ListProfilesUseCase(gh<_i852.PingStabilizerRepository>()),
+    );
+    gh.lazySingleton<_i761.ObserveLiveStatsUseCase>(
+      () => _i761.ObserveLiveStatsUseCase(gh<_i852.PingStabilizerRepository>()),
+    );
     gh.lazySingleton<_i875.StartStabilizationUseCase>(
       () =>
           _i875.StartStabilizationUseCase(gh<_i852.PingStabilizerRepository>()),
@@ -523,18 +535,6 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i932.StopStabilizationUseCase(gh<_i852.PingStabilizerRepository>()),
     );
-    gh.lazySingleton<_i761.ObserveLiveStatsUseCase>(
-      () => _i761.ObserveLiveStatsUseCase(gh<_i852.PingStabilizerRepository>()),
-    );
-    gh.lazySingleton<_i886.BenchmarkDnsUseCase>(
-      () => _i886.BenchmarkDnsUseCase(gh<_i852.PingStabilizerRepository>()),
-    );
-    gh.lazySingleton<_i613.ListProfilesUseCase>(
-      () => _i613.ListProfilesUseCase(gh<_i852.PingStabilizerRepository>()),
-    );
-    gh.lazySingleton<_i577.ApplyDnsUseCase>(
-      () => _i577.ApplyDnsUseCase(gh<_i852.PingStabilizerRepository>()),
-    );
     gh.factory<_i739.NetworkScanBloc>(
       () => _i739.NetworkScanBloc(
         gh<_i1073.NetworkScanRepository>(),
@@ -542,11 +542,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i552.AppSettingsStore>(),
       ),
     );
-    gh.lazySingleton<_i737.RecordHeatmapPointUsecase>(
-      () => _i737.RecordHeatmapPointUsecase(gh<_i747.HeatmapRepository>()),
-    );
     gh.lazySingleton<_i716.GetHeatmapSessionsUsecase>(
       () => _i716.GetHeatmapSessionsUsecase(gh<_i747.HeatmapRepository>()),
+    );
+    gh.lazySingleton<_i737.RecordHeatmapPointUsecase>(
+      () => _i737.RecordHeatmapPointUsecase(gh<_i747.HeatmapRepository>()),
     );
     gh.lazySingleton<_i1027.WifiRepository>(
       () => _i433.WifiRepositoryImpl(gh<_i1012.WifiDataSource>()),
@@ -675,20 +675,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i646.BaselinePingUseCase>(
       () => _i646.BaselinePingUseCase(gh<_i534.PingNodeUseCase>()),
     );
-    gh.lazySingleton<_i548.PingStabilizerCubit>(
-      () => _i548.PingStabilizerCubit(
-        gh<_i875.StartStabilizationUseCase>(),
-        gh<_i932.StopStabilizationUseCase>(),
-        gh<_i761.ObserveLiveStatsUseCase>(),
-        gh<_i886.BenchmarkDnsUseCase>(),
-        gh<_i577.ApplyDnsUseCase>(),
-        gh<_i613.ListProfilesUseCase>(),
-        gh<_i646.BaselinePingUseCase>(),
-        gh<_i941.NotificationService>(),
-        gh<_i852.PingStabilizerRepository>(),
-        gh<_i544.PingStabilizerSettingsStore>(),
-      ),
-    );
     gh.factory<_i931.HeatmapBloc>(
       () => _i931.HeatmapBloc(
         gh<_i716.GetHeatmapSessionsUsecase>(),
@@ -740,6 +726,19 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i640.NetworkContextResolver>(),
         gh<_i534.PingNodeUseCase>(),
         gh<_i846.NetworkInfo>(),
+      ),
+    );
+    gh.lazySingleton<_i548.PingStabilizerCubit>(
+      () => _i548.PingStabilizerCubit(
+        gh<_i875.StartStabilizationUseCase>(),
+        gh<_i932.StopStabilizationUseCase>(),
+        gh<_i761.ObserveLiveStatsUseCase>(),
+        gh<_i886.BenchmarkDnsUseCase>(),
+        gh<_i577.ApplyDnsUseCase>(),
+        gh<_i613.ListProfilesUseCase>(),
+        gh<_i646.BaselinePingUseCase>(),
+        gh<_i852.PingStabilizerRepository>(),
+        gh<_i544.PingStabilizerSettingsStore>(),
       ),
     );
     gh.factory<_i516.DiagnosticsBloc>(

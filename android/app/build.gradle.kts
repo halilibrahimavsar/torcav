@@ -71,6 +71,10 @@ flutter {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 
+    // Background monitoring ticks (MonitoringWorker). WorkManager survives
+    // Doze + reboots and has no foreground-service time cap.
+    implementation("androidx.work:work-runtime-ktx:2.10.1")
+
     // Native ARCore scene view (replaces deprecated Sceneform).
     // SceneView wraps ARCore + Filament so we can ship a PlatformView that
     // streams real vertical-plane polygons into Dart via EventChannel.

@@ -75,6 +75,8 @@ class PingStabilizerVpnService : VpnService() {
         private val packetsAccepted = AtomicInteger(0)
         private val packetsDeprioritized = AtomicInteger(0)
 
+        fun activeDnsIp(): String? = activeDns.get().hostAddress
+
         fun start(context: Context, profileId: String) {
             val intent = Intent(context, PingStabilizerVpnService::class.java).apply {
                 action = ACTION_START
@@ -111,6 +113,13 @@ class PingStabilizerVpnService : VpnService() {
     private var tunInterface: ParcelFileDescriptor? = null
     @Volatile private var workerThread: Thread? = null
     @Volatile private var statsThread: Thread? = null
+
+    /**
+     * Rule engine living in this process so jitter/loss/DNS alerts and the
+     * auto-DNS-switch keep working after the Flutter activity (and its Dart
+     * isolate) is gone. See [StabilizerAlertEngine] for the rationale.
+     */
+    @Volatile private var alertEngine: StabilizerAlertEngine? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
@@ -170,16 +179,24 @@ class PingStabilizerVpnService : VpnService() {
                 Log.w(TAG, "Failed to add DNS route $dns", e)
             }
         }
-        // Some apps query whatever IP DHCP handed us as the LAN gateway DNS
-        // (typically 192.168.x.1). We can't predict that here, but we add
-        // the most common private-LAN DNS prefixes so home-router DNS
-        // queries also flow through us. These are tiny ranges — they don't
-        // affect game/HTTP traffic which doesn't go to 192.168.x.1:53.
+        // Known limitations of the /32 allow-list approach:
+        //  - Queries to the LAN gateway resolver (192.168.x.1:53) bypass us.
+        //    We deliberately do NOT route private ranges: the interceptor
+        //    drops non-DNS packets, so routing 192.168.1.1 would break the
+        //    router's admin web UI.
+        //  - Non-DNS traffic to the listed IPs (DoH/DoQ on 1.1.1.1:443,
+        //    8.8.8.8:443, …) enters the TUN and is dropped by the
+        //    interceptor. Browsers with hard-coded DoH fall back to system
+        //    DNS (which we do serve); a full TCP forward-proxy lifts this
+        //    in Phase 1.5.
         return builder.establish()
     }
 
     private fun establish() {
         if (running.get()) return
+        // Restore thresholds + localized strings first: after a START_STICKY
+        // restart there is no Dart side to re-push them.
+        StabilizerConfig.load(applicationContext)
         ensureNotificationChannel()
         startForeground(NOTIFICATION_ID, buildNotification())
 
@@ -192,6 +209,9 @@ class PingStabilizerVpnService : VpnService() {
         }
         tunInterface = tun
         running.set(true)
+
+        alertEngine = StabilizerAlertEngine(applicationContext) { protect(it) }
+            .also { it.start() }
 
         workerThread = Thread({ runDnsInterceptor(tun) }, "TorcavStabilizer-tun").apply {
             start()
@@ -399,26 +419,43 @@ class PingStabilizerVpnService : VpnService() {
     }
 
     private fun runStatsLoop() {
-        var lastLatency = 0.0
+        // Last *successful* probe RTT. Timeouts must not poison the jitter
+        // computation (|-1 − 50| would read as a 51 ms "spike") nor be
+        // charted as a -1 ms latency sample — they are packet loss and are
+        // accounted for by the alert engine's rolling loss window.
+        var lastGoodLatency = 0.0
         try {
             while (running.get()) {
                 Thread.sleep(1000)
                 val rtt = probeLatency()
-                val jitter = if (lastLatency > 0) kotlin.math.abs(rtt - lastLatency) else 0.0
-                lastLatency = rtt
+                val lost = rtt < 0
+                val latency = if (lost) lastGoodLatency else rtt
+                val jitter =
+                    if (!lost && lastGoodLatency > 0) {
+                        kotlin.math.abs(rtt - lastGoodLatency)
+                    } else {
+                        0.0
+                    }
+                if (!lost) lastGoodLatency = rtt
+
+                val lossPct = alertEngine?.onSample(jitter, lost) ?: 0.0
+
                 PingStabilizerStatsSink.emit(
                     mapOf(
                         "tsMs" to System.currentTimeMillis(),
-                        "latencyMs" to rtt,
+                        "latencyMs" to latency,
                         "jitterMs" to jitter,
-                        "lossPct" to 0.0,
+                        "lossPct" to lossPct,
+                        // Lets the Dart cubit mirror native auto-DNS switches
+                        // into its UI state when the app comes back.
+                        "activeDnsIp" to activeDns.get().hostAddress,
                         "accepted" to acceptedDelta(),
                         "deprioritized" to deprioritizedDelta(),
                     ),
                 )
                 // Push live HUD into the persistent notification so the user
                 // can monitor ping from the shade without opening the app.
-                refreshNotification(rtt, jitter)
+                refreshNotification(latency, jitter)
             }
         } catch (_: InterruptedException) {
             // Normal teardown.
@@ -427,10 +464,18 @@ class PingStabilizerVpnService : VpnService() {
         }
     }
 
+    /// Last rendered HUD title — skipping identical updates keeps the 1 Hz
+    /// loop from spamming NotificationManager (rate-limited on Android 15).
+    @Volatile private var lastHudTitle: String? = null
+
     private fun refreshNotification(latencyMs: Double, jitterMs: Double) {
         try {
+            val notification = buildLiveNotification(latencyMs, jitterMs)
+            val title = notification.extras.getString(Notification.EXTRA_TITLE)
+            if (title != null && title == lastHudTitle) return
+            lastHudTitle = title
             val mgr = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            mgr.notify(NOTIFICATION_ID, buildLiveNotification(latencyMs, jitterMs))
+            mgr.notify(NOTIFICATION_ID, notification)
         } catch (e: Exception) {
             Log.w(TAG, "Notification refresh failed", e)
         }
@@ -468,6 +513,8 @@ class PingStabilizerVpnService : VpnService() {
         try {
             PingStabilizerStatsSink.emit(mapOf("stopped" to true))
         } catch (_: Exception) {}
+        try { alertEngine?.stop() } catch (_: Exception) {}
+        alertEngine = null
         try { workerThread?.interrupt() } catch (_: Exception) {}
         try { statsThread?.interrupt() } catch (_: Exception) {}
         try { tunInterface?.close() } catch (_: Exception) {}
@@ -498,10 +545,13 @@ class PingStabilizerVpnService : VpnService() {
         mgr.createNotificationChannel(
             NotificationChannel(
                 CHANNEL_ID,
-                "Ping Stabilizer",
+                StabilizerConfig.s("hudChannelName", "Ping Stabilizer"),
                 NotificationManager.IMPORTANCE_LOW,
             ).apply {
-                description = "Persistent notification while the on-device ping stabilizer tunnel is active."
+                description = StabilizerConfig.s(
+                    "hudChannelDesc",
+                    "Persistent notification while the on-device ping stabilizer tunnel is active.",
+                )
             },
         )
     }
@@ -539,19 +589,23 @@ class PingStabilizerVpnService : VpnService() {
 
         val title: String
         val text: String
-        if (latencyMs < 0) {
+        if (latencyMs <= 0) {
             title = "Torcav Ping Stabilizer"
-            text = "Measuring…"
+            text = StabilizerConfig.s("hudMeasuring", "Measuring…")
         } else {
             val dnsLabel = activeDns.get().hostAddress ?: "—"
-            title = "🛡 Ping ${latencyMs.toInt()} ms · jitter ${"%.1f".format(jitterMs)} ms"
-            text = "DNS $dnsLabel · tap actions to control"
+            // Integer jitter keeps the title stable between seconds so the
+            // dedup in [refreshNotification] can actually skip updates.
+            title = "🛡 Ping ${latencyMs.toInt()} ms · jitter ±${jitterMs.toInt()} ms"
+            text = StabilizerConfig
+                .s("hudBody", "DNS {dns} · tap actions to control")
+                .replace("{dns}", dnsLabel)
         }
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(text)
-            .setSmallIcon(android.R.drawable.stat_sys_data_bluetooth)
+            .setSmallIcon(R.drawable.ic_stat_torcav)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setShowWhen(false)
@@ -560,13 +614,13 @@ class PingStabilizerVpnService : VpnService() {
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .setContentIntent(openPending)
             .addAction(
-                android.R.drawable.ic_popup_sync,
-                "🔄 Cycle",
+                R.drawable.ic_stat_torcav,
+                StabilizerConfig.s("actionCycle", "Cycle"),
                 cyclePending,
             )
             .addAction(
-                android.R.drawable.ic_media_pause,
-                "⏹ Stop",
+                R.drawable.ic_stat_torcav,
+                StabilizerConfig.s("actionStop", "Stop"),
                 stopPending,
             )
             .build()

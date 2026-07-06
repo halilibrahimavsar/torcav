@@ -74,6 +74,28 @@ class PingStabilizerChannelHandler(
                     result.success(null)
                 }
             }
+            "updateConfig" -> {
+                // Threshold / auto-switch / candidate list / localized
+                // notification strings for the native alert engine. Persisted
+                // so a STICKY service restart keeps the user's settings even
+                // when the Dart side never comes back.
+                val rawCandidates = call.argument<List<Map<String, Any?>>>("candidates")
+                val candidates = rawCandidates?.mapNotNull { m ->
+                    val ip = m["ip"] as? String ?: return@mapNotNull null
+                    val label = m["label"] as? String ?: ip
+                    ip to label
+                }
+                @Suppress("UNCHECKED_CAST")
+                val strings = call.argument<Map<String, String>>("strings")
+                StabilizerConfig.update(
+                    context,
+                    jitterMs = call.argument<Number>("jitterThresholdMs")?.toDouble(),
+                    autoDns = call.argument<Boolean>("autoSwitchDns"),
+                    newCandidates = candidates,
+                    newStrings = strings,
+                )
+                result.success(null)
+            }
             "benchmarkDns" -> {
                 val raw = call.argument<List<Map<String, Any?>>>("candidates") ?: emptyList()
                 Thread {

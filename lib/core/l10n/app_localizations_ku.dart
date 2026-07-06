@@ -5291,6 +5291,84 @@ class AppLocalizationsKu extends AppLocalizations {
   }
 
   @override
+  String stabilizerNativeJitterBody(String jitter, String threshold) {
+    return 'Jitter $jitter ms e (sînor $threshold ms). Nûkirina tunelê dikare rêyeke xirab bişkîne.';
+  }
+
+  @override
+  String get stabilizerDnsSwitchedTitle => 'DNS hate guhertin';
+
+  @override
+  String stabilizerDnsSwitchedBody(String dns, String delta) {
+    return 'Niha $dns tê bikaranîn — $delta ms zûtir bersiv da.';
+  }
+
+  @override
+  String get stabilizerAlertChannelName => 'Hişyariyên stabilizer';
+
+  @override
+  String get stabilizerAlertChannelDesc =>
+      'Pêşniyarên jitter, windabûna pakêtan û DNS ji ping stabilizer.';
+
+  @override
+  String get stabilizerHudChannelDesc =>
+      'Danezana domdar dema tunela ping stabilizer a li ser cîhazê çalak e.';
+
+  @override
+  String get stabilizerHudMeasuring => 'Tê pîvandin…';
+
+  @override
+  String stabilizerHudBody(String dns) {
+    return 'DNS $dns · ji bo kontrolê bişkokan bikar bîne';
+  }
+
+  @override
+  String get stabilizerActionCycle => 'Nû bike';
+
+  @override
+  String get stabilizerActionStop => 'Rawestîne';
+
+  @override
+  String get batteryOptimizationTitle => 'Destûra xebata paşxanê bide';
+
+  @override
+  String get batteryOptimizationBody =>
+      'Ji bo ku hişyarî dema sepan girtî ye jî bixebitin, divê Torcav ji optimîzasyona bataryayê were derxistin. Wekî din Android dikare çavdêriyê li ser vê cîhazê bêdeng bike.';
+
+  @override
+  String get batteryOptimizationAction => 'Destûr bide';
+
+  @override
+  String get batteryOptimizationLater => 'Niha na';
+
+  @override
+  String get backgroundMonitoringNotifWarning =>
+      'Danezan girtî ne — çavdêriya paşxanê dê bixebite lê hişyarî nayên xuyakirin. Ji mîhengên pergalê danezanan veke.';
+
+  @override
+  String get monitorChannelName => 'Hişyariyên çavdêriya torê';
+
+  @override
+  String get monitorChannelDesc =>
+      'Hişyariyên kontrola Wi-Fi ya paşxanê ya periyodîk.';
+
+  @override
+  String get monitorBssidChangedTitle =>
+      'Xala gihîştinê ya girêdayî hate guhertin';
+
+  @override
+  String get monitorBssidChangedBody =>
+      'Cîhaza te derbasî xaleke gihîştinê ya cuda bû. Torcav veke da ku piştrast bikî ku hîn tora te ye.';
+
+  @override
+  String get monitorEnvironmentChangedTitle => 'Derdora Wi-Fi hate guhertin';
+
+  @override
+  String monitorEnvironmentChangedBody(String from, String to) {
+    return 'Hejmara torên nêzîk ji $from bû $to. Ji bo vekolînê Torcav veke.';
+  }
+
+  @override
   String get lanDiscoveryTitle => 'LAN Devices Discovered';
 
   @override

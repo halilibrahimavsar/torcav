@@ -6859,6 +6859,119 @@
         },
         "description": "Label for stabilizerPacketLossBody"
     },
+    "stabilizerNativeJitterBody": "Jitter is {jitter} ms (threshold {threshold} ms). Cycling the tunnel may break a sticky bad path.",
+    "@stabilizerNativeJitterBody": {
+        "placeholders": {
+            "jitter": {
+                "type": "String"
+            },
+            "threshold": {
+                "type": "String"
+            }
+        },
+        "description": "Label for stabilizerNativeJitterBody"
+    },
+    "stabilizerDnsSwitchedTitle": "DNS switched",
+    "@stabilizerDnsSwitchedTitle": {
+        "description": "Label for stabilizerDnsSwitchedTitle"
+    },
+    "stabilizerDnsSwitchedBody": "Now using {dns} — it responded {delta} ms faster.",
+    "@stabilizerDnsSwitchedBody": {
+        "placeholders": {
+            "dns": {
+                "type": "String"
+            },
+            "delta": {
+                "type": "String"
+            }
+        },
+        "description": "Label for stabilizerDnsSwitchedBody"
+    },
+    "stabilizerAlertChannelName": "Stabilizer alerts",
+    "@stabilizerAlertChannelName": {
+        "description": "Label for stabilizerAlertChannelName"
+    },
+    "stabilizerAlertChannelDesc": "Jitter, packet-loss and DNS recommendations from the ping stabilizer.",
+    "@stabilizerAlertChannelDesc": {
+        "description": "Label for stabilizerAlertChannelDesc"
+    },
+    "stabilizerHudChannelDesc": "Persistent notification while the on-device ping stabilizer tunnel is active.",
+    "@stabilizerHudChannelDesc": {
+        "description": "Label for stabilizerHudChannelDesc"
+    },
+    "stabilizerHudMeasuring": "Measuring…",
+    "@stabilizerHudMeasuring": {
+        "description": "Label for stabilizerHudMeasuring"
+    },
+    "stabilizerHudBody": "DNS {dns} · tap actions to control",
+    "@stabilizerHudBody": {
+        "placeholders": {
+            "dns": {
+                "type": "String"
+            }
+        },
+        "description": "Label for stabilizerHudBody"
+    },
+    "stabilizerActionCycle": "Cycle",
+    "@stabilizerActionCycle": {
+        "description": "Label for stabilizerActionCycle"
+    },
+    "stabilizerActionStop": "Stop",
+    "@stabilizerActionStop": {
+        "description": "Label for stabilizerActionStop"
+    },
+    "batteryOptimizationTitle": "Allow background operation",
+    "@batteryOptimizationTitle": {
+        "description": "Label for batteryOptimizationTitle"
+    },
+    "batteryOptimizationBody": "To keep alerts working while the app is closed, Torcav needs to be excluded from battery optimization. Android may otherwise silence monitoring on this device.",
+    "@batteryOptimizationBody": {
+        "description": "Label for batteryOptimizationBody"
+    },
+    "batteryOptimizationAction": "Allow",
+    "@batteryOptimizationAction": {
+        "description": "Label for batteryOptimizationAction"
+    },
+    "batteryOptimizationLater": "Not now",
+    "@batteryOptimizationLater": {
+        "description": "Label for batteryOptimizationLater"
+    },
+    "backgroundMonitoringNotifWarning": "Notifications are disabled — background monitoring will run, but alerts won't be visible. Enable notifications in system settings.",
+    "@backgroundMonitoringNotifWarning": {
+        "description": "Label for backgroundMonitoringNotifWarning"
+    },
+    "monitorChannelName": "Network watch alerts",
+    "@monitorChannelName": {
+        "description": "Label for monitorChannelName"
+    },
+    "monitorChannelDesc": "Alerts from the periodic background Wi-Fi check.",
+    "@monitorChannelDesc": {
+        "description": "Label for monitorChannelDesc"
+    },
+    "monitorBssidChangedTitle": "Connected access point changed",
+    "@monitorBssidChangedTitle": {
+        "description": "Label for monitorBssidChangedTitle"
+    },
+    "monitorBssidChangedBody": "Your device switched to a different access point. Open Torcav to verify it's still your network.",
+    "@monitorBssidChangedBody": {
+        "description": "Label for monitorBssidChangedBody"
+    },
+    "monitorEnvironmentChangedTitle": "Wi-Fi environment changed",
+    "@monitorEnvironmentChangedTitle": {
+        "description": "Label for monitorEnvironmentChangedTitle"
+    },
+    "monitorEnvironmentChangedBody": "Nearby networks moved from {from} to {to}. Open Torcav to review.",
+    "@monitorEnvironmentChangedBody": {
+        "placeholders": {
+            "from": {
+                "type": "String"
+            },
+            "to": {
+                "type": "String"
+            }
+        },
+        "description": "Label for monitorEnvironmentChangedBody"
+    },
     "lanDiscoveryTitle": "LAN Devices Discovered",
     "@lanDiscoveryTitle": {
         "description": "Label for lanDiscoveryTitle"

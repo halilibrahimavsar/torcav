@@ -124,8 +124,8 @@ This document is the **canonical source** for filling Play Console's Data Safety
 | `INTERNET` | Speed test, DoH/DoT detection, OUI database sync | Implicit |
 | `CAMERA` | AR pose tracking for indoor heatmap surveys | Prominent disclosure in `new_session_dialog` |
 | `ACTIVITY_RECOGNITION` | Step counter for heatmap survey movement tracking | Prominent disclosure in `new_session_dialog` |
-| `FOREGROUND_SERVICE` | Background monitoring + VPN tunnel | Implicit |
-| `FOREGROUND_SERVICE_DATA_SYNC` | Background Wi-Fi state polling (`MonitoringService`) | Opt-in: Settings → Privacy → Background monitoring |
+| `FOREGROUND_SERVICE` | Ping stabilizer VPN tunnel | Implicit |
+| `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` | Keeps opt-in background monitoring (WorkManager) + stabilizer alert engine alive on OEM battery managers | In-app disclosure dialog before system prompt (core-functionality exemption) |
 | `FOREGROUND_SERVICE_SPECIAL_USE` | Ping stabilizer VPN tunnel (specialUse + `local_ping_stabilizer_tunnel` subtype) | Prominent disclosure in `stabilizer_toggle_card` |
 | `POST_NOTIFICATIONS` | Security alerts + stabilizer status | Onboarding `_NotificationsPage` (Kısım 6) + ping_stabilizer flow |
 | `BIND_VPN_SERVICE` | Ping stabilizer local-only VPN tunnel | Prominent disclosure + Android system dialog |

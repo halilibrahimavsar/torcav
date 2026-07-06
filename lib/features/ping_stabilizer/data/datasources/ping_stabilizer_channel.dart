@@ -83,6 +83,31 @@ class PingStabilizerChannel {
     }
   }
 
+  /// Pushes thresholds, the candidate resolver list and localized
+  /// notification strings to the native alert engine. The native side
+  /// persists them so alerts keep firing (in the right language) after the
+  /// Dart isolate is gone — the whole point of running the rules natively.
+  Future<void> updateConfig({
+    required double jitterThresholdMs,
+    required bool autoSwitchDns,
+    required List<DnsCandidate> candidates,
+    required Map<String, String> strings,
+  }) async {
+    try {
+      await _method.invokeMethod<void>('updateConfig', {
+        'jitterThresholdMs': jitterThresholdMs,
+        'autoSwitchDns': autoSwitchDns,
+        'candidates':
+            candidates.map((c) => {'ip': c.ip, 'label': c.label}).toList(),
+        'strings': strings,
+      });
+    } on PlatformException {
+      // Non-fatal: native falls back to its persisted/default config.
+    } on MissingPluginException {
+      // No native impl on this platform.
+    }
+  }
+
   Future<List<DnsCandidate>> benchmarkDns(List<DnsCandidate> candidates) async {
     try {
       final raw = await _method.invokeMethod<List<dynamic>>('benchmarkDns', {
@@ -138,6 +163,7 @@ class PingStabilizerChannel {
             latencyMs: (m['latencyMs'] as num?)?.toDouble() ?? 0,
             jitterMs: (m['jitterMs'] as num?)?.toDouble() ?? 0,
             lossPct: (m['lossPct'] as num?)?.toDouble() ?? 0,
+            activeDnsIp: m['activeDnsIp'] as String?,
           ),
         );
       },

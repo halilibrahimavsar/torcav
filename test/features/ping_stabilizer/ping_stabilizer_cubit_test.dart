@@ -4,7 +4,6 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:torcav/core/errors/failures.dart';
-import 'package:torcav/core/services/notification_service.dart';
 import 'package:torcav/features/monitoring/domain/repositories/topology_repository.dart';
 import 'package:torcav/features/monitoring/domain/usecases/ping_node_usecase.dart';
 import 'package:torcav/features/ping_stabilizer/data/datasources/ping_stabilizer_settings_store.dart';
@@ -29,6 +28,9 @@ class _FakeRepo extends Fake implements PingStabilizerRepository {
   final _stoppedCtrl = StreamController<void>.broadcast();
   int startCount = 0;
   int stopCount = 0;
+  int pushConfigCount = 0;
+  double? lastPushedJitterThreshold;
+  bool? lastPushedAutoSwitch;
 
   @override
   Future<Either<Failure, bool>> isVpnPrepared() async => const Right(true);
@@ -76,6 +78,18 @@ class _FakeRepo extends Fake implements PingStabilizerRepository {
       const Right(null);
 
   @override
+  Future<void> pushNativeConfig({
+    required double jitterThresholdMs,
+    required bool autoSwitchDns,
+    required List<DnsCandidate> candidates,
+    required Map<String, String> notificationStrings,
+  }) async {
+    pushConfigCount++;
+    lastPushedJitterThreshold = jitterThresholdMs;
+    lastPushedAutoSwitch = autoSwitchDns;
+  }
+
+  @override
   Future<Either<Failure, List<StabilizationProfile>>> listProfiles() async =>
       Right(StabilizationProfile.builtIns());
 
@@ -85,15 +99,6 @@ class _FakeRepo extends Fake implements PingStabilizerRepository {
     await _samplesCtrl.close();
     await _stoppedCtrl.close();
   }
-}
-
-class _FakeNotifications extends Fake implements NotificationService {
-  @override
-  Future<void> showStabilizerAlert({
-    required String title,
-    required String body,
-    required bool actionable,
-  }) async {}
 }
 
 class _FakeTopology extends Mock implements TopologyRepository {}
@@ -141,7 +146,6 @@ PingStabilizerCubit _build(_FakeRepo repo, {_InMemorySettings? settings}) {
     ApplyDnsUseCase(repo),
     ListProfilesUseCase(repo),
     BaselinePingUseCase(PingNodeUseCase(topo)),
-    _FakeNotifications(),
     repo,
     s,
   );
@@ -175,6 +179,33 @@ void main() {
       expect(cubit.state.status, StabilizerStatus.active);
       expect(cubit.state.session, isNotNull);
       expect(repo.startCount, 1);
+
+      await cubit.close();
+      await repo.dispose();
+    });
+
+    test('startStabilizer arms the native alert engine with config', () async {
+      final repo = _FakeRepo();
+      final cubit = _build(repo);
+      await cubit.bootstrap();
+      await cubit.startStabilizer();
+      await Future<void>.delayed(Duration.zero);
+
+      expect(repo.pushConfigCount, 1);
+      expect(repo.lastPushedJitterThreshold, cubit.state.jitterThresholdMs);
+
+      await cubit.close();
+      await repo.dispose();
+    });
+
+    test('setAutoSwitchDns re-pushes native config', () async {
+      final repo = _FakeRepo();
+      final cubit = _build(repo);
+      cubit.setAutoSwitchDns(true);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(repo.pushConfigCount, 1);
+      expect(repo.lastPushedAutoSwitch, isTrue);
 
       await cubit.close();
       await repo.dispose();

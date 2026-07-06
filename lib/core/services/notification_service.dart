@@ -22,8 +22,11 @@ class NotificationService {
   Future<void> initialize() async {
     if (_initialized || kIsWeb) return;
 
+    // Monochrome status icon: @mipmap/ic_launcher was still the stock
+    // Flutter template art (the real launcher icon is @mipmap/launcher_icon)
+    // and full-color bitmaps render as a flat square in the status bar.
     const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
+      '@drawable/ic_stat_torcav',
     );
     const iosSettings = DarwinInitializationSettings();
     final linuxSettings = LinuxInitializationSettings(
@@ -110,25 +113,9 @@ class NotificationService {
     );
   }
 
-  /// Posts a notification when the Ping Stabilizer surfaces a new
-  /// recommendation (jitter spike, faster DNS available, persistent loss).
-  /// [actionable] is `true` for items the user can apply with one tap.
-  Future<void> showStabilizerAlert({
-    required String title,
-    required String body,
-    required bool actionable,
-  }) async {
-    if (!_initialized) await initialize();
-    final severity =
-        actionable ? SecurityEventSeverity.warning : SecurityEventSeverity.info;
-    await _plugin.show(
-      777000 + title.hashCode % 1000,
-      title,
-      body,
-      _buildNotificationDetails(severity),
-      payload: 'ping_stabilizer',
-    );
-  }
+  // Ping Stabilizer recommendation alerts intentionally have no Dart-side
+  // path anymore: they are posted by the native StabilizerAlertEngine so
+  // they keep firing after this isolate is killed.
 
   NotificationDetails _buildNotificationDetails(
     SecurityEventSeverity severity,
@@ -188,7 +175,7 @@ class NotificationService {
         priority: priority,
         color: color,
         enableVibration: severity != SecurityEventSeverity.info,
-        icon: '@mipmap/ic_launcher',
+        icon: '@drawable/ic_stat_torcav',
       ),
       iOS: DarwinNotificationDetails(
         presentAlert: true,

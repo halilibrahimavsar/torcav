@@ -36,6 +36,17 @@ abstract class PingStabilizerRepository {
 
   Future<Either<Failure, void>> setActiveDns(DnsCandidate candidate);
 
+  /// Pushes thresholds, the candidate resolver list and localized
+  /// notification strings to the native alert engine, which evaluates the
+  /// recommendation rules while the app is backgrounded or dead. Fire and
+  /// forget: config failures must never break the tunnel itself.
+  Future<void> pushNativeConfig({
+    required double jitterThresholdMs,
+    required bool autoSwitchDns,
+    required List<DnsCandidate> candidates,
+    required Map<String, String> notificationStrings,
+  });
+
   Future<Either<Failure, List<StabilizationProfile>>> listProfiles();
 
   Future<Either<Failure, void>> upsertProfile(StabilizationProfile profile);

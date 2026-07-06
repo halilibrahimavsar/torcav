@@ -5307,6 +5307,83 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String stabilizerNativeJitterBody(String jitter, String threshold) {
+    return 'Jitter $jitter ms (eşik $threshold ms). Tüneli yenilemek kötü rotayı kırabilir.';
+  }
+
+  @override
+  String get stabilizerDnsSwitchedTitle => 'DNS değiştirildi';
+
+  @override
+  String stabilizerDnsSwitchedBody(String dns, String delta) {
+    return 'Artık $dns kullanılıyor — $delta ms daha hızlı yanıt verdi.';
+  }
+
+  @override
+  String get stabilizerAlertChannelName => 'Stabilizer uyarıları';
+
+  @override
+  String get stabilizerAlertChannelDesc =>
+      'Ping stabilizer\'dan jitter, paket kaybı ve DNS önerileri.';
+
+  @override
+  String get stabilizerHudChannelDesc =>
+      'Cihaz üstü ping stabilizer tüneli etkinken görünen kalıcı bildirim.';
+
+  @override
+  String get stabilizerHudMeasuring => 'Ölçülüyor…';
+
+  @override
+  String stabilizerHudBody(String dns) {
+    return 'DNS $dns · kontrol için düğmelere dokunun';
+  }
+
+  @override
+  String get stabilizerActionCycle => 'Yenile';
+
+  @override
+  String get stabilizerActionStop => 'Durdur';
+
+  @override
+  String get batteryOptimizationTitle => 'Arka planda çalışmaya izin ver';
+
+  @override
+  String get batteryOptimizationBody =>
+      'Uygulama kapalıyken uyarıların çalışmaya devam etmesi için Torcav\'ın pil optimizasyonundan muaf tutulması gerekiyor. Aksi halde Android bu cihazda izlemeyi susturabilir.';
+
+  @override
+  String get batteryOptimizationAction => 'İzin ver';
+
+  @override
+  String get batteryOptimizationLater => 'Şimdi değil';
+
+  @override
+  String get backgroundMonitoringNotifWarning =>
+      'Bildirimler kapalı — arka plan izleme çalışacak ancak uyarılar görünmeyecek. Sistem ayarlarından bildirimleri açın.';
+
+  @override
+  String get monitorChannelName => 'Ağ nöbetçisi uyarıları';
+
+  @override
+  String get monitorChannelDesc =>
+      'Periyodik arka plan Wi-Fi denetiminden gelen uyarılar.';
+
+  @override
+  String get monitorBssidChangedTitle => 'Bağlı erişim noktası değişti';
+
+  @override
+  String get monitorBssidChangedBody =>
+      'Cihazınız farklı bir erişim noktasına geçti. Hâlâ sizin ağınız olduğunu doğrulamak için Torcav\'ı açın.';
+
+  @override
+  String get monitorEnvironmentChangedTitle => 'Wi-Fi ortamı değişti';
+
+  @override
+  String monitorEnvironmentChangedBody(String from, String to) {
+    return 'Yakındaki ağ sayısı $from → $to oldu. İncelemek için Torcav\'ı açın.';
+  }
+
+  @override
   String get lanDiscoveryTitle => 'LAN Cihazları Tespit Edildi';
 
   @override
