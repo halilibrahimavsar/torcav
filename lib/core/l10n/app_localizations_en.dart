@@ -5294,8 +5294,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String stabilizerPacketLossBody(String loss) {
-    return 'Packet loss is $loss%. Dual-interface send (Wi-Fi + cellular) can mask transient drops.';
+    return 'Packet loss is $loss%. Cycling the tunnel or moving to a stronger network may help.';
   }
+
+  @override
+  String get connCompareTitle => 'Connection comparison';
+
+  @override
+  String get connCompareCellular => 'Mobile';
+
+  @override
+  String get connCompareNoWifi => 'Wi-Fi not connected';
+
+  @override
+  String get connCompareNoCell => 'No mobile signal info';
+
+  @override
+  String get connCompareCellPermission =>
+      'Location permission is required to read the mobile signal';
+
+  @override
+  String get connCompareWifiStronger => 'Wi-Fi looks stronger right now';
+
+  @override
+  String get connCompareCellStronger => 'Mobile data looks stronger right now';
+
+  @override
+  String get connCompareBothWeak => 'Both connections look weak';
+
+  @override
+  String get connCompareEven => 'Connections look comparable';
+
+  @override
+  String get connCompareInUse => 'in use for data';
 
   @override
   String stabilizerNativeJitterBody(String jitter, String threshold) {

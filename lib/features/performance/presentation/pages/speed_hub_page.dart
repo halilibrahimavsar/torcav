@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/l10n/app_localizations.dart';
+import '../../../cellular/presentation/widgets/connection_compare_card.dart';
 import '../../../diagnostics/presentation/pages/speed_doctor_page.dart';
 import 'performance_page.dart';
 
@@ -48,11 +49,21 @@ class _SpeedHubPageState extends State<SpeedHubPage> {
           ),
         ),
       ),
-      body: IndexedStack(
-        index: _diagnose ? 1 : 0,
-        children: const [
-          PerformancePage(),
-          SpeedDoctorPage(showAppBar: false),
+      body: Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
+            child: ConnectionCompareCard(),
+          ),
+          Expanded(
+            child: IndexedStack(
+              index: _diagnose ? 1 : 0,
+              children: const [
+                PerformancePage(),
+                SpeedDoctorPage(showAppBar: false),
+              ],
+            ),
+          ),
         ],
       ),
     );

@@ -19,6 +19,10 @@ import '../../features/ai/data/services/onnx_device_classifier_service.dart'
     as _i265;
 import '../../features/ai/data/stores/device_label_override_store.dart'
     as _i391;
+import '../../features/cellular/data/services/connection_snapshot_service.dart'
+    as _i230;
+import '../../features/cellular/presentation/bloc/connection_compare_cubit.dart'
+    as _i632;
 import '../../features/dashboard/data/datasources/score_history_local_data_source.dart'
     as _i955;
 import '../../features/dashboard/presentation/bloc/dashboard_cubit.dart'
@@ -286,6 +290,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1050.OuiDatabaseService>(
       () => _i1050.OuiDatabaseService(),
     );
+    gh.lazySingleton<_i230.ConnectionSnapshotService>(
+      () => _i230.ConnectionSnapshotService(),
+    );
     gh.lazySingleton<_i972.DiagnosisExplainer>(
       () => const _i972.DiagnosisExplainer(),
     );
@@ -426,6 +433,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i391.DeviceLabelOverrideStore>(),
       ),
       dispose: (i) => i.dispose(),
+    );
+    gh.factory<_i632.ConnectionCompareCubit>(
+      () => _i632.ConnectionCompareCubit(gh<_i230.ConnectionSnapshotService>()),
     );
     gh.lazySingleton<_i367.GenerateReportUseCase>(
       () => _i367.GenerateReportUseCase(gh<_i119.ReportExportRepository>()),

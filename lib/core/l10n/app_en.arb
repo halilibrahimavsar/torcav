@@ -6850,7 +6850,7 @@
         },
         "description": "Label for stabilizerFasterDnsBody"
     },
-    "stabilizerPacketLossBody": "Packet loss is {loss}%. Dual-interface send (Wi-Fi + cellular) can mask transient drops.",
+    "stabilizerPacketLossBody": "Packet loss is {loss}%. Cycling the tunnel or moving to a stronger network may help.",
     "@stabilizerPacketLossBody": {
         "placeholders": {
             "loss": {
@@ -6858,6 +6858,46 @@
             }
         },
         "description": "Label for stabilizerPacketLossBody"
+    },
+    "connCompareTitle": "Connection comparison",
+    "@connCompareTitle": {
+        "description": "Label for connCompareTitle"
+    },
+    "connCompareCellular": "Mobile",
+    "@connCompareCellular": {
+        "description": "Label for connCompareCellular"
+    },
+    "connCompareNoWifi": "Wi-Fi not connected",
+    "@connCompareNoWifi": {
+        "description": "Label for connCompareNoWifi"
+    },
+    "connCompareNoCell": "No mobile signal info",
+    "@connCompareNoCell": {
+        "description": "Label for connCompareNoCell"
+    },
+    "connCompareCellPermission": "Location permission is required to read the mobile signal",
+    "@connCompareCellPermission": {
+        "description": "Label for connCompareCellPermission"
+    },
+    "connCompareWifiStronger": "Wi-Fi looks stronger right now",
+    "@connCompareWifiStronger": {
+        "description": "Label for connCompareWifiStronger"
+    },
+    "connCompareCellStronger": "Mobile data looks stronger right now",
+    "@connCompareCellStronger": {
+        "description": "Label for connCompareCellStronger"
+    },
+    "connCompareBothWeak": "Both connections look weak",
+    "@connCompareBothWeak": {
+        "description": "Label for connCompareBothWeak"
+    },
+    "connCompareEven": "Connections look comparable",
+    "@connCompareEven": {
+        "description": "Label for connCompareEven"
+    },
+    "connCompareInUse": "in use for data",
+    "@connCompareInUse": {
+        "description": "Label for connCompareInUse"
     },
     "stabilizerNativeJitterBody": "Jitter is {jitter} ms (threshold {threshold} ms). Cycling the tunnel may break a sticky bad path.",
     "@stabilizerNativeJitterBody": {

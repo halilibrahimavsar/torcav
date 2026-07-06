@@ -6850,7 +6850,7 @@
         },
         "description": "Label for stabilizerFasterDnsBody"
     },
-    "stabilizerPacketLossBody": "Packet loss is {loss}%. Dual-interface send (Wi-Fi + cellular) can mask transient drops.",
+    "stabilizerPacketLossBody": "Windabûna pakêtan %{loss} e. Nûkirina tunelê an derbasbûna toreke bihêztir dikare bibe alîkar.",
     "@stabilizerPacketLossBody": {
         "placeholders": {
             "loss": {
@@ -6858,6 +6858,46 @@
             }
         },
         "description": "Label for stabilizerPacketLossBody"
+    },
+    "connCompareTitle": "Berhevdana girêdanan",
+    "@connCompareTitle": {
+        "description": "Label for connCompareTitle"
+    },
+    "connCompareCellular": "Mobîl",
+    "@connCompareCellular": {
+        "description": "Label for connCompareCellular"
+    },
+    "connCompareNoWifi": "Wi-Fi ne girêdayî ye",
+    "@connCompareNoWifi": {
+        "description": "Label for connCompareNoWifi"
+    },
+    "connCompareNoCell": "Agahiya sînyala mobîl tune",
+    "@connCompareNoCell": {
+        "description": "Label for connCompareNoCell"
+    },
+    "connCompareCellPermission": "Ji bo xwendina sînyala mobîl destûra cihê pêwîst e",
+    "@connCompareCellPermission": {
+        "description": "Label for connCompareCellPermission"
+    },
+    "connCompareWifiStronger": "Niha Wi-Fi bihêztir xuya dike",
+    "@connCompareWifiStronger": {
+        "description": "Label for connCompareWifiStronger"
+    },
+    "connCompareCellStronger": "Niha daneya mobîl bihêztir xuya dike",
+    "@connCompareCellStronger": {
+        "description": "Label for connCompareCellStronger"
+    },
+    "connCompareBothWeak": "Herdu girêdan qels xuya dikin",
+    "@connCompareBothWeak": {
+        "description": "Label for connCompareBothWeak"
+    },
+    "connCompareEven": "Girêdan hevseng xuya dikin",
+    "@connCompareEven": {
+        "description": "Label for connCompareEven"
+    },
+    "connCompareInUse": "ji bo daneyan tê bikaranîn",
+    "@connCompareInUse": {
+        "description": "Label for connCompareInUse"
     },
     "stabilizerNativeJitterBody": "Jitter {jitter} ms e (sînor {threshold} ms). Nûkirina tunelê dikare rêyeke xirab bişkîne.",
     "@stabilizerNativeJitterBody": {

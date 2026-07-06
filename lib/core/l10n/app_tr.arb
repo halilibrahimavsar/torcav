@@ -6850,7 +6850,7 @@
         },
         "description": "Label for stabilizerFasterDnsBody"
     },
-    "stabilizerPacketLossBody": "Paket kaybı %{loss}. Çift arayüz gönderimi (Wi-Fi + hücresel) geçici düşüşleri maskeleyebilir.",
+    "stabilizerPacketLossBody": "Paket kaybı %{loss}. Tüneli yenilemek veya daha güçlü bir ağa geçmek yardımcı olabilir.",
     "@stabilizerPacketLossBody": {
         "placeholders": {
             "loss": {
@@ -6858,6 +6858,46 @@
             }
         },
         "description": "Label for stabilizerPacketLossBody"
+    },
+    "connCompareTitle": "Bağlantı karşılaştırması",
+    "@connCompareTitle": {
+        "description": "Label for connCompareTitle"
+    },
+    "connCompareCellular": "Mobil",
+    "@connCompareCellular": {
+        "description": "Label for connCompareCellular"
+    },
+    "connCompareNoWifi": "Wi-Fi bağlı değil",
+    "@connCompareNoWifi": {
+        "description": "Label for connCompareNoWifi"
+    },
+    "connCompareNoCell": "Mobil sinyal bilgisi yok",
+    "@connCompareNoCell": {
+        "description": "Label for connCompareNoCell"
+    },
+    "connCompareCellPermission": "Mobil sinyali okumak için konum izni gerekli",
+    "@connCompareCellPermission": {
+        "description": "Label for connCompareCellPermission"
+    },
+    "connCompareWifiStronger": "Şu an Wi-Fi daha güçlü görünüyor",
+    "@connCompareWifiStronger": {
+        "description": "Label for connCompareWifiStronger"
+    },
+    "connCompareCellStronger": "Şu an mobil veri daha güçlü görünüyor",
+    "@connCompareCellStronger": {
+        "description": "Label for connCompareCellStronger"
+    },
+    "connCompareBothWeak": "Her iki bağlantı da zayıf görünüyor",
+    "@connCompareBothWeak": {
+        "description": "Label for connCompareBothWeak"
+    },
+    "connCompareEven": "Bağlantılar dengeli görünüyor",
+    "@connCompareEven": {
+        "description": "Label for connCompareEven"
+    },
+    "connCompareInUse": "veri için kullanımda",
+    "@connCompareInUse": {
+        "description": "Label for connCompareInUse"
     },
     "stabilizerNativeJitterBody": "Jitter {jitter} ms (eşik {threshold} ms). Tüneli yenilemek kötü rotayı kırabilir.",
     "@stabilizerNativeJitterBody": {

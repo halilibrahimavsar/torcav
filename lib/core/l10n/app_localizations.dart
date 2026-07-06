@@ -9188,8 +9188,68 @@ abstract class AppLocalizations {
   /// Label for stabilizerPacketLossBody
   ///
   /// In en, this message translates to:
-  /// **'Packet loss is {loss}%. Dual-interface send (Wi-Fi + cellular) can mask transient drops.'**
+  /// **'Packet loss is {loss}%. Cycling the tunnel or moving to a stronger network may help.'**
   String stabilizerPacketLossBody(String loss);
+
+  /// Label for connCompareTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Connection comparison'**
+  String get connCompareTitle;
+
+  /// Label for connCompareCellular
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile'**
+  String get connCompareCellular;
+
+  /// Label for connCompareNoWifi
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi not connected'**
+  String get connCompareNoWifi;
+
+  /// Label for connCompareNoCell
+  ///
+  /// In en, this message translates to:
+  /// **'No mobile signal info'**
+  String get connCompareNoCell;
+
+  /// Label for connCompareCellPermission
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission is required to read the mobile signal'**
+  String get connCompareCellPermission;
+
+  /// Label for connCompareWifiStronger
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi looks stronger right now'**
+  String get connCompareWifiStronger;
+
+  /// Label for connCompareCellStronger
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile data looks stronger right now'**
+  String get connCompareCellStronger;
+
+  /// Label for connCompareBothWeak
+  ///
+  /// In en, this message translates to:
+  /// **'Both connections look weak'**
+  String get connCompareBothWeak;
+
+  /// Label for connCompareEven
+  ///
+  /// In en, this message translates to:
+  /// **'Connections look comparable'**
+  String get connCompareEven;
+
+  /// Label for connCompareInUse
+  ///
+  /// In en, this message translates to:
+  /// **'in use for data'**
+  String get connCompareInUse;
 
   /// Label for stabilizerNativeJitterBody
   ///

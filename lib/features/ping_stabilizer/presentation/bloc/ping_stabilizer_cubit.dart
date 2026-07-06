@@ -336,8 +336,11 @@ class PingStabilizerCubit extends Cubit<PingStabilizerState> {
         await stopStabilizer();
         await startStabilizer();
       case RecommendationType.suggestDual:
-        // Phase 2: enable dual-interface on active profile.
-        break;
+        // Dual-interface send doesn't exist yet (Phase 2). The honest
+        // action for sustained loss today is a tunnel cycle — matching the
+        // updated recommendation copy.
+        await stopStabilizer();
+        await startStabilizer();
     }
     dismissRecommendation(rec);
   }

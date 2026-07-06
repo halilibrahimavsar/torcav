@@ -5303,8 +5303,39 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String stabilizerPacketLossBody(String loss) {
-    return 'Paket kaybı %$loss. Çift arayüz gönderimi (Wi-Fi + hücresel) geçici düşüşleri maskeleyebilir.';
+    return 'Paket kaybı %$loss. Tüneli yenilemek veya daha güçlü bir ağa geçmek yardımcı olabilir.';
   }
+
+  @override
+  String get connCompareTitle => 'Bağlantı karşılaştırması';
+
+  @override
+  String get connCompareCellular => 'Mobil';
+
+  @override
+  String get connCompareNoWifi => 'Wi-Fi bağlı değil';
+
+  @override
+  String get connCompareNoCell => 'Mobil sinyal bilgisi yok';
+
+  @override
+  String get connCompareCellPermission =>
+      'Mobil sinyali okumak için konum izni gerekli';
+
+  @override
+  String get connCompareWifiStronger => 'Şu an Wi-Fi daha güçlü görünüyor';
+
+  @override
+  String get connCompareCellStronger => 'Şu an mobil veri daha güçlü görünüyor';
+
+  @override
+  String get connCompareBothWeak => 'Her iki bağlantı da zayıf görünüyor';
+
+  @override
+  String get connCompareEven => 'Bağlantılar dengeli görünüyor';
+
+  @override
+  String get connCompareInUse => 'veri için kullanımda';
 
   @override
   String stabilizerNativeJitterBody(String jitter, String threshold) {

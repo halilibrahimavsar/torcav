@@ -5287,8 +5287,39 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String stabilizerPacketLossBody(String loss) {
-    return 'Packet loss is $loss%. Dual-interface send (Wi-Fi + cellular) can mask transient drops.';
+    return 'Windabûna pakêtan %$loss e. Nûkirina tunelê an derbasbûna toreke bihêztir dikare bibe alîkar.';
   }
+
+  @override
+  String get connCompareTitle => 'Berhevdana girêdanan';
+
+  @override
+  String get connCompareCellular => 'Mobîl';
+
+  @override
+  String get connCompareNoWifi => 'Wi-Fi ne girêdayî ye';
+
+  @override
+  String get connCompareNoCell => 'Agahiya sînyala mobîl tune';
+
+  @override
+  String get connCompareCellPermission =>
+      'Ji bo xwendina sînyala mobîl destûra cihê pêwîst e';
+
+  @override
+  String get connCompareWifiStronger => 'Niha Wi-Fi bihêztir xuya dike';
+
+  @override
+  String get connCompareCellStronger => 'Niha daneya mobîl bihêztir xuya dike';
+
+  @override
+  String get connCompareBothWeak => 'Herdu girêdan qels xuya dikin';
+
+  @override
+  String get connCompareEven => 'Girêdan hevseng xuya dikin';
+
+  @override
+  String get connCompareInUse => 'ji bo daneyan tê bikaranîn';
 
   @override
   String stabilizerNativeJitterBody(String jitter, String threshold) {

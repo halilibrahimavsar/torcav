@@ -6850,7 +6850,7 @@
         },
         "description": "Label for stabilizerFasterDnsBody"
     },
-    "stabilizerPacketLossBody": "Packet loss is {loss}%. Dual-interface send (Wi-Fi + cellular) can mask transient drops.",
+    "stabilizerPacketLossBody": "Paketverlust liegt bei {loss}%. Ein Tunnel-Neustart oder ein stärkeres Netzwerk kann helfen.",
     "@stabilizerPacketLossBody": {
         "placeholders": {
             "loss": {
@@ -6858,6 +6858,46 @@
             }
         },
         "description": "Label for stabilizerPacketLossBody"
+    },
+    "connCompareTitle": "Verbindungsvergleich",
+    "@connCompareTitle": {
+        "description": "Label for connCompareTitle"
+    },
+    "connCompareCellular": "Mobil",
+    "@connCompareCellular": {
+        "description": "Label for connCompareCellular"
+    },
+    "connCompareNoWifi": "WLAN nicht verbunden",
+    "@connCompareNoWifi": {
+        "description": "Label for connCompareNoWifi"
+    },
+    "connCompareNoCell": "Keine Mobilfunk-Signaldaten",
+    "@connCompareNoCell": {
+        "description": "Label for connCompareNoCell"
+    },
+    "connCompareCellPermission": "Standortberechtigung erforderlich, um das Mobilfunksignal zu lesen",
+    "@connCompareCellPermission": {
+        "description": "Label for connCompareCellPermission"
+    },
+    "connCompareWifiStronger": "WLAN wirkt gerade stärker",
+    "@connCompareWifiStronger": {
+        "description": "Label for connCompareWifiStronger"
+    },
+    "connCompareCellStronger": "Mobile Daten wirken gerade stärker",
+    "@connCompareCellStronger": {
+        "description": "Label for connCompareCellStronger"
+    },
+    "connCompareBothWeak": "Beide Verbindungen wirken schwach",
+    "@connCompareBothWeak": {
+        "description": "Label for connCompareBothWeak"
+    },
+    "connCompareEven": "Verbindungen wirken vergleichbar",
+    "@connCompareEven": {
+        "description": "Label for connCompareEven"
+    },
+    "connCompareInUse": "für Daten in Nutzung",
+    "@connCompareInUse": {
+        "description": "Label for connCompareInUse"
     },
     "stabilizerNativeJitterBody": "Jitter liegt bei {jitter} ms (Schwelle {threshold} ms). Ein Tunnel-Neustart kann einen schlechten Pfad aufbrechen.",
     "@stabilizerNativeJitterBody": {

@@ -28,6 +28,9 @@ class MainActivity : FlutterActivity() {
             it.register(flutterEngine.dartExecutor.binaryMessenger)
         }
 
+        CellularChannelHandler(applicationContext)
+            .register(flutterEngine.dartExecutor.binaryMessenger)
+
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             WIFI_EXTENDED_CHANNEL,
