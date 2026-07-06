@@ -232,7 +232,7 @@ class _ReportsViewState extends State<ReportsView> {
                       Switch(
                         value: _anonymize,
                         onChanged: (v) => setState(() => _anonymize = v),
-                        activeColor: Theme.of(context).colorScheme.secondary,
+                        activeThumbColor: Theme.of(context).colorScheme.secondary,
                       ),
                     ],
                   ),

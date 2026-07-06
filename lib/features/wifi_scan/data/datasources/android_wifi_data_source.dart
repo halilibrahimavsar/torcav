@@ -122,6 +122,9 @@ class AndroidWifiDataSource implements WifiDataSource {
                   channelWidthMhz: WifiExtendedChannel.channelWidthToMhz(
                     ext?['channelWidth'] as int?,
                   ),
+                  centerFrequencyMhz: _positiveOrNull(
+                    ext?['centerFreq0'] as int?,
+                  ),
                   wifiStandard: wifiStandardFromInt(
                     ext?['wifiStandard'] as int?,
                   ),
@@ -154,6 +157,10 @@ class AndroidWifiDataSource implements WifiDataSource {
     );
   }
 
+  /// Android reports centerFreq0 as 0 when the channel is plain 20 MHz.
+  static int? _positiveOrNull(int? value) =>
+      (value != null && value > 0) ? value : null;
+
   int _frequencyToChannel(int frequency) {
     if (frequency == 2484) {
       return 14;
@@ -167,6 +174,9 @@ class AndroidWifiDataSource implements WifiDataSource {
     if (frequency < 5925) {
       return (frequency - 5000) ~/ 5;
     }
+    if (frequency == 5935) {
+      return 2; // 6 GHz channel 2 sits outside the 5950 + ch*5 grid.
+    }
     if (frequency >= 5955) {
       return (frequency - 5950) ~/ 5;
     }
@@ -175,6 +185,11 @@ class AndroidWifiDataSource implements WifiDataSource {
 
   SecurityType _mapCapabilitiesToSecurity(String capabilities) {
     final caps = capabilities.toUpperCase();
+    if (caps.trim().isEmpty) {
+      // No capability data at all — claiming "open" here would raise a false
+      // critical "Open Network" finding downstream.
+      return SecurityType.unknown;
+    }
     if (caps.contains('WPA3') || caps.contains('SAE')) {
       return SecurityType.wpa3;
     }

@@ -298,7 +298,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   // Backend
                   DropdownButtonFormField<WifiBackendPreference>(
-                    value: settings.defaultBackendPreference,
+                    initialValue: settings.defaultBackendPreference,
                     dropdownColor:
                         Theme.of(context).colorScheme.surfaceContainerHigh,
                     decoration: InputDecoration(
@@ -330,7 +330,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   // Hidden SSIDs
                   SwitchListTile(
                     value: settings.includeHiddenSsids,
-                    activeColor: Theme.of(context).colorScheme.tertiary,
+                    activeThumbColor: Theme.of(context).colorScheme.tertiary,
                     title: Text(
                       l10n.settingsIncludeHidden,
                       style: GoogleFonts.rajdhani(
@@ -353,7 +353,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   // AI Classification
                   SwitchListTile(
                     value: settings.isAiEnabled,
-                    activeColor: Theme.of(context).colorScheme.primary,
+                    activeThumbColor: Theme.of(context).colorScheme.primary,
                     title: Text(
                       l10n.settingsAiClassification,
                       style: GoogleFonts.rajdhani(
@@ -376,7 +376,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   // Auto-Scan
                   SwitchListTile(
                     value: settings.autoScanEnabled,
-                    activeColor: Theme.of(context).colorScheme.primary,
+                    activeThumbColor: Theme.of(context).colorScheme.primary,
                     title: Text(
                       l10n.autoScanLabel,
                       style: GoogleFonts.rajdhani(
@@ -399,7 +399,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   // Safety Mode
                   SwitchListTile(
                     value: settings.strictSafetyMode,
-                    activeColor: Theme.of(context).colorScheme.error,
+                    activeThumbColor: Theme.of(context).colorScheme.error,
                     title: Text(
                       l10n.settingsStrictSafety,
                       style: GoogleFonts.rajdhani(
@@ -422,7 +422,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   // Deep Scan
                   SwitchListTile(
                     value: settings.isDeepScanEnabled,
-                    activeColor: Theme.of(context).colorScheme.error,
+                    activeThumbColor: Theme.of(context).colorScheme.error,
                     title: Text(
                       l10n.deepScanLabel,
                       style: GoogleFonts.rajdhani(
@@ -449,7 +449,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   // Restrict deep scan on public networks
                   SwitchListTile(
                     value: settings.restrictDeepScanOnPublic,
-                    activeColor: Theme.of(context).colorScheme.primary,
+                    activeThumbColor: Theme.of(context).colorScheme.primary,
                     title: Text(
                       l10n.restrictDeepScanPublicLabel,
                       style: GoogleFonts.rajdhani(
@@ -474,7 +474,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   // Background monitoring (opt-in)
                   SwitchListTile(
                     value: settings.backgroundMonitoringEnabled,
-                    activeColor: Theme.of(context).colorScheme.primary,
+                    activeThumbColor: Theme.of(context).colorScheme.primary,
                     title: Text(
                       l10n.backgroundMonitoringLabel,
                       style: GoogleFonts.rajdhani(

@@ -36,6 +36,11 @@ class WifiNetwork extends Equatable {
 
   // Extended fields from Android ScanResult (available via method channel)
   final int? channelWidthMhz; // 20, 40, 80, 160, or 320
+
+  /// Center frequency (MHz) of the full 40/80/160/320 MHz block
+  /// (ScanResult.centerFreq0). Null for plain 20 MHz channels or when the
+  /// platform does not report it; [frequency] is only the primary channel.
+  final int? centerFrequencyMhz;
   final WifiStandard? wifiStandard; // Wi-Fi generation
   final bool? hasWps; // WPS enabled flag
   final bool? hasPmf; // Protected Management Frames flag
@@ -61,6 +66,7 @@ class WifiNetwork extends Equatable {
     this.vendor = 'Unknown',
     this.isHidden = false,
     this.channelWidthMhz,
+    this.centerFrequencyMhz,
     this.wifiStandard,
     this.hasWps,
     this.hasPmf,
@@ -81,6 +87,7 @@ class WifiNetwork extends Equatable {
     String? vendor,
     bool? isHidden,
     int? channelWidthMhz,
+    int? centerFrequencyMhz,
     WifiStandard? wifiStandard,
     bool? hasWps,
     bool? hasPmf,
@@ -100,6 +107,7 @@ class WifiNetwork extends Equatable {
       vendor: vendor ?? this.vendor,
       isHidden: isHidden ?? this.isHidden,
       channelWidthMhz: channelWidthMhz ?? this.channelWidthMhz,
+      centerFrequencyMhz: centerFrequencyMhz ?? this.centerFrequencyMhz,
       wifiStandard: wifiStandard ?? this.wifiStandard,
       hasWps: hasWps ?? this.hasWps,
       hasPmf: hasPmf ?? this.hasPmf,
@@ -123,6 +131,7 @@ class WifiNetwork extends Equatable {
     vendor,
     isHidden,
     channelWidthMhz,
+    centerFrequencyMhz,
     wifiStandard,
     hasWps,
     hasPmf,

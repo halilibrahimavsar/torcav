@@ -15,6 +15,8 @@ class WifiExtendedChannel {
   /// Returns a map keyed by normalised BSSID (uppercase, colon-separated).
   /// Each value is a map with the following keys:
   ///   - `channelWidth` (int?): 0=20 MHz, 1=40, 2=80, 3=160, 4=320
+  ///   - `centerFreq0`   (int?): center of the full-width block in MHz
+  ///     (0/null when unavailable or the channel is plain 20 MHz)
   ///   - `wifiStandard`  (int?): Android constant (4=n, 5=ac, 6=ax, 7=be)
   ///   - `capabilities`  (String?): raw capabilities string
   ///   - `apMldMac`      (String?): AP MLD MAC address (Wi-Fi 7, API 33+)
@@ -33,6 +35,7 @@ class WifiExtendedChannel {
           if (bssid == null) continue;
           result[bssid] = {
             'channelWidth': item['channelWidth'],
+            'centerFreq0': item['centerFreq0'],
             'wifiStandard': item['wifiStandard'],
             'capabilities': item['capabilities'],
             'apMldMac': item['apMldMac'],

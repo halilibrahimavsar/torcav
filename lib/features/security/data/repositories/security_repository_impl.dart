@@ -46,6 +46,12 @@ class SecurityRepositoryImpl implements SecurityRepository {
   final CaptivePortalDetector _captivePortalDetector;
   final NetworkInfo _networkInfo;
 
+  /// Last OS-notification time per (event type, BSSID). A persistent
+  /// condition (e.g. connected to an open network) would otherwise re-notify
+  /// on every scan cycle.
+  final Map<String, DateTime> _lastNotifiedAt = {};
+  static const _notificationCooldown = Duration(minutes: 15);
+
   SecurityRepositoryImpl(
     this._localDataSource,
     this._notificationService,
@@ -595,7 +601,16 @@ class SecurityRepositoryImpl implements SecurityRepository {
               (a) => a.type == eventType && a.bssid == network.bssid,
             )) {
               alerts.add(event);
-              await _notificationService.showSecurityAlert(event);
+              // OS notifications are reserved for the connected network:
+              // a neighbour's open/WEP AP is recorded in history but must
+              // not page the user on every scan cycle.
+              final isConnectedNetwork =
+                  connectedBssid != null &&
+                  network.bssid.toLowerCase() == connectedBssid.toLowerCase();
+              if (isConnectedNetwork &&
+                  _shouldNotify(eventType, network.bssid, now)) {
+                await _notificationService.showSecurityAlert(event);
+              }
             }
           }
         }
@@ -610,8 +625,12 @@ class SecurityRepositoryImpl implements SecurityRepository {
               exactTrusted.copyWith(lastConfirmedAt: now),
             );
           }
-        } else {
-          // Auto-trust Logic: Track network stability
+        } else if (connectedBssid != null &&
+            network.bssid.toLowerCase() == connectedBssid.toLowerCase()) {
+          // Auto-trust only the network we are actually connected to.
+          // Promoting every repeatedly-seen neighbour AP would fill the
+          // trusted list with third-party BSSIDs and exempt a persistent
+          // evil twin from EvilTwinClassifier checks.
           await _handleAutoTrust(network, knownNetworks);
         }
       }
@@ -625,7 +644,9 @@ class SecurityRepositoryImpl implements SecurityRepository {
       if (deauthEvent != null) {
         alerts.add(deauthEvent);
         await saveSecurityEvent(deauthEvent);
-        await _notificationService.showSecurityAlert(deauthEvent);
+        if (_shouldNotify(deauthEvent.type, deauthEvent.bssid, now)) {
+          await _notificationService.showSecurityAlert(deauthEvent);
+        }
       }
 
       final dedupedFindings = <String, SecurityFinding>{};
@@ -651,6 +672,16 @@ class SecurityRepositoryImpl implements SecurityRepository {
     } catch (e) {
       return Left(DatabaseFailure(e.toString()));
     }
+  }
+
+  bool _shouldNotify(SecurityEventType type, String bssid, DateTime now) {
+    final key = '${type.name}:${bssid.toLowerCase()}';
+    final last = _lastNotifiedAt[key];
+    if (last != null && now.difference(last) < _notificationCooldown) {
+      return false;
+    }
+    _lastNotifiedAt[key] = now;
+    return true;
   }
 
   Future<void> _handleAutoTrust(

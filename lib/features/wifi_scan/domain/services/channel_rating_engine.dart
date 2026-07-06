@@ -120,9 +120,16 @@ class ChannelRatingEngine {
         // Width-aware overlap: a 40/80/160 MHz network occupies its full
         // frequency block, so it interferes with every 20 MHz candidate
         // inside that block, not only with its centre channel.
+        // `frequency` is the primary 20 MHz channel; the block is centred on
+        // centerFrequencyMhz (ScanResult.centerFreq0) when the platform
+        // reports it — using the primary as centre would shift an 80 MHz
+        // block by up to 30 MHz and misscore neighbouring channels.
         final width = (network.channelWidthMhz ?? 20).toDouble();
-        final netLow = nFreq - width / 2;
-        final netHigh = nFreq + width / 2;
+        final blockCenter =
+            (width > 20 ? network.centerFrequencyMhz ?? nFreq : nFreq)
+                .toDouble();
+        final netLow = blockCenter - width / 2;
+        final netHigh = blockCenter + width / 2;
 
         final overlapLow = math.max(netLow, candLow);
         final overlapHigh = math.min(netHigh, candHigh);

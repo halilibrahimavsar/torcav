@@ -5,11 +5,7 @@ import 'injection.config.dart';
 
 final getIt = GetIt.instance;
 
-@InjectableInit(
-  initializerName: 'init', // default
-  preferRelativeImports: true, // default
-  asExtension: true, // default
-)
+@InjectableInit(preferRelativeImports: true)
 Future<void> configureDependencies() async {
   // `init()` artık async — `@PostConstruct(preResolve: true)` ile işaretlenmiş
   // bağımlılıkların (örn. `AppSettingsStore`) init future'larını DI kayıt

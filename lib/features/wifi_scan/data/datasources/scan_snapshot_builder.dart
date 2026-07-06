@@ -78,6 +78,7 @@ class ScanSnapshotBuilder {
           isHidden: entry.isHidden || entry.ssid.isEmpty,
           seenCount: entry.samples.length,
           channelWidthMhz: entry.channelWidthMhz,
+          centerFrequencyMhz: entry.centerFrequencyMhz,
           wifiStandard: entry.wifiStandard,
           hasWps: entry.hasWps,
           hasPmf: entry.hasPmf,
@@ -309,6 +310,7 @@ class _ObservationAccumulator {
   SecurityType security;
   bool isHidden;
   int? channelWidthMhz;
+  int? centerFrequencyMhz;
   WifiStandard? wifiStandard;
   bool? hasWps;
   bool? hasPmf;
@@ -323,6 +325,7 @@ class _ObservationAccumulator {
       security = network.security,
       isHidden = network.isHidden,
       channelWidthMhz = network.channelWidthMhz,
+      centerFrequencyMhz = network.centerFrequencyMhz,
       wifiStandard = network.wifiStandard,
       hasWps = network.hasWps,
       hasPmf = network.hasPmf,
@@ -347,6 +350,7 @@ class _ObservationAccumulator {
     isHidden = isHidden || network.isHidden;
     // Keep extended fields from first pass that provided them.
     channelWidthMhz ??= network.channelWidthMhz;
+    centerFrequencyMhz ??= network.centerFrequencyMhz;
     wifiStandard ??= network.wifiStandard;
     hasWps ??= network.hasWps;
     hasPmf ??= network.hasPmf;

@@ -103,11 +103,14 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
       final trusted = trustedResult.getOrElse(() => []);
       final eventsResult = await _repository.getSecurityEvents();
       final events = eventsResult.getOrElse(() => []);
-      final score = _computeScore(_lastNetworks);
       final summary =
           _lastNetworks.isEmpty ? null : _buildSummary(_lastNetworks);
       final sessionResult = await _repository.getLatestAssessmentSession();
       final latestSession = sessionResult.getOrElse(() => null);
+      // Prefer the persisted session score: it was produced with trusted
+      // profiles, context and hardware vulnerabilities, which the local
+      // re-computation lacks — recomputing here silently drifts from it.
+      final score = latestSession?.overallScore ?? _computeScore(_lastNetworks);
 
       // Surface the per-network policy state on initial load / refresh: if
       // deep scan + restrict guard are both ON and the connected network
@@ -183,11 +186,14 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
       final trusted = trustedResult.getOrElse(() => []);
       final eventsResult = await _repository.getSecurityEvents();
       final events = eventsResult.getOrElse(() => []);
-      final score = _computeScore(event.networks);
       final summary = _buildSummary(event.networks);
 
       final sessionResult = await _repository.getLatestAssessmentSession();
       final latestSession = sessionResult.getOrElse(() => null);
+      // The session created by _analyzeUseCase above carries the
+      // context-adjusted score; recomputing without trusted profiles and
+      // context would show a different number than the stored assessment.
+      final score = latestSession?.overallScore ?? _computeScore(event.networks);
 
       if (isClosed) return;
 
@@ -253,7 +259,6 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
       final trusted = trustedResult.getOrElse(() => []);
       final eventsResult = await _repository.getSecurityEvents();
       final events = eventsResult.getOrElse(() => []);
-      final score = _computeScore(_lastNetworks);
       final summary =
           _lastNetworks.isEmpty ? null : _buildSummary(_lastNetworks);
       final isDeepScan =
@@ -267,6 +272,8 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState> {
           state is SecurityLoaded
               ? (state as SecurityLoaded).latestSession
               : null;
+      final score =
+          latestSession?.overallScore ?? _computeScore(_lastNetworks);
 
       if (isClosed) return;
 

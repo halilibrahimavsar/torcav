@@ -19,6 +19,7 @@ class WifiObservation extends Equatable {
 
   // Extended fields from Android ScanResult (null when not available)
   final int? channelWidthMhz;
+  final int? centerFrequencyMhz;
   final WifiStandard? wifiStandard;
   final bool? hasWps;
   final bool? hasPmf;
@@ -47,6 +48,7 @@ class WifiObservation extends Equatable {
     required this.isHidden,
     required this.seenCount,
     this.channelWidthMhz,
+    this.centerFrequencyMhz,
     this.wifiStandard,
     this.hasWps,
     this.hasPmf,
@@ -74,6 +76,7 @@ class WifiObservation extends Equatable {
       isHidden: network.isHidden,
       seenCount: 1,
       channelWidthMhz: network.channelWidthMhz,
+      centerFrequencyMhz: network.centerFrequencyMhz,
       wifiStandard: network.wifiStandard,
       hasWps: network.hasWps,
       hasPmf: network.hasPmf,
@@ -96,6 +99,7 @@ class WifiObservation extends Equatable {
     required bool isHidden,
     required int seenCount,
     int? channelWidthMhz,
+    int? centerFrequencyMhz,
     WifiStandard? wifiStandard,
     bool? hasWps,
     bool? hasPmf,
@@ -127,6 +131,7 @@ class WifiObservation extends Equatable {
       isHidden: isHidden,
       seenCount: seenCount,
       channelWidthMhz: channelWidthMhz,
+      centerFrequencyMhz: centerFrequencyMhz,
       wifiStandard: wifiStandard,
       hasWps: hasWps,
       hasPmf: hasPmf,
@@ -149,6 +154,7 @@ class WifiObservation extends Equatable {
       vendor: vendor,
       isHidden: isHidden,
       channelWidthMhz: channelWidthMhz,
+      centerFrequencyMhz: centerFrequencyMhz,
       wifiStandard: wifiStandard,
       hasWps: hasWps,
       hasPmf: hasPmf,
@@ -174,6 +180,7 @@ class WifiObservation extends Equatable {
     isHidden,
     seenCount,
     channelWidthMhz,
+    centerFrequencyMhz,
     wifiStandard,
     hasWps,
     hasPmf,

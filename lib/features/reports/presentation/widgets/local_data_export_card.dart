@@ -157,7 +157,7 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<UserDataCategory?>(
-            value: _selected,
+            initialValue: _selected,
             isExpanded: true,
             decoration: InputDecoration(
               labelText: l10n.exportCategoryLabel,
@@ -208,7 +208,7 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<ExportFormat>(
-            value: _format,
+            initialValue: _format,
             isExpanded: true,
             decoration: InputDecoration(
               labelText: l10n.exportFormatLabel,

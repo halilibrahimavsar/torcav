@@ -90,11 +90,15 @@ class MainActivity : FlutterActivity() {
             map["capabilities"] = sr.capabilities
             map["timestampUs"] = sr.timestamp
 
-            // channelWidth: API 23+ (Android 6.0)
+            // channelWidth + centerFreq0: API 23+ (Android 6.0)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 map["channelWidth"] = sr.channelWidth
+                // Center of the full 40/80/160 MHz block; ScanResult.frequency
+                // is only the primary 20 MHz channel. 0 when not applicable.
+                map["centerFreq0"] = sr.centerFreq0
             } else {
                 map["channelWidth"] = null
+                map["centerFreq0"] = null
             }
 
             // wifiStandard: API 30+ (Android 11)

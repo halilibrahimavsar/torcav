@@ -26,12 +26,18 @@ class DeauthDetector {
   static const int _rssiSwingThreshold = 25; // dBm
   static const int _minBeaconCount = 3;
 
+  /// Windows older than this are dropped: the user has moved to a different
+  /// environment and pairing old samples with fresh ones would report the
+  /// natural RSSI jump as an attack.
+  static const Duration _staleAfter = Duration(minutes: 10);
+
   /// Sliding window of recent RSSI readings keyed by BSSID.
-  final Map<String, List<int>> _rssiHistory = {};
+  final Map<String, _RssiWindow> _rssiHistory = {};
 
   /// Returns a [SecurityEvent] if a deauth burst pattern is detected for any
   /// network in [scanResults], otherwise returns `null`.
   SecurityEvent? evaluate(List<WifiNetwork> scanResults) {
+    _pruneStale(DateTime.now());
     for (final network in scanResults) {
       final event = _evaluateSingle(network, scanResults);
       if (event != null) return event;
@@ -45,19 +51,19 @@ class DeauthDetector {
   ) {
     final bssid = target.bssid;
     if (bssid.isEmpty) return null;
+    // Hidden networks share an empty SSID, so the twin condition below would
+    // pair unrelated hidden APs with each other. Skip them entirely.
+    if (target.ssid.isEmpty) return null;
 
     // Update sliding RSSI window for this BSSID.
-    final history = _rssiHistory.putIfAbsent(bssid, () => []);
-    history.add(target.signalStrength);
-    if (history.length > _windowSize) {
-      history.removeAt(0);
-    }
+    final window = _rssiHistory.putIfAbsent(bssid, _RssiWindow.new);
+    window.add(target.signalStrength, _windowSize);
 
-    if (history.length < _minBeaconCount) return null;
+    if (window.samples.length < _minBeaconCount) return null;
 
     // Condition 1: RSSI swing within the window.
-    final maxRssi = history.reduce((a, b) => a > b ? a : b);
-    final minRssi = history.reduce((a, b) => a < b ? a : b);
+    final maxRssi = window.samples.reduce((a, b) => a > b ? a : b);
+    final minRssi = window.samples.reduce((a, b) => a < b ? a : b);
     final swing = maxRssi - minRssi;
     if (swing < _rssiSwingThreshold) return null;
 
@@ -79,11 +85,30 @@ class DeauthDetector {
       timestamp: DateTime.now(),
       // ignore: lines_longer_than_80_chars
       evidence:
-          'RSSI swing $swing dBm in ${history.length} samples; ${twins.length} twin AP(s) present on same SSID.',
+          'RSSI swing $swing dBm in ${window.samples.length} samples; ${twins.length} twin AP(s) present on same SSID.',
+    );
+  }
+
+  void _pruneStale(DateTime now) {
+    _rssiHistory.removeWhere(
+      (_, window) => now.difference(window.lastSeen) > _staleAfter,
     );
   }
 
   /// Clears all RSSI history. Call on scan start to prevent stale detection
   /// across different network environments.
   void reset() => _rssiHistory.clear();
+}
+
+class _RssiWindow {
+  final List<int> samples = [];
+  DateTime lastSeen = DateTime.now();
+
+  void add(int signalDbm, int maxSize) {
+    samples.add(signalDbm);
+    if (samples.length > maxSize) {
+      samples.removeAt(0);
+    }
+    lastSeen = DateTime.now();
+  }
 }
