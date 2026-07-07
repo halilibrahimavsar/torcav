@@ -186,21 +186,23 @@ class DashboardCubit extends Cubit<DashboardState> {
       final List<SecurityEvent> events = eventsResult.fold((_) => <SecurityEvent>[], (list) => list);
       final unreadCount = events.where((e) => !e.isRead).length;
 
-      // Network Health Score
+      // Passive diagnosis — feeds both the hero card's "one action" and the
+      // Network Health Score. Runs on whatever inputs exist; DiagnoseUseCase
+      // degrades gracefully when probes are missing.
+      final diagnosis = _diagnoseUseCase(DiagnosisInputs(
+        connectedNetwork: connectedNet,
+        visibleNetworks: networks,
+        speedTest: lastSpeed,
+        gatewayPingMs: null,
+        dnsBenchmark: null,
+        context: connectedCtx ?? NetworkContextType.unknown,
+      ),);
+
       NetworkHealthScore? healthScore;
       if (worstAssessment != null) {
-        final diagInputs = DiagnosisInputs(
-          connectedNetwork: connectedNet,
-          visibleNetworks: networks,
-          speedTest: lastSpeed,
-          gatewayPingMs: null,
-          dnsBenchmark: null,
-          context: connectedCtx ?? NetworkContextType.unknown,
-        );
-        final diagnosisResult = _diagnoseUseCase(diagInputs);
         healthScore = _healthScoreUseCase(
           securityAssessment: worstAssessment,
-          diagnosisResult: diagnosisResult,
+          diagnosisResult: diagnosis,
         );
       }
 
@@ -225,6 +227,7 @@ class DashboardCubit extends Cubit<DashboardState> {
         recentSnapshots: allSnapshots.reversed.take(6).toList(),
         lastSpeedTest: lastSpeed,
         networkHealthScore: healthScore,
+        diagnosis: diagnosis,
       ),);
     } catch (e) {
       emit(DashboardFailure(ServerFailure(e.toString())));

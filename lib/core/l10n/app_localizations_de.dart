@@ -5717,4 +5717,84 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get dnsInfoDotDesc =>
       'DoT verschlüsselt Ihre DNS-Anfragen ebenfalls, jedoch über einen separaten verschlüsselten Kanal auf Port 853. Das Ziel ist dasselbe: DNS-Abfragen privat zu halten. Manche Netzwerke blockieren Port 853 — dann sehen Sie \'Blockiert\' und Ihr Gerät greift möglicherweise auf unverschlüsseltes DNS zurück.';
+
+  @override
+  String get dashAdvancedMetrics => 'ERWEITERTE METRIKEN';
+
+  @override
+  String get dashHeroTopAction => 'Bester nächster Schritt';
+
+  @override
+  String get dashHeroSeeFullDiagnosis => 'Vollständige Diagnose ansehen';
+
+  @override
+  String get dashHeroDisconnectedHint =>
+      'Verbinden Sie sich mit einem WLAN — ich analysiere Ihr Netzwerk und fasse den Zustand zusammen.';
+
+  @override
+  String get planSpeedTitle => 'Bezahlt vs geliefert';
+
+  @override
+  String get planSpeedEnterCta => 'Tarifgeschwindigkeit eingeben';
+
+  @override
+  String get planSpeedSheetHint =>
+      'Die Download-Geschwindigkeit, die Ihr Internettarif verspricht (Mbps). Sie steht in Ihrem Vertrag oder auf der Rechnung.';
+
+  @override
+  String get planSpeedPlanLabel => 'Tarif';
+
+  @override
+  String get planSpeedMeasuredLabel => 'Durchschnitt';
+
+  @override
+  String get planSpeedNoData =>
+      'Noch keine Messungen — führen Sie unten einen Speedtest durch.';
+
+  @override
+  String planSpeedSamples(int count) {
+    return 'Durchschnitt aus $count Tests';
+  }
+
+  @override
+  String planSpeedPercentOfPlan(int percent) {
+    return '$percent% Ihres Tarifs';
+  }
+
+  @override
+  String get planSpeedVerdictDelivering => 'Sie bekommen, wofür Sie zahlen.';
+
+  @override
+  String get planSpeedVerdictAcceptable =>
+      'Etwas unter Ihrem Tarif — im Auge behalten.';
+
+  @override
+  String get planSpeedVerdictUnder => 'Deutlich unter dem, wofür Sie zahlen.';
+
+  @override
+  String get planSpeedReportCta => 'ISP-Bericht erstellen';
+
+  @override
+  String get ispEvidenceTitle =>
+      'TORCAV — NACHWEIS DER INTERNETGESCHWINDIGKEIT';
+
+  @override
+  String get ispEvidenceGeneratedAt => 'Erstellt';
+
+  @override
+  String get ispEvidenceBest => 'Beste Messung';
+
+  @override
+  String get ispEvidenceSamples => 'Messungen';
+
+  @override
+  String get ispEvidenceDisclaimer =>
+      'Hinweis: Gemessen über WLAN mit der Torcav-App. Einzelergebnisse variieren je nach Tageszeit und Bedingungen; aussagekräftig ist der Durchschnitt mehrerer Tests.';
+
+  @override
+  String get scheduledSpeedTestLabel => 'Geplante Geschwindigkeitsmessungen';
+
+  @override
+  String get scheduledSpeedTestDesc =>
+      'Misst die Download-Geschwindigkeit etwa zweimal täglich, nur über WLAN und nie über mobile Daten (10 MB pro Messung). Baut den Bezahlt-vs-Geliefert-Trend automatisch auf.';
 }

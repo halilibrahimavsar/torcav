@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/storage/app_database.dart';
@@ -11,6 +13,11 @@ class SpeedTestHistoryRepositoryImpl implements SpeedTestHistoryRepository {
 
   static const _table = 'speed_test_results';
 
+  final StreamController<void> _changes = StreamController<void>.broadcast();
+
+  @override
+  Stream<void> get changes => _changes.stream;
+
   @override
   Future<void> save(SpeedTestResult result) async {
     final db = await _db.database;
@@ -23,6 +30,7 @@ class SpeedTestHistoryRepositoryImpl implements SpeedTestHistoryRepository {
       'packet_loss': result.packetLoss,
       'loaded_latency_ms': result.loadedLatencyMs,
     });
+    _changes.add(null);
   }
 
   @override
@@ -40,12 +48,14 @@ class SpeedTestHistoryRepositoryImpl implements SpeedTestHistoryRepository {
   Future<void> deleteById(int id) async {
     final db = await _db.database;
     await db.delete(_table, where: 'id = ?', whereArgs: [id]);
+    _changes.add(null);
   }
 
   @override
   Future<void> deleteAll() async {
     final db = await _db.database;
     await db.delete(_table);
+    _changes.add(null);
   }
 
   SpeedTestResult _fromRow(Map<String, dynamic> row) => SpeedTestResult(

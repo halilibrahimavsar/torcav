@@ -5724,4 +5724,83 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get dnsInfoDotDesc =>
       'DoT da DNS sorgularını şifreler, ancak bunu 853 portu üzerinden ayrı bir şifreli kanaldan yapar. Amaç aynıdır: DNS sorgularının gizliliği. Bazı ağlar 853 portunu engeller — o zaman \'Engelli\' görürsün ve cihazın şifresiz DNS\'e geri düşebilir.';
+
+  @override
+  String get dashAdvancedMetrics => 'GELİŞMİŞ METRİKLER';
+
+  @override
+  String get dashHeroTopAction => 'Şimdi yapılacak en iyi hamle';
+
+  @override
+  String get dashHeroSeeFullDiagnosis => 'Tam tanıyı gör';
+
+  @override
+  String get dashHeroDisconnectedHint =>
+      'Wi-Fi\'a bağlandığında ağını analiz edip durumu sana özetlerim.';
+
+  @override
+  String get planSpeedTitle => 'Ödediğin vs aldığın';
+
+  @override
+  String get planSpeedEnterCta => 'Taahhüt hızını gir';
+
+  @override
+  String get planSpeedSheetHint =>
+      'İnternet paketinin taahhüt ettiği indirme hızı (Mbps). Sözleşmende veya faturanda yazar.';
+
+  @override
+  String get planSpeedPlanLabel => 'Taahhüt';
+
+  @override
+  String get planSpeedMeasuredLabel => 'Ortalama';
+
+  @override
+  String get planSpeedNoData =>
+      'Henüz ölçüm yok — aşağıdan bir hız testi çalıştır.';
+
+  @override
+  String planSpeedSamples(int count) {
+    return '$count testin ortalaması';
+  }
+
+  @override
+  String planSpeedPercentOfPlan(int percent) {
+    return 'taahhüdünün %$percent\'i';
+  }
+
+  @override
+  String get planSpeedVerdictDelivering => 'Ödediğinin karşılığını alıyorsun.';
+
+  @override
+  String get planSpeedVerdictAcceptable =>
+      'Taahhüdünün biraz altında — takipte kal.';
+
+  @override
+  String get planSpeedVerdictUnder => 'Ödediğinin çok altında.';
+
+  @override
+  String get planSpeedReportCta => 'ISS raporu hazırla';
+
+  @override
+  String get ispEvidenceTitle => 'TORCAV — İNTERNET HIZI KANIT RAPORU';
+
+  @override
+  String get ispEvidenceGeneratedAt => 'Oluşturulma';
+
+  @override
+  String get ispEvidenceBest => 'En iyi ölçüm';
+
+  @override
+  String get ispEvidenceSamples => 'Ölçümler';
+
+  @override
+  String get ispEvidenceDisclaimer =>
+      'Not: Ölçümler Torcav uygulamasıyla Wi-Fi üzerinden alınmıştır. Tekil sonuçlar günün saatine ve ev içi koşullara göre değişir; anlamlı olan çok sayıda testin ortalamasıdır.';
+
+  @override
+  String get scheduledSpeedTestLabel => 'Zamanlanmış hız ölçümleri';
+
+  @override
+  String get scheduledSpeedTestDesc =>
+      'Günde yaklaşık iki kez, yalnızca Wi-Fi\'da indirme hızını ölçer — mobil veride asla çalışmaz (her ölçüm 10 MB). Ödediğin-aldığın trendini kendiliğinden oluşturur.';
 }

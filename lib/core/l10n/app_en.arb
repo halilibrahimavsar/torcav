@@ -7256,5 +7256,107 @@
     "dnsInfoDohTitle": "DNS over HTTPS (DoH)",
     "dnsInfoDohDesc": "DoH encrypts the DNS queries that reveal which sites you visit, hiding them inside ordinary HTTPS web traffic. This stops your internet provider or an attacker on the network from seeing your queries or redirecting you to a fake site. 'Reachable' means this network allows DoH.",
     "dnsInfoDotTitle": "DNS over TLS (DoT)",
-    "dnsInfoDotDesc": "DoT also encrypts your DNS queries, but over a separate encrypted channel on port 853. The goal is the same: keeping DNS lookups private. Some networks block port 853 — then you see 'Blocked' and your device may fall back to unencrypted DNS."
+    "dnsInfoDotDesc": "DoT also encrypts your DNS queries, but over a separate encrypted channel on port 853. The goal is the same: keeping DNS lookups private. Some networks block port 853 — then you see 'Blocked' and your device may fall back to unencrypted DNS.",
+    "dashAdvancedMetrics": "ADVANCED METRICS",
+    "@dashAdvancedMetrics": {
+        "description": "Header of the collapsed dashboard section holding pro-depth widgets."
+    },
+    "dashHeroTopAction": "Best next move",
+    "@dashHeroTopAction": {
+        "description": "Overline above the hero card's single action button."
+    },
+    "dashHeroSeeFullDiagnosis": "See full diagnosis",
+    "@dashHeroSeeFullDiagnosis": {
+        "description": "Text link on the hero card opening the full Speed Doctor run."
+    },
+    "dashHeroDisconnectedHint": "Connect to Wi-Fi and I'll analyze your network and summarize its health.",
+    "@dashHeroDisconnectedHint": {
+        "description": "Hero card body shown when the device has no Wi-Fi connection."
+    },
+    "planSpeedTitle": "Paying vs getting",
+    "@planSpeedTitle": {
+        "description": "Title of the ISP plan speed comparison card."
+    },
+    "planSpeedEnterCta": "Enter plan speed",
+    "@planSpeedEnterCta": {
+        "description": "Button that opens the plan-speed input sheet."
+    },
+    "planSpeedSheetHint": "The download speed your internet plan promises (Mbps). You'll find it on your ISP contract or invoice.",
+    "@planSpeedSheetHint": {
+        "description": "Helper text in the plan-speed input sheet."
+    },
+    "planSpeedPlanLabel": "Plan",
+    "@planSpeedPlanLabel": {
+        "description": "Label over the declared plan speed value."
+    },
+    "planSpeedMeasuredLabel": "Average",
+    "@planSpeedMeasuredLabel": {
+        "description": "Label over the measured average download speed."
+    },
+    "planSpeedNoData": "No measurements yet — run a speed test below.",
+    "@planSpeedNoData": {
+        "description": "Shown when a plan is set but no speed tests exist."
+    },
+    "planSpeedSamples": "average of {count} tests",
+    "@planSpeedSamples": {
+        "description": "Caption under the measured value.",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "planSpeedPercentOfPlan": "{percent}% of your plan",
+    "@planSpeedPercentOfPlan": {
+        "description": "Caption under the ratio bar.",
+        "placeholders": {
+            "percent": {
+                "type": "int"
+            }
+        }
+    },
+    "planSpeedVerdictDelivering": "You're getting what you pay for.",
+    "@planSpeedVerdictDelivering": {
+        "description": "Verdict when measured speed is >=80% of plan."
+    },
+    "planSpeedVerdictAcceptable": "Somewhat below your plan — worth watching.",
+    "@planSpeedVerdictAcceptable": {
+        "description": "Verdict when measured speed is 50-80% of plan."
+    },
+    "planSpeedVerdictUnder": "Well below what you pay for.",
+    "@planSpeedVerdictUnder": {
+        "description": "Verdict when measured speed is <50% of plan."
+    },
+    "planSpeedReportCta": "Prepare ISP report",
+    "@planSpeedReportCta": {
+        "description": "Button that shares the plain-text ISP evidence."
+    },
+    "ispEvidenceTitle": "TORCAV — INTERNET SPEED EVIDENCE",
+    "@ispEvidenceTitle": {
+        "description": "First line of the shared ISP evidence text."
+    },
+    "ispEvidenceGeneratedAt": "Generated",
+    "@ispEvidenceGeneratedAt": {
+        "description": "Label before the evidence generation timestamp."
+    },
+    "ispEvidenceBest": "Best measurement",
+    "@ispEvidenceBest": {
+        "description": "Label before the best measured download speed."
+    },
+    "ispEvidenceSamples": "Measurements",
+    "@ispEvidenceSamples": {
+        "description": "Header above the list of individual speed tests."
+    },
+    "ispEvidenceDisclaimer": "Note: measured over Wi-Fi with the Torcav app. Individual results vary with time of day and in-home conditions; the average over multiple tests is the meaningful figure.",
+    "@ispEvidenceDisclaimer": {
+        "description": "Honesty footer of the ISP evidence text."
+    },
+    "scheduledSpeedTestLabel": "Scheduled speed measurements",
+    "@scheduledSpeedTestLabel": {
+        "description": "Settings toggle for the background speed probe."
+    },
+    "scheduledSpeedTestDesc": "Measures download speed about twice a day, only on Wi-Fi and never on mobile data (10 MB per run). Builds the paying-vs-getting trend automatically.",
+    "@scheduledSpeedTestDesc": {
+        "description": "Subtitle explaining the background speed probe's behavior and cost."
+    }
 }

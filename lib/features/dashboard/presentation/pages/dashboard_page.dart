@@ -8,6 +8,7 @@ import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/notification_context_extensions.dart';
+import '../../../diagnostics/domain/entities/root_cause_category.dart';
 import '../../../performance/presentation/pages/speed_hub_page.dart';
 import '../../../ping_stabilizer/presentation/bloc/ping_stabilizer_cubit.dart';
 import '../../../ping_stabilizer/presentation/widgets/stabilizer_toggle_card.dart';
@@ -16,10 +17,12 @@ import '../../../security/domain/entities/security_assessment.dart';
 import '../../../security/domain/services/network_context_resolver.dart';
 import '../../../security/presentation/bloc/notification/notification_bloc.dart';
 import '../../../security/presentation/extensions/vulnerability_extensions.dart';
+import '../../../security/presentation/pages/router_hardening_wizard_page.dart';
 import '../../../wifi_scan/domain/entities/channel_rating.dart';
 import '../bloc/dashboard_cubit.dart';
 import '../bloc/dashboard_state.dart';
 import '../widgets/activity_timeline.dart';
+import '../widgets/health_hero_card.dart';
 import '../widgets/live_metrics_bento.dart';
 import '../widgets/radial_dashboard_core.dart';
 import '../widgets/gamification_tasks_card.dart';
@@ -156,51 +159,35 @@ class DashboardPage extends StatelessWidget {
                   if (state is DashboardLoading || state is DashboardInitial)
                     const Center(child: CircularProgressIndicator())
                   else if (state is DashboardSuccess) ...[
-                    // ── Hero: radial dashboard core with orbital gauges ──
+                    // ── Hero: health score + one plain-language action (P2) ──
                     StaggeredEntry(
                       delay: const Duration(milliseconds: 80),
-                      child: Center(
-                        child: RadialDashboardCore(
-                          statusColor: accentColor,
-                          label: statusLabel,
-                          subLabel: state.ssid,
-                          healthScore:
-                              state.networkHealthScore?.totalScore ??
-                              state.securityScore,
-                          signalQualityPct: state.signalQualityPct,
-                          threatCount: state.threatCount,
-                          deviceCount: state.networkCount,
-                          onTapHealth:
-                              () =>
-                                  state.worstAssessment != null
-                                      ? _showScoreExplanation(
-                                        context,
-                                        state.worstAssessment!,
-                                      )
-                                      : onNavigate('security'),
-                          onTapSignal: () => onNavigate('monitor/channels'),
-                          onTapThreats: () => _showNotificationSheet(context),
-                          onTapDevices: () => onNavigate('wifi'),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // ── IP / Gateway compact strip ──
-                    StaggeredEntry(
-                      delay: const Duration(milliseconds: 200),
-                      child: _NetworkIdStrip(
+                      child: HealthHeroCard(
+                        score:
+                            state.networkHealthScore?.totalScore ??
+                            state.securityScore,
+                        isConnected: isConnected,
                         ssid: state.ssid,
-                        ip: state.ip,
-                        gateway: state.gateway,
+                        statusLabel: statusLabel,
+                        diagnosis: state.diagnosis,
+                        onTapScore:
+                            () =>
+                                state.worstAssessment != null
+                                    ? _showScoreExplanation(
+                                      context,
+                                      state.worstAssessment!,
+                                    )
+                                    : onNavigate('security'),
+                        onAction:
+                            (category) => _handleHeroAction(context, category),
+                        onFullDiagnosis: () => _openSpeedDoctor(context),
                       ),
                     ),
 
                     if (state.connectedBssid != null) ...[
                       const SizedBox(height: 8),
                       StaggeredEntry(
-                        delay: const Duration(milliseconds: 240),
+                        delay: const Duration(milliseconds: 160),
                         child: _NetworkContextBadge(
                           context:
                               state.connectedContext ??
@@ -211,135 +198,202 @@ class DashboardPage extends StatelessWidget {
                       ),
                     ],
 
-                    const SizedBox(height: 24),
-
-                    // ── Gamification Recommended Tasks ──
-                    if (state.networkHealthScore != null &&
-                        state
-                            .networkHealthScore!
-                            .recommendedTasks
-                            .isNotEmpty) ...[
-                      StaggeredEntry(
-                        delay: const Duration(milliseconds: 260),
-                        child: GamificationTasksCard(
-                          tasks: state.networkHealthScore!.recommendedTasks,
-                          onTapTask: (task) {
-                            if (task.deepLinkRoute != null) {
-                              onNavigate(task.deepLinkRoute!);
-                            }
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                    ],
-
-                    // ── Live Pulse: bento of mini metrics ──
-                    StaggeredEntry(
-                      delay: const Duration(milliseconds: 280),
-                      child: NeonSectionHeader(
-                        label: l10n.livePulse,
-                        color: scheme.primary,
-                        icon: Icons.monitor_heart_rounded,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-
-                    LiveMetricsBento(
-                      signalQualityPct: state.signalQualityPct,
-                      rssiHistory: state.rssiHistory,
-                      scoreHistory: state.scoreHistory,
-                      channelRatings: state.channelRatings,
-                      newDeviceCount: state.newDeviceCount,
-                      recentEvents: state.recentEvents,
-                      lastDownloadMbps: state.lastSpeedTest?.downloadMbps,
-                      lastUploadMbps: state.lastSpeedTest?.uploadMbps,
-                      lastSpeedTestAt: state.lastSpeedTest?.recordedAt,
-                      onTapSignal: () => onNavigate('monitor/channels'),
-                      onTapScore:
-                          () =>
-                              state.worstAssessment != null
-                                  ? _showScoreExplanation(
-                                    context,
-                                    state.worstAssessment!,
-                                  )
-                                  : onNavigate('security'),
-                      onTapChannels: () => onNavigate('monitor/channels'),
-                      onTapDevices: () => onNavigate('wifi'),
-                      onTapThreats: () => _showNotificationSheet(context),
-                      onTapSpeed: () => onNavigate('performance'),
-                    ),
-
                     const SizedBox(height: 20),
 
-                    // ── Ping Stabilizer quick-toggle ──
+                    // ── Advanced metrics — pro depth behind one tap (P2) ──
                     StaggeredEntry(
-                      delay: const Duration(milliseconds: 320),
-                      child: BlocProvider<PingStabilizerCubit>.value(
-                        value: getIt<PingStabilizerCubit>()..bootstrap(),
-                        child: StabilizerToggleCard(
-                          onTap: () => onNavigate('ping_stabilizer'),
+                      delay: const Duration(milliseconds: 240),
+                      child: Theme(
+                        data: Theme.of(
+                          context,
+                        ).copyWith(dividerColor: Colors.transparent),
+                        child: ExpansionTile(
+                          tilePadding: EdgeInsets.zero,
+                          childrenPadding: EdgeInsets.zero,
+                          shape: const Border(),
+                          collapsedShape: const Border(),
+                          iconColor: scheme.tertiary,
+                          collapsedIconColor: scheme.onSurfaceVariant,
+                          title: NeonSectionHeader(
+                            label: l10n.dashAdvancedMetrics,
+                            color: scheme.tertiary,
+                            icon: Icons.insights_rounded,
+                          ),
+                          children: [
+                            const SizedBox(height: 8),
+
+                            // ── Radial core with orbital gauges ──
+                            Center(
+                              child: RadialDashboardCore(
+                                statusColor: accentColor,
+                                label: statusLabel,
+                                subLabel: state.ssid,
+                                healthScore:
+                                    state.networkHealthScore?.totalScore ??
+                                    state.securityScore,
+                                signalQualityPct: state.signalQualityPct,
+                                threatCount: state.threatCount,
+                                deviceCount: state.networkCount,
+                                onTapHealth:
+                                    () =>
+                                        state.worstAssessment != null
+                                            ? _showScoreExplanation(
+                                              context,
+                                              state.worstAssessment!,
+                                            )
+                                            : onNavigate('security'),
+                                onTapSignal:
+                                    () => onNavigate('monitor/channels'),
+                                onTapThreats:
+                                    () => _showNotificationSheet(context),
+                                onTapDevices: () => onNavigate('wifi'),
+                              ),
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            // ── IP / Gateway compact strip ──
+                            _NetworkIdStrip(
+                              ssid: state.ssid,
+                              ip: state.ip,
+                              gateway: state.gateway,
+                            ),
+
+                            const SizedBox(height: 24),
+
+                            // ── Gamification Recommended Tasks ──
+                            if (state.networkHealthScore != null &&
+                                state
+                                    .networkHealthScore!
+                                    .recommendedTasks
+                                    .isNotEmpty) ...[
+                              GamificationTasksCard(
+                                tasks:
+                                    state.networkHealthScore!.recommendedTasks,
+                                onTapTask: (task) {
+                                  if (task.deepLinkRoute != null) {
+                                    onNavigate(task.deepLinkRoute!);
+                                  }
+                                },
+                              ),
+                              const SizedBox(height: 24),
+                            ],
+
+                            // ── Live Pulse: bento of mini metrics ──
+                            NeonSectionHeader(
+                              label: l10n.livePulse,
+                              color: scheme.primary,
+                              icon: Icons.monitor_heart_rounded,
+                            ),
+                            const SizedBox(height: 12),
+
+                            LiveMetricsBento(
+                              signalQualityPct: state.signalQualityPct,
+                              rssiHistory: state.rssiHistory,
+                              scoreHistory: state.scoreHistory,
+                              channelRatings: state.channelRatings,
+                              newDeviceCount: state.newDeviceCount,
+                              recentEvents: state.recentEvents,
+                              lastDownloadMbps:
+                                  state.lastSpeedTest?.downloadMbps,
+                              lastUploadMbps: state.lastSpeedTest?.uploadMbps,
+                              lastSpeedTestAt: state.lastSpeedTest?.recordedAt,
+                              onTapSignal: () => onNavigate('monitor/channels'),
+                              onTapScore:
+                                  () =>
+                                      state.worstAssessment != null
+                                          ? _showScoreExplanation(
+                                            context,
+                                            state.worstAssessment!,
+                                          )
+                                          : onNavigate('security'),
+                              onTapChannels:
+                                  () => onNavigate('monitor/channels'),
+                              onTapDevices: () => onNavigate('wifi'),
+                              onTapThreats:
+                                  () => _showNotificationSheet(context),
+                              onTapSpeed: () => onNavigate('performance'),
+                            ),
+
+                            const SizedBox(height: 20),
+
+                            // ── Ping Stabilizer quick-toggle ──
+                            BlocProvider<PingStabilizerCubit>.value(
+                              value: getIt<PingStabilizerCubit>()..bootstrap(),
+                              child: StabilizerToggleCard(
+                                onTap: () => onNavigate('ping_stabilizer'),
+                              ),
+                            ),
+
+                            const SizedBox(height: 28),
+
+                            // ── Activity Timeline ──
+                            NeonSectionHeader(
+                              label: l10n.networkLogs,
+                              color: scheme.tertiary,
+                              icon: Icons.timeline_rounded,
+                            ),
+                            const SizedBox(height: 12),
+
+                            ActivityTimeline(
+                              snapshots: state.recentSnapshots,
+                              events: state.recentEvents,
+                              onNavigate: onNavigate,
+                            ),
+
+                            if (state.bestChannel != null) ...[
+                              const SizedBox(height: 20),
+                              _ChannelRecommendationCard(
+                                best: state.bestChannel!,
+                                currentChannel: state.currentChannel,
+                                onTap: () => onNavigate('monitor/channels'),
+                              ),
+                            ],
+                          ],
                         ),
                       ),
                     ),
-
-                    const SizedBox(height: 28),
-
-                    // ── Activity Timeline ──
-                    StaggeredEntry(
-                      delay: const Duration(milliseconds: 360),
-                      child: NeonSectionHeader(
-                        label: l10n.networkLogs,
-                        color: scheme.tertiary,
-                        icon: Icons.timeline_rounded,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-
-                    StaggeredEntry(
-                      delay: const Duration(milliseconds: 440),
-                      child: ActivityTimeline(
-                        snapshots: state.recentSnapshots,
-                        events: state.recentEvents,
-                        onNavigate: onNavigate,
-                      ),
-                    ),
-
-                    if (state.bestChannel != null) ...[
-                      const SizedBox(height: 20),
-                      StaggeredEntry(
-                        delay: const Duration(milliseconds: 520),
-                        child: _ChannelRecommendationCard(
-                          best: state.bestChannel!,
-                          currentChannel: state.currentChannel,
-                          onTap: () => onNavigate('monitor/channels'),
-                        ),
-                      ),
-                    ],
                   ] else if (state is DashboardFailure)
                     Center(child: Text(state.failure.message)),
-
-                  const SizedBox(height: 20),
-                  StaggeredEntry(
-                    delay: const Duration(milliseconds: 580),
-                    child: _SpeedDoctorTile(
-                      onTap: () {
-                        unawaited(
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder:
-                                (_) =>
-                                    const SpeedHubPage(initialDiagnose: true),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
                 ],
               ),
             ),
           );
         },
+      ),
+    );
+  }
+
+  /// Routes the hero's single action to the tool where the user can act on
+  /// the diagnosed root cause.
+  void _handleHeroAction(BuildContext context, RootCauseCategory category) {
+    switch (category) {
+      case RootCauseCategory.crowdedChannel:
+        onNavigate('monitor/channels');
+      case RootCauseCategory.slowDns:
+        onNavigate('ping_stabilizer');
+      case RootCauseCategory.ispSlow:
+        onNavigate('reports');
+      case RootCauseCategory.bufferbloat:
+        unawaited(
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => const RouterHardeningWizardPage(),
+            ),
+          ),
+        );
+      case RootCauseCategory.weakSignal:
+      case RootCauseCategory.healthy:
+        _openSpeedDoctor(context);
+    }
+  }
+
+  void _openSpeedDoctor(BuildContext context) {
+    unawaited(
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => const SpeedHubPage(initialDiagnose: true),
+        ),
       ),
     );
   }
@@ -1025,80 +1079,3 @@ String _getNetworkContextLabel(BuildContext context, NetworkContextType type) {
   };
 }
 
-class _SpeedDoctorTile extends StatelessWidget {
-  const _SpeedDoctorTile({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              const Color(0xFFB91DFB).withValues(alpha: 0.18),
-              const Color(0xFF1E0F3D).withValues(alpha: 0.04),
-            ],
-          ),
-          border: Border.all(
-            color: const Color(0xFFB91DFB).withValues(alpha: 0.45),
-          ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: const Color(0xFFB91DFB).withValues(alpha: 0.15),
-                shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFB91DFB)),
-              ),
-              child: const Icon(
-                Icons.medical_services_rounded,
-                color: Color(0xFFB91DFB),
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    context.l10n.internetSlowQuestion,
-                    style: GoogleFonts.orbitron(
-                      color: const Color(0xFFB91DFB),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    context.l10n.runSpeedDoctorDesc,
-                    style: GoogleFonts.rajdhani(
-                      color: theme.colorScheme.onSurface,
-                      fontSize: 13,
-                      height: 1.3,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.chevron_right_rounded,
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

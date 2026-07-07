@@ -50,6 +50,16 @@ class AppSettings extends Equatable {
   /// posture conservative.
   final bool backgroundMonitoringEnabled;
 
+  /// Download speed (Mbps) the user's ISP plan promises ("taahhüt hızı").
+  /// Null until the user declares it; drives the paying-vs-getting
+  /// comparison in the Speed hub.
+  final double? planDownloadMbps;
+
+  /// When true, a WorkManager probe measures download speed roughly twice
+  /// a day on unmetered networks, feeding the plan-comparison trend.
+  /// Off by default — opt-in, like every background behavior.
+  final bool scheduledSpeedTestEnabled;
+
   const AppSettings({
     this.scanIntervalSeconds = 30,
     this.defaultScanPasses = 3,
@@ -67,6 +77,8 @@ class AppSettings extends Equatable {
     this.securityEventRetentionDays = 30,
     this.defaultNetworkContext = NetworkContextType.unknown,
     this.backgroundMonitoringEnabled = false,
+    this.planDownloadMbps,
+    this.scheduledSpeedTestEnabled = false,
   });
 
   AppSettings copyWith({
@@ -86,6 +98,9 @@ class AppSettings extends Equatable {
     int? securityEventRetentionDays,
     NetworkContextType? defaultNetworkContext,
     bool? backgroundMonitoringEnabled,
+    double? planDownloadMbps,
+    bool clearPlanDownloadMbps = false,
+    bool? scheduledSpeedTestEnabled,
   }) {
     return AppSettings(
       scanIntervalSeconds: scanIntervalSeconds ?? this.scanIntervalSeconds,
@@ -111,6 +126,12 @@ class AppSettings extends Equatable {
           defaultNetworkContext ?? this.defaultNetworkContext,
       backgroundMonitoringEnabled:
           backgroundMonitoringEnabled ?? this.backgroundMonitoringEnabled,
+      planDownloadMbps:
+          clearPlanDownloadMbps
+              ? null
+              : (planDownloadMbps ?? this.planDownloadMbps),
+      scheduledSpeedTestEnabled:
+          scheduledSpeedTestEnabled ?? this.scheduledSpeedTestEnabled,
     );
   }
 
@@ -132,6 +153,8 @@ class AppSettings extends Equatable {
     securityEventRetentionDays,
     defaultNetworkContext,
     backgroundMonitoringEnabled,
+    planDownloadMbps,
+    scheduledSpeedTestEnabled,
   ];
 
   Map<String, dynamic> toJson() {
@@ -152,6 +175,8 @@ class AppSettings extends Equatable {
       'securityEventRetentionDays': securityEventRetentionDays,
       'defaultNetworkContext': defaultNetworkContext.name,
       'backgroundMonitoringEnabled': backgroundMonitoringEnabled,
+      'planDownloadMbps': planDownloadMbps,
+      'scheduledSpeedTestEnabled': scheduledSpeedTestEnabled,
     };
   }
 
@@ -196,7 +221,19 @@ class AppSettings extends Equatable {
         json['backgroundMonitoringEnabled'],
         fallback: false,
       ),
+      planDownloadMbps: _readDoubleOrNull(json['planDownloadMbps']),
+      scheduledSpeedTestEnabled: _readBool(
+        json['scheduledSpeedTestEnabled'],
+        fallback: false,
+      ),
     );
+  }
+
+  static double? _readDoubleOrNull(Object? raw) {
+    return switch (raw) {
+      final num value when value > 0 => value.toDouble(),
+      _ => null,
+    };
   }
 
   static int _readInt(Object? raw, {required int fallback}) {

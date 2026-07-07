@@ -120,14 +120,24 @@ import '../../features/performance/data/repositories/speed_test_history_reposito
     as _i77;
 import '../../features/performance/data/repositories/speed_test_repository_impl.dart'
     as _i275;
+import '../../features/performance/data/services/scheduled_speed_probe_impl.dart'
+    as _i858;
 import '../../features/performance/domain/repositories/speed_test_history_repository.dart'
     as _i885;
 import '../../features/performance/domain/repositories/speed_test_repository.dart'
     as _i389;
+import '../../features/performance/domain/services/isp_evidence_composer.dart'
+    as _i863;
+import '../../features/performance/domain/services/scheduled_speed_probe.dart'
+    as _i901;
+import '../../features/performance/domain/usecases/compare_plan_speed_usecase.dart'
+    as _i565;
 import '../../features/performance/domain/usecases/run_speed_test_usecase.dart'
     as _i510;
 import '../../features/performance/presentation/bloc/performance_bloc.dart'
     as _i58;
+import '../../features/performance/presentation/bloc/plan_comparison_cubit.dart'
+    as _i455;
 import '../../features/ping_stabilizer/data/datasources/ping_stabilizer_channel.dart'
     as _i1014;
 import '../../features/ping_stabilizer/data/datasources/ping_stabilizer_settings_store.dart'
@@ -319,6 +329,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i970.HostTrustClassifier>(
       () => const _i970.HostTrustClassifier(),
     );
+    gh.lazySingleton<_i863.IspEvidenceComposer>(
+      () => const _i863.IspEvidenceComposer(),
+    );
     gh.lazySingleton<_i1014.PingStabilizerChannel>(
       () => _i1014.PingStabilizerChannel(),
       dispose: (i) => i.dispose(),
@@ -364,6 +377,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i192.ConnectedSignalService>(
       () => _i192.ConnectedSignalServiceImpl(),
+    );
+    gh.lazySingleton<_i901.ScheduledSpeedProbe>(
+      () => _i858.ScheduledSpeedProbeImpl(),
     );
     gh.lazySingleton<_i104.PositionTracker>(
       () => _i104.PositionTracker(gh<_i989.PositionDataSource>()),
@@ -676,6 +692,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i131.HiveStorageService>(),
       ),
     );
+    gh.lazySingleton<_i565.ComparePlanSpeedUseCase>(
+      () => _i565.ComparePlanSpeedUseCase(
+        gh<_i885.SpeedTestHistoryRepository>(),
+        gh<_i552.AppSettingsStore>(),
+      ),
+    );
     gh.lazySingleton<_i422.GetTopologyUseCase>(
       () => _i422.GetTopologyUseCase(gh<_i244.TopologyRepository>()),
     );
@@ -766,6 +788,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i422.GetTopologyUseCase>(),
         gh<_i534.PingNodeUseCase>(),
         gh<_i244.TopologyRepository>(),
+      ),
+    );
+    gh.factory<_i455.PlanComparisonCubit>(
+      () => _i455.PlanComparisonCubit(
+        gh<_i565.ComparePlanSpeedUseCase>(),
+        gh<_i552.AppSettingsStore>(),
+        gh<_i885.SpeedTestHistoryRepository>(),
+        gh<_i863.IspEvidenceComposer>(),
       ),
     );
     gh.factory<_i613.MonitoringBloc>(

@@ -9886,6 +9886,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'DoT also encrypts your DNS queries, but over a separate encrypted channel on port 853. The goal is the same: keeping DNS lookups private. Some networks block port 853 — then you see \'Blocked\' and your device may fall back to unencrypted DNS.'**
   String get dnsInfoDotDesc;
+
+  /// Header of the collapsed dashboard section holding pro-depth widgets.
+  ///
+  /// In en, this message translates to:
+  /// **'ADVANCED METRICS'**
+  String get dashAdvancedMetrics;
+
+  /// Overline above the hero card's single action button.
+  ///
+  /// In en, this message translates to:
+  /// **'Best next move'**
+  String get dashHeroTopAction;
+
+  /// Text link on the hero card opening the full Speed Doctor run.
+  ///
+  /// In en, this message translates to:
+  /// **'See full diagnosis'**
+  String get dashHeroSeeFullDiagnosis;
+
+  /// Hero card body shown when the device has no Wi-Fi connection.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to Wi-Fi and I\'ll analyze your network and summarize its health.'**
+  String get dashHeroDisconnectedHint;
+
+  /// Title of the ISP plan speed comparison card.
+  ///
+  /// In en, this message translates to:
+  /// **'Paying vs getting'**
+  String get planSpeedTitle;
+
+  /// Button that opens the plan-speed input sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter plan speed'**
+  String get planSpeedEnterCta;
+
+  /// Helper text in the plan-speed input sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'The download speed your internet plan promises (Mbps). You\'ll find it on your ISP contract or invoice.'**
+  String get planSpeedSheetHint;
+
+  /// Label over the declared plan speed value.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get planSpeedPlanLabel;
+
+  /// Label over the measured average download speed.
+  ///
+  /// In en, this message translates to:
+  /// **'Average'**
+  String get planSpeedMeasuredLabel;
+
+  /// Shown when a plan is set but no speed tests exist.
+  ///
+  /// In en, this message translates to:
+  /// **'No measurements yet — run a speed test below.'**
+  String get planSpeedNoData;
+
+  /// Caption under the measured value.
+  ///
+  /// In en, this message translates to:
+  /// **'average of {count} tests'**
+  String planSpeedSamples(int count);
+
+  /// Caption under the ratio bar.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of your plan'**
+  String planSpeedPercentOfPlan(int percent);
+
+  /// Verdict when measured speed is >=80% of plan.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re getting what you pay for.'**
+  String get planSpeedVerdictDelivering;
+
+  /// Verdict when measured speed is 50-80% of plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Somewhat below your plan — worth watching.'**
+  String get planSpeedVerdictAcceptable;
+
+  /// Verdict when measured speed is <50% of plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Well below what you pay for.'**
+  String get planSpeedVerdictUnder;
+
+  /// Button that shares the plain-text ISP evidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare ISP report'**
+  String get planSpeedReportCta;
+
+  /// First line of the shared ISP evidence text.
+  ///
+  /// In en, this message translates to:
+  /// **'TORCAV — INTERNET SPEED EVIDENCE'**
+  String get ispEvidenceTitle;
+
+  /// Label before the evidence generation timestamp.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated'**
+  String get ispEvidenceGeneratedAt;
+
+  /// Label before the best measured download speed.
+  ///
+  /// In en, this message translates to:
+  /// **'Best measurement'**
+  String get ispEvidenceBest;
+
+  /// Header above the list of individual speed tests.
+  ///
+  /// In en, this message translates to:
+  /// **'Measurements'**
+  String get ispEvidenceSamples;
+
+  /// Honesty footer of the ISP evidence text.
+  ///
+  /// In en, this message translates to:
+  /// **'Note: measured over Wi-Fi with the Torcav app. Individual results vary with time of day and in-home conditions; the average over multiple tests is the meaningful figure.'**
+  String get ispEvidenceDisclaimer;
+
+  /// Settings toggle for the background speed probe.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled speed measurements'**
+  String get scheduledSpeedTestLabel;
+
+  /// Subtitle explaining the background speed probe's behavior and cost.
+  ///
+  /// In en, this message translates to:
+  /// **'Measures download speed about twice a day, only on Wi-Fi and never on mobile data (10 MB per run). Builds the paying-vs-getting trend automatically.'**
+  String get scheduledSpeedTestDesc;
 }
 
 class _AppLocalizationsDelegate

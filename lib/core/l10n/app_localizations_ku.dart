@@ -5711,4 +5711,83 @@ class AppLocalizationsKu extends AppLocalizations {
   @override
   String get dnsInfoDotDesc =>
       'DoT jî lêgerînên DNSê yên te şîfre dike, lê vê yekê li ser kanalek şîfrekirî ya cuda li portê 853 dike. Armanc heman e: parastina nepenîtiya lêgerînên DNSê. Hin tor portê 853 asteng dikin — wê demê tu \'Astengkirî\' dibînî û cîhaza te dibe ku vegere DNSa neşîfrekirî.';
+
+  @override
+  String get dashAdvancedMetrics => 'PÎVANÊN PÊŞKETÎ';
+
+  @override
+  String get dashHeroTopAction => 'Gava herî baş a niha';
+
+  @override
+  String get dashHeroSeeFullDiagnosis => 'Teşhîsa tevahî bibîne';
+
+  @override
+  String get dashHeroDisconnectedHint =>
+      'Bi Wi-Fi ve girêbide, ez ê tora te analîz bikim û rewşê ji te re kurt bikim.';
+
+  @override
+  String get planSpeedTitle => 'Ya tu didî vs ya tu digirî';
+
+  @override
+  String get planSpeedEnterCta => 'Leza plansaziyê binivîse';
+
+  @override
+  String get planSpeedSheetHint =>
+      'Leza daxistinê ya ku pakêta înternetê ya te soz dide (Mbps). Di peymana te an fatûreya te de nivîsandî ye.';
+
+  @override
+  String get planSpeedPlanLabel => 'Plan';
+
+  @override
+  String get planSpeedMeasuredLabel => 'Navîn';
+
+  @override
+  String get planSpeedNoData =>
+      'Hîn pîvandin tune — li jêr testeke lezê bimeşîne.';
+
+  @override
+  String planSpeedSamples(int count) {
+    return 'navîna $count testan';
+  }
+
+  @override
+  String planSpeedPercentOfPlan(int percent) {
+    return '%$percent ya plansaziya te';
+  }
+
+  @override
+  String get planSpeedVerdictDelivering => 'Tu ya ku tu didî distînî.';
+
+  @override
+  String get planSpeedVerdictAcceptable =>
+      'Hinekî di bin plansaziya te de — bişopîne.';
+
+  @override
+  String get planSpeedVerdictUnder => 'Gelekî di bin ya ku tu didî de.';
+
+  @override
+  String get planSpeedReportCta => 'Rapora ISS amade bike';
+
+  @override
+  String get ispEvidenceTitle => 'TORCAV — BELGEYA LEZA ÎNTERNETÊ';
+
+  @override
+  String get ispEvidenceGeneratedAt => 'Hatî çêkirin';
+
+  @override
+  String get ispEvidenceBest => 'Pîvandina herî baş';
+
+  @override
+  String get ispEvidenceSamples => 'Pîvandin';
+
+  @override
+  String get ispEvidenceDisclaimer =>
+      'Nîşe: Bi sepana Torcav li ser Wi-Fi hatiye pîvandin. Encamên yekane li gorî dema rojê û şert û mercên malê diguherin; ya watedar navîna gelek testan e.';
+
+  @override
+  String get scheduledSpeedTestLabel => 'Pîvandinên lezê yên plansazkirî';
+
+  @override
+  String get scheduledSpeedTestDesc =>
+      'Rojê nêzî du caran leza daxistinê dipîve, tenê li ser Wi-Fi û qet li ser daneyên mobîl na (her pîvandin 10 MB). Trenda ya-tu-didî-ya-tu-digirî bixweber ava dike.';
 }

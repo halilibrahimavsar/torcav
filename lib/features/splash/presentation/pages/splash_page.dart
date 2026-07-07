@@ -11,6 +11,8 @@ import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/features/app_shell/presentation/pages/app_shell_page.dart';
 import 'package:torcav/features/app_shell/presentation/pages/onboarding_page.dart';
 import 'package:torcav/features/monitoring/domain/services/background_monitor.dart';
+import 'package:torcav/features/performance/domain/repositories/speed_test_history_repository.dart';
+import 'package:torcav/features/performance/domain/services/scheduled_speed_probe.dart';
 import 'package:torcav/features/settings/domain/services/app_settings_store.dart';
 import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
 import '../widgets/starfield_background.dart';
@@ -108,6 +110,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         return 0;
       }),
       _resumeBackgroundMonitoring(),
+      _drainScheduledSpeedProbe(),
     ]);
 
     final prunedCount = results[1];
@@ -168,6 +171,28 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       if (enabled) await getIt<BackgroundMonitor>().start();
     } catch (_) {
       // Best-effort: monitoring resume must never block app boot.
+    }
+    return 0;
+  }
+
+  /// Moves background speed-probe results collected while the app was
+  /// closed into the encrypted history DB, and heals the probe schedule
+  /// (same reasoning as [_resumeBackgroundMonitoring]).
+  Future<int> _drainScheduledSpeedProbe() async {
+    try {
+      final probe = getIt<ScheduledSpeedProbe>();
+      final results = await probe.drain();
+      if (results.isNotEmpty) {
+        final history = getIt<SpeedTestHistoryRepository>();
+        for (final result in results) {
+          await history.save(result);
+        }
+      }
+      if (getIt<AppSettingsStore>().value.scheduledSpeedTestEnabled) {
+        await probe.start();
+      }
+    } catch (_) {
+      // Best-effort: probe drain must never block app boot.
     }
     return 0;
   }

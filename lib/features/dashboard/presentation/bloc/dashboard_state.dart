@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../diagnostics/domain/entities/diagnosis_result.dart';
 import '../../../diagnostics/domain/entities/network_health_score.dart';
 import '../../../performance/domain/entities/speed_test_result.dart';
 import '../../../security/domain/entities/network_context_type.dart';
@@ -44,6 +45,7 @@ class DashboardSuccess extends DashboardState {
   final List<ScanSnapshot> recentSnapshots;
   final SpeedTestResult? lastSpeedTest;
   final NetworkHealthScore? networkHealthScore;
+  final DiagnosisResult? diagnosis;
 
   const DashboardSuccess({
     required this.ssid,
@@ -66,6 +68,7 @@ class DashboardSuccess extends DashboardState {
     required this.recentSnapshots,
     this.lastSpeedTest,
     this.networkHealthScore,
+    this.diagnosis,
   });
 
   @override
@@ -90,6 +93,7 @@ class DashboardSuccess extends DashboardState {
         recentSnapshots,
         lastSpeedTest,
         networkHealthScore,
+        diagnosis,
       ];
 }
 

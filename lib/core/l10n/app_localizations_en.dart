@@ -5715,4 +5715,82 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dnsInfoDotDesc =>
       'DoT also encrypts your DNS queries, but over a separate encrypted channel on port 853. The goal is the same: keeping DNS lookups private. Some networks block port 853 — then you see \'Blocked\' and your device may fall back to unencrypted DNS.';
+
+  @override
+  String get dashAdvancedMetrics => 'ADVANCED METRICS';
+
+  @override
+  String get dashHeroTopAction => 'Best next move';
+
+  @override
+  String get dashHeroSeeFullDiagnosis => 'See full diagnosis';
+
+  @override
+  String get dashHeroDisconnectedHint =>
+      'Connect to Wi-Fi and I\'ll analyze your network and summarize its health.';
+
+  @override
+  String get planSpeedTitle => 'Paying vs getting';
+
+  @override
+  String get planSpeedEnterCta => 'Enter plan speed';
+
+  @override
+  String get planSpeedSheetHint =>
+      'The download speed your internet plan promises (Mbps). You\'ll find it on your ISP contract or invoice.';
+
+  @override
+  String get planSpeedPlanLabel => 'Plan';
+
+  @override
+  String get planSpeedMeasuredLabel => 'Average';
+
+  @override
+  String get planSpeedNoData => 'No measurements yet — run a speed test below.';
+
+  @override
+  String planSpeedSamples(int count) {
+    return 'average of $count tests';
+  }
+
+  @override
+  String planSpeedPercentOfPlan(int percent) {
+    return '$percent% of your plan';
+  }
+
+  @override
+  String get planSpeedVerdictDelivering => 'You\'re getting what you pay for.';
+
+  @override
+  String get planSpeedVerdictAcceptable =>
+      'Somewhat below your plan — worth watching.';
+
+  @override
+  String get planSpeedVerdictUnder => 'Well below what you pay for.';
+
+  @override
+  String get planSpeedReportCta => 'Prepare ISP report';
+
+  @override
+  String get ispEvidenceTitle => 'TORCAV — INTERNET SPEED EVIDENCE';
+
+  @override
+  String get ispEvidenceGeneratedAt => 'Generated';
+
+  @override
+  String get ispEvidenceBest => 'Best measurement';
+
+  @override
+  String get ispEvidenceSamples => 'Measurements';
+
+  @override
+  String get ispEvidenceDisclaimer =>
+      'Note: measured over Wi-Fi with the Torcav app. Individual results vary with time of day and in-home conditions; the average over multiple tests is the meaningful figure.';
+
+  @override
+  String get scheduledSpeedTestLabel => 'Scheduled speed measurements';
+
+  @override
+  String get scheduledSpeedTestDesc =>
+      'Measures download speed about twice a day, only on Wi-Fi and never on mobile data (10 MB per run). Builds the paying-vs-getting trend automatically.';
 }

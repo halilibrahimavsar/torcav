@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../cellular/presentation/widgets/connection_compare_card.dart';
 import '../../../diagnostics/presentation/pages/speed_doctor_page.dart';
+import '../widgets/plan_comparison_card.dart';
 import 'performance_page.dart';
 
 /// Unified Speed hub.
@@ -51,6 +52,10 @@ class _SpeedHubPageState extends State<SpeedHubPage> {
       ),
       body: Column(
         children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+            child: PlanComparisonCard(),
+          ),
           const Padding(
             padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
             child: ConnectionCompareCard(),

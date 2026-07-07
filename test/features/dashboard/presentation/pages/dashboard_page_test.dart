@@ -6,6 +6,9 @@ import 'package:torcav/core/errors/failures.dart';
 import 'package:torcav/features/dashboard/presentation/bloc/dashboard_cubit.dart';
 import 'package:torcav/features/dashboard/presentation/bloc/dashboard_state.dart';
 import 'package:torcav/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:torcav/features/dashboard/presentation/widgets/health_hero_card.dart';
+import 'package:torcav/features/dashboard/presentation/widgets/live_metrics_bento.dart';
+import 'package:torcav/features/dashboard/presentation/widgets/radial_dashboard_core.dart';
 import 'package:torcav/features/ping_stabilizer/presentation/bloc/ping_stabilizer_cubit.dart';
 import 'package:torcav/features/ping_stabilizer/presentation/bloc/ping_stabilizer_state.dart';
 import 'package:torcav/features/security/presentation/bloc/notification/notification_bloc.dart';
@@ -86,38 +89,56 @@ void main() {
     expect(find.text('boom'), findsOneWidget);
   });
 
-  testWidgets('Success state renders RadialDashboardCore + LiveMetricsBento', (
-    tester,
-  ) async {
-    when(() => dashboardCubit.state).thenReturn(
-      const DashboardSuccess(
-        ssid: 'Lab AP',
-        ip: '192.168.1.10',
-        gateway: '192.168.1.1',
-        networkCount: 5,
-        securityScore: 85,
-        signalQualityPct: 75,
-        threatCount: 1,
-        newDeviceCount: 0,
-        channelRatings: [],
-        scoreHistory: [60, 70, 80, 85],
-        rssiHistory: [-55, -50],
-        recentEvents: [],
-        recentSnapshots: [],
-      ),
-    );
+  testWidgets(
+    'Success state shows hero; advanced section reveals core + bento',
+    (tester) async {
+      when(() => dashboardCubit.state).thenReturn(
+        const DashboardSuccess(
+          ssid: 'Lab AP',
+          ip: '192.168.1.10',
+          gateway: '192.168.1.1',
+          networkCount: 5,
+          securityScore: 85,
+          signalQualityPct: 75,
+          threatCount: 1,
+          newDeviceCount: 0,
+          channelRatings: [],
+          scoreHistory: [60, 70, 80, 85],
+          rssiHistory: [-55, -50],
+          recentEvents: [],
+          recentSnapshots: [],
+        ),
+      );
 
-    await pumpAppWidget(
-      tester,
-      DashboardPage(onNavigate: (_) {}),
-      surfaceSize: const Size(800, 1800),
-    );
-    await tester.pump(const Duration(milliseconds: 800));
+      await pumpAppWidget(
+        tester,
+        DashboardPage(onNavigate: (_) {}),
+        surfaceSize: const Size(800, 1800),
+      );
+      // Two pumps: the first fires the StaggeredEntry delay timers, the
+      // second settles their slide/fade animations at the final position.
+      await tester.pump(const Duration(milliseconds: 800));
+      await tester.pump(const Duration(milliseconds: 800));
 
-    expect(tester.takeException(), isNull);
-    // RadialDashboardCore renders the health score "85".
-    expect(find.text('85'), findsWidgets);
-    // Signal quality label.
-    expect(find.text('75'), findsWidgets);
-  });
+      expect(tester.takeException(), isNull);
+      // Hero renders the health score and the healthy verdict (state carries
+      // no diagnosis, which the hero treats as healthy).
+      expect(find.byType(HealthHeroCard), findsOneWidget);
+      expect(find.text('85'), findsWidgets);
+      expect(find.text('NETWORK HEALTHY'), findsOneWidget);
+      // Pro depth is collapsed by default (P2 first-screen simplification).
+      expect(find.byType(RadialDashboardCore), findsNothing);
+      expect(find.byType(LiveMetricsBento), findsNothing);
+
+      await tester.tap(find.byType(ExpansionTile));
+      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(const Duration(milliseconds: 600));
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(RadialDashboardCore), findsOneWidget);
+      expect(find.byType(LiveMetricsBento), findsOneWidget);
+      // Signal quality label now visible inside the advanced section.
+      expect(find.text('75'), findsWidgets);
+    },
+  );
 }

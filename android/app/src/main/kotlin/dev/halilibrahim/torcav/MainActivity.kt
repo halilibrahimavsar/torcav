@@ -13,6 +13,7 @@ class MainActivity : FlutterActivity() {
 
     private val WIFI_EXTENDED_CHANNEL = "torcav/wifi_extended"
     private val MONITORING_CHANNEL = "torcav/background_monitor"
+    private val SPEED_PROBE_CHANNEL = "torcav/speed_probe"
 
     private var pingStabilizerHandler: PingStabilizerChannelHandler? = null
 
@@ -69,6 +70,28 @@ class MainActivity : FlutterActivity() {
                 "stop" -> {
                     MonitoringWorker.cancel(applicationContext)
                     result.success(true)
+                }
+                else -> result.notImplemented()
+            }
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            SPEED_PROBE_CHANNEL,
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "start" -> {
+                    val intervalMs =
+                        (call.argument<Number>("intervalMs") ?: 43_200_000L).toLong()
+                    SpeedProbeWorker.schedule(applicationContext, intervalMs)
+                    result.success(true)
+                }
+                "stop" -> {
+                    SpeedProbeWorker.cancel(applicationContext)
+                    result.success(true)
+                }
+                "drain" -> {
+                    result.success(SpeedProbeWorker.drain(applicationContext))
                 }
                 else -> result.notImplemented()
             }

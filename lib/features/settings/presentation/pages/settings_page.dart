@@ -13,6 +13,7 @@ import '../../../../core/services/notification_service.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/theme/theme_cubit.dart';
 import '../../../performance/domain/repositories/speed_test_history_repository.dart';
+import '../../../performance/domain/services/scheduled_speed_probe.dart';
 import '../../../security/data/datasources/security_local_data_source.dart';
 import '../../../wifi_scan/data/datasources/channel_rating_local_data_source.dart';
 import '../../../wifi_scan/data/datasources/wifi_scan_history_local_data_source.dart';
@@ -516,6 +517,37 @@ class _SettingsPageState extends State<SettingsPage> {
                         await BatteryOptimization.ensureExemption(context);
                       }
                       await monitor.start();
+                    },
+                  ),
+                  // Scheduled background speed probe (opt-in)
+                  SwitchListTile(
+                    value: settings.scheduledSpeedTestEnabled,
+                    activeThumbColor: Theme.of(context).colorScheme.primary,
+                    title: Text(
+                      l10n.scheduledSpeedTestLabel,
+                      style: GoogleFonts.rajdhani(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      l10n.scheduledSpeedTestDesc,
+                      style: GoogleFonts.rajdhani(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
+                    ),
+                    onChanged: (value) async {
+                      _update(
+                        settings.copyWith(scheduledSpeedTestEnabled: value),
+                      );
+                      final probe = getIt<ScheduledSpeedProbe>();
+                      if (value) {
+                        await probe.start();
+                      } else {
+                        await probe.stop();
+                      }
                     },
                   ),
                   Divider(
