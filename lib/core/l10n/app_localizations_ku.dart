@@ -5570,6 +5570,10 @@ class AppLocalizationsKu extends AppLocalizations {
   String get speedHubTitle => 'LEZ';
 
   @override
+  String get speedHubCompareSection =>
+      'Tê dayîn vs tê stendin · Berawirdkirina Wi-Fi/mobîl';
+
+  @override
   String get speedModeQuickTest => 'Testa Bilez';
 
   @override
@@ -5714,6 +5718,12 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get dashAdvancedMetrics => 'PÎVANÊN PÊŞKETÎ';
+
+  @override
+  String get dashHeroOtherIssues => 'Dîtinên din';
+
+  @override
+  String get dashSignalLabel => 'Sînyal';
 
   @override
   String get dashHeroTopAction => 'Gava herî baş a niha';

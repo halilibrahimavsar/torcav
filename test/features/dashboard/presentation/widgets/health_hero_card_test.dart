@@ -32,8 +32,6 @@ Widget _hero({
   return HealthHeroCard(
     score: score,
     isConnected: isConnected,
-    ssid: 'Lab AP',
-    statusLabel: 'CONNECTED',
     diagnosis: diagnosis,
     onTapScore: () {},
     onAction: onAction ?? (_) {},

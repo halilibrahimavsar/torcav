@@ -23,86 +23,100 @@ class AboutSpectrumPanel extends StatelessWidget {
         color: color.withValues(alpha: 0.06),
         border: Border.all(color: color.withValues(alpha: 0.28)),
       ),
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          dividerColor: Colors.transparent,
-          splashColor: Colors.transparent,
-        ),
-        child: ExpansionTile(
-          tilePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-          childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          iconColor: color,
-          collapsedIconColor: color.withValues(alpha: 0.7),
-          leading: const Icon(Icons.info_outline_rounded, color: color, size: 22),
-          title: Text(
-            l10n.aboutSpectrumTitle,
-            style: GoogleFonts.orbitron(
-              color: color,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
-            ),
+      // ListTile ink'i en yakın Material'e çizer; dekorlu Container ile tile
+      // arasına şeffaf Material koymazsak framework assertion fırlatır.
+      child: Material(
+        type: MaterialType.transparency,
+        borderRadius: BorderRadius.circular(14),
+        clipBehavior: Clip.antiAlias,
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            dividerColor: Colors.transparent,
+            splashColor: Colors.transparent,
           ),
-          children: [
-            _Section(
-              header: l10n.aboutSpectrumWhatHeader,
-              body: l10n.aboutSpectrumWhatBody,
-              icon: Icons.help_outline_rounded,
+          child: ExpansionTile(
+            tilePadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 4,
+            ),
+            childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            iconColor: color,
+            collapsedIconColor: color.withValues(alpha: 0.7),
+            leading: const Icon(
+              Icons.info_outline_rounded,
               color: color,
-              onSurface: onSurface,
+              size: 22,
             ),
-            const SizedBox(height: 12),
-            _Section(
-              header: l10n.aboutSpectrumWhyHeader,
-              body: l10n.aboutSpectrumWhyBody,
-              icon: Icons.bolt_rounded,
-              color: AppColors.neonCyan,
-              onSurface: onSurface,
-            ),
-            const SizedBox(height: 12),
-            _Section(
-              header: l10n.aboutSpectrumHowHeader,
-              body: l10n.aboutSpectrumHowBody,
-              icon: Icons.tune_rounded,
-              color: AppColors.neonGreen,
-              onSurface: onSurface,
-            ),
-            const SizedBox(height: 16),
-            // ── Advanced topics ────────────────────────────────────
-            Text(
-              l10n.advancedTopicsHeader.toUpperCase(),
+            title: Text(
+              l10n.aboutSpectrumTitle,
               style: GoogleFonts.orbitron(
-                fontSize: 10,
+                color: color,
+                fontSize: 12,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.2,
-                color: onSurface.withValues(alpha: 0.5),
               ),
             ),
-            const SizedBox(height: 8),
-            _AdvancedTile(
-              icon: Icons.account_tree_rounded,
-              title: l10n.advancedMeshTitle,
-              body: l10n.advancedMeshBody,
-              color: AppColors.neonCyan,
-              onSurface: onSurface,
-            ),
-            const SizedBox(height: 6),
-            _AdvancedTile(
-              icon: Icons.swap_horiz_rounded,
-              title: l10n.advancedBandSteeringTitle,
-              body: l10n.advancedBandSteeringBody,
-              color: AppColors.neonPurple,
-              onSurface: onSurface,
-            ),
-            const SizedBox(height: 6),
-            _AdvancedTile(
-              icon: Icons.high_quality_rounded,
-              title: l10n.advancedWmmTitle,
-              body: l10n.advancedWmmBody,
-              color: AppColors.neonGreen,
-              onSurface: onSurface,
-            ),
-          ],
+            children: [
+              _Section(
+                header: l10n.aboutSpectrumWhatHeader,
+                body: l10n.aboutSpectrumWhatBody,
+                icon: Icons.help_outline_rounded,
+                color: color,
+                onSurface: onSurface,
+              ),
+              const SizedBox(height: 12),
+              _Section(
+                header: l10n.aboutSpectrumWhyHeader,
+                body: l10n.aboutSpectrumWhyBody,
+                icon: Icons.bolt_rounded,
+                color: AppColors.neonCyan,
+                onSurface: onSurface,
+              ),
+              const SizedBox(height: 12),
+              _Section(
+                header: l10n.aboutSpectrumHowHeader,
+                body: l10n.aboutSpectrumHowBody,
+                icon: Icons.tune_rounded,
+                color: AppColors.neonGreen,
+                onSurface: onSurface,
+              ),
+              const SizedBox(height: 16),
+              // ── Advanced topics ────────────────────────────────────
+              Text(
+                l10n.advancedTopicsHeader.toUpperCase(),
+                style: GoogleFonts.orbitron(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                  color: onSurface.withValues(alpha: 0.5),
+                ),
+              ),
+              const SizedBox(height: 8),
+              _AdvancedTile(
+                icon: Icons.account_tree_rounded,
+                title: l10n.advancedMeshTitle,
+                body: l10n.advancedMeshBody,
+                color: AppColors.neonCyan,
+                onSurface: onSurface,
+              ),
+              const SizedBox(height: 6),
+              _AdvancedTile(
+                icon: Icons.swap_horiz_rounded,
+                title: l10n.advancedBandSteeringTitle,
+                body: l10n.advancedBandSteeringBody,
+                color: AppColors.neonPurple,
+                onSurface: onSurface,
+              ),
+              const SizedBox(height: 6),
+              _AdvancedTile(
+                icon: Icons.high_quality_rounded,
+                title: l10n.advancedWmmTitle,
+                body: l10n.advancedWmmBody,
+                color: AppColors.neonGreen,
+                onSurface: onSurface,
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -9647,6 +9647,12 @@ abstract class AppLocalizations {
   /// **'SPEED'**
   String get speedHubTitle;
 
+  /// No description provided for @speedHubCompareSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Paying vs getting · Wi-Fi/mobile comparison'**
+  String get speedHubCompareSection;
+
   /// No description provided for @speedModeQuickTest.
   ///
   /// In en, this message translates to:
@@ -9892,6 +9898,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'ADVANCED METRICS'**
   String get dashAdvancedMetrics;
+
+  /// No description provided for @dashHeroOtherIssues.
+  ///
+  /// In en, this message translates to:
+  /// **'Other findings'**
+  String get dashHeroOtherIssues;
+
+  /// No description provided for @dashSignalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Signal'**
+  String get dashSignalLabel;
 
   /// Overline above the hero card's single action button.
   ///

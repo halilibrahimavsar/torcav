@@ -5584,6 +5584,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get speedHubTitle => 'HIZ';
 
   @override
+  String get speedHubCompareSection =>
+      'Ödediğin vs aldığın · Wi-Fi/Mobil karşılaştırma';
+
+  @override
   String get speedModeQuickTest => 'Hızlı Test';
 
   @override
@@ -5727,6 +5731,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get dashAdvancedMetrics => 'GELİŞMİŞ METRİKLER';
+
+  @override
+  String get dashHeroOtherIssues => 'Diğer tespitler';
+
+  @override
+  String get dashSignalLabel => 'Sinyal';
 
   @override
   String get dashHeroTopAction => 'Şimdi yapılacak en iyi hamle';

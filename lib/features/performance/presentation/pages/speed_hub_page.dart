@@ -25,6 +25,10 @@ class SpeedHubPage extends StatefulWidget {
 class _SpeedHubPageState extends State<SpeedHubPage> {
   late bool _diagnose = widget.initialDiagnose;
 
+  /// Plan/bağlantı karşılaştırma kartları varsayılan olarak kapalı — asıl
+  /// test/teşhis alanını ekranın altına itmesinler (kullanıcı şikayeti).
+  bool _compareOpen = false;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -52,13 +56,9 @@ class _SpeedHubPageState extends State<SpeedHubPage> {
       ),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
-            child: PlanComparisonCard(),
-          ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
-            child: ConnectionCompareCard(),
+          _CompareSection(
+            open: _compareOpen,
+            onToggle: () => setState(() => _compareOpen = !_compareOpen),
           ),
           Expanded(
             child: IndexedStack(
@@ -71,6 +71,100 @@ class _SpeedHubPageState extends State<SpeedHubPage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Kapalıyken tek satırlık şerit, açıkken plan + Wi-Fi/mobil karşılaştırma
+/// kartlarını gösterir. Test alanını gömen iki büyük kartın yerine geçer.
+class _CompareSection extends StatelessWidget {
+  const _CompareSection({required this.open, required this.onToggle});
+
+  final bool open;
+  final VoidCallback onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final scheme = Theme.of(context).colorScheme;
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          child: Material(
+            color: scheme.surfaceContainer.withValues(alpha: 0.9),
+            borderRadius: BorderRadius.circular(14),
+            child: InkWell(
+              onTap: onToggle,
+              borderRadius: BorderRadius.circular(14),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: scheme.primary.withValues(alpha: 0.12),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.receipt_long_rounded,
+                      size: 16,
+                      color: scheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        l10n.speedHubCompareSection,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.rajdhani(
+                          color: scheme.onSurface,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    AnimatedRotation(
+                      turns: open ? 0.5 : 0,
+                      duration: const Duration(milliseconds: 200),
+                      child: Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: scheme.primary,
+                        size: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOutCubic,
+          alignment: Alignment.topCenter,
+          child:
+              open
+                  ? const Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+                        child: PlanComparisonCard(),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
+                        child: ConnectionCompareCard(),
+                      ),
+                    ],
+                  )
+                  : const SizedBox(width: double.infinity),
+        ),
+      ],
     );
   }
 }

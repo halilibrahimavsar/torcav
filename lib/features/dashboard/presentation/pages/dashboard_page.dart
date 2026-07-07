@@ -159,6 +159,29 @@ class DashboardPage extends StatelessWidget {
                   if (state is DashboardLoading || state is DashboardInitial)
                     const Center(child: CircularProgressIndicator())
                   else if (state is DashboardSuccess) ...[
+                    // ── Connection bar: status + SSID + signal, hero'nun
+                    //    üstünde — tıklayınca yeniler, rozet bağlam seçer ──
+                    StaggeredEntry(
+                      delay: const Duration(milliseconds: 40),
+                      child: _ConnectionBar(
+                        isConnected: isConnected,
+                        accentColor: accentColor,
+                        statusLabel: statusLabel,
+                        ssid: state.ssid,
+                        signalQualityPct: state.signalQualityPct,
+                        networkContext:
+                            state.connectedBssid != null
+                                ? (state.connectedContext ??
+                                    NetworkContextType.unknown)
+                                : null,
+                        onRefresh: () => context.read<DashboardCubit>().load(),
+                        onTapContext:
+                            () => _showContextOverrideSheet(context, state),
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
                     // ── Hero: health score + one plain-language action (P2) ──
                     StaggeredEntry(
                       delay: const Duration(milliseconds: 80),
@@ -167,8 +190,6 @@ class DashboardPage extends StatelessWidget {
                             state.networkHealthScore?.totalScore ??
                             state.securityScore,
                         isConnected: isConnected,
-                        ssid: state.ssid,
-                        statusLabel: statusLabel,
                         diagnosis: state.diagnosis,
                         onTapScore:
                             () =>
@@ -183,20 +204,6 @@ class DashboardPage extends StatelessWidget {
                         onFullDiagnosis: () => _openSpeedDoctor(context),
                       ),
                     ),
-
-                    if (state.connectedBssid != null) ...[
-                      const SizedBox(height: 8),
-                      StaggeredEntry(
-                        delay: const Duration(milliseconds: 160),
-                        child: _NetworkContextBadge(
-                          context:
-                              state.connectedContext ??
-                              NetworkContextType.unknown,
-                          onTap:
-                              () => _showContextOverrideSheet(context, state),
-                        ),
-                      ),
-                    ],
 
                     const SizedBox(height: 20),
 
@@ -448,6 +455,119 @@ class DashboardPage extends StatelessWidget {
     }
     if (!context.mounted) return;
     unawaited(context.read<DashboardCubit>().load());
+  }
+}
+
+// ── Connection bar above the hero ────────────────────────────────────
+
+/// Hero'nun üstünde duran bağlantı şeridi: durum noktası + SSID + sinyal
+/// yüzdesi + ağ bağlamı rozeti + yenile. Şeride dokunmak da yeniler.
+class _ConnectionBar extends StatelessWidget {
+  final bool isConnected;
+  final Color accentColor;
+  final String statusLabel;
+  final String ssid;
+  final int? signalQualityPct;
+  final NetworkContextType? networkContext;
+  final VoidCallback onRefresh;
+  final VoidCallback onTapContext;
+
+  const _ConnectionBar({
+    required this.isConnected,
+    required this.accentColor,
+    required this.statusLabel,
+    required this.ssid,
+    required this.signalQualityPct,
+    required this.networkContext,
+    required this.onRefresh,
+    required this.onTapContext,
+  });
+
+  IconData get _signalIcon {
+    final pct = signalQualityPct;
+    if (pct == null || !isConnected) return Icons.wifi_off_rounded;
+    if (pct >= 66) return Icons.wifi_rounded;
+    if (pct >= 33) return Icons.wifi_2_bar_rounded;
+    return Icons.wifi_1_bar_rounded;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final scheme = Theme.of(context).colorScheme;
+
+    return GlassmorphicContainer(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      borderColor: accentColor.withValues(alpha: 0.25),
+      child: InkWell(
+        onTap: onRefresh,
+        borderRadius: BorderRadius.circular(12),
+        child: Row(
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: accentColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: accentColor.withValues(alpha: 0.6),
+                    blurRadius: 6,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(_signalIcon, size: 16, color: accentColor),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    isConnected ? ssid : statusLabel,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.rajdhani(
+                      color: scheme.onSurface,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  if (isConnected && signalQualityPct != null)
+                    Text(
+                      '${l10n.dashSignalLabel}: %$signalQualityPct',
+                      style: GoogleFonts.rajdhani(
+                        color: scheme.onSurfaceVariant,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            if (networkContext != null) ...[
+              const SizedBox(width: 8),
+              _NetworkContextBadge(
+                context: networkContext!,
+                onTap: onTapContext,
+              ),
+            ],
+            const SizedBox(width: 4),
+            IconButton(
+              visualDensity: VisualDensity.compact,
+              icon: Icon(
+                Icons.refresh_rounded,
+                size: 18,
+                color: scheme.onSurfaceVariant,
+              ),
+              onPressed: onRefresh,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -1078,4 +1198,3 @@ String _getNetworkContextLabel(BuildContext context, NetworkContextType type) {
     _ => type.labelKey,
   };
 }
-

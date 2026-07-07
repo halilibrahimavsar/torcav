@@ -7212,6 +7212,7 @@
     "lanViewListLabel": "List",
     "lanViewMapLabel": "Map",
     "speedHubTitle": "SPEED",
+    "speedHubCompareSection": "Paying vs getting · Wi-Fi/mobile comparison",
     "speedModeQuickTest": "Quick Test",
     "speedModeDiagnose": "Diagnose",
     "opsGroupSecurity": "SECURITY",
@@ -7261,6 +7262,8 @@
     "@dashAdvancedMetrics": {
         "description": "Header of the collapsed dashboard section holding pro-depth widgets."
     },
+    "dashHeroOtherIssues": "Other findings",
+    "dashSignalLabel": "Signal",
     "dashHeroTopAction": "Best next move",
     "@dashHeroTopAction": {
         "description": "Overline above the hero card's single action button."

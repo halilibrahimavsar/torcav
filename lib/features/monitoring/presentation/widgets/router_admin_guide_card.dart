@@ -101,106 +101,116 @@ class _RouterAdminGuideCardState extends State<RouterAdminGuideCard> {
         color: color.withValues(alpha: 0.05),
         border: Border.all(color: color.withValues(alpha: 0.28)),
       ),
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          dividerColor: Colors.transparent,
-          splashColor: Colors.transparent,
-        ),
-        child: ExpansionTile(
-          tilePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-          childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          iconColor: color,
-          collapsedIconColor: color.withValues(alpha: 0.7),
-          leading: const Icon(Icons.router_rounded, color: color, size: 22),
-          title: Text(
-            l10n.howToChangeChannelTitle,
-            style: GoogleFonts.orbitron(
-              color: color,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
-            ),
+      // ListTile ink'i en yakın Material'e çizer; dekorlu Container ile tile
+      // arasına şeffaf Material koymazsak framework assertion fırlatır.
+      child: Material(
+        type: MaterialType.transparency,
+        borderRadius: BorderRadius.circular(14),
+        clipBehavior: Clip.antiAlias,
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            dividerColor: Colors.transparent,
+            splashColor: Colors.transparent,
           ),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(top: 2),
-            child: Text(
-              l10n.howToChangeChannelSubtitle,
-              style: GoogleFonts.rajdhani(
-                fontSize: 11,
-                color: onSurface.withValues(alpha: 0.55),
+          child: ExpansionTile(
+            tilePadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 4,
+            ),
+            childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            iconColor: color,
+            collapsedIconColor: color.withValues(alpha: 0.7),
+            leading: const Icon(Icons.router_rounded, color: color, size: 22),
+            title: Text(
+              l10n.howToChangeChannelTitle,
+              style: GoogleFonts.orbitron(
+                color: color,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
               ),
             ),
-          ),
-          children: [
-            if (!hasConnection)
-              _NoConnectionHint(text: l10n.guideNoConnection, color: color)
-            else ...[
-              _DetectedHeader(
-                ssid: _ssid!,
-                vendorRaw: _vendorRaw,
-                vendorMatched: _guide?.brand,
-                color: color,
-                onSurface: onSurface,
-              ),
-              const SizedBox(height: 16),
-              _StepBlock(
-                stepLabel: l10n.guideStep1,
-                body: l10n.guideStep1Body,
-                color: color,
-                onSurface: onSurface,
-                trailing: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (adminAddress != null)
-                      _AdminAddressRow(address: adminAddress, color: color),
-                    const SizedBox(height: 10),
-                    _CredentialsSubSection(
-                      title: l10n.guideCredentialsHeader,
-                      body: l10n.guideCredentialsBody,
-                      color: color,
-                      onSurface: onSurface,
-                    ),
-                  ],
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Text(
+                l10n.howToChangeChannelSubtitle,
+                style: GoogleFonts.rajdhani(
+                  fontSize: 11,
+                  color: onSurface.withValues(alpha: 0.55),
                 ),
               ),
-              const SizedBox(height: 14),
-              _StepBlock(
-                stepLabel: l10n.guideStep2,
-                body: l10n.guideStep2Body,
-                color: color,
-                onSurface: onSurface,
-                trailing: _MenuPathRow(
-                  pathLabel: l10n.guideMenuPathLabel,
-                  path: menuPath,
+            ),
+            children: [
+              if (!hasConnection)
+                _NoConnectionHint(text: l10n.guideNoConnection, color: color)
+              else ...[
+                _DetectedHeader(
+                  ssid: _ssid!,
+                  vendorRaw: _vendorRaw,
+                  vendorMatched: _guide?.brand,
                   color: color,
                   onSurface: onSurface,
                 ),
+                const SizedBox(height: 16),
+                _StepBlock(
+                  stepLabel: l10n.guideStep1,
+                  body: l10n.guideStep1Body,
+                  color: color,
+                  onSurface: onSurface,
+                  trailing: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (adminAddress != null)
+                        _AdminAddressRow(address: adminAddress, color: color),
+                      const SizedBox(height: 10),
+                      _CredentialsSubSection(
+                        title: l10n.guideCredentialsHeader,
+                        body: l10n.guideCredentialsBody,
+                        color: color,
+                        onSurface: onSurface,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 14),
+                _StepBlock(
+                  stepLabel: l10n.guideStep2,
+                  body: l10n.guideStep2Body,
+                  color: color,
+                  onSurface: onSurface,
+                  trailing: _MenuPathRow(
+                    pathLabel: l10n.guideMenuPathLabel,
+                    path: menuPath,
+                    color: color,
+                    onSurface: onSurface,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                _StepBlock(
+                  stepLabel: l10n.guideStep3,
+                  body: l10n.guideStep3Body,
+                  color: color,
+                  onSurface: onSurface,
+                ),
+              ],
+              const SizedBox(height: 18),
+              _CollapsibleNote(
+                icon: Icons.alt_route_rounded,
+                title: l10n.channelWidthHeader,
+                body: l10n.channelWidthBody,
+                color: AppColors.neonGreen,
+                onSurface: onSurface,
               ),
-              const SizedBox(height: 14),
-              _StepBlock(
-                stepLabel: l10n.guideStep3,
-                body: l10n.guideStep3Body,
-                color: color,
+              const SizedBox(height: 10),
+              _CollapsibleNote(
+                icon: Icons.shield_outlined,
+                title: l10n.guideRisksHeader,
+                body: l10n.guideRisksBody,
+                color: AppColors.neonPurple,
                 onSurface: onSurface,
               ),
             ],
-            const SizedBox(height: 18),
-            _CollapsibleNote(
-              icon: Icons.alt_route_rounded,
-              title: l10n.channelWidthHeader,
-              body: l10n.channelWidthBody,
-              color: AppColors.neonGreen,
-              onSurface: onSurface,
-            ),
-            const SizedBox(height: 10),
-            _CollapsibleNote(
-              icon: Icons.shield_outlined,
-              title: l10n.guideRisksHeader,
-              body: l10n.guideRisksBody,
-              color: AppColors.neonPurple,
-              onSurface: onSurface,
-            ),
-          ],
+          ),
         ),
       ),
     );

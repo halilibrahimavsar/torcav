@@ -452,205 +452,215 @@ class _CheckTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: accent.withValues(alpha: 0.4)),
       ),
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          dividerColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-        ),
-        child: ExpansionTile(
-          tilePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-          childrenPadding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
-          leading: GestureDetector(
-            onTap: onToggle,
-            child: Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color:
+      // ListTile ink'i en yakın Material'e çizer; dekorlu Container ile tile
+      // arasına şeffaf Material koymazsak framework assertion fırlatır.
+      child: Material(
+        type: MaterialType.transparency,
+        borderRadius: BorderRadius.circular(14),
+        clipBehavior: Clip.antiAlias,
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            dividerColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ),
+          child: ExpansionTile(
+            tilePadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 4,
+            ),
+            childrenPadding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+            leading: GestureDetector(
+              onTap: onToggle,
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color:
+                      completed
+                          ? accent.withValues(alpha: 0.15)
+                          : Colors.transparent,
+                  border: Border.all(color: accent, width: 2),
+                ),
+                child:
                     completed
-                        ? accent.withValues(alpha: 0.15)
-                        : Colors.transparent,
-                border: Border.all(color: accent, width: 2),
-              ),
-              child:
-                  completed
-                      ? Icon(Icons.check_rounded, color: accent, size: 18)
-                      : Center(
-                        child: Text(
-                          '$index',
-                          style: GoogleFonts.orbitron(
-                            color: accent,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w900,
+                        ? Icon(Icons.check_rounded, color: accent, size: 18)
+                        : Center(
+                          child: Text(
+                            '$index',
+                            style: GoogleFonts.orbitron(
+                              color: accent,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w900,
+                            ),
                           ),
                         ),
+              ),
+            ),
+            title: Text(
+              meta.id.title(context),
+              style: GoogleFonts.orbitron(
+                color: scheme.onSurface,
+                fontSize: 12.5,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.8,
+                decoration: completed ? TextDecoration.lineThrough : null,
+                decorationColor: accent.withValues(alpha: 0.6),
+              ),
+            ),
+            subtitle:
+                meta.critical && !completed
+                    ? Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        context.l10n.hardeningCriticalBadge,
+                        style: GoogleFonts.orbitron(
+                          color: scheme.error,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2,
+                        ),
                       ),
-            ),
-          ),
-          title: Text(
-            meta.id.title(context),
-            style: GoogleFonts.orbitron(
-              color: scheme.onSurface,
-              fontSize: 12.5,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.8,
-              decoration: completed ? TextDecoration.lineThrough : null,
-              decorationColor: accent.withValues(alpha: 0.6),
-            ),
-          ),
-          subtitle:
-              meta.critical && !completed
-                  ? Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      context.l10n.hardeningCriticalBadge,
+                    )
+                    : null,
+            children: [
+              // ── WHY ──
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: scheme.surface.withValues(alpha: 0.4),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: scheme.outlineVariant.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.l10n.whyThisMattersLabel,
                       style: GoogleFonts.orbitron(
-                        color: scheme.error,
+                        color: scheme.onSurfaceVariant,
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
-                        letterSpacing: 1.2,
+                        letterSpacing: 1.4,
                       ),
                     ),
-                  )
-                  : null,
-          children: [
-            // ── WHY ──
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: scheme.surface.withValues(alpha: 0.4),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: scheme.outlineVariant.withValues(alpha: 0.3),
+                    const SizedBox(height: 6),
+                    Text(
+                      meta.id.body(context),
+                      style: GoogleFonts.rajdhani(
+                        color: scheme.onSurface,
+                        fontSize: 13,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+
+              // ── STEP-BY-STEP ──
+              const SizedBox(height: 14),
+              Row(
                 children: [
+                  Icon(Icons.list_alt_rounded, color: accent, size: 16),
+                  const SizedBox(width: 6),
                   Text(
-                    context.l10n.whyThisMattersLabel,
+                    context.l10n.hardeningStepsTitle,
                     style: GoogleFonts.orbitron(
-                      color: scheme.onSurfaceVariant,
-                      fontSize: 9,
+                      color: accent,
+                      fontSize: 10,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.4,
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    meta.id.body(context),
-                    style: GoogleFonts.rajdhani(
-                      color: scheme.onSurface,
-                      fontSize: 13,
-                      height: 1.4,
-                    ),
-                  ),
                 ],
               ),
-            ),
+              const SizedBox(height: 10),
+              for (var i = 0; i < meta.id.steps(context).length; i++)
+                _StepRow(
+                  index: i + 1,
+                  text: meta.id.steps(context)[i],
+                  accent: accent,
+                ),
 
-            // ── STEP-BY-STEP ──
-            const SizedBox(height: 14),
-            Row(
-              children: [
-                Icon(Icons.list_alt_rounded, color: accent, size: 16),
-                const SizedBox(width: 6),
+              // ── MENU HINTS ──
+              if (meta.menuHints.isNotEmpty) ...[
+                const SizedBox(height: 14),
                 Text(
-                  context.l10n.hardeningStepsTitle,
+                  context.l10n.hardeningMenuHintsTitle,
                   style: GoogleFonts.orbitron(
-                    color: accent,
-                    fontSize: 10,
+                    color: scheme.onSurfaceVariant,
+                    fontSize: 9,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.4,
                   ),
+                ),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    for (final hint in meta.menuHints)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: scheme.primary.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: scheme.primary.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: Text(
+                          hint,
+                          style: GoogleFonts.firaCode(
+                            color: scheme.primary,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ],
-            ),
-            const SizedBox(height: 10),
-            for (var i = 0; i < meta.id.steps(context).length; i++)
-              _StepRow(
-                index: i + 1,
-                text: meta.id.steps(context)[i],
-                accent: accent,
-              ),
 
-            // ── MENU HINTS ──
-            if (meta.menuHints.isNotEmpty) ...[
-              const SizedBox(height: 14),
-              Text(
-                context.l10n.hardeningMenuHintsTitle,
-                style: GoogleFonts.orbitron(
-                  color: scheme.onSurfaceVariant,
-                  fontSize: 9,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.4,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: [
-                  for (final hint in meta.menuHints)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: scheme.primary.withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: scheme.primary.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      child: Text(
-                        hint,
-                        style: GoogleFonts.firaCode(
-                          color: scheme.primary,
-                          fontSize: 11,
-                        ),
-                      ),
+              // ── MARK DONE ──
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: onToggle,
+                  icon: Icon(
+                    completed
+                        ? Icons.refresh_rounded
+                        : Icons.check_circle_outline_rounded,
+                    size: 18,
+                  ),
+                  label: Text(
+                    completed
+                        ? context.l10n.markAsTodoLabel
+                        : context.l10n.hardeningMarkDone,
+                    style: GoogleFonts.orbitron(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.4,
                     ),
-                ],
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: accent,
+                    side: BorderSide(color: accent.withValues(alpha: 0.6)),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
               ),
             ],
-
-            // ── MARK DONE ──
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: onToggle,
-                icon: Icon(
-                  completed
-                      ? Icons.refresh_rounded
-                      : Icons.check_circle_outline_rounded,
-                  size: 18,
-                ),
-                label: Text(
-                  completed
-                      ? context.l10n.markAsTodoLabel
-                      : context.l10n.hardeningMarkDone,
-                  style: GoogleFonts.orbitron(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.4,
-                  ),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: accent,
-                  side: BorderSide(color: accent.withValues(alpha: 0.6)),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

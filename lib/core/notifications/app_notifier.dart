@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:torcav/core/logging/app_logger.dart';
 import 'package:torcav/core/notifications/notification_severity.dart';
 
@@ -37,6 +38,32 @@ class AppNotifier {
     _recent[key] = now;
     _pruneRecent(now);
 
+    // Build/layout ortasında showSnackBar çağırmak "setState during build"
+    // assertion'ına düşer (örn. build sırasında emit eden bloc listener'ları).
+    // Bu durumda gösterimi frame sonrasına ertele.
+    final phase = SchedulerBinding.instance.schedulerPhase;
+    if (phase != SchedulerPhase.idle &&
+        phase != SchedulerPhase.postFrameCallbacks) {
+      SchedulerBinding.instance.addPostFrameCallback(
+        (_) => _present(
+          message,
+          severity: severity,
+          duration: duration,
+          action: action,
+        ),
+      );
+      return;
+    }
+
+    _present(message, severity: severity, duration: duration, action: action);
+  }
+
+  static void _present(
+    String message, {
+    required NotificationSeverity severity,
+    Duration? duration,
+    SnackBarAction? action,
+  }) {
     final messenger = messengerKey.currentState;
     if (messenger == null) {
       // Erken bootstrap (runApp öncesi) veya teardown sırası — sessizce logla.
@@ -84,8 +111,6 @@ class AppNotifier {
   // kontrol edilmeyen sözlük büyümesini önler.
   static void _pruneRecent(DateTime now) {
     if (_recent.length < 32) return;
-    _recent.removeWhere(
-      (_, ts) => now.difference(ts) > _dedupeWindow * 4,
-    );
+    _recent.removeWhere((_, ts) => now.difference(ts) > _dedupeWindow * 4);
   }
 }

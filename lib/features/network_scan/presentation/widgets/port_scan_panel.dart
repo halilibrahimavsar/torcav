@@ -68,6 +68,18 @@ class _PortScanPanelState extends State<PortScanPanel> {
     super.dispose();
   }
 
+  /// Devam eden port taramasını durdurur — özellikle 65535 portluk "tümü"
+  /// modunda kullanıcının aramayı iptal edebilmesi için.
+  void _stopPortScan() {
+    _scanSub?.cancel();
+    _scanSub = null;
+    if (!mounted) return;
+    setState(() {
+      _portScanState = _PortScanState.done;
+      _currentPortScanning = null;
+    });
+  }
+
   void _startPortScan() {
     if (_portScanState == _PortScanState.scanning) return;
 
@@ -147,6 +159,7 @@ class _PortScanPanelState extends State<PortScanPanel> {
       totalPortsToScan: _totalPortsToScan,
       currentPort: _currentPortScanning,
       onScanRequested: _startPortScan,
+      onStopRequested: _stopPortScan,
       scanMode: _scanMode,
       onModeChanged: (mode) => setState(() => _scanMode = mode),
       startPortController: _startPortController,
@@ -164,6 +177,7 @@ class _PortScanSection extends StatelessWidget {
   final int totalPortsToScan;
   final int? currentPort;
   final VoidCallback onScanRequested;
+  final VoidCallback onStopRequested;
   final _PortScanMode scanMode;
   final ValueChanged<_PortScanMode> onModeChanged;
   final TextEditingController startPortController;
@@ -176,6 +190,7 @@ class _PortScanSection extends StatelessWidget {
     required this.totalPortsToScan,
     this.currentPort,
     required this.onScanRequested,
+    required this.onStopRequested,
     required this.scanMode,
     required this.onModeChanged,
     required this.startPortController,
@@ -349,6 +364,8 @@ class _PortScanSection extends StatelessWidget {
                 totalPortsToScan > 0 ? scannedPortCount / totalPortsToScan : 0,
             color: scheme.primary,
           ),
+          const SizedBox(height: 12),
+          Center(child: _StopButton(onTap: onStopRequested)),
         ],
 
         if (services.isNotEmpty) ...[
@@ -432,6 +449,43 @@ class _ScanButton extends StatelessWidget {
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
                 color: scheme.primary,
+                letterSpacing: 1,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StopButton extends StatelessWidget {
+  final VoidCallback onTap;
+  const _StopButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: scheme.error.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: scheme.error.withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.stop_rounded, size: 14, color: scheme.error),
+            const SizedBox(width: 6),
+            Text(
+              context.l10n.cancelLabel.toUpperCase(),
+              style: GoogleFonts.orbitron(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color: scheme.error,
                 letterSpacing: 1,
               ),
             ),

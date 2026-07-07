@@ -5574,6 +5574,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get speedHubTitle => 'GESCHWINDIGKEIT';
 
   @override
+  String get speedHubCompareSection =>
+      'Bezahlt vs. erhalten · WLAN/Mobil-Vergleich';
+
+  @override
   String get speedModeQuickTest => 'Schnelltest';
 
   @override
@@ -5720,6 +5724,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get dashAdvancedMetrics => 'ERWEITERTE METRIKEN';
+
+  @override
+  String get dashHeroOtherIssues => 'Weitere Befunde';
+
+  @override
+  String get dashSignalLabel => 'Signal';
 
   @override
   String get dashHeroTopAction => 'Bester nächster Schritt';

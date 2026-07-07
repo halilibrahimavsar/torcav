@@ -15,8 +15,6 @@ import '../../../diagnostics/domain/entities/root_cause_category.dart';
 class HealthHeroCard extends StatelessWidget {
   final int score;
   final bool isConnected;
-  final String ssid;
-  final String statusLabel;
   final DiagnosisResult? diagnosis;
   final VoidCallback onTapScore;
   final void Function(RootCauseCategory category) onAction;
@@ -26,8 +24,6 @@ class HealthHeroCard extends StatelessWidget {
     super.key,
     required this.score,
     required this.isConnected,
-    required this.ssid,
-    required this.statusLabel,
     required this.diagnosis,
     required this.onTapScore,
     required this.onAction,
@@ -36,6 +32,26 @@ class HealthHeroCard extends StatelessWidget {
 
   RootCauseCategory get _category =>
       diagnosis?.primaryCause ?? RootCauseCategory.healthy;
+
+  /// Birincil kök neden dışında kalan anlamlı bulgular — kullanıcı birden
+  /// fazla sorun varken tek öneriyle sınırlı kalmasın (en fazla 3 chip).
+  List<RootCauseCategory> get _secondaryCategories {
+    final d = diagnosis;
+    if (d == null) return const [];
+    final seen = <RootCauseCategory>{};
+    final list =
+        d.allEvidence
+            .where(
+              (e) =>
+                  e.category != d.primaryCause &&
+                  e.category != RootCauseCategory.healthy &&
+                  e.severity >= 0.4 &&
+                  seen.add(e.category),
+            )
+            .toList()
+          ..sort((a, b) => b.severity.compareTo(a.severity));
+    return list.map((e) => e.category).take(3).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +64,6 @@ class HealthHeroCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _ConnectionChip(
-            color: statusColor,
-            statusLabel: statusLabel,
-            ssid: isConnected ? ssid : null,
-          ),
-          const SizedBox(height: 16),
           if (!isConnected)
             _DisconnectedBody(color: scheme.error)
           else ...[
@@ -80,6 +90,30 @@ class HealthHeroCard extends StatelessWidget {
               filled: _category != RootCauseCategory.healthy,
               onTap: () => onAction(_category),
             ),
+            if (_secondaryCategories.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(
+                context.l10n.dashHeroOtherIssues.toUpperCase(),
+                style: GoogleFonts.orbitron(
+                  color: scheme.onSurfaceVariant,
+                  fontSize: 8,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final category in _secondaryCategories)
+                    _SecondaryIssueChip(
+                      category: category,
+                      onTap: () => onAction(category),
+                    ),
+                ],
+              ),
+            ],
             if (_showFullDiagnosisLink)
               Padding(
                 padding: const EdgeInsets.only(top: 4),
@@ -140,59 +174,46 @@ class HealthHeroCard extends StatelessWidget {
 
 // ── Pieces ──────────────────────────────────────────────────────────────────
 
-class _ConnectionChip extends StatelessWidget {
-  final Color color;
-  final String statusLabel;
-  final String? ssid;
+/// Birincil aksiyonun altında listelenen ek bulgu chip'i — tıklanınca ilgili
+/// kategorinin aracına yönlendirir.
+class _SecondaryIssueChip extends StatelessWidget {
+  final RootCauseCategory category;
+  final VoidCallback onTap;
 
-  const _ConnectionChip({
-    required this.color,
-    required this.statusLabel,
-    this.ssid,
-  });
+  const _SecondaryIssueChip({required this.category, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Row(
-      children: [
-        Container(
-          width: 8,
-          height: 8,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color,
-            boxShadow: [
-              BoxShadow(color: color.withValues(alpha: 0.6), blurRadius: 6),
-            ],
-          ),
+    final color = HealthHeroCard._causeColor(category, scheme);
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: color.withValues(alpha: 0.08),
+          border: Border.all(color: color.withValues(alpha: 0.35)),
         ),
-        const SizedBox(width: 8),
-        Text(
-          statusLabel,
-          style: GoogleFonts.orbitron(
-            color: color,
-            fontSize: 9,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
-          ),
-        ),
-        if (ssid != null) ...[
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              ssid!,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(_VerdictRow._causeIcon(category), size: 13, color: color),
+            const SizedBox(width: 6),
+            Text(
+              _VerdictRow._causeTitle(context, category),
               style: GoogleFonts.rajdhani(
-                color: scheme.onSurfaceVariant,
-                fontSize: 13,
+                color: scheme.onSurface,
+                fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),
             ),
-          ),
-        ],
-      ],
+            const SizedBox(width: 4),
+            Icon(Icons.chevron_right_rounded, size: 14, color: color),
+          ],
+        ),
+      ),
     );
   }
 }
