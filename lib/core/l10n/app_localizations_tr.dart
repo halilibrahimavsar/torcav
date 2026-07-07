@@ -5739,6 +5739,23 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dashSignalLabel => 'Sinyal';
 
   @override
+  String get dashSsidHidden => 'Ağ adı gizli';
+
+  @override
+  String get dashGrantLocationHint => 'Ağ adını görmek için konum iznine dokun';
+
+  @override
+  String get dashConnDetailTitle => 'BAĞLANTI DETAYI';
+
+  @override
+  String get dashConnDetailCopyHint => 'Kopyalamak için bir değere dokun';
+
+  @override
+  String dashValueCopied(String label) {
+    return '$label kopyalandı';
+  }
+
+  @override
   String get dashHeroTopAction => 'Şimdi yapılacak en iyi hamle';
 
   @override

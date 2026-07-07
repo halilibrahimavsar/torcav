@@ -97,6 +97,7 @@ void main() {
           ssid: 'Lab AP',
           ip: '192.168.1.10',
           gateway: '192.168.1.1',
+          isConnected: true,
           networkCount: 5,
           securityScore: 85,
           signalQualityPct: 75,

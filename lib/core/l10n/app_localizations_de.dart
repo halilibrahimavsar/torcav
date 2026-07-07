@@ -5732,6 +5732,24 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dashSignalLabel => 'Signal';
 
   @override
+  String get dashSsidHidden => 'Netzwerkname verborgen';
+
+  @override
+  String get dashGrantLocationHint =>
+      'Standortzugriff erlauben, um den Netzwerknamen zu sehen';
+
+  @override
+  String get dashConnDetailTitle => 'VERBINDUNGSDETAILS';
+
+  @override
+  String get dashConnDetailCopyHint => 'Zum Kopieren auf einen Wert tippen';
+
+  @override
+  String dashValueCopied(String label) {
+    return '$label kopiert';
+  }
+
+  @override
   String get dashHeroTopAction => 'Bester nächster Schritt';
 
   @override

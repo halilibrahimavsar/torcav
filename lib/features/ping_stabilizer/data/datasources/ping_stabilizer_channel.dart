@@ -83,6 +83,19 @@ class PingStabilizerChannel {
     }
   }
 
+  /// Re-establishes the active tunnel to break a sticky bad path — same
+  /// operation as the notification "Cycle tunnel" action. No-op when the
+  /// stabilizer isn't running.
+  Future<void> cycle() async {
+    try {
+      await _method.invokeMethod<void>('cycle');
+    } on PlatformException {
+      // Best effort — service may already be torn down.
+    } on MissingPluginException {
+      // No native impl on this platform.
+    }
+  }
+
   /// Pushes thresholds, the candidate resolver list and localized
   /// notification strings to the native alert engine. The native side
   /// persists them so alerts keep firing (in the right language) after the

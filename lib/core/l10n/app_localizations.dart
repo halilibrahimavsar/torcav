@@ -9911,6 +9911,36 @@ abstract class AppLocalizations {
   /// **'Signal'**
   String get dashSignalLabel;
 
+  /// Connection bar title when connected but Android hides the SSID (no location permission).
+  ///
+  /// In en, this message translates to:
+  /// **'Network name hidden'**
+  String get dashSsidHidden;
+
+  /// Tappable hint under the connection bar title asking for location permission.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow location access to see the network name'**
+  String get dashGrantLocationHint;
+
+  /// Title of the bottom sheet opened by tapping the dashboard connection bar.
+  ///
+  /// In en, this message translates to:
+  /// **'CONNECTION DETAILS'**
+  String get dashConnDetailTitle;
+
+  /// Helper line in the connection detail sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a value to copy it'**
+  String get dashConnDetailCopyHint;
+
+  /// Snackbar after copying a value from the connection detail sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'{label} copied'**
+  String dashValueCopied(String label);
+
   /// Overline above the hero card's single action button.
   ///
   /// In en, this message translates to:

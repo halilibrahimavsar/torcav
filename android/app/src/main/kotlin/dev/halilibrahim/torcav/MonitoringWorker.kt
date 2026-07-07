@@ -227,6 +227,18 @@ class MonitoringWorker(
             .getString("$STRING_PREFIX$key", null) ?: fallback
 
     private fun notify(id: Int, title: String, body: String) {
+        // App visible → in-app snackbar; otherwise system notification.
+        InAppAlertBridge.deliver(
+            mapOf(
+                "source" to "monitor",
+                "severity" to "warning",
+                "title" to title,
+                "body" to body,
+            ),
+        ) { postNotification(id, title, body) }
+    }
+
+    private fun postNotification(id: Int, title: String, body: String) {
         if (!NotificationManagerCompat.from(applicationContext).areNotificationsEnabled()) {
             return
         }

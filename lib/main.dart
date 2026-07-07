@@ -12,6 +12,7 @@ import 'package:torcav/core/extensions/context_extensions.dart';
 import 'package:torcav/core/bloc/app_bloc_observer.dart';
 import 'package:torcav/core/logging/app_logger.dart';
 import 'package:torcav/core/notifications/app_notifier.dart';
+import 'package:torcav/core/notifications/in_app_alert_listener.dart';
 import 'package:torcav/core/di/injection.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
 import 'package:torcav/core/l10n/locale_cubit.dart';
@@ -88,6 +89,11 @@ void main() {
       }
       await HiveStorageService.init(hiveKey);
       await configureDependencies();
+
+      // Uygulama ön plandayken native uyarılar bildirim yerine snackbar
+      // olarak gelir — dinleyiciyi ilk frame'den önce bağla ki açılış
+      // anındaki bir uyarı kaçmasın.
+      getIt<InAppAlertListener>().start();
 
       runApp(const TorcavApp());
     },

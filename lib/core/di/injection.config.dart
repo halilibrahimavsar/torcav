@@ -262,6 +262,7 @@ import '../../features/wifi_scan/domain/usecases/scan_wifi.dart' as _i451;
 import '../../features/wifi_scan/presentation/bloc/wifi_scan_bloc.dart'
     as _i968;
 import '../l10n/locale_cubit.dart' as _i171;
+import '../notifications/in_app_alert_listener.dart' as _i726;
 import '../services/data_retention_service.dart' as _i533;
 import '../services/image_watermark_service.dart' as _i429;
 import '../services/notification_service.dart' as _i941;
@@ -395,6 +396,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i653.LinuxWifiDataSource>(
       () => _i653.LinuxWifiDataSource(gh<_i113.ScanSnapshotBuilder>()),
+    );
+    gh.lazySingleton<_i726.InAppAlertListener>(
+      () => _i726.InAppAlertListener(gh<_i1014.PingStabilizerChannel>()),
     );
     gh.lazySingleton<_i333.EvilTwinClassifier>(
       () => _i333.EvilTwinClassifier(meshDb: gh<_i641.MeshVendorDatabase>()),

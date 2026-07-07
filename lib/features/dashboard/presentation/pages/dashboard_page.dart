@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/l10n/app_localizations.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/notification_context_extensions.dart';
@@ -53,10 +57,7 @@ class DashboardPage extends StatelessWidget {
       ],
       child: BlocBuilder<DashboardCubit, DashboardState>(
         builder: (context, state) {
-          final isConnected =
-              state is DashboardSuccess &&
-              state.ssid != '—' &&
-              state.ssid.isNotEmpty;
+          final isConnected = state is DashboardSuccess && state.isConnected;
           final accentColor = isConnected ? scheme.primary : scheme.error;
           final statusLabel =
               isConnected
@@ -160,7 +161,7 @@ class DashboardPage extends StatelessWidget {
                     const Center(child: CircularProgressIndicator())
                   else if (state is DashboardSuccess) ...[
                     // ── Connection bar: status + SSID + signal, hero'nun
-                    //    üstünde — tıklayınca yeniler, rozet bağlam seçer ──
+                    //    üstünde — tıklayınca detay açar, rozet bağlam seçer ──
                     StaggeredEntry(
                       delay: const Duration(milliseconds: 40),
                       child: _ConnectionBar(
@@ -168,6 +169,7 @@ class DashboardPage extends StatelessWidget {
                         accentColor: accentColor,
                         statusLabel: statusLabel,
                         ssid: state.ssid,
+                        needsLocationForSsid: state.needsLocationForSsid,
                         signalQualityPct: state.signalQualityPct,
                         networkContext:
                             state.connectedBssid != null
@@ -177,6 +179,10 @@ class DashboardPage extends StatelessWidget {
                         onRefresh: () => context.read<DashboardCubit>().load(),
                         onTapContext:
                             () => _showContextOverrideSheet(context, state),
+                        onShowDetails:
+                            () => _showConnectionDetails(context, state),
+                        onGrantLocation:
+                            () => _grantLocationPermission(context),
                       ),
                     ),
 
@@ -254,6 +260,9 @@ class DashboardPage extends StatelessWidget {
                                 onTapThreats:
                                     () => _showNotificationSheet(context),
                                 onTapDevices: () => onNavigate('wifi'),
+                                onTapCore:
+                                    () =>
+                                        _showConnectionDetails(context, state),
                               ),
                             ),
 
@@ -417,6 +426,32 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
+  /// Android SSID'yi konum izni olmadan gizler; izin verilince yeniden yükle.
+  Future<void> _grantLocationPermission(BuildContext context) async {
+    final status = await Permission.location.request();
+    if (status.isPermanentlyDenied) {
+      await openAppSettings();
+    }
+    if (!context.mounted) return;
+    unawaited(context.read<DashboardCubit>().load());
+  }
+
+  void _showConnectionDetails(BuildContext context, DashboardSuccess state) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder:
+          (_) => _ConnectionDetailSheet(
+            state: state,
+            onTapContext: () {
+              Navigator.pop(context);
+              _showContextOverrideSheet(context, state);
+            },
+          ),
+    );
+  }
+
   void _showNotificationSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -461,26 +496,33 @@ class DashboardPage extends StatelessWidget {
 // ── Connection bar above the hero ────────────────────────────────────
 
 /// Hero'nun üstünde duran bağlantı şeridi: durum noktası + SSID + sinyal
-/// yüzdesi + ağ bağlamı rozeti + yenile. Şeride dokunmak da yeniler.
+/// yüzdesi + ağ bağlamı rozeti + yenile. Şeride dokunmak detay sayfası açar;
+/// SSID gizliyse konum izni ipucu gösterir.
 class _ConnectionBar extends StatelessWidget {
   final bool isConnected;
   final Color accentColor;
   final String statusLabel;
   final String ssid;
+  final bool needsLocationForSsid;
   final int? signalQualityPct;
   final NetworkContextType? networkContext;
   final VoidCallback onRefresh;
   final VoidCallback onTapContext;
+  final VoidCallback onShowDetails;
+  final VoidCallback onGrantLocation;
 
   const _ConnectionBar({
     required this.isConnected,
     required this.accentColor,
     required this.statusLabel,
     required this.ssid,
+    required this.needsLocationForSsid,
     required this.signalQualityPct,
     required this.networkContext,
     required this.onRefresh,
     required this.onTapContext,
+    required this.onShowDetails,
+    required this.onGrantLocation,
   });
 
   IconData get _signalIcon {
@@ -495,12 +537,13 @@ class _ConnectionBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final scheme = Theme.of(context).colorScheme;
+    final ssidHidden = isConnected && (ssid == '—' || ssid.isEmpty);
 
     return GlassmorphicContainer(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       borderColor: accentColor.withValues(alpha: 0.25),
       child: InkWell(
-        onTap: onRefresh,
+        onTap: needsLocationForSsid ? onGrantLocation : onShowDetails,
         borderRadius: BorderRadius.circular(12),
         child: Row(
           children: [
@@ -526,7 +569,9 @@ class _ConnectionBar extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    isConnected ? ssid : statusLabel,
+                    isConnected
+                        ? (ssidHidden ? l10n.dashSsidHidden : ssid)
+                        : statusLabel,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.rajdhani(
@@ -535,7 +580,18 @@ class _ConnectionBar extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  if (isConnected && signalQualityPct != null)
+                  if (needsLocationForSsid)
+                    Text(
+                      l10n.dashGrantLocationHint,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.rajdhani(
+                        color: accentColor,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    )
+                  else if (isConnected && signalQualityPct != null)
                     Text(
                       '${l10n.dashSignalLabel}: %$signalQualityPct',
                       style: GoogleFonts.rajdhani(
@@ -569,6 +625,426 @@ class _ConnectionBar extends StatelessWidget {
       ),
     );
   }
+}
+
+// ── Connection detail sheet (opened by the bar & the radial core) ────
+
+/// Bağlantı kimlik kartı: animasyonlu sinyal halkası + SSID/BSSID/IP/ağ geçidi
+/// satırları. Her satıra dokunmak değeri panoya kopyalar.
+class _ConnectionDetailSheet extends StatelessWidget {
+  final DashboardSuccess state;
+  final VoidCallback onTapContext;
+
+  const _ConnectionDetailSheet({required this.state, required this.onTapContext});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final scheme = Theme.of(context).colorScheme;
+    final accent = state.isConnected ? scheme.primary : scheme.error;
+    final ssidHidden = state.ssid == '—' || state.ssid.isEmpty;
+
+    final rows = <_DetailRowSpec>[
+      _DetailRowSpec(
+        icon: Icons.wifi_rounded,
+        label: l10n.ssidLabel,
+        value: ssidHidden ? null : state.ssid,
+        color: scheme.primary,
+      ),
+      _DetailRowSpec(
+        icon: Icons.router_rounded,
+        label: l10n.bssidHeader,
+        value: state.connectedBssid,
+        color: AppColors.neonPurple,
+        mono: true,
+      ),
+      _DetailRowSpec(
+        icon: Icons.lan_outlined,
+        label: l10n.ipLabel,
+        value: state.ip == '—' ? null : state.ip,
+        color: scheme.secondary,
+        mono: true,
+      ),
+      _DetailRowSpec(
+        icon: Icons.dns_outlined,
+        label: l10n.gatewayLabel,
+        value: state.gateway == '—' ? null : state.gateway,
+        color: scheme.tertiary,
+        mono: true,
+      ),
+      if (state.currentChannel != null)
+        _DetailRowSpec(
+          icon: Icons.tune_rounded,
+          label: l10n.dashSignalLabel,
+          value:
+              '${l10n.channelShort(state.currentChannel!)}'
+              '${state.signalQualityPct != null ? ' · %${state.signalQualityPct}' : ''}',
+          color: scheme.primary,
+        ),
+    ];
+
+    return Container(
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        border: Border(
+          top: BorderSide(color: accent.withValues(alpha: 0.25)),
+        ),
+      ),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewPadding.bottom,
+      ),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: scheme.onSurfaceVariant.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                NeonText(
+                  l10n.dashConnDetailTitle,
+                  style: GoogleFonts.orbitron(
+                    color: scheme.primary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                  ),
+                  glowRadius: 6,
+                ),
+                const Spacer(),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: accent.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: accent.withValues(alpha: 0.4)),
+                  ),
+                  child: Text(
+                    state.isConnected
+                        ? l10n.connectedStatusCaps
+                        : l10n.disconnectedStatusCaps,
+                    style: GoogleFonts.orbitron(
+                      color: accent,
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            _SignalRing(
+              pct: state.signalQualityPct,
+              color: accent,
+              caption: ssidHidden ? l10n.dashSsidHidden : state.ssid,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.dashConnDetailCopyHint,
+              style: GoogleFonts.rajdhani(
+                color: scheme.onSurfaceVariant,
+                fontSize: 11,
+              ),
+            ),
+            const SizedBox(height: 12),
+            for (final spec in rows) ...[
+              _DetailRow(
+                spec: spec,
+                onCopied:
+                    () => context.showSuccess(l10n.dashValueCopied(spec.label)),
+              ),
+              const SizedBox(height: 8),
+            ],
+            if (state.connectedBssid != null) ...[
+              const SizedBox(height: 4),
+              _NetworkContextBadge(
+                context: state.connectedContext ?? NetworkContextType.unknown,
+                onTap: onTapContext,
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DetailRowSpec {
+  final IconData icon;
+  final String label;
+  final String? value;
+  final Color color;
+  final bool mono;
+
+  const _DetailRowSpec({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.color,
+    this.mono = false,
+  });
+}
+
+class _DetailRow extends StatelessWidget {
+  final _DetailRowSpec spec;
+  final VoidCallback onCopied;
+
+  const _DetailRow({required this.spec, required this.onCopied});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final value = spec.value;
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap:
+          value == null
+              ? null
+              : () {
+                Clipboard.setData(ClipboardData(text: value));
+                onCopied();
+              },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: spec.color.withValues(alpha: 0.25)),
+          color: spec.color.withValues(alpha: 0.04),
+        ),
+        child: Row(
+          children: [
+            Icon(spec.icon, size: 16, color: spec.color),
+            const SizedBox(width: 10),
+            Text(
+              spec.label.toUpperCase(),
+              style: GoogleFonts.orbitron(
+                color: spec.color.withValues(alpha: 0.8),
+                fontSize: 9,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1,
+              ),
+            ),
+            const Spacer(),
+            Flexible(
+              child: Text(
+                value ?? '—',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style:
+                    spec.mono
+                        ? GoogleFonts.jetBrainsMono(
+                          color: scheme.onSurface,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        )
+                        : GoogleFonts.rajdhani(
+                          color: scheme.onSurface,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+              ),
+            ),
+            if (value != null) ...[
+              const SizedBox(width: 8),
+              Icon(
+                Icons.copy_rounded,
+                size: 12,
+                color: scheme.onSurfaceVariant.withValues(alpha: 0.5),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Animasyonlu sinyal halkası: yüzdeye göre dolan gradyan yay + halka üzerinde
+/// süzülen tarayıcı noktası. RadialDashboardCore'un görsel dilini sürdürür.
+class _SignalRing extends StatefulWidget {
+  final int? pct;
+  final Color color;
+  final String caption;
+
+  const _SignalRing({
+    required this.pct,
+    required this.color,
+    required this.caption,
+  });
+
+  @override
+  State<_SignalRing> createState() => _SignalRingState();
+}
+
+class _SignalRingState extends State<_SignalRing>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _scan;
+
+  @override
+  void initState() {
+    super.initState();
+    _scan = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _scan.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final pct = widget.pct;
+
+    return Column(
+      children: [
+        SizedBox(
+          width: 150,
+          height: 150,
+          child: TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0, end: (pct ?? 0) / 100),
+            duration: const Duration(milliseconds: 900),
+            curve: Curves.easeOutCubic,
+            builder: (context, fill, _) {
+              return AnimatedBuilder(
+                animation: _scan,
+                builder: (context, _) {
+                  return CustomPaint(
+                    painter: _SignalRingPainter(
+                      fill: fill,
+                      scan: _scan.value,
+                      color: widget.color,
+                      trackColor: scheme.onSurface.withValues(alpha: 0.08),
+                    ),
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            pct == null
+                                ? Icons.wifi_off_rounded
+                                : Icons.wifi_rounded,
+                            color: widget.color,
+                            size: 22,
+                          ),
+                          const SizedBox(height: 4),
+                          NeonText(
+                            pct == null ? '—' : '%$pct',
+                            style: GoogleFonts.orbitron(
+                              color: widget.color,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w900,
+                            ),
+                            glowColor: widget.color,
+                            glowRadius: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          widget.caption,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: GoogleFonts.rajdhani(
+            color: scheme.onSurface,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SignalRingPainter extends CustomPainter {
+  final double fill; // 0..1
+  final double scan; // 0..1
+  final Color color;
+  final Color trackColor;
+
+  _SignalRingPainter({
+    required this.fill,
+    required this.scan,
+    required this.color,
+    required this.trackColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2 - 8;
+    final rect = Rect.fromCircle(center: center, radius: radius);
+
+    canvas.drawCircle(
+      center,
+      radius,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3
+        ..color = trackColor,
+    );
+
+    const start = -math.pi / 2;
+    final sweep = 2 * math.pi * fill.clamp(0.0, 1.0);
+    if (sweep > 0) {
+      canvas.drawArc(
+        rect,
+        start,
+        sweep,
+        false,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 5
+          ..strokeCap = StrokeCap.round
+          ..shader = SweepGradient(
+            colors: [color.withValues(alpha: 0.25), color],
+            transform: const GradientRotation(start),
+          ).createShader(rect),
+      );
+    }
+
+    // Halka üzerinde süzülen tarayıcı noktası
+    final dotAngle = start + 2 * math.pi * scan;
+    final dotPos = Offset(
+      center.dx + math.cos(dotAngle) * radius,
+      center.dy + math.sin(dotAngle) * radius,
+    );
+    canvas.drawCircle(
+      dotPos,
+      5,
+      Paint()..color = color.withValues(alpha: 0.25),
+    );
+    canvas.drawCircle(dotPos, 2.5, Paint()..color = color);
+  }
+
+  @override
+  bool shouldRepaint(covariant _SignalRingPainter old) =>
+      old.fill != fill || old.scan != scan || old.color != color;
 }
 
 // ── Compact identity strip below the radial hero ─────────────────────

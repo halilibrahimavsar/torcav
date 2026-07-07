@@ -5726,6 +5726,24 @@ class AppLocalizationsKu extends AppLocalizations {
   String get dashSignalLabel => 'Sînyal';
 
   @override
+  String get dashSsidHidden => 'Navê torê veşartî ye';
+
+  @override
+  String get dashGrantLocationHint =>
+      'Ji bo dîtina navê torê destûra cihê bide';
+
+  @override
+  String get dashConnDetailTitle => 'KITEKITÊN GIRÊDANÊ';
+
+  @override
+  String get dashConnDetailCopyHint => 'Ji bo kopîkirinê li nirxekê bide';
+
+  @override
+  String dashValueCopied(String label) {
+    return '$label hat kopîkirin';
+  }
+
+  @override
   String get dashHeroTopAction => 'Gava herî baş a niha';
 
   @override

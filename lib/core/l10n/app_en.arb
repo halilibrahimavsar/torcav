@@ -7264,6 +7264,31 @@
     },
     "dashHeroOtherIssues": "Other findings",
     "dashSignalLabel": "Signal",
+    "dashSsidHidden": "Network name hidden",
+    "@dashSsidHidden": {
+        "description": "Connection bar title when connected but Android hides the SSID (no location permission)."
+    },
+    "dashGrantLocationHint": "Allow location access to see the network name",
+    "@dashGrantLocationHint": {
+        "description": "Tappable hint under the connection bar title asking for location permission."
+    },
+    "dashConnDetailTitle": "CONNECTION DETAILS",
+    "@dashConnDetailTitle": {
+        "description": "Title of the bottom sheet opened by tapping the dashboard connection bar."
+    },
+    "dashConnDetailCopyHint": "Tap a value to copy it",
+    "@dashConnDetailCopyHint": {
+        "description": "Helper line in the connection detail sheet."
+    },
+    "dashValueCopied": "{label} copied",
+    "@dashValueCopied": {
+        "placeholders": {
+            "label": {
+                "type": "String"
+            }
+        },
+        "description": "Snackbar after copying a value from the connection detail sheet."
+    },
     "dashHeroTopAction": "Best next move",
     "@dashHeroTopAction": {
         "description": "Overline above the hero card's single action button."

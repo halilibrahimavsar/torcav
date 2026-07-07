@@ -122,6 +122,7 @@ void main() {
     when(
       () => networkInfo.getWifiGatewayIP(),
     ).thenAnswer((_) async => '192.168.1.1');
+    when(() => networkInfo.getWifiBSSID()).thenAnswer((_) async => null);
 
     when(() => scanStore.snapshots).thenAnswer((_) => snapshotsController.stream);
     when(() => scanStore.latest).thenReturn(null);

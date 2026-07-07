@@ -389,6 +389,32 @@ class StabilizerAlertEngine(
         withCycleAction: Boolean,
         lowPriority: Boolean = false,
     ) {
+        // App visible → in-app snackbar; otherwise system notification. The
+        // cycle action travels as a flag + localized label so the Dart side
+        // can render a matching SnackBarAction.
+        InAppAlertBridge.deliver(
+            mapOf(
+                "source" to "stabilizer",
+                "severity" to if (lowPriority) "info" else "warning",
+                "title" to title,
+                "body" to body,
+                "action" to if (withCycleAction) "cycleTunnel" else null,
+                "actionLabel" to if (withCycleAction) {
+                    StabilizerConfig.s("actionCycle", "Cycle tunnel")
+                } else {
+                    null
+                },
+            ),
+        ) { postNotification(id, title, body, withCycleAction, lowPriority) }
+    }
+
+    private fun postNotification(
+        id: Int,
+        title: String,
+        body: String,
+        withCycleAction: Boolean,
+        lowPriority: Boolean,
+    ) {
         if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) return
 
         val pendingFlags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE

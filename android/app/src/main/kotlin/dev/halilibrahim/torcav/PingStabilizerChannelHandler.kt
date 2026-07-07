@@ -65,6 +65,15 @@ class PingStabilizerChannelHandler(
                 PingStabilizerVpnService.stop(context)
                 result.success(null)
             }
+            "cycle" -> {
+                // Same tunnel re-establish the notification action triggers,
+                // exposed so the in-app snackbar action can invoke it too.
+                val intent = Intent(context, PingStabilizerVpnService::class.java).apply {
+                    action = PingStabilizerVpnService.ACTION_CYCLE
+                }
+                context.startService(intent)
+                result.success(null)
+            }
             "setDns" -> {
                 val ip = call.argument<String>("ip")
                 if (ip == null) {

@@ -5730,6 +5730,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashSignalLabel => 'Signal';
 
   @override
+  String get dashSsidHidden => 'Network name hidden';
+
+  @override
+  String get dashGrantLocationHint =>
+      'Allow location access to see the network name';
+
+  @override
+  String get dashConnDetailTitle => 'CONNECTION DETAILS';
+
+  @override
+  String get dashConnDetailCopyHint => 'Tap a value to copy it';
+
+  @override
+  String dashValueCopied(String label) {
+    return '$label copied';
+  }
+
+  @override
   String get dashHeroTopAction => 'Best next move';
 
   @override

@@ -28,6 +28,14 @@ class DashboardSuccess extends DashboardState {
   final String ssid;
   final String ip;
   final String gateway;
+
+  /// True when the device is on a network (IP/gateway/BSSID present), even
+  /// if Android hides the SSID because location permission is missing.
+  final bool isConnected;
+
+  /// True when connected but the SSID is hidden and granting location
+  /// permission would reveal it.
+  final bool needsLocationForSsid;
   final int networkCount;
   final int securityScore;
   final int? signalQualityPct;
@@ -51,6 +59,8 @@ class DashboardSuccess extends DashboardState {
     required this.ssid,
     required this.ip,
     required this.gateway,
+    this.isConnected = false,
+    this.needsLocationForSsid = false,
     required this.networkCount,
     required this.securityScore,
     this.signalQualityPct,
@@ -76,6 +86,8 @@ class DashboardSuccess extends DashboardState {
         ssid,
         ip,
         gateway,
+        isConnected,
+        needsLocationForSsid,
         networkCount,
         securityScore,
         signalQualityPct,

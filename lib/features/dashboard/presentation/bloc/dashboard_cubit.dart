@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:network_info_plus/network_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../../../heatmap/domain/services/connected_signal_service.dart';
@@ -65,7 +66,28 @@ class DashboardCubit extends Cubit<DashboardState> {
         _networkInfo.getWifiName(),
         _networkInfo.getWifiIP(),
         _networkInfo.getWifiGatewayIP(),
+        _networkInfo.getWifiBSSID(),
       ]);
+
+      final ip = _cleanAddress(results[1]);
+      final gateway = _cleanAddress(results[2]);
+      final liveBssid = _cleanBssid(results[3]);
+      // Android hides the SSID without location permission (or with location
+      // services off); an IP/gateway/BSSID still proves we're on a network,
+      // so connectivity must never be inferred from the SSID alone.
+      final isConnected =
+          _cleanSsid(results[0]) != null ||
+          ip != null ||
+          gateway != null ||
+          liveBssid != null;
+      var needsLocationForSsid = false;
+      if (isConnected && _cleanSsid(results[0]) == null) {
+        try {
+          needsLocationForSsid = !await Permission.location.status.isGranted;
+        } catch (_) {
+          // Platform kanalı yoksa (test ortamı) ipucu gösterilmez.
+        }
+      }
 
       final latestSnapshot = _scanStore.latest;
       final networks =
@@ -208,8 +230,10 @@ class DashboardCubit extends Cubit<DashboardState> {
 
       emit(DashboardSuccess(
         ssid: _cleanSsid(results[0]) ?? '—',
-        ip: results[1] ?? '—',
-        gateway: results[2] ?? '—',
+        ip: ip ?? '—',
+        gateway: gateway ?? '—',
+        isConnected: isConnected,
+        needsLocationForSsid: needsLocationForSsid,
         networkCount: latestSnapshot?.networks.length ?? 0,
         securityScore: secScore,
         signalQualityPct: qualityPct,
@@ -220,7 +244,7 @@ class DashboardCubit extends Cubit<DashboardState> {
         channelRatings: ratings,
         worstAssessment: worstAssessment,
         connectedContext: connectedCtx,
-        connectedBssid: connectedNet?.bssid,
+        connectedBssid: connectedNet?.bssid ?? liveBssid,
         scoreHistory: scoreHistory,
         rssiHistory: rssiHistory,
         recentEvents: events.take(20).toList(),
@@ -234,7 +258,27 @@ class DashboardCubit extends Cubit<DashboardState> {
     }
   }
 
-  String? _cleanSsid(String? raw) => raw?.replaceAll('"', '');
+  String? _cleanSsid(String? raw) {
+    final ssid = raw?.replaceAll('"', '');
+    if (ssid == null || ssid.isEmpty || ssid == '<unknown ssid>') return null;
+    return ssid;
+  }
+
+  String? _cleanAddress(String? raw) {
+    if (raw == null || raw.isEmpty || raw == '0.0.0.0') return null;
+    return raw;
+  }
+
+  String? _cleanBssid(String? raw) {
+    // Android reports a placeholder MAC when location permission is missing.
+    if (raw == null ||
+        raw.isEmpty ||
+        raw == '02:00:00:00:00:00' ||
+        raw == '00:00:00:00:00:00') {
+      return null;
+    }
+    return raw;
+  }
 
   @override
   Future<void> close() {

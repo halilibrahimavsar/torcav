@@ -33,6 +33,9 @@ class RadialDashboardCore extends StatefulWidget {
   final VoidCallback? onTapThreats;
   final VoidCallback? onTapDevices;
 
+  /// Merkezdeki çekirdeğe (durum + SSID) dokununca çalışır.
+  final VoidCallback? onTapCore;
+
   const RadialDashboardCore({
     super.key,
     required this.statusColor,
@@ -47,6 +50,7 @@ class RadialDashboardCore extends StatefulWidget {
     this.onTapSignal,
     this.onTapThreats,
     this.onTapDevices,
+    this.onTapCore,
   });
 
   @override
@@ -162,11 +166,15 @@ class _RadialDashboardCoreState extends State<RadialDashboardCore>
           ),
 
           // Central core (existing animated widget)
-          SecurityCore(
-            statusColor: widget.statusColor,
-            label: widget.label,
-            subLabel: widget.subLabel,
-            isLoading: widget.isLoading,
+          GestureDetector(
+            onTap: widget.onTapCore,
+            behavior: HitTestBehavior.opaque,
+            child: SecurityCore(
+              statusColor: widget.statusColor,
+              label: widget.label,
+              subLabel: widget.subLabel,
+              isLoading: widget.isLoading,
+            ),
           ),
 
           // Tappable badges at each gauge position
