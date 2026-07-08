@@ -126,6 +126,12 @@ class PrivacyPolicyPage extends StatelessWidget {
                 ),
                 _buildPolicyCard(
                   context,
+                  icon: Icons.password_rounded,
+                  title: l10n.privacyBreachCheckTitle,
+                  content: l10n.privacyBreachCheckBody,
+                ),
+                _buildPolicyCard(
+                  context,
                   icon: Icons.block_rounded,
                   title: l10n.privacyNoTrackersTitle,
                   content: l10n.privacyNoTrackersBody,

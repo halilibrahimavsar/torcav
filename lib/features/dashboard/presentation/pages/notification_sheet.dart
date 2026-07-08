@@ -401,10 +401,6 @@ class NotificationTile extends StatelessWidget {
         icon = Icons.lock_open_rounded;
       case SecurityEventType.deauthBurstDetected:
         icon = Icons.warning_amber_rounded;
-      case SecurityEventType.handshakeCaptureStarted:
-        icon = Icons.vpn_key_rounded;
-      case SecurityEventType.handshakeCaptureCompleted:
-        icon = Icons.key_rounded;
       case SecurityEventType.captivePortalDetected:
         icon = Icons.web_rounded;
       case SecurityEventType.unsupportedOperation:
@@ -429,10 +425,6 @@ class NotificationTile extends StatelessWidget {
         return context.l10n.eventTypeEncryptionWeakened;
       case SecurityEventType.deauthBurstDetected:
         return context.l10n.eventTypeDeauthBurst;
-      case SecurityEventType.handshakeCaptureStarted:
-        return context.l10n.eventTypeHandshakeAnalysis;
-      case SecurityEventType.handshakeCaptureCompleted:
-        return context.l10n.eventTypeHandshakeSecured;
       case SecurityEventType.captivePortalDetected:
         return context.l10n.eventTypeCaptivePortal;
       case SecurityEventType.unsupportedOperation:

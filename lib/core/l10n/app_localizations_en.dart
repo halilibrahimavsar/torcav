@@ -105,9 +105,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get liveLabel => 'LIVE';
 
   @override
-  String get topologyLabel => 'TOPOLOGY';
-
-  @override
   String get networkLogs => 'NETWORK LOGS';
 
   @override
@@ -310,9 +307,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get threatsDetected => 'THREATS DETECTED';
 
   @override
-  String get networkReconTitle => 'NETWORK RECON';
-
-  @override
   String get intelligenceReportTitle => 'INTELLIGENCE REPORT';
 
   @override
@@ -327,9 +321,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String newDevicesFound(int count) {
     return '$count new devices on your network';
   }
-
-  @override
-  String get lanReconTitle => 'LAN RECON';
 
   @override
   String get targetSubnet => 'Target IP / Subnet';
@@ -583,17 +574,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get osDetectedLabel => 'OS DETECTED';
 
   @override
-  String portLabel(int port) {
-    return 'PORT $port';
-  }
-
-  @override
-  String get portsFoundLabel => 'OPEN PORTS';
-
-  @override
-  String get noPortsFound => 'No open ports found';
-
-  @override
   String get hostnameLookupAction => 'LOOKUP HOSTNAME';
 
   @override
@@ -601,9 +581,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get portScanAction => 'PORT SCAN';
-
-  @override
-  String get portRangeHint => 'Port range (e.g. 80,443 or 1-1000)';
 
   @override
   String get latencyLabel => 'LATENCY';
@@ -931,9 +908,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanProfileLabel => 'SCAN PROFILE';
 
   @override
-  String get infoScanProfilesTitle => 'Scan Profiles';
-
-  @override
   String get infoScanProfileFastDesc =>
       'Fast: Quick ping sweep — finds devices in seconds.';
 
@@ -1051,9 +1025,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get waitingForData => 'Waiting for data...';
-
-  @override
-  String get temporalHeatmap => 'Temporal Heatmap';
 
   @override
   String signalMonitoringTitle(String ssid) {
@@ -1197,24 +1168,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get interfaceTheme => 'Interface Theme';
 
   @override
-  String get speedTestHeader => 'SPEED TEST';
-
-  @override
-  String get commandCenters => 'COMMAND CENTERS';
-
-  @override
-  String get activeShielding => 'Active Shielding';
-
-  @override
-  String get logisticsTitle => 'LOGISTICS';
-
-  @override
-  String get intelMetrics => 'Intel Metrics';
-
-  @override
-  String get networkMesh => 'Network Mesh';
-
-  @override
   String get phasePing => 'PHASE: PING';
 
   @override
@@ -1256,8 +1209,6 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.selectLogic(type, {
       'rogueApSuspected': 'Rogue AP Suspected',
       'deauthBurstDetected': 'Deauth Burst Detected',
-      'handshakeCaptureStarted': 'Handshake Protocol Analysis',
-      'handshakeCaptureCompleted': 'Handshake Protocol Secured',
       'captivePortalDetected': 'Captive Portal Detected',
       'evilTwinDetected': 'Evil Twin Detected',
       'deauthAttackSuspected': 'Deauth Attack Suspected',
@@ -1854,12 +1805,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get speedDoctorTagline => 'Why is the internet slow?';
 
   @override
-  String get speedDoctorOpsTile => 'SPEED DOCTOR';
-
-  @override
-  String get speedDoctorOpsSubtitle => 'Why is it slow?';
-
-  @override
   String get evilTwinDetailTitle => 'EVIL TWIN DETAIL';
 
   @override
@@ -2011,10 +1956,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get internetSlowQuestion => 'IS INTERNET SLOW?';
 
   @override
-  String get runSpeedDoctorDesc =>
-      'Run Speed Doctor — 30-second root-cause diagnostic.';
-
-  @override
   String get securityAlertsTitle => 'SECURITY ALERTS';
 
   @override
@@ -2051,12 +1992,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get eventTypeDeauthBurst => 'DEAUTH BURST';
-
-  @override
-  String get eventTypeHandshakeAnalysis => 'HANDSHAKE ANALYSIS';
-
-  @override
-  String get eventTypeHandshakeSecured => 'HANDSHAKE SECURED';
 
   @override
   String get eventTypeCaptivePortal => 'CAPTIVE PORTAL';
@@ -2632,6 +2567,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get privacyCaptivePortalBody =>
       'connectivitycheck.gstatic.com receives a plain HEAD request to detect captive portals. This is the same probe Android itself runs.';
+
+  @override
+  String get privacyBreachCheckTitle =>
+      'Password Breach Check (Have I Been Pwned)';
+
+  @override
+  String get privacyBreachCheckBody =>
+      'The breach check queries api.pwnedpasswords.com with k-anonymity: the password is SHA-1 hashed on this device and only the first 5 characters of the hash are ever sent. The full password or full hash never leaves the phone, and nothing is logged or stored.';
 
   @override
   String get privacyNoTrackersTitle => 'No Analytics, No Trackers, No Ads';
@@ -3613,12 +3556,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deauthActivity => 'Deauth activity';
 
   @override
-  String get handshakeCaptureStarted => 'Handshake capture started';
-
-  @override
-  String get handshakeCaptured => 'Handshake captured';
-
-  @override
   String get captivePortal => 'Captive portal';
 
   @override
@@ -3926,12 +3863,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get whatIsThisHowToFix => 'What is this? · How to fix';
 
   @override
-  String get preview => 'Preview';
-
-  @override
-  String get recording => 'RECORDING';
-
-  @override
   String get reviewing => 'REVIEW';
 
   @override
@@ -3939,10 +3870,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get surveyComplete => 'SURVEY COMPLETE';
-
-  @override
-  String get surveyCompleteDesc =>
-      'The survey has been successfully recorded. Plan and signal data are synthesized.';
 
   @override
   String get coverage => 'COVERAGE';
@@ -3972,9 +3899,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get heatmapSamplesShort => 'samples';
 
   @override
-  String get heatmapWallsShort => 'walls';
-
-  @override
   String get heatmapRestartSurvey => 'RESTART SURVEY';
 
   @override
@@ -3997,114 +3921,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'I just mapped my home Wi-Fi with Torcav! Check out the dead zones. Find out why your internet is slow and download Torcav today: torcav.com';
 
   @override
-  String get heatmapIssueTitle => 'Issue';
-
-  @override
-  String get heatmapGenericIssueBody =>
-      'The survey could not finish. Check permissions and device sensors.';
-
-  @override
-  String get heatmapGoalTitle => 'What This Feature Does';
-
-  @override
-  String get heatmapGoalBody =>
-      'It samples Wi-Fi as you walk, captures wall lines in AR, and then shows the home outline together with signal density.';
-
-  @override
-  String get heatmapWaitingForDataTitle => 'Waiting For Data';
-
-  @override
-  String get heatmapWaitingForDataBody =>
-      'No signal sample has landed yet. Check motion and location permissions, then walk a few steps.';
-
-  @override
-  String get heatmapArCaptureTitle => 'AR Mode Active';
-
-  @override
-  String get heatmapArCaptureBody =>
-      'Point the phone at room edges and door openings. The camera searches for wall lines while signal points are added automatically as you move.';
-
-  @override
-  String get heatmapMapCaptureTitle => '2D Map Active';
-
-  @override
-  String get heatmapMapCaptureBody =>
-      'You are in the clearer 2D view. Samples keep arriving as you walk; if the outline stays weak, switch to AR mode.';
-
-  @override
-  String get heatmapReviewTitle => 'Survey Summary';
-
-  @override
-  String get heatmapReviewBodyNoSamples =>
-      'There is a saved survey, but it still lacks meaningful signal samples.';
-
-  @override
-  String get heatmapReviewBodyReady =>
-      'Coverage is readable. Use the summary below to inspect weak zones.';
-
-  @override
   String get heatmapSamplesLabel => 'SAMPLES';
-
-  @override
-  String get heatmapWallsLabel => 'WALLS';
-
-  @override
-  String get heatmapCurrentSignalLabel => 'LIVE SIGNAL';
 
   @override
   String get heatmapAvgSignalLabel => 'AVG SIGNAL';
 
   @override
-  String get heatmapWeakZonesLabel => 'WEAK ZONES';
-
-  @override
-  String get heatmapPlanSizeLabel => 'PLAN SIZE';
-
-  @override
   String get heatmapNotAvailable => 'Not ready';
-
-  @override
-  String get heatmapNoSamplesHelper => 'Fills in as you start walking';
-
-  @override
-  String heatmapSamplesHelper(int count) {
-    return '$count signal samples collected';
-  }
-
-  @override
-  String get heatmapNoWallsHelper => 'AR pass may be needed for the outline';
-
-  @override
-  String heatmapWallsHelper(int count) {
-    return '$count wall segments retained';
-  }
-
-  @override
-  String get heatmapSignalUnavailableHelper =>
-      'Wi-Fi reading has not arrived yet';
-
-  @override
-  String get heatmapSignalStrongHelper => 'Strong coverage';
-
-  @override
-  String get heatmapSignalFairHelper => 'Borderline but usable';
-
-  @override
-  String get heatmapSignalWeakHelper => 'Weak or problematic zone';
-
-  @override
-  String get heatmapWeakZoneHelperNone => 'No obvious dead zones';
-
-  @override
-  String get heatmapWeakZoneHelperOne => 'One problematic area';
-
-  @override
-  String heatmapWeakZoneHelperMany(int count) {
-    return '$count weak areas detected';
-  }
-
-  @override
-  String get heatmapPlanSizeHelper => 'Estimated span from captured trace';
 
   @override
   String get heatmapNoSurveyYetTitle => 'Start A Survey';
@@ -4119,63 +3942,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get heatmapWalkToBeginBody =>
       'The trail and signal points appear as you take a few steps in each room.';
-
-  @override
-  String get heatmapMapViewLabel => '2D HARITA';
-
-  @override
-  String get heatmapResultViewLabel => 'SONUC GORUNUMU';
-
-  @override
-  String get heatmapFindingsTitle => 'NE ANLATIYOR?';
-
-  @override
-  String get heatmapInsightReady =>
-      'The survey is now dense enough. One last room transition is enough before saving the result.';
-
-  @override
-  String get heatmapInsightTooEarly =>
-      'It is still too early. After 4-5 samples across a few rooms, the result becomes readable.';
-
-  @override
-  String get heatmapInsightNoWalls =>
-      'Signal is arriving but the outline is missing. Switch to AR and face the walls during another pass to improve the plan.';
-
-  @override
-  String heatmapInsightLive(int count) {
-    return 'The live result is starting to read well. With $count samples, weak areas are becoming visible.';
-  }
-
-  @override
-  String get heatmapReviewInsightNoSamples =>
-      'This survey has no signal samples. If location or motion permissions are off, the app cannot build the heatmap.';
-
-  @override
-  String get heatmapReviewInsightNoPlan =>
-      'The heatmap is present but the outline is weak. On the next run, use AR and face room boundaries while walking.';
-
-  @override
-  String get heatmapReviewInsightStrong =>
-      'Coverage looks strong overall. No clear dead zones are visible, and the outline agrees with the signal trace.';
-
-  @override
-  String heatmapReviewInsightWeak(int count) {
-    return '$count weak zones are visible. Moving the router more centrally or adding another access point may help.';
-  }
-
-  @override
-  String heatmapReviewInsightBalanced(int count) {
-    return 'Coverage is reasonably balanced, but it dips in $count spots. These are often corners, corridor ends, or heavy wall transitions.';
-  }
-
-  @override
-  String get heatmapCloseReview => 'CLOSE REVIEW';
-
-  @override
-  String get heatmapNewSurvey => 'NEW SURVEY';
-
-  @override
-  String get heatmapFinishAndReview => 'FINISH & REVIEW';
 
   @override
   String get heatmapStartSurvey => 'START SURVEY';
@@ -4208,142 +3974,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get heatmapDeleteSurveyTooltip => 'Delete survey';
-
-  @override
-  String get heatmapLegendTitle => 'COLOR GUIDE';
-
-  @override
-  String get heatmapLegendStrong => 'Strong';
-
-  @override
-  String get heatmapLegendFair => 'Fair';
-
-  @override
-  String get heatmapLegendWeak => 'Weak';
-
-  @override
-  String get heatmapCameraViewLabel => 'LIVE CAMERA';
-
-  @override
-  String get heatmapInfoSheetTitle => 'LIVE SURVEY DATA';
-
-  @override
-  String heatmapFeedStatus(String label, String status) {
-    return '$label: $status';
-  }
-
-  @override
-  String get heatmapActive => 'active';
-
-  @override
-  String get heatmapInactive => 'inactive';
-
-  @override
-  String get heatmapArViewLabel => 'AR VIEW';
-
-  @override
-  String get heatmapSwitchToMapHint => 'Return to the clearer 2D map';
-
-  @override
-  String get heatmapSwitchToArHint => 'Use AR to strengthen the outline';
-
-  @override
-  String get heatmapRouteLabel => 'NEXT STEP';
-
-  @override
-  String get heatmapPlanConfidenceLabel => 'PLAN CONFIDENCE';
-
-  @override
-  String get heatmapCoverageConfidenceLabel => 'COVERAGE CONFIDENCE';
-
-  @override
-  String get heatmapSignalConfidenceLabel => 'SIGNAL CONFIDENCE';
-
-  @override
-  String get heatmapMotionFeedLabel => 'Motion';
-
-  @override
-  String get heatmapCameraFeedLabel => 'Camera';
-
-  @override
-  String get heatmapPlanFeedLabel => 'Plan';
-
-  @override
-  String get heatmapGuidanceIdleTitle => 'Survey Setup';
-
-  @override
-  String get heatmapGuidanceCalibrationTitle => 'Starting Route';
-
-  @override
-  String get heatmapGuidanceSweepTitle => 'Filling Coverage';
-
-  @override
-  String get heatmapGuidanceWeakCheckTitle => 'Weak Zone Check';
-
-  @override
-  String get heatmapGuidanceWrapUpTitle => 'Ready To Save';
-
-  @override
-  String get heatmapGuidanceReviewTitle => 'Survey Quality';
-
-  @override
-  String get heatmapGuidanceIdleBody =>
-      'Start a new survey. The app will combine motion, camera, and Wi-Fi traces into a cleaner floor plan.';
-
-  @override
-  String get heatmapGuidanceCalibrationBody =>
-      'Walk straight for 5-8 steps to establish the first trace. Doorways and corner turns help anchor the layout faster.';
-
-  @override
-  String heatmapGuidanceSweepBody(String region) {
-    return 'The $region side of the map is still sparse. Move there and collect 3-4 more samples.';
-  }
-
-  @override
-  String get heatmapGuidanceWeakCheckBody =>
-      'You are currently in a weak-signal area. Sweep this zone a bit more to confirm whether it is a real dead spot.';
-
-  @override
-  String get heatmapGuidanceWrapUpBody =>
-      'Outline, coverage, and signal density are now strong enough. Save the result and read the plan/heatmap in review.';
-
-  @override
-  String heatmapGuidanceReviewBody(int progress, int count) {
-    return 'This survey is $progress% complete. With $count samples, the result is readable.';
-  }
-
-  @override
-  String get heatmapRouteFinish => 'Finish survey';
-
-  @override
-  String get heatmapRouteStart => 'Start survey';
-
-  @override
-  String get heatmapRouteWalkForward => 'Walk forward';
-
-  @override
-  String get heatmapRouteSweepWeak => 'Sweep weak zone';
-
-  @override
-  String get heatmapRouteWrapUp => 'Wrap up run';
-
-  @override
-  String get heatmapRouteReview => 'Review result';
-
-  @override
-  String get heatmapRegionLeft => 'left wing';
-
-  @override
-  String get heatmapRegionRight => 'right wing';
-
-  @override
-  String get heatmapRegionUpper => 'upper area';
-
-  @override
-  String get heatmapRegionLower => 'lower area';
-
-  @override
-  String get heatmapRegionKeep => 'keep sweeping';
 
   @override
   String channelShort(int channel) {
@@ -4678,40 +4308,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get trustLevelRisky => 'RISKY';
-
-  @override
-  String cveDatabaseLabel(String freshness) {
-    return 'CVE DATABASE — $freshness';
-  }
-
-  @override
-  String get howToUpdateLabel => 'HOW TO UPDATE';
-
-  @override
-  String get vulnDbFreshLabel => 'FRESH';
-
-  @override
-  String get vulnDbAgingLabel => 'AGING';
-
-  @override
-  String get vulnDbStaleLabel => 'STALE';
-
-  @override
-  String get vulnDbFreshMessage =>
-      'Vulnerability lookups against this database are up to date.';
-
-  @override
-  String get vulnDbAgingMessage =>
-      'The local vulnerability database is over a month old. A clean scan still has value but consider refreshing soon.';
-
-  @override
-  String get vulnDbStaleMessage =>
-      'This database is more than 90 days old. A \"no findings\" result no longer means the network is safe — many newer CVEs may not be represented here yet.';
-
-  @override
-  String vulnDbEntriesInfo(String version, int count, int days) {
-    return 'v$version · $count entries · $days days old';
-  }
 
   @override
   String get wipeAllDialogTitle => 'WIPE ALL DATA';
@@ -5247,18 +4843,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Security alert notifications';
 
   @override
-  String get scanCompleteTitle => 'Scan Complete';
-
-  @override
-  String scanCompleteBody(int count, int seconds) {
-    return 'Found $count networks in ${seconds}s';
-  }
-
-  @override
-  String get wifiChannelQualityDroppedTitle =>
-      '📶 Wi-Fi channel quality dropped';
-
-  @override
   String wifiChannelQualityDroppedBody(
     int channel,
     String rating,
@@ -5266,11 +4850,6 @@ class AppLocalizationsEn extends AppLocalizations {
     String recommendedRating,
   ) {
     return 'Channel $channel is now $rating/10. Channel $recommendedChannel is at $recommendedRating/10 — consider switching.';
-  }
-
-  @override
-  String attackDetectedTitle(String attackType) {
-    return '⚠️ Attack Detected: $attackType';
   }
 
   @override
@@ -5613,10 +5192,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get breachMonitorSubtitle => 'Check if a password has leaked';
-
-  @override
-  String get breachMonitorIntro =>
-      'Enter any password to check it against known data breaches. Only the first 5 characters of its hash are sent — the password itself never leaves your device.';
 
   @override
   String get breachInputLabel => 'Password to check';

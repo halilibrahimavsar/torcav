@@ -125,10 +125,6 @@
     "@liveLabel": {
         "description": "Live indicator label"
     },
-    "topologyLabel": "TOPOLOJİ",
-    "@topologyLabel": {
-        "description": "Dashboard section label."
-    },
     "networkLogs": "AĞ GÜNLÜKLERİ",
     "@networkLogs": {
         "description": "Dashboard logs label."
@@ -411,7 +407,7 @@
     "@errorLabel": {
         "description": "Error Label"
     },
-    "savePdfReportDialog": "Save PDF Report",
+    "savePdfReportDialog": "PDF Raporu Kaydet",
     "@savePdfReportDialog": {
         "description": "Save Pdf Report Dialog"
     },
@@ -426,10 +422,6 @@
     "threatsDetected": "TEHDİT TESPİT EDİLDİ",
     "@threatsDetected": {
         "description": "Status text when threats are detected"
-    },
-    "networkReconTitle": "AĞ KEŞFİ",
-    "@networkReconTitle": {
-        "description": "Network Recon Title"
     },
     "intelligenceReportTitle": "İSTİHBARAT RAPORU",
     "@intelligenceReportTitle": {
@@ -456,10 +448,6 @@
                 "type": "int"
             }
         }
-    },
-    "lanReconTitle": "LAN TARAMASI",
-    "@lanReconTitle": {
-        "description": "Lan Recon Title"
     },
     "targetSubnet": "Hedef IP / Alt Ağ",
     "@targetSubnet": {
@@ -553,39 +541,39 @@
     "@analyzingNode": {
         "description": "Analyzing Node"
     },
-    "topologyGuideTitle": "TOPOLOGY GUIDE",
+    "topologyGuideTitle": "TOPOLOJİ REHBERİ",
     "@topologyGuideTitle": {
         "description": "Title for the topology information sheet"
     },
-    "topologyGuideDesc": "Understand your network structure and device connectivity.",
+    "topologyGuideDesc": "Ağ yapınızı ve cihaz bağlantılarını anlayın.",
     "@topologyGuideDesc": {
         "description": "Description for the topology information sheet"
     },
-    "gatewayTitle": "The Gateway",
+    "gatewayTitle": "Ağ Geçidi",
     "@gatewayTitle": {
         "description": "Gateway title"
     },
-    "gatewayDesc": "The central brain of your network. All external traffic flows through this node.",
+    "gatewayDesc": "Ağınızın merkez beyni. Tüm dış trafik bu düğümden geçer.",
     "@gatewayDesc": {
         "description": "Gateway description"
     },
-    "deviceLayersTitle": "Device Layers",
+    "deviceLayersTitle": "Cihaz Katmanları",
     "@deviceLayersTitle": {
         "description": "Device layers title"
     },
-    "deviceLayersDesc": "Devices are categorized by their role: Core (Routers/APs), Mobile, and IoT/Peripheral.",
+    "deviceLayersDesc": "Cihazlar rollerine göre gruplanır: Çekirdek (Router/AP), Mobil ve IoT/Çevre birimleri.",
     "@deviceLayersDesc": {
         "description": "Device layers description"
     },
-    "pathwaysTitle": "Pathways",
+    "pathwaysTitle": "Bağlantı Yolları",
     "@pathwaysTitle": {
         "description": "Pathways title"
     },
-    "pathwaysDesc": "Modern networks mix wired (Ethernet) and wireless (Wi-Fi) connections. Solid lines indicate high-speed wired links, while dashed lines show wireless segments.",
+    "pathwaysDesc": "Modern ağlar kablolu (Ethernet) ve kablosuz (Wi-Fi) bağlantıları bir arada kullanır. Düz çizgiler yüksek hızlı kablolu hatları, kesikli çizgiler kablosuz bölümleri gösterir.",
     "@pathwaysDesc": {
         "description": "Pathways description"
     },
-    "pingAction": "TEST LATENCY",
+    "pingAction": "GECİKMEYİ TEST ET",
     "@pingAction": {
         "description": "Action to ping a device"
     },
@@ -725,7 +713,7 @@
     "@navWifi": {
         "description": "Nav Wifi"
     },
-    "backendLabel": "BACKEND",
+    "backendLabel": "ARKA UÇ",
     "@backendLabel": {
         "description": "Backend Label"
     },
@@ -737,7 +725,7 @@
     "@knownNetworks": {
         "description": "Known Networks"
     },
-    "noIdentifiedNetworks": "No identified networks in laboratory archives",
+    "noIdentifiedNetworks": "Laboratuvar arşivinde tanımlanmış ağ yok",
     "@noIdentifiedNetworks": {
         "description": "No Identified Networks"
     },
@@ -790,24 +778,7 @@
     "@osDetectedLabel": {
         "description": "OS Detection Label"
     },
-    "portLabel": "PORT {port}",
-    "@portLabel": {
-        "placeholders": {
-            "port": {
-                "type": "int"
-            }
-        },
-        "description": "Label for portLabel"
-    },
-    "portsFoundLabel": "OPEN PORTS",
-    "@portsFoundLabel": {
-        "description": "Label for discovered open ports"
-    },
-    "noPortsFound": "No open ports found",
-    "@noPortsFound": {
-        "description": "Message shown when no open ports were discovered"
-    },
-    "hostnameLookupAction": "LOOKUP HOSTNAME",
+    "hostnameLookupAction": "HOSTNAME SORGULA",
     "@hostnameLookupAction": {
         "description": "Action to lookup hostname of a device"
     },
@@ -818,10 +789,6 @@
     "portScanAction": "PORT TARAMASI",
     "@portScanAction": {
         "description": "Action to scan ports on a device"
-    },
-    "portRangeHint": "Port range (e.g. 80,443 or 1-1000)",
-    "@portRangeHint": {
-        "description": "Hint for port range input field"
     },
     "latencyLabel": "GECİKME",
     "@latencyLabel": {
@@ -1224,10 +1191,6 @@
     "@scanProfileLabel": {
         "description": "Scan Profile Label"
     },
-    "infoScanProfilesTitle": "Tarama Profilleri",
-    "@infoScanProfilesTitle": {
-        "description": "Info Scan Profiles Title"
-    },
     "infoScanProfileFastDesc": "Hızlı: Çabuk ping taraması — cihazları saniyeler içinde bulur.",
     "@infoScanProfileFastDesc": {
         "description": "Info Scan Profile Fast Desc"
@@ -1376,10 +1339,6 @@
     "waitingForData": "Veri bekleniyor...",
     "@waitingForData": {
         "description": "Text shown while waiting for data to load."
-    },
-    "temporalHeatmap": "Zamansal Isı Haritası",
-    "@temporalHeatmap": {
-        "description": "Title for the temporal heatmap screen."
     },
     "signalMonitoringTitle": "SİNYAL İZLEME: {ssid}",
     "@signalMonitoringTitle": {
@@ -1585,30 +1544,6 @@
     "@interfaceTheme": {
         "description": "Interface Theme"
     },
-    "speedTestHeader": "HIZ TESTİ",
-    "@speedTestHeader": {
-        "description": "Speed Test Header"
-    },
-    "commandCenters": "KOMUTA MERKEZLERİ",
-    "@commandCenters": {
-        "description": "Command Centers"
-    },
-    "activeShielding": "Aktif Kalkan",
-    "@activeShielding": {
-        "description": "Active Shielding"
-    },
-    "logisticsTitle": "LOJİSTİK",
-    "@logisticsTitle": {
-        "description": "Logistics Title"
-    },
-    "intelMetrics": "İstihbarat Metrikleri",
-    "@intelMetrics": {
-        "description": "Intel Metrics"
-    },
-    "networkMesh": "Ağ Örgüsü",
-    "@networkMesh": {
-        "description": "Network Mesh"
-    },
     "phasePing": "AŞAMA: PING",
     "@phasePing": {
         "description": "Phase Ping"
@@ -1657,7 +1592,7 @@
     "@channelInterferenceDescription": {
         "description": "Explanation of channel interference"
     },
-    "securityEventType": "{type, select, rogueApSuspected{Şüpheli AP Tespiti} deauthBurstDetected{Deauth Patlaması Tespiti} handshakeCaptureStarted{Handshake Protokol Analizi} handshakeCaptureCompleted{Handshake Protokolü Doğrulandı} captivePortalDetected{Captive Portal Tespiti} evilTwinDetected{Evil Twin Tespiti} deauthAttackSuspected{Şüpheli Deauth Saldırısı} encryptionDowngraded{Şifreleme Düzeyi Düşürüldü} unsupportedOperation{Desteklenmeyen İşlem} arpSpoofingDetected{ARP Spoofing Tespiti} dnsHijackingDetected{DNS Hijacking Tespiti} other{{type}}}",
+    "securityEventType": "{type, select, rogueApSuspected{Şüpheli AP Tespiti} deauthBurstDetected{Deauth Patlaması Tespiti} captivePortalDetected{Captive Portal Tespiti} evilTwinDetected{Evil Twin Tespiti} deauthAttackSuspected{Şüpheli Deauth Saldırısı} encryptionDowngraded{Şifreleme Düzeyi Düşürüldü} unsupportedOperation{Desteklenmeyen İşlem} arpSpoofingDetected{ARP Spoofing Tespiti} dnsHijackingDetected{DNS Hijacking Tespiti} other{{type}}}",
     "@securityEventType": {
         "description": "Name of security event type",
         "placeholders": {
@@ -1862,15 +1797,15 @@
             }
         }
     },
-    "trustNetwork": "TRUST NETWORK",
+    "trustNetwork": "AĞA GÜVEN",
     "@trustNetwork": {
         "description": "Button to trust a network baseline"
     },
-    "untrustNetwork": "UNTRUST NETWORK",
+    "untrustNetwork": "GÜVENİ KALDIR",
     "@untrustNetwork": {
         "description": "Button to remove a network from trusted profiles"
     },
-    "trustedBaselineBadge": "TRUSTED BASELINES",
+    "trustedBaselineBadge": "GÜVENİLEN TABANLAR",
     "@trustedBaselineBadge": {
         "description": "Badge for a network with an established trusted profile"
     },
@@ -2405,21 +2340,13 @@
     "@acknowledgedLabel": {
         "description": "Confirmation button label that closes an info bottom sheet (Topology legend)"
     },
-    "speedDoctorTitle": "SPEED DOCTOR",
+    "speedDoctorTitle": "HIZ DOKTORU",
     "@speedDoctorTitle": {
         "description": "Label for speedDoctorTitle"
     },
     "speedDoctorTagline": "İnternet neden yavaş?",
     "@speedDoctorTagline": {
         "description": "Speed Doctor subtitle"
-    },
-    "speedDoctorOpsTile": "HIZ DOKTORU",
-    "@speedDoctorOpsTile": {
-        "description": "Operations Hub tile for Speed Doctor"
-    },
-    "speedDoctorOpsSubtitle": "Niye yavaş?",
-    "@speedDoctorOpsSubtitle": {
-        "description": "Operations Hub tile subtitle for Speed Doctor"
     },
     "evilTwinDetailTitle": "EVIL TWIN DETAYI",
     "@evilTwinDetailTitle": {
@@ -2593,11 +2520,11 @@
     "@ssidLabel": {
         "description": "SSID label."
     },
-    "noSecurityFindings": "No security findings detected.",
+    "noSecurityFindings": "Güvenlik bulgusu tespit edilmedi.",
     "@noSecurityFindings": {
         "description": "Empty state for security findings."
     },
-    "resetToInferred": "Reset to inferred",
+    "resetToInferred": "Otomatik etikete dön",
     "@resetToInferred": {
         "description": "Button to reset network context."
     },
@@ -2605,39 +2532,35 @@
     "@internetSlowQuestion": {
         "description": "Question on the speed doctor tile."
     },
-    "runSpeedDoctorDesc": "Speed Doctor'ı çalıştır — 30 saniyelik kök neden teşhisi.",
-    "@runSpeedDoctorDesc": {
-        "description": "Description on the speed doctor tile."
-    },
-    "securityAlertsTitle": "SECURITY ALERTS",
+    "securityAlertsTitle": "GÜVENLİK UYARILARI",
     "@securityAlertsTitle": {
         "description": "Title for the security alerts sheet."
     },
-    "markAllRead": "MARK ALL READ",
+    "markAllRead": "TÜMÜNÜ OKUNDU YAP",
     "@markAllRead": {
         "description": "Button to mark all alerts as read."
     },
-    "clearAll": "CLEAR ALL",
+    "clearAll": "TÜMÜNÜ TEMİZLE",
     "@clearAll": {
         "description": "Button to clear all alerts."
     },
-    "eventsRetentionInfo": "Events are retained for 30 days. Swipe left to dismiss.",
+    "eventsRetentionInfo": "Olaylar 30 gün saklanır. Kapatmak için sola kaydırın.",
     "@eventsRetentionInfo": {
         "description": "Information about event retention."
     },
-    "allSystemsClear": "All systems clear",
+    "allSystemsClear": "Tüm sistemler temiz",
     "@allSystemsClear": {
         "description": "Text shown when there are no alerts."
     },
-    "heuristicDetectionNote": "Heuristic detection — not a confirmed attack. False positives may occur in congested environments.",
+    "heuristicDetectionNote": "Sezgisel tespit — doğrulanmış bir saldırı değildir. Kalabalık ortamlarda yanlış pozitif görülebilir.",
     "@heuristicDetectionNote": {
         "description": "Note about heuristic detection accuracy."
     },
-    "markAsRead": "MARK AS READ",
+    "markAsRead": "OKUNDU YAP",
     "@markAsRead": {
         "description": "Button to mark a single alert as read."
     },
-    "eventTypeRogueAp": "ROGUE AP",
+    "eventTypeRogueAp": "SAHTE AP",
     "@eventTypeRogueAp": {
         "description": "Security event type: Rogue AP."
     },
@@ -2645,31 +2568,23 @@
     "@eventTypeEvilTwin": {
         "description": "Security event type: Evil Twin."
     },
-    "eventTypeDeauthAttack": "DEAUTH ATTACK",
+    "eventTypeDeauthAttack": "DEAUTH SALDIRISI",
     "@eventTypeDeauthAttack": {
         "description": "Security event type: Deauth Attack."
     },
-    "eventTypeEncryptionWeakened": "ENCRYPTION WEAKENED",
+    "eventTypeEncryptionWeakened": "ŞİFRELEME ZAYIFLADI",
     "@eventTypeEncryptionWeakened": {
         "description": "Security event type: Encryption Weakened."
     },
-    "eventTypeDeauthBurst": "DEAUTH BURST",
+    "eventTypeDeauthBurst": "DEAUTH PATLAMASI",
     "@eventTypeDeauthBurst": {
         "description": "Security event type: Deauth Burst."
-    },
-    "eventTypeHandshakeAnalysis": "HANDSHAKE ANALYSIS",
-    "@eventTypeHandshakeAnalysis": {
-        "description": "Security event type: Handshake Analysis."
-    },
-    "eventTypeHandshakeSecured": "HANDSHAKE SECURED",
-    "@eventTypeHandshakeSecured": {
-        "description": "Security event type: Handshake Secured."
     },
     "eventTypeCaptivePortal": "CAPTIVE PORTAL",
     "@eventTypeCaptivePortal": {
         "description": "Security event type: Captive Portal."
     },
-    "eventTypeUnsupported": "UNSUPPORTED",
+    "eventTypeUnsupported": "DESTEKLENMİYOR",
     "@eventTypeUnsupported": {
         "description": "Security event type: Unsupported."
     },
@@ -2685,7 +2600,7 @@
     "@agentId": {
         "description": "Default agent ID."
     },
-    "cyberneticId": "CYBERNETIC_ID: {id}",
+    "cyberneticId": "SİBERNETİK_KİMLİK: {id}",
     "@cyberneticId": {
         "description": "Cybernetic ID label.",
         "placeholders": {
@@ -2694,7 +2609,7 @@
             }
         }
     },
-    "subscriptionLabel": "Sub: {type}",
+    "subscriptionLabel": "Abonelik: {type}",
     "@subscriptionLabel": {
         "description": "Subscription status label.",
         "placeholders": {
@@ -2703,7 +2618,7 @@
             }
         }
     },
-    "deepScanSuppressed": "Deep scan suppressed — connected to a {context} network. Disable the safety guard in Settings to override.",
+    "deepScanSuppressed": "Derin tarama bastırıldı — {context} bir ağa bağlısınız. Geçersiz kılmak için Ayarlar'dan güvenlik korumasını kapatın.",
     "@deepScanSuppressed": {
         "description": "Message shown when deep scan is skipped for safety.",
         "placeholders": {
@@ -2712,63 +2627,63 @@
             }
         }
     },
-    "securityAssessmentFailed": "SECURITY ASSESSMENT FAILED",
+    "securityAssessmentFailed": "GÜVENLİK DEĞERLENDİRMESİ BAŞARISIZ",
     "@securityAssessmentFailed": {
         "description": "Error message when security scan fails."
     },
-    "retryAnalytics": "RETRY ANALYTICS",
+    "retryAnalytics": "ANALİZİ YENİDEN DENE",
     "@retryAnalytics": {
         "description": "Button to retry security scan."
     },
-    "publicContextLabel": "public",
+    "publicContextLabel": "herkese açık",
     "@publicContextLabel": {
         "description": "Label for public network context."
     },
-    "guestContextLabel": "guest",
+    "guestContextLabel": "misafir",
     "@guestContextLabel": {
         "description": "Label for guest network context."
     },
-    "clearScanHistoryTitle": "CLEAR SCAN HISTORY",
+    "clearScanHistoryTitle": "TARAMA GEÇMİŞİNİ TEMİZLE",
     "@clearScanHistoryTitle": {
         "description": "Title for clear scan history dialog."
     },
-    "clearScanHistoryBody": "Delete all LAN scan records? This cannot be undone.",
+    "clearScanHistoryBody": "Tüm LAN tarama kayıtları silinsin mi? Bu işlem geri alınamaz.",
     "@clearScanHistoryBody": {
         "description": "Body for clear scan history dialog."
     },
-    "cancelLabel": "CANCEL",
+    "cancelLabel": "İPTAL",
     "@cancelLabel": {
         "description": "Cancel button label."
     },
-    "networkAuditConsentTitle": "NETWORK AUDIT CONSENT",
+    "networkAuditConsentTitle": "AĞ DENETİMİ ONAYI",
     "@networkAuditConsentTitle": {
         "description": "Title for network audit consent dialog."
     },
-    "networkAuditConsentDesc": "Active network scanning generates traffic to identify devices and services. This may be flagged by network security systems.",
+    "networkAuditConsentDesc": "Aktif ağ taraması, cihazları ve servisleri tanımlamak için trafik üretir. Bu, ağ güvenlik sistemleri tarafından işaretlenebilir.",
     "@networkAuditConsentDesc": {
         "description": "Description for network audit consent dialog."
     },
-    "consentScanNodes": "Scan local network for active nodes",
+    "consentScanNodes": "Yerel ağı aktif düğümler için tara",
     "@consentScanNodes": {
         "description": "Consent point: scan nodes."
     },
-    "consentFingerprint": "Fingerprint open services and OS",
+    "consentFingerprint": "Açık servislerin ve işletim sisteminin parmak izini çıkar",
     "@consentFingerprint": {
         "description": "Consent point: fingerprint."
     },
-    "consentIdentifyVulns": "Identify potential vulnerabilities",
+    "consentIdentifyVulns": "Olası zafiyetleri tespit et",
     "@consentIdentifyVulns": {
         "description": "Consent point: identify vulnerabilities."
     },
-    "consentConfirmAuth": "Confirm you have authorization for this network",
+    "consentConfirmAuth": "Bu ağ için yetkiniz olduğunu onaylayın",
     "@consentConfirmAuth": {
         "description": "Consent point: confirm authorization."
     },
-    "iUnderstand": "I UNDERSTAND",
+    "iUnderstand": "ANLADIM",
     "@iUnderstand": {
         "description": "Action label for consent dialog."
     },
-    "iosLanDiscoveryLimited": "iOS: LAN discovery is limited. mDNS browsing and ARP table access may be restricted by the OS.",
+    "iosLanDiscoveryLimited": "iOS: LAN keşfi sınırlıdır. mDNS taraması ve ARP tablosu erişimi işletim sistemi tarafından kısıtlanabilir.",
     "@iosLanDiscoveryLimited": {
         "description": "Warning for iOS users about LAN scan limitations."
     },
@@ -2973,7 +2888,7 @@
     "@legalDisclaimerBody": {
         "description": "Label for legalDisclaimerBody"
     },
-    "enableDeepScanTitle": "ENABLE DEEP SCAN?",
+    "enableDeepScanTitle": "DERİN TARAMA AÇILSIN MI?",
     "@enableDeepScanTitle": {
         "description": "Label for enableDeepScanTitle"
     },
@@ -2981,43 +2896,43 @@
     "@enableDeepScanBody": {
         "description": "Label for enableDeepScanBody"
     },
-    "wifiScanPermissionTitle": "WIFI SCAN PERMISSION",
+    "wifiScanPermissionTitle": "WIFI TARAMA İZNİ",
     "@wifiScanPermissionTitle": {
         "description": "Label for wifiScanPermissionTitle"
     },
-    "wifiScanPermissionDesc": "To discover nearby Wi-Fi networks and analyze signal strength, Torcav requires Location access. This is an Android system requirement for Wi-Fi scanning.",
+    "wifiScanPermissionDesc": "Yakındaki Wi-Fi ağlarını keşfetmek ve sinyal gücünü analiz etmek için Torcav'ın Konum iznine ihtiyacı var. Bu, Wi-Fi taraması için bir Android sistem gereksinimidir.",
     "@wifiScanPermissionDesc": {
         "description": "Label for wifiScanPermissionDesc"
     },
-    "consentScanSsids": "Scan nearby Wi-Fi SSIDs",
+    "consentScanSsids": "Yakındaki Wi-Fi SSID'lerini tara",
     "@consentScanSsids": {
         "description": "Label for consentScanSsids"
     },
-    "consentAnalyzeSignal": "Analyze signal quality and interference",
+    "consentAnalyzeSignal": "Sinyal kalitesini ve paraziti analiz et",
     "@consentAnalyzeSignal": {
         "description": "Label for consentAnalyzeSignal"
     },
-    "consentNoTracking": "Torcav never tracks or shares your location",
+    "consentNoTracking": "Torcav konumunuzu asla izlemez veya paylaşmaz",
     "@consentNoTracking": {
         "description": "Label for consentNoTracking"
     },
-    "continueLabel": "CONTINUE",
+    "continueLabel": "DEVAM",
     "@continueLabel": {
         "description": "Label for continueLabel"
     },
-    "clearWifiHistoryBody": "Delete all saved Wi-Fi scan sessions? This cannot be undone.",
+    "clearWifiHistoryBody": "Kayıtlı tüm Wi-Fi tarama oturumları silinsin mi? Bu işlem geri alınamaz.",
     "@clearWifiHistoryBody": {
         "description": "Label for clearWifiHistoryBody"
     },
-    "transparentSignalAnalysisTitle": "TRANSPARENT SIGNAL ANALYSIS",
+    "transparentSignalAnalysisTitle": "ŞEFFAF SİNYAL ANALİZİ",
     "@transparentSignalAnalysisTitle": {
         "description": "Label for transparentSignalAnalysisTitle"
     },
-    "transparentSignalAnalysisDesc": "Advanced spectrum analysis for security auditing. Local processing only.",
+    "transparentSignalAnalysisDesc": "Güvenlik denetimi için gelişmiş spektrum analizi. Yalnızca cihaz üzerinde işlenir.",
     "@transparentSignalAnalysisDesc": {
         "description": "Label for transparentSignalAnalysisDesc"
     },
-    "cachedResultsWarning": "Showing cached results — Android limits scan frequency. Wait ~30 s and refresh for live data.",
+    "cachedResultsWarning": "Önbellek sonuçları gösteriliyor — Android tarama sıklığını sınırlar. ~30 sn bekleyip canlı veri için yenileyin.",
     "@cachedResultsWarning": {
         "description": "Label for cachedResultsWarning"
     },
@@ -3029,35 +2944,35 @@
     "@iAmAuthorized": {
         "description": "Label for iAmAuthorized"
     },
-    "iosWifiScanLimited": "iOS: Wi-Fi scan results are limited by Apple APIs. Active scan trigger and some network details are unavailable.",
+    "iosWifiScanLimited": "iOS: Wi-Fi tarama sonuçları Apple API'leri ile sınırlıdır. Aktif tarama tetikleme ve bazı ağ ayrıntıları kullanılamaz.",
     "@iosWifiScanLimited": {
         "description": "Label for iosWifiScanLimited"
     },
-    "allCategoriesLabel": "All categories (single bundle)",
+    "allCategoriesLabel": "Tüm kategoriler (tek paket)",
     "@allCategoriesLabel": {
         "description": "Label for allCategoriesLabel"
     },
-    "autoLabel": "Auto",
+    "autoLabel": "Otomatik",
     "@autoLabel": {
         "description": "Label for autoLabel"
     },
-    "lightLabel": "Light",
+    "lightLabel": "Açık",
     "@lightLabel": {
         "description": "Label for lightLabel"
     },
-    "darkLabel": "Dark",
+    "darkLabel": "Koyu",
     "@darkLabel": {
         "description": "Label for darkLabel"
     },
-    "dismissLabel": "Dismiss",
+    "dismissLabel": "Kapat",
     "@dismissLabel": {
         "description": "Label for dismissLabel"
     },
-    "applyLabel": "Apply",
+    "applyLabel": "Uygula",
     "@applyLabel": {
         "description": "Label for applyLabel"
     },
-    "openSettingsLabel": "Open settings",
+    "openSettingsLabel": "Ayarları aç",
     "@openSettingsLabel": {
         "description": "Label for openSettingsLabel"
     },
@@ -3165,7 +3080,7 @@
     "@wpsRecommendation": {
         "description": "Label for wpsRecommendation"
     },
-    "renderingErrorTitle": "RENDERING ERROR",
+    "renderingErrorTitle": "GÖRSELLEŞTİRME HATASI",
     "@renderingErrorTitle": {
         "description": "Label for renderingErrorTitle"
     },
@@ -3201,63 +3116,63 @@
     "@pingStabilizerConsentAction": {
         "description": "Ping stabilizer prominent disclosure: pingStabilizerConsentAction"
     },
-    "appTitleLong": "Torcav Wi-Fi Analyzer",
+    "appTitleLong": "Torcav Wi-Fi Analizörü",
     "@appTitleLong": {
         "description": "Label for appTitleLong"
     },
-    "tosTitle": "TERMS OF SERVICE",
+    "tosTitle": "KULLANIM KOŞULLARI",
     "@tosTitle": {
         "description": "Label for tosTitle"
     },
-    "tosAcceptanceTitle": "1. ACCEPTANCE",
+    "tosAcceptanceTitle": "1. KABUL",
     "@tosAcceptanceTitle": {
         "description": "Label for tosAcceptanceTitle"
     },
-    "tosAcceptanceBody": "By accessing or using Torcav, you agree to be bound by these Terms. If you do not agree, you must immediately cease use of the App.",
+    "tosAcceptanceBody": "Torcav'a erişerek veya onu kullanarak bu Koşullara bağlı olmayı kabul edersiniz. Kabul etmiyorsanız Uygulamayı kullanmayı derhal bırakmalısınız.",
     "@tosAcceptanceBody": {
         "description": "Label for tosAcceptanceBody"
     },
-    "tosAuthorizedTestingTitle": "2. AUTHORIZED TESTING ONLY",
+    "tosAuthorizedTestingTitle": "2. YALNIZCA YETKİLİ TEST",
     "@tosAuthorizedTestingTitle": {
         "description": "Label for tosAuthorizedTestingTitle"
     },
-    "tosAuthorizedTestingBody": "You represent and warrant that you will only use the App to analyze networks and devices that you own or for which you have received explicit, written authorization to test. Unauthorized access to networks is strictly prohibited and may be illegal in your jurisdiction.",
+    "tosAuthorizedTestingBody": "Uygulamayı yalnızca sahibi olduğunuz veya test etmek için açık, yazılı yetki aldığınız ağları ve cihazları analiz etmek için kullanacağınızı beyan ve taahhüt edersiniz. Ağlara yetkisiz erişim kesinlikle yasaktır ve bulunduğunuz ülkede yasa dışı olabilir.",
     "@tosAuthorizedTestingBody": {
         "description": "Label for tosAuthorizedTestingBody"
     },
-    "tosDisclaimerTitle": "3. DISCLAIMER OF WARRANTIES",
+    "tosDisclaimerTitle": "3. GARANTİ REDDİ",
     "@tosDisclaimerTitle": {
         "description": "Label for tosDisclaimerTitle"
     },
-    "tosDisclaimerBody": "The App is provided \"as is\" and \"as available\". We do not guarantee that the App will identify all security vulnerabilities or that its results are 100% accurate. Use at your own risk.",
+    "tosDisclaimerBody": "Uygulama \"olduğu gibi\" ve \"mevcut haliyle\" sunulur. Uygulamanın tüm güvenlik zafiyetlerini tespit edeceğini veya sonuçlarının %100 doğru olduğunu garanti etmiyoruz. Kullanım riski size aittir.",
     "@tosDisclaimerBody": {
         "description": "Label for tosDisclaimerBody"
     },
-    "tosLiabilityTitle": "4. LIMITATION OF LIABILITY",
+    "tosLiabilityTitle": "4. SORUMLULUĞUN SINIRLANDIRILMASI",
     "@tosLiabilityTitle": {
         "description": "Label for tosLiabilityTitle"
     },
-    "tosLiabilityBody": "In no event shall the developers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the App.",
+    "tosLiabilityBody": "Geliştiriciler, Uygulamanın kullanımından veya kullanılamamasından doğan hiçbir zarardan (veri veya kâr kaybı ya da iş kesintisi dahil ancak bunlarla sınırlı olmamak üzere) hiçbir durumda sorumlu tutulamaz.",
     "@tosLiabilityBody": {
         "description": "Label for tosLiabilityBody"
     },
-    "tosModificationsTitle": "5. MODIFICATIONS",
+    "tosModificationsTitle": "5. DEĞİŞİKLİKLER",
     "@tosModificationsTitle": {
         "description": "Label for tosModificationsTitle"
     },
-    "tosModificationsBody": "We reserve the right to modify these terms at any time. Continued use of the App following any changes constitutes acceptance of the new terms.",
+    "tosModificationsBody": "Bu koşulları herhangi bir zamanda değiştirme hakkımız saklıdır. Değişikliklerden sonra Uygulamayı kullanmaya devam etmeniz yeni koşulları kabul ettiğiniz anlamına gelir.",
     "@tosModificationsBody": {
         "description": "Label for tosModificationsBody"
     },
-    "tosLastUpdated": "Last Updated: April 2026",
+    "tosLastUpdated": "Son Güncelleme: Nisan 2026",
     "@tosLastUpdated": {
         "description": "Label for tosLastUpdated"
     },
-    "legalNoticeTitle": "LEGAL NOTICE",
+    "legalNoticeTitle": "YASAL UYARI",
     "@legalNoticeTitle": {
         "description": "Label for legalNoticeTitle"
     },
-    "legalNoticeBody": "This application is a security auditing tool. Misuse of this software to access or monitor networks without permission is strictly prohibited.",
+    "legalNoticeBody": "Bu uygulama bir güvenlik denetim aracıdır. Bu yazılımın izinsiz ağlara erişmek veya onları izlemek için kötüye kullanılması kesinlikle yasaktır.",
     "@legalNoticeBody": {
         "description": "Label for legalNoticeBody"
     },
@@ -3365,6 +3280,14 @@
     "privacyCaptivePortalBody": "connectivitycheck.gstatic.com, captive portal'ları tespit etmek için düz bir HEAD isteği alır. Bu, Android'in kendisinin çalıştırdığı sorgunun aynısıdır.",
     "@privacyCaptivePortalBody": {
         "description": "Label for privacyCaptivePortalBody"
+    },
+    "privacyBreachCheckTitle": "Parola Sızıntı Kontrolü (Have I Been Pwned)",
+    "@privacyBreachCheckTitle": {
+        "description": "Privacy policy card title for the HIBP breach check endpoint"
+    },
+    "privacyBreachCheckBody": "Sızıntı kontrolü api.pwnedpasswords.com'u k-anonimlik ile sorgular: parola bu cihazda SHA-1 özetine çevrilir ve özetin yalnızca ilk 5 karakteri gönderilir. Parolanın tamamı veya tam özeti telefondan asla çıkmaz; hiçbir şey kaydedilmez.",
+    "@privacyBreachCheckBody": {
+        "description": "Privacy policy card body for the HIBP breach check endpoint"
     },
     "privacyNoTrackersTitle": "Analiz Yok, İzleyici Yok, Reklam Yok",
     "@privacyNoTrackersTitle": {
@@ -3564,7 +3487,7 @@
         },
         "description": "Label for gatewayCopyError"
     },
-    "gatewayCopied": "Gateway IP {ip} copied to clipboard.",
+    "gatewayCopied": "Ağ geçidi IP'si {ip} panoya kopyalandı.",
     "@gatewayCopied": {
         "placeholders": {
             "ip": {
@@ -3613,55 +3536,55 @@
     "@vpnRecommendation": {
         "description": "Label for vpnRecommendation"
     },
-    "exportLocalDataTitle": "EXPORT LOCAL DATA",
+    "exportLocalDataTitle": "YEREL VERİYİ DIŞA AKTAR",
     "@exportLocalDataTitle": {
         "description": "Label for exportLocalDataTitle"
     },
-    "exportLocalDataDesc": "Your data on this device, in your hands. Pick a category and share or save it as JSON.",
+    "exportLocalDataDesc": "Bu cihazdaki verileriniz, sizin elinizde. Bir kategori seçin; JSON olarak paylaşın veya kaydedin.",
     "@exportLocalDataDesc": {
         "description": "Label for exportLocalDataDesc"
     },
-    "exportCategoryLabel": "Category",
+    "exportCategoryLabel": "Kategori",
     "@exportCategoryLabel": {
         "description": "Label for exportCategoryLabel"
     },
-    "exportFormatLabel": "Format",
+    "exportFormatLabel": "Biçim",
     "@exportFormatLabel": {
         "description": "Label for exportFormatLabel"
     },
-    "jsonExportLabel": "JSON — full, machine-readable",
+    "jsonExportLabel": "JSON — eksiksiz, makine tarafından okunabilir",
     "@jsonExportLabel": {
         "description": "Label for jsonExportLabel"
     },
-    "csvExportLabel": "CSV — opens in Excel/Sheets",
+    "csvExportLabel": "CSV — Excel/Sheets ile açılır",
     "@csvExportLabel": {
         "description": "Label for csvExportLabel"
     },
-    "csvSingleCategoryOnlyLabel": "CSV — single category only",
+    "csvSingleCategoryOnlyLabel": "CSV — yalnızca tek kategori",
     "@csvSingleCategoryOnlyLabel": {
         "description": "Label for csvSingleCategoryOnlyLabel"
     },
-    "htmlExportLabel": "HTML — viewable in browser",
+    "htmlExportLabel": "HTML — tarayıcıda görüntülenebilir",
     "@htmlExportLabel": {
         "description": "Label for htmlExportLabel"
     },
-    "anonymizeIdentifiersLabel": "Anonymize identifiers",
+    "anonymizeIdentifiersLabel": "Tanımlayıcıları anonimleştir",
     "@anonymizeIdentifiersLabel": {
         "description": "Label for anonymizeIdentifiersLabel"
     },
-    "anonymizeIdentifiersDesc": "Mask BSSID/MAC last 3 octets, redact SSID and hostname.",
+    "anonymizeIdentifiersDesc": "BSSID/MAC'in son 3 oktetini maskele, SSID ve hostname'i gizle.",
     "@anonymizeIdentifiersDesc": {
         "description": "Label for anonymizeIdentifiersDesc"
     },
-    "noIdentifiersToMaskDesc": "This category has no identifiers to mask.",
+    "noIdentifiersToMaskDesc": "Bu kategoride maskelenecek tanımlayıcı yok.",
     "@noIdentifiersToMaskDesc": {
         "description": "Label for noIdentifiersToMaskDesc"
     },
-    "exportingLabel": "EXPORTING…",
+    "exportingLabel": "DIŞA AKTARILIYOR…",
     "@exportingLabel": {
         "description": "Label for exportingLabel"
     },
-    "exportAsLabel": "EXPORT AS {format}",
+    "exportAsLabel": "{format} OLARAK AKTAR",
     "@exportAsLabel": {
         "placeholders": {
             "format": {
@@ -3670,75 +3593,75 @@
         },
         "description": "Label for exportAsLabel"
     },
-    "exportPrivacyNote": "Stays on your device until you share it. Nothing is sent to any server.",
+    "exportPrivacyNote": "Siz paylaşana kadar cihazınızda kalır. Hiçbir sunucuya gönderilmez.",
     "@exportPrivacyNote": {
         "description": "Label for exportPrivacyNote"
     },
-    "categoryWifiScanHistory": "Wi-Fi scan history",
+    "categoryWifiScanHistory": "Wi-Fi tarama geçmişi",
     "@categoryWifiScanHistory": {
         "description": "Label for categoryWifiScanHistory"
     },
-    "categorySpeedTestResults": "Speed test results",
+    "categorySpeedTestResults": "Hız testi sonuçları",
     "@categorySpeedTestResults": {
         "description": "Label for categorySpeedTestResults"
     },
-    "categorySecurityEvents": "Security events",
+    "categorySecurityEvents": "Güvenlik olayları",
     "@categorySecurityEvents": {
         "description": "Label for categorySecurityEvents"
     },
-    "categoryKnownAndTrustedNetworks": "Known + trusted networks",
+    "categoryKnownAndTrustedNetworks": "Bilinen + güvenilen ağlar",
     "@categoryKnownAndTrustedNetworks": {
         "description": "Label for categoryKnownAndTrustedNetworks"
     },
-    "categoryChannelRatingsHistory": "Channel ratings history",
+    "categoryChannelRatingsHistory": "Kanal puanı geçmişi",
     "@categoryChannelRatingsHistory": {
         "description": "Label for categoryChannelRatingsHistory"
     },
-    "categoryHeatmapSessions": "Heatmap sessions",
+    "categoryHeatmapSessions": "Isı haritası oturumları",
     "@categoryHeatmapSessions": {
         "description": "Label for categoryHeatmapSessions"
     },
-    "categoryLanScanLatest": "LAN scan (latest)",
+    "categoryLanScanLatest": "LAN taraması (en son)",
     "@categoryLanScanLatest": {
         "description": "Label for categoryLanScanLatest"
     },
-    "categoryDeviceLabelOverrides": "Device label overrides",
+    "categoryDeviceLabelOverrides": "Cihaz etiketi değişiklikleri",
     "@categoryDeviceLabelOverrides": {
         "description": "Label for categoryDeviceLabelOverrides"
     },
-    "categoryPinnedNetworks": "Pinned networks",
+    "categoryPinnedNetworks": "Sabitlenmiş ağlar",
     "@categoryPinnedNetworks": {
         "description": "Label for categoryPinnedNetworks"
     },
-    "categoryScoreHistory": "Security score history",
+    "categoryScoreHistory": "Güvenlik puanı geçmişi",
     "@categoryScoreHistory": {
         "description": "Label for categoryScoreHistory"
     },
-    "categoryNetworkContextOverrides": "Network context overrides",
+    "categoryNetworkContextOverrides": "Ağ bağlamı değişiklikleri",
     "@categoryNetworkContextOverrides": {
         "description": "Label for categoryNetworkContextOverrides"
     },
-    "categoryRouterHardeningProgress": "Router hardening progress",
+    "categoryRouterHardeningProgress": "Router sıkılaştırma ilerlemesi",
     "@categoryRouterHardeningProgress": {
         "description": "Label for categoryRouterHardeningProgress"
     },
-    "macRandomizedLabel": "MAC Randomized",
+    "macRandomizedLabel": "MAC Rastgeleleştirilmiş",
     "@macRandomizedLabel": {
         "description": "Label for macRandomizedLabel"
     },
-    "notificationsBlockedTitle": "Notifications are blocked",
+    "notificationsBlockedTitle": "Bildirimler engelli",
     "@notificationsBlockedTitle": {
         "description": "Label for notificationsBlockedTitle"
     },
-    "notificationsBlockedDesc": "The live ping HUD lives in the notification shade. Without notifications you cannot see ping while gaming. On MIUI/Xiaomi, also enable \"Show on Lock screen\" and \"Floating notifications\".",
+    "notificationsBlockedDesc": "Canlı ping göstergesi bildirim panelinde yaşar. Bildirimler olmadan oyun sırasında ping'i göremezsiniz. MIUI/Xiaomi'de ayrıca \"Kilit ekranında göster\" ve \"Kayan bildirimler\"i etkinleştirin.",
     "@notificationsBlockedDesc": {
         "description": "Label for notificationsBlockedDesc"
     },
-    "liveLatencyLabel": "Live latency",
+    "liveLatencyLabel": "Canlı gecikme",
     "@liveLatencyLabel": {
         "description": "Label for liveLatencyLabel"
     },
-    "latencyStatLabel": "Latency",
+    "latencyStatLabel": "Gecikme",
     "@latencyStatLabel": {
         "description": "Label for latencyStatLabel"
     },
@@ -3746,11 +3669,11 @@
     "@jitterStatLabel": {
         "description": "Label for jitterStatLabel"
     },
-    "lossStatLabel": "Loss",
+    "lossStatLabel": "Kayıp",
     "@lossStatLabel": {
         "description": "Label for lossStatLabel"
     },
-    "baselineLatencyLabel": "Baseline (pre-tunnel): {ms} ms",
+    "baselineLatencyLabel": "Taban (tünel öncesi): {ms} ms",
     "@baselineLatencyLabel": {
         "placeholders": {
             "ms": {
@@ -3759,7 +3682,7 @@
         },
         "description": "Label for baselineLatencyLabel"
     },
-    "jitterThresholdLabel": "Jitter alarm threshold: {ms} ms",
+    "jitterThresholdLabel": "Jitter alarm eşiği: {ms} ms",
     "@jitterThresholdLabel": {
         "placeholders": {
             "ms": {
@@ -3768,7 +3691,7 @@
         },
         "description": "Label for jitterThresholdLabel"
     },
-    "heatmapSettingsTitle": "Heatmap Settings",
+    "heatmapSettingsTitle": "Isı Haritası Ayarları",
     "@heatmapSettingsTitle": {
         "description": "Label for heatmapSettingsTitle"
     },
@@ -3776,23 +3699,23 @@
     "@dnsLabel": {
         "description": "Label for dnsLabel"
     },
-    "notNowLabel": "NOT NOW",
+    "notNowLabel": "ŞİMDİ DEĞİL",
     "@notNowLabel": {
         "description": "Label for notNowLabel"
     },
-    "newNetworkLabel": "+ NEW",
+    "newNetworkLabel": "+ YENİ",
     "@newNetworkLabel": {
         "description": "Label for newNetworkLabel"
     },
-    "goneNetworkLabel": "GONE",
+    "goneNetworkLabel": "KAYIP",
     "@goneNetworkLabel": {
         "description": "Label for goneNetworkLabel"
     },
-    "hiddenNetworkLabel": "[Hidden]",
+    "hiddenNetworkLabel": "[Gizli]",
     "@hiddenNetworkLabel": {
         "description": "Label for hiddenNetworkLabel"
     },
-    "randomizedMacDetectedLabel": "Randomized MAC Detected",
+    "randomizedMacDetectedLabel": "Rastgele MAC Tespit Edildi",
     "@randomizedMacDetectedLabel": {
         "description": "Label for randomizedMacDetectedLabel"
     },
@@ -3876,7 +3799,7 @@
     "@activeThreatsLabel": {
         "description": "Label for activeThreatsLabel"
     },
-    "shieldStatusOptimal": "OPTIMAL",
+    "shieldStatusOptimal": "OPTİMAL",
     "@shieldStatusOptimal": {
         "description": "Label for shieldStatusOptimal"
     },
@@ -3935,7 +3858,7 @@
         },
         "description": "Label for authEstablishedLabel"
     },
-    "revokeTrustTooltip": "REVOKE TRUST",
+    "revokeTrustTooltip": "GÜVENİ GERİ AL",
     "@revokeTrustTooltip": {
         "description": "Label for revokeTrustTooltip"
     },
@@ -3963,43 +3886,43 @@
     "@guestNetworkLabel": {
         "description": "Label for guestNetworkLabel"
     },
-    "publicWifiDesc": "Open or untrusted network — assume traffic can be observed.",
+    "publicWifiDesc": "Açık veya güvenilmeyen ağ — trafiğin izlenebileceğini varsayın.",
     "@publicWifiDesc": {
         "description": "Label for publicWifiDesc"
     },
-    "guestNetworkDesc": "You are on a guest segment. Treat as untrusted by default.",
+    "guestNetworkDesc": "Misafir segmentindesiniz. Varsayılan olarak güvenilmez kabul edin.",
     "@guestNetworkDesc": {
         "description": "Label for guestNetworkDesc"
     },
-    "tipVpnTitle": "Use a VPN",
+    "tipVpnTitle": "VPN kullanın",
     "@tipVpnTitle": {
         "description": "Label for tipVpnTitle"
     },
-    "tipVpnBody": "Tunnel traffic through a trusted VPN before sending anything sensitive. Built-in OS VPN is fine for most users.",
+    "tipVpnBody": "Hassas bir şey göndermeden önce trafiği güvendiğiniz bir VPN'den tünelleyin. Çoğu kullanıcı için işletim sisteminin yerleşik VPN'i yeterlidir.",
     "@tipVpnBody": {
         "description": "Label for tipVpnBody"
     },
-    "tipHttpsTitle": "Verify HTTPS",
+    "tipHttpsTitle": "HTTPS'i doğrulayın",
     "@tipHttpsTitle": {
         "description": "Label for tipHttpsTitle"
     },
-    "tipHttpsBody": "Only enter credentials on sites with a locked padlock. Reject certificate warnings — they are how attackers strip TLS.",
+    "tipHttpsBody": "Kimlik bilgilerini yalnızca kilitli asma kilit görünen sitelere girin. Sertifika uyarılarını reddedin — saldırganlar TLS'i böyle soyar.",
     "@tipHttpsBody": {
         "description": "Label for tipHttpsBody"
     },
-    "tipSensitiveTitle": "Defer sensitive actions",
+    "tipSensitiveTitle": "Hassas işlemleri erteleyin",
     "@tipSensitiveTitle": {
         "description": "Label for tipSensitiveTitle"
     },
-    "tipSensitiveBody": "Avoid banking, payments, password resets and account logins until you are back on a trusted network.",
+    "tipSensitiveBody": "Güvendiğiniz bir ağa dönene kadar bankacılık, ödeme, parola sıfırlama ve hesap girişlerinden kaçının.",
     "@tipSensitiveBody": {
         "description": "Label for tipSensitiveBody"
     },
-    "tipDnsTitle": "Check DNS health",
+    "tipDnsTitle": "DNS sağlığını kontrol edin",
     "@tipDnsTitle": {
         "description": "Label for tipDnsTitle"
     },
-    "tipDnsBody": "Public hotspots can hijack DNS. Run a DNS test from this screen to confirm responses are not being rewritten.",
+    "tipDnsBody": "Halka açık erişim noktaları DNS'i ele geçirebilir. Yanıtların değiştirilmediğini doğrulamak için bu ekrandan bir DNS testi çalıştırın.",
     "@tipDnsBody": {
         "description": "Label for tipDnsBody"
     },
@@ -4440,11 +4363,11 @@
     "@rule_hardware_vulnerability_rec": {
         "description": "Label for rule_hardware_vulnerability_rec"
     },
-    "noLiveScanAvailable": "NO LIVE SCAN AVAILABLE",
+    "noLiveScanAvailable": "CANLI TARAMA YOK",
     "@noLiveScanAvailable": {
         "description": "Label for noLiveScanAvailable"
     },
-    "noLiveScanDesc": "We don't have a fresh Wi-Fi scan that includes \"{ssid}\" right now, so the live signal breakdown isn't available. Run a new Wi-Fi scan from the Discovery tab and reopen this alert to see the full evidence.",
+    "noLiveScanDesc": "Şu anda \"{ssid}\" ağını içeren güncel bir Wi-Fi taraması yok; bu yüzden canlı sinyal dökümü gösterilemiyor. Keşif sekmesinden yeni bir Wi-Fi taraması çalıştırın ve tüm kanıtı görmek için bu uyarıyı yeniden açın.",
     "@noLiveScanDesc": {
         "placeholders": {
             "ssid": {
@@ -4457,15 +4380,15 @@
     "@outOf100Label": {
         "description": "Label for outOf100Label"
     },
-    "networkLabel": "Network",
+    "networkLabel": "Ağ",
     "@networkLabel": {
         "description": "Label for networkLabel"
     },
-    "noActivityYet": "NO ACTIVITY YET",
+    "noActivityYet": "HENÜZ ETKİNLİK YOK",
     "@noActivityYet": {
         "description": "Label for noActivityYet"
     },
-    "runFirstScanDesc": "Run your first scan to populate the timeline.",
+    "runFirstScanDesc": "Zaman çizelgesini doldurmak için ilk taramanızı çalıştırın.",
     "@runFirstScanDesc": {
         "description": "Label for runFirstScanDesc"
     },
@@ -4489,7 +4412,7 @@
     "@networkContextUnknownDesc": {
         "description": "Label for networkContextUnknownDesc"
     },
-    "scanVia": "Scan via {backend}",
+    "scanVia": "{backend} ile tarama",
     "@scanVia": {
         "placeholders": {
             "backend": {
@@ -4529,35 +4452,27 @@
         },
         "description": "Label for daysAgo"
     },
-    "rogueApSuspected": "Rogue AP suspected",
+    "rogueApSuspected": "Sahte AP şüphesi",
     "@rogueApSuspected": {
         "description": "Label for rogueApSuspected"
     },
-    "deauthActivity": "Deauth activity",
+    "deauthActivity": "Deauth etkinliği",
     "@deauthActivity": {
         "description": "Label for deauthActivity"
-    },
-    "handshakeCaptureStarted": "Handshake capture started",
-    "@handshakeCaptureStarted": {
-        "description": "Label for handshakeCaptureStarted"
-    },
-    "handshakeCaptured": "Handshake captured",
-    "@handshakeCaptured": {
-        "description": "Label for handshakeCaptured"
     },
     "captivePortal": "Captive portal",
     "@captivePortal": {
         "description": "Label for captivePortal"
     },
-    "evilTwinDetected": "Evil twin detected",
+    "evilTwinDetected": "Evil twin tespit edildi",
     "@evilTwinDetected": {
         "description": "Label for evilTwinDetected"
     },
-    "encryptionDowngrade": "Encryption downgrade",
+    "encryptionDowngrade": "Şifreleme düşürme",
     "@encryptionDowngrade": {
         "description": "Label for encryptionDowngrade"
     },
-    "unsupportedOp": "Unsupported op",
+    "unsupportedOp": "Desteklenmeyen işlem",
     "@unsupportedOp": {
         "description": "Label for unsupportedOp"
     },
@@ -4569,7 +4484,7 @@
     "@dnsHijacking": {
         "description": "Label for dnsHijacking"
     },
-    "networksWithCount": "Networks ({count})",
+    "networksWithCount": "Ağlar ({count})",
     "@networksWithCount": {
         "placeholders": {
             "count": {
@@ -4578,7 +4493,7 @@
         },
         "description": "Label for networksWithCount"
     },
-    "signalStability": "Stability {stability}",
+    "signalStability": "Kararlılık {stability}",
     "@signalStability": {
         "placeholders": {
             "stability": {
@@ -4611,39 +4526,39 @@
     "@metricSpeed": {
         "description": "Label for metricSpeed"
     },
-    "severityCrit": "CRIT",
+    "severityCrit": "KRİT",
     "@severityCrit": {
         "description": "Label for severityCrit"
     },
-    "severityHighShort": "HIGH",
+    "severityHighShort": "YÜKSEK",
     "@severityHighShort": {
         "description": "Label for severityHighShort"
     },
-    "severityMedShort": "MED",
+    "severityMedShort": "ORTA",
     "@severityMedShort": {
         "description": "Label for severityMedShort"
     },
-    "severityInfoShort": "INFO",
+    "severityInfoShort": "BİLGİ",
     "@severityInfoShort": {
         "description": "Label for severityInfoShort"
     },
-    "hardenRouterTitle": "HARDEN ROUTER",
+    "hardenRouterTitle": "ROUTER'I SIKILAŞTIR",
     "@hardenRouterTitle": {
         "description": "Label for hardenRouterTitle"
     },
-    "hardenRouterSubtitle": "Security checklist",
+    "hardenRouterSubtitle": "Güvenlik kontrol listesi",
     "@hardenRouterSubtitle": {
         "description": "Label for hardenRouterSubtitle"
     },
-    "packetLossLabel": "PACKET LOSS",
+    "packetLossLabel": "PAKET KAYBI",
     "@packetLossLabel": {
         "description": "Label for packetLossLabel"
     },
-    "loadedLatencyLabel": "LOADED LATENCY",
+    "loadedLatencyLabel": "YÜK ALTINDA GECİKME",
     "@loadedLatencyLabel": {
         "description": "Label for loadedLatencyLabel"
     },
-    "clearHistoryTooltip": "Clear all history",
+    "clearHistoryTooltip": "Tüm geçmişi temizle",
     "@clearHistoryTooltip": {
         "description": "Label for clearHistoryTooltip"
     },
@@ -4655,15 +4570,15 @@
     "@whyItMattersSection": {
         "description": "Label for whyItMattersSection"
     },
-    "covShort": "COV",
+    "covShort": "KAP",
     "@covShort": {
         "description": "Label for covShort"
     },
-    "sigShort": "SIG",
+    "sigShort": "SNY",
     "@sigShort": {
         "description": "Label for sigShort"
     },
-    "motShort": "MOT",
+    "motShort": "HRK",
     "@motShort": {
         "description": "Label for motShort"
     },
@@ -4671,19 +4586,19 @@
     "@wifiShort": {
         "description": "Label for wifiShort"
     },
-    "camShort": "CAM",
+    "camShort": "KAM",
     "@camShort": {
         "description": "Label for camShort"
     },
-    "discardSurveyTooltip": "Discard Survey",
+    "discardSurveyTooltip": "Keşfi Sil",
     "@discardSurveyTooltip": {
         "description": "Label for discardSurveyTooltip"
     },
-    "finishReviewTooltip": "Finish & Review",
+    "finishReviewTooltip": "Bitir ve İncele",
     "@finishReviewTooltip": {
         "description": "Label for finishReviewTooltip"
     },
-    "noDataAtLocation": "NO DATA AT THIS LOCATION",
+    "noDataAtLocation": "BU KONUMDA VERİ YOK",
     "@noDataAtLocation": {
         "description": "Label for noDataAtLocation"
     },
@@ -4691,95 +4606,95 @@
     "@rssiLabel": {
         "description": "Label for rssiLabel"
     },
-    "statusLabel": "STATUS",
+    "statusLabel": "DURUM",
     "@statusLabel": {
         "description": "Label for statusLabel"
     },
-    "floorLabel": "FLOOR",
+    "floorLabel": "KAT",
     "@floorLabel": {
         "description": "Label for floorLabel"
     },
-    "positionLabel": "POSITION",
+    "positionLabel": "KONUM",
     "@positionLabel": {
         "description": "Label for positionLabel"
     },
-    "samplesLabel": "SAMPLES",
+    "samplesLabel": "ÖRNEKLER",
     "@samplesLabel": {
         "description": "Label for samplesLabel"
     },
-    "capturedLabel": "CAPTURED",
+    "capturedLabel": "KAYDEDİLDİ",
     "@capturedLabel": {
         "description": "Label for capturedLabel"
     },
-    "heatmapPermissionsTitle": "HEATMAP PERMISSIONS",
+    "heatmapPermissionsTitle": "ISI HARİTASI İZİNLERİ",
     "@heatmapPermissionsTitle": {
         "description": "Label for heatmapPermissionsTitle"
     },
-    "realignCompassTooltip": "Realign Compass",
+    "realignCompassTooltip": "Pusulayı Yeniden Hizala",
     "@realignCompassTooltip": {
         "description": "Label for realignCompassTooltip"
     },
-    "exportCsvLabel": "Export CSV",
+    "exportCsvLabel": "CSV Dışa Aktar",
     "@exportCsvLabel": {
         "description": "Label for exportCsvLabel"
     },
-    "setDeviceType": "Set Device Type",
+    "setDeviceType": "Cihaz Türünü Ayarla",
     "@setDeviceType": {
         "description": "Label for setDeviceType"
     },
-    "resetToAiLabel": "Reset to AI label",
+    "resetToAiLabel": "AI etiketine dön",
     "@resetToAiLabel": {
         "description": "Label for resetToAiLabel"
     },
-    "gatewayCaps": "GATEWAY",
+    "gatewayCaps": "AĞ GEÇİDİ",
     "@gatewayCaps": {
         "description": "Label for gatewayCaps"
     },
-    "identifiedCaps": "IDENTIFIED",
+    "identifiedCaps": "TANIMLANDI",
     "@identifiedCaps": {
         "description": "Label for identifiedCaps"
     },
-    "unknownMacRestricted": "UNKNOWN MAC (RESTRICTED)",
+    "unknownMacRestricted": "BİLİNMEYEN MAC (KISITLI)",
     "@unknownMacRestricted": {
         "description": "Label for unknownMacRestricted"
     },
-    "scanPortsCaps": "SCAN PORTS",
+    "scanPortsCaps": "PORTLARI TARA",
     "@scanPortsCaps": {
         "description": "Label for scanPortsCaps"
     },
-    "noOpenPortsFound": "No open ports found",
+    "noOpenPortsFound": "Açık port bulunamadı",
     "@noOpenPortsFound": {
         "description": "Label for noOpenPortsFound"
     },
-    "criticalCaps": "CRITICAL",
+    "criticalCaps": "KRİTİK",
     "@criticalCaps": {
         "description": "Label for criticalCaps"
     },
-    "wpsActiveCaps": "WPS ACTIVE",
+    "wpsActiveCaps": "WPS AKTİF",
     "@wpsActiveCaps": {
         "description": "Label for wpsActiveCaps"
     },
-    "protectPdfTitle": "PROTECT PDF WITH A PASSWORD",
+    "protectPdfTitle": "PDF'İ PAROLAYLA KORU",
     "@protectPdfTitle": {
         "description": "Label for protectPdfTitle"
     },
-    "pdfLockedHint": "Optional. Locked file: .torcav-pdf — open it again from Reports.",
+    "pdfLockedHint": "İsteğe bağlı. Kilitli dosya: .torcav-pdf — tekrar açmak için Raporlar'ı kullanın.",
     "@pdfLockedHint": {
         "description": "Label for pdfLockedHint"
     },
-    "pdfLockedLabel": "Locked file: .torcav-pdf — open it again from Reports.",
+    "pdfLockedLabel": "Kilitli dosya: .torcav-pdf — tekrar açmak için Raporlar'ı kullanın.",
     "@pdfLockedLabel": {
         "description": "Label for pdfLockedLabel"
     },
-    "pdfPasswordHint": "Password (leave empty for plain PDF)",
+    "pdfPasswordHint": "Parola (düz PDF için boş bırakın)",
     "@pdfPasswordHint": {
         "description": "Label for pdfPasswordHint"
     },
-    "pdfPasswordWarning": "Heads up: this is lightweight obfuscation, not bank-grade encryption. It protects the file against casual leaks (cloud thumbnails, mailbox cache) but a determined attacker who has the file could still attempt to brute-force a weak password. Use a long, unique passphrase.",
+    "pdfPasswordWarning": "Dikkat: bu hafif bir gizlemedir, banka düzeyi şifreleme değildir. Dosyayı sıradan sızıntılara (bulut küçük resimleri, posta kutusu önbelleği) karşı korur; ancak dosyaya sahip kararlı bir saldırgan zayıf bir parolayı kaba kuvvetle kırmayı deneyebilir. Uzun ve benzersiz bir parola cümlesi kullanın.",
     "@pdfPasswordWarning": {
         "description": "Label for pdfPasswordWarning"
     },
-    "understandEnable": "I UNDERSTAND — ENABLE",
+    "understandEnable": "ANLADIM — ETKİNLEŞTİR",
     "@understandEnable": {
         "description": "Label for understandEnable"
     },
@@ -4807,15 +4722,15 @@
     "@categoryHealthy": {
         "description": "Label for categoryHealthy"
     },
-    "severityHigh": "HIGH",
+    "severityHigh": "YÜKSEK",
     "@severityHigh": {
         "description": "Label for severityHigh"
     },
-    "severityMed": "MED",
+    "severityMed": "ORTA",
     "@severityMed": {
         "description": "Label for severityMed"
     },
-    "severityLow": "LOW",
+    "severityLow": "DÜŞÜK",
     "@severityLow": {
         "description": "Label for severityLow"
     },
@@ -4923,19 +4838,19 @@
     "@primaryCauseHealthyDesc": {
         "description": "Label for primaryCauseHealthyDesc"
     },
-    "diagStepReadingSignal": "Reading signal",
+    "diagStepReadingSignal": "Sinyal okunuyor",
     "@diagStepReadingSignal": {
         "description": "Label for diagStepReadingSignal"
     },
-    "diagStepAnalysingChannels": "Analysing channels",
+    "diagStepAnalysingChannels": "Kanallar analiz ediliyor",
     "@diagStepAnalysingChannels": {
         "description": "Label for diagStepAnalysingChannels"
     },
-    "diagStepMeasuringSpeed": "Measuring speed",
+    "diagStepMeasuringSpeed": "Hız ölçülüyor",
     "@diagStepMeasuringSpeed": {
         "description": "Label for diagStepMeasuringSpeed"
     },
-    "diagStepBenchmarkingDns": "Benchmarking DNS",
+    "diagStepBenchmarkingDns": "DNS kıyaslanıyor",
     "@diagStepBenchmarkingDns": {
         "description": "Label for diagStepBenchmarkingDns"
     },
@@ -4947,87 +4862,71 @@
     "@whatIsThisHowToFix": {
         "description": "Label for whatIsThisHowToFix"
     },
-    "preview": "Preview",
-    "@preview": {
-        "description": "Label for preview"
-    },
-    "recording": "RECORDING",
-    "@recording": {
-        "description": "Label for recording"
-    },
-    "reviewing": "REVIEW",
+    "reviewing": "İNCELEME",
     "@reviewing": {
         "description": "Label for reviewing"
     },
-    "idle": "IDLE",
+    "idle": "BOŞTA",
     "@idle": {
         "description": "Label for idle"
     },
-    "surveyComplete": "SURVEY COMPLETE",
+    "surveyComplete": "KEŞİF TAMAMLANDI",
     "@surveyComplete": {
         "description": "Label for surveyComplete"
     },
-    "surveyCompleteDesc": "The survey has been successfully recorded. Plan and signal data are synthesized.",
-    "@surveyCompleteDesc": {
-        "description": "Label for surveyCompleteDesc"
-    },
-    "coverage": "COVERAGE",
+    "coverage": "KAPSAMA",
     "@coverage": {
         "description": "Label for coverage"
     },
-    "blindSpots": "BLIND SPOTS",
+    "blindSpots": "KÖR NOKTALAR",
     "@blindSpots": {
         "description": "Label for blindSpots"
     },
-    "saveAndFinish": "SAVE & FINISH",
+    "saveAndFinish": "KAYDET VE BİTİR",
     "@saveAndFinish": {
         "description": "Label for saveAndFinish"
     },
-    "diagStepFinalizing": "Finalising diagnosis",
+    "diagStepFinalizing": "Teşhis tamamlanıyor",
     "@diagStepFinalizing": {
         "description": "Label for diagStepFinalizing"
     },
-    "heatmapPageTitle": "HOME PLAN + WIFI HEATMAP",
+    "heatmapPageTitle": "EV PLANI + WIFI ISI HARİTASI",
     "@heatmapPageTitle": {
         "description": "Label for heatmapPageTitle"
     },
-    "heatmapPageSubtitle": "Outline, coverage, and weak zones",
+    "heatmapPageSubtitle": "Kontur, kapsama ve zayıf bölgeler",
     "@heatmapPageSubtitle": {
         "description": "Label for heatmapPageSubtitle"
     },
-    "heatmapHistoryTooltip": "Open saved surveys",
+    "heatmapHistoryTooltip": "Kayıtlı keşifleri aç",
     "@heatmapHistoryTooltip": {
         "description": "Label for heatmapHistoryTooltip"
     },
-    "heatmapThemeToggleTooltip": "Toggle view (Blueprint / Neon)",
+    "heatmapThemeToggleTooltip": "Görünümü değiştir (Blueprint / Neon)",
     "@heatmapThemeToggleTooltip": {
         "description": "Label for heatmapThemeToggleTooltip"
     },
-    "heatmapSamplesShort": "samples",
+    "heatmapSamplesShort": "örnek",
     "@heatmapSamplesShort": {
         "description": "Label for heatmapSamplesShort"
     },
-    "heatmapWallsShort": "walls",
-    "@heatmapWallsShort": {
-        "description": "Label for heatmapWallsShort"
-    },
-    "heatmapRestartSurvey": "RESTART SURVEY",
+    "heatmapRestartSurvey": "KEŞFİ YENİDEN BAŞLAT",
     "@heatmapRestartSurvey": {
         "description": "Label for heatmapRestartSurvey"
     },
-    "heatmapRenameSurvey": "RENAME SURVEY",
+    "heatmapRenameSurvey": "KEŞFİ YENİDEN ADLANDIR",
     "@heatmapRenameSurvey": {
         "description": "Label for heatmapRenameSurvey"
     },
-    "heatmapShareHeatmap": "SHARE HEATMAP",
+    "heatmapShareHeatmap": "ISI HARİTASINI PAYLAŞ",
     "@heatmapShareHeatmap": {
         "description": "Label for heatmapShareHeatmap"
     },
-    "heatmapRenameDialogTitle": "RENAME SURVEY",
+    "heatmapRenameDialogTitle": "KEŞFİ YENİDEN ADLANDIR",
     "@heatmapRenameDialogTitle": {
         "description": "Label for heatmapRenameDialogTitle"
     },
-    "heatmapSave": "Save",
+    "heatmapSave": "Kaydet",
     "@heatmapSave": {
         "description": "Label for heatmapSave"
     },
@@ -5039,249 +4938,43 @@
     "@heatmapShareText": {
         "description": "Label for heatmapShareText"
     },
-    "heatmapIssueTitle": "Issue",
-    "@heatmapIssueTitle": {
-        "description": "Label for heatmapIssueTitle"
-    },
-    "heatmapGenericIssueBody": "The survey could not finish. Check permissions and device sensors.",
-    "@heatmapGenericIssueBody": {
-        "description": "Label for heatmapGenericIssueBody"
-    },
-    "heatmapGoalTitle": "What This Feature Does",
-    "@heatmapGoalTitle": {
-        "description": "Label for heatmapGoalTitle"
-    },
-    "heatmapGoalBody": "It samples Wi-Fi as you walk, captures wall lines in AR, and then shows the home outline together with signal density.",
-    "@heatmapGoalBody": {
-        "description": "Label for heatmapGoalBody"
-    },
-    "heatmapWaitingForDataTitle": "Waiting For Data",
-    "@heatmapWaitingForDataTitle": {
-        "description": "Label for heatmapWaitingForDataTitle"
-    },
-    "heatmapWaitingForDataBody": "No signal sample has landed yet. Check motion and location permissions, then walk a few steps.",
-    "@heatmapWaitingForDataBody": {
-        "description": "Label for heatmapWaitingForDataBody"
-    },
-    "heatmapArCaptureTitle": "AR Mode Active",
-    "@heatmapArCaptureTitle": {
-        "description": "Label for heatmapArCaptureTitle"
-    },
-    "heatmapArCaptureBody": "Point the phone at room edges and door openings. The camera searches for wall lines while signal points are added automatically as you move.",
-    "@heatmapArCaptureBody": {
-        "description": "Label for heatmapArCaptureBody"
-    },
-    "heatmapMapCaptureTitle": "2D Map Active",
-    "@heatmapMapCaptureTitle": {
-        "description": "Label for heatmapMapCaptureTitle"
-    },
-    "heatmapMapCaptureBody": "You are in the clearer 2D view. Samples keep arriving as you walk; if the outline stays weak, switch to AR mode.",
-    "@heatmapMapCaptureBody": {
-        "description": "Label for heatmapMapCaptureBody"
-    },
-    "heatmapReviewTitle": "Survey Summary",
-    "@heatmapReviewTitle": {
-        "description": "Label for heatmapReviewTitle"
-    },
-    "heatmapReviewBodyNoSamples": "There is a saved survey, but it still lacks meaningful signal samples.",
-    "@heatmapReviewBodyNoSamples": {
-        "description": "Label for heatmapReviewBodyNoSamples"
-    },
-    "heatmapReviewBodyReady": "Coverage is readable. Use the summary below to inspect weak zones.",
-    "@heatmapReviewBodyReady": {
-        "description": "Label for heatmapReviewBodyReady"
-    },
-    "heatmapSamplesLabel": "SAMPLES",
+    "heatmapSamplesLabel": "ÖRNEKLER",
     "@heatmapSamplesLabel": {
         "description": "Label for heatmapSamplesLabel"
     },
-    "heatmapWallsLabel": "WALLS",
-    "@heatmapWallsLabel": {
-        "description": "Label for heatmapWallsLabel"
-    },
-    "heatmapCurrentSignalLabel": "LIVE SIGNAL",
-    "@heatmapCurrentSignalLabel": {
-        "description": "Label for heatmapCurrentSignalLabel"
-    },
-    "heatmapAvgSignalLabel": "AVG SIGNAL",
+    "heatmapAvgSignalLabel": "ORT. SİNYAL",
     "@heatmapAvgSignalLabel": {
         "description": "Label for heatmapAvgSignalLabel"
     },
-    "heatmapWeakZonesLabel": "WEAK ZONES",
-    "@heatmapWeakZonesLabel": {
-        "description": "Label for heatmapWeakZonesLabel"
-    },
-    "heatmapPlanSizeLabel": "PLAN SIZE",
-    "@heatmapPlanSizeLabel": {
-        "description": "Label for heatmapPlanSizeLabel"
-    },
-    "heatmapNotAvailable": "Not ready",
+    "heatmapNotAvailable": "Hazır değil",
     "@heatmapNotAvailable": {
         "description": "Label for heatmapNotAvailable"
     },
-    "heatmapNoSamplesHelper": "Fills in as you start walking",
-    "@heatmapNoSamplesHelper": {
-        "description": "Label for heatmapNoSamplesHelper"
-    },
-    "heatmapSamplesHelper": "{count} signal samples collected",
-    "@heatmapSamplesHelper": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for heatmapSamplesHelper"
-    },
-    "heatmapNoWallsHelper": "AR pass may be needed for the outline",
-    "@heatmapNoWallsHelper": {
-        "description": "Label for heatmapNoWallsHelper"
-    },
-    "heatmapWallsHelper": "{count} wall segments retained",
-    "@heatmapWallsHelper": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for heatmapWallsHelper"
-    },
-    "heatmapSignalUnavailableHelper": "Wi-Fi reading has not arrived yet",
-    "@heatmapSignalUnavailableHelper": {
-        "description": "Label for heatmapSignalUnavailableHelper"
-    },
-    "heatmapSignalStrongHelper": "Strong coverage",
-    "@heatmapSignalStrongHelper": {
-        "description": "Label for heatmapSignalStrongHelper"
-    },
-    "heatmapSignalFairHelper": "Borderline but usable",
-    "@heatmapSignalFairHelper": {
-        "description": "Label for heatmapSignalFairHelper"
-    },
-    "heatmapSignalWeakHelper": "Weak or problematic zone",
-    "@heatmapSignalWeakHelper": {
-        "description": "Label for heatmapSignalWeakHelper"
-    },
-    "heatmapWeakZoneHelperNone": "No obvious dead zones",
-    "@heatmapWeakZoneHelperNone": {
-        "description": "Label for heatmapWeakZoneHelperNone"
-    },
-    "heatmapWeakZoneHelperOne": "One problematic area",
-    "@heatmapWeakZoneHelperOne": {
-        "description": "Label for heatmapWeakZoneHelperOne"
-    },
-    "heatmapWeakZoneHelperMany": "{count} weak areas detected",
-    "@heatmapWeakZoneHelperMany": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for heatmapWeakZoneHelperMany"
-    },
-    "heatmapPlanSizeHelper": "Estimated span from captured trace",
-    "@heatmapPlanSizeHelper": {
-        "description": "Label for heatmapPlanSizeHelper"
-    },
-    "heatmapNoSurveyYetTitle": "Start A Survey",
+    "heatmapNoSurveyYetTitle": "Bir Keşif Başlatın",
     "@heatmapNoSurveyYetTitle": {
         "description": "Label for heatmapNoSurveyYetTitle"
     },
-    "heatmapNoSurveyYetBody": "Start a walkthrough first. The result view will then show the outline and heatmap together.",
+    "heatmapNoSurveyYetBody": "Önce bir yürüyüş turu başlatın. Sonuç görünümü, kontur ve ısı haritasını birlikte gösterecek.",
     "@heatmapNoSurveyYetBody": {
         "description": "Label for heatmapNoSurveyYetBody"
     },
-    "heatmapWalkToBeginTitle": "Start Walking",
+    "heatmapWalkToBeginTitle": "Yürümeye Başlayın",
     "@heatmapWalkToBeginTitle": {
         "description": "Label for heatmapWalkToBeginTitle"
     },
-    "heatmapWalkToBeginBody": "The trail and signal points appear as you take a few steps in each room.",
+    "heatmapWalkToBeginBody": "Her odada birkaç adım attıkça iz ve sinyal noktaları görünür.",
     "@heatmapWalkToBeginBody": {
         "description": "Label for heatmapWalkToBeginBody"
     },
-    "heatmapMapViewLabel": "2D HARITA",
-    "@heatmapMapViewLabel": {
-        "description": "Label for heatmapMapViewLabel"
-    },
-    "heatmapResultViewLabel": "SONUC GORUNUMU",
-    "@heatmapResultViewLabel": {
-        "description": "Label for heatmapResultViewLabel"
-    },
-    "heatmapFindingsTitle": "NE ANLATIYOR?",
-    "@heatmapFindingsTitle": {
-        "description": "Label for heatmapFindingsTitle"
-    },
-    "heatmapInsightReady": "The survey is now dense enough. One last room transition is enough before saving the result.",
-    "@heatmapInsightReady": {
-        "description": "Label for heatmapInsightReady"
-    },
-    "heatmapInsightTooEarly": "It is still too early. After 4-5 samples across a few rooms, the result becomes readable.",
-    "@heatmapInsightTooEarly": {
-        "description": "Label for heatmapInsightTooEarly"
-    },
-    "heatmapInsightNoWalls": "Signal is arriving but the outline is missing. Switch to AR and face the walls during another pass to improve the plan.",
-    "@heatmapInsightNoWalls": {
-        "description": "Label for heatmapInsightNoWalls"
-    },
-    "heatmapInsightLive": "The live result is starting to read well. With {count} samples, weak areas are becoming visible.",
-    "@heatmapInsightLive": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for heatmapInsightLive"
-    },
-    "heatmapReviewInsightNoSamples": "This survey has no signal samples. If location or motion permissions are off, the app cannot build the heatmap.",
-    "@heatmapReviewInsightNoSamples": {
-        "description": "Label for heatmapReviewInsightNoSamples"
-    },
-    "heatmapReviewInsightNoPlan": "The heatmap is present but the outline is weak. On the next run, use AR and face room boundaries while walking.",
-    "@heatmapReviewInsightNoPlan": {
-        "description": "Label for heatmapReviewInsightNoPlan"
-    },
-    "heatmapReviewInsightStrong": "Coverage looks strong overall. No clear dead zones are visible, and the outline agrees with the signal trace.",
-    "@heatmapReviewInsightStrong": {
-        "description": "Label for heatmapReviewInsightStrong"
-    },
-    "heatmapReviewInsightWeak": "{count} weak zones are visible. Moving the router more centrally or adding another access point may help.",
-    "@heatmapReviewInsightWeak": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for heatmapReviewInsightWeak"
-    },
-    "heatmapReviewInsightBalanced": "Coverage is reasonably balanced, but it dips in {count} spots. These are often corners, corridor ends, or heavy wall transitions.",
-    "@heatmapReviewInsightBalanced": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for heatmapReviewInsightBalanced"
-    },
-    "heatmapCloseReview": "CLOSE REVIEW",
-    "@heatmapCloseReview": {
-        "description": "Label for heatmapCloseReview"
-    },
-    "heatmapNewSurvey": "NEW SURVEY",
-    "@heatmapNewSurvey": {
-        "description": "Label for heatmapNewSurvey"
-    },
-    "heatmapFinishAndReview": "FINISH & REVIEW",
-    "@heatmapFinishAndReview": {
-        "description": "Label for heatmapFinishAndReview"
-    },
-    "heatmapStartSurvey": "START SURVEY",
+    "heatmapStartSurvey": "KEŞFE BAŞLA",
     "@heatmapStartSurvey": {
         "description": "Label for heatmapStartSurvey"
     },
-    "heatmapNewSurveyDialogTitle": "NEW SURVEY",
+    "heatmapNewSurveyDialogTitle": "YENİ KEŞİF",
     "@heatmapNewSurveyDialogTitle": {
         "description": "Label for heatmapNewSurveyDialogTitle"
     },
-    "heatmapDefaultSessionName": "Survey {time}",
+    "heatmapDefaultSessionName": "Keşif {time}",
     "@heatmapDefaultSessionName": {
         "placeholders": {
             "time": {
@@ -5290,23 +4983,23 @@
         },
         "description": "Label for heatmapDefaultSessionName"
     },
-    "heatmapSessionNameField": "Survey name",
+    "heatmapSessionNameField": "Keşif adı",
     "@heatmapSessionNameField": {
         "description": "Label for heatmapSessionNameField"
     },
-    "heatmapNewSurveyHint": "Once the survey starts, signal samples are added automatically as you move. Switch to AR if you want a stronger room outline.",
+    "heatmapNewSurveyHint": "Keşif başladığında, siz hareket ettikçe sinyal örnekleri otomatik eklenir. Daha güçlü bir oda konturu isterseniz AR'a geçin.",
     "@heatmapNewSurveyHint": {
         "description": "Label for heatmapNewSurveyHint"
     },
-    "heatmapSavedSurveysTitle": "SAVED SURVEYS",
+    "heatmapSavedSurveysTitle": "KAYITLI KEŞİFLER",
     "@heatmapSavedSurveysTitle": {
         "description": "Label for heatmapSavedSurveysTitle"
     },
-    "heatmapNoSavedSurveys": "No saved surveys yet.",
+    "heatmapNoSavedSurveys": "Henüz kayıtlı keşif yok.",
     "@heatmapNoSavedSurveys": {
         "description": "Label for heatmapNoSavedSurveys"
     },
-    "heatmapSavedSurveySubtitle": "{samples} samples · {weak} weak zones · {timestamp}",
+    "heatmapSavedSurveySubtitle": "{samples} örnek · {weak} zayıf bölge · {timestamp}",
     "@heatmapSavedSurveySubtitle": {
         "placeholders": {
             "samples": {
@@ -5321,198 +5014,9 @@
         },
         "description": "Label for heatmapSavedSurveySubtitle"
     },
-    "heatmapDeleteSurveyTooltip": "Delete survey",
+    "heatmapDeleteSurveyTooltip": "Keşfi sil",
     "@heatmapDeleteSurveyTooltip": {
         "description": "Label for heatmapDeleteSurveyTooltip"
-    },
-    "heatmapLegendTitle": "COLOR GUIDE",
-    "@heatmapLegendTitle": {
-        "description": "Label for heatmapLegendTitle"
-    },
-    "heatmapLegendStrong": "Strong",
-    "@heatmapLegendStrong": {
-        "description": "Label for heatmapLegendStrong"
-    },
-    "heatmapLegendFair": "Fair",
-    "@heatmapLegendFair": {
-        "description": "Label for heatmapLegendFair"
-    },
-    "heatmapLegendWeak": "Weak",
-    "@heatmapLegendWeak": {
-        "description": "Label for heatmapLegendWeak"
-    },
-    "heatmapCameraViewLabel": "LIVE CAMERA",
-    "@heatmapCameraViewLabel": {
-        "description": "Label for heatmapCameraViewLabel"
-    },
-    "heatmapInfoSheetTitle": "LIVE SURVEY DATA",
-    "@heatmapInfoSheetTitle": {
-        "description": "Label for heatmapInfoSheetTitle"
-    },
-    "heatmapFeedStatus": "{label}: {status}",
-    "@heatmapFeedStatus": {
-        "placeholders": {
-            "label": {
-                "type": "String"
-            },
-            "status": {
-                "type": "String"
-            }
-        },
-        "description": "Label for heatmapFeedStatus"
-    },
-    "heatmapActive": "active",
-    "@heatmapActive": {
-        "description": "Label for heatmapActive"
-    },
-    "heatmapInactive": "inactive",
-    "@heatmapInactive": {
-        "description": "Label for heatmapInactive"
-    },
-    "heatmapArViewLabel": "AR VIEW",
-    "@heatmapArViewLabel": {
-        "description": "Label for heatmapArViewLabel"
-    },
-    "heatmapSwitchToMapHint": "Return to the clearer 2D map",
-    "@heatmapSwitchToMapHint": {
-        "description": "Label for heatmapSwitchToMapHint"
-    },
-    "heatmapSwitchToArHint": "Use AR to strengthen the outline",
-    "@heatmapSwitchToArHint": {
-        "description": "Label for heatmapSwitchToArHint"
-    },
-    "heatmapRouteLabel": "NEXT STEP",
-    "@heatmapRouteLabel": {
-        "description": "Label for heatmapRouteLabel"
-    },
-    "heatmapPlanConfidenceLabel": "PLAN CONFIDENCE",
-    "@heatmapPlanConfidenceLabel": {
-        "description": "Label for heatmapPlanConfidenceLabel"
-    },
-    "heatmapCoverageConfidenceLabel": "COVERAGE CONFIDENCE",
-    "@heatmapCoverageConfidenceLabel": {
-        "description": "Label for heatmapCoverageConfidenceLabel"
-    },
-    "heatmapSignalConfidenceLabel": "SIGNAL CONFIDENCE",
-    "@heatmapSignalConfidenceLabel": {
-        "description": "Label for heatmapSignalConfidenceLabel"
-    },
-    "heatmapMotionFeedLabel": "Motion",
-    "@heatmapMotionFeedLabel": {
-        "description": "Label for heatmapMotionFeedLabel"
-    },
-    "heatmapCameraFeedLabel": "Camera",
-    "@heatmapCameraFeedLabel": {
-        "description": "Label for heatmapCameraFeedLabel"
-    },
-    "heatmapPlanFeedLabel": "Plan",
-    "@heatmapPlanFeedLabel": {
-        "description": "Label for heatmapPlanFeedLabel"
-    },
-    "heatmapGuidanceIdleTitle": "Survey Setup",
-    "@heatmapGuidanceIdleTitle": {
-        "description": "Label for heatmapGuidanceIdleTitle"
-    },
-    "heatmapGuidanceCalibrationTitle": "Starting Route",
-    "@heatmapGuidanceCalibrationTitle": {
-        "description": "Label for heatmapGuidanceCalibrationTitle"
-    },
-    "heatmapGuidanceSweepTitle": "Filling Coverage",
-    "@heatmapGuidanceSweepTitle": {
-        "description": "Label for heatmapGuidanceSweepTitle"
-    },
-    "heatmapGuidanceWeakCheckTitle": "Weak Zone Check",
-    "@heatmapGuidanceWeakCheckTitle": {
-        "description": "Label for heatmapGuidanceWeakCheckTitle"
-    },
-    "heatmapGuidanceWrapUpTitle": "Ready To Save",
-    "@heatmapGuidanceWrapUpTitle": {
-        "description": "Label for heatmapGuidanceWrapUpTitle"
-    },
-    "heatmapGuidanceReviewTitle": "Survey Quality",
-    "@heatmapGuidanceReviewTitle": {
-        "description": "Label for heatmapGuidanceReviewTitle"
-    },
-    "heatmapGuidanceIdleBody": "Start a new survey. The app will combine motion, camera, and Wi-Fi traces into a cleaner floor plan.",
-    "@heatmapGuidanceIdleBody": {
-        "description": "Label for heatmapGuidanceIdleBody"
-    },
-    "heatmapGuidanceCalibrationBody": "Walk straight for 5-8 steps to establish the first trace. Doorways and corner turns help anchor the layout faster.",
-    "@heatmapGuidanceCalibrationBody": {
-        "description": "Label for heatmapGuidanceCalibrationBody"
-    },
-    "heatmapGuidanceSweepBody": "The {region} side of the map is still sparse. Move there and collect 3-4 more samples.",
-    "@heatmapGuidanceSweepBody": {
-        "placeholders": {
-            "region": {
-                "type": "String"
-            }
-        },
-        "description": "Label for heatmapGuidanceSweepBody"
-    },
-    "heatmapGuidanceWeakCheckBody": "You are currently in a weak-signal area. Sweep this zone a bit more to confirm whether it is a real dead spot.",
-    "@heatmapGuidanceWeakCheckBody": {
-        "description": "Label for heatmapGuidanceWeakCheckBody"
-    },
-    "heatmapGuidanceWrapUpBody": "Outline, coverage, and signal density are now strong enough. Save the result and read the plan/heatmap in review.",
-    "@heatmapGuidanceWrapUpBody": {
-        "description": "Label for heatmapGuidanceWrapUpBody"
-    },
-    "heatmapGuidanceReviewBody": "This survey is {progress}% complete. With {count} samples, the result is readable.",
-    "@heatmapGuidanceReviewBody": {
-        "placeholders": {
-            "progress": {
-                "type": "int"
-            },
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for heatmapGuidanceReviewBody"
-    },
-    "heatmapRouteFinish": "Finish survey",
-    "@heatmapRouteFinish": {
-        "description": "Label for heatmapRouteFinish"
-    },
-    "heatmapRouteStart": "Start survey",
-    "@heatmapRouteStart": {
-        "description": "Label for heatmapRouteStart"
-    },
-    "heatmapRouteWalkForward": "Walk forward",
-    "@heatmapRouteWalkForward": {
-        "description": "Label for heatmapRouteWalkForward"
-    },
-    "heatmapRouteSweepWeak": "Sweep weak zone",
-    "@heatmapRouteSweepWeak": {
-        "description": "Label for heatmapRouteSweepWeak"
-    },
-    "heatmapRouteWrapUp": "Wrap up run",
-    "@heatmapRouteWrapUp": {
-        "description": "Label for heatmapRouteWrapUp"
-    },
-    "heatmapRouteReview": "Review result",
-    "@heatmapRouteReview": {
-        "description": "Label for heatmapRouteReview"
-    },
-    "heatmapRegionLeft": "left wing",
-    "@heatmapRegionLeft": {
-        "description": "Label for heatmapRegionLeft"
-    },
-    "heatmapRegionRight": "right wing",
-    "@heatmapRegionRight": {
-        "description": "Label for heatmapRegionRight"
-    },
-    "heatmapRegionUpper": "upper area",
-    "@heatmapRegionUpper": {
-        "description": "Label for heatmapRegionUpper"
-    },
-    "heatmapRegionLower": "lower area",
-    "@heatmapRegionLower": {
-        "description": "Label for heatmapRegionLower"
-    },
-    "heatmapRegionKeep": "keep sweeping",
-    "@heatmapRegionKeep": {
-        "description": "Label for heatmapRegionKeep"
     },
     "channelShort": "CH {channel}",
     "@channelShort": {
@@ -5539,7 +5043,7 @@
     "@langGerman": {
         "description": "Label for langGerman"
     },
-    "startNowCaps": "START",
+    "startNowCaps": "BAŞLAT",
     "@startNowCaps": {
         "description": "Label for startNowCaps"
     },
@@ -5975,58 +5479,6 @@
     "trustLevelRisky": "RİSKLİ",
     "@trustLevelRisky": {
         "description": "Trust level label for risky hosts"
-    },
-    "cveDatabaseLabel": "CVE VERİTABANI — {freshness}",
-    "@cveDatabaseLabel": {
-        "description": "Label for CVE database freshness card",
-        "placeholders": {
-            "freshness": {
-                "type": "String"
-            }
-        }
-    },
-    "howToUpdateLabel": "NASIL GÜNCELLENİR",
-    "@howToUpdateLabel": {
-        "description": "Section title for CVE database update instructions"
-    },
-    "vulnDbFreshLabel": "GÜNCEL",
-    "@vulnDbFreshLabel": {
-        "description": "Label for fresh vulnerability database"
-    },
-    "vulnDbAgingLabel": "ESKİYOR",
-    "@vulnDbAgingLabel": {
-        "description": "Label for aging vulnerability database"
-    },
-    "vulnDbStaleLabel": "ESKİ",
-    "@vulnDbStaleLabel": {
-        "description": "Label for stale vulnerability database"
-    },
-    "vulnDbFreshMessage": "Bu veritabanına karşı güvenlik açığı aramaları güncel.",
-    "@vulnDbFreshMessage": {
-        "description": "Message when vulnerability database is fresh"
-    },
-    "vulnDbAgingMessage": "Yerel güvenlik açığı veritabanı bir aydan eski. Temiz bir taramanın değeri var ama yakında yenilemeyi düşünün.",
-    "@vulnDbAgingMessage": {
-        "description": "Message when vulnerability database is aging"
-    },
-    "vulnDbStaleMessage": "Bu veritabanı 90 günden eski. \"Bulgu yok\" sonucu artık ağın güvenli olduğu anlamına gelmiyor — burada henüz temsil edilmeyen çok sayıda yeni CVE olabilir.",
-    "@vulnDbStaleMessage": {
-        "description": "Message when vulnerability database is stale"
-    },
-    "vulnDbEntriesInfo": "v{version} · {count} giriş · {days} gün önce",
-    "@vulnDbEntriesInfo": {
-        "description": "Info line showing CVE database version and age",
-        "placeholders": {
-            "version": {
-                "type": "String"
-            },
-            "count": {
-                "type": "int"
-            },
-            "days": {
-                "type": "int"
-            }
-        }
     },
     "wipeAllDialogTitle": "TÜM VERİYİ SİL",
     "@wipeAllDialogTitle": {
@@ -6770,26 +6222,6 @@
     "@notificationChannelSecurityDescription": {
         "description": "Label for notificationChannelSecurityDescription"
     },
-    "scanCompleteTitle": "Tarama Tamamlandı",
-    "@scanCompleteTitle": {
-        "description": "Label for scanCompleteTitle"
-    },
-    "scanCompleteBody": "{seconds} saniyede {count} ağ bulundu",
-    "@scanCompleteBody": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            },
-            "seconds": {
-                "type": "int"
-            }
-        },
-        "description": "Label for scanCompleteBody"
-    },
-    "wifiChannelQualityDroppedTitle": "📶 Wi-Fi kanal kalitesi düştü",
-    "@wifiChannelQualityDroppedTitle": {
-        "description": "Label for wifiChannelQualityDroppedTitle"
-    },
     "wifiChannelQualityDroppedBody": "Kanal {channel} şu an {rating}/10. Kanal {recommendedChannel} {recommendedRating}/10 seviyesinde — geçiş yapmayı düşünün.",
     "@wifiChannelQualityDroppedBody": {
         "placeholders": {
@@ -6807,15 +6239,6 @@
             }
         },
         "description": "Label for wifiChannelQualityDroppedBody"
-    },
-    "attackDetectedTitle": "⚠️ Saldırı Tespit Edildi: {attackType}",
-    "@attackDetectedTitle": {
-        "placeholders": {
-            "attackType": {
-                "type": "String"
-            }
-        },
-        "description": "Label for attackDetectedTitle"
     },
     "stabilizerJitterSpikeTitle": "Jitter sıçraması tespit edildi",
     "@stabilizerJitterSpikeTitle": {
@@ -7225,7 +6648,6 @@
     "opsReportsSubtitle": "Ağ sağlık raporunu dışa aktarın",
     "breachMonitorTitle": "Sızıntı Monitörü",
     "breachMonitorSubtitle": "Bir parola sızmış mı kontrol et",
-    "breachMonitorIntro": "Herhangi bir parolayı bilinen veri sızıntılarına karşı kontrol etmek için girin. Hash'inin yalnızca ilk 5 karakteri gönderilir — parolanın kendisi cihazınızdan asla çıkmaz.",
     "breachInputLabel": "Kontrol edilecek parola",
     "breachCheckButton": "Parolayı Kontrol Et",
     "breachCheckingButton": "Kontrol ediliyor...",

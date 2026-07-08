@@ -5,7 +5,7 @@
 Torcav; ev Wi-Fi/LAN ağını ve bağlı olunan mobil operatör (Vodafone, Turkcell,
 Türk Telekom vb.) bağlantısını görünür kılan, sorunların kök nedenini kanıta
 dayalı teşhis eden ve kullanıcının bağlantısından ödediği hızın karşılığını
-almasına yardım eden; gizlilik-öncelikli, tamamen pasif, cihaz-üstü çalışan
+almasına yardım eden; gizlilik-öncelikli, müdahalesiz, cihaz-üstü çalışan
 bir Android ağ asistanıdır.
 
 ### İki kitle, iki deneyim, tek uygulama
@@ -45,9 +45,17 @@ yalnızca kendi cihazındaki trafiği etkileyen lokal-VPN iyileştirmeleri
 
 ### Değişmezler
 
-- **Gizlilik**: Tüm veri cihazda kalır — bulut yok, analytics yok, üçüncü taraf yok.
+- **Gizlilik**: Kullanıcı verisi cihazda kalır — hesap yok, bulut depolama yok,
+  analytics yok. Kullanıcının başlattığı ölçümler yalnızca şu uçlara
+  veri-minimizasyonuyla bağlanır: `speed.cloudflare.com` (hız testi),
+  `cloudflare-dns.com` + genel DNS çözücüleri (DNS/DoH doğrulama),
+  `connectivitycheck.gstatic.com` (captive portal),
+  `api.pwnedpasswords.com` (k-anonimlik ile parola sızıntı kontrolü).
+  Yeni bir dış uç eklemek bu listeyi VE uygulamadaki gizlilik politikası
+  sayfasını güncellemeyi gerektirir.
 - **Pasiflik**: Aktif saldırı/müdahale vektörü (deauth, injection, brute-force)
-  asla eklenmez.
+  asla eklenmez. Kullanıcının kendi ağında başlattığı teşhis ölçümleri
+  (ping, port tarama, mDNS, hız testi) müdahale değildir.
 - **Dürüstlük**: Yapamadığımız şeyi vaat eden UI metni yazılmaz.
 - **Platform**: Android-first; iOS kısıtları kullanıcıya açıkça belirtilir.
 
@@ -60,7 +68,7 @@ flutter pub get
 flutter pub run build_runner build --delete-conflicting-outputs  # DI kod üretimi
 dart analyze        # DİKKAT: `flutter analyze` bu makinede non-ASCII yol
                     # ("Masaüstü") yüzünden çöküyor — `dart analyze` kullan
-flutter test        # 440+ test
+flutter test        # 425+ test
 ```
 
 ### Mimari
@@ -76,6 +84,7 @@ flutter test        # 440+ test
 - Native katman (`android/app/src/main/kotlin/dev/halilibrahim/torcav/`):
   `PingStabilizerVpnService` + `StabilizerAlertEngine` (uyarı kuralları native
   çalışır), `MonitoringWorker` (WorkManager arka plan tarama),
+  `SpeedProbeWorker` (arka plan hız örneklemesi; yalnız UNMETERED ağda),
   `CellularChannelHandler` (operatör/nesil/sinyal).
 
 ### Değişmez kurallar

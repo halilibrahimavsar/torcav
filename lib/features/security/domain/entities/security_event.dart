@@ -3,8 +3,6 @@ import 'package:equatable/equatable.dart';
 enum SecurityEventType {
   rogueApSuspected,
   deauthBurstDetected,
-  handshakeCaptureStarted,
-  handshakeCaptureCompleted,
   captivePortalDetected,
   evilTwinDetected,
   deauthAttackSuspected,

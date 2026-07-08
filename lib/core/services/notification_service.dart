@@ -90,32 +90,10 @@ class NotificationService {
     );
   }
 
-  /// Posts a low-priority alert when the user's currently-active Wi-Fi
-  /// channel drops below a quality threshold the user can act upon.
-  Future<void> showSpectrumChannelAlert({
-    required int channel,
-    required double rating,
-    required int recommendedChannel,
-    required double recommendedRating,
-  }) async {
-    if (!_initialized) await initialize();
-    await _plugin.show(
-      888888 + channel,
-      _l10n.wifiChannelQualityDroppedTitle,
-      _l10n.wifiChannelQualityDroppedBody(
-        channel,
-        rating.toStringAsFixed(1),
-        recommendedChannel,
-        recommendedRating.toStringAsFixed(1),
-      ),
-      _buildNotificationDetails(SecurityEventSeverity.warning),
-      payload: 'spectrum|$channel',
-    );
-  }
-
-  // Ping Stabilizer recommendation alerts intentionally have no Dart-side
-  // path anymore: they are posted by the native StabilizerAlertEngine so
-  // they keep firing after this isolate is killed.
+  // Recommendation alerts (Ping Stabilizer, spectrum quality) intentionally
+  // have no Dart-side notification path: stabilizer alerts are posted by the
+  // native StabilizerAlertEngine so they keep firing after this isolate is
+  // killed, and live pages surface their advice in-app instead.
 
   NotificationDetails _buildNotificationDetails(
     SecurityEventSeverity severity,

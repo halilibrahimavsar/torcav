@@ -270,12 +270,6 @@ abstract class AppLocalizations {
   /// **'LIVE'**
   String get liveLabel;
 
-  /// Dashboard section label.
-  ///
-  /// In en, this message translates to:
-  /// **'TOPOLOGY'**
-  String get topologyLabel;
-
   /// Dashboard logs label.
   ///
   /// In en, this message translates to:
@@ -624,12 +618,6 @@ abstract class AppLocalizations {
   /// **'THREATS DETECTED'**
   String get threatsDetected;
 
-  /// Network Recon Title
-  ///
-  /// In en, this message translates to:
-  /// **'NETWORK RECON'**
-  String get networkReconTitle;
-
   /// Intelligence Report Title
   ///
   /// In en, this message translates to:
@@ -653,12 +641,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} new devices on your network'**
   String newDevicesFound(int count);
-
-  /// Lan Recon Title
-  ///
-  /// In en, this message translates to:
-  /// **'LAN RECON'**
-  String get lanReconTitle;
 
   /// Target Subnet
   ///
@@ -1146,24 +1128,6 @@ abstract class AppLocalizations {
   /// **'OS DETECTED'**
   String get osDetectedLabel;
 
-  /// Label for portLabel
-  ///
-  /// In en, this message translates to:
-  /// **'PORT {port}'**
-  String portLabel(int port);
-
-  /// Label for discovered open ports
-  ///
-  /// In en, this message translates to:
-  /// **'OPEN PORTS'**
-  String get portsFoundLabel;
-
-  /// Message shown when no open ports were discovered
-  ///
-  /// In en, this message translates to:
-  /// **'No open ports found'**
-  String get noPortsFound;
-
   /// Action to lookup hostname of a device
   ///
   /// In en, this message translates to:
@@ -1181,12 +1145,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'PORT SCAN'**
   String get portScanAction;
-
-  /// Hint for port range input field
-  ///
-  /// In en, this message translates to:
-  /// **'Port range (e.g. 80,443 or 1-1000)'**
-  String get portRangeHint;
 
   /// Label for latencyLabel
   ///
@@ -1722,12 +1680,6 @@ abstract class AppLocalizations {
   /// **'SCAN PROFILE'**
   String get scanProfileLabel;
 
-  /// Info Scan Profiles Title
-  ///
-  /// In en, this message translates to:
-  /// **'Scan Profiles'**
-  String get infoScanProfilesTitle;
-
   /// Info Scan Profile Fast Desc
   ///
   /// In en, this message translates to:
@@ -1943,12 +1895,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Waiting for data...'**
   String get waitingForData;
-
-  /// Title for the temporal heatmap screen.
-  ///
-  /// In en, this message translates to:
-  /// **'Temporal Heatmap'**
-  String get temporalHeatmap;
 
   /// Signal Monitoring Title
   ///
@@ -2202,42 +2148,6 @@ abstract class AppLocalizations {
   /// **'Interface Theme'**
   String get interfaceTheme;
 
-  /// Speed Test Header
-  ///
-  /// In en, this message translates to:
-  /// **'SPEED TEST'**
-  String get speedTestHeader;
-
-  /// Command Centers
-  ///
-  /// In en, this message translates to:
-  /// **'COMMAND CENTERS'**
-  String get commandCenters;
-
-  /// Active Shielding
-  ///
-  /// In en, this message translates to:
-  /// **'Active Shielding'**
-  String get activeShielding;
-
-  /// Logistics Title
-  ///
-  /// In en, this message translates to:
-  /// **'LOGISTICS'**
-  String get logisticsTitle;
-
-  /// Intel Metrics
-  ///
-  /// In en, this message translates to:
-  /// **'Intel Metrics'**
-  String get intelMetrics;
-
-  /// Network Mesh
-  ///
-  /// In en, this message translates to:
-  /// **'Network Mesh'**
-  String get networkMesh;
-
   /// Phase Ping
   ///
   /// In en, this message translates to:
@@ -2313,7 +2223,7 @@ abstract class AppLocalizations {
   /// Name of security event type
   ///
   /// In en, this message translates to:
-  /// **'{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst Detected} handshakeCaptureStarted{Handshake Protocol Analysis} handshakeCaptureCompleted{Handshake Protocol Secured} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} arpSpoofingDetected{ARP Spoofing Detected} dnsHijackingDetected{DNS Hijacking Detected} unsupportedOperation{Unsupported Operation} other{{type}}}'**
+  /// **'{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst Detected} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} arpSpoofingDetected{ARP Spoofing Detected} dnsHijackingDetected{DNS Hijacking Detected} unsupportedOperation{Unsupported Operation} other{{type}}}'**
   String securityEventType(String type);
 
   /// Label for showing all Wi-Fi bands in history filter.
@@ -3336,18 +3246,6 @@ abstract class AppLocalizations {
   /// **'Why is the internet slow?'**
   String get speedDoctorTagline;
 
-  /// Operations Hub tile for Speed Doctor
-  ///
-  /// In en, this message translates to:
-  /// **'SPEED DOCTOR'**
-  String get speedDoctorOpsTile;
-
-  /// Operations Hub tile subtitle for Speed Doctor
-  ///
-  /// In en, this message translates to:
-  /// **'Why is it slow?'**
-  String get speedDoctorOpsSubtitle;
-
   /// Evil-twin detail page title
   ///
   /// In en, this message translates to:
@@ -3624,12 +3522,6 @@ abstract class AppLocalizations {
   /// **'IS INTERNET SLOW?'**
   String get internetSlowQuestion;
 
-  /// Description on the speed doctor tile.
-  ///
-  /// In en, this message translates to:
-  /// **'Run Speed Doctor — 30-second root-cause diagnostic.'**
-  String get runSpeedDoctorDesc;
-
   /// Title for the security alerts sheet.
   ///
   /// In en, this message translates to:
@@ -3701,18 +3593,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'DEAUTH BURST'**
   String get eventTypeDeauthBurst;
-
-  /// Security event type: Handshake Analysis.
-  ///
-  /// In en, this message translates to:
-  /// **'HANDSHAKE ANALYSIS'**
-  String get eventTypeHandshakeAnalysis;
-
-  /// Security event type: Handshake Secured.
-  ///
-  /// In en, this message translates to:
-  /// **'HANDSHAKE SECURED'**
-  String get eventTypeHandshakeSecured;
 
   /// Security event type: Captive Portal.
   ///
@@ -4697,6 +4577,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'connectivitycheck.gstatic.com receives a plain HEAD request to detect captive portals. This is the same probe Android itself runs.'**
   String get privacyCaptivePortalBody;
+
+  /// Privacy policy card title for the HIBP breach check endpoint
+  ///
+  /// In en, this message translates to:
+  /// **'Password Breach Check (Have I Been Pwned)'**
+  String get privacyBreachCheckTitle;
+
+  /// Privacy policy card body for the HIBP breach check endpoint
+  ///
+  /// In en, this message translates to:
+  /// **'The breach check queries api.pwnedpasswords.com with k-anonymity: the password is SHA-1 hashed on this device and only the first 5 characters of the hash are ever sent. The full password or full hash never leaves the phone, and nothing is logged or stored.'**
+  String get privacyBreachCheckBody;
 
   /// Label for privacyNoTrackersTitle
   ///
@@ -6342,18 +6234,6 @@ abstract class AppLocalizations {
   /// **'Deauth activity'**
   String get deauthActivity;
 
-  /// Label for handshakeCaptureStarted
-  ///
-  /// In en, this message translates to:
-  /// **'Handshake capture started'**
-  String get handshakeCaptureStarted;
-
-  /// Label for handshakeCaptured
-  ///
-  /// In en, this message translates to:
-  /// **'Handshake captured'**
-  String get handshakeCaptured;
-
   /// Label for captivePortal
   ///
   /// In en, this message translates to:
@@ -6942,18 +6822,6 @@ abstract class AppLocalizations {
   /// **'What is this? · How to fix'**
   String get whatIsThisHowToFix;
 
-  /// Label for preview
-  ///
-  /// In en, this message translates to:
-  /// **'Preview'**
-  String get preview;
-
-  /// Label for recording
-  ///
-  /// In en, this message translates to:
-  /// **'RECORDING'**
-  String get recording;
-
   /// Label for reviewing
   ///
   /// In en, this message translates to:
@@ -6971,12 +6839,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'SURVEY COMPLETE'**
   String get surveyComplete;
-
-  /// Label for surveyCompleteDesc
-  ///
-  /// In en, this message translates to:
-  /// **'The survey has been successfully recorded. Plan and signal data are synthesized.'**
-  String get surveyCompleteDesc;
 
   /// Label for coverage
   ///
@@ -7032,12 +6894,6 @@ abstract class AppLocalizations {
   /// **'samples'**
   String get heatmapSamplesShort;
 
-  /// Label for heatmapWallsShort
-  ///
-  /// In en, this message translates to:
-  /// **'walls'**
-  String get heatmapWallsShort;
-
   /// Label for heatmapRestartSurvey
   ///
   /// In en, this message translates to:
@@ -7080,101 +6936,11 @@ abstract class AppLocalizations {
   /// **'I just mapped my home Wi-Fi with Torcav! Check out the dead zones. Find out why your internet is slow and download Torcav today: torcav.com'**
   String get heatmapShareText;
 
-  /// Label for heatmapIssueTitle
-  ///
-  /// In en, this message translates to:
-  /// **'Issue'**
-  String get heatmapIssueTitle;
-
-  /// Label for heatmapGenericIssueBody
-  ///
-  /// In en, this message translates to:
-  /// **'The survey could not finish. Check permissions and device sensors.'**
-  String get heatmapGenericIssueBody;
-
-  /// Label for heatmapGoalTitle
-  ///
-  /// In en, this message translates to:
-  /// **'What This Feature Does'**
-  String get heatmapGoalTitle;
-
-  /// Label for heatmapGoalBody
-  ///
-  /// In en, this message translates to:
-  /// **'It samples Wi-Fi as you walk, captures wall lines in AR, and then shows the home outline together with signal density.'**
-  String get heatmapGoalBody;
-
-  /// Label for heatmapWaitingForDataTitle
-  ///
-  /// In en, this message translates to:
-  /// **'Waiting For Data'**
-  String get heatmapWaitingForDataTitle;
-
-  /// Label for heatmapWaitingForDataBody
-  ///
-  /// In en, this message translates to:
-  /// **'No signal sample has landed yet. Check motion and location permissions, then walk a few steps.'**
-  String get heatmapWaitingForDataBody;
-
-  /// Label for heatmapArCaptureTitle
-  ///
-  /// In en, this message translates to:
-  /// **'AR Mode Active'**
-  String get heatmapArCaptureTitle;
-
-  /// Label for heatmapArCaptureBody
-  ///
-  /// In en, this message translates to:
-  /// **'Point the phone at room edges and door openings. The camera searches for wall lines while signal points are added automatically as you move.'**
-  String get heatmapArCaptureBody;
-
-  /// Label for heatmapMapCaptureTitle
-  ///
-  /// In en, this message translates to:
-  /// **'2D Map Active'**
-  String get heatmapMapCaptureTitle;
-
-  /// Label for heatmapMapCaptureBody
-  ///
-  /// In en, this message translates to:
-  /// **'You are in the clearer 2D view. Samples keep arriving as you walk; if the outline stays weak, switch to AR mode.'**
-  String get heatmapMapCaptureBody;
-
-  /// Label for heatmapReviewTitle
-  ///
-  /// In en, this message translates to:
-  /// **'Survey Summary'**
-  String get heatmapReviewTitle;
-
-  /// Label for heatmapReviewBodyNoSamples
-  ///
-  /// In en, this message translates to:
-  /// **'There is a saved survey, but it still lacks meaningful signal samples.'**
-  String get heatmapReviewBodyNoSamples;
-
-  /// Label for heatmapReviewBodyReady
-  ///
-  /// In en, this message translates to:
-  /// **'Coverage is readable. Use the summary below to inspect weak zones.'**
-  String get heatmapReviewBodyReady;
-
   /// Label for heatmapSamplesLabel
   ///
   /// In en, this message translates to:
   /// **'SAMPLES'**
   String get heatmapSamplesLabel;
-
-  /// Label for heatmapWallsLabel
-  ///
-  /// In en, this message translates to:
-  /// **'WALLS'**
-  String get heatmapWallsLabel;
-
-  /// Label for heatmapCurrentSignalLabel
-  ///
-  /// In en, this message translates to:
-  /// **'LIVE SIGNAL'**
-  String get heatmapCurrentSignalLabel;
 
   /// Label for heatmapAvgSignalLabel
   ///
@@ -7182,95 +6948,11 @@ abstract class AppLocalizations {
   /// **'AVG SIGNAL'**
   String get heatmapAvgSignalLabel;
 
-  /// Label for heatmapWeakZonesLabel
-  ///
-  /// In en, this message translates to:
-  /// **'WEAK ZONES'**
-  String get heatmapWeakZonesLabel;
-
-  /// Label for heatmapPlanSizeLabel
-  ///
-  /// In en, this message translates to:
-  /// **'PLAN SIZE'**
-  String get heatmapPlanSizeLabel;
-
   /// Label for heatmapNotAvailable
   ///
   /// In en, this message translates to:
   /// **'Not ready'**
   String get heatmapNotAvailable;
-
-  /// Label for heatmapNoSamplesHelper
-  ///
-  /// In en, this message translates to:
-  /// **'Fills in as you start walking'**
-  String get heatmapNoSamplesHelper;
-
-  /// Label for heatmapSamplesHelper
-  ///
-  /// In en, this message translates to:
-  /// **'{count} signal samples collected'**
-  String heatmapSamplesHelper(int count);
-
-  /// Label for heatmapNoWallsHelper
-  ///
-  /// In en, this message translates to:
-  /// **'AR pass may be needed for the outline'**
-  String get heatmapNoWallsHelper;
-
-  /// Label for heatmapWallsHelper
-  ///
-  /// In en, this message translates to:
-  /// **'{count} wall segments retained'**
-  String heatmapWallsHelper(int count);
-
-  /// Label for heatmapSignalUnavailableHelper
-  ///
-  /// In en, this message translates to:
-  /// **'Wi-Fi reading has not arrived yet'**
-  String get heatmapSignalUnavailableHelper;
-
-  /// Label for heatmapSignalStrongHelper
-  ///
-  /// In en, this message translates to:
-  /// **'Strong coverage'**
-  String get heatmapSignalStrongHelper;
-
-  /// Label for heatmapSignalFairHelper
-  ///
-  /// In en, this message translates to:
-  /// **'Borderline but usable'**
-  String get heatmapSignalFairHelper;
-
-  /// Label for heatmapSignalWeakHelper
-  ///
-  /// In en, this message translates to:
-  /// **'Weak or problematic zone'**
-  String get heatmapSignalWeakHelper;
-
-  /// Label for heatmapWeakZoneHelperNone
-  ///
-  /// In en, this message translates to:
-  /// **'No obvious dead zones'**
-  String get heatmapWeakZoneHelperNone;
-
-  /// Label for heatmapWeakZoneHelperOne
-  ///
-  /// In en, this message translates to:
-  /// **'One problematic area'**
-  String get heatmapWeakZoneHelperOne;
-
-  /// Label for heatmapWeakZoneHelperMany
-  ///
-  /// In en, this message translates to:
-  /// **'{count} weak areas detected'**
-  String heatmapWeakZoneHelperMany(int count);
-
-  /// Label for heatmapPlanSizeHelper
-  ///
-  /// In en, this message translates to:
-  /// **'Estimated span from captured trace'**
-  String get heatmapPlanSizeHelper;
 
   /// Label for heatmapNoSurveyYetTitle
   ///
@@ -7295,96 +6977,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The trail and signal points appear as you take a few steps in each room.'**
   String get heatmapWalkToBeginBody;
-
-  /// Label for heatmapMapViewLabel
-  ///
-  /// In en, this message translates to:
-  /// **'2D HARITA'**
-  String get heatmapMapViewLabel;
-
-  /// Label for heatmapResultViewLabel
-  ///
-  /// In en, this message translates to:
-  /// **'SONUC GORUNUMU'**
-  String get heatmapResultViewLabel;
-
-  /// Label for heatmapFindingsTitle
-  ///
-  /// In en, this message translates to:
-  /// **'NE ANLATIYOR?'**
-  String get heatmapFindingsTitle;
-
-  /// Label for heatmapInsightReady
-  ///
-  /// In en, this message translates to:
-  /// **'The survey is now dense enough. One last room transition is enough before saving the result.'**
-  String get heatmapInsightReady;
-
-  /// Label for heatmapInsightTooEarly
-  ///
-  /// In en, this message translates to:
-  /// **'It is still too early. After 4-5 samples across a few rooms, the result becomes readable.'**
-  String get heatmapInsightTooEarly;
-
-  /// Label for heatmapInsightNoWalls
-  ///
-  /// In en, this message translates to:
-  /// **'Signal is arriving but the outline is missing. Switch to AR and face the walls during another pass to improve the plan.'**
-  String get heatmapInsightNoWalls;
-
-  /// Label for heatmapInsightLive
-  ///
-  /// In en, this message translates to:
-  /// **'The live result is starting to read well. With {count} samples, weak areas are becoming visible.'**
-  String heatmapInsightLive(int count);
-
-  /// Label for heatmapReviewInsightNoSamples
-  ///
-  /// In en, this message translates to:
-  /// **'This survey has no signal samples. If location or motion permissions are off, the app cannot build the heatmap.'**
-  String get heatmapReviewInsightNoSamples;
-
-  /// Label for heatmapReviewInsightNoPlan
-  ///
-  /// In en, this message translates to:
-  /// **'The heatmap is present but the outline is weak. On the next run, use AR and face room boundaries while walking.'**
-  String get heatmapReviewInsightNoPlan;
-
-  /// Label for heatmapReviewInsightStrong
-  ///
-  /// In en, this message translates to:
-  /// **'Coverage looks strong overall. No clear dead zones are visible, and the outline agrees with the signal trace.'**
-  String get heatmapReviewInsightStrong;
-
-  /// Label for heatmapReviewInsightWeak
-  ///
-  /// In en, this message translates to:
-  /// **'{count} weak zones are visible. Moving the router more centrally or adding another access point may help.'**
-  String heatmapReviewInsightWeak(int count);
-
-  /// Label for heatmapReviewInsightBalanced
-  ///
-  /// In en, this message translates to:
-  /// **'Coverage is reasonably balanced, but it dips in {count} spots. These are often corners, corridor ends, or heavy wall transitions.'**
-  String heatmapReviewInsightBalanced(int count);
-
-  /// Label for heatmapCloseReview
-  ///
-  /// In en, this message translates to:
-  /// **'CLOSE REVIEW'**
-  String get heatmapCloseReview;
-
-  /// Label for heatmapNewSurvey
-  ///
-  /// In en, this message translates to:
-  /// **'NEW SURVEY'**
-  String get heatmapNewSurvey;
-
-  /// Label for heatmapFinishAndReview
-  ///
-  /// In en, this message translates to:
-  /// **'FINISH & REVIEW'**
-  String get heatmapFinishAndReview;
 
   /// Label for heatmapStartSurvey
   ///
@@ -7439,258 +7031,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete survey'**
   String get heatmapDeleteSurveyTooltip;
-
-  /// Label for heatmapLegendTitle
-  ///
-  /// In en, this message translates to:
-  /// **'COLOR GUIDE'**
-  String get heatmapLegendTitle;
-
-  /// Label for heatmapLegendStrong
-  ///
-  /// In en, this message translates to:
-  /// **'Strong'**
-  String get heatmapLegendStrong;
-
-  /// Label for heatmapLegendFair
-  ///
-  /// In en, this message translates to:
-  /// **'Fair'**
-  String get heatmapLegendFair;
-
-  /// Label for heatmapLegendWeak
-  ///
-  /// In en, this message translates to:
-  /// **'Weak'**
-  String get heatmapLegendWeak;
-
-  /// Label for heatmapCameraViewLabel
-  ///
-  /// In en, this message translates to:
-  /// **'LIVE CAMERA'**
-  String get heatmapCameraViewLabel;
-
-  /// Label for heatmapInfoSheetTitle
-  ///
-  /// In en, this message translates to:
-  /// **'LIVE SURVEY DATA'**
-  String get heatmapInfoSheetTitle;
-
-  /// Label for heatmapFeedStatus
-  ///
-  /// In en, this message translates to:
-  /// **'{label}: {status}'**
-  String heatmapFeedStatus(String label, String status);
-
-  /// Label for heatmapActive
-  ///
-  /// In en, this message translates to:
-  /// **'active'**
-  String get heatmapActive;
-
-  /// Label for heatmapInactive
-  ///
-  /// In en, this message translates to:
-  /// **'inactive'**
-  String get heatmapInactive;
-
-  /// Label for heatmapArViewLabel
-  ///
-  /// In en, this message translates to:
-  /// **'AR VIEW'**
-  String get heatmapArViewLabel;
-
-  /// Label for heatmapSwitchToMapHint
-  ///
-  /// In en, this message translates to:
-  /// **'Return to the clearer 2D map'**
-  String get heatmapSwitchToMapHint;
-
-  /// Label for heatmapSwitchToArHint
-  ///
-  /// In en, this message translates to:
-  /// **'Use AR to strengthen the outline'**
-  String get heatmapSwitchToArHint;
-
-  /// Label for heatmapRouteLabel
-  ///
-  /// In en, this message translates to:
-  /// **'NEXT STEP'**
-  String get heatmapRouteLabel;
-
-  /// Label for heatmapPlanConfidenceLabel
-  ///
-  /// In en, this message translates to:
-  /// **'PLAN CONFIDENCE'**
-  String get heatmapPlanConfidenceLabel;
-
-  /// Label for heatmapCoverageConfidenceLabel
-  ///
-  /// In en, this message translates to:
-  /// **'COVERAGE CONFIDENCE'**
-  String get heatmapCoverageConfidenceLabel;
-
-  /// Label for heatmapSignalConfidenceLabel
-  ///
-  /// In en, this message translates to:
-  /// **'SIGNAL CONFIDENCE'**
-  String get heatmapSignalConfidenceLabel;
-
-  /// Label for heatmapMotionFeedLabel
-  ///
-  /// In en, this message translates to:
-  /// **'Motion'**
-  String get heatmapMotionFeedLabel;
-
-  /// Label for heatmapCameraFeedLabel
-  ///
-  /// In en, this message translates to:
-  /// **'Camera'**
-  String get heatmapCameraFeedLabel;
-
-  /// Label for heatmapPlanFeedLabel
-  ///
-  /// In en, this message translates to:
-  /// **'Plan'**
-  String get heatmapPlanFeedLabel;
-
-  /// Label for heatmapGuidanceIdleTitle
-  ///
-  /// In en, this message translates to:
-  /// **'Survey Setup'**
-  String get heatmapGuidanceIdleTitle;
-
-  /// Label for heatmapGuidanceCalibrationTitle
-  ///
-  /// In en, this message translates to:
-  /// **'Starting Route'**
-  String get heatmapGuidanceCalibrationTitle;
-
-  /// Label for heatmapGuidanceSweepTitle
-  ///
-  /// In en, this message translates to:
-  /// **'Filling Coverage'**
-  String get heatmapGuidanceSweepTitle;
-
-  /// Label for heatmapGuidanceWeakCheckTitle
-  ///
-  /// In en, this message translates to:
-  /// **'Weak Zone Check'**
-  String get heatmapGuidanceWeakCheckTitle;
-
-  /// Label for heatmapGuidanceWrapUpTitle
-  ///
-  /// In en, this message translates to:
-  /// **'Ready To Save'**
-  String get heatmapGuidanceWrapUpTitle;
-
-  /// Label for heatmapGuidanceReviewTitle
-  ///
-  /// In en, this message translates to:
-  /// **'Survey Quality'**
-  String get heatmapGuidanceReviewTitle;
-
-  /// Label for heatmapGuidanceIdleBody
-  ///
-  /// In en, this message translates to:
-  /// **'Start a new survey. The app will combine motion, camera, and Wi-Fi traces into a cleaner floor plan.'**
-  String get heatmapGuidanceIdleBody;
-
-  /// Label for heatmapGuidanceCalibrationBody
-  ///
-  /// In en, this message translates to:
-  /// **'Walk straight for 5-8 steps to establish the first trace. Doorways and corner turns help anchor the layout faster.'**
-  String get heatmapGuidanceCalibrationBody;
-
-  /// Label for heatmapGuidanceSweepBody
-  ///
-  /// In en, this message translates to:
-  /// **'The {region} side of the map is still sparse. Move there and collect 3-4 more samples.'**
-  String heatmapGuidanceSweepBody(String region);
-
-  /// Label for heatmapGuidanceWeakCheckBody
-  ///
-  /// In en, this message translates to:
-  /// **'You are currently in a weak-signal area. Sweep this zone a bit more to confirm whether it is a real dead spot.'**
-  String get heatmapGuidanceWeakCheckBody;
-
-  /// Label for heatmapGuidanceWrapUpBody
-  ///
-  /// In en, this message translates to:
-  /// **'Outline, coverage, and signal density are now strong enough. Save the result and read the plan/heatmap in review.'**
-  String get heatmapGuidanceWrapUpBody;
-
-  /// Label for heatmapGuidanceReviewBody
-  ///
-  /// In en, this message translates to:
-  /// **'This survey is {progress}% complete. With {count} samples, the result is readable.'**
-  String heatmapGuidanceReviewBody(int progress, int count);
-
-  /// Label for heatmapRouteFinish
-  ///
-  /// In en, this message translates to:
-  /// **'Finish survey'**
-  String get heatmapRouteFinish;
-
-  /// Label for heatmapRouteStart
-  ///
-  /// In en, this message translates to:
-  /// **'Start survey'**
-  String get heatmapRouteStart;
-
-  /// Label for heatmapRouteWalkForward
-  ///
-  /// In en, this message translates to:
-  /// **'Walk forward'**
-  String get heatmapRouteWalkForward;
-
-  /// Label for heatmapRouteSweepWeak
-  ///
-  /// In en, this message translates to:
-  /// **'Sweep weak zone'**
-  String get heatmapRouteSweepWeak;
-
-  /// Label for heatmapRouteWrapUp
-  ///
-  /// In en, this message translates to:
-  /// **'Wrap up run'**
-  String get heatmapRouteWrapUp;
-
-  /// Label for heatmapRouteReview
-  ///
-  /// In en, this message translates to:
-  /// **'Review result'**
-  String get heatmapRouteReview;
-
-  /// Label for heatmapRegionLeft
-  ///
-  /// In en, this message translates to:
-  /// **'left wing'**
-  String get heatmapRegionLeft;
-
-  /// Label for heatmapRegionRight
-  ///
-  /// In en, this message translates to:
-  /// **'right wing'**
-  String get heatmapRegionRight;
-
-  /// Label for heatmapRegionUpper
-  ///
-  /// In en, this message translates to:
-  /// **'upper area'**
-  String get heatmapRegionUpper;
-
-  /// Label for heatmapRegionLower
-  ///
-  /// In en, this message translates to:
-  /// **'lower area'**
-  String get heatmapRegionLower;
-
-  /// Label for heatmapRegionKeep
-  ///
-  /// In en, this message translates to:
-  /// **'keep sweeping'**
-  String get heatmapRegionKeep;
 
   /// Label for channelShort
   ///
@@ -8189,60 +7529,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'RISKY'**
   String get trustLevelRisky;
-
-  /// Label for CVE database freshness card
-  ///
-  /// In en, this message translates to:
-  /// **'CVE DATABASE — {freshness}'**
-  String cveDatabaseLabel(String freshness);
-
-  /// Section title for CVE database update instructions
-  ///
-  /// In en, this message translates to:
-  /// **'HOW TO UPDATE'**
-  String get howToUpdateLabel;
-
-  /// Label for fresh vulnerability database
-  ///
-  /// In en, this message translates to:
-  /// **'FRESH'**
-  String get vulnDbFreshLabel;
-
-  /// Label for aging vulnerability database
-  ///
-  /// In en, this message translates to:
-  /// **'AGING'**
-  String get vulnDbAgingLabel;
-
-  /// Label for stale vulnerability database
-  ///
-  /// In en, this message translates to:
-  /// **'STALE'**
-  String get vulnDbStaleLabel;
-
-  /// Message when vulnerability database is fresh
-  ///
-  /// In en, this message translates to:
-  /// **'Vulnerability lookups against this database are up to date.'**
-  String get vulnDbFreshMessage;
-
-  /// Message when vulnerability database is aging
-  ///
-  /// In en, this message translates to:
-  /// **'The local vulnerability database is over a month old. A clean scan still has value but consider refreshing soon.'**
-  String get vulnDbAgingMessage;
-
-  /// Message when vulnerability database is stale
-  ///
-  /// In en, this message translates to:
-  /// **'This database is more than 90 days old. A \"no findings\" result no longer means the network is safe — many newer CVEs may not be represented here yet.'**
-  String get vulnDbStaleMessage;
-
-  /// Info line showing CVE database version and age
-  ///
-  /// In en, this message translates to:
-  /// **'v{version} · {count} entries · {days} days old'**
-  String vulnDbEntriesInfo(String version, int count, int days);
 
   /// Title of wipe all data confirmation dialog
   ///
@@ -9120,24 +8406,6 @@ abstract class AppLocalizations {
   /// **'Security alert notifications'**
   String get notificationChannelSecurityDescription;
 
-  /// Label for scanCompleteTitle
-  ///
-  /// In en, this message translates to:
-  /// **'Scan Complete'**
-  String get scanCompleteTitle;
-
-  /// Label for scanCompleteBody
-  ///
-  /// In en, this message translates to:
-  /// **'Found {count} networks in {seconds}s'**
-  String scanCompleteBody(int count, int seconds);
-
-  /// Label for wifiChannelQualityDroppedTitle
-  ///
-  /// In en, this message translates to:
-  /// **'📶 Wi-Fi channel quality dropped'**
-  String get wifiChannelQualityDroppedTitle;
-
   /// Label for wifiChannelQualityDroppedBody
   ///
   /// In en, this message translates to:
@@ -9148,12 +8416,6 @@ abstract class AppLocalizations {
     int recommendedChannel,
     String recommendedRating,
   );
-
-  /// Label for attackDetectedTitle
-  ///
-  /// In en, this message translates to:
-  /// **'⚠️ Attack Detected: {attackType}'**
-  String attackDetectedTitle(String attackType);
 
   /// Label for stabilizerJitterSpikeTitle
   ///
@@ -9724,12 +8986,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Check if a password has leaked'**
   String get breachMonitorSubtitle;
-
-  /// No description provided for @breachMonitorIntro.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter any password to check it against known data breaches. Only the first 5 characters of its hash are sent — the password itself never leaves your device.'**
-  String get breachMonitorIntro;
 
   /// No description provided for @breachInputLabel.
   ///

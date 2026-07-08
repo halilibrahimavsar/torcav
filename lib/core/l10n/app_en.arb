@@ -125,10 +125,6 @@
     "@liveLabel": {
         "description": "Live indicator label"
     },
-    "topologyLabel": "TOPOLOGY",
-    "@topologyLabel": {
-        "description": "Dashboard section label."
-    },
     "networkLogs": "NETWORK LOGS",
     "@networkLogs": {
         "description": "Dashboard logs label."
@@ -427,10 +423,6 @@
     "@threatsDetected": {
         "description": "Status text when threats are detected"
     },
-    "networkReconTitle": "NETWORK RECON",
-    "@networkReconTitle": {
-        "description": "Network Recon Title"
-    },
     "intelligenceReportTitle": "INTELLIGENCE REPORT",
     "@intelligenceReportTitle": {
         "description": "Intelligence Report Title"
@@ -456,10 +448,6 @@
                 "type": "int"
             }
         }
-    },
-    "lanReconTitle": "LAN RECON",
-    "@lanReconTitle": {
-        "description": "Lan Recon Title"
     },
     "targetSubnet": "Target IP / Subnet",
     "@targetSubnet": {
@@ -790,23 +778,6 @@
     "@osDetectedLabel": {
         "description": "OS Detection Label"
     },
-    "portLabel": "PORT {port}",
-    "@portLabel": {
-        "placeholders": {
-            "port": {
-                "type": "int"
-            }
-        },
-        "description": "Label for portLabel"
-    },
-    "portsFoundLabel": "OPEN PORTS",
-    "@portsFoundLabel": {
-        "description": "Label for discovered open ports"
-    },
-    "noPortsFound": "No open ports found",
-    "@noPortsFound": {
-        "description": "Message shown when no open ports were discovered"
-    },
     "hostnameLookupAction": "LOOKUP HOSTNAME",
     "@hostnameLookupAction": {
         "description": "Action to lookup hostname of a device"
@@ -818,10 +789,6 @@
     "portScanAction": "PORT SCAN",
     "@portScanAction": {
         "description": "Action to scan ports on a device"
-    },
-    "portRangeHint": "Port range (e.g. 80,443 or 1-1000)",
-    "@portRangeHint": {
-        "description": "Hint for port range input field"
     },
     "latencyLabel": "LATENCY",
     "@latencyLabel": {
@@ -1224,10 +1191,6 @@
     "@scanProfileLabel": {
         "description": "Scan Profile Label"
     },
-    "infoScanProfilesTitle": "Scan Profiles",
-    "@infoScanProfilesTitle": {
-        "description": "Info Scan Profiles Title"
-    },
     "infoScanProfileFastDesc": "Fast: Quick ping sweep — finds devices in seconds.",
     "@infoScanProfileFastDesc": {
         "description": "Info Scan Profile Fast Desc"
@@ -1376,10 +1339,6 @@
     "waitingForData": "Waiting for data...",
     "@waitingForData": {
         "description": "Text shown while waiting for data to load."
-    },
-    "temporalHeatmap": "Temporal Heatmap",
-    "@temporalHeatmap": {
-        "description": "Title for the temporal heatmap screen."
     },
     "signalMonitoringTitle": "SIGNAL MONITORING: {ssid}",
     "@signalMonitoringTitle": {
@@ -1585,30 +1544,6 @@
     "@interfaceTheme": {
         "description": "Interface Theme"
     },
-    "speedTestHeader": "SPEED TEST",
-    "@speedTestHeader": {
-        "description": "Speed Test Header"
-    },
-    "commandCenters": "COMMAND CENTERS",
-    "@commandCenters": {
-        "description": "Command Centers"
-    },
-    "activeShielding": "Active Shielding",
-    "@activeShielding": {
-        "description": "Active Shielding"
-    },
-    "logisticsTitle": "LOGISTICS",
-    "@logisticsTitle": {
-        "description": "Logistics Title"
-    },
-    "intelMetrics": "Intel Metrics",
-    "@intelMetrics": {
-        "description": "Intel Metrics"
-    },
-    "networkMesh": "Network Mesh",
-    "@networkMesh": {
-        "description": "Network Mesh"
-    },
     "phasePing": "PHASE: PING",
     "@phasePing": {
         "description": "Phase Ping"
@@ -1657,7 +1592,7 @@
     "@channelInterferenceDescription": {
         "description": "Explanation of channel interference"
     },
-    "securityEventType": "{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst Detected} handshakeCaptureStarted{Handshake Protocol Analysis} handshakeCaptureCompleted{Handshake Protocol Secured} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} arpSpoofingDetected{ARP Spoofing Detected} dnsHijackingDetected{DNS Hijacking Detected} unsupportedOperation{Unsupported Operation} other{{type}}}",
+    "securityEventType": "{type, select, rogueApSuspected{Rogue AP Suspected} deauthBurstDetected{Deauth Burst Detected} captivePortalDetected{Captive Portal Detected} evilTwinDetected{Evil Twin Detected} deauthAttackSuspected{Deauth Attack Suspected} encryptionDowngraded{Encryption Downgraded} arpSpoofingDetected{ARP Spoofing Detected} dnsHijackingDetected{DNS Hijacking Detected} unsupportedOperation{Unsupported Operation} other{{type}}}",
     "@securityEventType": {
         "description": "Name of security event type",
         "placeholders": {
@@ -2413,14 +2348,6 @@
     "@speedDoctorTagline": {
         "description": "Speed Doctor subtitle"
     },
-    "speedDoctorOpsTile": "SPEED DOCTOR",
-    "@speedDoctorOpsTile": {
-        "description": "Operations Hub tile for Speed Doctor"
-    },
-    "speedDoctorOpsSubtitle": "Why is it slow?",
-    "@speedDoctorOpsSubtitle": {
-        "description": "Operations Hub tile subtitle for Speed Doctor"
-    },
     "evilTwinDetailTitle": "EVIL TWIN DETAIL",
     "@evilTwinDetailTitle": {
         "description": "Evil-twin detail page title"
@@ -2605,10 +2532,6 @@
     "@internetSlowQuestion": {
         "description": "Question on the speed doctor tile."
     },
-    "runSpeedDoctorDesc": "Run Speed Doctor — 30-second root-cause diagnostic.",
-    "@runSpeedDoctorDesc": {
-        "description": "Description on the speed doctor tile."
-    },
     "securityAlertsTitle": "SECURITY ALERTS",
     "@securityAlertsTitle": {
         "description": "Title for the security alerts sheet."
@@ -2656,14 +2579,6 @@
     "eventTypeDeauthBurst": "DEAUTH BURST",
     "@eventTypeDeauthBurst": {
         "description": "Security event type: Deauth Burst."
-    },
-    "eventTypeHandshakeAnalysis": "HANDSHAKE ANALYSIS",
-    "@eventTypeHandshakeAnalysis": {
-        "description": "Security event type: Handshake Analysis."
-    },
-    "eventTypeHandshakeSecured": "HANDSHAKE SECURED",
-    "@eventTypeHandshakeSecured": {
-        "description": "Security event type: Handshake Secured."
     },
     "eventTypeCaptivePortal": "CAPTIVE PORTAL",
     "@eventTypeCaptivePortal": {
@@ -3365,6 +3280,14 @@
     "privacyCaptivePortalBody": "connectivitycheck.gstatic.com receives a plain HEAD request to detect captive portals. This is the same probe Android itself runs.",
     "@privacyCaptivePortalBody": {
         "description": "Label for privacyCaptivePortalBody"
+    },
+    "privacyBreachCheckTitle": "Password Breach Check (Have I Been Pwned)",
+    "@privacyBreachCheckTitle": {
+        "description": "Privacy policy card title for the HIBP breach check endpoint"
+    },
+    "privacyBreachCheckBody": "The breach check queries api.pwnedpasswords.com with k-anonymity: the password is SHA-1 hashed on this device and only the first 5 characters of the hash are ever sent. The full password or full hash never leaves the phone, and nothing is logged or stored.",
+    "@privacyBreachCheckBody": {
+        "description": "Privacy policy card body for the HIBP breach check endpoint"
     },
     "privacyNoTrackersTitle": "No Analytics, No Trackers, No Ads",
     "@privacyNoTrackersTitle": {
@@ -4537,14 +4460,6 @@
     "@deauthActivity": {
         "description": "Label for deauthActivity"
     },
-    "handshakeCaptureStarted": "Handshake capture started",
-    "@handshakeCaptureStarted": {
-        "description": "Label for handshakeCaptureStarted"
-    },
-    "handshakeCaptured": "Handshake captured",
-    "@handshakeCaptured": {
-        "description": "Label for handshakeCaptured"
-    },
     "captivePortal": "Captive portal",
     "@captivePortal": {
         "description": "Label for captivePortal"
@@ -4947,14 +4862,6 @@
     "@whatIsThisHowToFix": {
         "description": "Label for whatIsThisHowToFix"
     },
-    "preview": "Preview",
-    "@preview": {
-        "description": "Label for preview"
-    },
-    "recording": "RECORDING",
-    "@recording": {
-        "description": "Label for recording"
-    },
     "reviewing": "REVIEW",
     "@reviewing": {
         "description": "Label for reviewing"
@@ -4966,10 +4873,6 @@
     "surveyComplete": "SURVEY COMPLETE",
     "@surveyComplete": {
         "description": "Label for surveyComplete"
-    },
-    "surveyCompleteDesc": "The survey has been successfully recorded. Plan and signal data are synthesized.",
-    "@surveyCompleteDesc": {
-        "description": "Label for surveyCompleteDesc"
     },
     "coverage": "COVERAGE",
     "@coverage": {
@@ -5007,10 +4910,6 @@
     "@heatmapSamplesShort": {
         "description": "Label for heatmapSamplesShort"
     },
-    "heatmapWallsShort": "walls",
-    "@heatmapWallsShort": {
-        "description": "Label for heatmapWallsShort"
-    },
     "heatmapRestartSurvey": "RESTART SURVEY",
     "@heatmapRestartSurvey": {
         "description": "Label for heatmapRestartSurvey"
@@ -5039,148 +4938,17 @@
     "@heatmapShareText": {
         "description": "Label for heatmapShareText"
     },
-    "heatmapIssueTitle": "Issue",
-    "@heatmapIssueTitle": {
-        "description": "Label for heatmapIssueTitle"
-    },
-    "heatmapGenericIssueBody": "The survey could not finish. Check permissions and device sensors.",
-    "@heatmapGenericIssueBody": {
-        "description": "Label for heatmapGenericIssueBody"
-    },
-    "heatmapGoalTitle": "What This Feature Does",
-    "@heatmapGoalTitle": {
-        "description": "Label for heatmapGoalTitle"
-    },
-    "heatmapGoalBody": "It samples Wi-Fi as you walk, captures wall lines in AR, and then shows the home outline together with signal density.",
-    "@heatmapGoalBody": {
-        "description": "Label for heatmapGoalBody"
-    },
-    "heatmapWaitingForDataTitle": "Waiting For Data",
-    "@heatmapWaitingForDataTitle": {
-        "description": "Label for heatmapWaitingForDataTitle"
-    },
-    "heatmapWaitingForDataBody": "No signal sample has landed yet. Check motion and location permissions, then walk a few steps.",
-    "@heatmapWaitingForDataBody": {
-        "description": "Label for heatmapWaitingForDataBody"
-    },
-    "heatmapArCaptureTitle": "AR Mode Active",
-    "@heatmapArCaptureTitle": {
-        "description": "Label for heatmapArCaptureTitle"
-    },
-    "heatmapArCaptureBody": "Point the phone at room edges and door openings. The camera searches for wall lines while signal points are added automatically as you move.",
-    "@heatmapArCaptureBody": {
-        "description": "Label for heatmapArCaptureBody"
-    },
-    "heatmapMapCaptureTitle": "2D Map Active",
-    "@heatmapMapCaptureTitle": {
-        "description": "Label for heatmapMapCaptureTitle"
-    },
-    "heatmapMapCaptureBody": "You are in the clearer 2D view. Samples keep arriving as you walk; if the outline stays weak, switch to AR mode.",
-    "@heatmapMapCaptureBody": {
-        "description": "Label for heatmapMapCaptureBody"
-    },
-    "heatmapReviewTitle": "Survey Summary",
-    "@heatmapReviewTitle": {
-        "description": "Label for heatmapReviewTitle"
-    },
-    "heatmapReviewBodyNoSamples": "There is a saved survey, but it still lacks meaningful signal samples.",
-    "@heatmapReviewBodyNoSamples": {
-        "description": "Label for heatmapReviewBodyNoSamples"
-    },
-    "heatmapReviewBodyReady": "Coverage is readable. Use the summary below to inspect weak zones.",
-    "@heatmapReviewBodyReady": {
-        "description": "Label for heatmapReviewBodyReady"
-    },
     "heatmapSamplesLabel": "SAMPLES",
     "@heatmapSamplesLabel": {
         "description": "Label for heatmapSamplesLabel"
-    },
-    "heatmapWallsLabel": "WALLS",
-    "@heatmapWallsLabel": {
-        "description": "Label for heatmapWallsLabel"
-    },
-    "heatmapCurrentSignalLabel": "LIVE SIGNAL",
-    "@heatmapCurrentSignalLabel": {
-        "description": "Label for heatmapCurrentSignalLabel"
     },
     "heatmapAvgSignalLabel": "AVG SIGNAL",
     "@heatmapAvgSignalLabel": {
         "description": "Label for heatmapAvgSignalLabel"
     },
-    "heatmapWeakZonesLabel": "WEAK ZONES",
-    "@heatmapWeakZonesLabel": {
-        "description": "Label for heatmapWeakZonesLabel"
-    },
-    "heatmapPlanSizeLabel": "PLAN SIZE",
-    "@heatmapPlanSizeLabel": {
-        "description": "Label for heatmapPlanSizeLabel"
-    },
     "heatmapNotAvailable": "Not ready",
     "@heatmapNotAvailable": {
         "description": "Label for heatmapNotAvailable"
-    },
-    "heatmapNoSamplesHelper": "Fills in as you start walking",
-    "@heatmapNoSamplesHelper": {
-        "description": "Label for heatmapNoSamplesHelper"
-    },
-    "heatmapSamplesHelper": "{count} signal samples collected",
-    "@heatmapSamplesHelper": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for heatmapSamplesHelper"
-    },
-    "heatmapNoWallsHelper": "AR pass may be needed for the outline",
-    "@heatmapNoWallsHelper": {
-        "description": "Label for heatmapNoWallsHelper"
-    },
-    "heatmapWallsHelper": "{count} wall segments retained",
-    "@heatmapWallsHelper": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for heatmapWallsHelper"
-    },
-    "heatmapSignalUnavailableHelper": "Wi-Fi reading has not arrived yet",
-    "@heatmapSignalUnavailableHelper": {
-        "description": "Label for heatmapSignalUnavailableHelper"
-    },
-    "heatmapSignalStrongHelper": "Strong coverage",
-    "@heatmapSignalStrongHelper": {
-        "description": "Label for heatmapSignalStrongHelper"
-    },
-    "heatmapSignalFairHelper": "Borderline but usable",
-    "@heatmapSignalFairHelper": {
-        "description": "Label for heatmapSignalFairHelper"
-    },
-    "heatmapSignalWeakHelper": "Weak or problematic zone",
-    "@heatmapSignalWeakHelper": {
-        "description": "Label for heatmapSignalWeakHelper"
-    },
-    "heatmapWeakZoneHelperNone": "No obvious dead zones",
-    "@heatmapWeakZoneHelperNone": {
-        "description": "Label for heatmapWeakZoneHelperNone"
-    },
-    "heatmapWeakZoneHelperOne": "One problematic area",
-    "@heatmapWeakZoneHelperOne": {
-        "description": "Label for heatmapWeakZoneHelperOne"
-    },
-    "heatmapWeakZoneHelperMany": "{count} weak areas detected",
-    "@heatmapWeakZoneHelperMany": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for heatmapWeakZoneHelperMany"
-    },
-    "heatmapPlanSizeHelper": "Estimated span from captured trace",
-    "@heatmapPlanSizeHelper": {
-        "description": "Label for heatmapPlanSizeHelper"
     },
     "heatmapNoSurveyYetTitle": "Start A Survey",
     "@heatmapNoSurveyYetTitle": {
@@ -5197,81 +4965,6 @@
     "heatmapWalkToBeginBody": "The trail and signal points appear as you take a few steps in each room.",
     "@heatmapWalkToBeginBody": {
         "description": "Label for heatmapWalkToBeginBody"
-    },
-    "heatmapMapViewLabel": "2D HARITA",
-    "@heatmapMapViewLabel": {
-        "description": "Label for heatmapMapViewLabel"
-    },
-    "heatmapResultViewLabel": "SONUC GORUNUMU",
-    "@heatmapResultViewLabel": {
-        "description": "Label for heatmapResultViewLabel"
-    },
-    "heatmapFindingsTitle": "NE ANLATIYOR?",
-    "@heatmapFindingsTitle": {
-        "description": "Label for heatmapFindingsTitle"
-    },
-    "heatmapInsightReady": "The survey is now dense enough. One last room transition is enough before saving the result.",
-    "@heatmapInsightReady": {
-        "description": "Label for heatmapInsightReady"
-    },
-    "heatmapInsightTooEarly": "It is still too early. After 4-5 samples across a few rooms, the result becomes readable.",
-    "@heatmapInsightTooEarly": {
-        "description": "Label for heatmapInsightTooEarly"
-    },
-    "heatmapInsightNoWalls": "Signal is arriving but the outline is missing. Switch to AR and face the walls during another pass to improve the plan.",
-    "@heatmapInsightNoWalls": {
-        "description": "Label for heatmapInsightNoWalls"
-    },
-    "heatmapInsightLive": "The live result is starting to read well. With {count} samples, weak areas are becoming visible.",
-    "@heatmapInsightLive": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for heatmapInsightLive"
-    },
-    "heatmapReviewInsightNoSamples": "This survey has no signal samples. If location or motion permissions are off, the app cannot build the heatmap.",
-    "@heatmapReviewInsightNoSamples": {
-        "description": "Label for heatmapReviewInsightNoSamples"
-    },
-    "heatmapReviewInsightNoPlan": "The heatmap is present but the outline is weak. On the next run, use AR and face room boundaries while walking.",
-    "@heatmapReviewInsightNoPlan": {
-        "description": "Label for heatmapReviewInsightNoPlan"
-    },
-    "heatmapReviewInsightStrong": "Coverage looks strong overall. No clear dead zones are visible, and the outline agrees with the signal trace.",
-    "@heatmapReviewInsightStrong": {
-        "description": "Label for heatmapReviewInsightStrong"
-    },
-    "heatmapReviewInsightWeak": "{count} weak zones are visible. Moving the router more centrally or adding another access point may help.",
-    "@heatmapReviewInsightWeak": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for heatmapReviewInsightWeak"
-    },
-    "heatmapReviewInsightBalanced": "Coverage is reasonably balanced, but it dips in {count} spots. These are often corners, corridor ends, or heavy wall transitions.",
-    "@heatmapReviewInsightBalanced": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for heatmapReviewInsightBalanced"
-    },
-    "heatmapCloseReview": "CLOSE REVIEW",
-    "@heatmapCloseReview": {
-        "description": "Label for heatmapCloseReview"
-    },
-    "heatmapNewSurvey": "NEW SURVEY",
-    "@heatmapNewSurvey": {
-        "description": "Label for heatmapNewSurvey"
-    },
-    "heatmapFinishAndReview": "FINISH & REVIEW",
-    "@heatmapFinishAndReview": {
-        "description": "Label for heatmapFinishAndReview"
     },
     "heatmapStartSurvey": "START SURVEY",
     "@heatmapStartSurvey": {
@@ -5324,195 +5017,6 @@
     "heatmapDeleteSurveyTooltip": "Delete survey",
     "@heatmapDeleteSurveyTooltip": {
         "description": "Label for heatmapDeleteSurveyTooltip"
-    },
-    "heatmapLegendTitle": "COLOR GUIDE",
-    "@heatmapLegendTitle": {
-        "description": "Label for heatmapLegendTitle"
-    },
-    "heatmapLegendStrong": "Strong",
-    "@heatmapLegendStrong": {
-        "description": "Label for heatmapLegendStrong"
-    },
-    "heatmapLegendFair": "Fair",
-    "@heatmapLegendFair": {
-        "description": "Label for heatmapLegendFair"
-    },
-    "heatmapLegendWeak": "Weak",
-    "@heatmapLegendWeak": {
-        "description": "Label for heatmapLegendWeak"
-    },
-    "heatmapCameraViewLabel": "LIVE CAMERA",
-    "@heatmapCameraViewLabel": {
-        "description": "Label for heatmapCameraViewLabel"
-    },
-    "heatmapInfoSheetTitle": "LIVE SURVEY DATA",
-    "@heatmapInfoSheetTitle": {
-        "description": "Label for heatmapInfoSheetTitle"
-    },
-    "heatmapFeedStatus": "{label}: {status}",
-    "@heatmapFeedStatus": {
-        "placeholders": {
-            "label": {
-                "type": "String"
-            },
-            "status": {
-                "type": "String"
-            }
-        },
-        "description": "Label for heatmapFeedStatus"
-    },
-    "heatmapActive": "active",
-    "@heatmapActive": {
-        "description": "Label for heatmapActive"
-    },
-    "heatmapInactive": "inactive",
-    "@heatmapInactive": {
-        "description": "Label for heatmapInactive"
-    },
-    "heatmapArViewLabel": "AR VIEW",
-    "@heatmapArViewLabel": {
-        "description": "Label for heatmapArViewLabel"
-    },
-    "heatmapSwitchToMapHint": "Return to the clearer 2D map",
-    "@heatmapSwitchToMapHint": {
-        "description": "Label for heatmapSwitchToMapHint"
-    },
-    "heatmapSwitchToArHint": "Use AR to strengthen the outline",
-    "@heatmapSwitchToArHint": {
-        "description": "Label for heatmapSwitchToArHint"
-    },
-    "heatmapRouteLabel": "NEXT STEP",
-    "@heatmapRouteLabel": {
-        "description": "Label for heatmapRouteLabel"
-    },
-    "heatmapPlanConfidenceLabel": "PLAN CONFIDENCE",
-    "@heatmapPlanConfidenceLabel": {
-        "description": "Label for heatmapPlanConfidenceLabel"
-    },
-    "heatmapCoverageConfidenceLabel": "COVERAGE CONFIDENCE",
-    "@heatmapCoverageConfidenceLabel": {
-        "description": "Label for heatmapCoverageConfidenceLabel"
-    },
-    "heatmapSignalConfidenceLabel": "SIGNAL CONFIDENCE",
-    "@heatmapSignalConfidenceLabel": {
-        "description": "Label for heatmapSignalConfidenceLabel"
-    },
-    "heatmapMotionFeedLabel": "Motion",
-    "@heatmapMotionFeedLabel": {
-        "description": "Label for heatmapMotionFeedLabel"
-    },
-    "heatmapCameraFeedLabel": "Camera",
-    "@heatmapCameraFeedLabel": {
-        "description": "Label for heatmapCameraFeedLabel"
-    },
-    "heatmapPlanFeedLabel": "Plan",
-    "@heatmapPlanFeedLabel": {
-        "description": "Label for heatmapPlanFeedLabel"
-    },
-    "heatmapGuidanceIdleTitle": "Survey Setup",
-    "@heatmapGuidanceIdleTitle": {
-        "description": "Label for heatmapGuidanceIdleTitle"
-    },
-    "heatmapGuidanceCalibrationTitle": "Starting Route",
-    "@heatmapGuidanceCalibrationTitle": {
-        "description": "Label for heatmapGuidanceCalibrationTitle"
-    },
-    "heatmapGuidanceSweepTitle": "Filling Coverage",
-    "@heatmapGuidanceSweepTitle": {
-        "description": "Label for heatmapGuidanceSweepTitle"
-    },
-    "heatmapGuidanceWeakCheckTitle": "Weak Zone Check",
-    "@heatmapGuidanceWeakCheckTitle": {
-        "description": "Label for heatmapGuidanceWeakCheckTitle"
-    },
-    "heatmapGuidanceWrapUpTitle": "Ready To Save",
-    "@heatmapGuidanceWrapUpTitle": {
-        "description": "Label for heatmapGuidanceWrapUpTitle"
-    },
-    "heatmapGuidanceReviewTitle": "Survey Quality",
-    "@heatmapGuidanceReviewTitle": {
-        "description": "Label for heatmapGuidanceReviewTitle"
-    },
-    "heatmapGuidanceIdleBody": "Start a new survey. The app will combine motion, camera, and Wi-Fi traces into a cleaner floor plan.",
-    "@heatmapGuidanceIdleBody": {
-        "description": "Label for heatmapGuidanceIdleBody"
-    },
-    "heatmapGuidanceCalibrationBody": "Walk straight for 5-8 steps to establish the first trace. Doorways and corner turns help anchor the layout faster.",
-    "@heatmapGuidanceCalibrationBody": {
-        "description": "Label for heatmapGuidanceCalibrationBody"
-    },
-    "heatmapGuidanceSweepBody": "The {region} side of the map is still sparse. Move there and collect 3-4 more samples.",
-    "@heatmapGuidanceSweepBody": {
-        "placeholders": {
-            "region": {
-                "type": "String"
-            }
-        },
-        "description": "Label for heatmapGuidanceSweepBody"
-    },
-    "heatmapGuidanceWeakCheckBody": "You are currently in a weak-signal area. Sweep this zone a bit more to confirm whether it is a real dead spot.",
-    "@heatmapGuidanceWeakCheckBody": {
-        "description": "Label for heatmapGuidanceWeakCheckBody"
-    },
-    "heatmapGuidanceWrapUpBody": "Outline, coverage, and signal density are now strong enough. Save the result and read the plan/heatmap in review.",
-    "@heatmapGuidanceWrapUpBody": {
-        "description": "Label for heatmapGuidanceWrapUpBody"
-    },
-    "heatmapGuidanceReviewBody": "This survey is {progress}% complete. With {count} samples, the result is readable.",
-    "@heatmapGuidanceReviewBody": {
-        "placeholders": {
-            "progress": {
-                "type": "int"
-            },
-            "count": {
-                "type": "int"
-            }
-        },
-        "description": "Label for heatmapGuidanceReviewBody"
-    },
-    "heatmapRouteFinish": "Finish survey",
-    "@heatmapRouteFinish": {
-        "description": "Label for heatmapRouteFinish"
-    },
-    "heatmapRouteStart": "Start survey",
-    "@heatmapRouteStart": {
-        "description": "Label for heatmapRouteStart"
-    },
-    "heatmapRouteWalkForward": "Walk forward",
-    "@heatmapRouteWalkForward": {
-        "description": "Label for heatmapRouteWalkForward"
-    },
-    "heatmapRouteSweepWeak": "Sweep weak zone",
-    "@heatmapRouteSweepWeak": {
-        "description": "Label for heatmapRouteSweepWeak"
-    },
-    "heatmapRouteWrapUp": "Wrap up run",
-    "@heatmapRouteWrapUp": {
-        "description": "Label for heatmapRouteWrapUp"
-    },
-    "heatmapRouteReview": "Review result",
-    "@heatmapRouteReview": {
-        "description": "Label for heatmapRouteReview"
-    },
-    "heatmapRegionLeft": "left wing",
-    "@heatmapRegionLeft": {
-        "description": "Label for heatmapRegionLeft"
-    },
-    "heatmapRegionRight": "right wing",
-    "@heatmapRegionRight": {
-        "description": "Label for heatmapRegionRight"
-    },
-    "heatmapRegionUpper": "upper area",
-    "@heatmapRegionUpper": {
-        "description": "Label for heatmapRegionUpper"
-    },
-    "heatmapRegionLower": "lower area",
-    "@heatmapRegionLower": {
-        "description": "Label for heatmapRegionLower"
-    },
-    "heatmapRegionKeep": "keep sweeping",
-    "@heatmapRegionKeep": {
-        "description": "Label for heatmapRegionKeep"
     },
     "channelShort": "CH {channel}",
     "@channelShort": {
@@ -5975,58 +5479,6 @@
     "trustLevelRisky": "RISKY",
     "@trustLevelRisky": {
         "description": "Trust level label for risky hosts"
-    },
-    "cveDatabaseLabel": "CVE DATABASE — {freshness}",
-    "@cveDatabaseLabel": {
-        "description": "Label for CVE database freshness card",
-        "placeholders": {
-            "freshness": {
-                "type": "String"
-            }
-        }
-    },
-    "howToUpdateLabel": "HOW TO UPDATE",
-    "@howToUpdateLabel": {
-        "description": "Section title for CVE database update instructions"
-    },
-    "vulnDbFreshLabel": "FRESH",
-    "@vulnDbFreshLabel": {
-        "description": "Label for fresh vulnerability database"
-    },
-    "vulnDbAgingLabel": "AGING",
-    "@vulnDbAgingLabel": {
-        "description": "Label for aging vulnerability database"
-    },
-    "vulnDbStaleLabel": "STALE",
-    "@vulnDbStaleLabel": {
-        "description": "Label for stale vulnerability database"
-    },
-    "vulnDbFreshMessage": "Vulnerability lookups against this database are up to date.",
-    "@vulnDbFreshMessage": {
-        "description": "Message when vulnerability database is fresh"
-    },
-    "vulnDbAgingMessage": "The local vulnerability database is over a month old. A clean scan still has value but consider refreshing soon.",
-    "@vulnDbAgingMessage": {
-        "description": "Message when vulnerability database is aging"
-    },
-    "vulnDbStaleMessage": "This database is more than 90 days old. A \"no findings\" result no longer means the network is safe — many newer CVEs may not be represented here yet.",
-    "@vulnDbStaleMessage": {
-        "description": "Message when vulnerability database is stale"
-    },
-    "vulnDbEntriesInfo": "v{version} · {count} entries · {days} days old",
-    "@vulnDbEntriesInfo": {
-        "description": "Info line showing CVE database version and age",
-        "placeholders": {
-            "version": {
-                "type": "String"
-            },
-            "count": {
-                "type": "int"
-            },
-            "days": {
-                "type": "int"
-            }
-        }
     },
     "wipeAllDialogTitle": "WIPE ALL DATA",
     "@wipeAllDialogTitle": {
@@ -6770,26 +6222,6 @@
     "@notificationChannelSecurityDescription": {
         "description": "Label for notificationChannelSecurityDescription"
     },
-    "scanCompleteTitle": "Scan Complete",
-    "@scanCompleteTitle": {
-        "description": "Label for scanCompleteTitle"
-    },
-    "scanCompleteBody": "Found {count} networks in {seconds}s",
-    "@scanCompleteBody": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            },
-            "seconds": {
-                "type": "int"
-            }
-        },
-        "description": "Label for scanCompleteBody"
-    },
-    "wifiChannelQualityDroppedTitle": "📶 Wi-Fi channel quality dropped",
-    "@wifiChannelQualityDroppedTitle": {
-        "description": "Label for wifiChannelQualityDroppedTitle"
-    },
     "wifiChannelQualityDroppedBody": "Channel {channel} is now {rating}/10. Channel {recommendedChannel} is at {recommendedRating}/10 — consider switching.",
     "@wifiChannelQualityDroppedBody": {
         "placeholders": {
@@ -6807,15 +6239,6 @@
             }
         },
         "description": "Label for wifiChannelQualityDroppedBody"
-    },
-    "attackDetectedTitle": "⚠️ Attack Detected: {attackType}",
-    "@attackDetectedTitle": {
-        "placeholders": {
-            "attackType": {
-                "type": "String"
-            }
-        },
-        "description": "Label for attackDetectedTitle"
     },
     "stabilizerJitterSpikeTitle": "Jitter spike detected",
     "@stabilizerJitterSpikeTitle": {
@@ -7225,7 +6648,6 @@
     "opsReportsSubtitle": "Export a network health report",
     "breachMonitorTitle": "Breach Monitor",
     "breachMonitorSubtitle": "Check if a password has leaked",
-    "breachMonitorIntro": "Enter any password to check it against known data breaches. Only the first 5 characters of its hash are sent — the password itself never leaves your device.",
     "breachInputLabel": "Password to check",
     "breachCheckButton": "Check Password",
     "breachCheckingButton": "Checking...",

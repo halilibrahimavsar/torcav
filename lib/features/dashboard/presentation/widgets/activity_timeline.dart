@@ -146,10 +146,6 @@ class _TimelineItem {
       case SecurityEventType.deauthBurstDetected:
       case SecurityEventType.deauthAttackSuspected:
         return l10n.deauthActivity;
-      case SecurityEventType.handshakeCaptureStarted:
-        return l10n.handshakeCaptureStarted;
-      case SecurityEventType.handshakeCaptureCompleted:
-        return l10n.handshakeCaptured;
       case SecurityEventType.captivePortalDetected:
         return l10n.captivePortal;
       case SecurityEventType.evilTwinDetected:

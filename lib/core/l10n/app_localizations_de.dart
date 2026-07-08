@@ -27,22 +27,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get deviceTypeLaptop => 'Laptop';
 
   @override
-  String get deviceTypeMobileDevice => 'Mobile Device';
+  String get deviceTypeMobileDevice => 'Mobilgerät';
 
   @override
   String get deviceTypeTablet => 'Tablet';
 
   @override
-  String get deviceTypeSmartTV => 'Smart TV';
+  String get deviceTypeSmartTV => 'Smart-TV';
 
   @override
-  String get deviceTypeNASStorage => 'NAS/Storage';
+  String get deviceTypeNASStorage => 'NAS/Speicher';
 
   @override
-  String get deviceTypeGameConsole => 'Game Console';
+  String get deviceTypeGameConsole => 'Spielkonsole';
 
   @override
-  String get deviceTypeIPCamera => 'IP Camera';
+  String get deviceTypeIPCamera => 'IP-Kamera';
 
   @override
   String get deviceTypeSmartSpeaker => 'Smart Speaker';
@@ -51,10 +51,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get deviceTypeServer => 'Server';
 
   @override
-  String get deviceTypeUnknown => 'Unknown';
+  String get deviceTypeUnknown => 'Unbekannt';
 
   @override
-  String get notificationOpenAction => 'Open notification';
+  String get notificationOpenAction => 'Benachrichtigung öffnen';
 
   @override
   String get quickScan => 'Schnellscan';
@@ -96,9 +96,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get liveLabel => 'LIVE';
-
-  @override
-  String get topologyLabel => 'TOPOLOGIE';
 
   @override
   String get networkLogs => 'NETZWERK-LOGS';
@@ -232,7 +229,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get wifiStandardLegacy => 'Wi-Fi (legacy)';
+  String get wifiStandardLegacy => 'Wi-Fi (veraltet)';
 
   @override
   String get wifiStandard4 => 'Wi-Fi 4 (802.11n)';
@@ -263,13 +260,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get deviceTypeWorkstation => 'Workstation';
 
   @override
-  String get deviceTypePrinterIoT => 'Printer/IoT';
+  String get deviceTypePrinterIoT => 'Drucker/IoT';
 
   @override
-  String get vendorAndroidRestricted => 'Android Device (Restricted)';
+  String get vendorAndroidRestricted => 'Android-Gerät (eingeschränkt)';
 
   @override
-  String get vendorAndroidLimited => 'Unknown (Android Limited)';
+  String get vendorAndroidLimited => 'Unbekannt (Android-Limit)';
 
   @override
   String frequencyLabel(int freq) {
@@ -303,9 +300,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get threatsDetected => 'BEDROHUNGEN ERKANNT';
 
   @override
-  String get networkReconTitle => 'NETZWERK-ERKENNUNG';
-
-  @override
   String get intelligenceReportTitle => 'GEHEIMDIENST-BERICHT';
 
   @override
@@ -322,13 +316,10 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get lanReconTitle => 'LAN-ERKUNDUNG';
-
-  @override
   String get targetSubnet => 'Ziel-IP / Subnetz';
 
   @override
-  String get scanAllCaps => 'SCAN';
+  String get scanAllCaps => 'SCANNEN';
 
   @override
   String get refreshScanTooltip => 'Scan aktualisieren';
@@ -355,7 +346,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get analyzing => 'Analysieren...';
 
   @override
-  String get trafficLabel => 'TRAFFIC';
+  String get trafficLabel => 'DATENVERKEHR';
 
   @override
   String get normalSpeed => 'NORMAL';
@@ -395,35 +386,35 @@ class AppLocalizationsDe extends AppLocalizations {
   String get analyzingNode => 'KNOTEN ANALYSIEREN';
 
   @override
-  String get topologyGuideTitle => 'TOPOLOGY GUIDE';
+  String get topologyGuideTitle => 'TOPOLOGIE-LEITFADEN';
 
   @override
   String get topologyGuideDesc =>
-      'Understand your network structure and device connectivity.';
+      'Verstehen Sie Ihre Netzwerkstruktur und Geräteverbindungen.';
 
   @override
-  String get gatewayTitle => 'The Gateway';
+  String get gatewayTitle => 'Das Gateway';
 
   @override
   String get gatewayDesc =>
-      'The central brain of your network. All external traffic flows through this node.';
+      'Das zentrale Gehirn Ihres Netzwerks. Der gesamte externe Datenverkehr fließt durch diesen Knoten.';
 
   @override
-  String get deviceLayersTitle => 'Device Layers';
+  String get deviceLayersTitle => 'Geräteebenen';
 
   @override
   String get deviceLayersDesc =>
-      'Devices are categorized by their role: Core (Routers/APs), Mobile, and IoT/Peripheral.';
+      'Geräte werden nach ihrer Rolle gruppiert: Kern (Router/APs), Mobil und IoT/Peripherie.';
 
   @override
-  String get pathwaysTitle => 'Pathways';
+  String get pathwaysTitle => 'Verbindungswege';
 
   @override
   String get pathwaysDesc =>
-      'Modern networks mix wired (Ethernet) and wireless (Wi-Fi) connections. Solid lines indicate high-speed wired links, while dashed lines show wireless segments.';
+      'Moderne Netzwerke mischen kabelgebundene (Ethernet) und drahtlose (Wi-Fi) Verbindungen. Durchgezogene Linien zeigen schnelle Kabelverbindungen, gestrichelte Linien drahtlose Segmente.';
 
   @override
-  String get pingAction => 'TEST LATENCY';
+  String get pingAction => 'LATENZ TESTEN';
 
   @override
   String get settingsTitle => 'EINSTELLUNGEN';
@@ -486,11 +477,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsStrictSafetyDesc => 'Gefährliche Operationen einschränken';
 
   @override
-  String get settingsAiClassification => 'AI Device Classification';
+  String get settingsAiClassification => 'KI-Geräteklassifizierung';
 
   @override
   String get settingsAiClassificationDesc =>
-      'Enables local AI-powered device detection and identification.';
+      'Aktiviert lokale KI-gestützte Geräteerkennung und -identifikation.';
 
   @override
   String get aiBadgeLabel => 'AI';
@@ -539,7 +530,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get noIdentifiedNetworks =>
-      'No identified networks in laboratory archives';
+      'Keine identifizierten Netzwerke im Laborarchiv';
 
   @override
   String get securityTimeline => 'Sicherheits-Zeitlinie';
@@ -548,13 +539,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noSecurityEvents => 'Keine Sicherheitsereignisse aufgezeichnet';
 
   @override
-  String get dnsSecurityTitle => 'DNS INTEGRITY';
+  String get dnsSecurityTitle => 'DNS-INTEGRITÄT';
 
   @override
-  String get dnsPerformanceBenchmark => 'PERFORMANCE BENCHMARK';
+  String get dnsPerformanceBenchmark => 'LEISTUNGS-BENCHMARK';
 
   @override
-  String get dnsRecommended => 'RECOMMENDED';
+  String get dnsRecommended => 'EMPFOHLEN';
 
   @override
   String dnsResultLatency(int ms) {
@@ -562,7 +553,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get osNetworkDevice => 'Network Device (TTL≈255)';
+  String get osNetworkDevice => 'Netzwerkgerät (TTL≈255)';
 
   @override
   String get osWindows => 'Windows (TTL≈128)';
@@ -571,33 +562,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get osLinuxMacOS => 'Linux / macOS (TTL≈64)';
 
   @override
-  String get osUnknown => 'Unknown OS';
+  String get osUnknown => 'Unbekanntes OS';
 
   @override
-  String get osDetectedLabel => 'OS DETECTED';
+  String get osDetectedLabel => 'OS ERKANNT';
 
   @override
-  String portLabel(int port) {
-    return 'PORT $port';
-  }
+  String get hostnameLookupAction => 'HOSTNAME ABFRAGEN';
 
   @override
-  String get portsFoundLabel => 'OPEN PORTS';
+  String get osDetectAction => 'OS ERKENNEN';
 
   @override
-  String get noPortsFound => 'No open ports found';
-
-  @override
-  String get hostnameLookupAction => 'LOOKUP HOSTNAME';
-
-  @override
-  String get osDetectAction => 'OS DETECT';
-
-  @override
-  String get portScanAction => 'PORT SCAN';
-
-  @override
-  String get portRangeHint => 'Port range (e.g. 80,443 or 1-1000)';
+  String get portScanAction => 'PORT-SCAN';
 
   @override
   String get latencyLabel => 'LATENZ';
@@ -606,19 +583,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get hostnameLabel => 'HOSTNAME';
 
   @override
-  String get filterAll => 'ALL';
+  String get filterAll => 'ALLE';
 
   @override
-  String get filterCore => 'CORE';
+  String get filterCore => 'KERN';
 
   @override
-  String get filterMobile => 'MOBILE';
+  String get filterMobile => 'MOBIL';
 
   @override
   String get filterIot => 'IOT';
 
   @override
-  String get filterOther => 'OTHER';
+  String get filterOther => 'SONSTIGE';
 
   @override
   String get authLocalSystem => 'AUTH_LOKALES_SYSTEM';
@@ -635,159 +612,159 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String targetLabel(String target) {
-    return 'TARGET: $target';
+    return 'ZIEL: $target';
   }
 
   @override
-  String get dnsStatusPending => 'PENDING';
+  String get dnsStatusPending => 'AUSSTEHEND';
 
   @override
-  String get dnsStatusNotAssessed => 'NOT ASSESSED';
+  String get dnsStatusNotAssessed => 'NICHT GEPRÜFT';
 
   @override
-  String get dnsStatusInconsistent => 'INCONSISTENT';
+  String get dnsStatusInconsistent => 'INKONSISTENT';
 
   @override
-  String get dnsStatusEnabled => 'ENABLED';
+  String get dnsStatusEnabled => 'AKTIVIERT';
 
   @override
-  String get dnsStatusDisabled => 'DISABLED';
+  String get dnsStatusDisabled => 'DEAKTIVIERT';
 
   @override
-  String get notAvailableCaps => 'N/A';
+  String get notAvailableCaps => 'N/V';
 
   @override
   String get evilTwinSignalOuiMismatch =>
-      'The two access points come from different hardware vendors (MAC prefixes don\'t match).';
+      'Die beiden Access Points stammen von unterschiedlichen Hardware-Herstellern (MAC-Präfixe stimmen nicht überein).';
 
   @override
   String get evilTwinSignalSecurityDowngrade =>
-      'The pair advertises different encryption — typical of a downgrade attack (e.g. real network = WPA3, fake = WPA2 or Open).';
+      'Das Paar meldet unterschiedliche Verschlüsselung — typisch für einen Downgrade-Angriff (z. B. echtes Netzwerk = WPA3, Fälschung = WPA2 oder offen).';
 
   @override
   String get evilTwinSignalSameBandChannelDrift =>
-      'Both broadcast on the same frequency band but on very different channels — real radios rarely jump that far.';
+      'Beide senden im selben Frequenzband, aber auf sehr unterschiedlichen Kanälen — echte Funkmodule springen selten so weit.';
 
   @override
   String get evilTwinSignalChannelWidthMismatch =>
-      'They use different channel widths (e.g. 80 MHz vs 20 MHz). Cheap rogue hardware often runs narrower than the device it\'s copying.';
+      'Sie nutzen unterschiedliche Kanalbreiten (z. B. 80 MHz vs. 20 MHz). Billige Rogue-Hardware funkt oft schmaler als das kopierte Gerät.';
 
   @override
   String get evilTwinSignalWpsToggleMismatch =>
-      'WPS is enabled on one access point but not the other.';
+      'WPS ist auf einem Access Point aktiviert, auf dem anderen nicht.';
 
   @override
   String get evilTwinSignalPmfToggleMismatch =>
-      'Protected Management Frames (802.11w) are enabled on one side but not the other.';
+      'Protected Management Frames (802.11w) sind nur auf einer Seite aktiviert.';
 
   @override
   String get evilTwinSignalHiddenVsVisible =>
-      'One access point is hidden, the other broadcasts its name openly.';
+      'Ein Access Point ist versteckt, der andere sendet seinen Namen offen.';
 
   @override
   String get evilTwinSignalSharedMldMac =>
-      'Both share the same Wi-Fi 7 multi-link MAC — they are literally the same physical access point.';
+      'Beide teilen dieselbe Wi-Fi-7-Multi-Link-MAC — sie sind buchstäblich derselbe physische Access Point.';
 
   @override
   String get evilTwinSignalBssidProximity =>
-      'Their MAC addresses differ only in the last digits — manufacturers use that pattern for radios on the same router.';
+      'Ihre MAC-Adressen unterscheiden sich nur in den letzten Stellen — Hersteller nutzen dieses Muster für Funkmodule desselben Routers.';
 
   @override
   String get evilTwinSignalCrossBandSibling =>
-      'They sit on different Wi-Fi bands (2.4 / 5 / 6 GHz) but share the same vendor and security — classic dual-band router pattern.';
+      'Sie liegen auf verschiedenen Wi-Fi-Bändern (2,4 / 5 / 6 GHz), teilen aber Hersteller und Sicherheit — klassisches Dualband-Router-Muster.';
 
   @override
   String get evilTwinSignalKnownMeshVendor =>
-      'Both MAC addresses belong to a known mesh-router family (Eero, Google Nest, Asus AiMesh, Netgear Orbi, TP-Link Deco, or Linksys Velop). Mesh nodes share the same Wi-Fi name on purpose.';
+      'Beide MAC-Adressen gehören zu einer bekannten Mesh-Router-Familie (Eero, Google Nest, Asus AiMesh, Netgear Orbi, TP-Link Deco oder Linksys Velop). Mesh-Knoten teilen den Wi-Fi-Namen absichtlich.';
 
   @override
   String get evilTwinSafeHeadline =>
-      'Looks like the same router on different bands';
+      'Sieht nach demselben Router auf verschiedenen Bändern aus';
 
   @override
   String get evilTwinSafeWhatIs =>
-      'Most home routers broadcast the same Wi-Fi name (SSID) over 2.4 GHz, 5 GHz and sometimes 6 GHz. Your phone sees them as separate access points even though they\'re one device. Mesh systems work the same way — every node uses one shared name.';
+      'Die meisten Heimrouter senden denselben Wi-Fi-Namen (SSID) über 2,4 GHz, 5 GHz und manchmal 6 GHz. Ihr Handy sieht sie als getrennte Access Points, obwohl es ein Gerät ist. Mesh-Systeme arbeiten genauso — jeder Knoten nutzt einen gemeinsamen Namen.';
 
   @override
   String get evilTwinSafeWhyItMatters =>
-      'This pairing is normal and expected — no action needed. We show this here only so you know we checked and ruled it out.';
+      'Diese Paarung ist normal und erwartet — nichts zu tun. Wir zeigen sie nur, damit Sie wissen, dass wir es geprüft und ausgeschlossen haben.';
 
   @override
   String get evilTwinSafeAction =>
-      'Nothing to do. This is the same router or part of your mesh.';
+      'Nichts zu tun. Das ist derselbe Router oder Teil Ihres Mesh.';
 
   @override
   String get evilTwinSafePhrase =>
-      'We checked this pair and it matches the pattern of a normal dual-band router or mesh — not an attack.';
+      'Wir haben dieses Paar geprüft: Es entspricht dem Muster eines normalen Dualband-Routers oder Mesh — kein Angriff.';
 
   @override
-  String get evilTwinNoPatternHeadline => 'No evil-twin pattern detected';
+  String get evilTwinNoPatternHeadline => 'Kein Evil-Twin-Muster erkannt';
 
   @override
   String get evilTwinNoPatternAction =>
-      'Nothing urgent. Re-run a scan if you suspect something has changed in your environment.';
+      'Nichts Dringendes. Scannen Sie erneut, wenn Sie eine Veränderung in Ihrer Umgebung vermuten.';
 
   @override
   String get evilTwinNoPatternPhrase =>
-      'Some minor differences exist between the access points sharing this name, but not enough to look like an attack.';
+      'Zwischen den Access Points mit diesem Namen gibt es kleine Unterschiede, aber nicht genug, um nach einem Angriff auszusehen.';
 
   @override
   String get evilTwinWhatIs =>
-      'An \"evil twin\" is a fake Wi-Fi network that copies the name of a real one — usually your home or workplace network, or a popular café hotspot. The goal is to make your phone connect to the attacker\'s router instead of the real one.';
+      'Ein \"Evil Twin\" ist ein gefälschtes Wi-Fi-Netzwerk, das den Namen eines echten kopiert — meist Ihr Heim- oder Firmennetz oder ein beliebter Café-Hotspot. Ziel ist, dass sich Ihr Handy mit dem Router des Angreifers statt dem echten verbindet.';
 
   @override
   String get evilTwinWhyItMatters =>
-      'Once your device is on the attacker\'s Wi-Fi, they can read or tamper with traffic that isn\'t encrypted, push fake login pages, redirect you to look-alike websites, or capture passwords typed into apps that don\'t use HTTPS properly. Banking, email and messaging are the usual targets.';
+      'Sobald Ihr Gerät im Wi-Fi des Angreifers ist, kann dieser unverschlüsselten Verkehr mitlesen oder manipulieren, gefälschte Login-Seiten einblenden, Sie auf täuschend ähnliche Websites umleiten oder Passwörter aus Apps abgreifen, die HTTPS nicht sauber nutzen. Banking, E-Mail und Messaging sind die üblichen Ziele.';
 
   @override
   String get evilTwinHighHeadline =>
-      'Strong evil-twin pattern — treat this network as untrusted';
+      'Starkes Evil-Twin-Muster — behandeln Sie dieses Netzwerk als nicht vertrauenswürdig';
 
   @override
   String get evilTwinMediumHeadline =>
-      'Suspicious twin pattern — verify before connecting';
+      'Verdächtiges Twin-Muster — vor dem Verbinden prüfen';
 
   @override
-  String get evilTwinLowHeadline => 'Weak twin signal — keep an eye on this';
+  String get evilTwinLowHeadline => 'Schwaches Twin-Signal — im Auge behalten';
 
   @override
   String evilTwinHighPhrase(int pct) {
-    return 'Confidence: $pct%. Multiple strong mismatches between the two access points using this name. This is the pattern an attacker creates when impersonating a Wi-Fi.';
+    return 'Konfidenz: $pct %. Mehrere starke Abweichungen zwischen den beiden Access Points mit diesem Namen. Genau dieses Muster erzeugt ein Angreifer, der ein Wi-Fi imitiert.';
   }
 
   @override
   String evilTwinMediumPhrase(int pct) {
-    return 'Confidence: $pct%. Several details don\'t line up between the access points sharing this name. It might be benign, but verify before trusting it.';
+    return 'Konfidenz: $pct %. Mehrere Details passen zwischen den Access Points mit diesem Namen nicht zusammen. Es kann harmlos sein — prüfen Sie es, bevor Sie vertrauen.';
   }
 
   @override
   String evilTwinLowPhrase(int pct) {
-    return 'Confidence: $pct%. A couple of small mismatches noticed. Most likely benign — flagged so you can double-check.';
+    return 'Konfidenz: $pct %. Ein paar kleine Abweichungen bemerkt. Sehr wahrscheinlich harmlos — markiert, damit Sie nachsehen können.';
   }
 
   @override
   String get evilTwinActionPasswords =>
-      'Don\'t enter passwords, payment details, or two-factor codes while connected to this Wi-Fi.';
+      'Geben Sie in diesem Wi-Fi keine Passwörter, Zahlungsdaten oder Zwei-Faktor-Codes ein.';
 
   @override
   String get evilTwinActionCheckMac =>
-      'If you\'re at home, check the actual MAC (BSSID) printed under your router and compare it with the BSSIDs shown for this network.';
+      'Wenn Sie zu Hause sind: Vergleichen Sie die auf dem Router aufgedruckte MAC (BSSID) mit den hier angezeigten BSSIDs.';
 
   @override
   String get evilTwinActionForgetNetwork =>
-      'Forget the network in your phone\'s Wi-Fi settings and only reconnect by hand to the BSSID you\'ve verified.';
+      'Entfernen Sie das Netzwerk aus den Wi-Fi-Einstellungen und verbinden Sie sich nur manuell mit der verifizierten BSSID.';
 
   @override
   String get evilTwinActionSecurityDowngrade =>
-      'One of the two access points uses weaker encryption than the other. Always pick the stronger one (WPA3 over WPA2 over Open).';
+      'Einer der beiden Access Points nutzt schwächere Verschlüsselung. Wählen Sie immer den stärkeren (WPA3 vor WPA2 vor Offen).';
 
   @override
   String get evilTwinActionDisconnectNow =>
-      'Disconnect from this Wi-Fi now and switch to mobile data until you can verify which BSSID is the real one.';
+      'Trennen Sie sich jetzt von diesem Wi-Fi und nutzen Sie mobile Daten, bis Sie geklärt haben, welche BSSID die echte ist.';
 
   @override
   String get evilTwinActionHardwareVendor =>
-      'The two routers come from different hardware vendors — your real router shouldn\'t suddenly change manufacturer.';
+      'Die beiden Router stammen von verschiedenen Herstellern — Ihr echter Router wechselt nicht plötzlich den Hersteller.';
 
   @override
   String get ipAddrLabel => 'IP_ADRESSE';
@@ -838,7 +815,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Die Sicherheitsbewertung (0–100) gibt an, wie gut dieses Netzwerk geschützt ist. Höher ist besser. Sie berücksichtigt Verschlüsselungstyp, WPS-Status und andere Sicherheitsmerkmale.';
 
   @override
-  String get networkSecurity => 'Network Security';
+  String get networkSecurity => 'Netzwerksicherheit';
 
   @override
   String get portScanCommonPorts => 'Gängige Ports';
@@ -924,9 +901,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get scanProfileLabel => 'SCAN-PROFIL';
-
-  @override
-  String get infoScanProfilesTitle => 'Scan-Profile';
 
   @override
   String get infoScanProfileFastDesc =>
@@ -1050,9 +1024,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get waitingForData => 'Warten auf Daten...';
 
   @override
-  String get temporalHeatmap => 'Zeitliche Heatmap';
-
-  @override
   String signalMonitoringTitle(String ssid) {
     return 'SIGNAL-ÜBERWACHUNG: $ssid';
   }
@@ -1091,20 +1062,21 @@ class AppLocalizationsDe extends AppLocalizations {
   String get riskFactorFingerprintDrift => 'SSID-Fingerabdruck-Drift erkannt';
 
   @override
-  String get riskFactorHoneypotPattern => 'SSID matches known honeypot pattern';
+  String get riskFactorHoneypotPattern =>
+      'SSID entspricht bekanntem Honeypot-Muster';
 
   @override
-  String get riskFactorNo5Ghz => 'No 5 GHz band detected';
+  String get riskFactorNo5Ghz => 'Kein 5-GHz-Band erkannt';
 
   @override
-  String get riskFactorKnownVulnerability => 'Known hardware vulnerability';
+  String get riskFactorKnownVulnerability => 'Bekannte Hardware-Schwachstelle';
 
   @override
   String get riskFactorEvilTwinCandidate =>
-      'Evil twin candidate sharing this SSID';
+      'Evil-Twin-Kandidat mit derselben SSID';
 
   @override
-  String get riskFactorChannelCongested => 'Channel is heavily congested';
+  String get riskFactorChannelCongested => 'Kanal ist stark überlastet';
 
   @override
   String get historyCaps => 'VERLAUF';
@@ -1194,24 +1166,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get interfaceTheme => 'Schnittstellentheme';
 
   @override
-  String get speedTestHeader => 'GESCHWINDIGKEITSTEST';
-
-  @override
-  String get commandCenters => 'KOMMANDOZENTRALEN';
-
-  @override
-  String get activeShielding => 'Aktive Abschirmung';
-
-  @override
-  String get logisticsTitle => 'LOGISTIK';
-
-  @override
-  String get intelMetrics => 'Intel-Metriken';
-
-  @override
-  String get networkMesh => 'Netzwerk-Mesh';
-
-  @override
   String get phasePing => 'PHASE: PING';
 
   @override
@@ -1253,13 +1207,13 @@ class AppLocalizationsDe extends AppLocalizations {
     String _temp0 = intl.Intl.selectLogic(type, {
       'rogueApSuspected': 'Rogue AP Verdacht',
       'deauthBurstDetected': 'Deauth-Serie Erkannt',
-      'handshakeCaptureStarted': 'Sicherer Identitätsaustausch',
-      'handshakeCaptureCompleted': 'Austausch Verifiziert',
       'captivePortalDetected': 'Captive Portal Erkannt',
       'evilTwinDetected': 'Evil Twin Erkannt',
       'deauthAttackSuspected': 'Deauth-Angriff Verdacht',
       'encryptionDowngraded': 'Verschlüsselung Herabgestuft',
       'unsupportedOperation': 'Nicht Unterstützter Vorgang',
+      'arpSpoofingDetected': 'ARP-Spoofing Erkannt',
+      'dnsHijackingDetected': 'DNS-Hijacking Erkannt',
       'other': '$type',
     });
     return '$_temp0';
@@ -1291,36 +1245,36 @@ class AppLocalizationsDe extends AppLocalizations {
   String get historyChannelRatings => 'Kanalbewertungen';
 
   @override
-  String get dnsSecurityTest => 'DNS SECURITY TEST';
+  String get dnsSecurityTest => 'DNS-SICHERHEITSTEST';
 
   @override
-  String get dnsSecure => 'SECURE';
+  String get dnsSecure => 'SICHER';
 
   @override
-  String get dnsWarning => 'WARNING';
+  String get dnsWarning => 'WARNUNG';
 
   @override
-  String get dnsLeakDetected => 'LEAK DETECTED';
+  String get dnsLeakDetected => 'LEAK ERKANNT';
 
   @override
-  String get dnsHijacked => 'HIJACKED';
+  String get dnsHijacked => 'GEKAPERT';
 
   @override
   String dnsLastCheck(String hour, String minute) {
-    return 'Last check: $hour:$minute';
+    return 'Letzte Prüfung: $hour:$minute';
   }
 
   @override
-  String get dnsTestNow => 'TEST NOW';
+  String get dnsTestNow => 'JETZT TESTEN';
 
   @override
-  String get dnsTesting => 'TESTING...';
+  String get dnsTesting => 'TESTE...';
 
   @override
-  String get dnsCurrentDns => 'CURRENT DNS';
+  String get dnsCurrentDns => 'AKTUELLER DNS';
 
   @override
-  String get dnsIspProvider => 'ISP PROVIDER';
+  String get dnsIspProvider => 'ISP-ANBIETER';
 
   @override
   String get phaseIdle => 'BEREIT';
@@ -1390,45 +1344,45 @@ class AppLocalizationsDe extends AppLocalizations {
       'Noch keine Tests. Starten Sie den ersten Test oben.';
 
   @override
-  String get vulnLabTitle => 'VULNERABILITY LAB';
+  String get vulnLabTitle => 'SCHWACHSTELLEN-LABOR';
 
   @override
   String get vulnLabSubtitle =>
-      'Run security tests against your connected network';
+      'Sicherheitstests gegen Ihr verbundenes Netzwerk ausführen';
 
   @override
-  String get vulnLabRunAll => 'RUN ALL TESTS';
+  String get vulnLabRunAll => 'ALLE TESTS AUSFÜHREN';
 
   @override
-  String get vulnLabRunning => 'SCANNING...';
+  String get vulnLabRunning => 'SCANNE...';
 
   @override
   String get vulnLabNoNetwork =>
-      'Not connected to a Wi-Fi network. Connect first to run tests.';
+      'Nicht mit einem Wi-Fi verbunden. Zuerst verbinden, um Tests auszuführen.';
 
   @override
   String get vulnLabAllClear =>
-      'All tests passed. No vulnerabilities found on this network.';
+      'Alle Tests bestanden. Keine Schwachstellen in diesem Netzwerk gefunden.';
 
   @override
   String vulnLabFoundCount(int count) {
-    return '$count issue(s) found';
+    return '$count Problem(e) gefunden';
   }
 
   @override
-  String get trustNetwork => 'TRUST NETWORK';
+  String get trustNetwork => 'NETZWERK VERTRAUEN';
 
   @override
-  String get untrustNetwork => 'UNTRUST NETWORK';
+  String get untrustNetwork => 'VERTRAUEN ENTZIEHEN';
 
   @override
-  String get trustedBaselineBadge => 'TRUSTED BASELINES';
+  String get trustedBaselineBadge => 'VERTRAUENS-BASELINES';
 
   @override
-  String get dnsEvidenceTitle => 'DNS EVIDENCE';
+  String get dnsEvidenceTitle => 'DNS-NACHWEIS';
 
   @override
-  String get dnsProtocol => 'PROTOCOL';
+  String get dnsProtocol => 'PROTOKOLL';
 
   @override
   String get dnsSsec => 'DNSSEC';
@@ -1450,81 +1404,81 @@ class AppLocalizationsDe extends AppLocalizations {
       'Dieses Netzwerk blockiert verschlüsseltes DNS — Ihre Anfragen werden im Klartext übertragen.';
 
   @override
-  String get dnsInfoHijackingTitle => 'DNS Hijacking';
+  String get dnsInfoHijackingTitle => 'DNS-Hijacking';
 
   @override
   String get dnsInfoHijackingDesc =>
-      'When your network provider or a malicious actor redirects your DNS queries to rogue servers. This allows them to monitor your activity or block certain websites.';
+      'Wenn Ihr Netzanbieter oder ein Angreifer Ihre DNS-Anfragen auf fremde Server umleitet. So lassen sich Aktivitäten überwachen oder Websites blockieren.';
 
   @override
-  String get dnsInfoLeakTitle => 'DNS Leak';
+  String get dnsInfoLeakTitle => 'DNS-Leak';
 
   @override
   String get dnsInfoLeakDesc =>
-      'Even when using a VPN, your queries might bypass the secure tunnel and go to your ISP\'s servers. This \'leaks\' your browsing history to the network provider.';
+      'Selbst mit VPN können Anfragen am sicheren Tunnel vorbei zu den Servern Ihres ISP gehen. So \"leakt\" Ihr Browserverlauf an den Netzanbieter.';
 
   @override
-  String get dnsInfoEncryptedTitle => 'Encrypted DNS (DoH/DoT)';
+  String get dnsInfoEncryptedTitle => 'Verschlüsseltes DNS (DoH/DoT)';
 
   @override
   String get dnsInfoEncryptedDesc =>
-      'DNS over HTTPS (DoH) and DNS over TLS (DoT) wrap your queries in an encrypted layer. This makes your requests unreadable to local snoopers and network admins.';
+      'DNS over HTTPS (DoH) und DNS over TLS (DoT) verpacken Ihre Anfragen in eine verschlüsselte Schicht. Lokale Mitleser und Netzwerk-Admins können sie so nicht lesen.';
 
   @override
   String get dnsInfoDnssecTitle => 'DNSSEC';
 
   @override
   String get dnsInfoDnssecDesc =>
-      'DNS Security Extensions add cryptographic signatures to your queries. This prevents \'spoofing\' where a server sends you fake IP addresses for legitimate sites.';
+      'DNS Security Extensions fügen Anfragen kryptografische Signaturen hinzu. Das verhindert \"Spoofing\", bei dem ein Server gefälschte IP-Adressen für legitime Seiten liefert.';
 
   @override
-  String get dnsInfoLatencyTitle => 'DNS Latency (RTT)';
+  String get dnsInfoLatencyTitle => 'DNS-Latenz (RTT)';
 
   @override
   String get dnsInfoLatencyDesc =>
-      'Round Trip Time (RTT) measures how long it takes for a query to travel to the server and back. Lower latency means faster web browsing and better performance.';
+      'Die Round Trip Time (RTT) misst, wie lange eine Anfrage zum Server und zurück braucht. Niedrigere Latenz bedeutet schnelleres Surfen und bessere Performance.';
 
   @override
-  String get dnsInfoResolverDriftTitle => 'DNS Resolver Drift';
+  String get dnsInfoResolverDriftTitle => 'DNS-Resolver-Drift';
 
   @override
   String get dnsInfoResolverDriftDesc =>
-      'Detected when your DNS requests are being handled by different providers than configured, possibly due to transparent proxying or routing changes.';
+      'Erkannt, wenn Ihre DNS-Anfragen von anderen Anbietern beantwortet werden als konfiguriert — möglich durch transparentes Proxying oder Routing-Änderungen.';
 
   @override
   String get netInfoSsidTitle => 'SSID (Service Set Identifier)';
 
   @override
   String get netInfoSsidDesc =>
-      'The public name of your Wi-Fi network. While common, it can be spoofed by attackers to lure you into connecting to a rogue access point.';
+      'Der öffentliche Name Ihres Wi-Fi-Netzwerks. Er kann von Angreifern gefälscht werden, um Sie auf einen Rogue Access Point zu locken.';
 
   @override
   String get netInfoBssidTitle => 'BSSID (Basic Service Set ID)';
 
   @override
   String get netInfoBssidDesc =>
-      'The unique hardware address (MAC) of the wireless router. Useful for verifying that you are connected to the legitimate hardware and not a software clone.';
+      'Die eindeutige Hardware-Adresse (MAC) des Routers. Nützlich, um zu prüfen, ob Sie mit der echten Hardware verbunden sind und nicht mit einem Software-Klon.';
 
   @override
-  String get netInfoGatewayTitle => 'Default Gateway';
+  String get netInfoGatewayTitle => 'Standard-Gateway';
 
   @override
   String get netInfoGatewayDesc =>
-      'The local IP address of your router. All your traffic passes through this point. If this changes unexpectedly, it could indicate a Man-in-the-Middle attack.';
+      'Die lokale IP-Adresse Ihres Routers. Ihr gesamter Verkehr läuft über diesen Punkt. Ändert sie sich unerwartet, kann das auf einen Man-in-the-Middle-Angriff hindeuten.';
 
   @override
-  String get dnsReadyStatus => 'READY FOR ASSESSMENT';
+  String get dnsReadyStatus => 'BEREIT ZUR PRÜFUNG';
 
   @override
   String get dnsIdleDescription =>
-      'Run a scan to verify DNS integrity and performance.';
+      'Scan ausführen, um DNS-Integrität und -Leistung zu prüfen.';
 
   @override
-  String get netSecInfoTitle => 'Network Security Module';
+  String get netSecInfoTitle => 'Netzwerksicherheits-Modul';
 
   @override
   String get netSecInfoDesc =>
-      'Monitors the integrity of connected networks, detects rogue access points, and manages your trusted Wi-Fi profiles to protect against Evil Twin attacks.';
+      'Überwacht die Integrität verbundener Netzwerke, erkennt Rogue Access Points und verwaltet vertrauenswürdige Wi-Fi-Profile zum Schutz vor Evil-Twin-Angriffen.';
 
   @override
   String get spectrumOptimizationOpsSubtitle => 'Kanalbewertung · Störungen';
@@ -1836,7 +1790,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get deleteAllLabel => 'ALLES LÖSCHEN';
 
   @override
-  String get dualBandSiblingLabel => 'DUAL BAND';
+  String get dualBandSiblingLabel => 'DUALBAND';
 
   @override
   String dualBandSiblingBanner(String band, String channel) {
@@ -1851,12 +1805,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get speedDoctorTagline => 'Warum ist das Internet langsam?';
-
-  @override
-  String get speedDoctorOpsTile => 'SPEED-DOKTOR';
-
-  @override
-  String get speedDoctorOpsSubtitle => 'Warum langsam?';
 
   @override
   String get evilTwinDetailTitle => 'EVIL-TWIN-DETAILS';
@@ -1874,24 +1822,24 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pingStabilizerDrawerLabel => 'Ping-Stabilisator';
 
   @override
-  String get onboardingStartScanning => 'START SCANNING';
+  String get onboardingStartScanning => 'SCAN STARTEN';
 
   @override
-  String get onboardingNext => 'NEXT';
+  String get onboardingNext => 'WEITER';
 
   @override
-  String get onboardingWelcomeTitle => 'WELCOME TO TORCAV';
+  String get onboardingWelcomeTitle => 'WILLKOMMEN BEI TORCAV';
 
   @override
   String get onboardingWelcomeBody =>
-      'A cyberpunk Wi-Fi analyzer that helps you understand your wireless environment, find the best channel, and detect security threats.';
+      'Ein Cyberpunk-Wi-Fi-Analyzer, der Ihnen hilft, Ihre Funkumgebung zu verstehen, den besten Kanal zu finden und Sicherheitsbedrohungen zu erkennen.';
 
   @override
-  String get onboardingLocationTitle => 'LOCATION PERMISSION';
+  String get onboardingLocationTitle => 'STANDORT-BERECHTIGUNG';
 
   @override
   String get onboardingLocationBody =>
-      'Android requires Location permission to scan for Wi-Fi networks. To show signal heatmaps, we also use activity sensors. All data stays on your device and is never uploaded. Your location is only used to read nearby Wi-Fi signals.';
+      'Android verlangt die Standort-Berechtigung, um Wi-Fi-Netzwerke zu scannen. Für Signal-Heatmaps nutzen wir zusätzlich Bewegungssensoren. Alle Daten bleiben auf Ihrem Gerät und werden nie hochgeladen. Der Standort wird nur zum Lesen naher Wi-Fi-Signale verwendet.';
 
   @override
   String get onboardingNotificationsTitle => 'SICHERHEITSWARNUNGEN';
@@ -1907,92 +1855,93 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingNotificationsSkip => 'Vorerst überspringen';
 
   @override
-  String get onboardingTourTitle => 'THREE TABS';
+  String get onboardingTourTitle => 'DREI TABS';
 
   @override
   String get onboardingTourDashboardLabel => 'Dashboard';
 
   @override
   String get onboardingTourDashboardDesc =>
-      'Live overview of your network health';
+      'Live-Überblick über Ihre Netzwerkgesundheit';
 
   @override
-  String get onboardingTourDiscoveryLabel => 'Discovery';
+  String get onboardingTourDiscoveryLabel => 'Entdecken';
 
   @override
   String get onboardingTourDiscoveryDesc =>
-      'Scan Wi-Fi networks and LAN devices';
+      'Wi-Fi-Netzwerke und LAN-Geräte scannen';
 
   @override
-  String get onboardingTourOperationsLabel => 'Operations';
+  String get onboardingTourOperationsLabel => 'Operationen';
 
   @override
   String get onboardingTourOperationsDesc =>
-      'Security analysis, speed tests, reports';
+      'Sicherheitsanalyse, Speedtests, Berichte';
 
   @override
-  String get onboardingContextTitle => 'WHERE WILL YOU USE TORCAV?';
+  String get onboardingContextTitle => 'WO WERDEN SIE TORCAV NUTZEN?';
 
   @override
   String get onboardingContextBody =>
-      'This shapes how strict the security score is when we can\'t tell on our own. You can change it any time, and it can be overridden per network later.';
+      'Das bestimmt, wie streng der Sicherheits-Score ist, wenn wir es nicht selbst erkennen. Sie können es jederzeit ändern und später pro Netzwerk überschreiben.';
 
   @override
-  String get onboardingContextHomeTitle => 'Mostly my own home / office';
+  String get onboardingContextHomeTitle => 'Meist mein Zuhause / Büro';
 
   @override
   String get onboardingContextHomeBody =>
-      'Strict scoring. Any unexpected change in encryption or new devices on the LAN gets flagged loudly.';
+      'Strenge Bewertung. Jede unerwartete Änderung der Verschlüsselung oder neue LAN-Geräte werden laut gemeldet.';
 
   @override
-  String get onboardingContextPublicTitle => 'Mostly cafés / hotels / airports';
+  String get onboardingContextPublicTitle => 'Meist Cafés / Hotels / Flughäfen';
 
   @override
   String get onboardingContextPublicBody =>
-      'Relaxed scoring on encryption (these networks are often open) but heightened sensitivity to lure SSIDs and evil-twin patterns. Active LAN scanning is suppressed by default.';
+      'Lockere Bewertung der Verschlüsselung (diese Netze sind oft offen), aber erhöhte Sensibilität für Köder-SSIDs und Evil-Twin-Muster. Aktives LAN-Scannen ist standardmäßig unterdrückt.';
 
   @override
-  String get onboardingContextGuestTitle => 'Mostly guest / shared networks';
+  String get onboardingContextGuestTitle => 'Meist Gast- / geteilte Netzwerke';
 
   @override
   String get onboardingContextGuestBody =>
-      'Same Wi-Fi as friends, family, or coworkers. Drift is expected; we don\'t alert on every new device.';
+      'Dasselbe Wi-Fi wie Freunde, Familie oder Kollegen. Veränderung ist normal; wir melden nicht jedes neue Gerät.';
 
   @override
-  String get onboardingContextUnknownTitle => 'Not sure yet';
+  String get onboardingContextUnknownTitle => 'Noch unsicher';
 
   @override
   String get onboardingContextUnknownBody =>
-      'No strong default. We\'ll guess from each network\'s fingerprint and let you correct it.';
+      'Kein fester Standard. Wir schätzen anhand des Netzwerk-Fingerabdrucks und lassen Sie korrigieren.';
 
   @override
-  String get onboardingDoneTitle => 'ALL SET';
+  String get onboardingDoneTitle => 'FERTIG';
 
   @override
   String get onboardingDoneBody =>
-      'Torcav is a privacy-first network assistant. It provides safe network diagnostics and hardening tools for networks you own or are authorized to assess. No data is collected or transmitted externally.';
+      'Torcav ist ein Privacy-First-Netzwerkassistent. Er bietet sichere Netzwerkdiagnose und Härtungswerkzeuge für Netzwerke, die Ihnen gehören oder die Sie prüfen dürfen. Es werden keine Daten gesammelt oder nach außen übertragen.';
 
   @override
-  String get onboardingAcceptPrefix => 'I have read and accept the ';
+  String get onboardingAcceptPrefix => 'Ich habe gelesen und akzeptiere die ';
 
   @override
-  String get onboardingTosLink => 'Terms of Service';
+  String get onboardingTosLink => 'Nutzungsbedingungen';
 
   @override
-  String get onboardingAcceptAnd => ' and ';
+  String get onboardingAcceptAnd => ' und die ';
 
   @override
-  String get onboardingPrivacyLink => 'Privacy Policy';
+  String get onboardingPrivacyLink => 'Datenschutzerklärung';
 
   @override
   String get onboardingAcceptSuffix => '.';
 
   @override
   String get onboardingConfirmPermission =>
-      'I confirm I have permission to scan the networks I will analyze.';
+      'Ich bestätige, dass ich die Netzwerke, die ich analysiere, scannen darf.';
 
   @override
-  String get onboardingConfirmAge => 'I confirm I am 13 years of age or older.';
+  String get onboardingConfirmAge =>
+      'Ich bestätige, dass ich mindestens 13 Jahre alt bin.';
 
   @override
   String get appTitle => 'TORCAV';
@@ -2001,40 +1950,36 @@ class AppLocalizationsDe extends AppLocalizations {
   String get ssidLabel => 'SSID';
 
   @override
-  String get noSecurityFindings => 'No security findings detected.';
+  String get noSecurityFindings => 'Keine Sicherheitsbefunde erkannt.';
 
   @override
-  String get resetToInferred => 'Reset to inferred';
+  String get resetToInferred => 'Auf automatisches Label zurücksetzen';
 
   @override
-  String get internetSlowQuestion => 'IS INTERNET SLOW?';
+  String get internetSlowQuestion => 'IST DAS INTERNET LANGSAM?';
 
   @override
-  String get runSpeedDoctorDesc =>
-      'Run Speed Doctor — 30-second root-cause diagnostic.';
+  String get securityAlertsTitle => 'SICHERHEITSWARNUNGEN';
 
   @override
-  String get securityAlertsTitle => 'SECURITY ALERTS';
+  String get markAllRead => 'ALLE ALS GELESEN';
 
   @override
-  String get markAllRead => 'MARK ALL READ';
-
-  @override
-  String get clearAll => 'CLEAR ALL';
+  String get clearAll => 'ALLE LÖSCHEN';
 
   @override
   String get eventsRetentionInfo =>
-      'Events are retained for 30 days. Swipe left to dismiss.';
+      'Ereignisse werden 30 Tage aufbewahrt. Zum Ausblenden nach links wischen.';
 
   @override
-  String get allSystemsClear => 'All systems clear';
+  String get allSystemsClear => 'Alle Systeme sauber';
 
   @override
   String get heuristicDetectionNote =>
-      'Heuristic detection — not a confirmed attack. False positives may occur in congested environments.';
+      'Heuristische Erkennung — kein bestätigter Angriff. In überfüllten Umgebungen sind Fehlalarme möglich.';
 
   @override
-  String get markAsRead => 'MARK AS READ';
+  String get markAsRead => 'ALS GELESEN MARKIEREN';
 
   @override
   String get eventTypeRogueAp => 'ROGUE AP';
@@ -2043,207 +1988,201 @@ class AppLocalizationsDe extends AppLocalizations {
   String get eventTypeEvilTwin => 'EVIL TWIN';
 
   @override
-  String get eventTypeDeauthAttack => 'DEAUTH ATTACK';
+  String get eventTypeDeauthAttack => 'DEAUTH-ANGRIFF';
 
   @override
-  String get eventTypeEncryptionWeakened => 'ENCRYPTION WEAKENED';
+  String get eventTypeEncryptionWeakened => 'VERSCHLÜSSELUNG GESCHWÄCHT';
 
   @override
-  String get eventTypeDeauthBurst => 'DEAUTH BURST';
-
-  @override
-  String get eventTypeHandshakeAnalysis => 'HANDSHAKE ANALYSIS';
-
-  @override
-  String get eventTypeHandshakeSecured => 'HANDSHAKE SECURED';
+  String get eventTypeDeauthBurst => 'DEAUTH-SERIE';
 
   @override
   String get eventTypeCaptivePortal => 'CAPTIVE PORTAL';
 
   @override
-  String get eventTypeUnsupported => 'UNSUPPORTED';
+  String get eventTypeUnsupported => 'NICHT UNTERSTÜTZT';
 
   @override
-  String get eventTypeArpSpoofing => 'ARP SPOOFING';
+  String get eventTypeArpSpoofing => 'ARP-SPOOFING';
 
   @override
-  String get eventTypeDnsHijacking => 'DNS HIJACKING';
+  String get eventTypeDnsHijacking => 'DNS-HIJACKING';
 
   @override
   String get agentId => 'AGENT-01';
 
   @override
   String cyberneticId(String id) {
-    return 'CYBERNETIC_ID: $id';
+    return 'KYBERNETISCHE_ID: $id';
   }
 
   @override
   String subscriptionLabel(String type) {
-    return 'Sub: $type';
+    return 'Abo: $type';
   }
 
   @override
   String deepScanSuppressed(String context) {
-    return 'Deep scan suppressed — connected to a $context network. Disable the safety guard in Settings to override.';
+    return 'Deep Scan unterdrückt — verbunden mit einem Netzwerk vom Typ „$context“. Zum Überschreiben die Schutzsperre in den Einstellungen deaktivieren.';
   }
 
   @override
-  String get securityAssessmentFailed => 'SECURITY ASSESSMENT FAILED';
+  String get securityAssessmentFailed => 'SICHERHEITSBEWERTUNG FEHLGESCHLAGEN';
 
   @override
-  String get retryAnalytics => 'RETRY ANALYTICS';
+  String get retryAnalytics => 'ANALYSE WIEDERHOLEN';
 
   @override
-  String get publicContextLabel => 'public';
+  String get publicContextLabel => 'öffentlich';
 
   @override
-  String get guestContextLabel => 'guest';
+  String get guestContextLabel => 'Gast';
 
   @override
-  String get clearScanHistoryTitle => 'CLEAR SCAN HISTORY';
+  String get clearScanHistoryTitle => 'SCAN-VERLAUF LÖSCHEN';
 
   @override
   String get clearScanHistoryBody =>
-      'Delete all LAN scan records? This cannot be undone.';
+      'Alle LAN-Scan-Einträge löschen? Das kann nicht rückgängig gemacht werden.';
 
   @override
-  String get cancelLabel => 'CANCEL';
+  String get cancelLabel => 'ABBRECHEN';
 
   @override
-  String get networkAuditConsentTitle => 'NETWORK AUDIT CONSENT';
+  String get networkAuditConsentTitle => 'ZUSTIMMUNG ZUR NETZWERKPRÜFUNG';
 
   @override
   String get networkAuditConsentDesc =>
-      'Active network scanning generates traffic to identify devices and services. This may be flagged by network security systems.';
+      'Aktives Netzwerk-Scannen erzeugt Datenverkehr, um Geräte und Dienste zu identifizieren. Sicherheitssysteme können das registrieren.';
 
   @override
-  String get consentScanNodes => 'Scan local network for active nodes';
+  String get consentScanNodes => 'Lokales Netzwerk nach aktiven Knoten scannen';
 
   @override
-  String get consentFingerprint => 'Fingerprint open services and OS';
+  String get consentFingerprint => 'Offene Dienste und OS fingerprinten';
 
   @override
-  String get consentIdentifyVulns => 'Identify potential vulnerabilities';
+  String get consentIdentifyVulns => 'Mögliche Schwachstellen identifizieren';
 
   @override
   String get consentConfirmAuth =>
-      'Confirm you have authorization for this network';
+      'Bestätigen Sie Ihre Berechtigung für dieses Netzwerk';
 
   @override
-  String get iUnderstand => 'I UNDERSTAND';
+  String get iUnderstand => 'VERSTANDEN';
 
   @override
   String get iosLanDiscoveryLimited =>
-      'iOS: LAN discovery is limited. mDNS browsing and ARP table access may be restricted by the OS.';
+      'iOS: LAN-Erkennung ist eingeschränkt. mDNS-Browsing und ARP-Tabellen-Zugriff können vom OS blockiert werden.';
 
   @override
   String get androidLanVendorLimited =>
-      'Android limits LAN MAC access. Vendor names may only appear for the router/gateway; other devices are identified by IP, hostname and services when available.';
+      'Android beschränkt den Zugriff auf LAN-MACs. Herstellernamen erscheinen ggf. nur für Router/Gateway; andere Geräte werden über IP, Hostname und Dienste identifiziert.';
 
   @override
   String get vendorUnavailableAndroid =>
-      'Vendor unavailable: Android does not expose this device\'s LAN MAC address to apps.';
+      'Hersteller nicht verfügbar: Android gibt die LAN-MAC dieses Geräts nicht an Apps weiter.';
 
   @override
   String get speedDoctorLongDesc =>
-      'Runs signal, channel, speed and DNS probes in ~30 seconds and tells you which link in the chain is the bottleneck.';
+      'Führt in ~30 Sekunden Signal-, Kanal-, Speed- und DNS-Proben aus und sagt Ihnen, welches Glied der Kette der Engpass ist.';
 
   @override
-  String get startDiagnosis => 'START DIAGNOSIS';
+  String get startDiagnosis => 'DIAGNOSE STARTEN';
 
   @override
   String get speedDoctorQuotaWarning =>
-      'Heads up: a real speed test downloads ~300–500 MB. Use Wi-Fi or an unmetered connection to avoid burning your mobile quota.';
+      'Achtung: Ein echter Speedtest lädt ~300–500 MB. Nutzen Sie Wi-Fi oder eine unlimitierte Verbindung, um Ihr Datenvolumen zu schonen.';
 
   @override
-  String get evidenceLabel => 'EVIDENCE';
+  String get evidenceLabel => 'NACHWEIS';
 
   @override
-  String get runAgain => 'RUN AGAIN';
+  String get runAgain => 'ERNEUT AUSFÜHREN';
 
   @override
-  String get aboutSpeedDoctorTitle => 'ABOUT SPEED DOCTOR';
+  String get aboutSpeedDoctorTitle => 'ÜBER SPEED DOCTOR';
 
   @override
-  String get sdAboutWhatTitle => 'What is it?';
+  String get sdAboutWhatTitle => 'Was ist das?';
 
   @override
   String get sdAboutWhatBody =>
-      'A one-tap diagnostic that finds the likely bottleneck between you and the internet — without you having to compare numbers across separate screens.';
+      'Eine Ein-Tipp-Diagnose, die den wahrscheinlichen Engpass zwischen Ihnen und dem Internet findet — ohne Zahlen über mehrere Screens vergleichen zu müssen.';
 
   @override
-  String get sdAboutHowTitle => 'How does it work?';
+  String get sdAboutHowTitle => 'Wie funktioniert es?';
 
   @override
   String get sdAboutHowBody =>
-      'Five short probes run end-to-end and the results are compared against published thresholds:';
+      'Fünf kurze Proben laufen Ende-zu-Ende; die Ergebnisse werden mit veröffentlichten Schwellenwerten verglichen:';
 
   @override
   String get sdAboutHowBullet1 =>
-      'Signal — reads RSSI from the connected access point.';
+      'Signal — liest RSSI vom verbundenen Access Point.';
 
   @override
   String get sdAboutHowBullet2 =>
-      'Channel — scores your channel against neighbouring APs.';
+      'Kanal — bewertet Ihren Kanal gegen Nachbar-APs.';
 
   @override
   String get sdAboutHowBullet3 =>
-      'Speed — runs a real download/upload test against Cloudflare.';
+      'Speed — echter Download-/Upload-Test gegen Cloudflare.';
 
   @override
   String get sdAboutHowBullet4 =>
-      'Bufferbloat — measures latency under load (Waveform A–F).';
+      'Bufferbloat — misst Latenz unter Last (Waveform A–F).';
 
   @override
   String get sdAboutHowBullet5 =>
-      'DNS — benchmarks public resolvers vs. your current one.';
+      'DNS — vergleicht öffentliche Resolver mit Ihrem aktuellen.';
 
   @override
-  String get sdAboutCategoriesTitle => 'What do the categories mean?';
+  String get sdAboutCategoriesTitle => 'Was bedeuten die Kategorien?';
 
   @override
   String get sdAboutCategoriesBullet1 =>
-      'Weak Signal — Wi-Fi link forced into slower modes by distance / walls.';
+      'Schwaches Signal — Distanz/Wände zwingen den Wi-Fi-Link in langsamere Modi.';
 
   @override
   String get sdAboutCategoriesBullet2 =>
-      'Crowded Channel — neighbouring APs on the same channel eat your air-time.';
+      'Überfüllter Kanal — Nachbar-APs auf demselben Kanal fressen Ihre Sendezeit.';
 
   @override
   String get sdAboutCategoriesBullet3 =>
-      'Bufferbloat — latency balloons when the link is fully loaded; calls and games suffer.';
+      'Bufferbloat — Latenz explodiert unter Volllast; Calls und Games leiden.';
 
   @override
   String get sdAboutCategoriesBullet4 =>
-      'ISP Slow — Wi-Fi is fine but your plan / upstream is the ceiling.';
+      'ISP langsam — Wi-Fi ist okay, aber Tarif/Upstream ist die Decke.';
 
   @override
   String get sdAboutCategoriesBullet5 =>
-      'Slow DNS — page loads feel laggy because name lookups take too long.';
+      'Langsames DNS — Seiten wirken träge, weil Namensauflösung zu lange dauert.';
 
   @override
-  String get sdAboutEstimateTitle => 'About the speed-up estimate';
+  String get sdAboutEstimateTitle => 'Zur Gewinn-Schätzung';
 
   @override
   String get sdAboutEstimateBody =>
-      'Each finding shows a conservative projected gain — what you can realistically expect after applying the fix. It is a lower bound, not a guarantee, and it depends on the test conditions.';
+      'Jeder Befund zeigt einen konservativ geschätzten Zugewinn — was nach dem Fix realistisch zu erwarten ist. Eine Untergrenze, keine Garantie; abhängig von den Testbedingungen.';
 
   @override
-  String get diagnosisFailed => 'Diagnosis failed';
+  String get diagnosisFailed => 'Diagnose fehlgeschlagen';
 
   @override
-  String get retryLabel => 'RETRY';
+  String get retryLabel => 'WIEDERHOLEN';
 
   @override
   String get settingsIncludeHiddenDesc =>
-      'Actively probes for hidden SSIDs. Off by default — only enable on networks you own.';
+      'Sucht aktiv nach versteckten SSIDs. Standardmäßig aus — nur in eigenen Netzwerken aktivieren.';
 
   @override
   String get autoScanLabel => 'Auto-Scan';
 
   @override
   String autoScanDesc(int seconds) {
-    return 'Repeat scan every ${seconds}s automatically';
+    return 'Scan automatisch alle $seconds s wiederholen';
   }
 
   @override
@@ -2251,218 +2190,221 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get deepScanDesc =>
-      'Banner grab + exposure analysis. Only enable on networks you are authorized to test.';
+      'Banner-Grabbing + Exponierungsanalyse. Nur in Netzwerken aktivieren, die Sie testen dürfen.';
 
   @override
   String get restrictDeepScanPublicLabel =>
-      'Restrict Deep Scan on Public Wi-Fi';
+      'Deep Scan in öffentlichem Wi-Fi einschränken';
 
   @override
   String get restrictDeepScanPublicDesc =>
-      'Suppress active probing when connected to a public or guest network. Recommended — active scans on networks you do not own are the dominant legal risk.';
+      'Aktives Probing in öffentlichen oder Gast-Netzwerken unterdrücken. Empfohlen — aktive Scans in fremden Netzen sind das größte rechtliche Risiko.';
 
   @override
-  String get backgroundMonitoringLabel => 'Background Monitoring';
+  String get backgroundMonitoringLabel => 'Hintergrundüberwachung';
 
   @override
   String get backgroundMonitoringDesc =>
-      'Run a quiet Wi-Fi check every 30 minutes while the app is closed. You\'ll get a notification if a new device appears, the connected network swaps, or encryption changes. Battery impact is minimal. iOS support is limited (system-controlled refresh).';
+      'Alle 30 Minuten ein leiser Wi-Fi-Check, auch bei geschlossener App. Sie werden benachrichtigt, wenn ein neues Gerät auftaucht, das verbundene Netzwerk wechselt oder sich die Verschlüsselung ändert. Minimale Akkubelastung. iOS-Unterstützung ist begrenzt (systemgesteuerte Aktualisierung).';
 
   @override
-  String get portScanTimeoutLabel => 'Port Scan Timeout';
+  String get portScanTimeoutLabel => 'Port-Scan-Timeout';
 
   @override
-  String get privacyAndDataLabel => 'PRIVACY & DATA';
+  String get privacyAndDataLabel => 'DATENSCHUTZ & DATEN';
 
   @override
-  String get dataRetentionLabel => 'DATA RETENTION';
+  String get dataRetentionLabel => 'AUFBEWAHRUNG';
 
   @override
-  String get scanHistoryRetentionLabel => 'Scan History';
+  String get scanHistoryRetentionLabel => 'Scan-Verlauf';
 
   @override
-  String get speedTestsRetentionLabel => 'Speed Tests';
+  String get speedTestsRetentionLabel => 'Speedtests';
 
   @override
-  String get securityEventsRetentionLabel => 'Security Events';
+  String get securityEventsRetentionLabel => 'Sicherheitsereignisse';
 
   @override
-  String get replayOnboardingLabel => 'Replay Onboarding';
+  String get replayOnboardingLabel => 'Onboarding wiederholen';
 
   @override
-  String get replayOnboardingDesc => 'View the welcome tour again.';
+  String get replayOnboardingDesc => 'Die Willkommenstour erneut ansehen.';
 
   @override
-  String get wipeAllDataLabel => 'Wipe All Local Data';
+  String get wipeAllDataLabel => 'Alle lokalen Daten löschen';
 
   @override
   String get wipeAllDataDesc =>
-      'Deletes all scan history, speed tests, security events and channel ratings from this device.';
+      'Löscht sämtliche Scan-Verläufe, Speedtests, Sicherheitsereignisse und Kanalbewertungen von diesem Gerät.';
 
   @override
-  String get aboutLabel => 'ABOUT';
+  String get aboutLabel => 'ÜBER';
 
   @override
-  String get legalDisclaimerTitle => 'Legal Disclaimer';
+  String get legalDisclaimerTitle => 'Rechtlicher Hinweis';
 
   @override
   String get legalDisclaimerBody =>
       'This application performs network observation and authorized LAN discovery. Active probing is strictly limited to service identification and security assessment. No brute-force authentication, frame injection, deauthentication packets, ARP poisoning, or credential harvesting are performed.\n\nUse of this application on networks you do not own or are not authorized to test may violate applicable laws (TCK 243/244, EU Directive 2013/40, CFAA). The user is solely responsible for ensuring lawful use.\n\nBu uygulama ağ gözlemi ve yetkili LAN keşfi gerçekleştirir. Aktif sorgulama yalnızca servis tanımlama ve güvenlik değerlendirmesi ile sınırlıdır. Yetkisiz ağlarda kullanım TCK 243/244 kapsamında suç teşkil edebilir.';
 
   @override
-  String get enableDeepScanTitle => 'ENABLE DEEP SCAN?';
+  String get enableDeepScanTitle => 'DEEP SCAN AKTIVIEREN?';
 
   @override
   String get enableDeepScanBody =>
-      'Deep scan performs banner grabbing and service exposure analysis. This mode must only be used on networks you own or are explicitly authorized to test.\n\nProceeding on unauthorized networks may violate applicable laws.';
+      'Deep Scan führt Banner-Grabbing und Dienst-Exponierungsanalyse aus. Dieser Modus darf nur in Netzwerken verwendet werden, die Ihnen gehören oder für die Sie ausdrücklich autorisiert sind.\n\nDie Nutzung in fremden Netzwerken kann gegen geltendes Recht verstoßen.';
 
   @override
-  String get wifiScanPermissionTitle => 'WIFI SCAN PERMISSION';
+  String get wifiScanPermissionTitle => 'WIFI-SCAN-BERECHTIGUNG';
 
   @override
   String get wifiScanPermissionDesc =>
-      'To discover nearby Wi-Fi networks and analyze signal strength, Torcav requires Location access. This is an Android system requirement for Wi-Fi scanning.';
+      'Um nahe Wi-Fi-Netzwerke zu entdecken und Signalstärke zu analysieren, benötigt Torcav Standortzugriff. Das ist eine Android-Systemvoraussetzung für Wi-Fi-Scans.';
 
   @override
-  String get consentScanSsids => 'Scan nearby Wi-Fi SSIDs';
+  String get consentScanSsids => 'Nahe Wi-Fi-SSIDs scannen';
 
   @override
-  String get consentAnalyzeSignal => 'Analyze signal quality and interference';
+  String get consentAnalyzeSignal =>
+      'Signalqualität und Interferenz analysieren';
 
   @override
-  String get consentNoTracking => 'Torcav never tracks or shares your location';
+  String get consentNoTracking =>
+      'Torcav trackt oder teilt Ihren Standort niemals';
 
   @override
-  String get continueLabel => 'CONTINUE';
+  String get continueLabel => 'WEITER';
 
   @override
   String get clearWifiHistoryBody =>
-      'Delete all saved Wi-Fi scan sessions? This cannot be undone.';
+      'Alle gespeicherten Wi-Fi-Scan-Sitzungen löschen? Das kann nicht rückgängig gemacht werden.';
 
   @override
-  String get transparentSignalAnalysisTitle => 'TRANSPARENT SIGNAL ANALYSIS';
+  String get transparentSignalAnalysisTitle => 'TRANSPARENTE SIGNALANALYSE';
 
   @override
   String get transparentSignalAnalysisDesc =>
-      'Advanced spectrum analysis for security auditing. Local processing only.';
+      'Fortgeschrittene Spektrumanalyse für Sicherheitsaudits. Verarbeitung nur lokal.';
 
   @override
   String get cachedResultsWarning =>
-      'Showing cached results — Android limits scan frequency. Wait ~30 s and refresh for live data.';
+      'Zwischengespeicherte Ergebnisse — Android drosselt die Scan-Frequenz. ~30 s warten und für Live-Daten aktualisieren.';
 
   @override
   String get enableDeepScanBodyWifi =>
-      'Deep Scan performs banner grabbing and exposure analysis. Use only on networks you are authorized to scan. Unauthorized use may violate TCK 243/244 and similar laws.';
+      'Deep Scan führt Banner-Grabbing und Exponierungsanalyse aus. Nur in Netzwerken nutzen, für die Sie autorisiert sind. Unbefugte Nutzung kann gegen Gesetze wie TCK 243/244 verstoßen.';
 
   @override
-  String get iAmAuthorized => 'I AM AUTHORIZED';
+  String get iAmAuthorized => 'ICH BIN AUTORISIERT';
 
   @override
   String get iosWifiScanLimited =>
-      'iOS: Wi-Fi scan results are limited by Apple APIs. Active scan trigger and some network details are unavailable.';
+      'iOS: Wi-Fi-Scan-Ergebnisse sind durch Apple-APIs begrenzt. Aktives Scan-Auslösen und manche Netzwerkdetails sind nicht verfügbar.';
 
   @override
-  String get allCategoriesLabel => 'All categories (single bundle)';
+  String get allCategoriesLabel => 'Alle Kategorien (ein Paket)';
 
   @override
   String get autoLabel => 'Auto';
 
   @override
-  String get lightLabel => 'Light';
+  String get lightLabel => 'Hell';
 
   @override
-  String get darkLabel => 'Dark';
+  String get darkLabel => 'Dunkel';
 
   @override
-  String get dismissLabel => 'Dismiss';
+  String get dismissLabel => 'Schließen';
 
   @override
-  String get applyLabel => 'Apply';
+  String get applyLabel => 'Anwenden';
 
   @override
-  String get openSettingsLabel => 'Open settings';
+  String get openSettingsLabel => 'Einstellungen öffnen';
 
   @override
-  String get privacyPolicyTitle => 'Privacy Policy';
+  String get privacyPolicyTitle => 'Datenschutzerklärung';
 
   @override
-  String get encryptionAndConfigTitle => 'ENCRYPTION & CONFIG';
+  String get encryptionAndConfigTitle => 'VERSCHLÜSSELUNG & KONFIG';
 
   @override
-  String get environmentScanTitle => 'ENVIRONMENT SCAN';
+  String get environmentScanTitle => 'UMGEBUNGSSCAN';
 
   @override
-  String get dnsTestFailedTitle => 'DNS Test Failed';
+  String get dnsTestFailedTitle => 'DNS-Test fehlgeschlagen';
 
   @override
   String get dnsTestFailedDesc =>
-      'Could not reach DNS test servers. Check your connection.';
+      'DNS-Testserver nicht erreichbar. Prüfen Sie Ihre Verbindung.';
 
   @override
-  String get dnsLeakDetectedTitle => 'DNS Leak Detected';
+  String get dnsLeakDetectedTitle => 'DNS-Leak erkannt';
 
   @override
   String get dnsLeakDetectedDesc =>
-      'Your DNS queries are leaking outside the expected resolver, potentially exposing your browsing activity to your ISP or third parties.';
+      'Ihre DNS-Anfragen laufen am erwarteten Resolver vorbei und können Ihre Browsing-Aktivität gegenüber ISP oder Dritten offenlegen.';
 
   @override
-  String get dnsHijackingDetectedTitle => 'DNS Hijacking Detected';
+  String get dnsHijackingDetectedTitle => 'DNS-Hijacking erkannt';
 
   @override
   String get dnsHijackingDetectedDesc =>
-      'DNS responses are being redirected to an unexpected server. This could indicate a man-in-the-middle attack or ISP interception.';
+      'DNS-Antworten werden auf einen unerwarteten Server umgeleitet. Das kann auf einen Man-in-the-Middle-Angriff oder ISP-Eingriff hindeuten.';
 
   @override
-  String get dnsConfigWarningTitle => 'DNS Configuration Warning';
+  String get dnsConfigWarningTitle => 'DNS-Konfigurationswarnung';
 
   @override
   String get dnsConfigWarningDesc =>
-      'DNS configuration has potential issues that could affect privacy or security.';
+      'Die DNS-Konfiguration hat potenzielle Probleme, die Privatsphäre oder Sicherheit beeinträchtigen können.';
 
   @override
-  String get noIssuesDetected => 'No issues detected';
+  String get noIssuesDetected => 'Keine Probleme erkannt';
 
   @override
-  String get retryInternetConnection => 'Retry when connected to the internet.';
+  String get retryInternetConnection =>
+      'Erneut versuchen, sobald Internet verfügbar ist.';
 
   @override
   String get dnsLeakRecommendation =>
-      'Configure a trusted DNS resolver (e.g. 1.1.1.1 or 9.9.9.9) and enable DNS-over-HTTPS (DoH) or DNS-over-TLS (DoT).';
+      'Konfigurieren Sie einen vertrauenswürdigen DNS-Resolver (z. B. 1.1.1.1 oder 9.9.9.9) und aktivieren Sie DNS-over-HTTPS (DoH) oder DNS-over-TLS (DoT).';
 
   @override
   String get dnsHijackingRecommendation =>
-      'Switch to a VPN immediately. Your DNS queries are being tampered with.';
+      'Wechseln Sie sofort zu einem VPN. Ihre DNS-Anfragen werden manipuliert.';
 
   @override
   String get dnsConfigRecommendation =>
-      'Review your DNS settings and consider switching to a privacy-focused DNS provider.';
+      'Prüfen Sie Ihre DNS-Einstellungen und erwägen Sie einen datenschutzfreundlichen DNS-Anbieter.';
 
   @override
   String openNetworksNearbyTitle(int count) {
-    return '$count Open Network(s) Nearby';
+    return '$count offene(s) Netzwerk(e) in der Nähe';
   }
 
   @override
   String openNetworksNearbyDesc(int count) {
-    return 'Detected $count unencrypted network(s) in range. Open networks are trivially sniffable.';
+    return '$count unverschlüsselte(s) Netzwerk(e) in Reichweite erkannt. Offene Netzwerke sind trivial mitlesbar.';
   }
 
   @override
   String wpsEnabledNearbyTitle(int count) {
-    return '$count Network(s) with WPS Enabled';
+    return '$count Netzwerk(e) mit aktiviertem WPS';
   }
 
   @override
   String wpsEnabledNearbyDesc(int count) {
-    return 'WPS is enabled on $count nearby network(s). WPS PIN can be brute-forced, bypassing the Wi-Fi password entirely.';
+    return 'WPS ist auf $count Netzwerk(en) in der Nähe aktiv. Die WPS-PIN lässt sich brute-forcen und umgeht das Wi-Fi-Passwort komplett.';
   }
 
   @override
   String get wpsRecommendation =>
-      'Disable WPS on your router. If these are not your networks, be aware that nearby APs may be less secure.';
+      'Deaktivieren Sie WPS am Router. Sind es fremde Netzwerke, bedenken Sie, dass nahe APs unsicherer sein können.';
 
   @override
-  String get renderingErrorTitle => 'RENDERING ERROR';
+  String get renderingErrorTitle => 'RENDERING-FEHLER';
 
   @override
   String get renderingErrorBody =>
@@ -2498,577 +2440,587 @@ class AppLocalizationsDe extends AppLocalizations {
   String get appTitleLong => 'Torcav Wi-Fi Analyzer';
 
   @override
-  String get tosTitle => 'TERMS OF SERVICE';
+  String get tosTitle => 'NUTZUNGSBEDINGUNGEN';
 
   @override
-  String get tosAcceptanceTitle => '1. ACCEPTANCE';
+  String get tosAcceptanceTitle => '1. ZUSTIMMUNG';
 
   @override
   String get tosAcceptanceBody =>
-      'By accessing or using Torcav, you agree to be bound by these Terms. If you do not agree, you must immediately cease use of the App.';
+      'Mit dem Zugriff auf oder der Nutzung von Torcav erklären Sie sich an diese Bedingungen gebunden. Wenn nicht, müssen Sie die Nutzung der App sofort einstellen.';
 
   @override
-  String get tosAuthorizedTestingTitle => '2. AUTHORIZED TESTING ONLY';
+  String get tosAuthorizedTestingTitle => '2. NUR AUTORISIERTE TESTS';
 
   @override
   String get tosAuthorizedTestingBody =>
-      'You represent and warrant that you will only use the App to analyze networks and devices that you own or for which you have received explicit, written authorization to test. Unauthorized access to networks is strictly prohibited and may be illegal in your jurisdiction.';
+      'Sie sichern zu, die App nur für Netzwerke und Geräte zu nutzen, die Ihnen gehören oder für die Sie eine ausdrückliche, schriftliche Testerlaubnis haben. Unbefugter Zugriff auf Netzwerke ist strikt untersagt und kann in Ihrer Jurisdiktion strafbar sein.';
 
   @override
-  String get tosDisclaimerTitle => '3. DISCLAIMER OF WARRANTIES';
+  String get tosDisclaimerTitle => '3. GEWÄHRLEISTUNGSAUSSCHLUSS';
 
   @override
   String get tosDisclaimerBody =>
-      'The App is provided \"as is\" and \"as available\". We do not guarantee that the App will identify all security vulnerabilities or that its results are 100% accurate. Use at your own risk.';
+      'Die App wird \"wie besehen\" und \"wie verfügbar\" bereitgestellt. Wir garantieren nicht, dass die App alle Sicherheitslücken findet oder ihre Ergebnisse zu 100 % korrekt sind. Nutzung auf eigene Gefahr.';
 
   @override
-  String get tosLiabilityTitle => '4. LIMITATION OF LIABILITY';
+  String get tosLiabilityTitle => '4. HAFTUNGSBESCHRÄNKUNG';
 
   @override
   String get tosLiabilityBody =>
-      'In no event shall the developers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the App.';
+      'Die Entwickler haften in keinem Fall für Schäden (einschließlich, aber nicht beschränkt auf Daten- oder Gewinnverlust oder Betriebsunterbrechung), die aus der Nutzung oder Nichtnutzbarkeit der App entstehen.';
 
   @override
-  String get tosModificationsTitle => '5. MODIFICATIONS';
+  String get tosModificationsTitle => '5. ÄNDERUNGEN';
 
   @override
   String get tosModificationsBody =>
-      'We reserve the right to modify these terms at any time. Continued use of the App following any changes constitutes acceptance of the new terms.';
+      'Wir behalten uns vor, diese Bedingungen jederzeit zu ändern. Die weitere Nutzung der App nach Änderungen gilt als Zustimmung zu den neuen Bedingungen.';
 
   @override
-  String get tosLastUpdated => 'Last Updated: April 2026';
+  String get tosLastUpdated => 'Zuletzt aktualisiert: April 2026';
 
   @override
-  String get legalNoticeTitle => 'LEGAL NOTICE';
+  String get legalNoticeTitle => 'RECHTLICHER HINWEIS';
 
   @override
   String get legalNoticeBody =>
-      'This application is a security auditing tool. Misuse of this software to access or monitor networks without permission is strictly prohibited.';
+      'Diese Anwendung ist ein Sicherheits-Audit-Werkzeug. Der Missbrauch dieser Software, um ohne Erlaubnis auf Netzwerke zuzugreifen oder sie zu überwachen, ist strikt untersagt.';
 
   @override
-  String get privacyTitle => 'PRIVACY POLICY';
+  String get privacyTitle => 'DATENSCHUTZERKLÄRUNG';
 
   @override
   String get privacyIntro =>
-      'Torcav is built on the principle of \"Privacy by Default\". Almost every byte stays on your device — no accounts, no cloud sync, no analytics, no advertising. A handful of features connect to public technical endpoints (Cloudflare, Google\'s captive-portal probe, public DNS resolvers) — those see only your IP, never any Torcav-internal identifier. You can wipe every persisted record with one tap.';
+      'Torcav basiert auf dem Prinzip \"Privacy by Default\". Fast jedes Byte bleibt auf Ihrem Gerät — keine Konten, kein Cloud-Sync, keine Analytics, keine Werbung. Wenige Funktionen kontaktieren öffentliche technische Endpunkte (Cloudflare, Googles Captive-Portal-Probe, öffentliche DNS-Resolver) — diese sehen nur Ihre IP, nie eine Torcav-interne Kennung. Alle gespeicherten Daten lassen sich mit einem Tipp löschen.';
 
   @override
-  String get privacyViewFullGithub => 'VIEW FULL POLICY ON GITHUB';
+  String get privacyViewFullGithub => 'VOLLSTÄNDIGE POLICY AUF GITHUB';
 
   @override
   String get privacyFullPolicyDesc =>
-      'The card list below is a summary. The canonical, KVKK + GDPR-formatted policy is hosted at github.io.';
+      'Die Kartenliste unten ist eine Zusammenfassung. Die kanonische, KVKK+DSGVO-formatierte Policy ist auf github.io gehostet.';
 
   @override
-  String get privacyResponsibleTitle => 'WHO IS RESPONSIBLE';
+  String get privacyResponsibleTitle => 'WER IST VERANTWORTLICH';
 
   @override
-  String get privacyIndividualDev => 'Individual Developer';
+  String get privacyIndividualDev => 'Einzelentwickler';
 
   @override
   String privacyDevBody(String email) {
-    return 'Torcav is operated by an individual developer (Halil İbrahim Avşar), not a registered company. You can reach the data controller directly at $email.';
+    return 'Torcav wird von einem Einzelentwickler (Halil İbrahim Avşar) betrieben, nicht von einer eingetragenen Firma. Sie erreichen den Verantwortlichen direkt unter $email.';
   }
 
   @override
-  String get privacyDataCollectionTitle => 'DATA COLLECTION & USAGE';
+  String get privacyDataCollectionTitle => 'DATENERHEBUNG & NUTZUNG';
 
   @override
-  String get privacyWifiAnalysisTitle => 'Wi-Fi & Network Analysis';
+  String get privacyWifiAnalysisTitle => 'Wi-Fi- & Netzwerkanalyse';
 
   @override
   String get privacyWifiAnalysisBody =>
-      'Nearby SSID/BSSID/RSSI metadata and security flags (WPA2/WPA3/WPS/PMF) are read from the OS scan API. This data stays in a local SQLite database encrypted at rest. It is never uploaded.';
+      'SSID/BSSID/RSSI-Metadaten und Sicherheits-Flags (WPA2/WPA3/WPS/PMF) naher Netze werden über die OS-Scan-API gelesen. Die Daten bleiben in einer lokalen, verschlüsselten SQLite-Datenbank. Sie werden nie hochgeladen.';
 
   @override
-  String get privacyLanInventoryTitle => 'LAN Device Inventory';
+  String get privacyLanInventoryTitle => 'LAN-Geräteinventar';
 
   @override
   String get privacyLanInventoryBody =>
-      'When you run a LAN scan, the app collects IP/MAC/hostname/vendor/open ports for devices on the same network. This may include third-party devices — anonymisation is on by default for exports.';
+      'Bei einem LAN-Scan erfasst die App IP/MAC/Hostname/Hersteller/offene Ports der Geräte im selben Netzwerk. Das kann fremde Geräte einschließen — Anonymisierung ist für Exporte standardmäßig aktiv.';
 
   @override
-  String get privacyLocationTitle => 'Location Permission (Wi-Fi only)';
+  String get privacyLocationTitle => 'Standortberechtigung (nur Wi-Fi)';
 
   @override
   String get privacyLocationBody =>
-      'Android requires the location permission to enable Wi-Fi scanning. Torcav uses it strictly for that — we do not read GPS coordinates and we do not track movement.';
+      'Android verlangt die Standortberechtigung für Wi-Fi-Scans. Torcav nutzt sie ausschließlich dafür — wir lesen keine GPS-Koordinaten und tracken keine Bewegung.';
 
   @override
-  String get privacySensorsTitle => 'Sensors & Heatmap';
+  String get privacySensorsTitle => 'Sensoren & Heatmap';
 
   @override
   String get privacySensorsBody =>
-      'Activity recognition + IMU/barometer are used during heatmap surveys to map signal strength to your relative path (origin = scan start). GPS is not used.';
+      'Aktivitätserkennung + IMU/Barometer werden bei Heatmap-Erfassungen genutzt, um Signalstärke Ihrem relativen Pfad zuzuordnen (Ursprung = Scan-Start). GPS wird nicht verwendet.';
 
   @override
-  String get privacyAiTitle => 'AI / Local Classification';
+  String get privacyAiTitle => 'KI / Lokale Klassifizierung';
 
   @override
   String get privacyAiBody =>
-      'Device-type identification uses a local ONNX model. No proprietary or vendor data leaves the device.';
+      'Die Gerätetyp-Erkennung nutzt ein lokales ONNX-Modell. Keine Hersteller- oder Gerätedaten verlassen das Gerät.';
 
   @override
-  String get privacyExternalEndpointsTitle => 'EXTERNAL ENDPOINTS';
+  String get privacyExternalEndpointsTitle => 'EXTERNE ENDPUNKTE';
 
   @override
-  String get privacyCloudflareTitle => 'Cloudflare Speed Test';
+  String get privacyCloudflareTitle => 'Cloudflare-Speedtest';
 
   @override
   String get privacyCloudflareBody =>
-      'Speed Doctor and the speed-test page download/upload ~300-500 MB against speed.cloudflare.com. Cloudflare sees your IP — no Torcav identifier or telemetry is attached.';
+      'Speed Doctor und die Speedtest-Seite laden ~300–500 MB gegen speed.cloudflare.com herunter/hoch. Cloudflare sieht Ihre IP — ohne Torcav-Kennung oder Telemetrie.';
 
   @override
-  String get privacyDnsProbesTitle => 'Public DNS Probes';
+  String get privacyDnsProbesTitle => 'Öffentliche DNS-Proben';
 
   @override
   String get privacyDnsProbesBody =>
-      '1.1.1.1, 8.8.8.8, 9.9.9.9, OpenDNS and AdGuard are queried for DNS benchmark and leak detection. They see standard DNS queries (no user identifiers).';
+      '1.1.1.1, 8.8.8.8, 9.9.9.9, OpenDNS und AdGuard werden für DNS-Benchmark und Leak-Erkennung abgefragt. Sie sehen Standard-DNS-Anfragen (keine Nutzerkennungen).';
 
   @override
-  String get privacyCaptivePortalTitle => 'Captive Portal Probe';
+  String get privacyCaptivePortalTitle => 'Captive-Portal-Probe';
 
   @override
   String get privacyCaptivePortalBody =>
-      'connectivitycheck.gstatic.com receives a plain HEAD request to detect captive portals. This is the same probe Android itself runs.';
+      'connectivitycheck.gstatic.com erhält eine einfache HEAD-Anfrage zur Captive-Portal-Erkennung. Dieselbe Probe führt Android selbst aus.';
 
   @override
-  String get privacyNoTrackersTitle => 'No Analytics, No Trackers, No Ads';
+  String get privacyBreachCheckTitle =>
+      'Passwort-Leck-Prüfung (Have I Been Pwned)';
+
+  @override
+  String get privacyBreachCheckBody =>
+      'Die Leck-Prüfung fragt api.pwnedpasswords.com per k-Anonymität ab: Das Passwort wird auf diesem Gerät SHA-1-gehasht und nur die ersten 5 Zeichen des Hashes werden gesendet. Das vollständige Passwort oder der volle Hash verlässt das Telefon nie; nichts wird protokolliert oder gespeichert.';
+
+  @override
+  String get privacyNoTrackersTitle =>
+      'Keine Analytics, keine Tracker, keine Werbung';
 
   @override
   String get privacyNoTrackersBody =>
-      'There are zero analytics SDKs, zero advertising IDs, zero crash-reporting services in v1.0. We do not phone home on app start.';
+      'In v1.0 gibt es null Analytics-SDKs, null Werbe-IDs, null Crash-Reporting-Dienste. Beim App-Start wird nicht nach Hause telefoniert.';
 
   @override
-  String get privacyRetentionTitle => 'RETENTION & DELETION';
+  String get privacyRetentionTitle => 'AUFBEWAHRUNG & LÖSCHUNG';
 
   @override
-  String get privacyConfigRetentionTitle => 'Configurable Retention';
+  String get privacyConfigRetentionTitle => 'Konfigurierbare Aufbewahrung';
 
   @override
   String get privacyConfigRetentionBody =>
-      'Settings → Privacy lets you set retention windows (7-365 days) for scan history, speed tests, and security events. Default is 30 days. Old records prune automatically.';
+      'Einstellungen → Datenschutz erlaubt Aufbewahrungsfenster (7–365 Tage) für Scan-Verlauf, Speedtests und Sicherheitsereignisse. Standard: 30 Tage. Alte Einträge werden automatisch entfernt.';
 
   @override
-  String get privacyWipeLocalDataTitle => 'Wipe All Local Data';
+  String get privacyWipeLocalDataTitle => 'Alle lokalen Daten löschen';
 
   @override
   String get privacyWipeLocalDataBody =>
-      'A single tap in Settings → Privacy clears every persisted record: scans, devices, security events, heatmap sessions, LAN history, exports. Irreversible.';
+      'Ein Tipp in Einstellungen → Datenschutz löscht jeden gespeicherten Eintrag: Scans, Geräte, Sicherheitsereignisse, Heatmap-Sitzungen, LAN-Verlauf, Exporte. Unumkehrbar.';
 
   @override
-  String get privacyRightsTitle => 'YOUR RIGHTS';
+  String get privacyRightsTitle => 'IHRE RECHTE';
 
   @override
-  String get privacyKvkkGdprTitle => 'KVKK (Turkey) + GDPR (EU/EEA)';
+  String get privacyKvkkGdprTitle => 'KVKK (Türkei) + DSGVO (EU/EWR)';
 
   @override
   String privacyRightsBody(String email) {
-    return 'You can request access, correction, deletion, or portability of your data. For deletion, the in-app Wipe All button is the fastest path. For other requests, email $email — we respond within 30 days.';
+    return 'Sie können Auskunft, Berichtigung, Löschung oder Übertragbarkeit Ihrer Daten verlangen. Zum Löschen ist der In-App-Button \"Alles löschen\" der schnellste Weg. Für andere Anliegen: E-Mail an $email — Antwort innerhalb von 30 Tagen.';
   }
 
   @override
-  String get privacyChildrenTitle => 'Children\'s Privacy';
+  String get privacyChildrenTitle => 'Privatsphäre von Kindern';
 
   @override
   String get privacyChildrenBody =>
-      'Torcav is not directed at users under 13 and presumes the user is old enough to take responsibility for the network being scanned.';
+      'Torcav richtet sich nicht an Nutzer unter 13 Jahren und setzt voraus, dass der Nutzer alt genug ist, Verantwortung für das gescannte Netzwerk zu übernehmen.';
 
   @override
-  String get privacyAuthorisedUseTitle => 'Authorised Use Only';
+  String get privacyAuthorisedUseTitle => 'Nur autorisierte Nutzung';
 
   @override
   String get privacyAuthorisedUseBody =>
-      'Use Torcav on networks you own or are explicitly authorised to scan. Active LAN discovery and port scanning on networks you do not own may violate Turkish, EU, and US laws.';
+      'Nutzen Sie Torcav in Netzwerken, die Ihnen gehören oder für die Sie ausdrücklich autorisiert sind. Aktive LAN-Erkennung und Port-Scans in fremden Netzwerken können gegen türkisches, EU- und US-Recht verstoßen.';
 
   @override
-  String get privacyContactLabel => 'CONTACT';
+  String get privacyContactLabel => 'KONTAKT';
 
   @override
-  String get privacyEffectiveDate => 'Effective 2026-05-08 • Version 1.0';
+  String get privacyEffectiveDate => 'Gültig ab 08.05.2026 • Version 1.0';
 
   @override
-  String get hardeningTitle => 'ROUTER HARDENING';
+  String get hardeningTitle => 'ROUTER-HÄRTUNG';
 
   @override
-  String get hardeningMarkDone => 'MARK DONE';
+  String get hardeningMarkDone => 'ALS ERLEDIGT MARKIEREN';
 
   @override
-  String get hardeningOpenAdmin => 'OPEN ADMIN PANEL';
+  String get hardeningOpenAdmin => 'ADMIN-PANEL ÖFFNEN';
 
   @override
-  String get hardeningStepsTitle => 'ACTION STEPS';
+  String get hardeningStepsTitle => 'SCHRITTE';
 
   @override
-  String get hardeningMenuHintsTitle => 'COMMON MENU NAMES';
+  String get hardeningMenuHintsTitle => 'ÜBLICHE MENÜNAMEN';
 
   @override
-  String get hardeningCriticalBadge => 'CRITICAL';
+  String get hardeningCriticalBadge => 'KRITISCH';
 
   @override
   String get hardeningChangeAdminPasswordTitle =>
-      'Change router admin password';
+      'Router-Admin-Passwort ändern';
 
   @override
   String get hardeningChangeAdminPasswordBody =>
-      'Default admin credentials (admin/admin, admin/password) are publicly documented. Anyone on your Wi-Fi can open the admin panel and rewrite settings — DNS hijack, redirect traffic, lock you out.';
+      'Standard-Zugangsdaten (admin/admin, admin/password) sind öffentlich dokumentiert. Jeder in Ihrem Wi-Fi kann das Admin-Panel öffnen und Einstellungen umschreiben — DNS kapern, Verkehr umleiten, Sie aussperren.';
 
   @override
   String get hardeningChangeAdminPasswordStep1 =>
-      'Tap the big OPEN ADMIN PANEL button at the top of this page. Your browser will open the router login page.';
+      'Tippen Sie oben auf ADMIN-PANEL ÖFFNEN. Ihr Browser öffnet die Router-Login-Seite.';
 
   @override
   String get hardeningChangeAdminPasswordStep2 =>
-      'Log in. Try \"admin\" as username and \"admin\" or \"password\" as password if you haven\'t changed it.';
+      'Melden Sie sich an. Probieren Sie \"admin\" als Benutzername und \"admin\" oder \"password\" als Passwort, falls nie geändert.';
 
   @override
   String get hardeningChangeAdminPasswordStep3 =>
-      'Find a menu named \"Administration\", \"System\", \"Maintenance\" or \"Account\".';
+      'Suchen Sie ein Menü namens \"Administration\", \"System\", \"Maintenance\" oder \"Konto\".';
 
   @override
   String get hardeningChangeAdminPasswordStep4 =>
-      'Inside that menu look for \"Login password\", \"Admin password\" or \"Change password\".';
+      'Suchen Sie dort nach \"Login password\", \"Admin password\" oder \"Passwort ändern\".';
 
   @override
   String get hardeningChangeAdminPasswordStep5 =>
-      'Pick a NEW password — at least 12 characters, mix uppercase, lowercase, numbers and a symbol.';
+      'Wählen Sie ein NEUES Passwort — mindestens 12 Zeichen, mit Groß-/Kleinbuchstaben, Zahlen und Symbol.';
 
   @override
   String get hardeningChangeAdminPasswordStep6 =>
-      'Save / Apply. The router may reboot for ~30 seconds.';
+      'Speichern / Übernehmen. Der Router startet ggf. ~30 Sekunden neu.';
 
   @override
   String get hardeningChangeAdminPasswordStep7 =>
-      'Write the new password down somewhere safe.';
+      'Notieren Sie das neue Passwort an einem sicheren Ort.';
 
   @override
   String get hardeningChangeAdminPasswordStep8 =>
-      'Once saved, come back here and tap MARK DONE.';
+      'Danach hier zurückkehren und ALS ERLEDIGT MARKIEREN antippen.';
 
   @override
-  String get hardeningUseWpa3OrWpa2AesTitle =>
-      'Use WPA3, fall back to WPA2-AES';
+  String get hardeningUseWpa3OrWpa2AesTitle => 'WPA3 nutzen, Fallback WPA2-AES';
 
   @override
   String get hardeningUseWpa3OrWpa2AesBody =>
-      'WPA3 is the modern Wi-Fi encryption standard. WPA/TKIP and WEP can be cracked in minutes.';
+      'WPA3 ist der moderne Wi-Fi-Verschlüsselungsstandard. WPA/TKIP und WEP sind in Minuten knackbar.';
 
   @override
-  String get hardeningDisableWpsTitle => 'Disable WPS';
+  String get hardeningDisableWpsTitle => 'WPS deaktivieren';
 
   @override
   String get hardeningDisableWpsBody =>
-      'WPS lets attackers bypass your Wi-Fi password in hours. Turn it off.';
+      'WPS erlaubt Angreifern, Ihr Wi-Fi-Passwort binnen Stunden zu umgehen. Ausschalten.';
 
   @override
-  String get hardeningEnablePmfTitle => 'Enable PMF / 802.11w';
+  String get hardeningEnablePmfTitle => 'PMF / 802.11w aktivieren';
 
   @override
   String get hardeningEnablePmfBody =>
-      'Protected Management Frames stop attackers from knocking your devices offline.';
+      'Protected Management Frames verhindern, dass Angreifer Ihre Geräte aus dem Netz werfen.';
 
   @override
-  String get hardeningEnableGuestNetworkTitle => 'Enable a guest network';
+  String get hardeningEnableGuestNetworkTitle => 'Gastnetzwerk aktivieren';
 
   @override
   String get hardeningEnableGuestNetworkBody =>
-      'A second SSID for visitors and IoT devices keeps your private network safe.';
+      'Eine zweite SSID für Besucher und IoT-Geräte hält Ihr privates Netzwerk sicher.';
 
   @override
   String get hardeningDisableRemoteAdminTitle =>
-      'Disable remote / WAN-side admin';
+      'Fern-/WAN-Administration deaktivieren';
 
   @override
   String get hardeningDisableRemoteAdminBody =>
-      'If the admin panel is reachable from the internet, anyone can try default passwords.';
+      'Ist das Admin-Panel aus dem Internet erreichbar, kann jeder Standard-Passwörter durchprobieren.';
 
   @override
-  String get hardeningUpdateFirmwareTitle => 'Update firmware';
+  String get hardeningUpdateFirmwareTitle => 'Firmware aktualisieren';
 
   @override
   String get hardeningUpdateFirmwareBody =>
-      'Most home routers have known security holes that vendors patch quietly.';
+      'Die meisten Heimrouter haben bekannte Lücken, die Hersteller still patchen.';
 
   @override
-  String get hardeningStrongPassphraseTitle => 'Use a strong Wi-Fi passphrase';
+  String get hardeningStrongPassphraseTitle => 'Starke Wi-Fi-Passphrase nutzen';
 
   @override
   String get hardeningStrongPassphraseBody =>
-      '12+ characters, mixed case, never reused from another service.';
+      '12+ Zeichen, gemischte Groß-/Kleinschreibung, nie von anderem Dienst wiederverwendet.';
 
   @override
   String gatewayCopyError(String ip) {
-    return 'Could not open the browser automatically. Gateway IP $ip has been copied — paste it into your browser\'s address bar.';
+    return 'Browser konnte nicht automatisch geöffnet werden. Gateway-IP $ip wurde kopiert — fügen Sie sie in die Adresszeile Ihres Browsers ein.';
   }
 
   @override
   String gatewayCopied(String ip) {
-    return 'Gateway IP $ip copied to clipboard.';
+    return 'Gateway-IP $ip in die Zwischenablage kopiert.';
   }
 
   @override
   String get hardeningConnectWifiHint =>
-      'Connect to your home Wi-Fi to track progress per router. The checklist still works without a connection.';
+      'Verbinden Sie sich mit Ihrem Heim-Wi-Fi, um Fortschritt pro Router zu verfolgen. Die Checkliste funktioniert auch ohne Verbindung.';
 
   @override
-  String get progressLabel => 'PROGRESS';
+  String get progressLabel => 'FORTSCHRITT';
 
   @override
-  String get tapToCopy => 'tap to copy';
+  String get tapToCopy => 'zum Kopieren tippen';
 
   @override
-  String get hardeningOpenAdminDesc =>
-      'Launch your router login page in the browser';
+  String get hardeningOpenAdminDesc => 'Router-Login-Seite im Browser öffnen';
 
   @override
-  String get hardeningConnectWifiRequired => 'Connect to Wi-Fi first';
+  String get hardeningConnectWifiRequired => 'Zuerst mit Wi-Fi verbinden';
 
   @override
   String get hardeningGatewayHintDisconnected =>
-      'Once connected, the gateway IP appears above and the button will launch your browser.';
+      'Sobald verbunden, erscheint oben die Gateway-IP und der Button öffnet Ihren Browser.';
 
   @override
   String get hardeningGatewayHintConnected =>
-      'Doesn\'t open? Tap the gateway IP above to copy it, then paste it into your browser\'s address bar (Chrome, Firefox, etc.).';
+      'Öffnet sich nichts? Tippen Sie oben auf die Gateway-IP, um sie zu kopieren, und fügen Sie sie in die Adresszeile ein (Chrome, Firefox usw.).';
 
   @override
-  String get whyThisMattersLabel => 'WHY THIS MATTERS';
+  String get whyThisMattersLabel => 'WARUM DAS WICHTIG IST';
 
   @override
-  String get markAsTodoLabel => 'MARK AS todo';
+  String get markAsTodoLabel => 'ALS OFFEN MARKIEREN';
 
   @override
   String get vpnRecommendation =>
-      'Use a trusted VPN when connecting to unknown or untrusted networks.';
+      'Nutzen Sie in unbekannten oder nicht vertrauenswürdigen Netzwerken ein vertrauenswürdiges VPN.';
 
   @override
-  String get exportLocalDataTitle => 'EXPORT LOCAL DATA';
+  String get exportLocalDataTitle => 'LOKALE DATEN EXPORTIEREN';
 
   @override
   String get exportLocalDataDesc =>
-      'Your data on this device, in your hands. Pick a category and share or save it as JSON.';
+      'Ihre Daten auf diesem Gerät, in Ihrer Hand. Kategorie wählen und als JSON teilen oder speichern.';
 
   @override
-  String get exportCategoryLabel => 'Category';
+  String get exportCategoryLabel => 'Kategorie';
 
   @override
   String get exportFormatLabel => 'Format';
 
   @override
-  String get jsonExportLabel => 'JSON — full, machine-readable';
+  String get jsonExportLabel => 'JSON — vollständig, maschinenlesbar';
 
   @override
-  String get csvExportLabel => 'CSV — opens in Excel/Sheets';
+  String get csvExportLabel => 'CSV — öffnet in Excel/Sheets';
 
   @override
-  String get csvSingleCategoryOnlyLabel => 'CSV — single category only';
+  String get csvSingleCategoryOnlyLabel => 'CSV — nur eine Kategorie';
 
   @override
-  String get htmlExportLabel => 'HTML — viewable in browser';
+  String get htmlExportLabel => 'HTML — im Browser ansehbar';
 
   @override
-  String get anonymizeIdentifiersLabel => 'Anonymize identifiers';
+  String get anonymizeIdentifiersLabel => 'Kennungen anonymisieren';
 
   @override
   String get anonymizeIdentifiersDesc =>
-      'Mask BSSID/MAC last 3 octets, redact SSID and hostname.';
+      'Letzte 3 Oktette von BSSID/MAC maskieren, SSID und Hostname schwärzen.';
 
   @override
   String get noIdentifiersToMaskDesc =>
-      'This category has no identifiers to mask.';
+      'Diese Kategorie enthält keine maskierbaren Kennungen.';
 
   @override
-  String get exportingLabel => 'EXPORTING…';
+  String get exportingLabel => 'EXPORTIERE…';
 
   @override
   String exportAsLabel(String format) {
-    return 'EXPORT AS $format';
+    return 'ALS $format EXPORTIEREN';
   }
 
   @override
   String get exportPrivacyNote =>
-      'Stays on your device until you share it. Nothing is sent to any server.';
+      'Bleibt auf Ihrem Gerät, bis Sie es teilen. Nichts wird an einen Server gesendet.';
 
   @override
-  String get categoryWifiScanHistory => 'Wi-Fi scan history';
+  String get categoryWifiScanHistory => 'Wi-Fi-Scan-Verlauf';
 
   @override
-  String get categorySpeedTestResults => 'Speed test results';
+  String get categorySpeedTestResults => 'Speedtest-Ergebnisse';
 
   @override
-  String get categorySecurityEvents => 'Security events';
+  String get categorySecurityEvents => 'Sicherheitsereignisse';
 
   @override
-  String get categoryKnownAndTrustedNetworks => 'Known + trusted networks';
+  String get categoryKnownAndTrustedNetworks =>
+      'Bekannte + vertraute Netzwerke';
 
   @override
-  String get categoryChannelRatingsHistory => 'Channel ratings history';
+  String get categoryChannelRatingsHistory => 'Kanalbewertungs-Verlauf';
 
   @override
-  String get categoryHeatmapSessions => 'Heatmap sessions';
+  String get categoryHeatmapSessions => 'Heatmap-Sitzungen';
 
   @override
-  String get categoryLanScanLatest => 'LAN scan (latest)';
+  String get categoryLanScanLatest => 'LAN-Scan (aktuell)';
 
   @override
-  String get categoryDeviceLabelOverrides => 'Device label overrides';
+  String get categoryDeviceLabelOverrides => 'Geräte-Label-Überschreibungen';
 
   @override
-  String get categoryPinnedNetworks => 'Pinned networks';
+  String get categoryPinnedNetworks => 'Angeheftete Netzwerke';
 
   @override
-  String get categoryScoreHistory => 'Security score history';
+  String get categoryScoreHistory => 'Security-Score-Verlauf';
 
   @override
-  String get categoryNetworkContextOverrides => 'Network context overrides';
+  String get categoryNetworkContextOverrides =>
+      'Netzwerkkontext-Überschreibungen';
 
   @override
-  String get categoryRouterHardeningProgress => 'Router hardening progress';
+  String get categoryRouterHardeningProgress => 'Router-Härtungsfortschritt';
 
   @override
-  String get macRandomizedLabel => 'MAC Randomized';
+  String get macRandomizedLabel => 'MAC randomisiert';
 
   @override
-  String get notificationsBlockedTitle => 'Notifications are blocked';
+  String get notificationsBlockedTitle => 'Benachrichtigungen sind blockiert';
 
   @override
   String get notificationsBlockedDesc =>
-      'The live ping HUD lives in the notification shade. Without notifications you cannot see ping while gaming. On MIUI/Xiaomi, also enable \"Show on Lock screen\" and \"Floating notifications\".';
+      'Das Live-Ping-HUD lebt in der Benachrichtigungsleiste. Ohne Benachrichtigungen sehen Sie beim Gaming keinen Ping. Auf MIUI/Xiaomi zusätzlich \"Auf Sperrbildschirm anzeigen\" und \"Schwebende Benachrichtigungen\" aktivieren.';
 
   @override
-  String get liveLatencyLabel => 'Live latency';
+  String get liveLatencyLabel => 'Live-Latenz';
 
   @override
-  String get latencyStatLabel => 'Latency';
+  String get latencyStatLabel => 'Latenz';
 
   @override
   String get jitterStatLabel => 'Jitter';
 
   @override
-  String get lossStatLabel => 'Loss';
+  String get lossStatLabel => 'Verlust';
 
   @override
   String baselineLatencyLabel(String ms) {
-    return 'Baseline (pre-tunnel): $ms ms';
+    return 'Basiswert (vor Tunnel): $ms ms';
   }
 
   @override
   String jitterThresholdLabel(String ms) {
-    return 'Jitter alarm threshold: $ms ms';
+    return 'Jitter-Alarmschwelle: $ms ms';
   }
 
   @override
-  String get heatmapSettingsTitle => 'Heatmap Settings';
+  String get heatmapSettingsTitle => 'Heatmap-Einstellungen';
 
   @override
   String get dnsLabel => 'DNS';
 
   @override
-  String get notNowLabel => 'NOT NOW';
+  String get notNowLabel => 'NICHT JETZT';
 
   @override
-  String get newNetworkLabel => '+ NEW';
+  String get newNetworkLabel => '+ NEU';
 
   @override
-  String get goneNetworkLabel => 'GONE';
+  String get goneNetworkLabel => 'WEG';
 
   @override
-  String get hiddenNetworkLabel => '[Hidden]';
+  String get hiddenNetworkLabel => '[Versteckt]';
 
   @override
-  String get randomizedMacDetectedLabel => 'Randomized MAC Detected';
+  String get randomizedMacDetectedLabel => 'Randomisierte MAC erkannt';
 
   @override
-  String get howPingStabilizerWorksTitle => 'How Ping Stabilizer works';
+  String get howPingStabilizerWorksTitle =>
+      'So funktioniert der Ping Stabilizer';
 
   @override
   String get stabilizerExplainerSubtitle =>
-      'On-device, no remote servers, free.';
+      'Auf dem Gerät, keine Remote-Server, kostenlos.';
 
   @override
-  String get whatItDoesTitle => 'What it does';
+  String get whatItDoesTitle => 'Was er tut';
 
   @override
   String get whatItDoesBullet1 =>
-      'Establishes a local VPN tunnel on your device — no traffic leaves through any third-party server.';
+      'Baut einen lokalen VPN-Tunnel auf Ihrem Gerät auf — kein Verkehr läuft über Drittserver.';
 
   @override
   String get whatItDoesBullet2 =>
-      'Routes DNS queries to the fastest resolver (1.1.1.1, 8.8.8.8, 9.9.9.9, …) measured live.';
+      'Leitet DNS-Anfragen zum schnellsten Resolver (1.1.1.1, 8.8.8.8, 9.9.9.9, …), live gemessen.';
 
   @override
   String get whatItDoesBullet3 =>
-      'Watches latency / jitter every second and warns you when a spike persists, optionally cycling the tunnel to break a sticky bad path.';
+      'Beobachtet Latenz/Jitter jede Sekunde und warnt bei anhaltenden Spitzen; optional wird der Tunnel neu aufgebaut, um einen hängenden schlechten Pfad zu brechen.';
 
   @override
   String get whatItDoesBullet4 =>
-      'Uses an EWMA filter (recent samples weighted heavier) so it reacts to real degradation, not single-packet noise.';
+      'Nutzt einen EWMA-Filter (neuere Messwerte zählen stärker) und reagiert so auf echte Verschlechterung statt Einzelpaket-Rauschen.';
 
   @override
-  String get whatItDoesNotTitle => 'What it does NOT do';
+  String get whatItDoesNotTitle => 'Was er NICHT tut';
 
   @override
   String get whatItDoesNotBullet1 =>
-      'It cannot make your ISP\'s route to the game server physically shorter — no on-device app can.';
+      'Er kann die Route Ihres ISP zum Gameserver nicht physisch verkürzen — das kann keine On-Device-App.';
 
   @override
   String get whatItDoesNotBullet2 =>
-      'It does not replace a paid VPN/relay service like ExitLag or WTFast (those route via their own servers; this is local-only).';
+      'Er ersetzt keinen bezahlten VPN-/Relay-Dienst wie ExitLag oder WTFast (die routen über eigene Server; hier ist alles lokal).';
 
   @override
   String get whatItDoesNotBullet3 =>
-      'Multi-path \"first-wins\" send across Wi-Fi + cellular is on the roadmap (Phase 2) and currently disabled.';
+      'Multi-Path-\"First-wins\"-Versand über Wi-Fi + Mobilfunk steht auf der Roadmap (Phase 2) und ist derzeit deaktiviert.';
 
   @override
-  String get risksAndThingsToKnowTitle => 'Risks & things to know';
+  String get risksAndThingsToKnowTitle => 'Risiken & Wissenswertes';
 
   @override
   String get risksBullet1 =>
-      'Android shows a key icon while the tunnel is active — that is normal and required by the system.';
+      'Android zeigt ein Schlüsselsymbol, solange der Tunnel aktiv ist — normal und vom System vorgeschrieben.';
 
   @override
   String get risksBullet2 =>
-      'Only one VPN can run at a time. If you have another VPN app connected, this will refuse to start.';
+      'Es kann nur ein VPN gleichzeitig laufen. Ist eine andere VPN-App verbunden, startet dieses hier nicht.';
 
   @override
   String get risksBullet3 =>
-      'A persistent live notification (current ping + Stop / Cycle buttons) stays in the shade while the tunnel runs — that is your in-game HUD; do not swipe it away.';
+      'Eine dauerhafte Live-Benachrichtigung (aktueller Ping + Stop-/Cycle-Buttons) bleibt in der Leiste, solange der Tunnel läuft — das ist Ihr In-Game-HUD; nicht wegwischen.';
 
   @override
   String get risksBullet4 =>
-      'On Xiaomi/MIUI, OnePlus/OxygenOS and similar skins, you may need to allow Torcav under Settings → Notifications and Settings → Battery → No restrictions, or the OS will silently hide the notification.';
+      'Auf Xiaomi/MIUI, OnePlus/OxygenOS und ähnlichen Skins müssen Sie Torcav ggf. unter Einstellungen → Benachrichtigungen und Einstellungen → Akku → Keine Einschränkungen erlauben, sonst versteckt das OS die Benachrichtigung.';
 
   @override
   String get risksBullet5 =>
-      'DNS auto-switch will change which resolver answers your queries while the tunnel is on. That switch reverts when you stop the stabilizer.';
+      'Der DNS-Auto-Switch ändert bei aktivem Tunnel, welcher Resolver antwortet. Beim Stoppen des Stabilizers wird das zurückgesetzt.';
 
   @override
   String get risksBullet6 =>
-      'Battery use is small (~3-5%/hr in our tests) but non-zero — turn it off when you\'re done playing.';
+      'Der Akkuverbrauch ist klein (~3–5 %/h in unseren Tests), aber nicht null — nach dem Spielen ausschalten.';
 
   @override
-  String get shieldIntegrityLabel => 'SHIELD INTEGRITY';
+  String get shieldIntegrityLabel => 'SCHILD-INTEGRITÄT';
 
   @override
-  String get activeThreatsLabel => 'ACTIVE THREATS';
+  String get activeThreatsLabel => 'AKTIVE BEDROHUNGEN';
 
   @override
   String get shieldStatusOptimal => 'OPTIMAL';
 
   @override
-  String get shieldStatusWarning => 'WARNING';
+  String get shieldStatusWarning => 'WARNUNG';
 
   @override
-  String get shieldStatusCritical => 'CRITICAL';
+  String get shieldStatusCritical => 'KRITISCH';
 
   @override
-  String get securityScoreLabel => 'SECURITY SCORE';
+  String get securityScoreLabel => 'SECURITY-SCORE';
 
   @override
-  String get systemStatusLabel => 'SYSTEM STATUS';
+  String get systemStatusLabel => 'SYSTEMSTATUS';
 
   @override
-  String get scanningAllCaps => 'SCANNING';
+  String get scanningAllCaps => 'SCANNE';
 
   @override
   String bssidLabel(String bssid) {
@@ -3081,24 +3033,24 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get trustedBadge => 'TRUSTED';
+  String get trustedBadge => 'VERTRAUT';
 
   @override
-  String get identifiedBadge => 'IDENTIFIED';
+  String get identifiedBadge => 'IDENTIFIZIERT';
 
   @override
   String authEstablishedLabel(String date) {
-    return 'AUTH: ESTABLISHED $date';
+    return 'AUTH: BESTÄTIGT $date';
   }
 
   @override
-  String get revokeTrustTooltip => 'REVOKE TRUST';
+  String get revokeTrustTooltip => 'VERTRAUEN ENTZIEHEN';
 
   @override
   String get apsLabel => 'APs';
 
   @override
-  String get openLabel => 'OPEN';
+  String get openLabel => 'OFFEN';
 
   @override
   String get wpsLabel => 'WPS';
@@ -3107,46 +3059,46 @@ class AppLocalizationsDe extends AppLocalizations {
   String get wepLabel => 'WEP';
 
   @override
-  String get publicWifiLabel => 'PUBLIC WI-FI';
+  String get publicWifiLabel => 'ÖFFENTLICHES WI-FI';
 
   @override
-  String get guestNetworkLabel => 'GUEST NETWORK';
+  String get guestNetworkLabel => 'GASTNETZWERK';
 
   @override
   String get publicWifiDesc =>
-      'Open or untrusted network — assume traffic can be observed.';
+      'Offenes oder nicht vertrauenswürdiges Netzwerk — gehen Sie davon aus, dass Verkehr mitgelesen werden kann.';
 
   @override
   String get guestNetworkDesc =>
-      'You are on a guest segment. Treat as untrusted by default.';
+      'Sie sind in einem Gast-Segment. Standardmäßig als nicht vertrauenswürdig behandeln.';
 
   @override
-  String get tipVpnTitle => 'Use a VPN';
+  String get tipVpnTitle => 'VPN nutzen';
 
   @override
   String get tipVpnBody =>
-      'Tunnel traffic through a trusted VPN before sending anything sensitive. Built-in OS VPN is fine for most users.';
+      'Tunneln Sie Verkehr durch ein vertrauenswürdiges VPN, bevor Sie Sensibles senden. Das eingebaute OS-VPN reicht den meisten.';
 
   @override
-  String get tipHttpsTitle => 'Verify HTTPS';
+  String get tipHttpsTitle => 'HTTPS prüfen';
 
   @override
   String get tipHttpsBody =>
-      'Only enter credentials on sites with a locked padlock. Reject certificate warnings — they are how attackers strip TLS.';
+      'Zugangsdaten nur auf Seiten mit geschlossenem Schloss eingeben. Zertifikatswarnungen ablehnen — so hebeln Angreifer TLS aus.';
 
   @override
-  String get tipSensitiveTitle => 'Defer sensitive actions';
+  String get tipSensitiveTitle => 'Sensibles verschieben';
 
   @override
   String get tipSensitiveBody =>
-      'Avoid banking, payments, password resets and account logins until you are back on a trusted network.';
+      'Banking, Zahlungen, Passwort-Resets und Logins vermeiden, bis Sie wieder in einem vertrauten Netzwerk sind.';
 
   @override
-  String get tipDnsTitle => 'Check DNS health';
+  String get tipDnsTitle => 'DNS-Gesundheit prüfen';
 
   @override
   String get tipDnsBody =>
-      'Public hotspots can hijack DNS. Run a DNS test from this screen to confirm responses are not being rewritten.';
+      'Öffentliche Hotspots können DNS kapern. Führen Sie hier einen DNS-Test aus, um sicherzugehen, dass Antworten nicht umgeschrieben werden.';
 
   @override
   String evilTwinPrefix(String confidence) {
@@ -3154,556 +3106,552 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get whatIsEvilTwinTitle => 'What is an evil-twin?';
+  String get whatIsEvilTwinTitle => 'Was ist ein Evil Twin?';
 
   @override
-  String get whyItMattersTitle => 'Why does it matter?';
+  String get whyItMattersTitle => 'Warum ist das wichtig?';
 
   @override
-  String get whatWeObservedTitle => 'What we observed';
+  String get whatWeObservedTitle => 'Was wir beobachtet haben';
 
   @override
-  String get whatLookedLegitimateTitle => 'What looked legitimate';
+  String get whatLookedLegitimateTitle => 'Was legitim aussah';
 
   @override
-  String get whatYouShouldDoTitle => 'What you should do';
+  String get whatYouShouldDoTitle => 'Was Sie tun sollten';
 
   @override
   String get hardeningUseWpa3OrWpa2AesStep1 =>
-      'Open the admin panel using the button at the top.';
+      'Admin-Panel über den Button oben öffnen.';
 
   @override
   String get hardeningUseWpa3OrWpa2AesStep2 =>
-      'Find the wireless section: \"Wireless\", \"Wi-Fi\" or \"WLAN\".';
+      'Wireless-Bereich suchen: \"Wireless\", \"Wi-Fi\" oder \"WLAN\".';
 
   @override
   String get hardeningUseWpa3OrWpa2AesStep3 =>
-      'Look for a security or encryption setting — usually called \"Security mode\", \"Authentication\" or \"Encryption\".';
+      'Sicherheits-/Verschlüsselungseinstellung suchen — meist \"Security mode\", \"Authentication\" oder \"Encryption\".';
 
   @override
   String get hardeningUseWpa3OrWpa2AesStep4 =>
-      'Choose the strongest option in this order: WPA3-Personal > WPA2/WPA3 mixed > WPA2-Personal (AES). Avoid anything labelled \"WPA-PSK\", \"TKIP\", \"WEP\" or \"Open\" — these are insecure.';
+      'Die stärkste Option in dieser Reihenfolge wählen: WPA3-Personal > WPA2/WPA3 gemischt > WPA2-Personal (AES). Alles mit \"WPA-PSK\", \"TKIP\", \"WEP\" oder \"Open\" meiden — unsicher.';
 
   @override
   String get hardeningUseWpa3OrWpa2AesStep5 =>
-      'If you set WPA3-Personal and an old device (smart bulb, printer, older phone) stops working, switch to \"WPA2/WPA3 mixed\" — that lets old gear connect while new devices still use WPA3.';
+      'Falls nach WPA3-Personal ein altes Gerät (Smart-Lampe, Drucker, älteres Handy) ausfällt, auf \"WPA2/WPA3 gemischt\" wechseln — alte Geräte verbinden sich, neue nutzen weiter WPA3.';
 
   @override
   String get hardeningUseWpa3OrWpa2AesStep6 =>
-      'If you have separate 2.4 GHz and 5 GHz settings, change BOTH bands.';
+      'Bei getrennten 2,4-GHz- und 5-GHz-Einstellungen BEIDE Bänder ändern.';
 
   @override
   String get hardeningUseWpa3OrWpa2AesStep7 =>
-      'Save / Apply. Your devices may briefly disconnect — they will rejoin in a few seconds.';
+      'Speichern / Übernehmen. Geräte trennen sich kurz — sie verbinden sich in Sekunden neu.';
 
   @override
   String get hardeningUseWpa3OrWpa2AesStep8 =>
-      'Come back here and tap MARK DONE.';
+      'Hierher zurückkehren und ALS ERLEDIGT MARKIEREN antippen.';
 
   @override
-  String get hardeningDisableWpsStep1 => 'Open the admin panel.';
+  String get hardeningDisableWpsStep1 => 'Admin-Panel öffnen.';
 
   @override
-  String get hardeningDisableWpsStep2 => 'Find the Wireless or Wi-Fi section.';
+  String get hardeningDisableWpsStep2 => 'Wireless-/Wi-Fi-Bereich suchen.';
 
   @override
   String get hardeningDisableWpsStep3 =>
-      'Look for a sub-menu called \"WPS\", \"Easy Setup\", \"Quick Connect\" or a tab inside Wireless Settings labelled WPS.';
+      'Untermenü \"WPS\", \"Easy Setup\", \"Quick Connect\" oder einen WPS-Tab in den Wireless-Einstellungen suchen.';
 
   @override
   String get hardeningDisableWpsStep4 =>
-      'Switch the WPS toggle to OFF / Disabled.';
+      'WPS-Schalter auf AUS / Deaktiviert stellen.';
 
   @override
   String get hardeningDisableWpsStep5 =>
-      'Some routers also have a physical WPS button on the device — that will stop working too, which is the goal.';
+      'Manche Router haben zusätzlich eine physische WPS-Taste — auch die funktioniert dann nicht mehr, genau das ist das Ziel.';
 
   @override
-  String get hardeningDisableWpsStep6 => 'Save / Apply.';
+  String get hardeningDisableWpsStep6 => 'Speichern / Übernehmen.';
 
   @override
   String get hardeningDisableWpsStep7 =>
-      'From now on, when you connect a new device just type the Wi-Fi password normally. Takes 10 extra seconds, removes a serious attack path.';
+      'Neue Geräte verbinden Sie künftig einfach per Wi-Fi-Passwort. Kostet 10 Sekunden extra, entfernt einen ernsten Angriffspfad.';
 
   @override
-  String get hardeningDisableWpsStep8 => 'Come back here and tap MARK DONE.';
+  String get hardeningDisableWpsStep8 =>
+      'Hierher zurückkehren und ALS ERLEDIGT MARKIEREN antippen.';
 
   @override
-  String get hardeningEnablePmfStep1 => 'Open the admin panel.';
+  String get hardeningEnablePmfStep1 => 'Admin-Panel öffnen.';
 
   @override
-  String get hardeningEnablePmfStep2 => 'Go to the Wireless / Wi-Fi section.';
+  String get hardeningEnablePmfStep2 => 'Zum Wireless-/Wi-Fi-Bereich gehen.';
 
   @override
   String get hardeningEnablePmfStep3 =>
-      'Look in \"Advanced\" or \"Wireless Security\" for a setting called \"PMF\", \"802.11w\" or \"Management Frame Protection\".';
+      'In \"Advanced\" oder \"Wireless Security\" nach \"PMF\", \"802.11w\" oder \"Management Frame Protection\" suchen.';
 
   @override
   String get hardeningEnablePmfStep4 =>
-      'Set it to \"Required\" if all your devices are recent (last ~5 years). If older devices stop seeing the network, change it to \"Optional / Capable\" — that still helps, just less strictly.';
+      'Auf \"Required\" stellen, wenn alle Geräte neu sind (letzte ~5 Jahre). Sehen ältere Geräte das Netz nicht mehr, auf \"Optional / Capable\" wechseln — hilft immer noch, nur weniger strikt.';
 
   @override
   String get hardeningEnablePmfStep5 =>
-      'If you cannot find this setting at all, your router may have it baked into WPA3 mode (so completing item 2 above already covers it). In that case, tap MARK DONE here too.';
+      'Finden Sie die Einstellung gar nicht, steckt sie evtl. im WPA3-Modus (Punkt 2 oben deckt es dann ab). In dem Fall auch hier ALS ERLEDIGT MARKIEREN antippen.';
 
   @override
-  String get hardeningEnablePmfStep6 => 'Save / Apply.';
+  String get hardeningEnablePmfStep6 => 'Speichern / Übernehmen.';
 
   @override
-  String get hardeningEnablePmfStep7 => 'Come back here and tap MARK DONE.';
+  String get hardeningEnablePmfStep7 =>
+      'Hierher zurückkehren und ALS ERLEDIGT MARKIEREN antippen.';
 
   @override
-  String get hardeningEnableGuestNetworkStep1 => 'Open the admin panel.';
+  String get hardeningEnableGuestNetworkStep1 => 'Admin-Panel öffnen.';
 
   @override
   String get hardeningEnableGuestNetworkStep2 =>
-      'Find a menu called \"Guest Network\", \"Guest Wi-Fi\" or \"Multi-SSID\".';
+      'Menü \"Guest Network\", \"Gast-WLAN\" oder \"Multi-SSID\" suchen.';
 
   @override
   String get hardeningEnableGuestNetworkStep3 =>
-      'Enable it. Give it a different name from your main Wi-Fi — for example, if your main is \"Home\", call the guest one \"Home-Guest\".';
+      'Aktivieren. Anderen Namen als das Haupt-Wi-Fi vergeben — heißt das Hauptnetz \"Home\", nennen Sie das Gastnetz \"Home-Guest\".';
 
   @override
   String get hardeningEnableGuestNetworkStep4 =>
-      'Set a password. It can be simpler than your main one (guests will type it), but still 10+ characters.';
+      'Passwort setzen. Es darf einfacher sein als das Hauptpasswort (Gäste tippen es), aber trotzdem 10+ Zeichen.';
 
   @override
   String get hardeningEnableGuestNetworkStep5 =>
-      'Look for a setting called \"Client Isolation\", \"AP Isolation\" or \"Guest network isolation\". Turn it ON. This stops guest devices from talking to each other or to your private network.';
+      'Einstellung \"Client Isolation\", \"AP Isolation\" oder \"Gastnetz-Isolation\" suchen und EINSCHALTEN. Gastgeräte können dann weder untereinander noch mit Ihrem privaten Netz reden.';
 
   @override
   String get hardeningEnableGuestNetworkStep6 =>
-      'Move your IoT devices (smart plugs, cameras, robot vacuum, smart TV) over to the guest network — connect them with the new password.';
+      'IoT-Geräte (Smart-Stecker, Kameras, Saugroboter, Smart TV) ins Gastnetz umziehen — mit dem neuen Passwort verbinden.';
 
   @override
-  String get hardeningEnableGuestNetworkStep7 => 'Save / Apply.';
+  String get hardeningEnableGuestNetworkStep7 => 'Speichern / Übernehmen.';
 
   @override
   String get hardeningEnableGuestNetworkStep8 =>
-      'Come back here and tap MARK DONE.';
+      'Hierher zurückkehren und ALS ERLEDIGT MARKIEREN antippen.';
 
   @override
-  String get hardeningDisableRemoteAdminStep1 => 'Open the admin panel.';
+  String get hardeningDisableRemoteAdminStep1 => 'Admin-Panel öffnen.';
 
   @override
   String get hardeningDisableRemoteAdminStep2 =>
-      'Go to \"Administration\", \"System Tools\" or \"Security\".';
+      'Zu \"Administration\", \"System Tools\" oder \"Security\" gehen.';
 
   @override
   String get hardeningDisableRemoteAdminStep3 =>
-      'Find a setting called \"Remote Management\", \"Web Access from WAN\" or \"Remote admin\".';
+      'Einstellung \"Remote Management\", \"Web Access from WAN\" oder \"Remote admin\" suchen.';
 
   @override
-  String get hardeningDisableRemoteAdminStep4 => 'Switch it OFF / Disabled.';
+  String get hardeningDisableRemoteAdminStep4 =>
+      'Auf AUS / Deaktiviert stellen.';
 
   @override
   String get hardeningDisableRemoteAdminStep5 =>
-      'While here, also check for \"Cloud / Remote App access\" (some brands have this — TP-Link Tether, Asus Router app, Mi Wi-Fi). If you do not actively use that app, turn it off too.';
+      'Bei der Gelegenheit auch \"Cloud / Remote App access\" prüfen (TP-Link Tether, Asus Router App, Mi Wi-Fi). Wenn Sie die App nicht aktiv nutzen, ebenfalls ausschalten.';
 
   @override
-  String get hardeningDisableRemoteAdminStep6 => 'Save / Apply.';
+  String get hardeningDisableRemoteAdminStep6 => 'Speichern / Übernehmen.';
 
   @override
   String get hardeningDisableRemoteAdminStep7 =>
-      'You can still manage your router from inside your home — only the remote / public-internet path is closed.';
+      'Sie können den Router weiterhin von zu Hause verwalten — nur der Fern-/Internet-Pfad ist geschlossen.';
 
   @override
   String get hardeningDisableRemoteAdminStep8 =>
-      'Come back here and tap MARK DONE.';
+      'Hierher zurückkehren und ALS ERLEDIGT MARKIEREN antippen.';
 
   @override
-  String get hardeningUpdateFirmwareStep1 => 'Open the admin panel.';
+  String get hardeningUpdateFirmwareStep1 => 'Admin-Panel öffnen.';
 
   @override
   String get hardeningUpdateFirmwareStep2 =>
-      'Find a menu called \"Firmware Update\", \"System Update\", \"Online Upgrade\" or \"Maintenance\".';
+      'Menü \"Firmware Update\", \"System Update\", \"Online Upgrade\" oder \"Maintenance\" suchen.';
 
   @override
   String get hardeningUpdateFirmwareStep3 =>
-      'Tap \"Check for update\" or \"Online check\". The router will look for a newer version on the vendor server.';
+      '\"Check for update\" oder \"Online check\" antippen. Der Router sucht beim Hersteller nach einer neueren Version.';
 
   @override
   String get hardeningUpdateFirmwareStep4 =>
-      'If an update is offered, install it. The router will reboot for 2-5 minutes — do NOT unplug it during the update or it can become a paperweight.';
+      'Wird ein Update angeboten, installieren. Der Router startet 2–5 Minuten neu — währenddessen NICHT vom Strom trennen, sonst droht ein Totalschaden.';
 
   @override
   String get hardeningUpdateFirmwareStep5 =>
-      'After it comes back, go to the same menu and look for \"Auto update\" or \"Automatic upgrade\". Turn it ON if available.';
+      'Danach im selben Menü nach \"Auto update\" / \"Automatic upgrade\" suchen und einschalten, falls vorhanden.';
 
   @override
   String get hardeningUpdateFirmwareStep6 =>
-      'Some older routers do not have online updates. In that case, note the router model from the device sticker, search the vendor website, download the latest firmware file, and use the \"Manual upload\" option in the same menu.';
+      'Ältere Router haben kein Online-Update. Dann Modell vom Geräteaufkleber notieren, Herstellerseite durchsuchen, neueste Firmware laden und die Option \"Manual upload\" im selben Menü nutzen.';
 
   @override
   String get hardeningUpdateFirmwareStep7 =>
-      'Come back here and tap MARK DONE.';
+      'Hierher zurückkehren und ALS ERLEDIGT MARKIEREN antippen.';
 
   @override
-  String get hardeningStrongPassphraseStep1 => 'Open the admin panel.';
+  String get hardeningStrongPassphraseStep1 => 'Admin-Panel öffnen.';
 
   @override
   String get hardeningStrongPassphraseStep2 =>
-      'Go to \"Wireless\", \"Wi-Fi\" or \"WLAN\".';
+      'Zu \"Wireless\", \"Wi-Fi\" oder \"WLAN\" gehen.';
 
   @override
   String get hardeningStrongPassphraseStep3 =>
-      'Find the password field — labelled \"Wireless password\", \"Pre-Shared Key (PSK)\", \"Wireless Key\" or simply \"Password\".';
+      'Passwortfeld suchen — \"Wireless password\", \"Pre-Shared Key (PSK)\", \"Wireless Key\" oder schlicht \"Password\".';
 
   @override
   String get hardeningStrongPassphraseStep4 =>
-      'Replace it with a NEW passphrase: at least 12 characters, with a mix of uppercase, lowercase, numbers and a symbol. Avoid dictionary words and personal info (birthdays, pet names).';
+      'Durch eine NEUE Passphrase ersetzen: mindestens 12 Zeichen, mit Groß-/Kleinbuchstaben, Zahlen und Symbol. Wörterbuchwörter und Persönliches (Geburtstage, Tiernamen) meiden.';
 
   @override
   String get hardeningStrongPassphraseStep5 =>
-      'A good trick: pick three unrelated words plus a number, e.g. \"correct-horse-battery-9\". Long passphrases are harder to crack than short complex ones.';
+      'Guter Trick: drei zusammenhanglose Wörter plus Zahl, z. B. \"correct-horse-battery-9\". Lange Passphrasen sind schwerer zu knacken als kurze komplexe.';
 
   @override
   String get hardeningStrongPassphraseStep6 =>
-      'If you have separate 2.4 GHz and 5 GHz networks, change BOTH.';
+      'Bei getrennten 2,4-GHz- und 5-GHz-Netzen BEIDE ändern.';
 
   @override
   String get hardeningStrongPassphraseStep7 =>
-      'Save / Apply. Every device will disconnect — re-enter the new password on each one.';
+      'Speichern / Übernehmen. Alle Geräte trennen sich — neues Passwort überall neu eingeben.';
 
   @override
   String get hardeningStrongPassphraseStep8 =>
-      'Write the password down (password manager, fridge note for visitors, whatever works for you).';
+      'Passwort notieren (Passwortmanager, Zettel am Kühlschrank für Gäste — was für Sie funktioniert).';
 
   @override
   String get hardeningStrongPassphraseStep9 =>
-      'Come back here and tap MARK DONE.';
+      'Hierher zurückkehren und ALS ERLEDIGT MARKIEREN antippen.';
 
   @override
-  String get severity_critical => 'CRITICAL';
+  String get severity_critical => 'KRITISCH';
 
   @override
-  String get severity_high => 'HIGH';
+  String get severity_high => 'HOCH';
 
   @override
-  String get severity_medium => 'MEDIUM';
+  String get severity_medium => 'MITTEL';
 
   @override
-  String get severity_low => 'LOW';
+  String get severity_low => 'NIEDRIG';
 
   @override
   String get severity_info => 'INFO';
 
   @override
-  String get rule_scan_deep_scan_active_title => 'Active Probing Active';
+  String get rule_scan_deep_scan_active_title => 'Aktives Probing aktiv';
 
   @override
   String get rule_scan_deep_scan_active_desc =>
-      'Deep scan is enabled, performing more intrusive network tests.';
+      'Deep Scan ist aktiviert und führt eingriffstiefere Netzwerktests aus.';
 
   @override
   String get rule_scan_deep_scan_active_rec =>
-      'Use only on networks you own or have permission to scan.';
+      'Nur in eigenen oder ausdrücklich freigegebenen Netzwerken verwenden.';
 
   @override
-  String get rule_wifi_open_network_title => 'Open Network';
+  String get rule_wifi_open_network_title => 'Offenes Netzwerk';
 
   @override
   String get rule_wifi_open_network_desc =>
-      'No encryption detected. All traffic can be sniffed in plaintext.';
+      'Keine Verschlüsselung erkannt. Sämtlicher Verkehr ist im Klartext mitlesbar.';
 
   @override
   String get rule_wifi_open_network_rec =>
-      'Avoid sensitive activity. Prefer trusted VPN or different network.';
+      'Sensible Aktivitäten vermeiden. Vertrauenswürdiges VPN oder anderes Netzwerk bevorzugen.';
 
   @override
-  String get rule_wifi_wep_title => 'WEP Encryption';
+  String get rule_wifi_wep_title => 'WEP-Verschlüsselung';
 
   @override
-  String get rule_wifi_wep_desc =>
-      'WEP is deprecated and can be cracked quickly.';
+  String get rule_wifi_wep_desc => 'WEP ist veraltet und schnell knackbar.';
 
   @override
-  String get rule_wifi_wep_rec => 'Reconfigure AP to WPA2 or WPA3 immediately.';
+  String get rule_wifi_wep_rec => 'AP sofort auf WPA2 oder WPA3 umstellen.';
 
   @override
-  String get rule_wifi_legacy_wpa_title => 'Legacy WPA';
+  String get rule_wifi_legacy_wpa_title => 'Veraltetes WPA';
 
   @override
   String get rule_wifi_legacy_wpa_desc =>
-      'WPA/TKIP is older and weaker against modern attack techniques.';
+      'WPA/TKIP ist älter und gegen moderne Angriffstechniken schwächer.';
 
   @override
-  String get rule_wifi_legacy_wpa_rec => 'Upgrade AP and clients to WPA2/WPA3.';
+  String get rule_wifi_legacy_wpa_rec =>
+      'AP und Clients auf WPA2/WPA3 aufrüsten.';
 
   @override
-  String get rule_wifi_hidden_ssid_title => 'Hidden SSID';
+  String get rule_wifi_hidden_ssid_title => 'Versteckte SSID';
 
   @override
   String get rule_wifi_hidden_ssid_desc =>
-      'Hidden SSIDs are still discoverable and may hurt compatibility.';
+      'Versteckte SSIDs sind trotzdem auffindbar und können Kompatibilität verschlechtern.';
 
   @override
   String get rule_wifi_hidden_ssid_rec =>
-      'Hidden SSID alone is not protection. Focus on strong encryption.';
+      'Eine versteckte SSID allein ist kein Schutz. Auf starke Verschlüsselung setzen.';
 
   @override
-  String get rule_wifi_very_weak_signal_title => 'Very Weak Signal';
+  String get rule_wifi_very_weak_signal_title => 'Sehr schwaches Signal';
 
   @override
   String get rule_wifi_very_weak_signal_desc =>
-      'Weak signal can indicate unstable links and spoofing susceptibility.';
+      'Schwaches Signal kann auf instabile Links und Spoofing-Anfälligkeit hindeuten.';
 
   @override
   String get rule_wifi_very_weak_signal_rec =>
-      'Move closer to AP or validate BSSID consistency.';
+      'Näher an den AP gehen oder BSSID-Konsistenz prüfen.';
 
   @override
-  String get rule_wifi_wps_enabled_title => 'WPS Enabled';
+  String get rule_wifi_wps_enabled_title => 'WPS aktiviert';
 
   @override
   String get rule_wifi_wps_enabled_desc =>
-      'Wi-Fi Protected Setup (WPS) is enabled. The WPS PIN mode can be brute-forced in hours, bypassing any password.';
+      'Wi-Fi Protected Setup (WPS) ist aktiv. Der WPS-PIN-Modus ist in Stunden brute-forcebar und umgeht jedes Passwort.';
 
   @override
   String get rule_wifi_wps_enabled_rec =>
-      'Disable WPS in your router admin panel. Use WPA2/WPA3 passphrase only.';
+      'WPS im Router-Admin-Panel deaktivieren. Nur WPA2/WPA3-Passphrase verwenden.';
 
   @override
   String get rule_wifi_pmf_not_enforced_title =>
-      'Management Frames Unprotected';
+      'Management-Frames ungeschützt';
 
   @override
   String get rule_wifi_pmf_not_enforced_desc =>
-      'This access point does not enforce Protected Management Frames (PMF / 802.11w), allowing deauthentication attacks.';
+      'Dieser Access Point erzwingt keine Protected Management Frames (PMF / 802.11w) und erlaubt so Deauthentication-Angriffe.';
 
   @override
   String get rule_wifi_pmf_not_enforced_rec =>
-      'Enable PMF in your router settings (often labelled \"802.11w\" or \"Management Frame Protection\").';
+      'PMF in den Router-Einstellungen aktivieren (oft \"802.11w\" oder \"Management Frame Protection\").';
 
   @override
-  String get rule_wifi_suspicious_sibling_ap_title => 'Potential Evil Twin';
+  String get rule_wifi_suspicious_sibling_ap_title => 'Möglicher Evil Twin';
 
   @override
   String get rule_wifi_suspicious_sibling_ap_desc =>
-      'A nearby access point shares this SSID but its fingerprint doesn\'t match — that\'s the pattern an attacker uses to impersonate a real Wi-Fi.';
+      'Ein naher Access Point teilt diese SSID, aber sein Fingerabdruck passt nicht — genau so imitiert ein Angreifer ein echtes Wi-Fi.';
 
   @override
   String get rule_wifi_suspicious_sibling_ap_rec =>
-      'Don\'t enter passwords on this network until you\'ve verified the BSSID on the back of your router.';
+      'Keine Passwörter in diesem Netzwerk eingeben, bis die BSSID auf der Router-Rückseite verifiziert ist.';
 
   @override
-  String get rule_wifi_suspicious_ssid_title => 'Suspicious Network Name';
+  String get rule_wifi_suspicious_ssid_title => 'Verdächtiger Netzwerkname';
 
   @override
   String get rule_wifi_suspicious_ssid_desc =>
-      'This SSID matches common honeypot/lure patterns (e.g. \"Free WiFi\") used by attackers to trick users.';
+      'Diese SSID entspricht üblichen Honeypot-/Köder-Mustern (z. B. \"Free WiFi\"), mit denen Angreifer Nutzer täuschen.';
 
   @override
   String get rule_wifi_suspicious_ssid_rec =>
-      'Verify this network with the venue operator before connecting. Use a VPN if you must connect.';
+      'Netzwerk vor dem Verbinden beim Betreiber verifizieren. Falls nötig, nur mit VPN verbinden.';
 
   @override
-  String get rule_wifi_high_channel_congestion_title =>
-      'High Channel Congestion';
+  String get rule_wifi_high_channel_congestion_title => 'Hohe Kanalüberlastung';
 
   @override
   String get rule_wifi_high_channel_congestion_desc =>
-      'Heavy congestion on this channel degrades performance and connection reliability.';
+      'Starke Überlastung auf diesem Kanal verschlechtert Performance und Verbindungsstabilität.';
 
   @override
   String get rule_wifi_high_channel_congestion_rec =>
-      'Ask the network admin to switch to a less congested channel.';
+      'Den Netzwerk-Admin bitten, auf einen freieren Kanal zu wechseln.';
 
   @override
-  String get rule_wifi_only_24ghz_title => '2.4 GHz Only';
+  String get rule_wifi_only_24ghz_title => 'Nur 2,4 GHz';
 
   @override
   String get rule_wifi_only_24ghz_desc =>
-      'This network only broadcasts on the crowded 2.4 GHz band. 5 GHz offers better performance.';
+      'Dieses Netzwerk sendet nur im überfüllten 2,4-GHz-Band. 5 GHz bietet bessere Performance.';
 
   @override
-  String get rule_wifi_only_24ghz_rec =>
-      'Enable 5 GHz band on your router for better performance.';
+  String get rule_wifi_only_24ghz_rec => '5-GHz-Band am Router aktivieren.';
 
   @override
-  String get rule_trusted_baseline_drift_title => 'Trusted Baseline Drift';
+  String get rule_trusted_baseline_drift_title =>
+      'Abweichung von vertrauter Baseline';
 
   @override
   String get rule_trusted_baseline_drift_desc =>
-      'This access point no longer matches the fingerprint you previously trusted.';
+      'Dieser Access Point entspricht nicht mehr dem Fingerabdruck, dem Sie zuvor vertraut haben.';
 
   @override
   String get rule_trusted_baseline_drift_rec =>
-      'Re-validate the router configuration and only re-trust if the change was intentional.';
+      'Router-Konfiguration erneut prüfen und nur wieder vertrauen, wenn die Änderung beabsichtigt war.';
 
   @override
-  String get rule_hardware_vulnerability_title => 'Vulnerable Hardware';
+  String get rule_hardware_vulnerability_title => 'Verwundbare Hardware';
 
   @override
   String get rule_hardware_vulnerability_desc =>
-      'BSSID prefix matches a known vulnerable hardware profile.';
+      'Das BSSID-Präfix entspricht einem bekannten verwundbaren Hardware-Profil.';
 
   @override
   String get rule_hardware_vulnerability_rec =>
-      'Check for manufacturer firmware updates addressing known CVEs for this model.';
+      'Nach Firmware-Updates des Herstellers zu bekannten CVEs dieses Modells suchen.';
 
   @override
-  String get noLiveScanAvailable => 'NO LIVE SCAN AVAILABLE';
+  String get noLiveScanAvailable => 'KEIN LIVE-SCAN VERFÜGBAR';
 
   @override
   String noLiveScanDesc(String ssid) {
-    return 'We don\'t have a fresh Wi-Fi scan that includes \"$ssid\" right now, so the live signal breakdown isn\'t available. Run a new Wi-Fi scan from the Discovery tab and reopen this alert to see the full evidence.';
+    return 'Es gibt gerade keinen frischen Wi-Fi-Scan mit \"$ssid\", daher ist die Live-Signalauswertung nicht verfügbar. Führen Sie im Entdecken-Tab einen neuen Scan aus und öffnen Sie diese Warnung erneut, um alle Belege zu sehen.';
   }
 
   @override
   String get outOf100Label => '/100';
 
   @override
-  String get networkLabel => 'Network';
+  String get networkLabel => 'Netzwerk';
 
   @override
-  String get noActivityYet => 'NO ACTIVITY YET';
+  String get noActivityYet => 'NOCH KEINE AKTIVITÄT';
 
   @override
   String get runFirstScanDesc =>
-      'Run your first scan to populate the timeline.';
+      'Führen Sie den ersten Scan aus, um die Timeline zu füllen.';
 
   @override
-  String get networkContextTitle => 'NETWORK CONTEXT';
+  String get networkContextTitle => 'NETZWERKKONTEXT';
 
   @override
   String get networkContextHomeDesc =>
-      'Your home, office, or known router. Strict standards apply.';
+      'Ihr Zuhause, Büro oder bekannter Router. Strenge Standards gelten.';
 
   @override
   String get networkContextPublicDesc =>
-      'Café, hotel, airport, or open hotspot. VPN/HTTPS strongly advised.';
+      'Café, Hotel, Flughafen oder offener Hotspot. VPN/HTTPS dringend empfohlen.';
 
   @override
   String get networkContextGuestDesc =>
-      'Guest segment of a known network. Natural drift expected.';
+      'Gastsegment eines bekannten Netzwerks. Natürliche Veränderung erwartet.';
 
   @override
   String get networkContextUnknownDesc =>
-      'Let Torcav infer the context from passive signals.';
+      'Torcav den Kontext aus passiven Signalen ableiten lassen.';
 
   @override
   String scanVia(String backend) {
-    return 'Scan via $backend';
+    return 'Scan über $backend';
   }
 
   @override
-  String get justNow => 'just now';
+  String get justNow => 'gerade eben';
 
   @override
   String minutesAgo(int count) {
-    return '${count}m ago';
+    return 'vor ${count}m';
   }
 
   @override
   String hoursAgo(int count) {
-    return '${count}h ago';
+    return 'vor ${count}h';
   }
 
   @override
   String daysAgo(int count) {
-    return '${count}d ago';
+    return 'vor ${count}T';
   }
 
   @override
-  String get rogueApSuspected => 'Rogue AP suspected';
+  String get rogueApSuspected => 'Rogue AP vermutet';
 
   @override
-  String get deauthActivity => 'Deauth activity';
+  String get deauthActivity => 'Deauth-Aktivität';
 
   @override
-  String get handshakeCaptureStarted => 'Handshake capture started';
+  String get captivePortal => 'Captive Portal';
 
   @override
-  String get handshakeCaptured => 'Handshake captured';
+  String get evilTwinDetected => 'Evil Twin erkannt';
 
   @override
-  String get captivePortal => 'Captive portal';
+  String get encryptionDowngrade => 'Verschlüsselungs-Downgrade';
 
   @override
-  String get evilTwinDetected => 'Evil twin detected';
+  String get unsupportedOp => 'Nicht unterstützter Vorgang';
 
   @override
-  String get encryptionDowngrade => 'Encryption downgrade';
+  String get arpSpoofing => 'ARP-Spoofing';
 
   @override
-  String get unsupportedOp => 'Unsupported op';
-
-  @override
-  String get arpSpoofing => 'ARP spoofing';
-
-  @override
-  String get dnsHijacking => 'DNS hijacking';
+  String get dnsHijacking => 'DNS-Hijacking';
 
   @override
   String networksWithCount(int count) {
-    return 'Networks ($count)';
+    return 'Netzwerke ($count)';
   }
 
   @override
   String signalStability(String stability) {
-    return 'Stability $stability';
+    return 'Stabilität $stability';
   }
 
   @override
   String get metricSignal => 'SIGNAL';
 
   @override
-  String get metricScoreTrend => 'SCORE TREND';
+  String get metricScoreTrend => 'SCORE-TREND';
 
   @override
-  String get metricChannels => 'CHANNELS';
+  String get metricChannels => 'KANÄLE';
 
   @override
-  String get metricNewDevices => 'NEW DEVICES';
+  String get metricNewDevices => 'NEUE GERÄTE';
 
   @override
-  String get metricThreats => 'THREATS';
+  String get metricThreats => 'BEDROHUNGEN';
 
   @override
-  String get metricSpeed => 'SPEED';
+  String get metricSpeed => 'GESCHWINDIGKEIT';
 
   @override
-  String get severityCrit => 'CRIT';
+  String get severityCrit => 'KRIT';
 
   @override
-  String get severityHighShort => 'HIGH';
+  String get severityHighShort => 'HOCH';
 
   @override
-  String get severityMedShort => 'MED';
+  String get severityMedShort => 'MIT';
 
   @override
   String get severityInfoShort => 'INFO';
 
   @override
-  String get hardenRouterTitle => 'HARDEN ROUTER';
+  String get hardenRouterTitle => 'ROUTER HÄRTEN';
 
   @override
-  String get hardenRouterSubtitle => 'Security checklist';
+  String get hardenRouterSubtitle => 'Sicherheits-Checkliste';
 
   @override
-  String get packetLossLabel => 'PACKET LOSS';
+  String get packetLossLabel => 'PAKETVERLUST';
 
   @override
-  String get loadedLatencyLabel => 'LOADED LATENCY';
+  String get loadedLatencyLabel => 'LATENZ UNTER LAST';
 
   @override
-  String get clearHistoryTooltip => 'Clear all history';
+  String get clearHistoryTooltip => 'Gesamten Verlauf löschen';
 
   @override
-  String get whatIsThisSection => 'What is this?';
+  String get whatIsThisSection => 'Was ist das?';
 
   @override
-  String get whyItMattersSection => 'Why it matters';
+  String get whyItMattersSection => 'Warum das wichtig ist';
 
   @override
-  String get covShort => 'COV';
+  String get covShort => 'ABD';
 
   @override
   String get sigShort => 'SIG';
 
   @override
-  String get motShort => 'MOT';
+  String get motShort => 'BEW';
 
   @override
   String get wifiShort => 'WIFI';
@@ -3712,13 +3660,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get camShort => 'CAM';
 
   @override
-  String get discardSurveyTooltip => 'Discard Survey';
+  String get discardSurveyTooltip => 'Erfassung verwerfen';
 
   @override
-  String get finishReviewTooltip => 'Finish & Review';
+  String get finishReviewTooltip => 'Abschließen & Prüfen';
 
   @override
-  String get noDataAtLocation => 'NO DATA AT THIS LOCATION';
+  String get noDataAtLocation => 'KEINE DATEN AN DIESEM ORT';
 
   @override
   String get rssiLabel => 'RSSI';
@@ -3727,266 +3675,253 @@ class AppLocalizationsDe extends AppLocalizations {
   String get statusLabel => 'STATUS';
 
   @override
-  String get floorLabel => 'FLOOR';
+  String get floorLabel => 'STOCKWERK';
 
   @override
   String get positionLabel => 'POSITION';
 
   @override
-  String get samplesLabel => 'SAMPLES';
+  String get samplesLabel => 'MESSWERTE';
 
   @override
-  String get capturedLabel => 'CAPTURED';
+  String get capturedLabel => 'ERFASST';
 
   @override
-  String get heatmapPermissionsTitle => 'HEATMAP PERMISSIONS';
+  String get heatmapPermissionsTitle => 'HEATMAP-BERECHTIGUNGEN';
 
   @override
-  String get realignCompassTooltip => 'Realign Compass';
+  String get realignCompassTooltip => 'Kompass neu ausrichten';
 
   @override
-  String get exportCsvLabel => 'Export CSV';
+  String get exportCsvLabel => 'CSV exportieren';
 
   @override
-  String get setDeviceType => 'Set Device Type';
+  String get setDeviceType => 'Gerätetyp festlegen';
 
   @override
-  String get resetToAiLabel => 'Reset to AI label';
+  String get resetToAiLabel => 'Auf KI-Label zurücksetzen';
 
   @override
   String get gatewayCaps => 'GATEWAY';
 
   @override
-  String get identifiedCaps => 'IDENTIFIED';
+  String get identifiedCaps => 'IDENTIFIZIERT';
 
   @override
-  String get unknownMacRestricted => 'UNKNOWN MAC (RESTRICTED)';
+  String get unknownMacRestricted => 'UNBEKANNTE MAC (EINGESCHRÄNKT)';
 
   @override
-  String get scanPortsCaps => 'SCAN PORTS';
+  String get scanPortsCaps => 'PORTS SCANNEN';
 
   @override
-  String get noOpenPortsFound => 'No open ports found';
+  String get noOpenPortsFound => 'Keine offenen Ports gefunden';
 
   @override
-  String get criticalCaps => 'CRITICAL';
+  String get criticalCaps => 'KRITISCH';
 
   @override
-  String get wpsActiveCaps => 'WPS ACTIVE';
+  String get wpsActiveCaps => 'WPS AKTIV';
 
   @override
-  String get protectPdfTitle => 'PROTECT PDF WITH A PASSWORD';
+  String get protectPdfTitle => 'PDF MIT PASSWORT SCHÜTZEN';
 
   @override
   String get pdfLockedHint =>
-      'Optional. Locked file: .torcav-pdf — open it again from Reports.';
+      'Optional. Gesperrte Datei: .torcav-pdf — erneut aus Berichten öffnen.';
 
   @override
   String get pdfLockedLabel =>
-      'Locked file: .torcav-pdf — open it again from Reports.';
+      'Gesperrte Datei: .torcav-pdf — erneut aus Berichten öffnen.';
 
   @override
-  String get pdfPasswordHint => 'Password (leave empty for plain PDF)';
+  String get pdfPasswordHint => 'Passwort (für einfaches PDF leer lassen)';
 
   @override
   String get pdfPasswordWarning =>
-      'Heads up: this is lightweight obfuscation, not bank-grade encryption. It protects the file against casual leaks (cloud thumbnails, mailbox cache) but a determined attacker who has the file could still attempt to brute-force a weak password. Use a long, unique passphrase.';
+      'Achtung: Das ist eine leichte Verschleierung, keine bankentaugliche Verschlüsselung. Sie schützt die Datei vor zufälligen Lecks (Cloud-Vorschaubilder, Postfach-Cache), aber ein entschlossener Angreifer mit der Datei könnte trotzdem ein schwaches Passwort per Brute-Force knacken. Nutzen Sie eine lange, einzigartige Passphrase.';
 
   @override
-  String get understandEnable => 'I UNDERSTAND — ENABLE';
+  String get understandEnable => 'VERSTANDEN — AKTIVIEREN';
 
   @override
   String get categorySignal => 'Signal';
 
   @override
-  String get categoryChannel => 'Channel';
+  String get categoryChannel => 'Kanal';
 
   @override
   String get categoryBufferbloat => 'Bufferbloat';
 
   @override
-  String get categoryIsp => 'ISP throughput';
+  String get categoryIsp => 'ISP-Durchsatz';
 
   @override
   String get categoryDns => 'DNS';
 
   @override
-  String get categoryHealthy => 'Healthy';
+  String get categoryHealthy => 'Gesund';
 
   @override
-  String get severityHigh => 'HIGH';
+  String get severityHigh => 'HOCH';
 
   @override
-  String get severityMed => 'MED';
+  String get severityMed => 'MITTEL';
 
   @override
-  String get severityLow => 'LOW';
+  String get severityLow => 'NIEDRIG';
 
   @override
-  String get speedDoctorActionMoveCloser => 'Move closer to router';
+  String get speedDoctorActionMoveCloser => 'Näher an den Router';
 
   @override
-  String get speedDoctorActionAddMesh => 'Add a mesh node';
+  String get speedDoctorActionAddMesh => 'Mesh-Knoten hinzufügen';
 
   @override
-  String get speedDoctorActionSwitchTo5Ghz => 'Switch to 5 GHz';
+  String get speedDoctorActionSwitchTo5Ghz => 'Zu 5 GHz wechseln';
 
   @override
-  String get speedDoctorActionChangeChannel => 'Change Wi-Fi channel';
+  String get speedDoctorActionChangeChannel => 'Wi-Fi-Kanal ändern';
 
   @override
-  String get speedDoctorActionMoveTo5Ghz => 'Move to 5/6 GHz band';
+  String get speedDoctorActionMoveTo5Ghz => 'Zu 5/6-GHz-Band wechseln';
 
   @override
-  String get speedDoctorActionEnableQos => 'Enable router QoS';
+  String get speedDoctorActionEnableQos => 'Router-QoS aktivieren';
 
   @override
-  String get speedDoctorActionUpdateFirmware => 'Update router firmware';
+  String get speedDoctorActionUpdateFirmware => 'Router-Firmware aktualisieren';
 
   @override
-  String get speedDoctorActionCallIsp => 'Contact your ISP';
+  String get speedDoctorActionCallIsp => 'ISP kontaktieren';
 
   @override
-  String get speedDoctorActionRunWiredTest => 'Re-test with cable';
+  String get speedDoctorActionRunWiredTest => 'Mit Kabel erneut testen';
 
   @override
-  String get speedDoctorActionChangeDns => 'Change DNS provider';
+  String get speedDoctorActionChangeDns => 'DNS-Anbieter wechseln';
 
   @override
-  String get speedDoctorActionEnableDoh => 'Enable DoH / DoT';
+  String get speedDoctorActionEnableDoh => 'DoH / DoT aktivieren';
 
   @override
-  String get waitingForHistory => 'Waiting for history';
+  String get waitingForHistory => 'Warte auf Verlauf';
 
   @override
-  String get noScanData => 'No scan data';
+  String get noScanData => 'Keine Scan-Daten';
 
   @override
   String get mbps => 'Mbps';
 
   @override
-  String get primaryCauseWeakSignalTitle => 'WEAK SIGNAL';
+  String get primaryCauseWeakSignalTitle => 'SCHWACHES SIGNAL';
 
   @override
   String get primaryCauseWeakSignalDesc =>
-      'Your device is far from the router or has too many walls in the way. Move closer or add a mesh node in this area.';
+      'Ihr Gerät ist weit vom Router entfernt oder es sind zu viele Wände im Weg. Näher heran gehen oder einen Mesh-Knoten in diesem Bereich hinzufügen.';
 
   @override
-  String get primaryCauseCrowdedChannelTitle => 'CROWDED CHANNEL';
+  String get primaryCauseCrowdedChannelTitle => 'ÜBERFÜLLTER KANAL';
 
   @override
   String get primaryCauseCrowdedChannelDesc =>
-      'Several neighbouring access points are sharing your channel. Switching to a less crowded channel — or to 5/6 GHz — should help.';
+      'Mehrere benachbarte Access Points teilen sich Ihren Kanal. Ein Wechsel zu einem weniger überfüllten Kanal — oder zu 5/6 GHz — sollte helfen.';
 
   @override
   String get primaryCauseBufferbloatTitle => 'BUFFERBLOAT';
 
   @override
   String get primaryCauseBufferbloatDesc =>
-      'Latency spikes when the link is busy. Enable QoS / SQM on your router to manage traffic spikes.';
+      'Latenz steigt sprunghaft, wenn die Verbindung ausgelastet ist. QoS / SQM auf Ihrem Router aktivieren, um Lastspitzen zu managen.';
 
   @override
-  String get primaryCauseIspSlowTitle => 'ISP THROUGHPUT LIMIT';
+  String get primaryCauseIspSlowTitle => 'ISP-DURCHSATZLIMIT';
 
   @override
   String get primaryCauseIspSlowDesc =>
-      'Your Wi-Fi link is healthy but the download speed is low. The bottleneck is most likely your internet plan or upstream provider.';
+      'Ihre Wi-Fi-Verbindung ist gesund, aber die Download-Geschwindigkeit ist niedrig. Der Engpass ist höchstwahrscheinlich Ihr Internettarif oder vorgelagerter Anbieter.';
 
   @override
-  String get primaryCauseSlowDnsTitle => 'SLOW DNS';
+  String get primaryCauseSlowDnsTitle => 'LANGSAMES DNS';
 
   @override
   String get primaryCauseSlowDnsDesc =>
-      'Names take too long to resolve. Switching DNS provider or enabling DoH/DoT typically removes the delay.';
+      'Namen brauchen zu lange zur Auflösung. Ein Wechsel des DNS-Anbieters oder Aktivieren von DoH/DoT beseitigt die Verzögerung meist.';
 
   @override
-  String get primaryCauseHealthyTitle => 'NETWORK HEALTHY';
+  String get primaryCauseHealthyTitle => 'NETZWERK GESUND';
 
   @override
   String get primaryCauseHealthyDesc =>
-      'No bottleneck reached an alert threshold. Your link looks fine right now.';
+      'Kein Engpass hat einen Warnschwellenwert erreicht. Ihre Verbindung sieht gerade gut aus.';
 
   @override
-  String get diagStepReadingSignal => 'Reading signal';
+  String get diagStepReadingSignal => 'Signal wird gelesen';
 
   @override
-  String get diagStepAnalysingChannels => 'Analysing channels';
+  String get diagStepAnalysingChannels => 'Kanäle werden analysiert';
 
   @override
-  String get diagStepMeasuringSpeed => 'Measuring speed';
+  String get diagStepMeasuringSpeed => 'Geschwindigkeit wird gemessen';
 
   @override
-  String get diagStepBenchmarkingDns => 'Benchmarking DNS';
+  String get diagStepBenchmarkingDns => 'DNS wird verglichen';
 
   @override
-  String get hideDetails => 'Hide details';
+  String get hideDetails => 'Details ausblenden';
 
   @override
-  String get whatIsThisHowToFix => 'What is this? · How to fix';
+  String get whatIsThisHowToFix => 'Was ist das? · Wie beheben';
 
   @override
-  String get preview => 'Preview';
+  String get reviewing => 'PRÜFUNG';
 
   @override
-  String get recording => 'RECORDING';
+  String get idle => 'LEERLAUF';
 
   @override
-  String get reviewing => 'REVIEW';
+  String get surveyComplete => 'ERFASSUNG ABGESCHLOSSEN';
 
   @override
-  String get idle => 'IDLE';
+  String get coverage => 'ABDECKUNG';
 
   @override
-  String get surveyComplete => 'SURVEY COMPLETE';
+  String get blindSpots => 'BLINDE FLECKEN';
 
   @override
-  String get surveyCompleteDesc =>
-      'The survey has been successfully recorded. Plan and signal data are synthesized.';
+  String get saveAndFinish => 'SPEICHERN & BEENDEN';
 
   @override
-  String get coverage => 'COVERAGE';
+  String get diagStepFinalizing => 'Diagnose wird abgeschlossen';
 
   @override
-  String get blindSpots => 'BLIND SPOTS';
+  String get heatmapPageTitle => 'WOHNUNGSPLAN + WIFI-HEATMAP';
 
   @override
-  String get saveAndFinish => 'SAVE & FINISH';
+  String get heatmapPageSubtitle => 'Grundriss, Abdeckung und schwache Zonen';
 
   @override
-  String get diagStepFinalizing => 'Finalising diagnosis';
+  String get heatmapHistoryTooltip => 'Gespeicherte Erfassungen öffnen';
 
   @override
-  String get heatmapPageTitle => 'HOME PLAN + WIFI HEATMAP';
+  String get heatmapThemeToggleTooltip => 'Ansicht wechseln (Blueprint / Neon)';
 
   @override
-  String get heatmapPageSubtitle => 'Outline, coverage, and weak zones';
+  String get heatmapSamplesShort => 'Messwerte';
 
   @override
-  String get heatmapHistoryTooltip => 'Open saved surveys';
+  String get heatmapRestartSurvey => 'ERFASSUNG NEU STARTEN';
 
   @override
-  String get heatmapThemeToggleTooltip => 'Toggle view (Blueprint / Neon)';
+  String get heatmapRenameSurvey => 'ERFASSUNG UMBENENNEN';
 
   @override
-  String get heatmapSamplesShort => 'samples';
+  String get heatmapShareHeatmap => 'HEATMAP TEILEN';
 
   @override
-  String get heatmapWallsShort => 'walls';
+  String get heatmapRenameDialogTitle => 'ERFASSUNG UMBENENNEN';
 
   @override
-  String get heatmapRestartSurvey => 'RESTART SURVEY';
-
-  @override
-  String get heatmapRenameSurvey => 'RENAME SURVEY';
-
-  @override
-  String get heatmapShareHeatmap => 'SHARE HEATMAP';
-
-  @override
-  String get heatmapRenameDialogTitle => 'RENAME SURVEY';
-
-  @override
-  String get heatmapSave => 'Save';
+  String get heatmapSave => 'Speichern';
 
   @override
   String get heatmapShareSubject => 'Mein Torcav AR WLAN-Scan';
@@ -3996,353 +3931,59 @@ class AppLocalizationsDe extends AppLocalizations {
       'Ich habe gerade mein Heim-WLAN mit Torcav kartiert! Schau dir die toten Winkel an. Finde heraus, warum dein Internet langsam ist und lade Torcav herunter: torcav.com';
 
   @override
-  String get heatmapIssueTitle => 'Issue';
+  String get heatmapSamplesLabel => 'MESSWERTE';
 
   @override
-  String get heatmapGenericIssueBody =>
-      'The survey could not finish. Check permissions and device sensors.';
+  String get heatmapAvgSignalLabel => 'SIGNAL Ø';
 
   @override
-  String get heatmapGoalTitle => 'What This Feature Does';
+  String get heatmapNotAvailable => 'Nicht bereit';
 
   @override
-  String get heatmapGoalBody =>
-      'It samples Wi-Fi as you walk, captures wall lines in AR, and then shows the home outline together with signal density.';
-
-  @override
-  String get heatmapWaitingForDataTitle => 'Waiting For Data';
-
-  @override
-  String get heatmapWaitingForDataBody =>
-      'No signal sample has landed yet. Check motion and location permissions, then walk a few steps.';
-
-  @override
-  String get heatmapArCaptureTitle => 'AR Mode Active';
-
-  @override
-  String get heatmapArCaptureBody =>
-      'Point the phone at room edges and door openings. The camera searches for wall lines while signal points are added automatically as you move.';
-
-  @override
-  String get heatmapMapCaptureTitle => '2D Map Active';
-
-  @override
-  String get heatmapMapCaptureBody =>
-      'You are in the clearer 2D view. Samples keep arriving as you walk; if the outline stays weak, switch to AR mode.';
-
-  @override
-  String get heatmapReviewTitle => 'Survey Summary';
-
-  @override
-  String get heatmapReviewBodyNoSamples =>
-      'There is a saved survey, but it still lacks meaningful signal samples.';
-
-  @override
-  String get heatmapReviewBodyReady =>
-      'Coverage is readable. Use the summary below to inspect weak zones.';
-
-  @override
-  String get heatmapSamplesLabel => 'SAMPLES';
-
-  @override
-  String get heatmapWallsLabel => 'WALLS';
-
-  @override
-  String get heatmapCurrentSignalLabel => 'LIVE SIGNAL';
-
-  @override
-  String get heatmapAvgSignalLabel => 'AVG SIGNAL';
-
-  @override
-  String get heatmapWeakZonesLabel => 'WEAK ZONES';
-
-  @override
-  String get heatmapPlanSizeLabel => 'PLAN SIZE';
-
-  @override
-  String get heatmapNotAvailable => 'Not ready';
-
-  @override
-  String get heatmapNoSamplesHelper => 'Fills in as you start walking';
-
-  @override
-  String heatmapSamplesHelper(int count) {
-    return '$count signal samples collected';
-  }
-
-  @override
-  String get heatmapNoWallsHelper => 'AR pass may be needed for the outline';
-
-  @override
-  String heatmapWallsHelper(int count) {
-    return '$count wall segments retained';
-  }
-
-  @override
-  String get heatmapSignalUnavailableHelper =>
-      'Wi-Fi reading has not arrived yet';
-
-  @override
-  String get heatmapSignalStrongHelper => 'Strong coverage';
-
-  @override
-  String get heatmapSignalFairHelper => 'Borderline but usable';
-
-  @override
-  String get heatmapSignalWeakHelper => 'Weak or problematic zone';
-
-  @override
-  String get heatmapWeakZoneHelperNone => 'No obvious dead zones';
-
-  @override
-  String get heatmapWeakZoneHelperOne => 'One problematic area';
-
-  @override
-  String heatmapWeakZoneHelperMany(int count) {
-    return '$count weak areas detected';
-  }
-
-  @override
-  String get heatmapPlanSizeHelper => 'Estimated span from captured trace';
-
-  @override
-  String get heatmapNoSurveyYetTitle => 'Start A Survey';
+  String get heatmapNoSurveyYetTitle => 'Erfassung starten';
 
   @override
   String get heatmapNoSurveyYetBody =>
-      'Start a walkthrough first. The result view will then show the outline and heatmap together.';
+      'Zuerst einen Rundgang starten. Die Ergebnisansicht zeigt dann Grundriss und Heatmap zusammen.';
 
   @override
-  String get heatmapWalkToBeginTitle => 'Start Walking';
+  String get heatmapWalkToBeginTitle => 'Losgehen';
 
   @override
   String get heatmapWalkToBeginBody =>
-      'The trail and signal points appear as you take a few steps in each room.';
+      'Der Pfad und die Signalpunkte erscheinen, sobald Sie ein paar Schritte in jedem Raum gehen.';
 
   @override
-  String get heatmapMapViewLabel => '2D HARITA';
+  String get heatmapStartSurvey => 'ERFASSUNG STARTEN';
 
   @override
-  String get heatmapResultViewLabel => 'SONUC GORUNUMU';
-
-  @override
-  String get heatmapFindingsTitle => 'NE ANLATIYOR?';
-
-  @override
-  String get heatmapInsightReady =>
-      'The survey is now dense enough. One last room transition is enough before saving the result.';
-
-  @override
-  String get heatmapInsightTooEarly =>
-      'It is still too early. After 4-5 samples across a few rooms, the result becomes readable.';
-
-  @override
-  String get heatmapInsightNoWalls =>
-      'Signal is arriving but the outline is missing. Switch to AR and face the walls during another pass to improve the plan.';
-
-  @override
-  String heatmapInsightLive(int count) {
-    return 'The live result is starting to read well. With $count samples, weak areas are becoming visible.';
-  }
-
-  @override
-  String get heatmapReviewInsightNoSamples =>
-      'This survey has no signal samples. If location or motion permissions are off, the app cannot build the heatmap.';
-
-  @override
-  String get heatmapReviewInsightNoPlan =>
-      'The heatmap is present but the outline is weak. On the next run, use AR and face room boundaries while walking.';
-
-  @override
-  String get heatmapReviewInsightStrong =>
-      'Coverage looks strong overall. No clear dead zones are visible, and the outline agrees with the signal trace.';
-
-  @override
-  String heatmapReviewInsightWeak(int count) {
-    return '$count weak zones are visible. Moving the router more centrally or adding another access point may help.';
-  }
-
-  @override
-  String heatmapReviewInsightBalanced(int count) {
-    return 'Coverage is reasonably balanced, but it dips in $count spots. These are often corners, corridor ends, or heavy wall transitions.';
-  }
-
-  @override
-  String get heatmapCloseReview => 'CLOSE REVIEW';
-
-  @override
-  String get heatmapNewSurvey => 'NEW SURVEY';
-
-  @override
-  String get heatmapFinishAndReview => 'FINISH & REVIEW';
-
-  @override
-  String get heatmapStartSurvey => 'START SURVEY';
-
-  @override
-  String get heatmapNewSurveyDialogTitle => 'NEW SURVEY';
+  String get heatmapNewSurveyDialogTitle => 'NEUE ERFASSUNG';
 
   @override
   String heatmapDefaultSessionName(String time) {
-    return 'Survey $time';
+    return 'Erfassung $time';
   }
 
   @override
-  String get heatmapSessionNameField => 'Survey name';
+  String get heatmapSessionNameField => 'Name der Erfassung';
 
   @override
   String get heatmapNewSurveyHint =>
-      'Once the survey starts, signal samples are added automatically as you move. Switch to AR if you want a stronger room outline.';
+      'Sobald die Erfassung beginnt, werden Signalmesswerte automatisch beim Gehen hinzugefügt. Für einen stärkeren Raumgrundriss zu AR wechseln.';
 
   @override
-  String get heatmapSavedSurveysTitle => 'SAVED SURVEYS';
+  String get heatmapSavedSurveysTitle => 'GESPEICHERTE ERFASSUNGEN';
 
   @override
-  String get heatmapNoSavedSurveys => 'No saved surveys yet.';
+  String get heatmapNoSavedSurveys => 'Noch keine gespeicherten Erfassungen.';
 
   @override
   String heatmapSavedSurveySubtitle(int samples, int weak, String timestamp) {
-    return '$samples samples · $weak weak zones · $timestamp';
+    return '$samples Messwerte · $weak schwache Zonen · $timestamp';
   }
 
   @override
-  String get heatmapDeleteSurveyTooltip => 'Delete survey';
-
-  @override
-  String get heatmapLegendTitle => 'COLOR GUIDE';
-
-  @override
-  String get heatmapLegendStrong => 'Strong';
-
-  @override
-  String get heatmapLegendFair => 'Fair';
-
-  @override
-  String get heatmapLegendWeak => 'Weak';
-
-  @override
-  String get heatmapCameraViewLabel => 'LIVE CAMERA';
-
-  @override
-  String get heatmapInfoSheetTitle => 'LIVE SURVEY DATA';
-
-  @override
-  String heatmapFeedStatus(String label, String status) {
-    return '$label: $status';
-  }
-
-  @override
-  String get heatmapActive => 'active';
-
-  @override
-  String get heatmapInactive => 'inactive';
-
-  @override
-  String get heatmapArViewLabel => 'AR VIEW';
-
-  @override
-  String get heatmapSwitchToMapHint => 'Return to the clearer 2D map';
-
-  @override
-  String get heatmapSwitchToArHint => 'Use AR to strengthen the outline';
-
-  @override
-  String get heatmapRouteLabel => 'NEXT STEP';
-
-  @override
-  String get heatmapPlanConfidenceLabel => 'PLAN CONFIDENCE';
-
-  @override
-  String get heatmapCoverageConfidenceLabel => 'COVERAGE CONFIDENCE';
-
-  @override
-  String get heatmapSignalConfidenceLabel => 'SIGNAL CONFIDENCE';
-
-  @override
-  String get heatmapMotionFeedLabel => 'Motion';
-
-  @override
-  String get heatmapCameraFeedLabel => 'Camera';
-
-  @override
-  String get heatmapPlanFeedLabel => 'Plan';
-
-  @override
-  String get heatmapGuidanceIdleTitle => 'Survey Setup';
-
-  @override
-  String get heatmapGuidanceCalibrationTitle => 'Starting Route';
-
-  @override
-  String get heatmapGuidanceSweepTitle => 'Filling Coverage';
-
-  @override
-  String get heatmapGuidanceWeakCheckTitle => 'Weak Zone Check';
-
-  @override
-  String get heatmapGuidanceWrapUpTitle => 'Ready To Save';
-
-  @override
-  String get heatmapGuidanceReviewTitle => 'Survey Quality';
-
-  @override
-  String get heatmapGuidanceIdleBody =>
-      'Start a new survey. The app will combine motion, camera, and Wi-Fi traces into a cleaner floor plan.';
-
-  @override
-  String get heatmapGuidanceCalibrationBody =>
-      'Walk straight for 5-8 steps to establish the first trace. Doorways and corner turns help anchor the layout faster.';
-
-  @override
-  String heatmapGuidanceSweepBody(String region) {
-    return 'The $region side of the map is still sparse. Move there and collect 3-4 more samples.';
-  }
-
-  @override
-  String get heatmapGuidanceWeakCheckBody =>
-      'You are currently in a weak-signal area. Sweep this zone a bit more to confirm whether it is a real dead spot.';
-
-  @override
-  String get heatmapGuidanceWrapUpBody =>
-      'Outline, coverage, and signal density are now strong enough. Save the result and read the plan/heatmap in review.';
-
-  @override
-  String heatmapGuidanceReviewBody(int progress, int count) {
-    return 'This survey is $progress% complete. With $count samples, the result is readable.';
-  }
-
-  @override
-  String get heatmapRouteFinish => 'Finish survey';
-
-  @override
-  String get heatmapRouteStart => 'Start survey';
-
-  @override
-  String get heatmapRouteWalkForward => 'Walk forward';
-
-  @override
-  String get heatmapRouteSweepWeak => 'Sweep weak zone';
-
-  @override
-  String get heatmapRouteWrapUp => 'Wrap up run';
-
-  @override
-  String get heatmapRouteReview => 'Review result';
-
-  @override
-  String get heatmapRegionLeft => 'left wing';
-
-  @override
-  String get heatmapRegionRight => 'right wing';
-
-  @override
-  String get heatmapRegionUpper => 'upper area';
-
-  @override
-  String get heatmapRegionLower => 'lower area';
-
-  @override
-  String get heatmapRegionKeep => 'keep sweeping';
+  String get heatmapDeleteSurveyTooltip => 'Erfassung löschen';
 
   @override
   String channelShort(int channel) {
@@ -4365,368 +4006,334 @@ class AppLocalizationsDe extends AppLocalizations {
   String get startNowCaps => 'START';
 
   @override
-  String get howToFixSection => 'HOW TO FIX';
+  String get howToFixSection => 'SO BEHEBEN SIE ES';
 
   @override
-  String get endSurveyDialogTitle => 'End Survey?';
+  String get endSurveyDialogTitle => 'Erfassung beenden?';
 
   @override
   String get endSurveyDialogBody =>
-      'Your current survey data will be lost if you discard it. Save or Discard?';
+      'Ihre aktuellen Erfassungsdaten gehen verloren, wenn Sie sie verwerfen. Speichern oder Verwerfen?';
 
   @override
-  String get endSurveyReviewBody => 'Exit session review?';
+  String get endSurveyReviewBody => 'Sitzungsprüfung verlassen?';
 
   @override
-  String get discardAction => 'DISCARD';
+  String get discardAction => 'VERWERFEN';
 
   @override
-  String get exitAction => 'EXIT';
+  String get exitAction => 'VERLASSEN';
 
   @override
-  String get continueAction => 'CONTINUE';
+  String get continueAction => 'WEITER';
 
   @override
-  String get discardSurveyDialogTitle => 'DISCARD SURVEY?';
+  String get discardSurveyDialogTitle => 'ERFASSUNG VERWERFEN?';
 
   @override
   String get discardSurveyDialogBody =>
-      'All recorded data for this session will be permanently deleted.';
+      'Alle aufgezeichneten Daten dieser Sitzung werden unwiderruflich gelöscht.';
 
   @override
-  String get autoSamplingDistance => 'Auto-sampling Distance';
+  String get autoSamplingDistance => 'Auto-Messabstand';
 
   @override
-  String get appearanceLabel => 'Appearance';
+  String get appearanceLabel => 'Erscheinungsbild';
 
   @override
-  String get clearHistoryAction => 'CLEAR HISTORY';
+  String get clearHistoryAction => 'VERLAUF LÖSCHEN';
 
   @override
-  String get dataUsageWarningTitle => 'DATA USAGE WARNING';
+  String get dataUsageWarningTitle => 'WARNUNG ZUM DATENVERBRAUCH';
 
   @override
   String get dataUsageWarningBody =>
-      'This speed test downloads ~300–500 MB of data. If you are on a mobile/metered connection this may incur charges or consume your data allowance.';
+      'Dieser Speedtest lädt ~300–500 MB Daten herunter. Bei einer mobilen/limitierten Verbindung können dabei Kosten entstehen oder Ihr Datenvolumen verbraucht werden.';
 
   @override
   String latencyExcellentTitle(String ms) {
-    return 'Latency: $ms ms — Excellent';
+    return 'Latenz: $ms ms — Ausgezeichnet';
   }
 
   @override
   String latencyGoodTitle(String ms) {
-    return 'Latency: $ms ms — Good';
+    return 'Latenz: $ms ms — Gut';
   }
 
   @override
   String latencyAcceptableTitle(String ms) {
-    return 'Latency: $ms ms — Acceptable';
+    return 'Latenz: $ms ms — Akzeptabel';
   }
 
   @override
   String latencyHighTitle(String ms) {
-    return 'Latency: $ms ms — High';
+    return 'Latenz: $ms ms — Hoch';
   }
 
   @override
   String get latencyExcellentBody =>
-      'Near-instant response. Ideal for gaming, video calls, and real-time apps.';
+      'Nahezu sofortige Reaktion. Ideal für Gaming, Videoanrufe und Echtzeit-Apps.';
 
   @override
   String get latencyGoodBody =>
-      'Good for video calls and streaming. Most apps will feel responsive.';
+      'Gut für Videoanrufe und Streaming. Die meisten Apps fühlen sich reaktionsschnell an.';
 
   @override
   String get latencyAcceptableBody =>
-      'Fine for browsing and streaming, but video calls may have slight delays.';
+      'Okay zum Surfen und Streamen, aber Videoanrufe können leichte Verzögerungen haben.';
 
   @override
   String get latencyHighBody =>
-      'Noticeable lag. Video calls and gaming may feel sluggish. Try moving closer to your router.';
+      'Spürbare Verzögerung. Videoanrufe und Gaming können träge wirken. Näher an den Router gehen.';
 
   @override
   String jitterStableTitle(String ms) {
-    return 'Jitter: $ms ms — Stable';
+    return 'Jitter: $ms ms — Stabil';
   }
 
   @override
   String jitterGoodTitle(String ms) {
-    return 'Jitter: $ms ms — Good';
+    return 'Jitter: $ms ms — Gut';
   }
 
   @override
   String jitterModerateTitle(String ms) {
-    return 'Jitter: $ms ms — Moderate';
+    return 'Jitter: $ms ms — Mäßig';
   }
 
   @override
   String jitterUnstableTitle(String ms) {
-    return 'Jitter: $ms ms — Unstable';
+    return 'Jitter: $ms ms — Instabil';
   }
 
   @override
   String get jitterStableBody =>
-      'Very consistent connection. Your packets arrive with minimal timing variation.';
+      'Sehr gleichmäßige Verbindung. Ihre Pakete kommen mit minimaler zeitlicher Schwankung an.';
 
   @override
   String get jitterGoodBody =>
-      'Stable enough for calls and streaming. Minor variation is normal on Wi-Fi.';
+      'Stabil genug für Anrufe und Streaming. Kleine Schwankungen sind bei Wi-Fi normal.';
 
   @override
   String get jitterModerateBody =>
-      'Some inconsistency detected. Voice calls may sound choppy during spikes.';
+      'Einige Unregelmäßigkeiten erkannt. Sprachanrufe können bei Spitzen stockend klingen.';
 
   @override
   String get jitterUnstableBody =>
-      'High variation — audio and video calls will likely break up. This can be caused by interference or a congested channel.';
+      'Hohe Schwankung — Audio- und Videoanrufe werden wahrscheinlich abbrechen. Ursache können Interferenzen oder ein überlasteter Kanal sein.';
 
   @override
   String downloadFastTitle(String mbps) {
-    return 'Download: $mbps Mbps — Fast';
+    return 'Download: $mbps Mbps — Schnell';
   }
 
   @override
   String downloadGoodTitle(String mbps) {
-    return 'Download: $mbps Mbps — Good';
+    return 'Download: $mbps Mbps — Gut';
   }
 
   @override
   String downloadModerateTitle(String mbps) {
-    return 'Download: $mbps Mbps — Moderate';
+    return 'Download: $mbps Mbps — Mäßig';
   }
 
   @override
   String downloadSlowTitle(String mbps) {
-    return 'Download: $mbps Mbps — Slow';
+    return 'Download: $mbps Mbps — Langsam';
   }
 
   @override
   String downloadFastBody(int streams) {
-    return 'Handles $streams+ simultaneous HD streams with ease. Great for large households.';
+    return 'Bewältigt mühelos $streams+ gleichzeitige HD-Streams. Ideal für große Haushalte.';
   }
 
   @override
   String downloadGoodBody(int streams) {
-    return 'Supports $streams simultaneous HD streams. Good for most households.';
+    return 'Unterstützt $streams gleichzeitige HD-Streams. Gut für die meisten Haushalte.';
   }
 
   @override
   String get downloadModerateBody =>
-      'Enough for browsing and one or two SD streams. Large downloads will be slow.';
+      'Reicht für Surfen und ein bis zwei SD-Streams. Große Downloads werden langsam sein.';
 
   @override
   String get downloadSlowBody =>
-      'Very limited. Consider moving closer to your router or checking for interference.';
+      'Stark eingeschränkt. Näher an den Router gehen oder auf Interferenzen prüfen.';
 
   @override
   String uploadFastTitle(String mbps) {
-    return 'Upload: $mbps Mbps — Fast';
+    return 'Upload: $mbps Mbps — Schnell';
   }
 
   @override
   String uploadGoodTitle(String mbps) {
-    return 'Upload: $mbps Mbps — Good';
+    return 'Upload: $mbps Mbps — Gut';
   }
 
   @override
   String uploadLimitedTitle(String mbps) {
-    return 'Upload: $mbps Mbps — Limited';
+    return 'Upload: $mbps Mbps — Eingeschränkt';
   }
 
   @override
   String uploadSlowTitle(String mbps) {
-    return 'Upload: $mbps Mbps — Slow';
+    return 'Upload: $mbps Mbps — Langsam';
   }
 
   @override
   String get uploadFastBody =>
-      'Excellent for video conferencing, cloud backups, and live streaming.';
+      'Ausgezeichnet für Videokonferenzen, Cloud-Backups und Live-Streaming.';
 
   @override
   String get uploadGoodBody =>
-      'Good for video calls and sharing files. Cloud uploads will be reasonable.';
+      'Gut für Videoanrufe und Dateifreigabe. Cloud-Uploads sind angemessen schnell.';
 
   @override
   String get uploadLimitedBody =>
-      'Enough for basic video calls. Large file uploads will take a while.';
+      'Reicht für einfache Videoanrufe. Große Datei-Uploads dauern eine Weile.';
 
   @override
   String get uploadSlowBody =>
-      'Very slow upload. Live video and cloud sync will struggle.';
+      'Sehr langsamer Upload. Live-Video und Cloud-Sync werden hakeln.';
 
   @override
-  String get packetLossPerfectTitle => 'Packet Loss: 0% — Perfect';
+  String get packetLossPerfectTitle => 'Paketverlust: 0 % — Perfekt';
 
   @override
   String packetLossMinimalTitle(String pct) {
-    return 'Packet Loss: $pct% — Minimal';
+    return 'Paketverlust: $pct % — Minimal';
   }
 
   @override
   String packetLossHighTitle(String pct) {
-    return 'Packet Loss: $pct% — High';
+    return 'Paketverlust: $pct % — Hoch';
   }
 
   @override
   String get packetLossPerfectBody =>
-      'Solid connection. No data packets were lost during the assessment.';
+      'Solide Verbindung. Während der Prüfung gingen keine Datenpakete verloren.';
 
   @override
   String get packetLossMinimalBody =>
-      'Very minor loss. Likely unnoticeable for most activities.';
+      'Sehr geringer Verlust. Für die meisten Aktivitäten wahrscheinlich unbemerkt.';
 
   @override
   String get packetLossHighBody =>
-      'Data is being dropped. This causes stuttering in calls and gaming. Check for Wi-Fi interference.';
+      'Daten gehen verloren. Das verursacht Stottern bei Anrufen und Gaming. Auf Wi-Fi-Interferenzen prüfen.';
 
   @override
   String loadedLatencyExcellentTitle(String ms) {
-    return 'Loaded Latency: $ms ms — Excellent';
+    return 'Latenz unter Last: $ms ms — Ausgezeichnet';
   }
 
   @override
   String loadedLatencyGoodTitle(String ms) {
-    return 'Loaded Latency: $ms ms — Good';
+    return 'Latenz unter Last: $ms ms — Gut';
   }
 
   @override
   String loadedLatencyFairTitle(String ms) {
-    return 'Loaded Latency: $ms ms — Fair';
+    return 'Latenz unter Last: $ms ms — Mittelmäßig';
   }
 
   @override
   String loadedLatencyPoorTitle(String ms) {
-    return 'Loaded Latency: $ms ms — Poor';
+    return 'Latenz unter Last: $ms ms — Schlecht';
   }
 
   @override
   String get loadedLatencyExcellentBody =>
-      'Your network stays responsive even when downloading. Excellent router quality.';
+      'Ihr Netzwerk bleibt auch beim Herunterladen reaktionsschnell. Ausgezeichnete Router-Qualität.';
 
   @override
   String get loadedLatencyGoodBody =>
-      'Response time increases slightly under load, but stays very usable.';
+      'Die Reaktionszeit steigt unter Last leicht an, bleibt aber gut nutzbar.';
 
   @override
   String get loadedLatencyFairBody =>
-      'Noticeable delay when others are using the network. Gaming while downloading may suffer.';
+      'Spürbare Verzögerung, wenn andere das Netzwerk nutzen. Gaming beim Herunterladen kann leiden.';
 
   @override
   String get loadedLatencyPoorBody =>
-      'High Bufferbloat. Connection becomes unresponsive during large downloads. Consider enabling QoS on your router.';
+      'Hoher Bufferbloat. Die Verbindung wird bei großen Downloads träge. QoS auf Ihrem Router aktivieren.';
 
   @override
-  String get bufferbloatGradeLabel => 'BUFFERBLOAT GRADE';
+  String get bufferbloatGradeLabel => 'BUFFERBLOAT-NOTE';
 
   @override
   String get bufferbloatGradeA =>
-      'Excellent bufferbloat control. Your router keeps latency low even under heavy load.';
+      'Ausgezeichnete Bufferbloat-Kontrolle. Ihr Router hält die Latenz auch unter starker Last niedrig.';
 
   @override
   String get bufferbloatGradeB =>
-      'Good bufferbloat. Minor latency increase under load — most users won\'t notice.';
+      'Guter Bufferbloat-Wert. Leichter Latenzanstieg unter Last — die meisten Nutzer merken nichts.';
 
   @override
   String get bufferbloatGradeC =>
-      'Moderate bufferbloat. Gaming and video calls may lag when others are downloading.';
+      'Mäßiger Bufferbloat. Gaming und Videoanrufe können ruckeln, wenn andere herunterladen.';
 
   @override
   String get bufferbloatGradeD =>
-      'Poor bufferbloat. Connection becomes sluggish under load. Enable QoS on your router.';
+      'Schlechter Bufferbloat. Die Verbindung wird unter Last träge. QoS auf Ihrem Router aktivieren.';
 
   @override
   String get bufferbloatGradeE =>
-      'Severe bufferbloat. Real-time apps will fail during concurrent downloads.';
+      'Starker Bufferbloat. Echtzeit-Apps versagen bei gleichzeitigen Downloads.';
 
   @override
   String get bufferbloatGradeF =>
-      'Critical bufferbloat. Your router does not control queue depth. Upgrade firmware or hardware.';
+      'Kritischer Bufferbloat. Ihr Router kontrolliert die Warteschlangentiefe nicht. Firmware oder Hardware aktualisieren.';
 
   @override
   String get speedTestDisclaimer =>
-      'Results reflect speed to Cloudflare\'s nearest server and are affected by Wi-Fi, device hardware, and PoP distance. They are not a direct measure of your ISP contract speed.';
+      'Ergebnisse spiegeln die Geschwindigkeit zum nächsten Cloudflare-Server wider und werden von Wi-Fi, Gerätehardware und PoP-Entfernung beeinflusst. Sie sind kein direktes Maß für die vertraglich vereinbarte ISP-Geschwindigkeit.';
 
   @override
-  String get clearAllHistoryAction => 'CLEAR ALL HISTORY';
+  String get clearAllHistoryAction => 'GESAMTEN VERLAUF LÖSCHEN';
 
   @override
   String get deleteAllHistoryConfirm =>
-      'Delete all speed test records? This cannot be undone.';
+      'Alle Speedtest-Datensätze löschen? Das kann nicht rückgängig gemacht werden.';
 
   @override
-  String get deleteAllAction => 'DELETE ALL';
+  String get deleteAllAction => 'ALLE LÖSCHEN';
 
   @override
   String whyIsThisLabel(String level) {
-    return 'WHY IS THIS $level?';
+    return 'WARUM IST DAS $level?';
   }
 
   @override
   String get noSpecificConcerns =>
-      'No specific concerns logged for this device. The badge reflects an aggregate score.';
+      'Für dieses Gerät sind keine spezifischen Probleme protokolliert. Das Abzeichen spiegelt einen Gesamtwert wider.';
 
   @override
-  String get whatToDoLabel => 'WHAT TO DO';
+  String get whatToDoLabel => 'WAS ZU TUN IST';
 
   @override
-  String get trustLevelSafe => 'SAFE';
+  String get trustLevelSafe => 'SICHER';
 
   @override
-  String get trustLevelCaution => 'CAUTION';
+  String get trustLevelCaution => 'VORSICHT';
 
   @override
-  String get trustLevelRisky => 'RISKY';
+  String get trustLevelRisky => 'RISKANT';
 
   @override
-  String cveDatabaseLabel(String freshness) {
-    return 'CVE DATABASE — $freshness';
-  }
-
-  @override
-  String get howToUpdateLabel => 'HOW TO UPDATE';
-
-  @override
-  String get vulnDbFreshLabel => 'FRESH';
-
-  @override
-  String get vulnDbAgingLabel => 'AGING';
-
-  @override
-  String get vulnDbStaleLabel => 'STALE';
-
-  @override
-  String get vulnDbFreshMessage =>
-      'Vulnerability lookups against this database are up to date.';
-
-  @override
-  String get vulnDbAgingMessage =>
-      'The local vulnerability database is over a month old. A clean scan still has value but consider refreshing soon.';
-
-  @override
-  String get vulnDbStaleMessage =>
-      'This database is more than 90 days old. A \"no findings\" result no longer means the network is safe — many newer CVEs may not be represented here yet.';
-
-  @override
-  String vulnDbEntriesInfo(String version, int count, int days) {
-    return 'v$version · $count entries · $days days old';
-  }
-
-  @override
-  String get wipeAllDialogTitle => 'WIPE ALL DATA';
+  String get wipeAllDialogTitle => 'ALLE DATEN LÖSCHEN';
 
   @override
   String get wipeAllDialogBody =>
-      'This will permanently delete all local scan history, speed test records, security events, channel ratings and in-memory snapshots. This action cannot be undone.';
+      'Dies löscht dauerhaft den gesamten lokalen Scan-Verlauf, Speedtest-Datensätze, Sicherheitsereignisse, Kanalbewertungen und Snapshots im Speicher. Diese Aktion kann nicht rückgängig gemacht werden.';
 
   @override
-  String get wipeAllAction => 'WIPE ALL';
+  String get wipeAllAction => 'ALLES LÖSCHEN';
 
   @override
-  String get allDataWiped => 'All local data wiped.';
+  String get allDataWiped => 'Alle lokalen Daten gelöscht.';
 
   @override
-  String get systemDefault => 'System Default';
+  String get systemDefault => 'Systemstandard';
 
   @override
   String portScanTimeoutMs(int ms) {
@@ -4734,76 +4341,78 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get legendAndNodes => 'LEGEND & NODES';
+  String get legendAndNodes => 'LEGENDE & KNOTEN';
 
   @override
   String get legendGateway => 'GATEWAY';
 
   @override
-  String get legendGatewayDesc => 'Central network entry point';
+  String get legendGatewayDesc => 'Zentraler Netzwerk-Eingangspunkt';
 
   @override
   String get legendAccessPoint => 'ACCESS POINT';
 
   @override
-  String get legendAccessPointDesc => 'WiFi signal distributor';
+  String get legendAccessPointDesc => 'WiFi-Signalverteiler';
 
   @override
-  String get legendMobile => 'MOBILE';
+  String get legendMobile => 'MOBIL';
 
   @override
-  String get legendMobileDesc => 'Personal handheld devices';
+  String get legendMobileDesc => 'Persönliche mobile Geräte';
 
   @override
   String get legendIot => 'IOT';
 
   @override
-  String get legendIotDesc => 'Smart home & sensors';
+  String get legendIotDesc => 'Smart Home & Sensoren';
 
   @override
-  String get legendDevice => 'DEVICE';
+  String get legendDevice => 'GERÄT';
 
   @override
-  String get legendDeviceDesc => 'Computers, TVs, etc.';
+  String get legendDeviceDesc => 'Computer, TVs, usw.';
 
   @override
   String get surveyStageStandby => 'STANDBY';
 
   @override
-  String get surveyStageInitializing => 'INITIALIZING';
+  String get surveyStageInitializing => 'INITIALISIERUNG';
 
   @override
-  String get surveyStageSweepRooms => 'SWEEP ROOMS';
+  String get surveyStageSweepRooms => 'RÄUME ERFASSEN';
 
   @override
-  String get surveyStageWeakZone => 'WEAK ZONE';
+  String get surveyStageWeakZone => 'SCHWACHE ZONE';
 
   @override
-  String get surveyStageWrapUp => 'WRAP UP';
+  String get surveyStageWrapUp => 'ABSCHLUSS';
 
   @override
-  String get surveyStageReview => 'REVIEW';
+  String get surveyStageReview => 'PRÜFUNG';
 
   @override
-  String get connectionTypesHeader => 'CONNECTION TYPES';
+  String get connectionTypesHeader => 'VERBINDUNGSARTEN';
 
   @override
-  String get connTypeSolidLineLabel => 'Solid Line (Blue)';
+  String get connTypeSolidLineLabel => 'Durchgezogene Linie (Blau)';
 
   @override
-  String get connTypeSolidLineDesc => 'High-speed wired Ethernet connection';
+  String get connTypeSolidLineDesc =>
+      'Kabelgebundene Ethernet-Verbindung mit hoher Geschwindigkeit';
 
   @override
-  String get connTypeGradientLabel => 'Glowing Gradient (Cyan)';
+  String get connTypeGradientLabel => 'Leuchtender Verlauf (Cyan)';
 
   @override
-  String get connTypeGradientDesc => 'Wireless WiFi connection';
+  String get connTypeGradientDesc => 'Drahtlose WiFi-Verbindung';
 
   @override
-  String get connTypePulsingLabel => 'Pulsing Data Point';
+  String get connTypePulsingLabel => 'Pulsierender Datenpunkt';
 
   @override
-  String get connTypePulsingDesc => 'Active traffic detected on the link';
+  String get connTypePulsingDesc =>
+      'Aktiver Datenverkehr auf der Verbindung erkannt';
 
   @override
   String get uploadLabel => 'UPLOAD';
@@ -4812,159 +4421,159 @@ class AppLocalizationsDe extends AppLocalizations {
   String get downloadLabel => 'DOWNLOAD';
 
   @override
-  String get speedTestSemanticsIdle => 'Speed test gauge. Tap to start.';
+  String get speedTestSemanticsIdle => 'Speedtest-Anzeige. Zum Starten tippen.';
 
   @override
   String speedTestSemanticsRunning(String mbps) {
-    return 'Speed test running — $mbps Mbps download. Tap to stop.';
+    return 'Speedtest läuft — $mbps Mbps Download. Zum Stoppen tippen.';
   }
 
   @override
   String speedTestSemanticsComplete(String dl, String ul) {
-    return 'Speed test complete — $dl Mbps download, $ul Mbps upload.';
+    return 'Speedtest abgeschlossen — $dl Mbps Download, $ul Mbps Upload.';
   }
 
   @override
-  String get measurementLockedTitle => 'MEASUREMENT LOCKED';
+  String get measurementLockedTitle => 'MESSUNG GESPERRT';
 
   @override
   String get measurementLockNoWifi =>
-      'Connect to a Wi-Fi network to lock the survey target.';
+      'Mit einem Wi-Fi-Netzwerk verbinden, um das Erfassungsziel zu sperren.';
 
   @override
   String measurementLockReconnect(String bssid) {
-    return 'Reconnect to $bssid to resume sampling.';
+    return 'Erneut mit $bssid verbinden, um die Messung fortzusetzen.';
   }
 
   @override
-  String get waitingForSignalTitle => 'WAITING FOR FRESH SIGNAL';
+  String get waitingForSignalTitle => 'WARTE AUF FRISCHES SIGNAL';
 
   @override
   String get waitingForSignalBody =>
-      'RSSI is older than 3 seconds. Walk briefly or hold position for a new scan.';
+      'RSSI ist älter als 3 Sekunden. Kurz gehen oder Position halten für einen neuen Scan.';
 
   @override
-  String get signalDroppedTitle => 'SIGNAL DROPPED';
+  String get signalDroppedTitle => 'SIGNAL ABGEFALLEN';
 
   @override
   String get signalDroppedBody =>
-      'Wi-Fi signal is below -85dBm. Move closer to the Access Point.';
+      'Wi-Fi-Signal liegt unter -85dBm. Näher an den Access Point gehen.';
 
   @override
-  String get compassDriftTitle => 'COMPASS DRIFT DETECTED';
+  String get compassDriftTitle => 'KOMPASS-ABWEICHUNG ERKANNT';
 
   @override
   String get measurementLockMagnetic =>
-      'Magnetic interference found. Walk in a figure-8 or tap Realign.';
+      'Magnetische Störung gefunden. In einer 8er-Form gehen oder auf Neu ausrichten tippen.';
 
   @override
-  String get placeSurveyOriginTitle => 'PLACE SURVEY ORIGIN';
+  String get placeSurveyOriginTitle => 'ERFASSUNGSURSPRUNG PLATZIEREN';
 
   @override
   String get measurementLockAnchor =>
-      'Tap a detected plane to anchor the AR survey before recording points.';
+      'Auf eine erkannte Ebene tippen, um die AR-Erfassung zu verankern, bevor Punkte aufgezeichnet werden.';
 
   @override
-  String get trackingLostTitle => 'TRACKING LOST';
+  String get trackingLostTitle => 'TRACKING VERLOREN';
 
   @override
   String get measurementLockTracking =>
-      'Motion tracking is unavailable. Move slowly until tracking returns.';
+      'Bewegungs-Tracking ist nicht verfügbar. Langsam bewegen, bis das Tracking zurückkehrt.';
 
   @override
-  String get readyBannerTapFinish => 'Tap to finish scan';
+  String get readyBannerTapFinish => 'Zum Beenden des Scans tippen';
 
   @override
-  String get ssidChipLock => 'LOCK';
+  String get ssidChipLock => 'SPERREN';
 
   @override
-  String get ssidChipHold => 'HOLD';
+  String get ssidChipHold => 'HALTEN';
 
   @override
-  String get guidanceStageIdle => 'Idle';
+  String get guidanceStageIdle => 'Leerlauf';
 
   @override
-  String get guidanceStageInitializing => 'Initializing';
+  String get guidanceStageInitializing => 'Initialisierung';
 
   @override
-  String get guidanceStageMappingSignal => 'Mapping Signal';
+  String get guidanceStageMappingSignal => 'Signal wird kartiert';
 
   @override
-  String get guidanceStageScanningWeakZones => 'Scanning Weak Zones';
+  String get guidanceStageScanningWeakZones => 'Schwache Zonen werden gescannt';
 
   @override
-  String get guidanceStageReadyToFinish => 'Ready to Finish';
+  String get guidanceStageReadyToFinish => 'Bereit zum Abschluss';
 
   @override
-  String get guidanceStageReviewing => 'Reviewing';
+  String get guidanceStageReviewing => 'Wird geprüft';
 
   @override
   String get signalProbeHint =>
-      'Try tapping closer to a captured signal point.';
+      'Versuchen Sie, näher an einem erfassten Signalpunkt zu tippen.';
 
   @override
-  String get wifiSecurityOpen => 'OPEN';
+  String get wifiSecurityOpen => 'OFFEN';
 
   @override
   String get newSessionPermissionsBody =>
-      'To generate accurate heatmaps and map your network coverage, Torcav requires access to certain device features:';
+      'Um genaue Heatmaps zu erstellen und Ihre Netzwerkabdeckung zu kartieren, benötigt Torcav Zugriff auf bestimmte Gerätefunktionen:';
 
   @override
   String get newSessionPermLocation =>
-      'Location (to map signal to coordinates)';
+      'Standort (um Signal auf Koordinaten abzubilden)';
 
   @override
   String get newSessionPermActivity =>
-      'Activity Recognition (to track steps and movement)';
+      'Aktivitätserkennung (um Schritte und Bewegung zu verfolgen)';
 
   @override
   String get newSessionPermCamera =>
-      'Camera (optional, for visual mapping features)';
+      'Kamera (optional, für visuelle Kartierungsfunktionen)';
 
   @override
   String get reportsMacMaskDesc =>
-      'Masks last 3 octets (XX:XX:XX) before export';
+      'Maskiert die letzten 3 Oktette (XX:XX:XX) vor dem Export';
 
   @override
-  String get reportsShareSubject => 'Torcav Scan Report';
+  String get reportsShareSubject => 'Torcav-Scanbericht';
 
   @override
   String exportNoDataYet(String label) {
-    return 'No data in \"$label\" yet.';
+    return 'Noch keine Daten in \"$label\".';
   }
 
   @override
-  String get exportSubject => 'Torcav local data export';
+  String get exportSubject => 'Torcav lokaler Datenexport';
 
   @override
   String exportFailedError(String error) {
-    return 'Export failed: $error';
+    return 'Export fehlgeschlagen: $error';
   }
 
   @override
-  String get tapToStart => 'TAP TO START';
+  String get tapToStart => 'ZUM STARTEN TIPPEN';
 
   @override
-  String get tapToStop => 'TAP TO STOP';
+  String get tapToStop => 'ZUM STOPPEN TIPPEN';
 
   @override
-  String get liveWifi => 'LIVE WI-FI';
+  String get liveWifi => 'LIVE-WI-FI';
 
   @override
-  String get signalProbeTitle => 'SIGNAL PROBE';
+  String get signalProbeTitle => 'SIGNALSONDE';
 
   @override
   String get statusOptimal => 'OPTIMAL';
 
   @override
-  String get statusFair => 'FAIR';
+  String get statusFair => 'MITTELMÄSSIG';
 
   @override
-  String get statusCritical => 'CRITICAL';
+  String get statusCritical => 'KRITISCH';
 
   @override
   String daysCount(int count) {
-    return '${count}d';
+    return '${count}T';
   }
 
   @override
@@ -4991,152 +4600,152 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get sdWeakSignalWhatIs =>
-      'Signal strength (RSSI) measures how loudly your device hears the router. Below about −70 dBm, Wi-Fi has to drop to slower, more redundant encodings to stay reliable.';
+      'Die Signalstärke (RSSI) misst, wie laut Ihr Gerät den Router hört. Unter etwa −70 dBm muss Wi-Fi auf langsamere, redundantere Kodierungen ausweichen, um zuverlässig zu bleiben.';
 
   @override
   String get sdWeakSignalWhyItMatters =>
-      'A weak signal forces the radio into low-rate modes. Even if your internet plan is fast, the Wi-Fi link itself becomes the ceiling — downloads stall, video calls drop, and pages take longer.';
+      'Ein schwaches Signal zwingt das Funkmodul in Modi mit niedriger Datenrate. Selbst bei einem schnellen Internettarif wird die Wi-Fi-Verbindung selbst zur Obergrenze — Downloads stocken, Videoanrufe brechen ab, Seiten laden langsamer.';
 
   @override
   String get sdWeakSignalHowToFix1 =>
-      'Move closer to the router or to a less obstructed spot.';
+      'Näher an den Router oder an eine weniger verstellte Stelle gehen.';
 
   @override
   String get sdWeakSignalHowToFix2 =>
-      'Add a mesh node / Wi-Fi extender in this area.';
+      'Einen Mesh-Knoten / Wi-Fi-Verstärker in diesem Bereich hinzufügen.';
 
   @override
   String get sdWeakSignalHowToFix3 =>
-      'If your router supports 5 GHz or 6 GHz on this SSID, use that band when you are in line-of-sight of it.';
+      'Falls Ihr Router 5 GHz oder 6 GHz auf dieser SSID unterstützt, dieses Band nutzen, wenn Sichtverbindung besteht.';
 
   @override
   String get sdWeakSignalHowToFix4 =>
-      'Check that the router is not buried inside a cabinet, behind a TV, or next to a microwave.';
+      'Prüfen, dass der Router nicht in einem Schrank, hinter einem TV oder neben einer Mikrowelle versteckt ist.';
 
   @override
   String sdWeakSignalEstimate(String gain) {
-    return 'Estimated gain: up to +$gain Mbps download if you can pull the device closer to the router.';
+    return 'Geschätzter Gewinn: bis zu +$gain Mbps Download, wenn Sie das Gerät näher an den Router bringen können.';
   }
 
   @override
   String get sdCrowdedChannelWhatIs =>
-      'Wi-Fi channels are shared spectrum. When several nearby access points transmit on the same channel, they have to take turns — air-time is split between all of them, including yours.';
+      'Wi-Fi-Kanäle sind geteiltes Spektrum. Wenn mehrere nahe Access Points auf demselben Kanal senden, müssen sie sich abwechseln — die Sendezeit wird unter allen aufgeteilt, auch Ihrer.';
 
   @override
   String get sdCrowdedChannelWhyItMatters =>
-      'On a crowded channel your throughput drops even when no one in your home is using the network. The radio is healthy, but it has to wait for its turn to talk.';
+      'Auf einem überfüllten Kanal sinkt Ihr Durchsatz, selbst wenn niemand bei Ihnen zu Hause das Netzwerk nutzt. Das Funkmodul ist gesund, muss aber auf seine Sendezeit warten.';
 
   @override
   String get sdCrowdedChannelHowToFix1 =>
-      'Open the router admin page and switch the Wi-Fi channel manually (Channel Rating in the app suggests the cleanest one).';
+      'Die Router-Admin-Seite öffnen und den Wi-Fi-Kanal manuell wechseln (die Kanalbewertung in der App schlägt den saubersten vor).';
 
   @override
   String get sdCrowdedChannelHowToFix2 =>
-      'On 2.4 GHz, prefer channels 1 / 6 / 11 — they do not overlap.';
+      'Bei 2,4 GHz die Kanäle 1 / 6 / 11 bevorzugen — sie überlappen sich nicht.';
 
   @override
   String get sdCrowdedChannelHowToFix3 =>
-      'If your router supports 5 GHz or 6 GHz, move the device to that band: there are far more clean channels available.';
+      'Falls Ihr Router 5 GHz oder 6 GHz unterstützt, das Gerät auf dieses Band verschieben: dort gibt es weit mehr saubere Kanäle.';
 
   @override
   String get sdCrowdedChannelHowToFix4 =>
-      'For dual-band routers, give each band its own SSID so devices stop flipping back to a crowded 2.4 GHz channel.';
+      'Bei Dualband-Routern jedem Band eine eigene SSID geben, damit Geräte nicht mehr auf einen überfüllten 2,4-GHz-Kanal zurückfallen.';
 
   @override
   String sdCrowdedChannelEstimate(String gain) {
-    return 'Estimated gain: up to +$gain Mbps download after switching to a quieter channel.';
+    return 'Geschätzter Gewinn: bis zu +$gain Mbps Download nach dem Wechsel zu einem ruhigeren Kanal.';
   }
 
   @override
   String get sdBufferbloatWhatIs =>
-      'Bufferbloat is the latency that builds up inside your router\'s send buffers when the link is fully loaded — typical packets have to queue behind a backlog of bulk traffic.';
+      'Bufferbloat ist die Latenz, die sich in den Sendepuffern Ihres Routers aufbaut, wenn die Verbindung voll ausgelastet ist — typische Pakete müssen sich hinter einem Rückstau an Massenverkehr einreihen.';
 
   @override
   String get sdBufferbloatWhyItMatters =>
-      'Your download speed can look great while a file is in flight, but voice calls jitter, video conferences freeze, and games lag — anything time-sensitive is held up behind the queue.';
+      'Ihre Download-Geschwindigkeit kann großartig aussehen, während eine Datei unterwegs ist, aber Sprachanrufe jittern, Videokonferenzen frieren ein und Spiele lagen — alles Zeitkritische wird hinter der Warteschlange festgehalten.';
 
   @override
   String get sdBufferbloatHowToFix1 =>
-      'Enable QoS / SQM (sometimes called \"Smart Queue Management\" or \"Adaptive QoS\") in your router admin page.';
+      'QoS / SQM (manchmal \"Smart Queue Management\" oder \"Adaptive QoS\" genannt) auf der Router-Admin-Seite aktivieren.';
 
   @override
   String get sdBufferbloatHowToFix2 =>
-      'Update the router firmware — modern firmware ships better queue discipline by default.';
+      'Die Router-Firmware aktualisieren — moderne Firmware liefert standardmäßig bessere Warteschlangen-Steuerung.';
 
   @override
   String get sdBufferbloatHowToFix3 =>
-      'If the router is many years old and lacks SQM, replacing it with a recent model is often the only real fix.';
+      'Ist der Router viele Jahre alt und hat kein SQM, ist ein neueres Modell oft die einzige echte Lösung.';
 
   @override
   String get sdBufferbloatHowToFix4 =>
-      'Cap upload bandwidth in the router slightly below your real plan (e.g. 90%) so the queue lives on the router, not at the ISP.';
+      'Die Upload-Bandbreite im Router leicht unter Ihrem tatsächlichen Tarif deckeln (z. B. 90 %), damit die Warteschlange am Router entsteht, nicht beim ISP.';
 
   @override
   String sdBufferbloatEstimate(String reduction) {
-    return 'Estimated gain: about −$reduction ms loaded latency. Calls and gaming will feel responsive even during large downloads.';
+    return 'Geschätzter Gewinn: etwa −$reduction ms Latenz unter Last. Anrufe und Gaming fühlen sich auch bei großen Downloads reaktionsschnell an.';
   }
 
   @override
   String get sdIspSlowWhatIs =>
-      'Your Wi-Fi link is healthy and the radio could carry far more than what is actually flowing through it. The bottleneck sits upstream of the router.';
+      'Ihre Wi-Fi-Verbindung ist gesund und das Funkmodul könnte weit mehr übertragen als tatsächlich fließt. Der Engpass liegt vor dem Router.';
 
   @override
   String get sdIspSlowWhyItMatters =>
-      'No amount of router or Wi-Fi tuning will help — the link from your ISP to the router is the ceiling. Treat this as data for a plan-upgrade or support call, not as a Wi-Fi problem.';
+      'Kein Router- oder Wi-Fi-Tuning hilft hier — die Verbindung von Ihrem ISP zum Router ist die Obergrenze. Betrachten Sie dies als Grundlage für ein Tarif-Upgrade oder einen Support-Anruf, nicht als Wi-Fi-Problem.';
 
   @override
   String get sdIspSlowHowToFix1 =>
-      'Re-run the test with a wired Ethernet cable to confirm the radio is not at fault.';
+      'Den Test mit einem Ethernet-Kabel erneut ausführen, um zu bestätigen, dass nicht das Funkmodul schuld ist.';
 
   @override
   String get sdIspSlowHowToFix2 =>
-      'Check the ISP plan you are paying for — the test result should match it within ~80% on a good day.';
+      'Den ISP-Tarif prüfen, den Sie bezahlen — das Testergebnis sollte an einem guten Tag zu ~80 % passen.';
 
   @override
   String get sdIspSlowHowToFix3 =>
-      'Try at different times of day. If only evenings are slow, the ISP segment may be congested.';
+      'Zu verschiedenen Tageszeiten testen. Ist nur abends langsam, könnte das ISP-Segment überlastet sein.';
 
   @override
   String get sdIspSlowHowToFix4 =>
-      'If the result is consistently far below your plan, contact the ISP with the speed test output.';
+      'Liegt das Ergebnis dauerhaft weit unter Ihrem Tarif, den ISP mit dem Speedtest-Ergebnis kontaktieren.';
 
   @override
   String sdIspSlowEstimate(String phy, String download) {
-    return 'Your Wi-Fi can carry up to ~$phy Mbps; you are currently getting $download Mbps. The gap is upstream of the router.';
+    return 'Ihr Wi-Fi kann bis zu ~$phy Mbps tragen; Sie erhalten aktuell $download Mbps. Die Lücke liegt vor dem Router.';
   }
 
   @override
   String get sdSlowDnsWhatIs =>
-      'DNS turns names like example.com into the IP addresses your device actually connects to. Every page load fires off a handful of these lookups before any data flows.';
+      'DNS wandelt Namen wie example.com in die IP-Adressen um, mit denen sich Ihr Gerät tatsächlich verbindet. Jeder Seitenaufruf löst eine Handvoll dieser Abfragen aus, bevor Daten fließen.';
 
   @override
   String get sdSlowDnsWhyItMatters =>
-      'Slow DNS does not lower your download speed — it adds a delay at the start of every connection. The web feels \"laggy\" even when speed tests look fine.';
+      'Langsames DNS senkt nicht Ihre Download-Geschwindigkeit — es fügt eine Verzögerung am Anfang jeder Verbindung hinzu. Das Web fühlt sich \"träge\" an, selbst wenn Speedtests gut aussehen.';
 
   @override
   String get sdSlowDnsHowToFix1 =>
-      'Switch your device or router DNS to a fast public resolver — 1.1.1.1 (Cloudflare), 8.8.8.8 (Google), or 9.9.9.9 (Quad9).';
+      'Das DNS Ihres Geräts oder Routers auf einen schnellen öffentlichen Resolver umstellen — 1.1.1.1 (Cloudflare), 8.8.8.8 (Google) oder 9.9.9.9 (Quad9).';
 
   @override
   String get sdSlowDnsHowToFix2 =>
-      'Enable DNS-over-HTTPS (DoH) or DNS-over-TLS (DoT) in your OS or browser to also encrypt the lookups.';
+      'DNS-over-HTTPS (DoH) oder DNS-over-TLS (DoT) in Ihrem Betriebssystem oder Browser aktivieren, um die Abfragen zusätzlich zu verschlüsseln.';
 
   @override
   String get sdSlowDnsHowToFix3 =>
-      'If your ISP\'s DNS is slow, set the resolver on the router so the whole household benefits, not just one device.';
+      'Ist das DNS Ihres ISP langsam, den Resolver am Router einstellen, damit der ganze Haushalt profitiert, nicht nur ein Gerät.';
 
   @override
   String sdSlowDnsEstimate(int reduction) {
-    return 'Estimated gain: about −$reduction ms per name lookup. Page loads usually feel 5–20% snappier because each page kicks off a dozen lookups.';
+    return 'Geschätzter Gewinn: etwa −$reduction ms pro Namensauflösung. Seiten fühlen sich meist 5–20 % flotter an, da jede Seite ein Dutzend Abfragen auslöst.';
   }
 
   @override
   String get sdHealthyWhatIs =>
-      'Speed Doctor checks five things: signal strength, channel congestion, speed-under-load (bufferbloat), download throughput vs Wi-Fi capacity, and DNS resolution time.';
+      'Speed Doctor prüft fünf Dinge: Signalstärke, Kanalüberlastung, Geschwindigkeit unter Last (Bufferbloat), Download-Durchsatz vs. Wi-Fi-Kapazität und DNS-Auflösungszeit.';
 
   @override
   String get sdHealthyWhyItMatters =>
-      'None of those crossed an alert threshold this run. Your link is in good shape right now — re-run the test if you start noticing a problem to see whether anything shifted.';
+      'Keiner dieser Werte hat diesmal einen Warnschwellenwert überschritten. Ihre Verbindung ist gerade in gutem Zustand — führen Sie den Test erneut aus, falls Sie ein Problem bemerken, um zu sehen, ob sich etwas verändert hat.';
 
   @override
   String sdMetricRssi(int rssi) {
@@ -5145,27 +4754,27 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String sdThresholdRssi(int healthy, int severe) {
-    return 'Healthy ≥ $healthy dBm · Severe ≤ $severe dBm';
+    return 'Gesund ≥ $healthy dBm · Kritisch ≤ $severe dBm';
   }
 
   @override
   String sdMetricChannel(int channel, String score) {
-    return 'Channel $channel · score $score/10';
+    return 'Kanal $channel · Wert $score/10';
   }
 
   @override
   String sdThresholdChannel(String healthy, String severe) {
-    return 'Healthy ≥ $healthy · Severe ≤ $severe';
+    return 'Gesund ≥ $healthy · Kritisch ≤ $severe';
   }
 
   @override
   String sdMetricBufferbloat(String induced, String latency, String loaded) {
-    return 'Loaded latency Δ: $induced ms ($latency → $loaded)';
+    return 'Latenz unter Last Δ: $induced ms ($latency → $loaded)';
   }
 
   @override
   String sdThresholdBufferbloat(String healthy, String severe) {
-    return 'Healthy ≤ $healthy ms · Severe ≥ $severe ms';
+    return 'Gesund ≤ $healthy ms · Kritisch ≥ $severe ms';
   }
 
   @override
@@ -5180,82 +4789,70 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String sdThresholdIsp(String healthy) {
-    return 'Healthy ≥ $healthy Mbps when radio is uncongested';
+    return 'Gesund ≥ $healthy Mbps bei unbelastetem Funkmodul';
   }
 
   @override
   String sdMetricDns(String name, int latency) {
-    return 'Best resolver: $name · $latency ms';
+    return 'Bester Resolver: $name · $latency ms';
   }
 
   @override
   String sdThresholdDns(int healthy, int severe) {
-    return 'Healthy ≤ $healthy ms · Severe ≥ $severe ms';
+    return 'Gesund ≤ $healthy ms · Kritisch ≥ $severe ms';
   }
 
   @override
-  String get networkContextHomeLabel => 'Home';
+  String get networkContextHomeLabel => 'Zuhause';
 
   @override
-  String get networkContextPublicLabel => 'Public';
+  String get networkContextPublicLabel => 'Öffentlich';
 
   @override
-  String get networkContextGuestLabel => 'Guest';
+  String get networkContextGuestLabel => 'Gast';
 
   @override
-  String get networkContextUnknownLabel => 'Unknown';
+  String get networkContextUnknownLabel => 'Unbekannt';
 
   @override
-  String get noChangeLabel => 'no change';
+  String get noChangeLabel => 'keine Änderung';
 
   @override
-  String get sinceLastScanLabel => 'since last scan';
+  String get sinceLastScanLabel => 'seit letztem Scan';
 
   @override
-  String get allClearLabel => 'all clear';
+  String get allClearLabel => 'alles klar';
 
   @override
-  String get tapToTestLabel => 'tap to test';
+  String get tapToTestLabel => 'zum Testen tippen';
 
   @override
-  String get gameProfileLabel => 'Game profile';
+  String get gameProfileLabel => 'Spielprofil';
 
   @override
-  String get profileGeneric => 'Generic UDP Game';
+  String get profileGeneric => 'Allgemeines UDP-Spiel';
 
   @override
-  String get notificationChannelSecurityCritical => 'Critical Alerts';
+  String get notificationChannelSecurityCritical => 'Kritische Warnungen';
 
   @override
-  String get notificationChannelSecurityHigh => 'High Priority';
+  String get notificationChannelSecurityHigh => 'Hohe Priorität';
 
   @override
-  String get notificationChannelSecurityMedium => 'Medium Priority';
+  String get notificationChannelSecurityMedium => 'Mittlere Priorität';
 
   @override
-  String get notificationChannelSecurityWarning => 'Warnings';
+  String get notificationChannelSecurityWarning => 'Warnungen';
 
   @override
-  String get notificationChannelSecurityLow => 'Low Priority';
+  String get notificationChannelSecurityLow => 'Niedrige Priorität';
 
   @override
   String get notificationChannelSecurityInfo => 'Information';
 
   @override
   String get notificationChannelSecurityDescription =>
-      'Security alert notifications';
-
-  @override
-  String get scanCompleteTitle => 'Scan Complete';
-
-  @override
-  String scanCompleteBody(int count, int seconds) {
-    return 'Found $count networks in ${seconds}s';
-  }
-
-  @override
-  String get wifiChannelQualityDroppedTitle =>
-      '📶 Wi-Fi channel quality dropped';
+      'Benachrichtigungen zu Sicherheitswarnungen';
 
   @override
   String wifiChannelQualityDroppedBody(
@@ -5264,31 +4861,26 @@ class AppLocalizationsDe extends AppLocalizations {
     int recommendedChannel,
     String recommendedRating,
   ) {
-    return 'Channel $channel is now $rating/10. Channel $recommendedChannel is at $recommendedRating/10 — consider switching.';
+    return 'Kanal $channel liegt jetzt bei $rating/10. Kanal $recommendedChannel liegt bei $recommendedRating/10 — einen Wechsel erwägen.';
   }
 
   @override
-  String attackDetectedTitle(String attackType) {
-    return '⚠️ Attack Detected: $attackType';
-  }
+  String get stabilizerJitterSpikeTitle => 'Jitter-Spitze erkannt';
 
   @override
-  String get stabilizerJitterSpikeTitle => 'Jitter spike detected';
+  String get stabilizerFasterDnsTitle => 'Schnelleres DNS verfügbar';
 
   @override
-  String get stabilizerFasterDnsTitle => 'Faster DNS available';
-
-  @override
-  String get stabilizerPacketLossTitle => 'Persistent packet loss';
+  String get stabilizerPacketLossTitle => 'Anhaltender Paketverlust';
 
   @override
   String stabilizerJitterSpikeBody(String threshold, int window) {
-    return 'Jitter exceeded $threshold ms for $window samples. Cycling the tunnel may break a sticky bad path.';
+    return 'Jitter überschritt $threshold ms für $window Messwerte. Ein Tunnel-Neuaufbau kann einen hängenden schlechten Pfad beheben.';
   }
 
   @override
   String stabilizerFasterDnsBody(String label) {
-    return 'A faster DNS ($label) is available.';
+    return 'Ein schnelleres DNS ($label) ist verfügbar.';
   }
 
   @override
@@ -5405,100 +4997,100 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get lanDiscoveryTitle => 'LAN Devices Discovered';
+  String get lanDiscoveryTitle => 'LAN-Geräte entdeckt';
 
   @override
   String get lanDiscoveryRecommendation =>
-      'Ensure you recognize all devices on your local network.';
+      'Stellen Sie sicher, dass Sie alle Geräte in Ihrem lokalen Netzwerk erkennen.';
 
   @override
-  String get gatewayPortsExposedTitle => 'Gateway Ports Exposed';
+  String get gatewayPortsExposedTitle => 'Gateway-Ports exponiert';
 
   @override
   String get gatewayPortsExposedRecommendation =>
-      'Disable unnecessary services on the gateway router and ensure strong passwords.';
+      'Unnötige Dienste am Gateway-Router deaktivieren und starke Passwörter sicherstellen.';
 
   @override
-  String get openServiceDetectedTitle => 'Open Service Detected';
+  String get openServiceDetectedTitle => 'Offener Dienst erkannt';
 
   @override
   String get openServiceDetectedRecommendation =>
-      'Ensure this service is intended to be accessible.';
+      'Sicherstellen, dass dieser Dienst absichtlich erreichbar sein soll.';
 
   @override
   String lanDeviceDiscoveredTitle(String name) {
-    return 'LAN Device: $name';
+    return 'LAN-Gerät: $name';
   }
 
   @override
   String get lanDeviceDiscoveredRecommendation =>
-      'Verify this device is yours. Malicious devices often hide in the LAN.';
+      'Prüfen Sie, ob dieses Gerät Ihnen gehört. Bösartige Geräte verstecken sich oft im LAN.';
 
   @override
-  String get rule_arp_spoofing_title => 'ARP Spoofing Detected';
+  String get rule_arp_spoofing_title => 'ARP-Spoofing erkannt';
 
   @override
   String get rule_arp_spoofing_desc =>
-      'Multiple MAC addresses are claiming the same IP address. An attacker may be intercepting your traffic.';
+      'Mehrere MAC-Adressen beanspruchen dieselbe IP-Adresse. Ein Angreifer könnte Ihren Datenverkehr abfangen.';
 
   @override
   String get rule_arp_spoofing_rec =>
-      'Switch to a different network or use a VPN immediately.';
+      'Zu einem anderen Netzwerk wechseln oder sofort ein VPN nutzen.';
 
   @override
-  String get rule_dns_hijacking_title => 'DNS Hijacking Detected';
+  String get rule_dns_hijacking_title => 'DNS-Hijacking erkannt';
 
   @override
   String get rule_dns_hijacking_desc =>
-      'Your DNS queries are being redirected to an unexpected server. This allows an attacker to control which websites you visit.';
+      'Ihre DNS-Anfragen werden auf einen unerwarteten Server umgeleitet. So kann ein Angreifer kontrollieren, welche Websites Sie besuchen.';
 
   @override
   String get rule_dns_hijacking_rec =>
-      'Switch to a VPN immediately. Your DNS queries are being tampered with.';
+      'Sofort zu einem VPN wechseln. Ihre DNS-Anfragen werden manipuliert.';
 
   @override
   String channelWithRating(int channel, String rating) {
-    return 'CH $channel ($rating)';
+    return 'KN $channel ($rating)';
   }
 
   @override
   String lanDiscoveryEvidence(String devices) {
-    return 'Discovered: $devices';
+    return 'Entdeckt: $devices';
   }
 
   @override
   String gatewayPortsExposedEvidence(String ports) {
-    return 'Open Ports: $ports';
+    return 'Offene Ports: $ports';
   }
 
   @override
   String openServiceDetectedEvidence(String ip, int port, String service) {
-    return 'Target: $ip, Port: $port, Service: $service';
+    return 'Ziel: $ip, Port: $port, Dienst: $service';
   }
 
   @override
   String lanDeviceDiscoveredEvidence(String ip, String mac, String vendor) {
-    return 'IP: $ip, MAC: $mac, Vendor: $vendor';
+    return 'IP: $ip, MAC: $mac, Hersteller: $vendor';
   }
 
   @override
   String evidenceNoEncryption(String network) {
-    return 'The access point advertises no encryption for $network.';
+    return 'Der Access Point meldet keine Verschlüsselung für $network.';
   }
 
   @override
   String lanDiscoveryDesc(int count) {
-    return 'Active scanning identified $count devices on this network.';
+    return 'Aktives Scannen identifizierte $count Geräte in diesem Netzwerk.';
   }
 
   @override
   String gatewayPortsExposedDesc(String ip) {
-    return 'Host $ip has open ports that may be vulnerable.';
+    return 'Host $ip hat offene Ports, die verwundbar sein könnten.';
   }
 
   @override
   String openServiceDetectedDesc(String ip, String service, int port) {
-    return 'Host $ip is running $service on port $port.';
+    return 'Host $ip betreibt $service auf Port $port.';
   }
 
   @override
@@ -5614,10 +5206,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get breachMonitorSubtitle => 'Prüfen, ob ein Passwort geleakt wurde';
-
-  @override
-  String get breachMonitorIntro =>
-      'Geben Sie ein beliebiges Passwort ein, um es gegen bekannte Datenlecks zu prüfen. Nur die ersten 5 Zeichen seines Hashes werden gesendet — das Passwort selbst verlässt Ihr Gerät nie.';
 
   @override
   String get breachInputLabel => 'Zu prüfendes Passwort';

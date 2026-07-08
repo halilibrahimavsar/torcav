@@ -7,7 +7,6 @@ import 'package:network_info_plus/network_info_plus.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/services/notification_service.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../wifi_scan/domain/entities/channel_rating.dart';
@@ -64,7 +63,7 @@ class _SpectrumViewState extends State<_SpectrumView> {
   WifiRegion? _region;
   // Channel for which we already fired an alert in this page session — we
   // only re-alert if the user moves to a different channel and that one
-  // drops too. This prevents notification spam while staying on the page.
+  // drops too. This prevents alert spam while staying on the page.
   int? _alertedChannel;
 
   @override
@@ -121,11 +120,21 @@ class _SpectrumViewState extends State<_SpectrumView> {
     if (best.channel == ratingForConnected.channel) return;
     if (best.rating - ratingForConnected.rating < 1.0) return;
 
-    getIt<NotificationService>().showSpectrumChannelAlert(
-      channel: ratingForConnected.channel,
-      rating: ratingForConnected.rating,
-      recommendedChannel: best.channel,
-      recommendedRating: best.rating,
+    // OS notifications are reserved for the native background workers that
+    // survive process death (MonitoringWorker, StabilizerAlertEngine); on
+    // this live page the recommendation surfaces as an in-app SnackBar.
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          context.l10n.wifiChannelQualityDroppedBody(
+            ratingForConnected.channel,
+            ratingForConnected.rating.toStringAsFixed(1),
+            best.channel,
+            best.rating.toStringAsFixed(1),
+          ),
+        ),
+        duration: const Duration(seconds: 6),
+      ),
     );
   }
 

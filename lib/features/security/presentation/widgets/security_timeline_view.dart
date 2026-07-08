@@ -157,10 +157,7 @@ class SecurityEventCard extends StatelessWidget {
       case domain_event.SecurityEventType.deauthBurstDetected:
         return Icons.wifi_off_rounded;
       case domain_event.SecurityEventType.encryptionDowngraded:
-      case domain_event.SecurityEventType.handshakeCaptureStarted:
         return Icons.lock_open_rounded;
-      case domain_event.SecurityEventType.handshakeCaptureCompleted:
-        return Icons.lock_rounded;
       case domain_event.SecurityEventType.captivePortalDetected:
         return Icons.web_rounded;
       default:
