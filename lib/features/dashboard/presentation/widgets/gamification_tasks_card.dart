@@ -4,48 +4,24 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/l10n/task_label_helper.dart';
 import '../../../diagnostics/domain/entities/network_health_score.dart';
 
 extension GamificationTaskX on GamificationTask {
-  String localizedTitle(BuildContext context) {
-    final l10n = context.l10n;
-    switch (titleKey) {
-      case 'harden_router':
-        return l10n.hardenRouterTaskTitle;
-      case 'enable_wpa3':
-        return l10n.enableWpa3TaskTitle;
-      case 'disable_wps':
-        return l10n.disableWpsTaskTitle;
-      case 'change_default_passwords':
-        return l10n.changeDefaultPasswordsTaskTitle;
-      case 'run_speed_test':
-        return l10n.runSpeedTestTaskTitle;
-      case 'optimize_channel':
-        return l10n.optimizeChannelTaskTitle;
-      default:
-        return titleKey;
-    }
-  }
+  /// Localized task title.
+  ///
+  /// [GetNetworkHealthScoreUseCase] fills `titleKey` from two families — its
+  /// own security-task keys *and* the `speedDoctorAction*` keys of every
+  /// diagnostic action — so resolution goes through [TaskLabelHelper], which
+  /// knows both. The raw key is only ever shown if a new key ships without
+  /// being registered there.
+  String localizedTitle(BuildContext context) =>
+      TaskLabelHelper.title(context.l10n, titleKey) ?? titleKey;
 
-  String localizedDescription(BuildContext context) {
-    final l10n = context.l10n;
-    switch (titleKey) {
-      case 'harden_router':
-        return l10n.hardenRouterTaskDesc;
-      case 'enable_wpa3':
-        return l10n.enableWpa3TaskDesc;
-      case 'disable_wps':
-        return l10n.disableWpsTaskDesc;
-      case 'change_default_passwords':
-        return l10n.changeDefaultPasswordsTaskDesc;
-      case 'run_speed_test':
-        return l10n.runSpeedTestTaskDesc;
-      case 'optimize_channel':
-        return l10n.optimizeChannelTaskDesc;
-      default:
-        return '';
-    }
-  }
+  /// Localized second line, empty when the task is single-line (every
+  /// diagnostic action is: the evidence card carries the reasoning).
+  String localizedDescription(BuildContext context) =>
+      TaskLabelHelper.description(context.l10n, titleKey) ?? '';
 
   String get severity {
     if (pointValue >= 20) return 'critical';

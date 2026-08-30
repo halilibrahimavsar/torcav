@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/l10n/task_label_helper.dart';
 import '../../../security/presentation/pages/router_hardening_wizard_page.dart';
 import '../../domain/entities/category_explanation.dart';
 import '../../domain/entities/diagnosis_evidence.dart';
@@ -349,26 +350,11 @@ class _ActionChip extends StatelessWidget {
     }
   }
 
-  // Static fallback labels keyed by AppLocalizations getter name. The page
-  // will be wired to live AppLocalizations strings in a follow-up; this
-  // default keeps the UI usable today.
-  String _label(BuildContext context, String key) {
-    final l10n = context.l10n;
-    return switch (key) {
-      'speedDoctorActionMoveCloser' => l10n.speedDoctorActionMoveCloser,
-      'speedDoctorActionAddMesh' => l10n.speedDoctorActionAddMesh,
-      'speedDoctorActionSwitchTo5Ghz' => l10n.speedDoctorActionSwitchTo5Ghz,
-      'speedDoctorActionChangeChannel' => l10n.speedDoctorActionChangeChannel,
-      'speedDoctorActionMoveTo5Ghz' => l10n.speedDoctorActionMoveTo5Ghz,
-      'speedDoctorActionEnableQos' => l10n.speedDoctorActionEnableQos,
-      'speedDoctorActionUpdateFirmware' => l10n.speedDoctorActionUpdateFirmware,
-      'speedDoctorActionCallIsp' => l10n.speedDoctorActionCallIsp,
-      'speedDoctorActionRunWiredTest' => l10n.speedDoctorActionRunWiredTest,
-      'speedDoctorActionChangeDns' => l10n.speedDoctorActionChangeDns,
-      'speedDoctorActionEnableDoh' => l10n.speedDoctorActionEnableDoh,
-      _ => key,
-    };
-  }
+  /// Action label for a `speedDoctorAction*` key. Shares [TaskLabelHelper]
+  /// with the dashboard task card so the two renderings of the same key set
+  /// cannot drift apart again.
+  String _label(BuildContext context, String key) =>
+      TaskLabelHelper.title(context.l10n, key) ?? key;
 }
 
 String? _translate(
