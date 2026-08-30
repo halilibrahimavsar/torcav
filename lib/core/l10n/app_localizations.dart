@@ -8747,6 +8747,24 @@ abstract class AppLocalizations {
   /// **'Switch to a VPN immediately. Your DNS queries are being tampered with.'**
   String get rule_dns_hijacking_rec;
 
+  /// Title for the dns.check_unavailable rule
+  ///
+  /// In en, this message translates to:
+  /// **'DNS Check Could Not Run'**
+  String get rule_dns_check_unavailable_title;
+
+  /// Description for the dns.check_unavailable rule
+  ///
+  /// In en, this message translates to:
+  /// **'The DNS integrity probe could not complete, so this network was not checked for DNS hijacking. This is not a finding about your network — it means we could not look.'**
+  String get rule_dns_check_unavailable_desc;
+
+  /// Recommendation for the dns.check_unavailable rule
+  ///
+  /// In en, this message translates to:
+  /// **'Re-run the scan once your connection is stable.'**
+  String get rule_dns_check_unavailable_rec;
+
   /// Label for channelWithRating
   ///
   /// In en, this message translates to:

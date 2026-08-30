@@ -6517,6 +6517,18 @@
     "@rule_dns_hijacking_rec": {
         "description": "Label for rule_dns_hijacking_rec"
     },
+    "rule_dns_check_unavailable_title": "DNS-Prüfung nicht möglich",
+    "@rule_dns_check_unavailable_title": {
+        "description": "Title for the dns.check_unavailable rule"
+    },
+    "rule_dns_check_unavailable_desc": "Die DNS-Integritätsprüfung konnte nicht abgeschlossen werden, dieses Netzwerk wurde also nicht auf DNS-Hijacking geprüft. Das ist kein Befund über Ihr Netzwerk — wir konnten schlicht nicht nachsehen.",
+    "@rule_dns_check_unavailable_desc": {
+        "description": "Description for the dns.check_unavailable rule"
+    },
+    "rule_dns_check_unavailable_rec": "Führen Sie den Scan erneut aus, sobald die Verbindung stabil ist.",
+    "@rule_dns_check_unavailable_rec": {
+        "description": "Recommendation for the dns.check_unavailable rule"
+    },
     "channelWithRating": "KN {channel} ({rating})",
     "@channelWithRating": {
         "placeholders": {

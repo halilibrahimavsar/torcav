@@ -257,7 +257,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
 
       // Run new detectors
       final arpEvent = await _arpSpoofingDetector.check();
-      final dnsEvent = await _dnsSecurityUseCase.check();
+      final dns = await _dnsSecurityUseCase.check();
 
       final allTrusted = await _localDataSource.getTrustedNetworkProfiles();
       final trustedBssids = allTrusted.map((p) => p.bssid).toSet();
@@ -359,6 +359,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
         );
       }
 
+      final dnsEvent = dns.event;
       if (dnsEvent != null) {
         assessment.evidenceFindings.add(
           SecurityFinding(
@@ -373,6 +374,27 @@ class SecurityRepositoryImpl implements SecurityRepository {
             recommendation:
                 'Check your DNS settings and consider using a trusted DNS provider like Google (8.8.8.8) or Cloudflare (1.1.1.1).',
             timestamp: dnsEvent.timestamp,
+          ),
+        );
+      } else if (dns.status == DnsCheckStatus.unavailable) {
+        // Say so instead of letting silence read as "DNS is fine". Info
+        // severity: this is the absence of a result, not a problem with the
+        // network, so it must not move the security score.
+        assessment.evidenceFindings.add(
+          SecurityFinding(
+            ruleId: 'dns.check_unavailable',
+            category: SecurityFindingCategory.privacy,
+            severity: VulnerabilitySeverity.info,
+            confidence: SecurityFindingConfidence.heuristic,
+            title: 'DNS Check Could Not Run',
+            description:
+                'The DNS integrity probe could not complete, so this network '
+                'was not checked for DNS hijacking.',
+            evidence:
+                'DNS resolution was unreachable or timed out during the scan.',
+            recommendation:
+                'Re-run the scan once the connection is stable.',
+            timestamp: DateTime.now(),
           ),
         );
       }
@@ -400,8 +422,11 @@ class SecurityRepositoryImpl implements SecurityRepository {
       final arpEvent = await _arpSpoofingDetector.check();
       if (arpEvent != null) alerts.add(arpEvent);
 
-      final dnsEvent = await _dnsSecurityUseCase.check();
-      if (dnsEvent != null) alerts.add(dnsEvent);
+      // An unavailable probe raises no alert: we have nothing to report.
+      // The assessment path surfaces it as an info finding instead.
+      final dns = await _dnsSecurityUseCase.check();
+      final dnsAlert = dns.event;
+      if (dnsAlert != null) alerts.add(dnsAlert);
 
       // Captive portal probe: detects ISP / public-Wi-Fi traffic interception.
       final portal = await _captivePortalDetector.check();

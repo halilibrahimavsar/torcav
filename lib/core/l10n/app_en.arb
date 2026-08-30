@@ -6517,6 +6517,18 @@
     "@rule_dns_hijacking_rec": {
         "description": "Label for rule_dns_hijacking_rec"
     },
+    "rule_dns_check_unavailable_title": "DNS Check Could Not Run",
+    "@rule_dns_check_unavailable_title": {
+        "description": "Title for the dns.check_unavailable rule"
+    },
+    "rule_dns_check_unavailable_desc": "The DNS integrity probe could not complete, so this network was not checked for DNS hijacking. This is not a finding about your network — it means we could not look.",
+    "@rule_dns_check_unavailable_desc": {
+        "description": "Description for the dns.check_unavailable rule"
+    },
+    "rule_dns_check_unavailable_rec": "Re-run the scan once your connection is stable.",
+    "@rule_dns_check_unavailable_rec": {
+        "description": "Recommendation for the dns.check_unavailable rule"
+    },
     "channelWithRating": "CH {channel} ({rating})",
     "@channelWithRating": {
         "placeholders": {

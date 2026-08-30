@@ -5058,6 +5058,17 @@ class AppLocalizationsKu extends AppLocalizations {
       'Tavilê biçin ser VPNê. Pirsên DNS ya we têne destwerdan.';
 
   @override
+  String get rule_dns_check_unavailable_title => 'Kontrola DNS nehat kirin';
+
+  @override
+  String get rule_dns_check_unavailable_desc =>
+      'Testa yekpariya DNS neqediya, ji ber vê yekê ev tor ji bo revandina DNS nehat kontrolkirin. Ev ne encamek der barê tora te de ye — tê wateya ku me nekarî binêre.';
+
+  @override
+  String get rule_dns_check_unavailable_rec =>
+      'Gava girêdana te stabîl bû, şopandinê dîsa bimeşîne.';
+
+  @override
   String channelWithRating(int channel, String rating) {
     return 'KN $channel ($rating)';
   }

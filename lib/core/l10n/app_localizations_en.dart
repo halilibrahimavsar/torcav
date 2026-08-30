@@ -5052,6 +5052,17 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switch to a VPN immediately. Your DNS queries are being tampered with.';
 
   @override
+  String get rule_dns_check_unavailable_title => 'DNS Check Could Not Run';
+
+  @override
+  String get rule_dns_check_unavailable_desc =>
+      'The DNS integrity probe could not complete, so this network was not checked for DNS hijacking. This is not a finding about your network — it means we could not look.';
+
+  @override
+  String get rule_dns_check_unavailable_rec =>
+      'Re-run the scan once your connection is stable.';
+
+  @override
   String channelWithRating(int channel, String rating) {
     return 'CH $channel ($rating)';
   }

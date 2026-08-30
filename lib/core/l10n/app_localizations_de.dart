@@ -5064,6 +5064,17 @@ class AppLocalizationsDe extends AppLocalizations {
       'Sofort zu einem VPN wechseln. Ihre DNS-Anfragen werden manipuliert.';
 
   @override
+  String get rule_dns_check_unavailable_title => 'DNS-Prüfung nicht möglich';
+
+  @override
+  String get rule_dns_check_unavailable_desc =>
+      'Die DNS-Integritätsprüfung konnte nicht abgeschlossen werden, dieses Netzwerk wurde also nicht auf DNS-Hijacking geprüft. Das ist kein Befund über Ihr Netzwerk — wir konnten schlicht nicht nachsehen.';
+
+  @override
+  String get rule_dns_check_unavailable_rec =>
+      'Führen Sie den Scan erneut aus, sobald die Verbindung stabil ist.';
+
+  @override
   String channelWithRating(int channel, String rating) {
     return 'KN $channel ($rating)';
   }

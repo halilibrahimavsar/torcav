@@ -5064,6 +5064,17 @@ class AppLocalizationsTr extends AppLocalizations {
       'Derhal bir VPNe geçin. DNS sorgularınıza müdahale ediliyor.';
 
   @override
+  String get rule_dns_check_unavailable_title => 'DNS Kontrolü Çalıştırılamadı';
+
+  @override
+  String get rule_dns_check_unavailable_desc =>
+      'DNS bütünlük testi tamamlanamadı; bu ağ DNS ele geçirme açısından kontrol edilmedi. Bu, ağınızla ilgili bir bulgu değil — bakamadığımız anlamına geliyor.';
+
+  @override
+  String get rule_dns_check_unavailable_rec =>
+      'Bağlantınız kararlı hale gelince taramayı yeniden çalıştırın.';
+
+  @override
   String channelWithRating(int channel, String rating) {
     return 'KN $channel ($rating)';
   }

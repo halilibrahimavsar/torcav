@@ -6517,6 +6517,18 @@
     "@rule_dns_hijacking_rec": {
         "description": "Label for rule_dns_hijacking_rec"
     },
+    "rule_dns_check_unavailable_title": "Kontrola DNS nehat kirin",
+    "@rule_dns_check_unavailable_title": {
+        "description": "Title for the dns.check_unavailable rule"
+    },
+    "rule_dns_check_unavailable_desc": "Testa yekpariya DNS neqediya, ji ber vê yekê ev tor ji bo revandina DNS nehat kontrolkirin. Ev ne encamek der barê tora te de ye — tê wateya ku me nekarî binêre.",
+    "@rule_dns_check_unavailable_desc": {
+        "description": "Description for the dns.check_unavailable rule"
+    },
+    "rule_dns_check_unavailable_rec": "Gava girêdana te stabîl bû, şopandinê dîsa bimeşîne.",
+    "@rule_dns_check_unavailable_rec": {
+        "description": "Recommendation for the dns.check_unavailable rule"
+    },
     "channelWithRating": "KN {channel} ({rating})",
     "@channelWithRating": {
         "placeholders": {

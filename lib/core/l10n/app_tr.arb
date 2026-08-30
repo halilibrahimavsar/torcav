@@ -6517,6 +6517,18 @@
     "@rule_dns_hijacking_rec": {
         "description": "Label for rule_dns_hijacking_rec"
     },
+    "rule_dns_check_unavailable_title": "DNS Kontrolü Çalıştırılamadı",
+    "@rule_dns_check_unavailable_title": {
+        "description": "Title for the dns.check_unavailable rule"
+    },
+    "rule_dns_check_unavailable_desc": "DNS bütünlük testi tamamlanamadı; bu ağ DNS ele geçirme açısından kontrol edilmedi. Bu, ağınızla ilgili bir bulgu değil — bakamadığımız anlamına geliyor.",
+    "@rule_dns_check_unavailable_desc": {
+        "description": "Description for the dns.check_unavailable rule"
+    },
+    "rule_dns_check_unavailable_rec": "Bağlantınız kararlı hale gelince taramayı yeniden çalıştırın.",
+    "@rule_dns_check_unavailable_rec": {
+        "description": "Recommendation for the dns.check_unavailable rule"
+    },
     "channelWithRating": "KN {channel} ({rating})",
     "@channelWithRating": {
         "placeholders": {
