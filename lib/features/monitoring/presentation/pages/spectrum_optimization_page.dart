@@ -37,13 +37,14 @@ class SpectrumOptimizationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final monitoringBloc = getIt<MonitoringBloc>();
-    final wifiScanBloc = getIt<WifiScanBloc>();
-
+    // `create:` (not `.value`) because both blocs are registered as DI
+    // factories: BlocProvider owns them and closes them on dispose. With
+    // `.value` nothing ever called close(), so every rebuild leaked a
+    // MonitoringBloc still subscribed to the scan stream.
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: monitoringBloc),
-        BlocProvider.value(value: wifiScanBloc),
+        BlocProvider(create: (_) => getIt<MonitoringBloc>()),
+        BlocProvider(create: (_) => getIt<WifiScanBloc>()),
       ],
       child: const _SpectrumView(),
     );
