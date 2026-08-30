@@ -5422,4 +5422,25 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get scheduledSpeedTestDesc =>
       'Measures download speed about twice a day, only on Wi-Fi and never on mobile data (10 MB per run). Builds the paying-vs-getting trend automatically.';
+
+  @override
+  String get reviewLanDevicesTaskTitle => 'Review devices on your network';
+
+  @override
+  String get reviewLanDevicesTaskDesc =>
+      'Open the LAN list and confirm you recognise every device and every exposed service.';
+
+  @override
+  String get reviewTrustedNetworkTaskTitle => 'Re-check this trusted network';
+
+  @override
+  String get reviewTrustedNetworkTaskDesc =>
+      'Its fingerprint changed since you trusted it. Confirm it is still the network you think it is.';
+
+  @override
+  String get leaveNetworkTaskTitle => 'Leave this network';
+
+  @override
+  String get leaveNetworkTaskDesc =>
+      'Traffic here may be intercepted. No router setting fixes this — disconnect and use mobile data or a network you trust.';
 }

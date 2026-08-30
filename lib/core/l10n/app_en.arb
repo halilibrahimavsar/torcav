@@ -6844,5 +6844,29 @@
     "scheduledSpeedTestDesc": "Measures download speed about twice a day, only on Wi-Fi and never on mobile data (10 MB per run). Builds the paying-vs-getting trend automatically.",
     "@scheduledSpeedTestDesc": {
         "description": "Subtitle explaining the background speed probe's behavior and cost."
+    },
+    "reviewLanDevicesTaskTitle": "Review devices on your network",
+    "@reviewLanDevicesTaskTitle": {
+        "description": "Task title for the dashboard action list"
+    },
+    "reviewLanDevicesTaskDesc": "Open the LAN list and confirm you recognise every device and every exposed service.",
+    "@reviewLanDevicesTaskDesc": {
+        "description": "Task description for the dashboard action list"
+    },
+    "reviewTrustedNetworkTaskTitle": "Re-check this trusted network",
+    "@reviewTrustedNetworkTaskTitle": {
+        "description": "Task title for the dashboard action list"
+    },
+    "reviewTrustedNetworkTaskDesc": "Its fingerprint changed since you trusted it. Confirm it is still the network you think it is.",
+    "@reviewTrustedNetworkTaskDesc": {
+        "description": "Task description for the dashboard action list"
+    },
+    "leaveNetworkTaskTitle": "Leave this network",
+    "@leaveNetworkTaskTitle": {
+        "description": "Task title for the dashboard action list"
+    },
+    "leaveNetworkTaskDesc": "Traffic here may be intercepted. No router setting fixes this — disconnect and use mobile data or a network you trust.",
+    "@leaveNetworkTaskDesc": {
+        "description": "Task description for the dashboard action list"
     }
 }

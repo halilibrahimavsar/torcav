@@ -5434,4 +5434,26 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get scheduledSpeedTestDesc =>
       'Günde yaklaşık iki kez, yalnızca Wi-Fi\'da indirme hızını ölçer — mobil veride asla çalışmaz (her ölçüm 10 MB). Ödediğin-aldığın trendini kendiliğinden oluşturur.';
+
+  @override
+  String get reviewLanDevicesTaskTitle => 'Ağındaki cihazları gözden geçir';
+
+  @override
+  String get reviewLanDevicesTaskDesc =>
+      'LAN listesini aç; her cihazı ve dışa açık her servisi tanıdığından emin ol.';
+
+  @override
+  String get reviewTrustedNetworkTaskTitle =>
+      'Bu güvenilir ağı yeniden kontrol et';
+
+  @override
+  String get reviewTrustedNetworkTaskDesc =>
+      'Güvendiğinden bu yana parmak izi değişti. Hâlâ sandığın ağ olduğunu doğrula.';
+
+  @override
+  String get leaveNetworkTaskTitle => 'Bu ağdan ayrıl';
+
+  @override
+  String get leaveNetworkTaskDesc =>
+      'Buradaki trafik dinleniyor olabilir. Bunu düzelten bir modem ayarı yok — bağlantıyı kes, mobil veriyi veya güvendiğin bir ağı kullan.';
 }

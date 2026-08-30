@@ -6737,5 +6737,29 @@
     "ispEvidenceSamples": "Ölçümler",
     "ispEvidenceDisclaimer": "Not: Ölçümler Torcav uygulamasıyla Wi-Fi üzerinden alınmıştır. Tekil sonuçlar günün saatine ve ev içi koşullara göre değişir; anlamlı olan çok sayıda testin ortalamasıdır.",
     "scheduledSpeedTestLabel": "Zamanlanmış hız ölçümleri",
-    "scheduledSpeedTestDesc": "Günde yaklaşık iki kez, yalnızca Wi-Fi'da indirme hızını ölçer — mobil veride asla çalışmaz (her ölçüm 10 MB). Ödediğin-aldığın trendini kendiliğinden oluşturur."
+    "scheduledSpeedTestDesc": "Günde yaklaşık iki kez, yalnızca Wi-Fi'da indirme hızını ölçer — mobil veride asla çalışmaz (her ölçüm 10 MB). Ödediğin-aldığın trendini kendiliğinden oluşturur.",
+    "reviewLanDevicesTaskTitle": "Ağındaki cihazları gözden geçir",
+    "@reviewLanDevicesTaskTitle": {
+        "description": "Task title for the dashboard action list"
+    },
+    "reviewLanDevicesTaskDesc": "LAN listesini aç; her cihazı ve dışa açık her servisi tanıdığından emin ol.",
+    "@reviewLanDevicesTaskDesc": {
+        "description": "Task description for the dashboard action list"
+    },
+    "reviewTrustedNetworkTaskTitle": "Bu güvenilir ağı yeniden kontrol et",
+    "@reviewTrustedNetworkTaskTitle": {
+        "description": "Task title for the dashboard action list"
+    },
+    "reviewTrustedNetworkTaskDesc": "Güvendiğinden bu yana parmak izi değişti. Hâlâ sandığın ağ olduğunu doğrula.",
+    "@reviewTrustedNetworkTaskDesc": {
+        "description": "Task description for the dashboard action list"
+    },
+    "leaveNetworkTaskTitle": "Bu ağdan ayrıl",
+    "@leaveNetworkTaskTitle": {
+        "description": "Task title for the dashboard action list"
+    },
+    "leaveNetworkTaskDesc": "Buradaki trafik dinleniyor olabilir. Bunu düzelten bir modem ayarı yok — bağlantıyı kes, mobil veriyi veya güvendiğin bir ağı kullan.",
+    "@leaveNetworkTaskDesc": {
+        "description": "Task description for the dashboard action list"
+    }
 }

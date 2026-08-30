@@ -9370,6 +9370,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Measures download speed about twice a day, only on Wi-Fi and never on mobile data (10 MB per run). Builds the paying-vs-getting trend automatically.'**
   String get scheduledSpeedTestDesc;
+
+  /// Task title for the dashboard action list
+  ///
+  /// In en, this message translates to:
+  /// **'Review devices on your network'**
+  String get reviewLanDevicesTaskTitle;
+
+  /// Task description for the dashboard action list
+  ///
+  /// In en, this message translates to:
+  /// **'Open the LAN list and confirm you recognise every device and every exposed service.'**
+  String get reviewLanDevicesTaskDesc;
+
+  /// Task title for the dashboard action list
+  ///
+  /// In en, this message translates to:
+  /// **'Re-check this trusted network'**
+  String get reviewTrustedNetworkTaskTitle;
+
+  /// Task description for the dashboard action list
+  ///
+  /// In en, this message translates to:
+  /// **'Its fingerprint changed since you trusted it. Confirm it is still the network you think it is.'**
+  String get reviewTrustedNetworkTaskDesc;
+
+  /// Task title for the dashboard action list
+  ///
+  /// In en, this message translates to:
+  /// **'Leave this network'**
+  String get leaveNetworkTaskTitle;
+
+  /// Task description for the dashboard action list
+  ///
+  /// In en, this message translates to:
+  /// **'Traffic here may be intercepted. No router setting fixes this — disconnect and use mobile data or a network you trust.'**
+  String get leaveNetworkTaskDesc;
 }
 
 class _AppLocalizationsDelegate

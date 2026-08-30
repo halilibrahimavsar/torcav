@@ -48,12 +48,18 @@ class GetNetworkHealthScoreUseCase {
           break;
       }
       
+      // A rule with no honest next step produces no task. Previously every
+      // unmapped rule fell back to "harden your router" pointing at the
+      // hardening wizard, so an ARP-spoofing or DNS-hijacking victim was
+      // sent to a wizard that does nothing about their problem.
+      final action = _taskForRule(finding.ruleId);
+      if (action == null) continue;
+
       tasks.add(
         GamificationTask(
-          // Map the rule to a stable, localizable task key (see GamificationTaskX).
-          titleKey: _taskKeyForRule(finding.ruleId),
+          titleKey: action.titleKey,
           pointValue: points,
-          deepLinkRoute: 'router-hardening',
+          deepLinkRoute: action.route,
         ),
       );
     }
@@ -84,22 +90,84 @@ class GetNetworkHealthScoreUseCase {
     );
   }
 
-  /// Maps a [SecurityFinding.ruleId] to a stable, localizable task key that
-  /// [GamificationTaskX] can resolve into a title and description.
-  String _taskKeyForRule(String ruleId) {
-    switch (ruleId) {
-      case 'wifi.wps_enabled':
-        return 'disable_wps';
-      case 'wifi.wep':
-      case 'wifi.legacy_wpa':
-      case 'wifi.open_network':
-      case 'wifi.pmf_not_enforced':
-        return 'enable_wpa3';
-      case 'wifi.high_channel_congestion':
-      case 'wifi.only_24ghz':
-        return 'optimize_channel';
-      default:
-        return 'harden_router';
-    }
+  /// The dashboard action a security rule earns, or `null` when the rule has
+  /// no step the user can take.
+  ///
+  /// `titleKey` is resolved by `TaskLabelHelper`; `route` must be a
+  /// destination `AppShellPage._navigateTo` actually handles, or the tap is a
+  /// silent no-op.
+  ///
+  /// Returning `null` is the point of this method. A finding the user cannot
+  /// act on (an informational one, or a threat whose only answer is "leave
+  /// this network", which no screen automates) should show no task rather
+  /// than a plausible-looking wrong one.
+  ({String titleKey, String? route})? _taskForRule(String ruleId) {
+    return switch (ruleId) {
+      // ── Router configuration: the hardening wizard genuinely covers these ──
+      'wifi.wps_enabled' => (
+        titleKey: 'disable_wps',
+        route: 'router-hardening',
+      ),
+      'wifi.wep' ||
+      'wifi.legacy_wpa' ||
+      'wifi.open_network' ||
+      'wifi.pmf_not_enforced' => (
+        titleKey: 'enable_wpa3',
+        route: 'router-hardening',
+      ),
+      'lan.gateway_ports_open' => (
+        titleKey: 'harden_router',
+        route: 'router-hardening',
+      ),
+      'hardware.vulnerability' => (
+        titleKey: 'speedDoctorActionUpdateFirmware',
+        route: 'router-hardening',
+      ),
+
+      // ── Radio: the spectrum page shows the alternative channels ──
+      'wifi.high_channel_congestion' || 'wifi.only_24ghz' => (
+        titleKey: 'optimize_channel',
+        route: 'monitor/channels',
+      ),
+
+      // ── Coverage: the heatmap is where "where do I move it" is answered ──
+      'wifi.very_weak_signal' => (
+        titleKey: 'speedDoctorActionMoveCloser',
+        route: 'heatmap',
+      ),
+
+      // ── DNS: the stabilizer is the screen that changes the resolver ──
+      'dns_hijacking' => (
+        titleKey: 'speedDoctorActionChangeDns',
+        route: 'ping_stabilizer',
+      ),
+
+      // ── LAN exposure: the answer is to look at what is on the network ──
+      'lan.port_open' || 'lan.device_discovered' || 'lan_discovery' => (
+        titleKey: 'review_lan_devices',
+        route: 'lan',
+      ),
+
+      // ── Trust drift: review the profile that changed ──
+      'trusted.baseline_drift' => (
+        titleKey: 'review_trusted_network',
+        route: 'security',
+      ),
+
+      // ── Active interception: no setting fixes this; get off the network ──
+      'arp_spoofing' ||
+      'wifi.suspicious_ssid' ||
+      'wifi.suspicious_sibling_ap' => (
+        titleKey: 'leave_network',
+        route: 'security',
+      ),
+
+      // ── No task. Not oversights: ──
+      // wifi.hidden_ssid       — hiding an SSID is not a security control,
+      //                          so there is nothing to recommend.
+      // scan.deep_scan_active  — reports a mode the user turned on.
+      // dns.check_unavailable  — reports that a probe could not run.
+      _ => null,
+    };
   }
 }

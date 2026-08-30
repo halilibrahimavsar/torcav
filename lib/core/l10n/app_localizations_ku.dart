@@ -5431,4 +5431,26 @@ class AppLocalizationsKu extends AppLocalizations {
   @override
   String get scheduledSpeedTestDesc =>
       'Rojê nêzî du caran leza daxistinê dipîve, tenê li ser Wi-Fi û qet li ser daneyên mobîl na (her pîvandin 10 MB). Trenda ya-tu-didî-ya-tu-digirî bixweber ava dike.';
+
+  @override
+  String get reviewLanDevicesTaskTitle => 'Amûrên li ser tora xwe binirxîne';
+
+  @override
+  String get reviewLanDevicesTaskDesc =>
+      'Lîsteya LAN veke û pê bawer be ku tu her amûrê û her karûbarê vekirî nas dikî.';
+
+  @override
+  String get reviewTrustedNetworkTaskTitle =>
+      'Vê tora pêbawer ji nû ve kontrol bike';
+
+  @override
+  String get reviewTrustedNetworkTaskDesc =>
+      'Ji dema ku te pê bawer kir ve şopa wê hatiye guhertin. Piştrast bike ku ew hîn jî heman tor e.';
+
+  @override
+  String get leaveNetworkTaskTitle => 'Ji vê torê derkeve';
+
+  @override
+  String get leaveNetworkTaskDesc =>
+      'Trafîka li vir dibe ku were girtin. Tu mîhengek rûterê vê çareser nake — girêdanê qut bike û daneya mobîl an torek pêbawer bikar bîne.';
 }

@@ -45,6 +45,9 @@ class TaskLabelHelper {
     'change_default_passwords' => l10n.changeDefaultPasswordsTaskTitle,
     'run_speed_test' => l10n.runSpeedTestTaskTitle,
     'optimize_channel' => l10n.optimizeChannelTaskTitle,
+    'review_lan_devices' => l10n.reviewLanDevicesTaskTitle,
+    'review_trusted_network' => l10n.reviewTrustedNetworkTaskTitle,
+    'leave_network' => l10n.leaveNetworkTaskTitle,
     _ => null,
   };
 
@@ -60,6 +63,9 @@ class TaskLabelHelper {
         'change_default_passwords' => l10n.changeDefaultPasswordsTaskDesc,
         'run_speed_test' => l10n.runSpeedTestTaskDesc,
         'optimize_channel' => l10n.optimizeChannelTaskDesc,
+        'review_lan_devices' => l10n.reviewLanDevicesTaskDesc,
+        'review_trusted_network' => l10n.reviewTrustedNetworkTaskDesc,
+        'leave_network' => l10n.leaveNetworkTaskDesc,
         _ => null,
       };
 }

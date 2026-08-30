@@ -5439,4 +5439,26 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get scheduledSpeedTestDesc =>
       'Misst die Download-Geschwindigkeit etwa zweimal täglich, nur über WLAN und nie über mobile Daten (10 MB pro Messung). Baut den Bezahlt-vs-Geliefert-Trend automatisch auf.';
+
+  @override
+  String get reviewLanDevicesTaskTitle => 'Geräte im Netzwerk prüfen';
+
+  @override
+  String get reviewLanDevicesTaskDesc =>
+      'Öffnen Sie die LAN-Liste und bestätigen Sie, dass Sie jedes Gerät und jeden offenen Dienst kennen.';
+
+  @override
+  String get reviewTrustedNetworkTaskTitle =>
+      'Dieses vertraute Netzwerk erneut prüfen';
+
+  @override
+  String get reviewTrustedNetworkTaskDesc =>
+      'Sein Fingerabdruck hat sich seit der Vertrauensfreigabe geändert. Prüfen Sie, ob es noch dasselbe Netzwerk ist.';
+
+  @override
+  String get leaveNetworkTaskTitle => 'Dieses Netzwerk verlassen';
+
+  @override
+  String get leaveNetworkTaskDesc =>
+      'Der Verkehr hier kann abgefangen werden. Keine Router-Einstellung behebt das — trennen Sie die Verbindung und nutzen Sie mobile Daten oder ein vertrautes Netzwerk.';
 }

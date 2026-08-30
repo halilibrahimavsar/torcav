@@ -6737,5 +6737,29 @@
     "ispEvidenceSamples": "Pîvandin",
     "ispEvidenceDisclaimer": "Nîşe: Bi sepana Torcav li ser Wi-Fi hatiye pîvandin. Encamên yekane li gorî dema rojê û şert û mercên malê diguherin; ya watedar navîna gelek testan e.",
     "scheduledSpeedTestLabel": "Pîvandinên lezê yên plansazkirî",
-    "scheduledSpeedTestDesc": "Rojê nêzî du caran leza daxistinê dipîve, tenê li ser Wi-Fi û qet li ser daneyên mobîl na (her pîvandin 10 MB). Trenda ya-tu-didî-ya-tu-digirî bixweber ava dike."
+    "scheduledSpeedTestDesc": "Rojê nêzî du caran leza daxistinê dipîve, tenê li ser Wi-Fi û qet li ser daneyên mobîl na (her pîvandin 10 MB). Trenda ya-tu-didî-ya-tu-digirî bixweber ava dike.",
+    "reviewLanDevicesTaskTitle": "Amûrên li ser tora xwe binirxîne",
+    "@reviewLanDevicesTaskTitle": {
+        "description": "Task title for the dashboard action list"
+    },
+    "reviewLanDevicesTaskDesc": "Lîsteya LAN veke û pê bawer be ku tu her amûrê û her karûbarê vekirî nas dikî.",
+    "@reviewLanDevicesTaskDesc": {
+        "description": "Task description for the dashboard action list"
+    },
+    "reviewTrustedNetworkTaskTitle": "Vê tora pêbawer ji nû ve kontrol bike",
+    "@reviewTrustedNetworkTaskTitle": {
+        "description": "Task title for the dashboard action list"
+    },
+    "reviewTrustedNetworkTaskDesc": "Ji dema ku te pê bawer kir ve şopa wê hatiye guhertin. Piştrast bike ku ew hîn jî heman tor e.",
+    "@reviewTrustedNetworkTaskDesc": {
+        "description": "Task description for the dashboard action list"
+    },
+    "leaveNetworkTaskTitle": "Ji vê torê derkeve",
+    "@leaveNetworkTaskTitle": {
+        "description": "Task title for the dashboard action list"
+    },
+    "leaveNetworkTaskDesc": "Trafîka li vir dibe ku were girtin. Tu mîhengek rûterê vê çareser nake — girêdanê qut bike û daneya mobîl an torek pêbawer bikar bîne.",
+    "@leaveNetworkTaskDesc": {
+        "description": "Task description for the dashboard action list"
+    }
 }

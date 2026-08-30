@@ -12,6 +12,7 @@ import '../../../../core/theme/neon_widgets.dart';
 import '../../../dashboard/presentation/pages/dashboard_page.dart';
 import '../../../network_scan/presentation/pages/lan_discovery_page.dart';
 import '../../../reports/presentation/pages/reports_page.dart';
+import '../../../security/presentation/pages/router_hardening_wizard_page.dart';
 import '../../../security/presentation/pages/security_center_page.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
 import '../../../monitoring/presentation/pages/spectrum_optimization_page.dart';
@@ -180,6 +181,19 @@ class _AppShellPageState extends State<AppShellPage> with RestorationMixin {
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => const PingStabilizerPage()),
         );
+      case 'router-hardening':
+        // Produced by GetNetworkHealthScoreUseCase for dashboard security
+        // tasks. Without this case the switch fell through and tapping a
+        // security task did nothing at all.
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const RouterHardeningWizardPage(),
+          ),
+        );
+      default:
+        // Every route produced anywhere in the app must have a case above;
+        // a silent fall-through reads to the user as a broken button.
+        assert(false, 'Unhandled navigation destination: $destination');
     }
   }
 }
