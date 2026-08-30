@@ -71,6 +71,11 @@ flutter {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 
+    // JVM unit tests for the pure native rules (StabilizerAlertRules). These
+    // run without a device or Robolectric — the rules carry no Android types
+    // precisely so that stays true.
+    testImplementation("junit:junit:4.13.2")
+
     // Background monitoring ticks (MonitoringWorker). WorkManager survives
     // Doze + reboots and has no foreground-service time cap.
     implementation("androidx.work:work-runtime-ktx:2.10.1")

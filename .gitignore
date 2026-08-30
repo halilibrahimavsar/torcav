@@ -55,3 +55,6 @@ hardcoded_strings.json
 
 # KDE Dolphin klasör ayarları
 .directory
+
+# Gradle test raporları (build/ zaten yok sayılıyor, bu yalnızca netlik için)
+android/.gradle/

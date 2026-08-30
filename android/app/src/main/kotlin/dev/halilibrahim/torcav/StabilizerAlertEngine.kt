@@ -133,19 +133,8 @@ class StabilizerAlertEngine(
         private const val ID_LOSS = 4403
         private const val ID_DNS_SWITCHED = 4404
 
-        /** Consecutive over-threshold samples before a jitter alert fires. */
-        private const val JITTER_BREACH_WINDOW = 3
-
-        /** Clean samples required before a new jitter episode may re-alert. */
-        private const val JITTER_RESET_WINDOW = 10
-
-        /** Rolling probe-outcome window for loss percentage (≈1 min @ 1 Hz). */
-        private const val LOSS_WINDOW = 60
-
-        /** Minimum filled window before the loss rule is trusted. */
-        private const val LOSS_MIN_SAMPLES = 30
-        private const val LOSS_ALERT_PCT = 5.0
-        private const val LOSS_CLEAR_PCT = 2.0
+        // Jitter/loss episode thresholds live in StabilizerAlertRules, which
+        // is pure and unit-tested; this class only delivers what it decides.
 
         /** Seconds between full candidate benchmark passes. */
         private const val BENCH_INTERVAL_MS = 45_000L
@@ -164,14 +153,11 @@ class StabilizerAlertEngine(
         private const val SWITCH_COOLDOWN_MS = 5 * 60_000L
     }
 
-    // ── Jitter episode state ────────────────────────────────────────────
-    private var consecutiveBreaches = 0
-    private var cleanSamples = 0
-    private var jitterEpisodeActive = false
-
-    // ── Loss window (true = probe timed out) ────────────────────────────
-    private val lossWindow = ArrayDeque<Boolean>()
-    private var lossEpisodeActive = false
+    /**
+     * Jitter/loss decisions. Pure and unit-tested; the engine is the adapter
+     * that turns its output into notifications.
+     */
+    private val rules = StabilizerAlertRules { StabilizerConfig.jitterThresholdMs }
 
     // ── DNS benchmark state ─────────────────────────────────────────────
     private val candidateEwmaMs = ConcurrentHashMap<String, Double>()
@@ -199,31 +185,14 @@ class StabilizerAlertEngine(
      * percentage so the service can emit it to Flutter.
      */
     fun onSample(jitterMs: Double, lost: Boolean): Double {
-        lossWindow.addLast(lost)
-        while (lossWindow.size > LOSS_WINDOW) lossWindow.removeFirst()
-        val lossPct =
-            if (lossWindow.isEmpty()) 0.0
-            else lossWindow.count { it } * 100.0 / lossWindow.size
-
-        evaluateJitter(jitterMs, lost)
-        evaluateLoss(lossPct)
-        return lossPct
+        val outcome = rules.onSample(jitterMs, lost, System.currentTimeMillis())
+        for (alert in outcome.alerts) deliver(alert)
+        return outcome.lossPct
     }
 
-    private fun evaluateJitter(jitterMs: Double, lost: Boolean) {
-        if (lost) return // timeouts are loss, not jitter
-        if (jitterMs > StabilizerConfig.jitterThresholdMs) {
-            consecutiveBreaches++
-            cleanSamples = 0
-        } else {
-            consecutiveBreaches = 0
-            cleanSamples++
-            if (cleanSamples >= JITTER_RESET_WINDOW) jitterEpisodeActive = false
-        }
-        if (consecutiveBreaches >= JITTER_BREACH_WINDOW && !jitterEpisodeActive) {
-            jitterEpisodeActive = true
-            if (cooldownOk(ID_JITTER)) {
-                val threshold = StabilizerConfig.jitterThresholdMs
+    private fun deliver(alert: StabilizerAlert) {
+        when (alert) {
+            is StabilizerAlert.JitterSpike ->
                 notify(
                     id = ID_JITTER,
                     title = StabilizerConfig.s("jitterTitle", "Jitter spike detected"),
@@ -233,29 +202,20 @@ class StabilizerAlertEngine(
                             "Jitter is {jitter} ms (threshold {threshold} ms). " +
                                 "Cycling the tunnel may break a sticky bad path.",
                         )
-                        .replace("{jitter}", fmt(jitterMs))
-                        .replace("{threshold}", fmt(threshold)),
+                        .replace("{jitter}", fmt(alert.jitterMs))
+                        .replace("{threshold}", fmt(alert.thresholdMs)),
                     withCycleAction = true,
                 )
-            }
-        }
-    }
 
-    private fun evaluateLoss(lossPct: Double) {
-        if (lossPct < LOSS_CLEAR_PCT) lossEpisodeActive = false
-        if (lossWindow.size < LOSS_MIN_SAMPLES) return
-        if (lossPct >= LOSS_ALERT_PCT && !lossEpisodeActive) {
-            lossEpisodeActive = true
-            if (cooldownOk(ID_LOSS)) {
+            is StabilizerAlert.PacketLoss ->
                 notify(
                     id = ID_LOSS,
                     title = StabilizerConfig.s("lossTitle", "Persistent packet loss"),
                     body = StabilizerConfig
                         .s("lossBody", "Packet loss is {loss}%.")
-                        .replace("{loss}", fmt(lossPct)),
+                        .replace("{loss}", fmt(alert.lossPct)),
                     withCycleAction = true,
                 )
-            }
         }
     }
 
