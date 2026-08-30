@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:torcav/features/security/domain/entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 import 'package:torcav/features/security/domain/entities/network_fingerprint.dart';
 import 'package:torcav/features/security/domain/entities/trusted_network_profile.dart';
 import 'package:torcav/features/security/domain/services/network_context_inferrer.dart';

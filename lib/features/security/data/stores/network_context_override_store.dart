@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:torcav/core/storage/hive_storage_service.dart';
 
-import '../../domain/entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 
 /// Persists user-supplied network-context overrides keyed by BSSID.
 ///

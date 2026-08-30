@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../settings/domain/services/app_settings_store.dart';
+import 'package:torcav/core/settings/app_settings_store.dart';
 import '../entities/plan_comparison.dart';
 import '../repositories/speed_test_history_repository.dart';
 

@@ -10,7 +10,7 @@ import '../../domain/entities/network_scan_policy.dart';
 import '../../domain/entities/network_scan_profile.dart';
 import '../../domain/repositories/network_scan_repository.dart';
 import '../../domain/services/new_device_detector.dart';
-import '../../../settings/domain/services/app_settings_store.dart';
+import 'package:torcav/core/settings/app_settings_store.dart';
 
 // Events
 abstract class NetworkScanEvent extends Equatable {

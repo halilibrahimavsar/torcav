@@ -4,8 +4,8 @@ import 'package:mocktail/mocktail.dart';
 import 'package:torcav/features/network_scan/domain/repositories/network_scan_repository.dart';
 import 'package:torcav/features/network_scan/domain/services/new_device_detector.dart';
 import 'package:torcav/features/network_scan/presentation/bloc/network_scan_bloc.dart';
-import 'package:torcav/features/settings/domain/services/app_settings_store.dart';
-import 'package:torcav/features/settings/domain/entities/app_settings.dart';
+import 'package:torcav/core/settings/app_settings_store.dart';
+import 'package:torcav/core/settings/app_settings.dart';
 import 'package:torcav/features/network_scan/domain/entities/network_scan_profile.dart';
 
 class MockNetworkScanRepository extends Mock implements NetworkScanRepository {}

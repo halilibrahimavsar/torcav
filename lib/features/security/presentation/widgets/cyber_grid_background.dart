@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:torcav/core/di/injection.dart';
-import '../../../settings/domain/entities/app_settings.dart';
-import '../../../settings/domain/services/app_settings_store.dart';
+import 'package:torcav/core/settings/app_settings.dart';
+import 'package:torcav/core/settings/app_settings_store.dart';
 import 'aegis_shield_background.dart';
 import 'aurora_mesh_background.dart';
 import 'classic_grid_background.dart';

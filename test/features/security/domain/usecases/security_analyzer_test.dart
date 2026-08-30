@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:torcav/features/security/domain/entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 import 'package:torcav/features/security/domain/entities/security_assessment.dart';
 import 'package:torcav/features/security/domain/entities/vulnerability.dart';
 import 'package:torcav/features/security/domain/services/evil_twin_classifier.dart';

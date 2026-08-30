@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:injectable/injectable.dart';
-import '../../../../core/storage/hive_storage_service.dart';
+import 'package:torcav/core/storage/hive_storage_service.dart';
 
-import '../entities/app_settings.dart';
+import 'package:torcav/core/settings/app_settings.dart';
 
 @lazySingleton
 class AppSettingsStore {

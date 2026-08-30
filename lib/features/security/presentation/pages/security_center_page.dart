@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/l10n/app_localizations.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/notification_context_extensions.dart';
-import '../../domain/entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 import '../bloc/security_bloc.dart';
 import 'breach_monitor_page.dart';
 import 'router_hardening_wizard_page.dart';

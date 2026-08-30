@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 import '../storage/app_database.dart';
-import '../../features/settings/domain/services/app_settings_store.dart';
+import 'package:torcav/core/settings/app_settings_store.dart';
 
 @lazySingleton
 class DataRetentionService {

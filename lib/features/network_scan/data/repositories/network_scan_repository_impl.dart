@@ -13,7 +13,7 @@ import '../datasources/arp_data_source.dart';
 import '../datasources/mdns_data_source.dart';
 import '../datasources/netbios_data_source.dart';
 import '../datasources/upnp_data_source.dart';
-import '../../../settings/domain/services/app_settings_store.dart';
+import 'package:torcav/core/settings/app_settings_store.dart';
 
 @LazySingleton(as: NetworkScanRepository)
 class NetworkScanRepositoryImpl implements NetworkScanRepository {

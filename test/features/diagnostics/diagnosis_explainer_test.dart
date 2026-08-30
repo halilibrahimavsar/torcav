@@ -5,7 +5,7 @@ import 'package:torcav/features/diagnostics/domain/entities/root_cause_category.
 import 'package:torcav/features/diagnostics/domain/services/diagnosis_explainer.dart';
 import 'package:torcav/features/performance/domain/entities/speed_test_result.dart';
 import 'package:torcav/features/security/domain/entities/dns_test_result.dart';
-import 'package:torcav/features/security/domain/entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 
 void main() {

@@ -13,7 +13,7 @@ import 'package:torcav/features/app_shell/presentation/pages/onboarding_page.dar
 import 'package:torcav/features/monitoring/domain/services/background_monitor.dart';
 import 'package:torcav/features/performance/domain/repositories/speed_test_history_repository.dart';
 import 'package:torcav/features/performance/domain/services/scheduled_speed_probe.dart';
-import 'package:torcav/features/settings/domain/services/app_settings_store.dart';
+import 'package:torcav/core/settings/app_settings_store.dart';
 import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
 import '../widgets/starfield_background.dart';
 

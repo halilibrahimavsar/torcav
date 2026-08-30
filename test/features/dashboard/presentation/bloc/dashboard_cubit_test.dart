@@ -17,7 +17,7 @@ import 'package:torcav/features/diagnostics/domain/usecases/get_network_health_s
 import 'package:torcav/features/heatmap/domain/entities/connected_signal.dart';
 import 'package:torcav/features/heatmap/domain/services/connected_signal_service.dart';
 import 'package:torcav/features/performance/domain/repositories/speed_test_history_repository.dart';
-import 'package:torcav/features/security/domain/entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 import 'package:torcav/features/security/domain/entities/security_event.dart';
 import 'package:torcav/features/security/domain/repositories/security_repository.dart';
 import 'package:torcav/features/security/domain/services/network_context_resolver.dart';

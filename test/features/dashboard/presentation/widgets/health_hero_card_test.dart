@@ -4,7 +4,7 @@ import 'package:torcav/features/dashboard/presentation/widgets/health_hero_card.
 import 'package:torcav/features/diagnostics/domain/entities/diagnosis_inputs.dart';
 import 'package:torcav/features/diagnostics/domain/entities/diagnosis_result.dart';
 import 'package:torcav/features/diagnostics/domain/entities/root_cause_category.dart';
-import 'package:torcav/features/security/domain/entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 
 import '../../../../helpers/widget_pump.dart';
 

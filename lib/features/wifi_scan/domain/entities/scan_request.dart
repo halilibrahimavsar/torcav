@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-enum WifiBackendPreference { auto, nmcli, iw, android }
+import 'package:torcav/core/settings/wifi_backend_preference.dart';
+
+export 'package:torcav/core/settings/wifi_backend_preference.dart';
 
 class ScanRequest extends Equatable {
   final String? interfaceName;

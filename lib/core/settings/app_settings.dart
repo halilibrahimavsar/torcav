@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../security/domain/entities/network_context_type.dart';
-import '../../../wifi_scan/domain/entities/scan_request.dart';
+import 'package:torcav/core/network/network_context_type.dart';
+import 'package:torcav/core/settings/wifi_backend_preference.dart';
 
 enum AppBackgroundType {
   neomorphic,

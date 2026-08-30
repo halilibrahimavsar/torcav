@@ -2,7 +2,7 @@ import 'package:injectable/injectable.dart';
 
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 import '../entities/evil_twin_assessment.dart';
-import '../entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 import '../entities/network_fingerprint.dart';
 import '../entities/security_assessment.dart';
 import '../entities/security_drift_finding.dart';

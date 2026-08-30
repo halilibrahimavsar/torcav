@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:torcav/core/storage/hive_storage_service.dart';
-import 'package:torcav/features/settings/domain/entities/app_settings.dart';
-import 'package:torcav/features/settings/domain/services/app_settings_store.dart';
+import 'package:torcav/core/settings/app_settings.dart';
+import 'package:torcav/core/settings/app_settings_store.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/scan_request.dart';
 
 class MockHiveStorageService extends Mock implements HiveStorageService {}

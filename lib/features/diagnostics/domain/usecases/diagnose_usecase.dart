@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../security/domain/entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 import '../../../wifi_scan/domain/entities/wifi_network.dart';
 import '../../../wifi_scan/domain/services/channel_rating_engine.dart';
 import '../entities/diagnosis_evidence.dart';

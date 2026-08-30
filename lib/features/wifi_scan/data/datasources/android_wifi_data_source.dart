@@ -12,7 +12,7 @@ import '../../domain/entities/scan_snapshot.dart';
 import '../../domain/entities/wifi_network.dart';
 import 'scan_snapshot_builder.dart';
 import 'wifi_data_source.dart';
-import '../../../settings/domain/services/app_settings_store.dart';
+import 'package:torcav/core/settings/app_settings_store.dart';
 
 @lazySingleton
 class AndroidWifiDataSource implements WifiDataSource {

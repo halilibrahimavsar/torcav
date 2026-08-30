@@ -7,8 +7,8 @@ import 'package:torcav/core/di/injection.dart';
 import 'package:torcav/core/extensions/context_extensions.dart';
 
 import '../../../../core/theme/neon_widgets.dart';
-import '../../../security/domain/entities/network_context_type.dart';
-import '../../../settings/domain/services/app_settings_store.dart';
+import 'package:torcav/core/network/network_context_type.dart';
+import 'package:torcav/core/settings/app_settings_store.dart';
 import '../../../settings/presentation/pages/privacy_policy_page.dart';
 import '../../../settings/presentation/pages/terms_of_service_page.dart';
 import 'app_shell_page.dart';

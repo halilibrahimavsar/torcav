@@ -10,7 +10,7 @@ import '../../../performance/domain/entities/speed_test_result.dart';
 import '../../../performance/domain/usecases/run_speed_test_usecase.dart';
 import '../../../security/data/datasources/dns_test_data_source.dart';
 import '../../../security/domain/entities/dns_test_result.dart';
-import '../../../security/domain/entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 import '../../../security/domain/services/network_context_resolver.dart';
 import '../../../wifi_scan/domain/entities/wifi_network.dart';
 import '../../../wifi_scan/domain/services/scan_session_store.dart';

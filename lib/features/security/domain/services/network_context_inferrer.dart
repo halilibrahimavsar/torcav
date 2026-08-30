@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
-import '../entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 import '../entities/trusted_network_profile.dart';
 
 /// Infers a [NetworkContextType] from observable signals.

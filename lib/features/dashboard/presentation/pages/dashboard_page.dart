@@ -16,7 +16,7 @@ import '../../../diagnostics/domain/entities/root_cause_category.dart';
 import '../../../performance/presentation/pages/speed_hub_page.dart';
 import '../../../ping_stabilizer/presentation/bloc/ping_stabilizer_cubit.dart';
 import '../../../ping_stabilizer/presentation/widgets/stabilizer_toggle_card.dart';
-import '../../../security/domain/entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 import '../../../security/domain/entities/security_assessment.dart';
 import '../../../security/domain/services/network_context_resolver.dart';
 import '../../../security/presentation/bloc/notification/notification_bloc.dart';

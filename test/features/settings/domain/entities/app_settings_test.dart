@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:torcav/features/security/domain/entities/network_context_type.dart';
-import 'package:torcav/features/settings/domain/entities/app_settings.dart';
+import 'package:torcav/core/network/network_context_type.dart';
+import 'package:torcav/core/settings/app_settings.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/scan_request.dart';
 
 void main() {

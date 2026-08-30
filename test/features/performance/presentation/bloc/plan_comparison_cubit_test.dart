@@ -6,8 +6,8 @@ import 'package:torcav/features/performance/domain/repositories/speed_test_histo
 import 'package:torcav/features/performance/domain/services/isp_evidence_composer.dart';
 import 'package:torcav/features/performance/domain/usecases/compare_plan_speed_usecase.dart';
 import 'package:torcav/features/performance/presentation/bloc/plan_comparison_cubit.dart';
-import 'package:torcav/features/settings/domain/entities/app_settings.dart';
-import 'package:torcav/features/settings/domain/services/app_settings_store.dart';
+import 'package:torcav/core/settings/app_settings.dart';
+import 'package:torcav/core/settings/app_settings_store.dart';
 
 class _FakeHistory extends Fake implements SpeedTestHistoryRepository {
   List<SpeedTestResult> results = [];

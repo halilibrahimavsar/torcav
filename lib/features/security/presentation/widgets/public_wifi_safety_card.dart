@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:torcav/core/extensions/context_extensions.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
-import '../../domain/entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 
 /// Surfaces a short safe-use checklist when the connected network resolves to
 /// a `public` or `guest` context. Plain-language: VPN, HTTPS, sensitive data,

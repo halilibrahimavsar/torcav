@@ -9,7 +9,7 @@ import 'package:torcav/features/diagnostics/domain/usecases/diagnose_usecase.dar
 import 'package:torcav/features/diagnostics/presentation/bloc/diagnostics_bloc.dart';
 import 'package:torcav/features/diagnostics/presentation/bloc/diagnostics_event.dart';
 import 'package:torcav/features/diagnostics/presentation/bloc/diagnostics_state.dart';
-import 'package:torcav/features/security/domain/entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 import 'package:torcav/features/wifi_scan/domain/services/channel_rating_engine.dart';
 
 class _FakeDiagnosticsRepo extends Mock implements DiagnosticsRepository {}

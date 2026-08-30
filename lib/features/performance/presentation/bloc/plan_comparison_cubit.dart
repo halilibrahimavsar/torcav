@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../settings/domain/services/app_settings_store.dart';
+import 'package:torcav/core/settings/app_settings_store.dart';
 import '../../domain/entities/isp_evidence_labels.dart';
 import '../../domain/entities/plan_comparison.dart';
 import '../../domain/repositories/speed_test_history_repository.dart';

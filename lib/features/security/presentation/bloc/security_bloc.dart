@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import '../../domain/entities/known_network.dart';
-import '../../domain/entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 import '../../domain/entities/security_event.dart' as domain_event;
 import '../../domain/repositories/security_repository.dart';
 import '../../domain/services/network_context_resolver.dart';
@@ -14,7 +14,7 @@ import '../../domain/entities/dns_test_result.dart';
 import '../../domain/entities/assessment_session.dart';
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
 import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
-import 'package:torcav/features/settings/domain/services/app_settings_store.dart';
+import 'package:torcav/core/settings/app_settings_store.dart';
 import '../../domain/entities/trusted_network_profile.dart';
 import 'dart:async';
 

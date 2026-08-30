@@ -1,9 +1,9 @@
 import 'package:injectable/injectable.dart';
 
 import 'package:torcav/features/wifi_scan/domain/entities/wifi_network.dart';
-import '../../../settings/domain/services/app_settings_store.dart';
+import 'package:torcav/core/settings/app_settings_store.dart';
 import '../../data/stores/network_context_override_store.dart';
-import '../entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 import '../entities/trusted_network_profile.dart';
 import 'network_context_inferrer.dart';
 

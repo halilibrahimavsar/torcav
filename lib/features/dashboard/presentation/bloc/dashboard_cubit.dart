@@ -8,7 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../heatmap/domain/services/connected_signal_service.dart';
 import '../../../performance/domain/repositories/speed_test_history_repository.dart';
-import '../../../security/domain/entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 import '../../../security/domain/repositories/security_repository.dart';
 import '../../../security/domain/services/network_context_resolver.dart';
 import '../../../security/domain/usecases/security_analyzer.dart';

@@ -5,7 +5,7 @@ import 'package:torcav/features/diagnostics/domain/entities/diagnosis_result.dar
 import 'package:torcav/features/diagnostics/domain/entities/diagnostic_action.dart';
 import 'package:torcav/features/diagnostics/domain/entities/root_cause_category.dart';
 import 'package:torcav/features/diagnostics/domain/usecases/get_network_health_score_usecase.dart';
-import 'package:torcav/features/security/domain/entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 import 'package:torcav/features/security/domain/entities/security_assessment.dart';
 import 'package:torcav/features/security/domain/entities/security_finding.dart';
 import 'package:torcav/features/security/domain/entities/vulnerability.dart';

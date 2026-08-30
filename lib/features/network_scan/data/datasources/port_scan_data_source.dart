@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:injectable/injectable.dart';
 
-import '../../../../features/settings/domain/services/app_settings_store.dart';
+import 'package:torcav/core/settings/app_settings_store.dart';
 import '../../domain/entities/service_fingerprint.dart';
 import '../../domain/entities/port_scan_event.dart';
 

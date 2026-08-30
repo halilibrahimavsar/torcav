@@ -3,7 +3,7 @@ import '../../../../core/errors/failures.dart';
 import '../../../diagnostics/domain/entities/diagnosis_result.dart';
 import '../../../diagnostics/domain/entities/network_health_score.dart';
 import '../../../performance/domain/entities/speed_test_result.dart';
-import '../../../security/domain/entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 import '../../../security/domain/entities/security_assessment.dart';
 import '../../../security/domain/entities/security_event.dart';
 import '../../../wifi_scan/domain/entities/channel_rating.dart';

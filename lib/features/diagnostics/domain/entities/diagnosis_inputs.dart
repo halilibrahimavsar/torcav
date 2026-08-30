@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../../performance/domain/entities/speed_test_result.dart';
 import '../../../security/domain/entities/dns_test_result.dart';
-import '../../../security/domain/entities/network_context_type.dart';
+import 'package:torcav/core/network/network_context_type.dart';
 import '../../../wifi_scan/domain/entities/wifi_network.dart';
 
 /// Bundle of every signal the diagnose use case needs.
