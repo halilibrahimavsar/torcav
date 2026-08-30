@@ -6570,6 +6570,36 @@ abstract class AppLocalizations {
   /// **'Heads up: this is lightweight obfuscation, not bank-grade encryption. It protects the file against casual leaks (cloud thumbnails, mailbox cache) but a determined attacker who has the file could still attempt to brute-force a weak password. Use a long, unique passphrase.'**
   String get pdfPasswordWarning;
 
+  /// Button that opens a previously locked .torcav-pdf report
+  ///
+  /// In en, this message translates to:
+  /// **'Open a locked report'**
+  String get openLockedReport;
+
+  /// Instruction in the unlock-password dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the password you used when locking this file.'**
+  String get unlockDialogBody;
+
+  /// Hint for the unlock password field
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get unlockPasswordHint;
+
+  /// Error when the unlock password is wrong or the file is not ours
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong password, or this file was not locked by Torcav.'**
+  String get unlockFailed;
+
+  /// Confirmation after a locked report was unlocked
+  ///
+  /// In en, this message translates to:
+  /// **'Report unlocked: {path}'**
+  String unlockedToast(String path);
+
   /// Label for understandEnable
   ///
   /// In en, this message translates to:
@@ -7895,12 +7925,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Location (to map signal to coordinates)'**
   String get newSessionPermLocation;
-
-  /// Permission item: activity recognition for heatmap
-  ///
-  /// In en, this message translates to:
-  /// **'Activity Recognition (to track steps and movement)'**
-  String get newSessionPermActivity;
 
   /// Permission item: camera for heatmap
   ///

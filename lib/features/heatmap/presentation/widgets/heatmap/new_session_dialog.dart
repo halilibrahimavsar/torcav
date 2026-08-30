@@ -90,7 +90,6 @@ class _NewSessionDialogState extends State<NewSessionDialog> {
                           icon: Icons.map_rounded,
                           privacyPoints: [
                             context.l10n.newSessionPermLocation,
-                            context.l10n.newSessionPermActivity,
                             context.l10n.newSessionPermCamera,
                           ],
                           actionLabel: context.l10n.continueLabel,
@@ -102,11 +101,10 @@ class _NewSessionDialogState extends State<NewSessionDialog> {
 
               if (!shouldProceed) return;
 
-              await [
-                Permission.activityRecognition,
-                Permission.location,
-                Permission.camera,
-              ].request();
+              // Step detection runs on the raw accelerometer stream, which
+              // needs no runtime permission — ACTIVITY_RECOGNITION is not
+              // requested and is stripped in the manifest.
+              await [Permission.location, Permission.camera].request();
 
               if (mounted) {
                 widget.bloc.startSession(name);

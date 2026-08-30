@@ -17,7 +17,6 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 
     <!-- FOREGROUND_SERVICE backs the Ping Stabilizer VPN (specialUse type
          below). Background monitoring itself runs through WorkManager and
@@ -40,7 +39,13 @@
     <uses-permission android:name="android.permission.BIND_VPN_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
-    <!-- Remove unused sensitive permissions injected by plugins -->
+    <!-- Remove unused sensitive permissions injected by plugins.
+         ACTIVITY_RECOGNITION was declared for a step counter that was
+         never implemented: heatmap dead reckoning detects steps from the
+         raw accelerometer stream (position_datasource.dart), which needs
+         no permission. Removed rather than merely undeclared so a plugin
+         cannot reintroduce it. -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" tools:node="remove" />
     <uses-permission android:name="android.permission.BODY_SENSORS" tools:node="remove" />
     <uses-permission android:name="android.permission.HIGH_SAMPLING_RATE_SENSORS" tools:node="remove" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:node="remove" />

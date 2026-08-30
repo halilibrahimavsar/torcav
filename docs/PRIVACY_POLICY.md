@@ -76,11 +76,15 @@ Torcav collects only what each feature directly requires. Every category below s
 |---|---|---|
 | `ACCESS_FINE_LOCATION` (Android) | Android requires location permission to enable Wi-Fi scanning. We do not read GPS coordinates. | Yes |
 | `CAMERA` (Android, iOS) | AR-based heatmap visualisation only. Frames are processed on-device, never uploaded. | Optional |
-| `ACTIVITY_RECOGNITION` (Android) | Detects walking vs. standing during heatmap survey for accurate position interpolation. | Optional |
 | `INTERNET`, `ACCESS_WIFI_STATE`, `CHANGE_WIFI_STATE` (Android) | Network probes, scan triggering. | Yes |
 | `POST_NOTIFICATIONS` (Android 13+) | Alerts you about new devices, encryption changes, gateway drift — only when background monitoring is enabled. | Optional |
 
-We do **not** request: `BODY_SENSORS`, `RECORD_AUDIO`, `READ/WRITE_EXTERNAL_STORAGE`, `READ_PHONE_STATE`, `SEND_SMS`, `RECEIVE_SMS`, `CALL_PHONE`. If a third-party plugin tries to inject any of those into our manifest, we explicitly remove them.
+Heatmap surveys read the accelerometer, gyroscope and compass to estimate
+how far you have walked between measurements. On Android those sensors need
+no permission, and we do not use the activity-recognition API, so no motion
+permission is requested.
+
+We do **not** request: `ACTIVITY_RECOGNITION`, `BODY_SENSORS`, `RECORD_AUDIO`, `READ/WRITE_EXTERNAL_STORAGE`, `READ_PHONE_STATE`, `SEND_SMS`, `RECEIVE_SMS`, `CALL_PHONE`. If a third-party plugin tries to inject any of those into our manifest, we explicitly remove them.
 
 ---
 

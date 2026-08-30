@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,8 +28,10 @@ class ReportsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: getIt<ReportsBloc>(),
+    // `create:` (not `.value`): ReportsBloc is a DI factory, so BlocProvider
+    // must own it and close it on dispose.
+    return BlocProvider(
+      create: (_) => getIt<ReportsBloc>(),
       child: const ReportsView(),
     );
   }
@@ -736,6 +739,118 @@ class _PdfPasswordFieldState extends State<_PdfPasswordField> {
   bool _expanded = false;
   bool _obscure = true;
 
+  /// Reverses [PdfLockService.lock]: pick a `.torcav-pdf`, ask for the
+  /// password, and share the recovered plain PDF.
+  ///
+  /// Locking without this was a one-way door — the card promises "open it
+  /// again from Reports", and until this existed nothing could read the file
+  /// back, not Torcav and not a PDF reader.
+  Future<void> _openLockedReport() async {
+    final l10n = context.l10n;
+    try {
+      // No extension filter: Android's document picker handles unknown
+      // extensions inconsistently, and unlock() already rejects anything
+      // without the TCV1 magic header.
+      final picked = await FilePicker.platform.pickFiles(withData: true);
+      if (picked == null || picked.files.isEmpty) return;
+
+      final file = picked.files.single;
+      final bytes =
+          file.bytes ??
+          (file.path != null ? await File(file.path!).readAsBytes() : null);
+      if (bytes == null) {
+        if (mounted) context.showWarning(l10n.unlockFailed);
+        return;
+      }
+
+      if (!mounted) return;
+      final password = await _askUnlockPassword();
+      if (password == null || password.isEmpty) return;
+
+      final plain = const PdfLockService().unlock(
+        locked: bytes,
+        password: password,
+      );
+      if (plain == null) {
+        // Wrong password or not one of ours — unlock() cannot tell the two
+        // apart by design, so the message covers both.
+        if (mounted) context.showWarning(l10n.unlockFailed);
+        return;
+      }
+
+      final dir = await getTemporaryDirectory();
+      final baseName =
+          file.name.endsWith('.torcav-pdf')
+              ? file.name.substring(0, file.name.length - '.torcav-pdf'.length)
+              : file.name;
+      final out = File('${dir.path}/$baseName.pdf');
+      await out.writeAsBytes(plain);
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(out.path)],
+          subject: l10n.savePdfReportDialog,
+        ),
+      );
+      if (mounted) context.showInfo(l10n.unlockedToast(out.path));
+    } catch (e) {
+      if (mounted) context.showWarning('${l10n.errorLabel}: $e');
+    }
+  }
+
+  Future<String?> _askUnlockPassword() {
+    final controller = TextEditingController();
+    var obscure = true;
+    return showDialog<String>(
+      context: context,
+      builder:
+          (ctx) => StatefulBuilder(
+            builder: (ctx, setLocal) {
+              final l10n = ctx.l10n;
+              return AlertDialog(
+                title: Text(l10n.openLockedReport),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.unlockDialogBody),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: controller,
+                      obscureText: obscure,
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        hintText: l10n.unlockPasswordHint,
+                        isDense: true,
+                        border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            obscure
+                                ? Icons.visibility_off_rounded
+                                : Icons.visibility_rounded,
+                          ),
+                          onPressed: () => setLocal(() => obscure = !obscure),
+                        ),
+                      ),
+                      onSubmitted: (value) => Navigator.of(ctx).pop(value),
+                    ),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(),
+                    child: Text(l10n.cancelLabel),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(controller.text),
+                    child: Text(l10n.openLabel),
+                  ),
+                ],
+              );
+            },
+          ),
+    ).whenComplete(controller.dispose);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -824,6 +939,12 @@ class _PdfPasswordFieldState extends State<_PdfPasswordField> {
                 fontSize: 11,
                 height: 1.4,
               ),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: _openLockedReport,
+              icon: const Icon(Icons.lock_open_rounded, size: 18),
+              label: Text(l10n.openLockedReport),
             ),
           ],
         ],

@@ -4694,6 +4694,31 @@
     "@pdfPasswordWarning": {
         "description": "Label for pdfPasswordWarning"
     },
+    "openLockedReport": "Kilitli raporu aç",
+    "@openLockedReport": {
+        "description": "Button that opens a previously locked .torcav-pdf report"
+    },
+    "unlockDialogBody": "Bu dosyayı kilitlerken kullandığınız parolayı girin.",
+    "@unlockDialogBody": {
+        "description": "Instruction in the unlock-password dialog"
+    },
+    "unlockPasswordHint": "Parola",
+    "@unlockPasswordHint": {
+        "description": "Hint for the unlock password field"
+    },
+    "unlockFailed": "Parola yanlış veya bu dosya Torcav ile kilitlenmemiş.",
+    "@unlockFailed": {
+        "description": "Error when the unlock password is wrong or the file is not ours"
+    },
+    "unlockedToast": "Rapor açıldı: {path}",
+    "@unlockedToast": {
+        "placeholders": {
+            "path": {
+                "type": "String"
+            }
+        },
+        "description": "Confirmation after a locked report was unlocked"
+    },
     "understandEnable": "ANLADIM — ETKİNLEŞTİR",
     "@understandEnable": {
         "description": "Label for understandEnable"
@@ -5746,10 +5771,6 @@
     "newSessionPermLocation": "Konum (sinyali koordinatlara eşlemek için)",
     "@newSessionPermLocation": {
         "description": "Permission item: location access for heatmap"
-    },
-    "newSessionPermActivity": "Aktivite Tanıma (adımları ve hareketi izlemek için)",
-    "@newSessionPermActivity": {
-        "description": "Permission item: activity recognition for heatmap"
     },
     "newSessionPermCamera": "Kamera (isteğe bağlı, görsel haritalama özellikleri için)",
     "@newSessionPermCamera": {

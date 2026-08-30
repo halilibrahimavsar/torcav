@@ -3740,6 +3740,25 @@ class AppLocalizationsTr extends AppLocalizations {
       'Dikkat: bu hafif bir gizlemedir, banka düzeyi şifreleme değildir. Dosyayı sıradan sızıntılara (bulut küçük resimleri, posta kutusu önbelleği) karşı korur; ancak dosyaya sahip kararlı bir saldırgan zayıf bir parolayı kaba kuvvetle kırmayı deneyebilir. Uzun ve benzersiz bir parola cümlesi kullanın.';
 
   @override
+  String get openLockedReport => 'Kilitli raporu aç';
+
+  @override
+  String get unlockDialogBody =>
+      'Bu dosyayı kilitlerken kullandığınız parolayı girin.';
+
+  @override
+  String get unlockPasswordHint => 'Parola';
+
+  @override
+  String get unlockFailed =>
+      'Parola yanlış veya bu dosya Torcav ile kilitlenmemiş.';
+
+  @override
+  String unlockedToast(String path) {
+    return 'Rapor açıldı: $path';
+  }
+
+  @override
   String get understandEnable => 'ANLADIM — ETKİNLEŞTİR';
 
   @override
@@ -4521,10 +4540,6 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get newSessionPermLocation =>
       'Konum (sinyali koordinatlara eşlemek için)';
-
-  @override
-  String get newSessionPermActivity =>
-      'Aktivite Tanıma (adımları ve hareketi izlemek için)';
 
   @override
   String get newSessionPermCamera =>

@@ -4694,6 +4694,31 @@
     "@pdfPasswordWarning": {
         "description": "Label for pdfPasswordWarning"
     },
+    "openLockedReport": "Rapora girtî veke",
+    "@openLockedReport": {
+        "description": "Button that opens a previously locked .torcav-pdf report"
+    },
+    "unlockDialogBody": "Şîfreya ku te dema girtina vê dosyeyê bikaranî binivîse.",
+    "@unlockDialogBody": {
+        "description": "Instruction in the unlock-password dialog"
+    },
+    "unlockPasswordHint": "Şîfre",
+    "@unlockPasswordHint": {
+        "description": "Hint for the unlock password field"
+    },
+    "unlockFailed": "Şîfre çewt e, an ev dosye ji aliyê Torcav ve nehatiye girtin.",
+    "@unlockFailed": {
+        "description": "Error when the unlock password is wrong or the file is not ours"
+    },
+    "unlockedToast": "Rapor hate vekirin: {path}",
+    "@unlockedToast": {
+        "placeholders": {
+            "path": {
+                "type": "String"
+            }
+        },
+        "description": "Confirmation after a locked report was unlocked"
+    },
     "understandEnable": "FÊM KIRIM — ÇALAK BIKE",
     "@understandEnable": {
         "description": "Label for understandEnable"
@@ -5746,10 +5771,6 @@
     "newSessionPermLocation": "Cih (ji bo nexşekirina sînyalê li koordînatan)",
     "@newSessionPermLocation": {
         "description": "Permission item: location access for heatmap"
-    },
-    "newSessionPermActivity": "Naskirina Çalakiyê (ji bo şopandina gav û tevgerê)",
-    "@newSessionPermActivity": {
-        "description": "Permission item: activity recognition for heatmap"
     },
     "newSessionPermCamera": "Kamera (bijarte, ji bo taybetmendiyên nexşekirina dîtbarî)",
     "@newSessionPermCamera": {

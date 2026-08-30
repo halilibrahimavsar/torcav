@@ -53,7 +53,7 @@ This document is the **canonical source** for filling Play Console's Data Safety
 ### 1.4 Health & fitness (motion data)
 | Field | Value |
 |---|---|
-| Type | Activity recognition (step counter), motion sensors (IMU/accelerometer), barometer |
+| Type | Motion sensors (IMU/accelerometer, gyroscope), compass, barometer. No activity-recognition API is used: step detection is derived from the raw accelerometer stream on-device. |
 | Purpose | App functionality — indoor signal heatmap surveys (position tracking) |
 | Shared with 3rd parties? | **NO** |
 | Stored on device? | **YES** — heatmap session points in encrypted Hive |
@@ -123,7 +123,6 @@ This document is the **canonical source** for filling Play Console's Data Safety
 | `CHANGE_WIFI_STATE` | Trigger Wi-Fi scan | Implicit |
 | `INTERNET` | Speed test, DoH/DoT detection, OUI database sync | Implicit |
 | `CAMERA` | AR pose tracking for indoor heatmap surveys | Prominent disclosure in `new_session_dialog` |
-| `ACTIVITY_RECOGNITION` | Step counter for heatmap survey movement tracking | Prominent disclosure in `new_session_dialog` |
 | `FOREGROUND_SERVICE` | Ping stabilizer VPN tunnel | Implicit |
 | `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` | Keeps opt-in background monitoring (WorkManager) + stabilizer alert engine alive on OEM battery managers | In-app disclosure dialog before system prompt (core-functionality exemption) |
 | `FOREGROUND_SERVICE_SPECIAL_USE` | Ping stabilizer VPN tunnel (specialUse + `local_ping_stabilizer_tunnel` subtype) | Prominent disclosure in `stabilizer_toggle_card` |

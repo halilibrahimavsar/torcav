@@ -4694,6 +4694,31 @@
     "@pdfPasswordWarning": {
         "description": "Label for pdfPasswordWarning"
     },
+    "openLockedReport": "Open a locked report",
+    "@openLockedReport": {
+        "description": "Button that opens a previously locked .torcav-pdf report"
+    },
+    "unlockDialogBody": "Enter the password you used when locking this file.",
+    "@unlockDialogBody": {
+        "description": "Instruction in the unlock-password dialog"
+    },
+    "unlockPasswordHint": "Password",
+    "@unlockPasswordHint": {
+        "description": "Hint for the unlock password field"
+    },
+    "unlockFailed": "Wrong password, or this file was not locked by Torcav.",
+    "@unlockFailed": {
+        "description": "Error when the unlock password is wrong or the file is not ours"
+    },
+    "unlockedToast": "Report unlocked: {path}",
+    "@unlockedToast": {
+        "placeholders": {
+            "path": {
+                "type": "String"
+            }
+        },
+        "description": "Confirmation after a locked report was unlocked"
+    },
     "understandEnable": "I UNDERSTAND — ENABLE",
     "@understandEnable": {
         "description": "Label for understandEnable"
@@ -5747,10 +5772,6 @@
     "@newSessionPermLocation": {
         "description": "Permission item: location access for heatmap"
     },
-    "newSessionPermActivity": "Activity Recognition (to track steps and movement)",
-    "@newSessionPermActivity": {
-        "description": "Permission item: activity recognition for heatmap"
-    },
     "newSessionPermCamera": "Camera (optional, for visual mapping features)",
     "@newSessionPermCamera": {
         "description": "Permission item: camera for heatmap"
@@ -6657,7 +6678,10 @@
     "breachResultCompromised": "This password appears in {count} known breach records. Stop using it everywhere and change it immediately.",
     "@breachResultCompromised": {
         "placeholders": {
-            "count": { "type": "int", "format": "decimalPattern" }
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
         }
     },
     "breachAdvice": "Replace it with a unique password and enable two-factor authentication on affected accounts.",

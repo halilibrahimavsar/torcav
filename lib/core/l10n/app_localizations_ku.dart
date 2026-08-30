@@ -3733,6 +3733,25 @@ class AppLocalizationsKu extends AppLocalizations {
       'Hişyar bin: ev veşartineke sivik e, ne şîfrekirina asta bankê ye. Dosyeyê li hember derketinên hêsan (thumbnailên cloud, cache ya emailê) diparêze lê êrîşkarek biryardar ku dosyeyê hebe hîna jî dikare şîfreyeke lawaz bi zorê biceribîne. Şîfreyeke dirêj û bêhempa bikar bînin.';
 
   @override
+  String get openLockedReport => 'Rapora girtî veke';
+
+  @override
+  String get unlockDialogBody =>
+      'Şîfreya ku te dema girtina vê dosyeyê bikaranî binivîse.';
+
+  @override
+  String get unlockPasswordHint => 'Şîfre';
+
+  @override
+  String get unlockFailed =>
+      'Şîfre çewt e, an ev dosye ji aliyê Torcav ve nehatiye girtin.';
+
+  @override
+  String unlockedToast(String path) {
+    return 'Rapor hate vekirin: $path';
+  }
+
+  @override
   String get understandEnable => 'FÊM KIRIM — ÇALAK BIKE';
 
   @override
@@ -4514,10 +4533,6 @@ class AppLocalizationsKu extends AppLocalizations {
   @override
   String get newSessionPermLocation =>
       'Cih (ji bo nexşekirina sînyalê li koordînatan)';
-
-  @override
-  String get newSessionPermActivity =>
-      'Naskirina Çalakiyê (ji bo şopandina gav û tevgerê)';
 
   @override
   String get newSessionPermCamera =>

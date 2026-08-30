@@ -4694,6 +4694,31 @@
     "@pdfPasswordWarning": {
         "description": "Label for pdfPasswordWarning"
     },
+    "openLockedReport": "Gesperrten Bericht öffnen",
+    "@openLockedReport": {
+        "description": "Button that opens a previously locked .torcav-pdf report"
+    },
+    "unlockDialogBody": "Geben Sie das Passwort ein, mit dem Sie diese Datei gesperrt haben.",
+    "@unlockDialogBody": {
+        "description": "Instruction in the unlock-password dialog"
+    },
+    "unlockPasswordHint": "Passwort",
+    "@unlockPasswordHint": {
+        "description": "Hint for the unlock password field"
+    },
+    "unlockFailed": "Falsches Passwort, oder diese Datei wurde nicht von Torcav gesperrt.",
+    "@unlockFailed": {
+        "description": "Error when the unlock password is wrong or the file is not ours"
+    },
+    "unlockedToast": "Bericht entsperrt: {path}",
+    "@unlockedToast": {
+        "placeholders": {
+            "path": {
+                "type": "String"
+            }
+        },
+        "description": "Confirmation after a locked report was unlocked"
+    },
     "understandEnable": "VERSTANDEN — AKTIVIEREN",
     "@understandEnable": {
         "description": "Label for understandEnable"
@@ -5746,10 +5771,6 @@
     "newSessionPermLocation": "Standort (um Signal auf Koordinaten abzubilden)",
     "@newSessionPermLocation": {
         "description": "Permission item: location access for heatmap"
-    },
-    "newSessionPermActivity": "Aktivitätserkennung (um Schritte und Bewegung zu verfolgen)",
-    "@newSessionPermActivity": {
-        "description": "Permission item: activity recognition for heatmap"
     },
     "newSessionPermCamera": "Kamera (optional, für visuelle Kartierungsfunktionen)",
     "@newSessionPermCamera": {

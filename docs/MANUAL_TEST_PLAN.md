@@ -1097,8 +1097,8 @@ ls -lh build/app/outputs/flutter-apk/app-release.apk
 - ✅ Nearby devices (NEARBY_WIFI_DEVICES)
 - ✅ Location
 - ✅ Camera
-- ✅ Physical activity (ACTIVITY_RECOGNITION)
 - ✅ Notifications
+- ❌ Physical activity GÖRÜNMEMELİ (ACTIVITY_RECOGNITION `tools:node="remove"` ile çıkarıldı)
 - ❌ Body sensors GÖRÜNMEMELİ (`tools:node="remove"` ile çıkarıldı)
 - ❌ Storage / Phone / SMS GÖRÜNMEMELİ
 - ❌ Microphone GÖRÜNMEMELİ

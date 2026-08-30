@@ -3731,6 +3731,25 @@ class AppLocalizationsEn extends AppLocalizations {
       'Heads up: this is lightweight obfuscation, not bank-grade encryption. It protects the file against casual leaks (cloud thumbnails, mailbox cache) but a determined attacker who has the file could still attempt to brute-force a weak password. Use a long, unique passphrase.';
 
   @override
+  String get openLockedReport => 'Open a locked report';
+
+  @override
+  String get unlockDialogBody =>
+      'Enter the password you used when locking this file.';
+
+  @override
+  String get unlockPasswordHint => 'Password';
+
+  @override
+  String get unlockFailed =>
+      'Wrong password, or this file was not locked by Torcav.';
+
+  @override
+  String unlockedToast(String path) {
+    return 'Report unlocked: $path';
+  }
+
+  @override
   String get understandEnable => 'I UNDERSTAND — ENABLE';
 
   @override
@@ -4509,10 +4528,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get newSessionPermLocation =>
       'Location (to map signal to coordinates)';
-
-  @override
-  String get newSessionPermActivity =>
-      'Activity Recognition (to track steps and movement)';
 
   @override
   String get newSessionPermCamera =>

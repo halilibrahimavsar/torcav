@@ -3741,6 +3741,25 @@ class AppLocalizationsDe extends AppLocalizations {
       'Achtung: Das ist eine leichte Verschleierung, keine bankentaugliche Verschlüsselung. Sie schützt die Datei vor zufälligen Lecks (Cloud-Vorschaubilder, Postfach-Cache), aber ein entschlossener Angreifer mit der Datei könnte trotzdem ein schwaches Passwort per Brute-Force knacken. Nutzen Sie eine lange, einzigartige Passphrase.';
 
   @override
+  String get openLockedReport => 'Gesperrten Bericht öffnen';
+
+  @override
+  String get unlockDialogBody =>
+      'Geben Sie das Passwort ein, mit dem Sie diese Datei gesperrt haben.';
+
+  @override
+  String get unlockPasswordHint => 'Passwort';
+
+  @override
+  String get unlockFailed =>
+      'Falsches Passwort, oder diese Datei wurde nicht von Torcav gesperrt.';
+
+  @override
+  String unlockedToast(String path) {
+    return 'Bericht entsperrt: $path';
+  }
+
+  @override
   String get understandEnable => 'VERSTANDEN — AKTIVIEREN';
 
   @override
@@ -4521,10 +4540,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get newSessionPermLocation =>
       'Standort (um Signal auf Koordinaten abzubilden)';
-
-  @override
-  String get newSessionPermActivity =>
-      'Aktivitätserkennung (um Schritte und Bewegung zu verfolgen)';
 
   @override
   String get newSessionPermCamera =>
