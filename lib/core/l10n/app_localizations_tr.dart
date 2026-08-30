@@ -5456,4 +5456,59 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get leaveNetworkTaskDesc =>
       'Buradaki trafik dinleniyor olabilir. Bunu düzelten bir modem ayarı yok — bağlantıyı kes, mobil veriyi veya güvendiğin bir ağı kullan.';
+
+  @override
+  String a11yHealthScore(int score) {
+    return 'Ağ sağlığı 100 üzerinden $score. Ayrıntı için çift dokunun.';
+  }
+
+  @override
+  String a11ySignalQuality(int percent) {
+    return 'Sinyal kalitesi yüzde $percent. Kanal görünümü için çift dokunun.';
+  }
+
+  @override
+  String get a11ySignalQualityUnknown =>
+      'Sinyal kalitesi bilinmiyor. Kanal görünümü için çift dokunun.';
+
+  @override
+  String a11yThreatCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count etkin güvenlik uyarısı',
+      one: '1 etkin güvenlik uyarısı',
+      zero: 'Etkin güvenlik uyarısı yok',
+    );
+    return '$_temp0. İncelemek için çift dokunun.';
+  }
+
+  @override
+  String a11yDeviceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Ağda $count cihaz',
+      one: 'Ağda 1 cihaz',
+      zero: 'Cihaz bulunamadı',
+    );
+    return '$_temp0. Listeyi görmek için çift dokunun.';
+  }
+
+  @override
+  String a11yNetworkStatus(String status, String ssid) {
+    return 'Ağ durumu: $status, $ssid. Tam değerlendirme için çift dokunun.';
+  }
+
+  @override
+  String get openMenuTooltip => 'Menüyü aç';
+
+  @override
+  String get closeTooltip => 'Kapat';
+
+  @override
+  String get showPasswordTooltip => 'Parolayı göster';
+
+  @override
+  String get hidePasswordTooltip => 'Parolayı gizle';
 }

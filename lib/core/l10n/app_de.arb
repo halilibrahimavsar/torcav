@@ -6761,5 +6761,73 @@
     "leaveNetworkTaskDesc": "Der Verkehr hier kann abgefangen werden. Keine Router-Einstellung behebt das — trennen Sie die Verbindung und nutzen Sie mobile Daten oder ein vertrautes Netzwerk.",
     "@leaveNetworkTaskDesc": {
         "description": "Task description for the dashboard action list"
+    },
+    "a11yHealthScore": "Netzwerkzustand {score} von 100. Zum Öffnen doppeltippen.",
+    "@a11yHealthScore": {
+        "placeholders": {
+            "score": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11ySignalQuality": "Signalqualität {percent} Prozent. Für die Kanalansicht doppeltippen.",
+    "@a11ySignalQuality": {
+        "placeholders": {
+            "percent": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11ySignalQualityUnknown": "Signalqualität unbekannt. Für die Kanalansicht doppeltippen.",
+    "@a11ySignalQualityUnknown": {
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11yThreatCount": "{count, plural, =0{Keine aktiven Sicherheitswarnungen} =1{1 aktive Sicherheitswarnung} other{{count} aktive Sicherheitswarnungen}}. Zum Prüfen doppeltippen.",
+    "@a11yThreatCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11yDeviceCount": "{count, plural, =0{Keine Geräte gefunden} =1{1 Gerät im Netzwerk} other{{count} Geräte im Netzwerk}}. Für die Liste doppeltippen.",
+    "@a11yDeviceCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11yNetworkStatus": "Netzwerkstatus: {status}, {ssid}. Für die vollständige Bewertung doppeltippen.",
+    "@a11yNetworkStatus": {
+        "placeholders": {
+            "status": {
+                "type": "String"
+            },
+            "ssid": {
+                "type": "String"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "openMenuTooltip": "Menü öffnen",
+    "@openMenuTooltip": {
+        "description": "Tooltip / screen-reader label for an icon-only button"
+    },
+    "closeTooltip": "Schließen",
+    "@closeTooltip": {
+        "description": "Tooltip / screen-reader label for an icon-only button"
+    },
+    "showPasswordTooltip": "Passwort anzeigen",
+    "@showPasswordTooltip": {
+        "description": "Tooltip / screen-reader label for an icon-only button"
+    },
+    "hidePasswordTooltip": "Passwort verbergen",
+    "@hidePasswordTooltip": {
+        "description": "Tooltip / screen-reader label for an icon-only button"
     }
 }

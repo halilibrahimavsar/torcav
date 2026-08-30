@@ -6761,5 +6761,73 @@
     "leaveNetworkTaskDesc": "Trafîka li vir dibe ku were girtin. Tu mîhengek rûterê vê çareser nake — girêdanê qut bike û daneya mobîl an torek pêbawer bikar bîne.",
     "@leaveNetworkTaskDesc": {
         "description": "Task description for the dashboard action list"
+    },
+    "a11yHealthScore": "Tenduristiya torê {score} ji 100. Ji bo hûrgiliyan du caran bitikîne.",
+    "@a11yHealthScore": {
+        "placeholders": {
+            "score": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11ySignalQuality": "Kalîteya sînyalê ji sedî {percent}. Ji bo dîmena kanalê du caran bitikîne.",
+    "@a11ySignalQuality": {
+        "placeholders": {
+            "percent": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11ySignalQualityUnknown": "Kalîteya sînyalê nenas e. Ji bo dîmena kanalê du caran bitikîne.",
+    "@a11ySignalQualityUnknown": {
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11yThreatCount": "{count, plural, =0{Tu hişyariya ewlehiyê ya çalak tune} =1{1 hişyariya ewlehiyê ya çalak} other{{count} hişyariyên ewlehiyê yên çalak}}. Ji bo vekolînê du caran bitikîne.",
+    "@a11yThreatCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11yDeviceCount": "{count, plural, =0{Tu amûr nehat dîtin} =1{1 amûr li ser torê} other{{count} amûr li ser torê}}. Ji bo lîsteyê du caran bitikîne.",
+    "@a11yDeviceCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11yNetworkStatus": "Rewşa torê: {status}, {ssid}. Ji bo nirxandina tevahî du caran bitikîne.",
+    "@a11yNetworkStatus": {
+        "placeholders": {
+            "status": {
+                "type": "String"
+            },
+            "ssid": {
+                "type": "String"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "openMenuTooltip": "Menuyê veke",
+    "@openMenuTooltip": {
+        "description": "Tooltip / screen-reader label for an icon-only button"
+    },
+    "closeTooltip": "Bigire",
+    "@closeTooltip": {
+        "description": "Tooltip / screen-reader label for an icon-only button"
+    },
+    "showPasswordTooltip": "Şîfreyê nîşan bide",
+    "@showPasswordTooltip": {
+        "description": "Tooltip / screen-reader label for an icon-only button"
+    },
+    "hidePasswordTooltip": "Şîfreyê veşêre",
+    "@hidePasswordTooltip": {
+        "description": "Tooltip / screen-reader label for an icon-only button"
     }
 }

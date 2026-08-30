@@ -5461,4 +5461,59 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get leaveNetworkTaskDesc =>
       'Der Verkehr hier kann abgefangen werden. Keine Router-Einstellung behebt das — trennen Sie die Verbindung und nutzen Sie mobile Daten oder ein vertrautes Netzwerk.';
+
+  @override
+  String a11yHealthScore(int score) {
+    return 'Netzwerkzustand $score von 100. Zum Öffnen doppeltippen.';
+  }
+
+  @override
+  String a11ySignalQuality(int percent) {
+    return 'Signalqualität $percent Prozent. Für die Kanalansicht doppeltippen.';
+  }
+
+  @override
+  String get a11ySignalQualityUnknown =>
+      'Signalqualität unbekannt. Für die Kanalansicht doppeltippen.';
+
+  @override
+  String a11yThreatCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count aktive Sicherheitswarnungen',
+      one: '1 aktive Sicherheitswarnung',
+      zero: 'Keine aktiven Sicherheitswarnungen',
+    );
+    return '$_temp0. Zum Prüfen doppeltippen.';
+  }
+
+  @override
+  String a11yDeviceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Geräte im Netzwerk',
+      one: '1 Gerät im Netzwerk',
+      zero: 'Keine Geräte gefunden',
+    );
+    return '$_temp0. Für die Liste doppeltippen.';
+  }
+
+  @override
+  String a11yNetworkStatus(String status, String ssid) {
+    return 'Netzwerkstatus: $status, $ssid. Für die vollständige Bewertung doppeltippen.';
+  }
+
+  @override
+  String get openMenuTooltip => 'Menü öffnen';
+
+  @override
+  String get closeTooltip => 'Schließen';
+
+  @override
+  String get showPasswordTooltip => 'Passwort anzeigen';
+
+  @override
+  String get hidePasswordTooltip => 'Passwort verbergen';
 }

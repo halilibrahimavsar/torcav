@@ -99,4 +99,111 @@ void main() {
     await tester.tap(find.byIcon(Icons.devices_other_rounded));
     expect(taps, 1);
   });
+
+  // The gauges are a 12px icon over a bare number inside a CustomPaint ring —
+  // nothing a screen reader can make sense of without an explicit label.
+  testWidgets('each gauge is exposed as a labelled button', (tester) async {
+    final handle = tester.ensureSemantics();
+
+    await pumpAppWidget(
+      tester,
+      RadialDashboardCore(
+        statusColor: Colors.green,
+        label: 'SECURE',
+        subLabel: 'HomeNet',
+        healthScore: 82,
+        signalQualityPct: 64,
+        threatCount: 2,
+        deviceCount: 7,
+        onTapHealth: () {},
+        onTapSignal: () {},
+        onTapThreats: () {},
+        onTapDevices: () {},
+        onTapCore: () {},
+      ),
+      surfaceSize: const Size(500, 500),
+    );
+    await tester.pump(const Duration(milliseconds: 800));
+
+    expect(
+      find.bySemanticsLabel(RegExp(r'Network health 82 out of 100')),
+      findsOneWidget,
+    );
+    expect(
+      find.bySemanticsLabel(RegExp(r'Signal quality 64 percent')),
+      findsOneWidget,
+    );
+    expect(
+      find.bySemanticsLabel(RegExp(r'2 active security alerts')),
+      findsOneWidget,
+    );
+    expect(
+      find.bySemanticsLabel(RegExp(r'7 devices on the network')),
+      findsOneWidget,
+    );
+    expect(
+      find.bySemanticsLabel(RegExp(r'Network status: SECURE, HomeNet')),
+      findsOneWidget,
+    );
+
+    handle.dispose();
+  });
+
+  testWidgets('unknown signal reads as unknown, not as zero', (tester) async {
+    final handle = tester.ensureSemantics();
+
+    await pumpAppWidget(
+      tester,
+      RadialDashboardCore(
+        statusColor: Colors.grey,
+        label: 'SCANNING',
+        subLabel: '—',
+        healthScore: 0,
+        signalQualityPct: null,
+        threatCount: 0,
+        deviceCount: 0,
+        onTapSignal: () {},
+      ),
+      surfaceSize: const Size(500, 500),
+    );
+    await tester.pump(const Duration(milliseconds: 800));
+
+    expect(
+      find.bySemanticsLabel(RegExp(r'Signal quality unknown')),
+      findsOneWidget,
+    );
+    expect(
+      find.bySemanticsLabel(RegExp(r'No active security alerts')),
+      findsOneWidget,
+    );
+
+    handle.dispose();
+  });
+
+  testWidgets('gauge tap targets meet the 48px minimum', (tester) async {
+    await pumpAppWidget(
+      tester,
+      RadialDashboardCore(
+        statusColor: Colors.green,
+        label: 'SECURE',
+        subLabel: 'HomeNet',
+        healthScore: 82,
+        signalQualityPct: 64,
+        threatCount: 0,
+        deviceCount: 3,
+        onTapHealth: () {},
+      ),
+      surfaceSize: const Size(500, 500),
+    );
+    await tester.pump(const Duration(milliseconds: 800));
+
+    final targets = tester.widgetList<SizedBox>(
+      find.descendant(
+        of: find.byType(RadialDashboardCore),
+        matching: find.byType(SizedBox),
+      ),
+    );
+    final gaugeTargets = targets.where((b) => b.width == 48 && b.height == 48);
+    expect(gaugeTargets, hasLength(4));
+  });
 }

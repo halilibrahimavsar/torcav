@@ -6761,5 +6761,73 @@
     "leaveNetworkTaskDesc": "Buradaki trafik dinleniyor olabilir. Bunu düzelten bir modem ayarı yok — bağlantıyı kes, mobil veriyi veya güvendiğin bir ağı kullan.",
     "@leaveNetworkTaskDesc": {
         "description": "Task description for the dashboard action list"
+    },
+    "a11yHealthScore": "Ağ sağlığı 100 üzerinden {score}. Ayrıntı için çift dokunun.",
+    "@a11yHealthScore": {
+        "placeholders": {
+            "score": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11ySignalQuality": "Sinyal kalitesi yüzde {percent}. Kanal görünümü için çift dokunun.",
+    "@a11ySignalQuality": {
+        "placeholders": {
+            "percent": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11ySignalQualityUnknown": "Sinyal kalitesi bilinmiyor. Kanal görünümü için çift dokunun.",
+    "@a11ySignalQualityUnknown": {
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11yThreatCount": "{count, plural, =0{Etkin güvenlik uyarısı yok} =1{1 etkin güvenlik uyarısı} other{{count} etkin güvenlik uyarısı}}. İncelemek için çift dokunun.",
+    "@a11yThreatCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11yDeviceCount": "{count, plural, =0{Cihaz bulunamadı} =1{Ağda 1 cihaz} other{Ağda {count} cihaz}}. Listeyi görmek için çift dokunun.",
+    "@a11yDeviceCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11yNetworkStatus": "Ağ durumu: {status}, {ssid}. Tam değerlendirme için çift dokunun.",
+    "@a11yNetworkStatus": {
+        "placeholders": {
+            "status": {
+                "type": "String"
+            },
+            "ssid": {
+                "type": "String"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "openMenuTooltip": "Menüyü aç",
+    "@openMenuTooltip": {
+        "description": "Tooltip / screen-reader label for an icon-only button"
+    },
+    "closeTooltip": "Kapat",
+    "@closeTooltip": {
+        "description": "Tooltip / screen-reader label for an icon-only button"
+    },
+    "showPasswordTooltip": "Parolayı göster",
+    "@showPasswordTooltip": {
+        "description": "Tooltip / screen-reader label for an icon-only button"
+    },
+    "hidePasswordTooltip": "Parolayı gizle",
+    "@hidePasswordTooltip": {
+        "description": "Tooltip / screen-reader label for an icon-only button"
     }
 }

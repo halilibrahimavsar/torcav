@@ -5443,4 +5443,59 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get leaveNetworkTaskDesc =>
       'Traffic here may be intercepted. No router setting fixes this — disconnect and use mobile data or a network you trust.';
+
+  @override
+  String a11yHealthScore(int score) {
+    return 'Network health $score out of 100. Double tap for details.';
+  }
+
+  @override
+  String a11ySignalQuality(int percent) {
+    return 'Signal quality $percent percent. Double tap to open the channel view.';
+  }
+
+  @override
+  String get a11ySignalQualityUnknown =>
+      'Signal quality unknown. Double tap to open the channel view.';
+
+  @override
+  String a11yThreatCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count active security alerts',
+      one: '1 active security alert',
+      zero: 'No active security alerts',
+    );
+    return '$_temp0. Double tap to review.';
+  }
+
+  @override
+  String a11yDeviceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count devices on the network',
+      one: '1 device on the network',
+      zero: 'No devices found',
+    );
+    return '$_temp0. Double tap to see the list.';
+  }
+
+  @override
+  String a11yNetworkStatus(String status, String ssid) {
+    return 'Network status: $status, $ssid. Double tap for the full assessment.';
+  }
+
+  @override
+  String get openMenuTooltip => 'Open menu';
+
+  @override
+  String get closeTooltip => 'Close';
+
+  @override
+  String get showPasswordTooltip => 'Show password';
+
+  @override
+  String get hidePasswordTooltip => 'Hide password';
 }

@@ -5453,4 +5453,59 @@ class AppLocalizationsKu extends AppLocalizations {
   @override
   String get leaveNetworkTaskDesc =>
       'Trafîka li vir dibe ku were girtin. Tu mîhengek rûterê vê çareser nake — girêdanê qut bike û daneya mobîl an torek pêbawer bikar bîne.';
+
+  @override
+  String a11yHealthScore(int score) {
+    return 'Tenduristiya torê $score ji 100. Ji bo hûrgiliyan du caran bitikîne.';
+  }
+
+  @override
+  String a11ySignalQuality(int percent) {
+    return 'Kalîteya sînyalê ji sedî $percent. Ji bo dîmena kanalê du caran bitikîne.';
+  }
+
+  @override
+  String get a11ySignalQualityUnknown =>
+      'Kalîteya sînyalê nenas e. Ji bo dîmena kanalê du caran bitikîne.';
+
+  @override
+  String a11yThreatCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hişyariyên ewlehiyê yên çalak',
+      one: '1 hişyariya ewlehiyê ya çalak',
+      zero: 'Tu hişyariya ewlehiyê ya çalak tune',
+    );
+    return '$_temp0. Ji bo vekolînê du caran bitikîne.';
+  }
+
+  @override
+  String a11yDeviceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count amûr li ser torê',
+      one: '1 amûr li ser torê',
+      zero: 'Tu amûr nehat dîtin',
+    );
+    return '$_temp0. Ji bo lîsteyê du caran bitikîne.';
+  }
+
+  @override
+  String a11yNetworkStatus(String status, String ssid) {
+    return 'Rewşa torê: $status, $ssid. Ji bo nirxandina tevahî du caran bitikîne.';
+  }
+
+  @override
+  String get openMenuTooltip => 'Menuyê veke';
+
+  @override
+  String get closeTooltip => 'Bigire';
+
+  @override
+  String get showPasswordTooltip => 'Şîfreyê nîşan bide';
+
+  @override
+  String get hidePasswordTooltip => 'Şîfreyê veşêre';
 }

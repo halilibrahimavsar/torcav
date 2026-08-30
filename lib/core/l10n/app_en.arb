@@ -6868,5 +6868,73 @@
     "leaveNetworkTaskDesc": "Traffic here may be intercepted. No router setting fixes this — disconnect and use mobile data or a network you trust.",
     "@leaveNetworkTaskDesc": {
         "description": "Task description for the dashboard action list"
+    },
+    "a11yHealthScore": "Network health {score} out of 100. Double tap for details.",
+    "@a11yHealthScore": {
+        "placeholders": {
+            "score": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11ySignalQuality": "Signal quality {percent} percent. Double tap to open the channel view.",
+    "@a11ySignalQuality": {
+        "placeholders": {
+            "percent": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11ySignalQualityUnknown": "Signal quality unknown. Double tap to open the channel view.",
+    "@a11ySignalQualityUnknown": {
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11yThreatCount": "{count, plural, =0{No active security alerts} =1{1 active security alert} other{{count} active security alerts}}. Double tap to review.",
+    "@a11yThreatCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11yDeviceCount": "{count, plural, =0{No devices found} =1{1 device on the network} other{{count} devices on the network}}. Double tap to see the list.",
+    "@a11yDeviceCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "a11yNetworkStatus": "Network status: {status}, {ssid}. Double tap for the full assessment.",
+    "@a11yNetworkStatus": {
+        "placeholders": {
+            "status": {
+                "type": "String"
+            },
+            "ssid": {
+                "type": "String"
+            }
+        },
+        "description": "Screen-reader label for the dashboard radial gauges"
+    },
+    "openMenuTooltip": "Open menu",
+    "@openMenuTooltip": {
+        "description": "Tooltip / screen-reader label for an icon-only button"
+    },
+    "closeTooltip": "Close",
+    "@closeTooltip": {
+        "description": "Tooltip / screen-reader label for an icon-only button"
+    },
+    "showPasswordTooltip": "Show password",
+    "@showPasswordTooltip": {
+        "description": "Tooltip / screen-reader label for an icon-only button"
+    },
+    "hidePasswordTooltip": "Hide password",
+    "@hidePasswordTooltip": {
+        "description": "Tooltip / screen-reader label for an icon-only button"
     }
 }

@@ -60,6 +60,7 @@ class _SecurityCenterView extends StatelessWidget {
                   state is SecurityLoading ||
                   (state is SecurityLoaded && state.isDnsLoading);
               return IconButton(
+                tooltip: l10n.refresh,
                 icon:
                     isLoading
                         ? SizedBox(

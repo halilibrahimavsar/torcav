@@ -74,6 +74,7 @@ class NotificationSheet extends StatelessWidget {
                 ),
               ),
               IconButton(
+                tooltip: context.l10n.closeTooltip,
                 icon: Icon(
                   Icons.close,
                   color: Theme.of(

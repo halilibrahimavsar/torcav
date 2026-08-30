@@ -823,6 +823,10 @@ class _PdfPasswordFieldState extends State<_PdfPasswordField> {
                         isDense: true,
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
+                          tooltip:
+                              obscure
+                                  ? l10n.showPasswordTooltip
+                                  : l10n.hidePasswordTooltip,
                           icon: Icon(
                             obscure
                                 ? Icons.visibility_off_rounded
@@ -921,6 +925,10 @@ class _PdfPasswordFieldState extends State<_PdfPasswordField> {
                 isDense: true,
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
+                  tooltip:
+                      _obscure
+                          ? l10n.showPasswordTooltip
+                          : l10n.hidePasswordTooltip,
                   icon: Icon(
                     _obscure
                         ? Icons.visibility_off_rounded

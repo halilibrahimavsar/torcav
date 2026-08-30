@@ -3,6 +3,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/extensions/context_extensions.dart';
+
 import '../../../../core/theme/app_theme.dart';
 import 'security_core.dart';
 
@@ -92,6 +94,7 @@ class _RadialDashboardCoreState extends State<RadialDashboardCore>
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
     const size = 320.0;
 
     final secColor = _scoreColor(widget.healthScore, scheme);
@@ -110,6 +113,7 @@ class _RadialDashboardCoreState extends State<RadialDashboardCore>
         icon: Icons.health_and_safety_rounded,
         label: '${widget.healthScore}',
         unit: '%',
+        semanticLabel: l10n.a11yHealthScore(widget.healthScore),
         onTap: widget.onTapHealth,
       ),
       _GaugeSpec(
@@ -122,6 +126,10 @@ class _RadialDashboardCoreState extends State<RadialDashboardCore>
                 ? '${widget.signalQualityPct}'
                 : '—',
         unit: '%',
+        semanticLabel:
+            widget.signalQualityPct != null
+                ? l10n.a11ySignalQuality(widget.signalQualityPct!)
+                : l10n.a11ySignalQualityUnknown,
         onTap: widget.onTapSignal,
       ),
       _GaugeSpec(
@@ -131,6 +139,7 @@ class _RadialDashboardCoreState extends State<RadialDashboardCore>
         icon: Icons.warning_amber_rounded,
         label: '${widget.threatCount}',
         unit: '',
+        semanticLabel: l10n.a11yThreatCount(widget.threatCount),
         onTap: widget.onTapThreats,
       ),
       _GaugeSpec(
@@ -140,6 +149,7 @@ class _RadialDashboardCoreState extends State<RadialDashboardCore>
         icon: Icons.devices_other_rounded,
         label: '${widget.deviceCount}',
         unit: '',
+        semanticLabel: l10n.a11yDeviceCount(widget.deviceCount),
         onTap: widget.onTapDevices,
       ),
     ];
@@ -150,8 +160,10 @@ class _RadialDashboardCoreState extends State<RadialDashboardCore>
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Outer orbital arcs painter
-          AnimatedBuilder(
+          // Outer orbital arcs painter — pure decoration; the badges carry
+          // the values, so this must not add a second, wordless node.
+          ExcludeSemantics(
+            child: AnimatedBuilder(
             animation: _orbit,
             builder: (context, _) {
               return CustomPaint(
@@ -163,17 +175,24 @@ class _RadialDashboardCoreState extends State<RadialDashboardCore>
                 ),
               );
             },
+            ),
           ),
 
           // Central core (existing animated widget)
-          GestureDetector(
-            onTap: widget.onTapCore,
-            behavior: HitTestBehavior.opaque,
-            child: SecurityCore(
-              statusColor: widget.statusColor,
-              label: widget.label,
-              subLabel: widget.subLabel,
-              isLoading: widget.isLoading,
+          Semantics(
+            button: true,
+            label: l10n.a11yNetworkStatus(widget.label, widget.subLabel),
+            child: ExcludeSemantics(
+              child: GestureDetector(
+                onTap: widget.onTapCore,
+                behavior: HitTestBehavior.opaque,
+                child: SecurityCore(
+                  statusColor: widget.statusColor,
+                  label: widget.label,
+                  subLabel: widget.subLabel,
+                  isLoading: widget.isLoading,
+                ),
+              ),
             ),
           ),
 
@@ -194,9 +213,14 @@ class _GaugeSpec {
   final String unit;
   final VoidCallback? onTap;
 
+  /// Full sentence read by screen readers. The visual badge is a 12px icon
+  /// over a bare number, which conveys nothing on its own.
+  final String semanticLabel;
+
   _GaugeSpec({
     required this.anglePos,
     required this.valuePct,
+    required this.semanticLabel,
     required this.color,
     required this.icon,
     required this.label,
@@ -219,47 +243,64 @@ class _GaugeBadge extends StatelessWidget {
 
     return Transform.translate(
       offset: Offset(dx, dy),
-      child: GestureDetector(
-        onTap: spec.onTap,
-        behavior: HitTestBehavior.opaque,
-        child: TweenAnimationBuilder<double>(
-          tween: Tween(begin: 0.7, end: 1.0),
-          duration: const Duration(milliseconds: 700),
-          curve: Curves.elasticOut,
-          builder:
-              (context, scale, child) =>
-                  Transform.scale(scale: scale, child: child),
-          child: Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: spec.color.withValues(alpha: 0.12),
-              border: Border.all(
-                color: spec.color.withValues(alpha: 0.5),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: spec.color.withValues(alpha: 0.25),
-                  blurRadius: 8,
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(spec.icon, size: 12, color: spec.color),
-                const SizedBox(height: 1),
-                Text(
-                  spec.label,
-                  style: GoogleFonts.orbitron(
-                    color: spec.color,
-                    fontSize: 8,
-                    fontWeight: FontWeight.w900,
-                    height: 1,
+      child: Semantics(
+        button: spec.onTap != null,
+        label: spec.semanticLabel,
+        child: GestureDetector(
+          onTap: spec.onTap,
+          behavior: HitTestBehavior.opaque,
+          // Drawn at 36px, but the tap target is the 48px minimum. The four
+          // badges sit at the cardinal points of the ring, so the larger
+          // targets cannot overlap each other.
+          child: SizedBox(
+            width: 48,
+            height: 48,
+            child: Center(
+              // The icon and bare number say nothing on their own; the
+              // Semantics label above is the accessible version.
+              child: ExcludeSemantics(
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.7, end: 1.0),
+                  duration: const Duration(milliseconds: 700),
+                  curve: Curves.elasticOut,
+                  builder:
+                      (context, scale, child) =>
+                          Transform.scale(scale: scale, child: child),
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: spec.color.withValues(alpha: 0.12),
+                      border: Border.all(
+                        color: spec.color.withValues(alpha: 0.5),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: spec.color.withValues(alpha: 0.25),
+                          blurRadius: 8,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(spec.icon, size: 12, color: spec.color),
+                        const SizedBox(height: 1),
+                        Text(
+                          spec.label,
+                          style: GoogleFonts.orbitron(
+                            color: spec.color,
+                            fontSize: 8,
+                            fontWeight: FontWeight.w900,
+                            height: 1,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         ),

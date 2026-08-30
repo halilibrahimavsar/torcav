@@ -71,6 +71,7 @@ class DashboardPage extends StatelessWidget {
               leading: Builder(
                 builder:
                     (context) => IconButton(
+                      tooltip: l10n.openMenuTooltip,
                       icon: Container(
                         width: 32,
                         height: 32,
@@ -613,6 +614,7 @@ class _ConnectionBar extends StatelessWidget {
             const SizedBox(width: 4),
             IconButton(
               visualDensity: VisualDensity.compact,
+              tooltip: context.l10n.refresh,
               icon: Icon(
                 Icons.refresh_rounded,
                 size: 18,

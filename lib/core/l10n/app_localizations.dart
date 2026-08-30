@@ -9406,6 +9406,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Traffic here may be intercepted. No router setting fixes this — disconnect and use mobile data or a network you trust.'**
   String get leaveNetworkTaskDesc;
+
+  /// Screen-reader label for the dashboard radial gauges
+  ///
+  /// In en, this message translates to:
+  /// **'Network health {score} out of 100. Double tap for details.'**
+  String a11yHealthScore(int score);
+
+  /// Screen-reader label for the dashboard radial gauges
+  ///
+  /// In en, this message translates to:
+  /// **'Signal quality {percent} percent. Double tap to open the channel view.'**
+  String a11ySignalQuality(int percent);
+
+  /// Screen-reader label for the dashboard radial gauges
+  ///
+  /// In en, this message translates to:
+  /// **'Signal quality unknown. Double tap to open the channel view.'**
+  String get a11ySignalQualityUnknown;
+
+  /// Screen-reader label for the dashboard radial gauges
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No active security alerts} =1{1 active security alert} other{{count} active security alerts}}. Double tap to review.'**
+  String a11yThreatCount(int count);
+
+  /// Screen-reader label for the dashboard radial gauges
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No devices found} =1{1 device on the network} other{{count} devices on the network}}. Double tap to see the list.'**
+  String a11yDeviceCount(int count);
+
+  /// Screen-reader label for the dashboard radial gauges
+  ///
+  /// In en, this message translates to:
+  /// **'Network status: {status}, {ssid}. Double tap for the full assessment.'**
+  String a11yNetworkStatus(String status, String ssid);
+
+  /// Tooltip / screen-reader label for an icon-only button
+  ///
+  /// In en, this message translates to:
+  /// **'Open menu'**
+  String get openMenuTooltip;
+
+  /// Tooltip / screen-reader label for an icon-only button
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get closeTooltip;
+
+  /// Tooltip / screen-reader label for an icon-only button
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get showPasswordTooltip;
+
+  /// Tooltip / screen-reader label for an icon-only button
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get hidePasswordTooltip;
 }
 
 class _AppLocalizationsDelegate
