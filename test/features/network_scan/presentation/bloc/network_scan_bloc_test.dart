@@ -57,8 +57,11 @@ void main() {
       expect:
           () => [
             NetworkScanInitial(),
+            // The key is the part that matters: the message is English
+            // detail for logs, the key is what the user actually reads.
             const NetworkScanError(
               'Deep scanning is disabled when Strict Safety Mode is active.',
+              messageKey: 'failureDeepScanBlocked',
             ),
           ],
     );

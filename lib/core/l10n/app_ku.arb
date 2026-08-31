@@ -7126,5 +7126,45 @@
             }
         },
         "description": "Screen-reader summary of the topology graph"
+    },
+    "failureGeneric": "Tiştek çewt çû. Dîsa biceribîne.",
+    "@failureGeneric": {
+        "description": "User-facing failure message"
+    },
+    "failureHostnameNotFound": "Ev amûr navê hostê belav nake.",
+    "@failureHostnameNotFound": {
+        "description": "User-facing failure message"
+    },
+    "failureOsUnknown": "Ji portên vekirî pergala xebitandinê nehat destnîşankirin.",
+    "@failureOsUnknown": {
+        "description": "User-facing failure message"
+    },
+    "failureNetworkNotFound": "Ew tor êdî ne di nav rêzê de ye.",
+    "@failureNetworkNotFound": {
+        "description": "User-facing failure message"
+    },
+    "failureLocationPermission": "Li Androidê şopandina Wi-Fi destûra cihî dixwaze. Ji mîhengên pergalê bide û dîsa biceribîne.",
+    "@failureLocationPermission": {
+        "description": "User-facing failure message"
+    },
+    "failureScanUnavailable": "Encamên şopandinê nehatin xwendin. Kontrol bike ka Cih di mîhengên pergalê de vekirî ye.",
+    "@failureScanUnavailable": {
+        "description": "User-facing failure message"
+    },
+    "failureNoNetworksFound": "Tu tora Wi-Fi nehat dîtin. Kontrol bike ka Wi-Fi û Cih her du jî vekirî ne.",
+    "@failureNoNetworksFound": {
+        "description": "User-facing failure message"
+    },
+    "failureScanConsentRequired": "Şopandina tora te pêşî erêkirina te dixwaze.",
+    "@failureScanConsentRequired": {
+        "description": "User-facing failure message"
+    },
+    "failureScanTargetTooLarge": "Ev rêze ji bo şopandinê pir fireh e. Li ser jêr-tora /24 an biçûktir bimîne.",
+    "@failureScanTargetTooLarge": {
+        "description": "User-facing failure message"
+    },
+    "failureDeepScanBlocked": "Dema Moda Ewlehiya Hişk vekirî be şopandina kûr girtî ye.",
+    "@failureDeepScanBlocked": {
+        "description": "User-facing failure message"
     }
 }

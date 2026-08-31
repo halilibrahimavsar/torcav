@@ -45,10 +45,11 @@ class _UpdateNetwork extends MonitoringEvent {
 }
 
 class _MonitoringError extends MonitoringEvent {
+  const _MonitoringError(this.message, {this.messageKey});
   final String message;
-  const _MonitoringError(this.message);
+  final String? messageKey;
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, messageKey];
 }
 
 // State
@@ -98,10 +99,18 @@ class ChannelAnalysisReady extends MonitoringState {
 }
 
 class MonitoringFailure extends MonitoringState {
+  const MonitoringFailure(this.message, {this.messageKey});
+
+  /// Technical detail, for logs.
   final String message;
-  const MonitoringFailure(this.message);
+
+  /// Localization key for the user-facing sentence; resolve with
+  /// `FailureLabels.forKey`. Null when no wording was written — the UI then
+  /// shows a generic message rather than the English detail.
+  final String? messageKey;
+
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, messageKey];
 }
 
 @injectable
@@ -151,7 +160,12 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
         .listen(
           (result) {
             result.fold(
-              (failure) => add(_MonitoringError(failure.message)),
+              (failure) => add(
+                _MonitoringError(
+                  failure.message,
+                  messageKey: failure.messageKey,
+                ),
+              ),
               (network) => add(_UpdateNetwork(network)),
             );
           },
@@ -302,7 +316,7 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
     _MonitoringError event,
     Emitter<MonitoringState> emit,
   ) {
-    emit(MonitoringFailure(event.message));
+    emit(MonitoringFailure(event.message, messageKey: event.messageKey));
   }
 
   @override

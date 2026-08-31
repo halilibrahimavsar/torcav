@@ -119,10 +119,18 @@ class NetworkScanLoaded extends NetworkScanState {
 }
 
 class NetworkScanError extends NetworkScanState {
+  const NetworkScanError(this.message, {this.messageKey});
+
+  /// Technical detail, for logs.
   final String message;
-  const NetworkScanError(this.message);
+
+  /// Localization key for the user-facing sentence; resolve with
+  /// `FailureLabels.forKey`. The safety gates below all carry one — their
+  /// whole job is explaining a refusal, which is useless untranslated.
+  final String? messageKey;
+
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, messageKey];
 }
 
 @injectable
@@ -164,6 +172,7 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
       emit(
         const NetworkScanError(
           'Legal acknowledgement required for LAN discovery.',
+          messageKey: 'failureScanConsentRequired',
         ),
       );
     }
@@ -182,6 +191,7 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
       emit(
         const NetworkScanError(
           'Scan target exceeds safety limits. Please restrict to /24 or smaller subnets.',
+          messageKey: 'failureScanTargetTooLarge',
         ),
       );
       return;
@@ -192,6 +202,7 @@ class NetworkScanBloc extends Bloc<NetworkScanEvent, NetworkScanState> {
       emit(
         const NetworkScanError(
           'Deep scanning is disabled when Strict Safety Mode is active.',
+          messageKey: 'failureDeepScanBlocked',
         ),
       );
       return;

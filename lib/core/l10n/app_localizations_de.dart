@@ -5733,4 +5733,44 @@ class AppLocalizationsDe extends AppLocalizations {
     );
     return 'Netzwerkkarte: $_temp0, $_temp1. Die Geräteliste darunter enthält dieselben Informationen als Text.';
   }
+
+  @override
+  String get failureGeneric =>
+      'Etwas ist schiefgelaufen. Versuchen Sie es erneut.';
+
+  @override
+  String get failureHostnameNotFound =>
+      'Dieses Gerät veröffentlicht keinen Hostnamen.';
+
+  @override
+  String get failureOsUnknown =>
+      'Das Betriebssystem ließ sich aus den offenen Ports nicht bestimmen.';
+
+  @override
+  String get failureNetworkNotFound =>
+      'Dieses Netzwerk ist nicht mehr in Reichweite.';
+
+  @override
+  String get failureLocationPermission =>
+      'WLAN-Scans brauchen unter Android die Standortberechtigung. Erteilen Sie sie in den Systemeinstellungen.';
+
+  @override
+  String get failureScanUnavailable =>
+      'Scan-Ergebnisse konnten nicht gelesen werden. Prüfen Sie, ob Standort in den Systemeinstellungen aktiviert ist.';
+
+  @override
+  String get failureNoNetworksFound =>
+      'Keine WLAN-Netzwerke gefunden. Prüfen Sie, ob WLAN und Standort beide aktiv sind.';
+
+  @override
+  String get failureScanConsentRequired =>
+      'Der Scan Ihres Netzwerks braucht zuerst Ihre Bestätigung.';
+
+  @override
+  String get failureScanTargetTooLarge =>
+      'Dieser Bereich ist zu groß zum Scannen. Bleiben Sie bei einem /24-Subnetz oder kleiner.';
+
+  @override
+  String get failureDeepScanBlocked =>
+      'Tiefenscans sind deaktiviert, solange der strenge Sicherheitsmodus aktiv ist.';
 }

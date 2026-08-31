@@ -169,7 +169,9 @@ class TopologyRepositoryImpl implements TopologyRepository {
         final host = addresses.first.host;
         if (host != ip) return Right(host);
       }
-      return const Left(ServerFailure('Hostname not found'));
+      return const Left(
+        ServerFailure('Hostname not found', messageKey: 'failureHostnameNotFound'),
+      );
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
@@ -200,7 +202,9 @@ class TopologyRepositoryImpl implements TopologyRepository {
           }
         }
       }
-      return const Left(ServerFailure('Could not determine OS'));
+      return const Left(
+        ServerFailure('Could not determine OS', messageKey: 'failureOsUnknown'),
+      );
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }

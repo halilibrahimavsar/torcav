@@ -7126,5 +7126,45 @@
             }
         },
         "description": "Screen-reader summary of the topology graph"
+    },
+    "failureGeneric": "Bir şeyler ters gitti. Tekrar dene.",
+    "@failureGeneric": {
+        "description": "User-facing failure message"
+    },
+    "failureHostnameNotFound": "Bu cihaz bir ana bilgisayar adı yayınlamıyor.",
+    "@failureHostnameNotFound": {
+        "description": "User-facing failure message"
+    },
+    "failureOsUnknown": "Açık portlardan işletim sistemi belirlenemedi.",
+    "@failureOsUnknown": {
+        "description": "User-facing failure message"
+    },
+    "failureNetworkNotFound": "O ağ artık menzilde değil.",
+    "@failureNetworkNotFound": {
+        "description": "User-facing failure message"
+    },
+    "failureLocationPermission": "Android'de Wi-Fi taraması konum izni gerektiriyor. Sistem ayarlarından ver ve tekrar dene.",
+    "@failureLocationPermission": {
+        "description": "User-facing failure message"
+    },
+    "failureScanUnavailable": "Tarama sonuçları okunamadı. Sistem ayarlarından Konum'un açık olduğunu kontrol et.",
+    "@failureScanUnavailable": {
+        "description": "User-facing failure message"
+    },
+    "failureNoNetworksFound": "Wi-Fi ağı bulunamadı. Wi-Fi ve Konum'un ikisinin de açık olduğunu kontrol et.",
+    "@failureNoNetworksFound": {
+        "description": "User-facing failure message"
+    },
+    "failureScanConsentRequired": "Ağını taramak önce onayını gerektiriyor.",
+    "@failureScanConsentRequired": {
+        "description": "User-facing failure message"
+    },
+    "failureScanTargetTooLarge": "Bu aralık taranamayacak kadar geniş. /24 veya daha küçük bir alt ağda kal.",
+    "@failureScanTargetTooLarge": {
+        "description": "User-facing failure message"
+    },
+    "failureDeepScanBlocked": "Sıkı Güvenlik Modu açıkken derin tarama kapalıdır.",
+    "@failureDeepScanBlocked": {
+        "description": "User-facing failure message"
     }
 }

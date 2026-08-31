@@ -7126,5 +7126,45 @@
             }
         },
         "description": "Screen-reader summary of the topology graph"
+    },
+    "failureGeneric": "Etwas ist schiefgelaufen. Versuchen Sie es erneut.",
+    "@failureGeneric": {
+        "description": "User-facing failure message"
+    },
+    "failureHostnameNotFound": "Dieses Gerät veröffentlicht keinen Hostnamen.",
+    "@failureHostnameNotFound": {
+        "description": "User-facing failure message"
+    },
+    "failureOsUnknown": "Das Betriebssystem ließ sich aus den offenen Ports nicht bestimmen.",
+    "@failureOsUnknown": {
+        "description": "User-facing failure message"
+    },
+    "failureNetworkNotFound": "Dieses Netzwerk ist nicht mehr in Reichweite.",
+    "@failureNetworkNotFound": {
+        "description": "User-facing failure message"
+    },
+    "failureLocationPermission": "WLAN-Scans brauchen unter Android die Standortberechtigung. Erteilen Sie sie in den Systemeinstellungen.",
+    "@failureLocationPermission": {
+        "description": "User-facing failure message"
+    },
+    "failureScanUnavailable": "Scan-Ergebnisse konnten nicht gelesen werden. Prüfen Sie, ob Standort in den Systemeinstellungen aktiviert ist.",
+    "@failureScanUnavailable": {
+        "description": "User-facing failure message"
+    },
+    "failureNoNetworksFound": "Keine WLAN-Netzwerke gefunden. Prüfen Sie, ob WLAN und Standort beide aktiv sind.",
+    "@failureNoNetworksFound": {
+        "description": "User-facing failure message"
+    },
+    "failureScanConsentRequired": "Der Scan Ihres Netzwerks braucht zuerst Ihre Bestätigung.",
+    "@failureScanConsentRequired": {
+        "description": "User-facing failure message"
+    },
+    "failureScanTargetTooLarge": "Dieser Bereich ist zu groß zum Scannen. Bleiben Sie bei einem /24-Subnetz oder kleiner.",
+    "@failureScanTargetTooLarge": {
+        "description": "User-facing failure message"
+    },
+    "failureDeepScanBlocked": "Tiefenscans sind deaktiviert, solange der strenge Sicherheitsmodus aktiv ist.",
+    "@failureDeepScanBlocked": {
+        "description": "User-facing failure message"
     }
 }

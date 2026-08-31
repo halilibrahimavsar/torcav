@@ -5728,4 +5728,42 @@ class AppLocalizationsTr extends AppLocalizations {
     );
     return 'Ağ haritası: $_temp0, $_temp1. Aşağıdaki cihaz listesi aynı bilgiyi metin olarak taşıyor.';
   }
+
+  @override
+  String get failureGeneric => 'Bir şeyler ters gitti. Tekrar dene.';
+
+  @override
+  String get failureHostnameNotFound =>
+      'Bu cihaz bir ana bilgisayar adı yayınlamıyor.';
+
+  @override
+  String get failureOsUnknown =>
+      'Açık portlardan işletim sistemi belirlenemedi.';
+
+  @override
+  String get failureNetworkNotFound => 'O ağ artık menzilde değil.';
+
+  @override
+  String get failureLocationPermission =>
+      'Android\'de Wi-Fi taraması konum izni gerektiriyor. Sistem ayarlarından ver ve tekrar dene.';
+
+  @override
+  String get failureScanUnavailable =>
+      'Tarama sonuçları okunamadı. Sistem ayarlarından Konum\'un açık olduğunu kontrol et.';
+
+  @override
+  String get failureNoNetworksFound =>
+      'Wi-Fi ağı bulunamadı. Wi-Fi ve Konum\'un ikisinin de açık olduğunu kontrol et.';
+
+  @override
+  String get failureScanConsentRequired =>
+      'Ağını taramak önce onayını gerektiriyor.';
+
+  @override
+  String get failureScanTargetTooLarge =>
+      'Bu aralık taranamayacak kadar geniş. /24 veya daha küçük bir alt ağda kal.';
+
+  @override
+  String get failureDeepScanBlocked =>
+      'Sıkı Güvenlik Modu açıkken derin tarama kapalıdır.';
 }

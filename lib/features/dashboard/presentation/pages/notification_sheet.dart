@@ -7,6 +7,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../security/domain/entities/security_event.dart';
 import '../../../security/presentation/bloc/notification/notification_bloc.dart';
+import '../../../../core/errors/failure_labels.dart';
 
 class NotificationSheet extends StatelessWidget {
   const NotificationSheet({super.key});
@@ -245,7 +246,11 @@ class NotificationSheet extends StatelessWidget {
         }
 
         if (state is NotificationError) {
-          return Center(child: Text(state.message));
+          // The message is an exception string; show the generic sentence
+          // and leave the detail for the logs.
+          return Center(
+            child: Text(FailureLabels.forKey(context.l10n, null)),
+          );
         }
 
         return const SizedBox();

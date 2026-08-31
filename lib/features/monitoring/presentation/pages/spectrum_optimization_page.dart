@@ -26,6 +26,7 @@ import '../widgets/router_groups_card.dart';
 import '../widgets/spectrum_colors.dart';
 import '../widgets/spectrum_overlap_chart.dart';
 import '../../../wifi_scan/domain/entities/wifi_band.dart';
+import '../../../../core/errors/failure_labels.dart';
 
 /// Operations Hub entry-point for the Spectrum / Channel Optimization tool.
 ///
@@ -339,7 +340,9 @@ class _BandTab extends StatelessWidget {
         }
         if (state is MonitoringFailure) {
           return NeonErrorCard(
-            message: '${l10n.errorLabel}: ${state.message}',
+            // The technical detail is English; show the localized
+            // sentence and leave the detail for the logs.
+            message: FailureLabels.forKey(l10n, state.messageKey),
             onRetry: () {
               final s = context.read<WifiScanBloc>().state;
               if (s is WifiScanLoaded) {

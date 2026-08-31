@@ -15,6 +15,7 @@ import '../bloc/network_scan_bloc.dart';
 import '../widgets/host_device_card.dart';
 import '../../../../core/theme/prominent_disclosure_dialog.dart';
 import '../../data/datasources/lan_scan_history_local_data_source.dart';
+import '../../../../core/errors/failure_labels.dart';
 
 class NetworkScanPage extends StatelessWidget {
   /// The list view of the shared LAN discovery shell. A [NetworkScanBloc] must
@@ -274,7 +275,10 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
                 StaggeredEntry(
                   delay: const Duration(milliseconds: 200),
                   child: NeonErrorCard(
-                    message: state.message,
+                    message: FailureLabels.forKey(
+                      context.l10n,
+                      state.messageKey,
+                    ),
                     onRetry: widget.onRescan,
                   ),
                 ),

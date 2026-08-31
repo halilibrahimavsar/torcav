@@ -7233,5 +7233,45 @@
             }
         },
         "description": "Screen-reader summary of the topology graph"
+    },
+    "failureGeneric": "Something went wrong. Try again.",
+    "@failureGeneric": {
+        "description": "User-facing failure message"
+    },
+    "failureHostnameNotFound": "No hostname is published for this device.",
+    "@failureHostnameNotFound": {
+        "description": "User-facing failure message"
+    },
+    "failureOsUnknown": "The operating system could not be identified from the open ports.",
+    "@failureOsUnknown": {
+        "description": "User-facing failure message"
+    },
+    "failureNetworkNotFound": "That network is no longer in range.",
+    "@failureNetworkNotFound": {
+        "description": "User-facing failure message"
+    },
+    "failureLocationPermission": "Wi-Fi scanning needs location permission on Android. Grant it in system settings and try again.",
+    "@failureLocationPermission": {
+        "description": "User-facing failure message"
+    },
+    "failureScanUnavailable": "Scan results could not be read. Check that Location is turned on in system settings.",
+    "@failureScanUnavailable": {
+        "description": "User-facing failure message"
+    },
+    "failureNoNetworksFound": "No Wi-Fi networks found. Check that Wi-Fi and Location are both on.",
+    "@failureNoNetworksFound": {
+        "description": "User-facing failure message"
+    },
+    "failureScanConsentRequired": "Scanning your network needs your acknowledgement first.",
+    "@failureScanConsentRequired": {
+        "description": "User-facing failure message"
+    },
+    "failureScanTargetTooLarge": "That range is too large to scan. Keep it to a /24 subnet or smaller.",
+    "@failureScanTargetTooLarge": {
+        "description": "User-facing failure message"
+    },
+    "failureDeepScanBlocked": "Deep scanning is off while Strict Safety Mode is on.",
+    "@failureDeepScanBlocked": {
+        "description": "User-facing failure message"
     }
 }

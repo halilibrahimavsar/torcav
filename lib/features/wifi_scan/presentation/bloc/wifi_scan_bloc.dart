@@ -32,7 +32,11 @@ class WifiScanBloc extends Bloc<WifiScanEvent, WifiScanState> {
     final result = await _scanWifi(request: event.request);
     if (isClosed) return;
 
-    result.fold((failure) => emit(WifiScanError(failure.message)), (snapshot) {
+    result.fold(
+      (failure) => emit(
+        WifiScanError(failure.message, messageKey: failure.messageKey),
+      ),
+      (snapshot) {
       final sortedSnapshot = _sortSnapshot(snapshot);
       _sessionStore.add(sortedSnapshot);
       emit(WifiScanLoaded(sortedSnapshot, pinnedBssids: _favorites.pinned));
@@ -53,7 +57,11 @@ class WifiScanBloc extends Bloc<WifiScanEvent, WifiScanState> {
     final result = await _scanWifi(request: event.request);
     if (isClosed) return;
 
-    result.fold((failure) => emit(WifiScanError(failure.message)), (snapshot) {
+    result.fold(
+      (failure) => emit(
+        WifiScanError(failure.message, messageKey: failure.messageKey),
+      ),
+      (snapshot) {
       final sortedSnapshot = _sortSnapshot(snapshot);
       _sessionStore.add(sortedSnapshot);
       emit(

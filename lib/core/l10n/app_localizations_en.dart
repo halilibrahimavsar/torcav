@@ -5715,4 +5715,42 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return 'Network map: $_temp0, $_temp1. The device list below carries the same information as text.';
   }
+
+  @override
+  String get failureGeneric => 'Something went wrong. Try again.';
+
+  @override
+  String get failureHostnameNotFound =>
+      'No hostname is published for this device.';
+
+  @override
+  String get failureOsUnknown =>
+      'The operating system could not be identified from the open ports.';
+
+  @override
+  String get failureNetworkNotFound => 'That network is no longer in range.';
+
+  @override
+  String get failureLocationPermission =>
+      'Wi-Fi scanning needs location permission on Android. Grant it in system settings and try again.';
+
+  @override
+  String get failureScanUnavailable =>
+      'Scan results could not be read. Check that Location is turned on in system settings.';
+
+  @override
+  String get failureNoNetworksFound =>
+      'No Wi-Fi networks found. Check that Wi-Fi and Location are both on.';
+
+  @override
+  String get failureScanConsentRequired =>
+      'Scanning your network needs your acknowledgement first.';
+
+  @override
+  String get failureScanTargetTooLarge =>
+      'That range is too large to scan. Keep it to a /24 subnet or smaller.';
+
+  @override
+  String get failureDeepScanBlocked =>
+      'Deep scanning is off while Strict Safety Mode is on.';
 }

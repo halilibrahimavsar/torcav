@@ -26,6 +26,7 @@ import '../widgets/wifi_network_card.dart';
 import '../widgets/wifi_scan_error_view.dart';
 import '../widgets/wifi_scanner_radar.dart';
 import 'scan_comparison_page.dart';
+import '../../../../core/errors/failure_labels.dart';
 
 /// Wrapper that provides the [WifiScanBloc] to the subtree.
 class WifiScanPage extends StatelessWidget {
@@ -222,7 +223,11 @@ class _WifiScanViewState extends State<_WifiScanView> {
                   if (!isLoading)
                     if (state is WifiScanError)
                       WifiScanErrorView(
-                        message: state.message,
+                        // Localized sentence, not the English detail.
+                        message: FailureLabels.forKey(
+                          context.l10n,
+                          state.messageKey,
+                        ),
                         onRetry: () {
                           context.read<WifiScanBloc>().add(
                             WifiScanStarted(request: _currentRequest),

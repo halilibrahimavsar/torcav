@@ -42,6 +42,7 @@ class AndroidWifiDataSource implements WifiDataSource {
     if (!hasPermission) {
       throw const PermissionFailure(
         'Location permission required for Wi-Fi scanning',
+        messageKey: 'failureLocationPermission',
       );
     }
 
@@ -86,6 +87,7 @@ class AndroidWifiDataSource implements WifiDataSource {
         throw const ScanFailure(
           'Cannot retrieve Wi-Fi scan results. '
           'Please ensure Location is enabled in system settings.',
+          messageKey: 'failureScanUnavailable',
         );
       }
 
@@ -95,6 +97,7 @@ class AndroidWifiDataSource implements WifiDataSource {
         throw const ScanFailure(
           'No Wi-Fi networks found. '
           'Ensure Wi-Fi and Location services are enabled.',
+          messageKey: 'failureNoNetworksFound',
         );
       }
 

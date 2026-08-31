@@ -8,6 +8,7 @@ import '../../../../core/extensions/context_extensions.dart';
 import '../../../../features/wifi_scan/domain/entities/wifi_network.dart';
 import 'package:torcav/features/heatmap/presentation/pages/heatmap_page.dart';
 import '../bloc/monitoring_bloc.dart';
+import '../../../../core/errors/failure_labels.dart';
 
 class SignalGraphPage extends StatelessWidget {
   final WifiNetwork network;
@@ -239,7 +240,11 @@ class _SignalChart extends StatelessWidget {
             ),
           );
         } else if (state is MonitoringFailure) {
-          return Center(child: Text(context.l10n.errorPrefix(state.message)));
+          return Center(
+            child: Text(
+              FailureLabels.forKey(context.l10n, state.messageKey),
+            ),
+          );
         }
         return Center(child: Text(context.l10n.waitingForData));
       },

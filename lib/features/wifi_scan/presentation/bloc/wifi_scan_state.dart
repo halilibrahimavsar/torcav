@@ -3,8 +3,11 @@ part of 'wifi_scan_bloc.dart';
 abstract class WifiScanState extends Equatable {
   const WifiScanState();
 
+  // `Object?`, matching Equatable's own signature, so a state can carry an
+  // optional field (e.g. WifiScanError.messageKey) without a covariance
+  // clash. Subclasses returning List<Object> stay valid overrides.
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class WifiScanInitial extends WifiScanState {}
@@ -41,10 +44,15 @@ class WifiScanLoaded extends WifiScanState {
 }
 
 class WifiScanError extends WifiScanState {
+  const WifiScanError(this.message, {this.messageKey});
+
+  /// Technical detail, for logs.
   final String message;
 
-  const WifiScanError(this.message);
+  /// Localization key for the user-facing sentence; resolve with
+  /// `FailureLabels.forKey`.
+  final String? messageKey;
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message, messageKey];
 }

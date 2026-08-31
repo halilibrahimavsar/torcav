@@ -9724,6 +9724,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Network map: {nodes, plural, =0{no devices} =1{1 device} other{{nodes} devices}}, {edges, plural, =0{no links} =1{1 link} other{{edges} links}}. The device list below carries the same information as text.'**
   String a11yTopologyGraph(int nodes, int edges);
+
+  /// User-facing failure message
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Try again.'**
+  String get failureGeneric;
+
+  /// User-facing failure message
+  ///
+  /// In en, this message translates to:
+  /// **'No hostname is published for this device.'**
+  String get failureHostnameNotFound;
+
+  /// User-facing failure message
+  ///
+  /// In en, this message translates to:
+  /// **'The operating system could not be identified from the open ports.'**
+  String get failureOsUnknown;
+
+  /// User-facing failure message
+  ///
+  /// In en, this message translates to:
+  /// **'That network is no longer in range.'**
+  String get failureNetworkNotFound;
+
+  /// User-facing failure message
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi scanning needs location permission on Android. Grant it in system settings and try again.'**
+  String get failureLocationPermission;
+
+  /// User-facing failure message
+  ///
+  /// In en, this message translates to:
+  /// **'Scan results could not be read. Check that Location is turned on in system settings.'**
+  String get failureScanUnavailable;
+
+  /// User-facing failure message
+  ///
+  /// In en, this message translates to:
+  /// **'No Wi-Fi networks found. Check that Wi-Fi and Location are both on.'**
+  String get failureNoNetworksFound;
+
+  /// User-facing failure message
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning your network needs your acknowledgement first.'**
+  String get failureScanConsentRequired;
+
+  /// User-facing failure message
+  ///
+  /// In en, this message translates to:
+  /// **'That range is too large to scan. Keep it to a /24 subnet or smaller.'**
+  String get failureScanTargetTooLarge;
+
+  /// User-facing failure message
+  ///
+  /// In en, this message translates to:
+  /// **'Deep scanning is off while Strict Safety Mode is on.'**
+  String get failureDeepScanBlocked;
 }
 
 class _AppLocalizationsDelegate

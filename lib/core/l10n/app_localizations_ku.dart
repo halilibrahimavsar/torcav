@@ -5725,4 +5725,41 @@ class AppLocalizationsKu extends AppLocalizations {
     );
     return 'Nexşeya torê: $_temp0, $_temp1. Lîsteya amûran a jêrîn heman agahiyê wek nivîs dihewîne.';
   }
+
+  @override
+  String get failureGeneric => 'Tiştek çewt çû. Dîsa biceribîne.';
+
+  @override
+  String get failureHostnameNotFound => 'Ev amûr navê hostê belav nake.';
+
+  @override
+  String get failureOsUnknown =>
+      'Ji portên vekirî pergala xebitandinê nehat destnîşankirin.';
+
+  @override
+  String get failureNetworkNotFound => 'Ew tor êdî ne di nav rêzê de ye.';
+
+  @override
+  String get failureLocationPermission =>
+      'Li Androidê şopandina Wi-Fi destûra cihî dixwaze. Ji mîhengên pergalê bide û dîsa biceribîne.';
+
+  @override
+  String get failureScanUnavailable =>
+      'Encamên şopandinê nehatin xwendin. Kontrol bike ka Cih di mîhengên pergalê de vekirî ye.';
+
+  @override
+  String get failureNoNetworksFound =>
+      'Tu tora Wi-Fi nehat dîtin. Kontrol bike ka Wi-Fi û Cih her du jî vekirî ne.';
+
+  @override
+  String get failureScanConsentRequired =>
+      'Şopandina tora te pêşî erêkirina te dixwaze.';
+
+  @override
+  String get failureScanTargetTooLarge =>
+      'Ev rêze ji bo şopandinê pir fireh e. Li ser jêr-tora /24 an biçûktir bimîne.';
+
+  @override
+  String get failureDeepScanBlocked =>
+      'Dema Moda Ewlehiya Hişk vekirî be şopandina kûr girtî ye.';
 }

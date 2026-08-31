@@ -50,7 +50,9 @@ class MonitoringRepositoryImpl implements MonitoringRepository {
         if (network != null) {
           return Right(network);
         } else {
-          return const Left(ScanFailure('Network not found'));
+          return const Left(
+            ScanFailure('Network not found', messageKey: 'failureNetworkNotFound'),
+          );
         }
       });
     }
