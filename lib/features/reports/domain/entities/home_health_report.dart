@@ -1,5 +1,27 @@
 import 'package:equatable/equatable.dart';
 
+/// The four things the home-health report scores.
+///
+/// An enum rather than the display name it used to switch on: dispatching on
+/// `'Wi-Fi'` meant a copy change silently broke the recommendation logic, and
+/// it made the report impossible to translate.
+enum HealthDial { wifi, security, internet, lanExposure }
+
+/// One recommended action, as a key the presentation layer resolves.
+///
+/// [deviceIp] and [deviceVendor] are filled only for the LAN action that
+/// names a specific device.
+class HealthAction extends Equatable {
+  const HealthAction(this.key, {this.deviceIp, this.deviceVendor});
+
+  final String key;
+  final String? deviceIp;
+  final String? deviceVendor;
+
+  @override
+  List<Object?> get props => [key, deviceIp, deviceVendor];
+}
+
 /// Aggregate one-page summary of the home network: Wi-Fi quality,
 /// security posture, internet performance and LAN exposure rolled into
 /// four scoring dials plus the underlying counts.
@@ -29,12 +51,14 @@ class HomeHealthReport extends Equatable {
   /// across hosts maps to a higher health score.
   final int lanScore;
 
-  /// One-line headline summarising the worst sub-score.
-  final String headline;
+  /// Localization key for the one-line headline.
+  final String headlineKey;
 
-  /// Three short bullets for the report body — picked from the worst
-  /// findings across all four dials.
-  final List<String> topActions;
+  /// The dial that scored worst — what the headline is about.
+  final HealthDial worstDial;
+
+  /// Short bullets for the report body, picked from the worst findings.
+  final List<HealthAction> topActions;
 
   /// Raw counts for context (devices found, networks visible, etc.).
   final Map<String, int> stats;
@@ -46,7 +70,8 @@ class HomeHealthReport extends Equatable {
     required this.securityScore,
     required this.internetScore,
     required this.lanScore,
-    required this.headline,
+    required this.headlineKey,
+    required this.worstDial,
     required this.topActions,
     required this.stats,
   });
@@ -63,8 +88,9 @@ class HomeHealthReport extends Equatable {
     'securityScore': securityScore,
     'internetScore': internetScore,
     'lanScore': lanScore,
-    'headline': headline,
-    'topActions': topActions,
+    'headlineKey': headlineKey,
+    'worstDial': worstDial.name,
+    'topActions': topActions.map((a) => a.key).toList(),
     'stats': stats,
   };
 
@@ -76,7 +102,8 @@ class HomeHealthReport extends Equatable {
     securityScore,
     internetScore,
     lanScore,
-    headline,
+    headlineKey,
+    worstDial,
     topActions,
     stats,
   ];

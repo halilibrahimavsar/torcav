@@ -5552,4 +5552,68 @@ class AppLocalizationsDe extends AppLocalizations {
   String placementDeadZoneCount(int dead, int total) {
     return '$dead von $total Messpunkten waren schwach';
   }
+
+  @override
+  String get healthReportTitle => 'Zustand des Heimnetzes';
+
+  @override
+  String get healthDialWifi => 'WLAN';
+
+  @override
+  String get healthDialSecurity => 'Sicherheit';
+
+  @override
+  String get healthDialInternet => 'Internet';
+
+  @override
+  String get healthDialLan => 'LAN-Exposition';
+
+  @override
+  String get healthHeadlineGreat => 'Ihr Heimnetz ist in gutem Zustand.';
+
+  @override
+  String healthHeadlineFocus(String dial) {
+    return '$dial ist der Bereich, auf den Sie sich konzentrieren sollten.';
+  }
+
+  @override
+  String healthHeadlineAttention(String dial) {
+    return '$dial braucht Aufmerksamkeit — siehe die Schritte unten.';
+  }
+
+  @override
+  String get healthActionMonthlyRecheck =>
+      'Wiederholen Sie diesen Bericht monatlich, damit Ihnen Veränderungen auffallen.';
+
+  @override
+  String get healthActionWifi =>
+      'Stellen Sie den Router höher und weg von großen Metallobjekten, oder ergänzen Sie einen Mesh-Knoten dort, wo das Signal abfällt.';
+
+  @override
+  String get healthActionSecurity =>
+      'Öffnen Sie das Sicherheitszentrum und beheben Sie die markierten Befunde — der Härtungsassistent führt durch die häufigsten.';
+
+  @override
+  String get healthActionInternet =>
+      'Starten Sie Speed Doctor für eine Ursachenanalyse: Bufferbloat, überfüllter Kanal oder Tariflimit.';
+
+  @override
+  String healthActionLanRisky(String ip, String vendor) {
+    return 'Das Gerät unter $ip ($vendor) ist als riskant markiert. Öffnen Sie seine Karte im Netzwerk-Scan, um zu sehen warum.';
+  }
+
+  @override
+  String get healthActionLanCaution =>
+      'Mehrere Geräte sind leicht exponiert. Tippen Sie im Netzwerk-Scan auf jedes VORSICHT-Abzeichen.';
+
+  @override
+  String get healthActionShare =>
+      'Teilen Sie diesen Bericht mit der Person, die das Netzwerk betreut, damit dasselbe Bild dokumentiert ist.';
+
+  @override
+  String get healthReportShare => 'Zustandsbericht teilen';
+
+  @override
+  String get healthReportEmpty =>
+      'Führen Sie zuerst einen WLAN-Scan durch — der Bericht entsteht aus dem, was die anderen Werkzeuge gemessen haben.';
 }

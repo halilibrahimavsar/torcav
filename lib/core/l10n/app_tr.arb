@@ -6873,5 +6873,91 @@
             }
         },
         "description": "Router placement advice shown after a heatmap survey"
+    },
+    "healthReportTitle": "Ev ağı sağlığı",
+    "@healthReportTitle": {
+        "description": "Home network health report"
+    },
+    "healthDialWifi": "Wi-Fi",
+    "@healthDialWifi": {
+        "description": "Home network health report"
+    },
+    "healthDialSecurity": "Güvenlik",
+    "@healthDialSecurity": {
+        "description": "Home network health report"
+    },
+    "healthDialInternet": "İnternet",
+    "@healthDialInternet": {
+        "description": "Home network health report"
+    },
+    "healthDialLan": "LAN maruziyeti",
+    "@healthDialLan": {
+        "description": "Home network health report"
+    },
+    "healthHeadlineGreat": "Ev ağın iyi durumda.",
+    "@healthHeadlineGreat": {
+        "description": "Home network health report"
+    },
+    "healthHeadlineFocus": "Odaklanman gereken alan: {dial}.",
+    "@healthHeadlineFocus": {
+        "placeholders": {
+            "dial": {
+                "type": "String"
+            }
+        },
+        "description": "Home network health report"
+    },
+    "healthHeadlineAttention": "{dial} dikkat istiyor — aşağıdaki adımlara bak.",
+    "@healthHeadlineAttention": {
+        "placeholders": {
+            "dial": {
+                "type": "String"
+            }
+        },
+        "description": "Home network health report"
+    },
+    "healthActionMonthlyRecheck": "Bu raporu ayda bir tekrarla ki bir şey bozulursa fark edesin.",
+    "@healthActionMonthlyRecheck": {
+        "description": "Home network health report"
+    },
+    "healthActionWifi": "Modemi daha yükseğe ve büyük metal eşyalardan uzağa taşı, ya da sinyalin düştüğü yere mesh ünitesi ekle.",
+    "@healthActionWifi": {
+        "description": "Home network health report"
+    },
+    "healthActionSecurity": "Güvenlik merkezini aç ve işaretlenen bulguları çöz — modem sıkılaştırma sihirbazı yaygın olanları adım adım anlatıyor.",
+    "@healthActionSecurity": {
+        "description": "Home network health report"
+    },
+    "healthActionInternet": "Kök neden dökümü için Speed Doctor'ı çalıştır: bufferbloat, kalabalık kanal veya ISS paket sınırı.",
+    "@healthActionInternet": {
+        "description": "Home network health report"
+    },
+    "healthActionLanRisky": "{ip} adresindeki cihaz ({vendor}) riskli olarak işaretlendi. Nedenini görmek için ağ taramasında kartını aç.",
+    "@healthActionLanRisky": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            },
+            "vendor": {
+                "type": "String"
+            }
+        },
+        "description": "Home network health report"
+    },
+    "healthActionLanCaution": "Birkaç cihazda küçük maruziyet var. Neyin açık olduğunu görmek için ağ taramasındaki her DİKKAT rozetine dokun.",
+    "@healthActionLanCaution": {
+        "description": "Home network health report"
+    },
+    "healthActionShare": "Bu raporu ağı kim yönetiyorsa onunla paylaş ki aynı tablo kayıtta olsun.",
+    "@healthActionShare": {
+        "description": "Home network health report"
+    },
+    "healthReportShare": "Sağlık raporunu paylaş",
+    "@healthReportShare": {
+        "description": "Home network health report"
+    },
+    "healthReportEmpty": "Önce bir Wi-Fi taraması yap — sağlık raporu diğer araçların ölçtüklerinden üretiliyor.",
+    "@healthReportEmpty": {
+        "description": "Home network health report"
     }
 }

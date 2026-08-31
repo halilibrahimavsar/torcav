@@ -6980,5 +6980,91 @@
             }
         },
         "description": "Router placement advice shown after a heatmap survey"
+    },
+    "healthReportTitle": "Home network health",
+    "@healthReportTitle": {
+        "description": "Home network health report"
+    },
+    "healthDialWifi": "Wi-Fi",
+    "@healthDialWifi": {
+        "description": "Home network health report"
+    },
+    "healthDialSecurity": "Security",
+    "@healthDialSecurity": {
+        "description": "Home network health report"
+    },
+    "healthDialInternet": "Internet",
+    "@healthDialInternet": {
+        "description": "Home network health report"
+    },
+    "healthDialLan": "LAN exposure",
+    "@healthDialLan": {
+        "description": "Home network health report"
+    },
+    "healthHeadlineGreat": "Your home network is in good shape.",
+    "@healthHeadlineGreat": {
+        "description": "Home network health report"
+    },
+    "healthHeadlineFocus": "{dial} is the area to focus on.",
+    "@healthHeadlineFocus": {
+        "placeholders": {
+            "dial": {
+                "type": "String"
+            }
+        },
+        "description": "Home network health report"
+    },
+    "healthHeadlineAttention": "{dial} needs attention — see the steps below.",
+    "@healthHeadlineAttention": {
+        "placeholders": {
+            "dial": {
+                "type": "String"
+            }
+        },
+        "description": "Home network health report"
+    },
+    "healthActionMonthlyRecheck": "Re-run this report monthly so you notice if anything drifts.",
+    "@healthActionMonthlyRecheck": {
+        "description": "Home network health report"
+    },
+    "healthActionWifi": "Move the router higher and away from large metal objects, or add a mesh node where the signal drops.",
+    "@healthActionWifi": {
+        "description": "Home network health report"
+    },
+    "healthActionSecurity": "Open the security center and resolve the flagged findings — the router-hardening wizard walks through the common ones.",
+    "@healthActionSecurity": {
+        "description": "Home network health report"
+    },
+    "healthActionInternet": "Run Speed Doctor for a root-cause breakdown: bufferbloat, a crowded channel or an ISP plan limit.",
+    "@healthActionInternet": {
+        "description": "Home network health report"
+    },
+    "healthActionLanRisky": "The device at {ip} ({vendor}) is flagged as risky. Open its card in the network scan to see why.",
+    "@healthActionLanRisky": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            },
+            "vendor": {
+                "type": "String"
+            }
+        },
+        "description": "Home network health report"
+    },
+    "healthActionLanCaution": "Several devices have minor exposure. Tap each CAUTION badge in the network scan to review what is open.",
+    "@healthActionLanCaution": {
+        "description": "Home network health report"
+    },
+    "healthActionShare": "Share this report with whoever maintains the network so the same picture is on record.",
+    "@healthActionShare": {
+        "description": "Home network health report"
+    },
+    "healthReportShare": "Share health report",
+    "@healthReportShare": {
+        "description": "Home network health report"
+    },
+    "healthReportEmpty": "Run a Wi-Fi scan first — the health report is built from what the other tools have measured.",
+    "@healthReportEmpty": {
+        "description": "Home network health report"
     }
 }

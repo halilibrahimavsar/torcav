@@ -9520,6 +9520,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{dead} of {total} measurement points were weak'**
   String placementDeadZoneCount(int dead, int total);
+
+  /// Home network health report
+  ///
+  /// In en, this message translates to:
+  /// **'Home network health'**
+  String get healthReportTitle;
+
+  /// Home network health report
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi'**
+  String get healthDialWifi;
+
+  /// Home network health report
+  ///
+  /// In en, this message translates to:
+  /// **'Security'**
+  String get healthDialSecurity;
+
+  /// Home network health report
+  ///
+  /// In en, this message translates to:
+  /// **'Internet'**
+  String get healthDialInternet;
+
+  /// Home network health report
+  ///
+  /// In en, this message translates to:
+  /// **'LAN exposure'**
+  String get healthDialLan;
+
+  /// Home network health report
+  ///
+  /// In en, this message translates to:
+  /// **'Your home network is in good shape.'**
+  String get healthHeadlineGreat;
+
+  /// Home network health report
+  ///
+  /// In en, this message translates to:
+  /// **'{dial} is the area to focus on.'**
+  String healthHeadlineFocus(String dial);
+
+  /// Home network health report
+  ///
+  /// In en, this message translates to:
+  /// **'{dial} needs attention — see the steps below.'**
+  String healthHeadlineAttention(String dial);
+
+  /// Home network health report
+  ///
+  /// In en, this message translates to:
+  /// **'Re-run this report monthly so you notice if anything drifts.'**
+  String get healthActionMonthlyRecheck;
+
+  /// Home network health report
+  ///
+  /// In en, this message translates to:
+  /// **'Move the router higher and away from large metal objects, or add a mesh node where the signal drops.'**
+  String get healthActionWifi;
+
+  /// Home network health report
+  ///
+  /// In en, this message translates to:
+  /// **'Open the security center and resolve the flagged findings — the router-hardening wizard walks through the common ones.'**
+  String get healthActionSecurity;
+
+  /// Home network health report
+  ///
+  /// In en, this message translates to:
+  /// **'Run Speed Doctor for a root-cause breakdown: bufferbloat, a crowded channel or an ISP plan limit.'**
+  String get healthActionInternet;
+
+  /// Home network health report
+  ///
+  /// In en, this message translates to:
+  /// **'The device at {ip} ({vendor}) is flagged as risky. Open its card in the network scan to see why.'**
+  String healthActionLanRisky(String ip, String vendor);
+
+  /// Home network health report
+  ///
+  /// In en, this message translates to:
+  /// **'Several devices have minor exposure. Tap each CAUTION badge in the network scan to review what is open.'**
+  String get healthActionLanCaution;
+
+  /// Home network health report
+  ///
+  /// In en, this message translates to:
+  /// **'Share this report with whoever maintains the network so the same picture is on record.'**
+  String get healthActionShare;
+
+  /// Home network health report
+  ///
+  /// In en, this message translates to:
+  /// **'Share health report'**
+  String get healthReportShare;
+
+  /// Home network health report
+  ///
+  /// In en, this message translates to:
+  /// **'Run a Wi-Fi scan first — the health report is built from what the other tools have measured.'**
+  String get healthReportEmpty;
 }
 
 class _AppLocalizationsDelegate

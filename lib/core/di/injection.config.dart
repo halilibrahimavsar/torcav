@@ -174,6 +174,8 @@ import '../../features/reports/domain/services/local_data_export_service.dart'
     as _i743;
 import '../../features/reports/domain/usecases/generate_report_usecase.dart'
     as _i367;
+import '../../features/reports/presentation/bloc/home_health_cubit.dart'
+    as _i529;
 import '../../features/reports/presentation/bloc/reports_bloc.dart' as _i554;
 import '../../features/security/data/datasources/breach_data_source.dart'
     as _i876;
@@ -664,6 +666,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i192.ConnectedSignalService>(),
         gh<_i106.ConnectedSignalSmoother>(),
         gh<_i451.ScanWifi>(),
+        gh<_i846.NetworkInfo>(),
+      ),
+    );
+    gh.factory<_i529.HomeHealthCubit>(
+      () => _i529.HomeHealthCubit(
+        gh<_i648.HomeHealthReportBuilder>(),
+        gh<_i797.ScanSessionStore>(),
+        gh<_i885.SpeedTestHistoryRepository>(),
+        gh<_i190.LanScanHistoryLocalDataSource>(),
         gh<_i846.NetworkInfo>(),
       ),
     );

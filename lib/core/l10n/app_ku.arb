@@ -6873,5 +6873,91 @@
             }
         },
         "description": "Router placement advice shown after a heatmap survey"
+    },
+    "healthReportTitle": "Tenduristiya tora malê",
+    "@healthReportTitle": {
+        "description": "Home network health report"
+    },
+    "healthDialWifi": "Wi-Fi",
+    "@healthDialWifi": {
+        "description": "Home network health report"
+    },
+    "healthDialSecurity": "Ewlehî",
+    "@healthDialSecurity": {
+        "description": "Home network health report"
+    },
+    "healthDialInternet": "Înternet",
+    "@healthDialInternet": {
+        "description": "Home network health report"
+    },
+    "healthDialLan": "Eşkerebûna LAN",
+    "@healthDialLan": {
+        "description": "Home network health report"
+    },
+    "healthHeadlineGreat": "Tora te ya malê di rewşeke baş de ye.",
+    "@healthHeadlineGreat": {
+        "description": "Home network health report"
+    },
+    "healthHeadlineFocus": "Qada ku divê tu bala xwe bidiyê: {dial}.",
+    "@healthHeadlineFocus": {
+        "placeholders": {
+            "dial": {
+                "type": "String"
+            }
+        },
+        "description": "Home network health report"
+    },
+    "healthHeadlineAttention": "{dial} bal dixwaze — li gavên jêrîn binêre.",
+    "@healthHeadlineAttention": {
+        "placeholders": {
+            "dial": {
+                "type": "String"
+            }
+        },
+        "description": "Home network health report"
+    },
+    "healthActionMonthlyRecheck": "Vê raporê mehane dubare bike da ku ger tiştek xera bibe tu pê hesiyayî.",
+    "@healthActionMonthlyRecheck": {
+        "description": "Home network health report"
+    },
+    "healthActionWifi": "Rûterê bilindtir û dûrî tiştên metalî yên mezin bike, an li cihê ku sînyal dikeve girêkek mesh zêde bike.",
+    "@healthActionWifi": {
+        "description": "Home network health report"
+    },
+    "healthActionSecurity": "Navenda ewlehiyê veke û encamên nîşankirî çareser bike — sêrbazê hişkkirina rûterê yên hevpar gav bi gav rave dike.",
+    "@healthActionSecurity": {
+        "description": "Home network health report"
+    },
+    "healthActionInternet": "Ji bo vekolîna sedema bingehîn Speed Doctor bimeşîne: bufferbloat, kanala qerebalix an sînorê pakêta ISS.",
+    "@healthActionInternet": {
+        "description": "Home network health report"
+    },
+    "healthActionLanRisky": "Amûra li {ip} ({vendor}) wek metirsîdar hatiye nîşankirin. Ji bo sedemê karta wê di şopandina torê de veke.",
+    "@healthActionLanRisky": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            },
+            "vendor": {
+                "type": "String"
+            }
+        },
+        "description": "Home network health report"
+    },
+    "healthActionLanCaution": "Çend amûr hinekî eşkere ne. Ji bo dîtina ka çi vekirî ye li her nîşana HAY JÊ BE bitikîne.",
+    "@healthActionLanCaution": {
+        "description": "Home network health report"
+    },
+    "healthActionShare": "Vê raporê bi kesê ku torê diparêze re parve bike da ku heman wêne di tomarê de be.",
+    "@healthActionShare": {
+        "description": "Home network health report"
+    },
+    "healthReportShare": "Rapora tenduristiyê parve bike",
+    "@healthReportShare": {
+        "description": "Home network health report"
+    },
+    "healthReportEmpty": "Pêşî şopandineke Wi-Fi bike — rapor ji tiştên ku amûrên din pîvandine tê çêkirin.",
+    "@healthReportEmpty": {
+        "description": "Home network health report"
     }
 }

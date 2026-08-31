@@ -20,6 +20,7 @@ import '../../domain/entities/report_labels.dart';
 import '../../domain/services/pdf_lock_service.dart';
 import '../../domain/usecases/generate_report_usecase.dart';
 import '../bloc/reports_bloc.dart';
+import '../widgets/home_health_card.dart';
 import '../widgets/local_data_export_card.dart';
 import '../../../../core/di/injection.dart';
 
@@ -347,6 +348,15 @@ class _ReportsViewState extends State<ReportsView> {
             ],
             const SizedBox(height: 24),
 
+            // ── Home health: the four dials rolled into one page ──
+            StaggeredEntry(
+              delay: const Duration(milliseconds: 660),
+              child: HomeHealthCard(
+                onShare: (text) => _shareText(context, text),
+              ),
+            ),
+            const SizedBox(height: 24),
+
             // ── Export Local Data (full GDPR-style data dump) ──
             const StaggeredEntry(
               delay: Duration(milliseconds: 700),
@@ -428,6 +438,28 @@ class _ReportsViewState extends State<ReportsView> {
       channelHeader: l10n.channelHeader,
       hiddenLabel: l10n.hiddenLabel,
     );
+  }
+
+  /// Shares a rendered report as plain text. Text rather than PDF for the
+  /// same reason `IspEvidenceComposer` chose it: every support channel
+  /// accepts it and the user can read what leaves the device first.
+  Future<void> _shareText(BuildContext context, String text) async {
+    final l10n = context.l10n;
+    try {
+      final tempDir = await getTemporaryDirectory();
+      final file = File(
+        '${tempDir.path}/torcav_health_${DateTime.now().millisecondsSinceEpoch}.txt',
+      );
+      await file.writeAsString(text);
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(file.path)],
+          subject: l10n.healthReportTitle,
+        ),
+      );
+    } catch (e) {
+      if (context.mounted) _toast(context, '${l10n.errorLabel}: $e');
+    }
   }
 
   Future<void> _saveTextFile({

@@ -6873,5 +6873,91 @@
             }
         },
         "description": "Router placement advice shown after a heatmap survey"
+    },
+    "healthReportTitle": "Zustand des Heimnetzes",
+    "@healthReportTitle": {
+        "description": "Home network health report"
+    },
+    "healthDialWifi": "WLAN",
+    "@healthDialWifi": {
+        "description": "Home network health report"
+    },
+    "healthDialSecurity": "Sicherheit",
+    "@healthDialSecurity": {
+        "description": "Home network health report"
+    },
+    "healthDialInternet": "Internet",
+    "@healthDialInternet": {
+        "description": "Home network health report"
+    },
+    "healthDialLan": "LAN-Exposition",
+    "@healthDialLan": {
+        "description": "Home network health report"
+    },
+    "healthHeadlineGreat": "Ihr Heimnetz ist in gutem Zustand.",
+    "@healthHeadlineGreat": {
+        "description": "Home network health report"
+    },
+    "healthHeadlineFocus": "{dial} ist der Bereich, auf den Sie sich konzentrieren sollten.",
+    "@healthHeadlineFocus": {
+        "placeholders": {
+            "dial": {
+                "type": "String"
+            }
+        },
+        "description": "Home network health report"
+    },
+    "healthHeadlineAttention": "{dial} braucht Aufmerksamkeit — siehe die Schritte unten.",
+    "@healthHeadlineAttention": {
+        "placeholders": {
+            "dial": {
+                "type": "String"
+            }
+        },
+        "description": "Home network health report"
+    },
+    "healthActionMonthlyRecheck": "Wiederholen Sie diesen Bericht monatlich, damit Ihnen Veränderungen auffallen.",
+    "@healthActionMonthlyRecheck": {
+        "description": "Home network health report"
+    },
+    "healthActionWifi": "Stellen Sie den Router höher und weg von großen Metallobjekten, oder ergänzen Sie einen Mesh-Knoten dort, wo das Signal abfällt.",
+    "@healthActionWifi": {
+        "description": "Home network health report"
+    },
+    "healthActionSecurity": "Öffnen Sie das Sicherheitszentrum und beheben Sie die markierten Befunde — der Härtungsassistent führt durch die häufigsten.",
+    "@healthActionSecurity": {
+        "description": "Home network health report"
+    },
+    "healthActionInternet": "Starten Sie Speed Doctor für eine Ursachenanalyse: Bufferbloat, überfüllter Kanal oder Tariflimit.",
+    "@healthActionInternet": {
+        "description": "Home network health report"
+    },
+    "healthActionLanRisky": "Das Gerät unter {ip} ({vendor}) ist als riskant markiert. Öffnen Sie seine Karte im Netzwerk-Scan, um zu sehen warum.",
+    "@healthActionLanRisky": {
+        "placeholders": {
+            "ip": {
+                "type": "String"
+            },
+            "vendor": {
+                "type": "String"
+            }
+        },
+        "description": "Home network health report"
+    },
+    "healthActionLanCaution": "Mehrere Geräte sind leicht exponiert. Tippen Sie im Netzwerk-Scan auf jedes VORSICHT-Abzeichen.",
+    "@healthActionLanCaution": {
+        "description": "Home network health report"
+    },
+    "healthActionShare": "Teilen Sie diesen Bericht mit der Person, die das Netzwerk betreut, damit dasselbe Bild dokumentiert ist.",
+    "@healthActionShare": {
+        "description": "Home network health report"
+    },
+    "healthReportShare": "Zustandsbericht teilen",
+    "@healthReportShare": {
+        "description": "Home network health report"
+    },
+    "healthReportEmpty": "Führen Sie zuerst einen WLAN-Scan durch — der Bericht entsteht aus dem, was die anderen Werkzeuge gemessen haben.",
+    "@healthReportEmpty": {
+        "description": "Home network health report"
     }
 }

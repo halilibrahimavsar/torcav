@@ -5534,4 +5534,68 @@ class AppLocalizationsEn extends AppLocalizations {
   String placementDeadZoneCount(int dead, int total) {
     return '$dead of $total measurement points were weak';
   }
+
+  @override
+  String get healthReportTitle => 'Home network health';
+
+  @override
+  String get healthDialWifi => 'Wi-Fi';
+
+  @override
+  String get healthDialSecurity => 'Security';
+
+  @override
+  String get healthDialInternet => 'Internet';
+
+  @override
+  String get healthDialLan => 'LAN exposure';
+
+  @override
+  String get healthHeadlineGreat => 'Your home network is in good shape.';
+
+  @override
+  String healthHeadlineFocus(String dial) {
+    return '$dial is the area to focus on.';
+  }
+
+  @override
+  String healthHeadlineAttention(String dial) {
+    return '$dial needs attention — see the steps below.';
+  }
+
+  @override
+  String get healthActionMonthlyRecheck =>
+      'Re-run this report monthly so you notice if anything drifts.';
+
+  @override
+  String get healthActionWifi =>
+      'Move the router higher and away from large metal objects, or add a mesh node where the signal drops.';
+
+  @override
+  String get healthActionSecurity =>
+      'Open the security center and resolve the flagged findings — the router-hardening wizard walks through the common ones.';
+
+  @override
+  String get healthActionInternet =>
+      'Run Speed Doctor for a root-cause breakdown: bufferbloat, a crowded channel or an ISP plan limit.';
+
+  @override
+  String healthActionLanRisky(String ip, String vendor) {
+    return 'The device at $ip ($vendor) is flagged as risky. Open its card in the network scan to see why.';
+  }
+
+  @override
+  String get healthActionLanCaution =>
+      'Several devices have minor exposure. Tap each CAUTION badge in the network scan to review what is open.';
+
+  @override
+  String get healthActionShare =>
+      'Share this report with whoever maintains the network so the same picture is on record.';
+
+  @override
+  String get healthReportShare => 'Share health report';
+
+  @override
+  String get healthReportEmpty =>
+      'Run a Wi-Fi scan first — the health report is built from what the other tools have measured.';
 }

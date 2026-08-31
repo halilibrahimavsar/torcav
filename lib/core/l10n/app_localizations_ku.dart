@@ -5544,4 +5544,68 @@ class AppLocalizationsKu extends AppLocalizations {
   String placementDeadZoneCount(int dead, int total) {
     return '$dead ji $total xalên pîvandinê qels bûn';
   }
+
+  @override
+  String get healthReportTitle => 'Tenduristiya tora malê';
+
+  @override
+  String get healthDialWifi => 'Wi-Fi';
+
+  @override
+  String get healthDialSecurity => 'Ewlehî';
+
+  @override
+  String get healthDialInternet => 'Înternet';
+
+  @override
+  String get healthDialLan => 'Eşkerebûna LAN';
+
+  @override
+  String get healthHeadlineGreat => 'Tora te ya malê di rewşeke baş de ye.';
+
+  @override
+  String healthHeadlineFocus(String dial) {
+    return 'Qada ku divê tu bala xwe bidiyê: $dial.';
+  }
+
+  @override
+  String healthHeadlineAttention(String dial) {
+    return '$dial bal dixwaze — li gavên jêrîn binêre.';
+  }
+
+  @override
+  String get healthActionMonthlyRecheck =>
+      'Vê raporê mehane dubare bike da ku ger tiştek xera bibe tu pê hesiyayî.';
+
+  @override
+  String get healthActionWifi =>
+      'Rûterê bilindtir û dûrî tiştên metalî yên mezin bike, an li cihê ku sînyal dikeve girêkek mesh zêde bike.';
+
+  @override
+  String get healthActionSecurity =>
+      'Navenda ewlehiyê veke û encamên nîşankirî çareser bike — sêrbazê hişkkirina rûterê yên hevpar gav bi gav rave dike.';
+
+  @override
+  String get healthActionInternet =>
+      'Ji bo vekolîna sedema bingehîn Speed Doctor bimeşîne: bufferbloat, kanala qerebalix an sînorê pakêta ISS.';
+
+  @override
+  String healthActionLanRisky(String ip, String vendor) {
+    return 'Amûra li $ip ($vendor) wek metirsîdar hatiye nîşankirin. Ji bo sedemê karta wê di şopandina torê de veke.';
+  }
+
+  @override
+  String get healthActionLanCaution =>
+      'Çend amûr hinekî eşkere ne. Ji bo dîtina ka çi vekirî ye li her nîşana HAY JÊ BE bitikîne.';
+
+  @override
+  String get healthActionShare =>
+      'Vê raporê bi kesê ku torê diparêze re parve bike da ku heman wêne di tomarê de be.';
+
+  @override
+  String get healthReportShare => 'Rapora tenduristiyê parve bike';
+
+  @override
+  String get healthReportEmpty =>
+      'Pêşî şopandineke Wi-Fi bike — rapor ji tiştên ku amûrên din pîvandine tê çêkirin.';
 }

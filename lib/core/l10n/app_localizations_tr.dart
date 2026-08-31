@@ -5547,4 +5547,68 @@ class AppLocalizationsTr extends AppLocalizations {
   String placementDeadZoneCount(int dead, int total) {
     return '$total ölçüm noktasının $dead tanesi zayıftı';
   }
+
+  @override
+  String get healthReportTitle => 'Ev ağı sağlığı';
+
+  @override
+  String get healthDialWifi => 'Wi-Fi';
+
+  @override
+  String get healthDialSecurity => 'Güvenlik';
+
+  @override
+  String get healthDialInternet => 'İnternet';
+
+  @override
+  String get healthDialLan => 'LAN maruziyeti';
+
+  @override
+  String get healthHeadlineGreat => 'Ev ağın iyi durumda.';
+
+  @override
+  String healthHeadlineFocus(String dial) {
+    return 'Odaklanman gereken alan: $dial.';
+  }
+
+  @override
+  String healthHeadlineAttention(String dial) {
+    return '$dial dikkat istiyor — aşağıdaki adımlara bak.';
+  }
+
+  @override
+  String get healthActionMonthlyRecheck =>
+      'Bu raporu ayda bir tekrarla ki bir şey bozulursa fark edesin.';
+
+  @override
+  String get healthActionWifi =>
+      'Modemi daha yükseğe ve büyük metal eşyalardan uzağa taşı, ya da sinyalin düştüğü yere mesh ünitesi ekle.';
+
+  @override
+  String get healthActionSecurity =>
+      'Güvenlik merkezini aç ve işaretlenen bulguları çöz — modem sıkılaştırma sihirbazı yaygın olanları adım adım anlatıyor.';
+
+  @override
+  String get healthActionInternet =>
+      'Kök neden dökümü için Speed Doctor\'ı çalıştır: bufferbloat, kalabalık kanal veya ISS paket sınırı.';
+
+  @override
+  String healthActionLanRisky(String ip, String vendor) {
+    return '$ip adresindeki cihaz ($vendor) riskli olarak işaretlendi. Nedenini görmek için ağ taramasında kartını aç.';
+  }
+
+  @override
+  String get healthActionLanCaution =>
+      'Birkaç cihazda küçük maruziyet var. Neyin açık olduğunu görmek için ağ taramasındaki her DİKKAT rozetine dokun.';
+
+  @override
+  String get healthActionShare =>
+      'Bu raporu ağı kim yönetiyorsa onunla paylaş ki aynı tablo kayıtta olsun.';
+
+  @override
+  String get healthReportShare => 'Sağlık raporunu paylaş';
+
+  @override
+  String get healthReportEmpty =>
+      'Önce bir Wi-Fi taraması yap — sağlık raporu diğer araçların ölçtüklerinden üretiliyor.';
 }

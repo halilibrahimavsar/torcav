@@ -39,17 +39,17 @@ class HomeHealthReportBuilder {
     };
 
     final scores = {
-      'Wi-Fi': wifiScore,
-      'Security': security,
-      'Internet': internetScore,
-      'LAN exposure': lanScore,
+      HealthDial.wifi: wifiScore,
+      HealthDial.security: security,
+      HealthDial.internet: internetScore,
+      HealthDial.lanExposure: lanScore,
     };
     final worstEntry = scores.entries.reduce(
       (a, b) => a.value <= b.value ? a : b,
     );
 
     final actions = _topActions(
-      worstName: worstEntry.key,
+      worst: worstEntry.key,
       worstScore: worstEntry.value,
       lanHosts: lanHosts,
     );
@@ -61,7 +61,8 @@ class HomeHealthReportBuilder {
       securityScore: security,
       internetScore: internetScore,
       lanScore: lanScore,
-      headline: _headline(worstEntry.key, worstEntry.value),
+      headlineKey: _headlineKey(worstEntry.value),
+      worstDial: worstEntry.key,
       topActions: actions,
       stats: stats,
     );
@@ -117,58 +118,51 @@ class HomeHealthReportBuilder {
     return (100 - penalty).clamp(0, 100);
   }
 
-  String _headline(String worstName, int worstScore) {
-    if (worstScore >= 80) return 'Your home network is in great shape.';
-    if (worstScore >= 60) return '$worstName is the area to focus on.';
-    return '$worstName needs attention — see the recommendations below.';
+  /// The headline key. The dial it refers to travels separately as
+  /// [HomeHealthReport.worstDial] so the sentence can be assembled in the
+  /// reader's language rather than by string concatenation here.
+  String _headlineKey(int worstScore) {
+    if (worstScore >= 80) return 'healthHeadlineGreat';
+    if (worstScore >= 60) return 'healthHeadlineFocus';
+    return 'healthHeadlineAttention';
   }
 
-  List<String> _topActions({
-    required String worstName,
+  List<HealthAction> _topActions({
+    required HealthDial worst,
     required int worstScore,
     required List<HostScanResult> lanHosts,
   }) {
     if (worstScore >= 80) {
-      return const ['Re-run this report monthly to make sure nothing drifts.'];
+      return const [HealthAction('healthActionMonthlyRecheck')];
     }
-    final actions = <String>[];
-    switch (worstName) {
-      case 'Wi-Fi':
-        actions.add(
-          'Move the router higher and away from large metal objects, or '
-          'add a mesh node where signal drops.',
-        );
-      case 'Security':
-        actions.add(
-          'Open the security center and resolve any flagged findings — '
-          'the router-hardening wizard walks through the common ones.',
-        );
-      case 'Internet':
-        actions.add(
-          'Run Speed Doctor for a root-cause breakdown — bufferbloat, '
-          'crowded channel, or ISP plan limitation will be identified.',
-        );
-      case 'LAN exposure':
+
+    final actions = <HealthAction>[];
+    switch (worst) {
+      case HealthDial.wifi:
+        actions.add(const HealthAction('healthActionWifi'));
+      case HealthDial.security:
+        actions.add(const HealthAction('healthActionSecurity'));
+      case HealthDial.internet:
+        actions.add(const HealthAction('healthActionInternet'));
+      case HealthDial.lanExposure:
         final risky = lanHosts.where(
           (h) => _trust.classify(h).level == HostTrustLevel.risky,
         );
         if (risky.isNotEmpty) {
           final first = risky.first;
           actions.add(
-            'A device at ${first.ip} (${first.vendor}) is flagged as '
-            'risky. Open its card in the network scan to see why.',
+            HealthAction(
+              'healthActionLanRisky',
+              deviceIp: first.ip,
+              deviceVendor: first.vendor,
+            ),
           );
         } else {
-          actions.add(
-            'Several devices have minor exposure. Tap each "CAUTION" '
-            'badge in network scan to review what\'s open.',
-          );
+          actions.add(const HealthAction('healthActionLanCaution'));
         }
     }
-    actions.add(
-      'Save or share this report (PDF) with whoever maintains the '
-      'network so the same picture is on record.',
-    );
+
+    actions.add(const HealthAction('healthActionShare'));
     return actions;
   }
 }
