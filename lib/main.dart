@@ -22,7 +22,7 @@ import 'package:torcav/core/theme/theme_cubit.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:torcav/core/storage/hive_storage_service.dart';
 import 'package:torcav/core/storage/secure_storage_service.dart';
-import 'package:torcav/features/security/presentation/widgets/cyber_grid_background.dart';
+import 'package:torcav/core/theme/backgrounds/cyber_grid_background.dart';
 import 'package:torcav/features/splash/presentation/pages/splash_page.dart';
 
 void main() {

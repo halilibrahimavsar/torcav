@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import '../../../../core/logging/app_logger.dart';
-import '../../../../core/theme/app_theme.dart';
+import 'package:torcav/core/logging/app_logger.dart';
+import 'package:torcav/core/theme/app_theme.dart';
 
 class NeomorphicBackground extends StatefulWidget {
   final Widget? child;

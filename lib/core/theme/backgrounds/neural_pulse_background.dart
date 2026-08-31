@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_theme.dart';
+import 'package:torcav/core/theme/app_theme.dart';
 
 /// Premium neural-network themed background.
 ///
