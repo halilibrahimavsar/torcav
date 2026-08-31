@@ -5753,4 +5753,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get failureDeepScanBlocked =>
       'Deep scanning is off while Strict Safety Mode is on.';
+
+  @override
+  String get failureScanTargetNotLocal =>
+      'This device is outside your local network, so Torcav will not scan it.';
 }

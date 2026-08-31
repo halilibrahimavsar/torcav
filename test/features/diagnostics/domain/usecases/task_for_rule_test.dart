@@ -196,4 +196,29 @@ void main() {
       }
     }
   });
+
+  test('the task list is capped where it is computed, not where it is drawn', () {
+    // Four findings, three tasks: the cap lives here so the card can render
+    // whatever it is handed. Slicing in both places meant work was done and
+    // thrown away.
+    final assessment = SecurityAssessment(
+      score: 20,
+      status: SecurityStatus.atRisk,
+      evidenceFindings: [
+        _finding('wifi.wps_enabled'),
+        _finding('wifi.wep'),
+        _finding('lan.port_open'),
+        _finding('arp_spoofing'),
+      ],
+      riskFactors: const [],
+    );
+
+    final tasks =
+        usecase(
+          securityAssessment: assessment,
+          diagnosisResult: _healthyDiagnosis(),
+        ).recommendedTasks;
+
+    expect(tasks, hasLength(3));
+  });
 }

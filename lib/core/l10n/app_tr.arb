@@ -7166,5 +7166,9 @@
     "failureDeepScanBlocked": "Sıkı Güvenlik Modu açıkken derin tarama kapalıdır.",
     "@failureDeepScanBlocked": {
         "description": "User-facing failure message"
+    },
+    "failureScanTargetNotLocal": "Bu cihaz yerel ağının dışında; Torcav onu taramaz.",
+    "@failureScanTargetNotLocal": {
+        "description": "User-facing failure message"
     }
 }

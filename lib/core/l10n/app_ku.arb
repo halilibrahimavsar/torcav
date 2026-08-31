@@ -7166,5 +7166,9 @@
     "failureDeepScanBlocked": "Dema Moda Ewlehiya Hişk vekirî be şopandina kûr girtî ye.",
     "@failureDeepScanBlocked": {
         "description": "User-facing failure message"
+    },
+    "failureScanTargetNotLocal": "Ev amûr li derveyî tora te ya herêmî ye, ji ber vê yekê Torcav wê naşopîne.",
+    "@failureScanTargetNotLocal": {
+        "description": "User-facing failure message"
     }
 }

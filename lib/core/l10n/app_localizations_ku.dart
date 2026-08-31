@@ -5762,4 +5762,8 @@ class AppLocalizationsKu extends AppLocalizations {
   @override
   String get failureDeepScanBlocked =>
       'Dema Moda Ewlehiya Hişk vekirî be şopandina kûr girtî ye.';
+
+  @override
+  String get failureScanTargetNotLocal =>
+      'Ev amûr li derveyî tora te ya herêmî ye, ji ber vê yekê Torcav wê naşopîne.';
 }

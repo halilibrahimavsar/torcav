@@ -86,7 +86,10 @@ class GetNetworkHealthScoreUseCase {
       totalScore: totalScore,
       securityScore: securityScore,
       performanceScore: performanceScore,
-      recommendedTasks: tasks.take(5).toList(), // Limit to top 5 tasks
+      // Three: the dashboard card shows what this returns, and a
+      // fourth line pushes the live metrics below the fold. The card
+      // used to slice again, so two of five were computed and dropped.
+      recommendedTasks: tasks.take(3).toList(),
     );
   }
 

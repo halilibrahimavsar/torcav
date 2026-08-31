@@ -23,7 +23,9 @@ void main() {
     expect(find.byIcon(Icons.task_alt_rounded), findsNothing);
   });
 
-  testWidgets('renders up to 3 tasks; tapping fires onTapTask', (tester) async {
+  testWidgets('renders every task it is given; tapping fires onTapTask', (
+    tester,
+  ) async {
     final tasks = [
       const GamificationTask(
         titleKey: 'enable_wpa3',
@@ -53,11 +55,13 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 200));
 
+    // The card no longer slices: GetNetworkHealthScoreUseCase decides how
+    // many tasks are worth showing, and a second limit here meant it computed
+    // five and silently dropped two.
     expect(find.text('+15'), findsOneWidget);
     expect(find.text('+25'), findsOneWidget);
     expect(find.text('+10'), findsOneWidget);
-    // 4th task is sliced off.
-    expect(find.text('+5'), findsNothing);
+    expect(find.text('+5'), findsOneWidget);
 
     await tester.tap(find.text('+15'));
     expect(tapped?.pointValue, 15);

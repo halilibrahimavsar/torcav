@@ -344,12 +344,19 @@ class _BandTab extends StatelessWidget {
             // sentence and leave the detail for the logs.
             message: FailureLabels.forKey(l10n, state.messageKey),
             onRetry: () {
-              final s = context.read<WifiScanBloc>().state;
-              if (s is WifiScanLoaded) {
+              final scanState = context.read<WifiScanBloc>().state;
+              if (scanState is WifiScanLoaded) {
                 final networks =
-                    s.snapshot.networks.map((n) => n.toWifiNetwork()).toList();
+                    scanState.snapshot.networks
+                        .map((n) => n.toWifiNetwork())
+                        .toList();
                 context.read<MonitoringBloc>().add(AnalyzeChannels(networks));
+                return;
               }
+              // No snapshot to re-analyse — the scan itself is what failed
+              // (permission denied, Wi-Fi off). Re-run it instead of doing
+              // nothing, which read as a broken button.
+              context.read<WifiScanBloc>().add(const WifiScanRefreshed());
             },
           );
         }

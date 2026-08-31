@@ -9784,6 +9784,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Deep scanning is off while Strict Safety Mode is on.'**
   String get failureDeepScanBlocked;
+
+  /// User-facing failure message
+  ///
+  /// In en, this message translates to:
+  /// **'This device is outside your local network, so Torcav will not scan it.'**
+  String get failureScanTargetNotLocal;
 }
 
 class _AppLocalizationsDelegate

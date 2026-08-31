@@ -31,6 +31,7 @@ class FailureLabels {
     'failureScanConsentRequired' => l10n.failureScanConsentRequired,
     'failureScanTargetTooLarge' => l10n.failureScanTargetTooLarge,
     'failureDeepScanBlocked' => l10n.failureDeepScanBlocked,
+    'failureScanTargetNotLocal' => l10n.failureScanTargetNotLocal,
     _ => l10n.failureGeneric,
   };
 }

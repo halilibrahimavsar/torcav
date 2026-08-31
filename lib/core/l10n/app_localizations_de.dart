@@ -5773,4 +5773,8 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get failureDeepScanBlocked =>
       'Tiefenscans sind deaktiviert, solange der strenge Sicherheitsmodus aktiv ist.';
+
+  @override
+  String get failureScanTargetNotLocal =>
+      'Dieses Gerät liegt außerhalb Ihres lokalen Netzwerks, daher scannt Torcav es nicht.';
 }

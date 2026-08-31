@@ -23,12 +23,12 @@ void main() {
   });
 
   test('call() delegates to repository.scanPorts', () async {
-    when(() => repo.scanPorts('1.2.3.4'))
+    when(() => repo.scanPorts('192.168.1.4'))
         .thenAnswer((_) async => const Right(<ServiceFingerprint>[]));
 
-    final result = await usecase('1.2.3.4');
+    final result = await usecase('192.168.1.4');
     expect(result.isRight(), isTrue);
-    verify(() => repo.scanPorts('1.2.3.4')).called(1);
+    verify(() => repo.scanPorts('192.168.1.4')).called(1);
   });
 
   test('call() propagates Left failures', () async {
@@ -36,7 +36,7 @@ void main() {
       (_) async => const Left(ScanFailure('denied')),
     );
 
-    final result = await usecase('1.2.3.4');
+    final result = await usecase('192.168.1.4');
     expect(result.isLeft(), isTrue);
   });
 
@@ -54,6 +54,20 @@ void main() {
       ),
     ).thenAnswer((_) => Stream.value(event));
 
-    expect(usecase.callReactive('1.2.3.4'), emits(event));
+    expect(usecase.callReactive('192.168.1.4'), emits(event));
+  });
+
+  // The use case is the last gate before a socket opens, so it refuses a
+  // non-private target regardless of what the caller passed.
+  test('refuses a public address without touching the repository', () async {
+    final result = await usecase('8.8.8.8');
+
+    expect(result.isLeft(), isTrue);
+    verifyNever(() => repo.scanPorts(any()));
+  });
+
+  test('the reactive path refuses a public address too', () {
+    expect(usecase.callReactive('8.8.8.8'), emitsDone);
+    verifyNever(() => repo.scanPortsReactive(any()));
   });
 }

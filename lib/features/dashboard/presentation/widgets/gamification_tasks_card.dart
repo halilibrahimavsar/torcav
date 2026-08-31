@@ -63,7 +63,10 @@ class GamificationTasksCard extends StatelessWidget {
           icon: Icons.task_alt_rounded,
         ),
         const SizedBox(height: 12),
-        ...tasks.take(3).map((task) {
+        // No second limit here: GetNetworkHealthScoreUseCase already
+        // decides how many tasks are worth showing. Slicing again meant
+        // it computed five and two were silently discarded.
+        ...tasks.map((task) {
           final color = _severityColor(task.severity, scheme);
           return Padding(
             padding: const EdgeInsets.only(bottom: 8.0),

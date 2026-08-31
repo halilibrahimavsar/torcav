@@ -5766,4 +5766,8 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get failureDeepScanBlocked =>
       'Sıkı Güvenlik Modu açıkken derin tarama kapalıdır.';
+
+  @override
+  String get failureScanTargetNotLocal =>
+      'Bu cihaz yerel ağının dışında; Torcav onu taramaz.';
 }
