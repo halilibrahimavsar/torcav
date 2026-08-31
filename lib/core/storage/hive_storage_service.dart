@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../logging/app_logger.dart';
 
@@ -12,23 +15,88 @@ import '../logging/app_logger.dart';
 class HiveStorageService {
   static const String _defaultBoxName = 'torcav_preferences';
 
+  /// Marker written on every successful open, so a later open can tell
+  /// "empty because it is a fresh install" from "empty because the key
+  /// changed".
+  static const String _canaryKey = '__torcav_cipher_canary';
+  static const String _canaryValue = 'ok';
+
   /// Initializes Hive for Flutter and opens the default box with AES
-  /// encryption. If the existing box cannot be decrypted with [encryptionKey]
-  /// (cipher mismatch, e.g. after a secure-storage reset) the box files are
-  /// deleted and recreated cleanly so the app can keep running.
+  /// encryption.
+  ///
+  /// Recovering from a cipher mismatch is not as simple as catching an
+  /// exception: **Hive does not throw when the key is wrong.** It logs
+  /// "Recovering corrupted box" and hands back an *empty* box, which is
+  /// indistinguishable from a first launch. Left alone, a secure-storage
+  /// reset silently wipes the user's preferences back to defaults while the
+  /// old encrypted file stays on disk forever.
+  ///
+  /// So the mismatch is detected by canary instead: every successful open
+  /// writes a marker, and a box that opens empty *and* has a file on disk
+  /// larger than a fresh one must have failed to decrypt. That box is
+  /// deleted and recreated, which is the same outcome the old comment
+  /// promised — this time it actually happens.
   static Future<void> init(List<int> encryptionKey) async {
     await Hive.initFlutter();
     final cipher = HiveAesCipher(encryptionKey);
+
+    Future<void> openFresh() async {
+      await Hive.deleteBoxFromDisk(_defaultBoxName);
+      final box = await Hive.openBox(_defaultBoxName, encryptionCipher: cipher);
+      await box.put(_canaryKey, _canaryValue);
+    }
+
+    // Measured BEFORE opening: when Hive fails to decrypt it logs
+    // "Recovering corrupted box" and truncates the file to zero, so asking
+    // afterwards always answers "empty" and the mismatch becomes invisible.
+    final hadStoredData = await _hasStoredData();
+
+    Box box;
     try {
-      await Hive.openBox(_defaultBoxName, encryptionCipher: cipher);
+      box = await Hive.openBox(_defaultBoxName, encryptionCipher: cipher);
     } catch (e, stack) {
       AppLogger.e(
-        'Hive box open failed; deleting and recreating',
+        'Hive box open threw; deleting and recreating',
         error: e,
         stackTrace: stack,
       );
-      await Hive.deleteBoxFromDisk(_defaultBoxName);
-      await Hive.openBox(_defaultBoxName, encryptionCipher: cipher);
+      await openFresh();
+      return;
+    }
+
+    if (box.get(_canaryKey) == _canaryValue) return;
+
+    // No canary. Either a genuinely fresh box, or one we just failed to
+    // decrypt. An empty box is fine either way; a box that reports empty
+    // while data exists on disk is the mismatch case.
+    if (box.isEmpty && !hadStoredData) {
+      await box.put(_canaryKey, _canaryValue);
+      return;
+    }
+
+    AppLogger.e(
+      'Hive cipher mismatch: box opened empty but data exists on disk. '
+      'Recreating — local preferences will reset.',
+    );
+    await box.close();
+    await openFresh();
+  }
+
+  /// Whether the box file on disk holds any records.
+  ///
+  /// Measured, not guessed: a never-written Hive box is **0 bytes**, the
+  /// canary alone is 64, and one further record is 110. So any non-zero
+  /// length means records exist — and after a failed decrypt Hive truncates
+  /// the file back to 0, which is why this has to be read before opening.
+  static Future<bool> _hasStoredData() async {
+    try {
+      final dir = await getApplicationDocumentsDirectory();
+      final file = File('${dir.path}/$_defaultBoxName.hive');
+      if (!file.existsSync()) return false;
+      return await file.length() > 0;
+    } catch (_) {
+      // Cannot tell — assume fresh rather than destroying readable data.
+      return false;
     }
   }
 

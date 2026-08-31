@@ -110,19 +110,10 @@ void main() {
       );
     });
 
-    // Documents a real defect, found by writing this test.
-    //
-    // `HiveStorageService.init` wraps `openBox` in a try/catch whose comment
-    // says the box is deleted and recreated "if the existing box cannot be
-    // decrypted with [encryptionKey] (cipher mismatch, e.g. after a
-    // secure-storage reset)". Hive does not behave that way: a wrong key
-    // opens successfully and presents an *empty* box. The recovery branch
-    // therefore never runs, and a cipher mismatch is indistinguishable from
-    // a first launch — the user's preferences silently revert to defaults
-    // while the old encrypted file stays on disk forever.
-    //
-    // Locked in as the current behaviour so a future fix has to update this
-    // test deliberately rather than by accident.
+    // Hive's behaviour, which is why `init` cannot simply catch an
+    // exception: a wrong key opens *successfully* and hands back an empty
+    // box. `init` detects that by canary instead (see its doc comment); this
+    // test pins the platform behaviour the detection is built on.
     test('a wrong key opens an EMPTY box instead of throwing', () async {
       await Hive.openBox(_boxName, encryptionCipher: HiveAesCipher(_key(1)));
       await service.save('secret', 'HomeNet-PSK');
@@ -137,6 +128,73 @@ void main() {
 
       expect(reopened.isEmpty, isTrue);
       expect(service.get<String>('secret'), isNull);
+    });
+  });
+
+  group('cipher-mismatch detection', () {
+    // The canary is what makes "empty because fresh" distinguishable from
+    // "empty because the key changed" — Hive reports both identically.
+    test('a fresh box gains a canary that a later open accepts', () async {
+      final box = await Hive.openBox(
+        _boxName,
+        encryptionCipher: HiveAesCipher(_key(1)),
+      );
+      await box.put('__torcav_cipher_canary', 'ok');
+      await service.save('ssid', 'HomeNet');
+      await Hive.close();
+
+      Hive.init(dir.path);
+      final reopened = await Hive.openBox(
+        _boxName,
+        encryptionCipher: HiveAesCipher(_key(1)),
+      );
+
+      expect(reopened.get('__torcav_cipher_canary'), 'ok');
+      expect(reopened.get('ssid'), 'HomeNet');
+    });
+
+    test('a wrong key loses the canary, which is the signal to recreate', () async {
+      final box = await Hive.openBox(
+        _boxName,
+        encryptionCipher: HiveAesCipher(_key(1)),
+      );
+      await box.put('__torcav_cipher_canary', 'ok');
+      await service.save('ssid', 'HomeNet');
+      await Hive.close();
+
+      Hive.init(dir.path);
+      final reopened = await Hive.openBox(
+        _boxName,
+        encryptionCipher: HiveAesCipher(_key(2)),
+      );
+
+      // No canary and no readable data.
+      expect(reopened.get('__torcav_cipher_canary'), isNull);
+      expect(reopened.isEmpty, isTrue);
+    });
+
+    // Why `init` measures the file before opening: Hive truncates it during
+    // its own "recovery", so a size check afterwards always reports empty and
+    // the mismatch would be invisible.
+    test('Hive truncates the file while recovering, so size must be read first',
+        () async {
+      final box = await Hive.openBox(
+        _boxName,
+        encryptionCipher: HiveAesCipher(_key(1)),
+      );
+      await box.put('ssid', 'HomeNet');
+      await Hive.close();
+
+      final file = File('${dir.path}/$_boxName.hive');
+      // Measured: an untouched box is 0 bytes, the canary alone 64, one
+      // further record 110.
+      final sizeBeforeOpen = file.lengthSync();
+      expect(sizeBeforeOpen, greaterThan(0));
+
+      Hive.init(dir.path);
+      await Hive.openBox(_boxName, encryptionCipher: HiveAesCipher(_key(2)));
+
+      expect(file.lengthSync(), 0);
     });
   });
 }
