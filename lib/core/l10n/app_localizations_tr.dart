@@ -5511,4 +5511,40 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get hidePasswordTooltip => 'Parolayı gizle';
+
+  @override
+  String get placementTitle => 'Modemini nereye koymalısın';
+
+  @override
+  String get placementNoSurvey =>
+      'Anket açıkken evin içinde dolaş ki modemini nereye koyacağını söyleyebilelim.';
+
+  @override
+  String get placementGoodCoverage =>
+      'Kapsama iyi görünüyor — dolaştığın alanın %5\'inden azında sinyal zayıftı.';
+
+  @override
+  String get placementGoodCoverageDetail =>
+      'Modemi taşımana gerek yok. Modemin yerini değiştirirsen ya da yeni duvar veya mobilya eklersen anketi tekrarla.';
+
+  @override
+  String get placementRelocate =>
+      'Zayıf noktalar bir arada toplanmış — modemi o bölgeye doğru taşımayı dene.';
+
+  @override
+  String get placementRelocateDetail =>
+      'Modemin şu anki yeri ile ölü bölgenin merkezi arasında kabaca yarı yolu hedefle; büyük metal eşyalardan (televizyon, mikrodalga, buzdolabı) uzak dur.';
+
+  @override
+  String get placementAddMesh =>
+      'Zayıf noktalar birden fazla odaya yayılmış; modemi taşımak tek başına çözmez.';
+
+  @override
+  String get placementAddMeshDetail =>
+      'Ölü bölgenin merkezine yakın, mevcut modemi görecek bir yere mesh ünitesi ekle. Dağınık zayıf bölgeleri iki erişim noktası, yer değiştirmenin çözemeyeceği biçimde çözer.';
+
+  @override
+  String placementDeadZoneCount(int dead, int total) {
+    return '$total ölçüm noktasının $dead tanesi zayıftı';
+  }
 }

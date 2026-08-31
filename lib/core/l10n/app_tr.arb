@@ -6829,5 +6829,49 @@
     "hidePasswordTooltip": "Parolayı gizle",
     "@hidePasswordTooltip": {
         "description": "Tooltip / screen-reader label for an icon-only button"
+    },
+    "placementTitle": "Modemini nereye koymalısın",
+    "@placementTitle": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementNoSurvey": "Anket açıkken evin içinde dolaş ki modemini nereye koyacağını söyleyebilelim.",
+    "@placementNoSurvey": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementGoodCoverage": "Kapsama iyi görünüyor — dolaştığın alanın %5'inden azında sinyal zayıftı.",
+    "@placementGoodCoverage": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementGoodCoverageDetail": "Modemi taşımana gerek yok. Modemin yerini değiştirirsen ya da yeni duvar veya mobilya eklersen anketi tekrarla.",
+    "@placementGoodCoverageDetail": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementRelocate": "Zayıf noktalar bir arada toplanmış — modemi o bölgeye doğru taşımayı dene.",
+    "@placementRelocate": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementRelocateDetail": "Modemin şu anki yeri ile ölü bölgenin merkezi arasında kabaca yarı yolu hedefle; büyük metal eşyalardan (televizyon, mikrodalga, buzdolabı) uzak dur.",
+    "@placementRelocateDetail": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementAddMesh": "Zayıf noktalar birden fazla odaya yayılmış; modemi taşımak tek başına çözmez.",
+    "@placementAddMesh": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementAddMeshDetail": "Ölü bölgenin merkezine yakın, mevcut modemi görecek bir yere mesh ünitesi ekle. Dağınık zayıf bölgeleri iki erişim noktası, yer değiştirmenin çözemeyeceği biçimde çözer.",
+    "@placementAddMeshDetail": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementDeadZoneCount": "{total} ölçüm noktasının {dead} tanesi zayıftı",
+    "@placementDeadZoneCount": {
+        "placeholders": {
+            "dead": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        },
+        "description": "Router placement advice shown after a heatmap survey"
     }
 }

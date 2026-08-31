@@ -5508,4 +5508,40 @@ class AppLocalizationsKu extends AppLocalizations {
 
   @override
   String get hidePasswordTooltip => 'Şîfreyê veşêre';
+
+  @override
+  String get placementTitle => 'Rûterê xwe li ku deynî';
+
+  @override
+  String get placementNoSurvey =>
+      'Dema pîvan çalak e li dora xwe bigere da ku em bikaribin cihê rûterê pêşniyar bikin.';
+
+  @override
+  String get placementGoodCoverage =>
+      'Berfirehî baş xuya dike — di bin ji sedî 5 ya qada ku te lê geriya de sînyal qels bû.';
+
+  @override
+  String get placementGoodCoverageDetail =>
+      'Ne hewce ye rûterê bilivînî. Ger cihê rûterê biguherînî an dîwar û mobîlyayên nû zêde bikî, pîvanê dubare bike.';
+
+  @override
+  String get placementRelocate =>
+      'Xalên qels li cem hev kom bûne — rûterê ber bi wê deverê ve bilivîne.';
+
+  @override
+  String get placementRelocateDetail =>
+      'Nêzîkî nîvê rê di navbera cihê niha yê rûterê û navenda qada mirî de armanc bike, dûrî tiştên metalî yên mezin (TV, mîkrodalge, sarincok).';
+
+  @override
+  String get placementAddMesh =>
+      'Xalên qels li gelek odeyan belav bûne; livandina rûterê bi tenê wê çareser nake.';
+
+  @override
+  String get placementAddMeshDetail =>
+      'Nêzîkî navenda qada mirî, li cihekî ku rûtera te bibîne, girêkek mesh zêde bike. Du xalên gihîştinê qadên qels ên belavbûyî bi awayekî çareser dikin ku livandin nikare.';
+
+  @override
+  String placementDeadZoneCount(int dead, int total) {
+    return '$dead ji $total xalên pîvandinê qels bûn';
+  }
 }

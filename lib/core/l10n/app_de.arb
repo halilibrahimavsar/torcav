@@ -6829,5 +6829,49 @@
     "hidePasswordTooltip": "Passwort verbergen",
     "@hidePasswordTooltip": {
         "description": "Tooltip / screen-reader label for an icon-only button"
+    },
+    "placementTitle": "Wohin mit dem Router",
+    "@placementTitle": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementNoSurvey": "Gehen Sie mit laufender Messung durch die Wohnung, damit wir einen Standort für den Router vorschlagen können.",
+    "@placementNoSurvey": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementGoodCoverage": "Die Abdeckung sieht gut aus — unter 5 % der abgelaufenen Fläche hatte schwaches Signal.",
+    "@placementGoodCoverage": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementGoodCoverageDetail": "Kein Umstellen nötig. Wiederholen Sie die Messung, wenn Sie den Router versetzen oder Wände bzw. Möbel hinzukommen.",
+    "@placementGoodCoverageDetail": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementRelocate": "Die schwachen Stellen liegen beieinander — versuchen Sie, den Router in diese Richtung zu rücken.",
+    "@placementRelocate": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementRelocateDetail": "Zielen Sie etwa auf die Mitte zwischen dem heutigen Standort und dem Zentrum der Funklücke, fern von großen Metallobjekten (Fernseher, Mikrowelle, Kühlschrank).",
+    "@placementRelocateDetail": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementAddMesh": "Die schwachen Stellen verteilen sich über mehrere Räume; Umstellen allein löst das nicht.",
+    "@placementAddMesh": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementAddMeshDetail": "Setzen Sie einen Mesh-Knoten nahe der Mitte der Funklücke, in Sichtlinie zum vorhandenen Router. Zwei Zugangspunkte lösen verstreute Funklöcher so, wie es kein Umstellen kann.",
+    "@placementAddMeshDetail": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementDeadZoneCount": "{dead} von {total} Messpunkten waren schwach",
+    "@placementDeadZoneCount": {
+        "placeholders": {
+            "dead": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        },
+        "description": "Router placement advice shown after a heatmap survey"
     }
 }

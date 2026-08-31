@@ -30,9 +30,7 @@ class HeatmapPlacementService {
         advice: PlacementAdvice.noActionNeeded,
         deadZoneCount: 0,
         totalPoints: 0,
-        headline:
-            'Walk around your space with the heatmap survey active so we '
-            'can suggest where to place your router.',
+        headlineKey: 'placementNoSurvey',
       );
     }
 
@@ -42,12 +40,8 @@ class HeatmapPlacementService {
         advice: PlacementAdvice.noActionNeeded,
         deadZoneCount: deadZones.length,
         totalPoints: total,
-        headline:
-            'Coverage looks good — fewer than 5% of the area you walked '
-            'showed weak signal.',
-        suggestion:
-            'No router move needed. Re-run the survey if you change the '
-            'router\'s position or add new walls / furniture.',
+        headlineKey: 'placementGoodCoverage',
+        suggestionKey: 'placementGoodCoverageDetail',
       );
     }
 
@@ -64,13 +58,8 @@ class HeatmapPlacementService {
         deadZoneCount: deadZones.length,
         totalPoints: total,
         deadZoneCenter: (x: center.x, y: center.y),
-        headline:
-            'Most weak-signal spots cluster together — try moving the '
-            'router closer to that area.',
-        suggestion:
-            'Aim for a position roughly halfway between where the router '
-            'is now and the centre of the highlighted dead zone, away '
-            'from large metal objects (TVs, microwaves, refrigerators).',
+        headlineKey: 'placementRelocate',
+        suggestionKey: 'placementRelocateDetail',
       );
     }
 
@@ -79,14 +68,8 @@ class HeatmapPlacementService {
       deadZoneCount: deadZones.length,
       totalPoints: total,
       deadZoneCenter: (x: center.x, y: center.y),
-      headline:
-          'Weak spots are spread across multiple rooms — a single router '
-          'move won\'t solve it.',
-      suggestion:
-          'Add a mesh node (Eero, Google Nest, TP-Link Deco, etc.) at '
-          'roughly the dead zone centre, in line of sight of your '
-          'existing router. Two-AP coverage usually fixes scattered '
-          'weak zones in a way no relocation can.',
+      headlineKey: 'placementAddMesh',
+      suggestionKey: 'placementAddMeshDetail',
     );
   }
 

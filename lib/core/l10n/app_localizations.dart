@@ -9466,6 +9466,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hide password'**
   String get hidePasswordTooltip;
+
+  /// Router placement advice shown after a heatmap survey
+  ///
+  /// In en, this message translates to:
+  /// **'Where to put your router'**
+  String get placementTitle;
+
+  /// Router placement advice shown after a heatmap survey
+  ///
+  /// In en, this message translates to:
+  /// **'Walk around your space with the survey running so we can suggest where to place your router.'**
+  String get placementNoSurvey;
+
+  /// Router placement advice shown after a heatmap survey
+  ///
+  /// In en, this message translates to:
+  /// **'Coverage looks good — under 5% of the area you walked had a weak signal.'**
+  String get placementGoodCoverage;
+
+  /// Router placement advice shown after a heatmap survey
+  ///
+  /// In en, this message translates to:
+  /// **'No router move needed. Re-run the survey if you move the router or add new walls or furniture.'**
+  String get placementGoodCoverageDetail;
+
+  /// Router placement advice shown after a heatmap survey
+  ///
+  /// In en, this message translates to:
+  /// **'The weak spots cluster together — try moving the router toward that area.'**
+  String get placementRelocate;
+
+  /// Router placement advice shown after a heatmap survey
+  ///
+  /// In en, this message translates to:
+  /// **'Aim for roughly halfway between where the router is now and the centre of the dead zone, away from large metal objects (TVs, microwaves, fridges).'**
+  String get placementRelocateDetail;
+
+  /// Router placement advice shown after a heatmap survey
+  ///
+  /// In en, this message translates to:
+  /// **'Weak spots are spread across several rooms, so moving the router alone will not fix it.'**
+  String get placementAddMesh;
+
+  /// Router placement advice shown after a heatmap survey
+  ///
+  /// In en, this message translates to:
+  /// **'Add a mesh node near the centre of the dead zone, in line of sight of your existing router. Two access points fix scattered weak zones in a way relocation cannot.'**
+  String get placementAddMeshDetail;
+
+  /// Router placement advice shown after a heatmap survey
+  ///
+  /// In en, this message translates to:
+  /// **'{dead} of {total} measurement points were weak'**
+  String placementDeadZoneCount(int dead, int total);
 }
 
 class _AppLocalizationsDelegate

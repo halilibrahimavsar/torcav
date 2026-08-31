@@ -29,19 +29,22 @@ class PlacementSuggestion extends Equatable {
   /// or null when no dead zones exist.
   final ({double x, double y})? deadZoneCenter;
 
-  /// Plain-language summary, ready to render in the heatmap page.
-  final String headline;
+  /// Localization key for the one-line verdict. Resolved in the presentation
+  /// layer — the domain must not decide what language the user reads, which
+  /// is exactly what kept this feature from ever shipping.
+  final String headlineKey;
 
-  /// Optional follow-up sentence with a concrete suggestion.
-  final String? suggestion;
+  /// Localization key for the follow-up sentence, or null when the verdict
+  /// stands alone.
+  final String? suggestionKey;
 
   const PlacementSuggestion({
     required this.advice,
     required this.deadZoneCount,
     required this.totalPoints,
-    required this.headline,
+    required this.headlineKey,
     this.deadZoneCenter,
-    this.suggestion,
+    this.suggestionKey,
   });
 
   @override
@@ -50,7 +53,7 @@ class PlacementSuggestion extends Equatable {
     deadZoneCount,
     totalPoints,
     deadZoneCenter,
-    headline,
-    suggestion,
+    headlineKey,
+    suggestionKey,
   ];
 }

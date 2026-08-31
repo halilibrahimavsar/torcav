@@ -30,6 +30,7 @@ import 'package:torcav/features/heatmap/presentation/widgets/heatmap/signal_prob
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap/survey_conclusion_overlay.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap_canvas.dart';
 import 'package:torcav/core/extensions/context_extensions.dart';
+import '../../domain/services/heatmap_placement_service.dart';
 
 class HeatmapPage extends StatefulWidget {
   const HeatmapPage({super.key});
@@ -336,6 +337,12 @@ class _HeatmapViewState extends State<_HeatmapView> {
                         child: SurveyConclusionOverlay(
                           summary: summary,
                           copy: copy,
+                          // The coverage half of "root cause + evidence +
+                          // action": the survey measured, this says what to
+                          // do about it.
+                          placement: getIt<HeatmapPlacementService>().analyze(
+                            session.points,
+                          ),
                           onRestart: () => bloc.startSession(session.name),
                           onDone: bloc.finishSession,
                           onRename:

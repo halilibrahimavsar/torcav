@@ -5498,4 +5498,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hidePasswordTooltip => 'Hide password';
+
+  @override
+  String get placementTitle => 'Where to put your router';
+
+  @override
+  String get placementNoSurvey =>
+      'Walk around your space with the survey running so we can suggest where to place your router.';
+
+  @override
+  String get placementGoodCoverage =>
+      'Coverage looks good — under 5% of the area you walked had a weak signal.';
+
+  @override
+  String get placementGoodCoverageDetail =>
+      'No router move needed. Re-run the survey if you move the router or add new walls or furniture.';
+
+  @override
+  String get placementRelocate =>
+      'The weak spots cluster together — try moving the router toward that area.';
+
+  @override
+  String get placementRelocateDetail =>
+      'Aim for roughly halfway between where the router is now and the centre of the dead zone, away from large metal objects (TVs, microwaves, fridges).';
+
+  @override
+  String get placementAddMesh =>
+      'Weak spots are spread across several rooms, so moving the router alone will not fix it.';
+
+  @override
+  String get placementAddMeshDetail =>
+      'Add a mesh node near the centre of the dead zone, in line of sight of your existing router. Two access points fix scattered weak zones in a way relocation cannot.';
+
+  @override
+  String placementDeadZoneCount(int dead, int total) {
+    return '$dead of $total measurement points were weak';
+  }
 }

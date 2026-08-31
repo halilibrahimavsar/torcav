@@ -6936,5 +6936,49 @@
     "hidePasswordTooltip": "Hide password",
     "@hidePasswordTooltip": {
         "description": "Tooltip / screen-reader label for an icon-only button"
+    },
+    "placementTitle": "Where to put your router",
+    "@placementTitle": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementNoSurvey": "Walk around your space with the survey running so we can suggest where to place your router.",
+    "@placementNoSurvey": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementGoodCoverage": "Coverage looks good — under 5% of the area you walked had a weak signal.",
+    "@placementGoodCoverage": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementGoodCoverageDetail": "No router move needed. Re-run the survey if you move the router or add new walls or furniture.",
+    "@placementGoodCoverageDetail": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementRelocate": "The weak spots cluster together — try moving the router toward that area.",
+    "@placementRelocate": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementRelocateDetail": "Aim for roughly halfway between where the router is now and the centre of the dead zone, away from large metal objects (TVs, microwaves, fridges).",
+    "@placementRelocateDetail": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementAddMesh": "Weak spots are spread across several rooms, so moving the router alone will not fix it.",
+    "@placementAddMesh": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementAddMeshDetail": "Add a mesh node near the centre of the dead zone, in line of sight of your existing router. Two access points fix scattered weak zones in a way relocation cannot.",
+    "@placementAddMeshDetail": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementDeadZoneCount": "{dead} of {total} measurement points were weak",
+    "@placementDeadZoneCount": {
+        "placeholders": {
+            "dead": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        },
+        "description": "Router placement advice shown after a heatmap survey"
     }
 }

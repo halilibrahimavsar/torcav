@@ -5516,4 +5516,40 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get hidePasswordTooltip => 'Passwort verbergen';
+
+  @override
+  String get placementTitle => 'Wohin mit dem Router';
+
+  @override
+  String get placementNoSurvey =>
+      'Gehen Sie mit laufender Messung durch die Wohnung, damit wir einen Standort für den Router vorschlagen können.';
+
+  @override
+  String get placementGoodCoverage =>
+      'Die Abdeckung sieht gut aus — unter 5 % der abgelaufenen Fläche hatte schwaches Signal.';
+
+  @override
+  String get placementGoodCoverageDetail =>
+      'Kein Umstellen nötig. Wiederholen Sie die Messung, wenn Sie den Router versetzen oder Wände bzw. Möbel hinzukommen.';
+
+  @override
+  String get placementRelocate =>
+      'Die schwachen Stellen liegen beieinander — versuchen Sie, den Router in diese Richtung zu rücken.';
+
+  @override
+  String get placementRelocateDetail =>
+      'Zielen Sie etwa auf die Mitte zwischen dem heutigen Standort und dem Zentrum der Funklücke, fern von großen Metallobjekten (Fernseher, Mikrowelle, Kühlschrank).';
+
+  @override
+  String get placementAddMesh =>
+      'Die schwachen Stellen verteilen sich über mehrere Räume; Umstellen allein löst das nicht.';
+
+  @override
+  String get placementAddMeshDetail =>
+      'Setzen Sie einen Mesh-Knoten nahe der Mitte der Funklücke, in Sichtlinie zum vorhandenen Router. Zwei Zugangspunkte lösen verstreute Funklöcher so, wie es kein Umstellen kann.';
+
+  @override
+  String placementDeadZoneCount(int dead, int total) {
+    return '$dead von $total Messpunkten waren schwach';
+  }
 }

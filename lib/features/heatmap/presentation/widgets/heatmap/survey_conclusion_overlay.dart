@@ -5,12 +5,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:torcav/core/theme/app_theme.dart';
 import 'package:torcav/core/theme/neon_widgets.dart';
 import 'package:torcav/features/heatmap/presentation/widgets/heatmap/heatmap_page_models.dart';
+import 'placement_advice_card.dart';
+import '../../../domain/entities/placement_suggestion.dart';
 
 class SurveyConclusionOverlay extends StatelessWidget {
   const SurveyConclusionOverlay({
     super.key,
     required this.summary,
     required this.copy,
+    this.placement,
     required this.onRestart,
     required this.onDone,
     required this.onRename,
@@ -22,6 +25,10 @@ class SurveyConclusionOverlay extends StatelessWidget {
 
   final HeatmapSummary summary;
   final HeatmapCopy copy;
+
+  /// The one thing to try about coverage. Null while the survey has produced
+  /// nothing to reason about yet.
+  final PlacementSuggestion? placement;
   final VoidCallback onRestart;
   final VoidCallback onDone;
   final VoidCallback onRename;
@@ -162,6 +169,12 @@ class SurveyConclusionOverlay extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
+                // Action above evidence: the mini-stats below say what was
+                // measured, this says what to do about it.
+                if (placement != null) ...[
+                  PlacementAdviceCard(suggestion: placement!),
+                  const SizedBox(height: 14),
+                ],
                 Row(
                   children: [
                     Expanded(

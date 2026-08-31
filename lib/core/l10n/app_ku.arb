@@ -6829,5 +6829,49 @@
     "hidePasswordTooltip": "Şîfreyê veşêre",
     "@hidePasswordTooltip": {
         "description": "Tooltip / screen-reader label for an icon-only button"
+    },
+    "placementTitle": "Rûterê xwe li ku deynî",
+    "@placementTitle": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementNoSurvey": "Dema pîvan çalak e li dora xwe bigere da ku em bikaribin cihê rûterê pêşniyar bikin.",
+    "@placementNoSurvey": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementGoodCoverage": "Berfirehî baş xuya dike — di bin ji sedî 5 ya qada ku te lê geriya de sînyal qels bû.",
+    "@placementGoodCoverage": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementGoodCoverageDetail": "Ne hewce ye rûterê bilivînî. Ger cihê rûterê biguherînî an dîwar û mobîlyayên nû zêde bikî, pîvanê dubare bike.",
+    "@placementGoodCoverageDetail": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementRelocate": "Xalên qels li cem hev kom bûne — rûterê ber bi wê deverê ve bilivîne.",
+    "@placementRelocate": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementRelocateDetail": "Nêzîkî nîvê rê di navbera cihê niha yê rûterê û navenda qada mirî de armanc bike, dûrî tiştên metalî yên mezin (TV, mîkrodalge, sarincok).",
+    "@placementRelocateDetail": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementAddMesh": "Xalên qels li gelek odeyan belav bûne; livandina rûterê bi tenê wê çareser nake.",
+    "@placementAddMesh": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementAddMeshDetail": "Nêzîkî navenda qada mirî, li cihekî ku rûtera te bibîne, girêkek mesh zêde bike. Du xalên gihîştinê qadên qels ên belavbûyî bi awayekî çareser dikin ku livandin nikare.",
+    "@placementAddMeshDetail": {
+        "description": "Router placement advice shown after a heatmap survey"
+    },
+    "placementDeadZoneCount": "{dead} ji {total} xalên pîvandinê qels bûn",
+    "@placementDeadZoneCount": {
+        "placeholders": {
+            "dead": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        },
+        "description": "Router placement advice shown after a heatmap survey"
     }
 }
