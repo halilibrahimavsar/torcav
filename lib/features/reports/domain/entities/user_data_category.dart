@@ -20,19 +20,24 @@ enum UserDataCategory {
 }
 
 extension UserDataCategoryX on UserDataCategory {
-  String get label => switch (this) {
-    UserDataCategory.wifiScanHistory => 'Wi-Fi scan history',
-    UserDataCategory.speedTestResults => 'Speed test results',
-    UserDataCategory.securityEvents => 'Security events',
-    UserDataCategory.knownAndTrustedNetworks => 'Known + trusted networks',
-    UserDataCategory.channelRatingsHistory => 'Channel ratings history',
-    UserDataCategory.heatmapSessions => 'Heatmap sessions',
-    UserDataCategory.lanScanLatest => 'LAN scan (latest)',
-    UserDataCategory.deviceLabelOverrides => 'Device label overrides',
-    UserDataCategory.pinnedNetworks => 'Pinned networks',
-    UserDataCategory.scoreHistory => 'Security score history',
-    UserDataCategory.networkContextOverrides => 'Network context overrides',
-    UserDataCategory.routerHardeningProgress => 'Router hardening progress',
+  /// Localization key for the category name.
+  ///
+  /// A key rather than the English name: it was being interpolated into an
+  /// already-translated sentence, so a Turkish user read
+  /// "Henüz veri yok: Wi-Fi scan history" — half translated, half not.
+  String get labelKey => switch (this) {
+    UserDataCategory.wifiScanHistory => 'dataCatWifiScanHistory',
+    UserDataCategory.speedTestResults => 'dataCatSpeedTests',
+    UserDataCategory.securityEvents => 'dataCatSecurityEvents',
+    UserDataCategory.knownAndTrustedNetworks => 'dataCatKnownNetworks',
+    UserDataCategory.channelRatingsHistory => 'dataCatChannelRatings',
+    UserDataCategory.heatmapSessions => 'dataCatHeatmapSessions',
+    UserDataCategory.lanScanLatest => 'dataCatLanScan',
+    UserDataCategory.deviceLabelOverrides => 'dataCatDeviceLabels',
+    UserDataCategory.pinnedNetworks => 'dataCatPinnedNetworks',
+    UserDataCategory.scoreHistory => 'dataCatScoreHistory',
+    UserDataCategory.networkContextOverrides => 'dataCatNetworkContexts',
+    UserDataCategory.routerHardeningProgress => 'dataCatRouterHardening',
   };
 
   /// Stable JSON key used in the composite ("All categories") export and as

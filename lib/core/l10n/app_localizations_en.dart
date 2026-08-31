@@ -5757,4 +5757,40 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get failureScanTargetNotLocal =>
       'This device is outside your local network, so Torcav will not scan it.';
+
+  @override
+  String get dataCatWifiScanHistory => 'Wi-Fi scan history';
+
+  @override
+  String get dataCatSpeedTests => 'Speed test results';
+
+  @override
+  String get dataCatSecurityEvents => 'Security events';
+
+  @override
+  String get dataCatKnownNetworks => 'Known and trusted networks';
+
+  @override
+  String get dataCatChannelRatings => 'Channel ratings history';
+
+  @override
+  String get dataCatHeatmapSessions => 'Heatmap sessions';
+
+  @override
+  String get dataCatLanScan => 'LAN scan (latest)';
+
+  @override
+  String get dataCatDeviceLabels => 'Device label overrides';
+
+  @override
+  String get dataCatPinnedNetworks => 'Pinned networks';
+
+  @override
+  String get dataCatScoreHistory => 'Security score history';
+
+  @override
+  String get dataCatNetworkContexts => 'Network context overrides';
+
+  @override
+  String get dataCatRouterHardening => 'Router hardening progress';
 }

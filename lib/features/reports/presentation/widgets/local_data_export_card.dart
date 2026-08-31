@@ -13,6 +13,7 @@ import '../../../../core/theme/neon_widgets.dart';
 import '../../domain/entities/user_data_category.dart';
 import '../../domain/services/local_data_export_service.dart';
 import '../extensions/user_data_category_extension.dart';
+import 'data_category_labels.dart';
 
 /// "Export Local Data" section on the Reports page.
 ///
@@ -46,7 +47,7 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
 
     final l10n = context.l10n;
     final noDataMsg =
-        _selected != null ? l10n.exportNoDataYet(_selected!.label) : '';
+        _selected != null ? l10n.exportNoDataYet(DataCategoryLabels.resolve(l10n, _selected!)) : '';
     final subjectMsg = l10n.exportSubject;
     final failPrefix = l10n.exportFailedError('');
 
@@ -54,7 +55,11 @@ class _LocalDataExportCardState extends State<LocalDataExportCard> {
       final service = getIt<LocalDataExportService>();
       final document =
           _selected == null
-              ? await service.exportAll(format: _format, anonymize: _anonymize)
+              ? await service.exportAll(
+                format: _format,
+                anonymize: _anonymize,
+                nameOf: (c) => DataCategoryLabels.resolve(l10n, c),
+              )
               : await service.exportCategory(
                 _selected!,
                 format: _format,

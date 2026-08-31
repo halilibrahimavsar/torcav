@@ -29,7 +29,7 @@ class SecurityAnalyzer {
     int adjust(int base, String ruleId) =>
         _contextAdjustedDeduction(base, ruleId, context);
     final findings = <SecurityFinding>[];
-    final riskFactors = <String>[];
+    final riskFactors = <RiskFactor>[];
     var score = 100;
     final now = DateTime.now();
 
@@ -71,7 +71,7 @@ class SecurityAnalyzer {
             subject: network.bssid,
           ),
         );
-        riskFactors.add('No encryption in use');
+        riskFactors.add(const RiskFactor('riskFactorNoEncryption'));
         score -= adjust(80, 'wifi.open_network');
         break;
       case SecurityType.wep:
@@ -90,7 +90,7 @@ class SecurityAnalyzer {
             subject: network.bssid,
           ),
         );
-        riskFactors.add('Deprecated encryption (WEP)');
+        riskFactors.add(const RiskFactor('riskFactorDeprecatedEncryption'));
         score -= adjust(70, 'wifi.wep');
         break;
       case SecurityType.wpa:
@@ -110,7 +110,7 @@ class SecurityAnalyzer {
             subject: network.bssid,
           ),
         );
-        riskFactors.add('Legacy WPA in use');
+        riskFactors.add(const RiskFactor('riskFactorLegacyWpa'));
         score -= adjust(40, 'wifi.legacy_wpa');
         break;
       case SecurityType.wpa2:
@@ -137,7 +137,7 @@ class SecurityAnalyzer {
           subject: network.bssid,
         ),
       );
-      riskFactors.add('Hidden SSID behavior');
+      riskFactors.add(const RiskFactor('riskFactorHiddenSsid'));
       score -= adjust(5, 'wifi.hidden_ssid');
     }
 
@@ -158,7 +158,7 @@ class SecurityAnalyzer {
           subject: network.bssid,
         ),
       );
-      riskFactors.add('Weak signal environment');
+      riskFactors.add(const RiskFactor('riskFactorWeakSignal'));
       score -= adjust(5, 'wifi.very_weak_signal');
     }
 
@@ -183,7 +183,7 @@ class SecurityAnalyzer {
           subject: network.bssid,
         ),
       );
-      riskFactors.add('WPS PIN attack surface exposed');
+      riskFactors.add(const RiskFactor('riskFactorWpsEnabled'));
       score -= adjust(30, 'wifi.wps_enabled');
     }
 
@@ -211,7 +211,7 @@ class SecurityAnalyzer {
           subject: network.bssid,
         ),
       );
-      riskFactors.add('PMF not enforced — deauth spoofing possible');
+      riskFactors.add(const RiskFactor('riskFactorPmfNotEnforced'));
       score -= adjust(10, 'wifi.pmf_not_enforced');
     }
 
@@ -245,8 +245,10 @@ class SecurityAnalyzer {
         ),
       );
       riskFactors.add(
-        'Evil twin candidate (${(evilTwin.confidence * 100).round()}% '
-        'confidence) sharing this SSID',
+        RiskFactor(
+          'riskFactorEvilTwinCandidate',
+          detail: '${(evilTwin.confidence * 100).round()}%',
+        ),
       );
       // Scale the score deduction with confidence: a low-confidence finding
       // costs ~15 points, a high-confidence one ~50.
@@ -278,7 +280,7 @@ class SecurityAnalyzer {
           subject: network.ssid,
         ),
       );
-      riskFactors.add('SSID matches known honeypot pattern');
+      riskFactors.add(const RiskFactor('riskFactorHoneypotPattern'));
       score -= adjust(15, 'wifi.suspicious_ssid');
     }
 
@@ -310,7 +312,12 @@ class SecurityAnalyzer {
           subject: network.bssid,
         ),
       );
-      riskFactors.add('Channel ${network.channel} is heavily congested');
+      riskFactors.add(
+        RiskFactor(
+          'riskFactorChannelCongested',
+          detail: '${network.channel}',
+        ),
+      );
       score -= adjust(5, 'wifi.high_channel_congestion');
     }
 
@@ -342,7 +349,7 @@ class SecurityAnalyzer {
             subject: network.ssid,
           ),
         );
-        riskFactors.add('No 5 GHz band detected');
+        riskFactors.add(const RiskFactor('riskFactorNo5Ghz'));
         score -= adjust(3, 'wifi.only_24ghz');
       }
     }
@@ -375,7 +382,12 @@ class SecurityAnalyzer {
             subject: network.ssid,
           ),
         );
-        riskFactors.add('Trusted fingerprint drift: ${drift.join(', ')}');
+        riskFactors.add(
+          RiskFactor(
+            'riskFactorFingerprintDrift',
+            detail: drift.join(', '),
+          ),
+        );
         score -= adjust(
           severity == VulnerabilitySeverity.high ? 25 : 12,
           'trusted.baseline_drift',
@@ -400,7 +412,12 @@ class SecurityAnalyzer {
           subject: network.bssid,
         ),
       );
-      riskFactors.add('Known vulnerability in ${vulnerable.model}');
+      riskFactors.add(
+        RiskFactor(
+          'riskFactorKnownVulnerability',
+          detail: vulnerable.model,
+        ),
+      );
       score -= adjust(
         _scoreDeductionForSeverity(severity),
         'hardware.vulnerability',

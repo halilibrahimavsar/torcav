@@ -21,6 +21,11 @@ extension ExportFormatX on ExportFormat {
 ///
 /// Implementations route each [UserDataCategory] to its existing data source
 /// or store, so this service is a thin aggregator — no new persistence.
+/// Supplies the reader's name for a category. Passed in by the presentation
+/// layer, which is the only place that can reach `AppLocalizations` — the same
+/// arrangement `ReportLabels` already uses for the scan report.
+typedef CategoryNamer = String Function(UserDataCategory category);
+
 abstract class LocalDataExportService {
   /// Returns the raw row count for [category]. Used by the UI to short-circuit
   /// to a "no data yet" message before serialising.
@@ -44,5 +49,6 @@ abstract class LocalDataExportService {
   Future<String> exportAll({
     required ExportFormat format,
     bool anonymize = false,
+    CategoryNamer? nameOf,
   });
 }

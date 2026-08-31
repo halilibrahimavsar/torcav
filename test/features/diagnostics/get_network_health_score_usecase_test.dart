@@ -71,7 +71,7 @@ void main() {
             subject: 'router',
           ),
         ],
-        riskFactors: const ['WPS enabled'],
+        riskFactors: const [RiskFactor('riskFactorWpsEnabled')],
       );
 
       final diagnosisResult = DiagnosisResult(

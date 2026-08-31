@@ -5766,4 +5766,40 @@ class AppLocalizationsKu extends AppLocalizations {
   @override
   String get failureScanTargetNotLocal =>
       'Ev amûr li derveyî tora te ya herêmî ye, ji ber vê yekê Torcav wê naşopîne.';
+
+  @override
+  String get dataCatWifiScanHistory => 'Dîroka şopandina Wi-Fi';
+
+  @override
+  String get dataCatSpeedTests => 'Encamên testa lezê';
+
+  @override
+  String get dataCatSecurityEvents => 'Bûyerên ewlehiyê';
+
+  @override
+  String get dataCatKnownNetworks => 'Torên naskirî û pêbawer';
+
+  @override
+  String get dataCatChannelRatings => 'Dîroka nirxandina kanalê';
+
+  @override
+  String get dataCatHeatmapSessions => 'Danişînên nexşeya germahiyê';
+
+  @override
+  String get dataCatLanScan => 'Şopandina LAN (ya dawî)';
+
+  @override
+  String get dataCatDeviceLabels => 'Guhertinên navê amûran';
+
+  @override
+  String get dataCatPinnedNetworks => 'Torên pêvekirî';
+
+  @override
+  String get dataCatScoreHistory => 'Dîroka puana ewlehiyê';
+
+  @override
+  String get dataCatNetworkContexts => 'Guhertinên çarçoveya torê';
+
+  @override
+  String get dataCatRouterHardening => 'Pêşketina hişkkirina rûterê';
 }

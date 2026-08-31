@@ -7277,5 +7277,53 @@
     "failureScanTargetNotLocal": "This device is outside your local network, so Torcav will not scan it.",
     "@failureScanTargetNotLocal": {
         "description": "User-facing failure message"
+    },
+    "dataCatWifiScanHistory": "Wi-Fi scan history",
+    "@dataCatWifiScanHistory": {
+        "description": "Local data category name"
+    },
+    "dataCatSpeedTests": "Speed test results",
+    "@dataCatSpeedTests": {
+        "description": "Local data category name"
+    },
+    "dataCatSecurityEvents": "Security events",
+    "@dataCatSecurityEvents": {
+        "description": "Local data category name"
+    },
+    "dataCatKnownNetworks": "Known and trusted networks",
+    "@dataCatKnownNetworks": {
+        "description": "Local data category name"
+    },
+    "dataCatChannelRatings": "Channel ratings history",
+    "@dataCatChannelRatings": {
+        "description": "Local data category name"
+    },
+    "dataCatHeatmapSessions": "Heatmap sessions",
+    "@dataCatHeatmapSessions": {
+        "description": "Local data category name"
+    },
+    "dataCatLanScan": "LAN scan (latest)",
+    "@dataCatLanScan": {
+        "description": "Local data category name"
+    },
+    "dataCatDeviceLabels": "Device label overrides",
+    "@dataCatDeviceLabels": {
+        "description": "Local data category name"
+    },
+    "dataCatPinnedNetworks": "Pinned networks",
+    "@dataCatPinnedNetworks": {
+        "description": "Local data category name"
+    },
+    "dataCatScoreHistory": "Security score history",
+    "@dataCatScoreHistory": {
+        "description": "Local data category name"
+    },
+    "dataCatNetworkContexts": "Network context overrides",
+    "@dataCatNetworkContexts": {
+        "description": "Local data category name"
+    },
+    "dataCatRouterHardening": "Router hardening progress",
+    "@dataCatRouterHardening": {
+        "description": "Local data category name"
     }
 }

@@ -5770,4 +5770,40 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get failureScanTargetNotLocal =>
       'Bu cihaz yerel ağının dışında; Torcav onu taramaz.';
+
+  @override
+  String get dataCatWifiScanHistory => 'Wi-Fi tarama geçmişi';
+
+  @override
+  String get dataCatSpeedTests => 'Hız testi sonuçları';
+
+  @override
+  String get dataCatSecurityEvents => 'Güvenlik olayları';
+
+  @override
+  String get dataCatKnownNetworks => 'Bilinen ve güvenilen ağlar';
+
+  @override
+  String get dataCatChannelRatings => 'Kanal değerlendirme geçmişi';
+
+  @override
+  String get dataCatHeatmapSessions => 'Isı haritası oturumları';
+
+  @override
+  String get dataCatLanScan => 'LAN taraması (son)';
+
+  @override
+  String get dataCatDeviceLabels => 'Cihaz etiketi değişiklikleri';
+
+  @override
+  String get dataCatPinnedNetworks => 'Sabitlenen ağlar';
+
+  @override
+  String get dataCatScoreHistory => 'Güvenlik puanı geçmişi';
+
+  @override
+  String get dataCatNetworkContexts => 'Ağ bağlamı değişiklikleri';
+
+  @override
+  String get dataCatRouterHardening => 'Modem sıkılaştırma ilerlemesi';
 }

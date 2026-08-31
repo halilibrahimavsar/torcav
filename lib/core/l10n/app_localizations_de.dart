@@ -5777,4 +5777,40 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get failureScanTargetNotLocal =>
       'Dieses Gerät liegt außerhalb Ihres lokalen Netzwerks, daher scannt Torcav es nicht.';
+
+  @override
+  String get dataCatWifiScanHistory => 'WLAN-Scanverlauf';
+
+  @override
+  String get dataCatSpeedTests => 'Speedtest-Ergebnisse';
+
+  @override
+  String get dataCatSecurityEvents => 'Sicherheitsereignisse';
+
+  @override
+  String get dataCatKnownNetworks => 'Bekannte und vertraute Netzwerke';
+
+  @override
+  String get dataCatChannelRatings => 'Verlauf der Kanalbewertungen';
+
+  @override
+  String get dataCatHeatmapSessions => 'Heatmap-Sitzungen';
+
+  @override
+  String get dataCatLanScan => 'LAN-Scan (zuletzt)';
+
+  @override
+  String get dataCatDeviceLabels => 'Geänderte Gerätenamen';
+
+  @override
+  String get dataCatPinnedNetworks => 'Angeheftete Netzwerke';
+
+  @override
+  String get dataCatScoreHistory => 'Verlauf des Sicherheitswerts';
+
+  @override
+  String get dataCatNetworkContexts => 'Geänderte Netzwerkkontexte';
+
+  @override
+  String get dataCatRouterHardening => 'Fortschritt der Router-Härtung';
 }

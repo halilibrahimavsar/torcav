@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:torcav/features/cellular/data/services/connection_snapshot_service.dart';
 import 'package:torcav/features/cellular/domain/entities/cellular_status.dart';
 import 'package:torcav/features/cellular/presentation/bloc/connection_compare_cubit.dart';
-import 'package:torcav/features/heatmap/domain/entities/connected_signal.dart';
+import 'package:torcav/core/network/connected_signal.dart';
 
 class _FakeService extends Fake implements ConnectionSnapshotService {
   CellularStatus cellularResult = CellularStatus.unavailable;

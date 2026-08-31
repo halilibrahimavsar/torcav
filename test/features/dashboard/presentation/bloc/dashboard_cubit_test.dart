@@ -14,7 +14,7 @@ import 'package:torcav/features/diagnostics/domain/entities/diagnosis_result.dar
 import 'package:torcav/features/diagnostics/domain/entities/root_cause_category.dart';
 import 'package:torcav/features/diagnostics/domain/usecases/diagnose_usecase.dart';
 import 'package:torcav/features/diagnostics/domain/usecases/get_network_health_score_usecase.dart';
-import 'package:torcav/features/heatmap/domain/entities/connected_signal.dart';
+import 'package:torcav/core/network/connected_signal.dart';
 import 'package:torcav/features/heatmap/domain/services/connected_signal_service.dart';
 import 'package:torcav/features/performance/domain/repositories/speed_test_history_repository.dart';
 import 'package:torcav/core/network/network_context_type.dart';

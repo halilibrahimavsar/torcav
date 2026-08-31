@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/platform/wifi_extended_channel.dart';
-import '../../../heatmap/domain/entities/connected_signal.dart';
+import 'package:torcav/core/network/connected_signal.dart';
 import '../../domain/entities/cellular_status.dart';
 
 /// One-shot snapshots of both link types for the comparison card.

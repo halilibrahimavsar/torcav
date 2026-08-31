@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 
-import '../../features/heatmap/domain/entities/connected_signal.dart';
+import 'package:torcav/core/network/connected_signal.dart';
 
 /// Dart-side bridge to the `torcav/wifi_extended` method channel.
 ///

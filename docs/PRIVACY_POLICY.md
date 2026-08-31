@@ -104,8 +104,20 @@ These are required for specific features and never carry user identifiers, accou
 | `1.1.1.1`, `8.8.8.8`, `9.9.9.9`, `208.67.222.222`, `94.140.14.14` | DNS A/AAAA queries for `google.com` and `cloudflare.com` | Your IP + the queried domain | DNS resolver benchmark + leak detection |
 | `whoami.akamai.net`, `debug.opendns.com` | DNS query | Your IP | Resolver identification (figures out which DNS your network actually uses) |
 | `sigok.vertebrate.adns.network`, `sigfail.vertebrate.adns.network` | DNS query | Your IP | DNSSEC validation test (returns one signed-good and one signed-bad name) |
+| a randomly generated `*.com` name | DNS query | Your IP + a name that cannot exist | NXDOMAIN hijack test — if a name that cannot exist still resolves, something is rewriting your DNS |
+| `api.pwnedpasswords.com` | The **first 5 characters** of the SHA-1 of a password you type | Your IP + those 5 characters | Breach check. The password never leaves the device: the hash is computed locally, only the prefix is sent, and the match is resolved on-device against the returned list. We also request padded responses so the number of matches cannot be inferred from the response size |
 
 **None of these endpoints receive a user ID, BSSID, MAC, or any Torcav-internal identifier.** The query payloads are public probe content.
+
+#### Links you open yourself
+
+These are **not** connections Torcav makes. Tapping them hands the address to
+your browser, which then connects as it would to any other site:
+
+| Address | Opened when |
+|---|---|
+| `halirlnj.github.io/torcav-privacy` | You tap the link to this policy in Settings |
+| `tplinkwifi.net`, `routerlogin.net`, `router.asus.com`, `miwifi.com`, `tendawifi.com`, `mwlogin.net`, `linksyssmartwifi.com`, or your gateway's IP | You tap "open router admin page" in the hardening guide. These are your own router's address; the first seven are vendor shortcuts that resolve to it |
 
 ### 3.3 What we do not do
 - We do not run analytics SDKs (Firebase, Mixpanel, Amplitude, etc.). The `com.google.gms.google-services` plugin was explicitly removed.

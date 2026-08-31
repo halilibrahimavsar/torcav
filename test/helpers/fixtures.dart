@@ -1,5 +1,5 @@
 import 'package:torcav/features/diagnostics/domain/entities/network_health_score.dart';
-import 'package:torcav/features/heatmap/domain/entities/connected_signal.dart';
+import 'package:torcav/core/network/connected_signal.dart';
 import 'package:torcav/features/monitoring/domain/entities/network_topology.dart';
 import 'package:torcav/features/network_scan/domain/entities/network_device.dart';
 import 'package:torcav/features/performance/domain/entities/speed_test_result.dart';

@@ -7170,5 +7170,53 @@
     "failureScanTargetNotLocal": "Ev amûr li derveyî tora te ya herêmî ye, ji ber vê yekê Torcav wê naşopîne.",
     "@failureScanTargetNotLocal": {
         "description": "User-facing failure message"
+    },
+    "dataCatWifiScanHistory": "Dîroka şopandina Wi-Fi",
+    "@dataCatWifiScanHistory": {
+        "description": "Local data category name"
+    },
+    "dataCatSpeedTests": "Encamên testa lezê",
+    "@dataCatSpeedTests": {
+        "description": "Local data category name"
+    },
+    "dataCatSecurityEvents": "Bûyerên ewlehiyê",
+    "@dataCatSecurityEvents": {
+        "description": "Local data category name"
+    },
+    "dataCatKnownNetworks": "Torên naskirî û pêbawer",
+    "@dataCatKnownNetworks": {
+        "description": "Local data category name"
+    },
+    "dataCatChannelRatings": "Dîroka nirxandina kanalê",
+    "@dataCatChannelRatings": {
+        "description": "Local data category name"
+    },
+    "dataCatHeatmapSessions": "Danişînên nexşeya germahiyê",
+    "@dataCatHeatmapSessions": {
+        "description": "Local data category name"
+    },
+    "dataCatLanScan": "Şopandina LAN (ya dawî)",
+    "@dataCatLanScan": {
+        "description": "Local data category name"
+    },
+    "dataCatDeviceLabels": "Guhertinên navê amûran",
+    "@dataCatDeviceLabels": {
+        "description": "Local data category name"
+    },
+    "dataCatPinnedNetworks": "Torên pêvekirî",
+    "@dataCatPinnedNetworks": {
+        "description": "Local data category name"
+    },
+    "dataCatScoreHistory": "Dîroka puana ewlehiyê",
+    "@dataCatScoreHistory": {
+        "description": "Local data category name"
+    },
+    "dataCatNetworkContexts": "Guhertinên çarçoveya torê",
+    "@dataCatNetworkContexts": {
+        "description": "Local data category name"
+    },
+    "dataCatRouterHardening": "Pêşketina hişkkirina rûterê",
+    "@dataCatRouterHardening": {
+        "description": "Local data category name"
     }
 }

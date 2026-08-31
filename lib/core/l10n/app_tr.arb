@@ -7170,5 +7170,53 @@
     "failureScanTargetNotLocal": "Bu cihaz yerel ağının dışında; Torcav onu taramaz.",
     "@failureScanTargetNotLocal": {
         "description": "User-facing failure message"
+    },
+    "dataCatWifiScanHistory": "Wi-Fi tarama geçmişi",
+    "@dataCatWifiScanHistory": {
+        "description": "Local data category name"
+    },
+    "dataCatSpeedTests": "Hız testi sonuçları",
+    "@dataCatSpeedTests": {
+        "description": "Local data category name"
+    },
+    "dataCatSecurityEvents": "Güvenlik olayları",
+    "@dataCatSecurityEvents": {
+        "description": "Local data category name"
+    },
+    "dataCatKnownNetworks": "Bilinen ve güvenilen ağlar",
+    "@dataCatKnownNetworks": {
+        "description": "Local data category name"
+    },
+    "dataCatChannelRatings": "Kanal değerlendirme geçmişi",
+    "@dataCatChannelRatings": {
+        "description": "Local data category name"
+    },
+    "dataCatHeatmapSessions": "Isı haritası oturumları",
+    "@dataCatHeatmapSessions": {
+        "description": "Local data category name"
+    },
+    "dataCatLanScan": "LAN taraması (son)",
+    "@dataCatLanScan": {
+        "description": "Local data category name"
+    },
+    "dataCatDeviceLabels": "Cihaz etiketi değişiklikleri",
+    "@dataCatDeviceLabels": {
+        "description": "Local data category name"
+    },
+    "dataCatPinnedNetworks": "Sabitlenen ağlar",
+    "@dataCatPinnedNetworks": {
+        "description": "Local data category name"
+    },
+    "dataCatScoreHistory": "Güvenlik puanı geçmişi",
+    "@dataCatScoreHistory": {
+        "description": "Local data category name"
+    },
+    "dataCatNetworkContexts": "Ağ bağlamı değişiklikleri",
+    "@dataCatNetworkContexts": {
+        "description": "Local data category name"
+    },
+    "dataCatRouterHardening": "Modem sıkılaştırma ilerlemesi",
+    "@dataCatRouterHardening": {
+        "description": "Local data category name"
     }
 }

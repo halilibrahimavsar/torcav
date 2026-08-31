@@ -13,6 +13,7 @@ import '../../domain/entities/security_assessment.dart';
 import '../../domain/entities/vulnerability.dart';
 import '../bloc/wifi_details_bloc.dart';
 import '../extensions/vulnerability_extensions.dart';
+import '../extensions/risk_factor_labels.dart';
 
 class WifiDetailsPage extends StatelessWidget {
   final WifiNetwork network;
@@ -85,7 +86,7 @@ class WifiDetailsPage extends StatelessWidget {
                       const SizedBox(height: 8),
                       ...state.assessment.riskFactors.map(
                         (factor) =>
-                            Text('- ${_localizeRiskFactor(context, factor)}'),
+                            Text('- ${RiskFactorLabels.resolve(l10n, factor)}'),
                       ),
                     ],
                     const SizedBox(height: 24),
@@ -573,50 +574,6 @@ class WifiDetailsPage extends StatelessWidget {
     );
   }
 
-  String _localizeRiskFactor(BuildContext context, String factor) {
-    final l10n = context.l10n;
-    if (factor.startsWith('No encryption in use')) {
-      return l10n.riskFactorNoEncryption;
-    }
-    if (factor.startsWith('Deprecated encryption (WEP)')) {
-      return l10n.riskFactorDeprecatedEncryption;
-    }
-    if (factor.startsWith('Legacy WPA in use')) {
-      return l10n.riskFactorLegacyWpa;
-    }
-    if (factor.startsWith('Hidden SSID behavior')) {
-      return l10n.riskFactorHiddenSsid;
-    }
-    if (factor.startsWith('Weak signal environment')) {
-      return l10n.riskFactorWeakSignal;
-    }
-    if (factor.startsWith('WPS PIN attack surface exposed')) {
-      return l10n.riskFactorWpsEnabled;
-    }
-    if (factor.startsWith('PMF not enforced')) {
-      return l10n.riskFactorPmfNotEnforced;
-    }
-    if (factor.startsWith('SSID fingerprint drift detected')) {
-      return l10n.riskFactorFingerprintDrift;
-    }
-    if (factor.startsWith('SSID matches known honeypot pattern')) {
-      return l10n.riskFactorHoneypotPattern;
-    }
-    if (factor.startsWith('No 5 GHz band detected')) {
-      return l10n.riskFactorNo5Ghz;
-    }
-    if (factor.startsWith('Known vulnerability in')) {
-      return l10n.riskFactorKnownVulnerability;
-    }
-    if (factor.startsWith('Evil twin candidate')) {
-      return l10n.riskFactorEvilTwinCandidate;
-    }
-    if (factor.contains('is heavily congested')) {
-      return l10n.riskFactorChannelCongested;
-    }
-
-    return factor;
-  }
 
   (String, String, String) _localizeVulnerability(
     BuildContext context,

@@ -47,10 +47,23 @@ yalnızca kendi cihazındaki trafiği etkileyen lokal-VPN iyileştirmeleri
 
 - **Gizlilik**: Kullanıcı verisi cihazda kalır — hesap yok, bulut depolama yok,
   analytics yok. Kullanıcının başlattığı ölçümler yalnızca şu uçlara
-  veri-minimizasyonuyla bağlanır: `speed.cloudflare.com` (hız testi),
+  veri-minimizasyonuyla **bağlanır**: `speed.cloudflare.com` (hız testi),
   `cloudflare-dns.com` + genel DNS çözücüleri (DNS/DoH doğrulama),
   `connectivitycheck.gstatic.com` (captive portal),
   `api.pwnedpasswords.com` (k-anonimlik ile parola sızıntı kontrolü).
+
+  Ayrıca, teşhis sırasında birkaç alan adı **çözümlenir** — bağlantı
+  kurulmaz, yalnızca çözümleyiciye sorulur: `google.com` ve
+  `cloudflare.com` (canary; DNS'in çalıştığını doğrulamak),
+  `debug.opendns.com` (çözümleyici kimliği), ve rastgele üretilen bir
+  `*.com` adı (NXDOMAIN ele geçirme testi). Bunların hepsi DNS testinin
+  çalışması için zorunlu; ağdaki bir gözlemciye görünürler, bu yüzden
+  burada ve gizlilik politikası sayfasında listelenirler.
+
+  Kullanıcının kendi tarayıcısında açtığı dış bağlantılar (gizlilik
+  politikası sayfası, modem yönetim arayüzü) bu listenin kapsamı
+  **dışındadır** — uygulama o adreslere kendisi bağlanmaz.
+
   Yeni bir dış uç eklemek bu listeyi VE uygulamadaki gizlilik politikası
   sayfasını güncellemeyi gerektirir.
 - **Pasiflik**: Aktif saldırı/müdahale vektörü (deauth, injection, brute-force)

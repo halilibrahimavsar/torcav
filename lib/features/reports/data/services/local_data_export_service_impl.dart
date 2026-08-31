@@ -84,6 +84,7 @@ class LocalDataExportServiceImpl implements LocalDataExportService {
   Future<String> exportAll({
     required ExportFormat format,
     bool anonymize = false,
+    CategoryNamer? nameOf,
   }) async {
     final entries = <(UserDataCategory, dynamic)>[];
     for (final cat in UserDataCategory.values) {
@@ -95,7 +96,7 @@ class LocalDataExportServiceImpl implements LocalDataExportService {
         'exported_at': DateTime.now().toUtc().toIso8601String(),
         'categories': {for (final e in entries) e.$1.jsonKey: e.$2},
       }),
-      ExportFormat.html => _wrapHtml(entries, anonymize: anonymize),
+      ExportFormat.html => _wrapHtml(entries, anonymize: anonymize, nameOf: nameOf),
       // CSV bundle would lose its structure across 12 different shapes.
       // Caller should fall back to JSON or HTML; we raise a clear error so
       // the UI can show an actionable message instead of producing junk.
@@ -181,6 +182,7 @@ class LocalDataExportServiceImpl implements LocalDataExportService {
   String _wrapHtml(
     List<(UserDataCategory, dynamic)> entries, {
     required bool anonymize,
+    CategoryNamer? nameOf,
   }) {
     final buffer =
         StringBuffer()
@@ -215,7 +217,7 @@ class LocalDataExportServiceImpl implements LocalDataExportService {
 
     for (final entry in entries) {
       final (category, payload) = entry;
-      buffer.writeln('<h2>${_htmlEscape(category.label)}</h2>');
+      buffer.writeln('<h2>${_htmlEscape(nameOf?.call(category) ?? category.labelKey)}</h2>');
       _appendHtmlSection(buffer, payload);
     }
 

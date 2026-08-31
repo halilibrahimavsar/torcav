@@ -9790,6 +9790,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This device is outside your local network, so Torcav will not scan it.'**
   String get failureScanTargetNotLocal;
+
+  /// Local data category name
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi scan history'**
+  String get dataCatWifiScanHistory;
+
+  /// Local data category name
+  ///
+  /// In en, this message translates to:
+  /// **'Speed test results'**
+  String get dataCatSpeedTests;
+
+  /// Local data category name
+  ///
+  /// In en, this message translates to:
+  /// **'Security events'**
+  String get dataCatSecurityEvents;
+
+  /// Local data category name
+  ///
+  /// In en, this message translates to:
+  /// **'Known and trusted networks'**
+  String get dataCatKnownNetworks;
+
+  /// Local data category name
+  ///
+  /// In en, this message translates to:
+  /// **'Channel ratings history'**
+  String get dataCatChannelRatings;
+
+  /// Local data category name
+  ///
+  /// In en, this message translates to:
+  /// **'Heatmap sessions'**
+  String get dataCatHeatmapSessions;
+
+  /// Local data category name
+  ///
+  /// In en, this message translates to:
+  /// **'LAN scan (latest)'**
+  String get dataCatLanScan;
+
+  /// Local data category name
+  ///
+  /// In en, this message translates to:
+  /// **'Device label overrides'**
+  String get dataCatDeviceLabels;
+
+  /// Local data category name
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned networks'**
+  String get dataCatPinnedNetworks;
+
+  /// Local data category name
+  ///
+  /// In en, this message translates to:
+  /// **'Security score history'**
+  String get dataCatScoreHistory;
+
+  /// Local data category name
+  ///
+  /// In en, this message translates to:
+  /// **'Network context overrides'**
+  String get dataCatNetworkContexts;
+
+  /// Local data category name
+  ///
+  /// In en, this message translates to:
+  /// **'Router hardening progress'**
+  String get dataCatRouterHardening;
 }
 
 class _AppLocalizationsDelegate

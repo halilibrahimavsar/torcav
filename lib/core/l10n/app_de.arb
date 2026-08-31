@@ -7170,5 +7170,53 @@
     "failureScanTargetNotLocal": "Dieses Gerät liegt außerhalb Ihres lokalen Netzwerks, daher scannt Torcav es nicht.",
     "@failureScanTargetNotLocal": {
         "description": "User-facing failure message"
+    },
+    "dataCatWifiScanHistory": "WLAN-Scanverlauf",
+    "@dataCatWifiScanHistory": {
+        "description": "Local data category name"
+    },
+    "dataCatSpeedTests": "Speedtest-Ergebnisse",
+    "@dataCatSpeedTests": {
+        "description": "Local data category name"
+    },
+    "dataCatSecurityEvents": "Sicherheitsereignisse",
+    "@dataCatSecurityEvents": {
+        "description": "Local data category name"
+    },
+    "dataCatKnownNetworks": "Bekannte und vertraute Netzwerke",
+    "@dataCatKnownNetworks": {
+        "description": "Local data category name"
+    },
+    "dataCatChannelRatings": "Verlauf der Kanalbewertungen",
+    "@dataCatChannelRatings": {
+        "description": "Local data category name"
+    },
+    "dataCatHeatmapSessions": "Heatmap-Sitzungen",
+    "@dataCatHeatmapSessions": {
+        "description": "Local data category name"
+    },
+    "dataCatLanScan": "LAN-Scan (zuletzt)",
+    "@dataCatLanScan": {
+        "description": "Local data category name"
+    },
+    "dataCatDeviceLabels": "Geänderte Gerätenamen",
+    "@dataCatDeviceLabels": {
+        "description": "Local data category name"
+    },
+    "dataCatPinnedNetworks": "Angeheftete Netzwerke",
+    "@dataCatPinnedNetworks": {
+        "description": "Local data category name"
+    },
+    "dataCatScoreHistory": "Verlauf des Sicherheitswerts",
+    "@dataCatScoreHistory": {
+        "description": "Local data category name"
+    },
+    "dataCatNetworkContexts": "Geänderte Netzwerkkontexte",
+    "@dataCatNetworkContexts": {
+        "description": "Local data category name"
+    },
+    "dataCatRouterHardening": "Fortschritt der Router-Härtung",
+    "@dataCatRouterHardening": {
+        "description": "Local data category name"
     }
 }
