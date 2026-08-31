@@ -1248,7 +1248,15 @@ class _HeatmapView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                SizedBox(
+                Semantics(
+                  // A colour grid of channel × time; only the census can be
+                  // spoken, the shape cannot.
+                  label: context.l10n.a11yChannelHistoryChart(
+                    byChannel.values.fold(0, (n, l) => n + l.length),
+                    channels.length,
+                  ),
+                  child: ExcludeSemantics(
+                  child: SizedBox(
                   width: totalGridW,
                   height: totalGridH,
                   child: CustomPaint(
@@ -1263,6 +1271,8 @@ class _HeatmapView extends StatelessWidget {
                       textColor: onSurface,
                       isDark: isDark,
                     ),
+                  ),
+                  ),
                   ),
                 ),
               ],

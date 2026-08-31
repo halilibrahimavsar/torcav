@@ -5616,4 +5616,121 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get healthReportEmpty =>
       'Führen Sie zuerst einen WLAN-Scan durch — der Bericht entsteht aus dem, was die anderen Werkzeuge gemessen haben.';
+
+  @override
+  String a11ySignalTrend(int quality, int count, int rssi) {
+    return '$quality Prozent Qualität, $count letzte Messungen, zuletzt $rssi dBm';
+  }
+
+  @override
+  String get a11ySignalTrendUnknown => 'noch keine Signalmessung';
+
+  @override
+  String a11yScoreTrend(int score, int count) {
+    return 'zuletzt $score von 100, $count Punkte erfasst';
+  }
+
+  @override
+  String get a11yScoreTrendEmpty => 'noch kein Verlauf';
+
+  @override
+  String a11yChannelBars(int count, int channel, String rating) {
+    return '$count Kanäle bewertet, bester ist Kanal $channel mit $rating von 10';
+  }
+
+  @override
+  String get a11yChannelBarsEmpty => 'noch keine Kanalbewertung';
+
+  @override
+  String a11yNewDevices(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count neue Geräte',
+      one: '1 neues Gerät',
+      zero: 'keine neuen Geräte',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yThreatEvents(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Sicherheitsereignisse',
+      one: '1 Sicherheitsereignis',
+      zero: 'keine aktuellen Sicherheitsereignisse',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11ySpeedSnapshot(String down, String up) {
+    return 'Download $down Megabit, Upload $up Megabit';
+  }
+
+  @override
+  String get a11ySpeedSnapshotEmpty => 'noch kein Speedtest';
+
+  @override
+  String a11ySpeedTrendChart(int count, String min, String max, String plan) {
+    return 'Geschwindigkeitsverlauf: $count Tests zwischen $min und $max Megabit, gegenüber einem $plan-Megabit-Tarif';
+  }
+
+  @override
+  String a11ySpectrumChart(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Netzwerke in diesem Band',
+      one: '1 Netzwerk in diesem Band',
+      zero: 'keine Netzwerke in diesem Band sichtbar',
+    );
+    return '$_temp0, nach Kanal und Breite dargestellt';
+  }
+
+  @override
+  String a11yHourlyChart(int count, int channels) {
+    return 'Kanalqualität nach Stunde: $count Messungen über $channels Kanäle';
+  }
+
+  @override
+  String get a11yHourlyChartEmpty => 'noch kein Stundenverlauf';
+
+  @override
+  String a11yChannelHistoryChart(int count, int channels) {
+    return 'Verlauf der Kanalqualität: $count Messungen über $channels Kanäle';
+  }
+
+  @override
+  String a11yCoverageMap(int count, int weak) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Messungen',
+      one: '1 Messung',
+      zero: 'noch keine Messungen',
+    );
+    return 'Abdeckungskarte: $_temp0, davon $weak schwach';
+  }
+
+  @override
+  String a11yTopologyGraph(int nodes, int edges) {
+    String _temp0 = intl.Intl.pluralLogic(
+      nodes,
+      locale: localeName,
+      other: '$nodes Geräte',
+      one: '1 Gerät',
+      zero: 'keine Geräte',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      edges,
+      locale: localeName,
+      other: '$edges Verbindungen',
+      one: '1 Verbindung',
+      zero: 'keine Verbindungen',
+    );
+    return 'Netzwerkkarte: $_temp0, $_temp1. Die Geräteliste darunter enthält dieselben Informationen als Text.';
+  }
 }

@@ -544,7 +544,16 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                         _targetPositions = Map.from(_currentPositions);
                       }
 
-                      return CustomPaint(
+                      return Semantics(
+                        // A force-directed graph is unreadable aloud. The
+                        // census plus a pointer to the text list below is the
+                        // honest substitute.
+                        label: context.l10n.a11yTopologyGraph(
+                          topology.nodes.length,
+                          topology.edges.length,
+                        ),
+                        child: ExcludeSemantics(
+                        child: CustomPaint(
                         size: size,
                         painter: TopologyGraphPainter(
                           topology: topology,
@@ -557,6 +566,8 @@ class _TopologyPageContentState extends State<_TopologyPageContent>
                           flowSpeed: _flowSpeed,
                           isScanning: _isScanning,
                           colorScheme: Theme.of(context).colorScheme,
+                        ),
+                        ),
                         ),
                       );
                     },

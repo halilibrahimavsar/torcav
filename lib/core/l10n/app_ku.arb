@@ -6959,5 +6959,172 @@
     "healthReportEmpty": "Pêşî şopandineke Wi-Fi bike — rapor ji tiştên ku amûrên din pîvandine tê çêkirin.",
     "@healthReportEmpty": {
         "description": "Home network health report"
+    },
+    "a11ySignalTrend": "ji sedî {quality} kalîte, {count} nimûneyên dawî, ya dawî {rssi} dBm",
+    "@a11ySignalTrend": {
+        "placeholders": {
+            "quality": {
+                "type": "int"
+            },
+            "count": {
+                "type": "int"
+            },
+            "rssi": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11ySignalTrendUnknown": "hêj xwendina sînyalê tune",
+    "@a11ySignalTrendUnknown": {
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yScoreTrend": "ya dawî {score} ji 100, {count} xal hatine tomarkirin",
+    "@a11yScoreTrend": {
+        "placeholders": {
+            "score": {
+                "type": "int"
+            },
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yScoreTrendEmpty": "hêj dîrok tune",
+    "@a11yScoreTrendEmpty": {
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yChannelBars": "{count} kanal hatin nirxandin, ya çêtirîn kanala {channel} bi {rating} ji 10",
+    "@a11yChannelBars": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "channel": {
+                "type": "int"
+            },
+            "rating": {
+                "type": "String"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yChannelBarsEmpty": "hêj nirxandina kanalê tune",
+    "@a11yChannelBarsEmpty": {
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yNewDevices": "{count, plural, =0{amûrên nû tune} =1{1 amûra nû} other{{count} amûrên nû}}",
+    "@a11yNewDevices": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yThreatEvents": "{count, plural, =0{bûyerên ewlehiyê yên dawî tune} =1{1 bûyera ewlehiyê} other{{count} bûyerên ewlehiyê}}",
+    "@a11yThreatEvents": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11ySpeedSnapshot": "daxistin {down} megabît, barkirin {up} megabît",
+    "@a11ySpeedSnapshot": {
+        "placeholders": {
+            "down": {
+                "type": "String"
+            },
+            "up": {
+                "type": "String"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11ySpeedSnapshotEmpty": "hêj testa leza tune",
+    "@a11ySpeedSnapshotEmpty": {
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11ySpeedTrendChart": "Rêça lezê: {count} test, di navbera {min} û {max} megabît de, li hember pakêta {plan} megabît",
+    "@a11ySpeedTrendChart": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "min": {
+                "type": "String"
+            },
+            "max": {
+                "type": "String"
+            },
+            "plan": {
+                "type": "String"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11ySpectrumChart": "{count, plural, =0{di vê bendê de tu tor xuya nake} =1{di vê bendê de 1 tor} other{di vê bendê de {count} tor}}, li gorî kanal û firehiyê hatiye xêzkirin",
+    "@a11ySpectrumChart": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yHourlyChart": "Kalîteya kanalê li gorî demjimêrê: {count} nimûne li ser {channels} kanalan",
+    "@a11yHourlyChart": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "channels": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yHourlyChartEmpty": "hêj dîroka demjimêrî tune",
+    "@a11yHourlyChartEmpty": {
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yChannelHistoryChart": "Dîroka kalîteya kanalê: {count} nimûne li ser {channels} kanalan",
+    "@a11yChannelHistoryChart": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "channels": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yCoverageMap": "Nexşeya berfirehiyê: {count, plural, =0{hêj pîvan tune} =1{1 pîvan} other{{count} pîvan}}, {weak} ji wan qels",
+    "@a11yCoverageMap": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "weak": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yTopologyGraph": "Nexşeya torê: {nodes, plural, =0{amûr tune} =1{1 amûr} other{{nodes} amûr}}, {edges, plural, =0{girêdan tune} =1{1 girêdan} other{{edges} girêdan}}. Lîsteya amûran a jêrîn heman agahiyê wek nivîs dihewîne.",
+    "@a11yTopologyGraph": {
+        "placeholders": {
+            "nodes": {
+                "type": "int"
+            },
+            "edges": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of the topology graph"
     }
 }

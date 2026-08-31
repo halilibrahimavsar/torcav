@@ -51,6 +51,19 @@ class LiveMetricsBento extends StatelessWidget {
     required this.onTapSpeed,
   });
 
+  /// Best channel plus how many were rated — the bars alone convey neither.
+  String _channelSummary(BuildContext context) {
+    if (channelRatings.isEmpty) return context.l10n.a11yChannelBarsEmpty;
+    final best = channelRatings.reduce(
+      (a, b) => a.rating >= b.rating ? a : b,
+    );
+    return context.l10n.a11yChannelBars(
+      channelRatings.length,
+      best.channel,
+      best.rating.toStringAsFixed(1),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final tiles = <Widget>[
@@ -59,6 +72,14 @@ class LiveMetricsBento extends StatelessWidget {
         accent: AppColors.neonCyan,
         title: context.l10n.metricSignal,
         onTap: onTapSignal,
+        semanticValue:
+            signalQualityPct == null || rssiHistory.isEmpty
+                ? context.l10n.a11ySignalTrendUnknown
+                : context.l10n.a11ySignalTrend(
+                  signalQualityPct!,
+                  rssiHistory.length,
+                  rssiHistory.last,
+                ),
         child: _SignalWaveform(
           rssiHistory: rssiHistory,
           qualityPct: signalQualityPct,
@@ -69,6 +90,13 @@ class LiveMetricsBento extends StatelessWidget {
         accent: AppColors.neonGreen,
         title: context.l10n.metricScoreTrend,
         onTap: onTapScore,
+        semanticValue:
+            scoreHistory.isEmpty
+                ? context.l10n.a11yScoreTrendEmpty
+                : context.l10n.a11yScoreTrend(
+                  scoreHistory.last,
+                  scoreHistory.length,
+                ),
         child: _ScoreSparkline(scores: scoreHistory),
       ),
       _MetricTile(
@@ -76,6 +104,7 @@ class LiveMetricsBento extends StatelessWidget {
         accent: AppColors.neonPurple,
         title: context.l10n.metricChannels,
         onTap: onTapChannels,
+        semanticValue: _channelSummary(context),
         child: _ChannelBars(ratings: channelRatings),
       ),
       _MetricTile(
@@ -83,6 +112,7 @@ class LiveMetricsBento extends StatelessWidget {
         accent: AppColors.neonOrange,
         title: context.l10n.metricNewDevices,
         onTap: onTapDevices,
+        semanticValue: context.l10n.a11yNewDevices(newDeviceCount),
         child: _NewDeviceCounter(count: newDeviceCount),
       ),
       _MetricTile(
@@ -90,6 +120,7 @@ class LiveMetricsBento extends StatelessWidget {
         accent: AppColors.neonRed,
         title: context.l10n.metricThreats,
         onTap: onTapThreats,
+        semanticValue: context.l10n.a11yThreatEvents(recentEvents.length),
         child: _ThreatSeverity(events: recentEvents),
       ),
       _MetricTile(
@@ -97,6 +128,13 @@ class LiveMetricsBento extends StatelessWidget {
         accent: AppColors.neonBlue,
         title: context.l10n.metricSpeed,
         onTap: onTapSpeed,
+        semanticValue:
+            lastDownloadMbps == null
+                ? context.l10n.a11ySpeedSnapshotEmpty
+                : context.l10n.a11ySpeedSnapshot(
+                  lastDownloadMbps!.toStringAsFixed(1),
+                  (lastUploadMbps ?? 0).toStringAsFixed(1),
+                ),
         child: _SpeedSnapshot(
           downloadMbps: lastDownloadMbps,
           uploadMbps: lastUploadMbps,
@@ -126,16 +164,29 @@ class _MetricTile extends StatelessWidget {
   final VoidCallback onTap;
   final Widget child;
 
+  /// Spoken value for the tile. The visuals are sparklines and bars that a
+  /// screen reader cannot interpret, so the number has to be said out loud.
+  final String semanticValue;
+
   const _MetricTile({
     required this.delayMs,
     required this.accent,
     required this.title,
     required this.onTap,
+    required this.semanticValue,
     required this.child,
   });
 
   @override
   Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: '$title: $semanticValue',
+      child: ExcludeSemantics(child: _visual(context)),
+    );
+  }
+
+  Widget _visual(BuildContext context) {
     return StaggeredEntry(
       delay: Duration(milliseconds: delayMs),
       slideOffset: 16,

@@ -6959,5 +6959,172 @@
     "healthReportEmpty": "Önce bir Wi-Fi taraması yap — sağlık raporu diğer araçların ölçtüklerinden üretiliyor.",
     "@healthReportEmpty": {
         "description": "Home network health report"
+    },
+    "a11ySignalTrend": "yüzde {quality} kalite, son {count} örnek, en son {rssi} dBm",
+    "@a11ySignalTrend": {
+        "placeholders": {
+            "quality": {
+                "type": "int"
+            },
+            "count": {
+                "type": "int"
+            },
+            "rssi": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11ySignalTrendUnknown": "henüz sinyal okuması yok",
+    "@a11ySignalTrendUnknown": {
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yScoreTrend": "en son 100 üzerinden {score}, {count} kayıt",
+    "@a11yScoreTrend": {
+        "placeholders": {
+            "score": {
+                "type": "int"
+            },
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yScoreTrendEmpty": "henüz geçmiş yok",
+    "@a11yScoreTrendEmpty": {
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yChannelBars": "{count} kanal değerlendirildi, en iyisi 10 üzerinden {rating} ile kanal {channel}",
+    "@a11yChannelBars": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "channel": {
+                "type": "int"
+            },
+            "rating": {
+                "type": "String"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yChannelBarsEmpty": "henüz kanal değerlendirmesi yok",
+    "@a11yChannelBarsEmpty": {
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yNewDevices": "{count, plural, =0{yeni cihaz yok} =1{1 yeni cihaz} other{{count} yeni cihaz}}",
+    "@a11yNewDevices": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yThreatEvents": "{count, plural, =0{yakın zamanda güvenlik olayı yok} =1{1 güvenlik olayı} other{{count} güvenlik olayı}}",
+    "@a11yThreatEvents": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11ySpeedSnapshot": "indirme {down} megabit, yükleme {up} megabit",
+    "@a11ySpeedSnapshot": {
+        "placeholders": {
+            "down": {
+                "type": "String"
+            },
+            "up": {
+                "type": "String"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11ySpeedSnapshotEmpty": "henüz hız testi yok",
+    "@a11ySpeedSnapshotEmpty": {
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11ySpeedTrendChart": "Hız eğilimi: {count} test, {min} ile {max} megabit arasında, {plan} megabitlik pakete karşı",
+    "@a11ySpeedTrendChart": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "min": {
+                "type": "String"
+            },
+            "max": {
+                "type": "String"
+            },
+            "plan": {
+                "type": "String"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11ySpectrumChart": "{count, plural, =0{bu bantta görünür ağ yok} =1{bu bantta 1 ağ} other{bu bantta {count} ağ}}, kanal ve genişliğe göre çizildi",
+    "@a11ySpectrumChart": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yHourlyChart": "Saate göre kanal kalitesi: {channels} kanalda {count} örnek",
+    "@a11yHourlyChart": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "channels": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yHourlyChartEmpty": "henüz saatlik geçmiş yok",
+    "@a11yHourlyChartEmpty": {
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yChannelHistoryChart": "Kanal kalitesi geçmişi: {channels} kanalda {count} örnek",
+    "@a11yChannelHistoryChart": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "channels": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yCoverageMap": "Kapsama haritası: {count, plural, =0{henüz ölçüm yok} =1{1 ölçüm} other{{count} ölçüm}}, bunların {weak} tanesi zayıf",
+    "@a11yCoverageMap": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "weak": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yTopologyGraph": "Ağ haritası: {nodes, plural, =0{cihaz yok} =1{1 cihaz} other{{nodes} cihaz}}, {edges, plural, =0{bağlantı yok} =1{1 bağlantı} other{{edges} bağlantı}}. Aşağıdaki cihaz listesi aynı bilgiyi metin olarak taşıyor.",
+    "@a11yTopologyGraph": {
+        "placeholders": {
+            "nodes": {
+                "type": "int"
+            },
+            "edges": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of the topology graph"
     }
 }

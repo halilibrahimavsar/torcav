@@ -9622,6 +9622,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Run a Wi-Fi scan first — the health report is built from what the other tools have measured.'**
   String get healthReportEmpty;
+
+  /// Screen-reader summary of a chart
+  ///
+  /// In en, this message translates to:
+  /// **'{quality} percent quality, {count} recent samples, latest {rssi} dBm'**
+  String a11ySignalTrend(int quality, int count, int rssi);
+
+  /// Screen-reader summary of a chart
+  ///
+  /// In en, this message translates to:
+  /// **'no signal reading yet'**
+  String get a11ySignalTrendUnknown;
+
+  /// Screen-reader summary of a chart
+  ///
+  /// In en, this message translates to:
+  /// **'latest {score} out of 100, {count} points recorded'**
+  String a11yScoreTrend(int score, int count);
+
+  /// Screen-reader summary of a chart
+  ///
+  /// In en, this message translates to:
+  /// **'no history yet'**
+  String get a11yScoreTrendEmpty;
+
+  /// Screen-reader summary of a chart
+  ///
+  /// In en, this message translates to:
+  /// **'{count} channels rated, best is channel {channel} at {rating} out of 10'**
+  String a11yChannelBars(int count, int channel, String rating);
+
+  /// Screen-reader summary of a chart
+  ///
+  /// In en, this message translates to:
+  /// **'no channel ratings yet'**
+  String get a11yChannelBarsEmpty;
+
+  /// Screen-reader summary of a chart
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{no new devices} =1{1 new device} other{{count} new devices}}'**
+  String a11yNewDevices(int count);
+
+  /// Screen-reader summary of a chart
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{no recent security events} =1{1 recent security event} other{{count} recent security events}}'**
+  String a11yThreatEvents(int count);
+
+  /// Screen-reader summary of a chart
+  ///
+  /// In en, this message translates to:
+  /// **'download {down} megabits, upload {up} megabits'**
+  String a11ySpeedSnapshot(String down, String up);
+
+  /// Screen-reader summary of a chart
+  ///
+  /// In en, this message translates to:
+  /// **'no speed test yet'**
+  String get a11ySpeedSnapshotEmpty;
+
+  /// Screen-reader summary of a chart
+  ///
+  /// In en, this message translates to:
+  /// **'Speed trend: {count} tests between {min} and {max} megabits, against a {plan} megabit plan'**
+  String a11ySpeedTrendChart(int count, String min, String max, String plan);
+
+  /// Screen-reader summary of a chart
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{no networks visible in this band} =1{1 network in this band} other{{count} networks in this band}}, plotted by channel and width'**
+  String a11ySpectrumChart(int count);
+
+  /// Screen-reader summary of a chart
+  ///
+  /// In en, this message translates to:
+  /// **'Channel quality by hour: {count} samples across {channels} channels'**
+  String a11yHourlyChart(int count, int channels);
+
+  /// Screen-reader summary of a chart
+  ///
+  /// In en, this message translates to:
+  /// **'no hourly history yet'**
+  String get a11yHourlyChartEmpty;
+
+  /// Screen-reader summary of a chart
+  ///
+  /// In en, this message translates to:
+  /// **'Channel quality history: {count} samples across {channels} channels'**
+  String a11yChannelHistoryChart(int count, int channels);
+
+  /// Screen-reader summary of a chart
+  ///
+  /// In en, this message translates to:
+  /// **'Coverage map: {count, plural, =0{no measurements yet} =1{1 measurement} other{{count} measurements}}, {weak} of them weak'**
+  String a11yCoverageMap(int count, int weak);
+
+  /// Screen-reader summary of the topology graph
+  ///
+  /// In en, this message translates to:
+  /// **'Network map: {nodes, plural, =0{no devices} =1{1 device} other{{nodes} devices}}, {edges, plural, =0{no links} =1{1 link} other{{edges} links}}. The device list below carries the same information as text.'**
+  String a11yTopologyGraph(int nodes, int edges);
 }
 
 class _AppLocalizationsDelegate

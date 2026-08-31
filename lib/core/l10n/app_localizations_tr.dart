@@ -5611,4 +5611,121 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get healthReportEmpty =>
       'Önce bir Wi-Fi taraması yap — sağlık raporu diğer araçların ölçtüklerinden üretiliyor.';
+
+  @override
+  String a11ySignalTrend(int quality, int count, int rssi) {
+    return 'yüzde $quality kalite, son $count örnek, en son $rssi dBm';
+  }
+
+  @override
+  String get a11ySignalTrendUnknown => 'henüz sinyal okuması yok';
+
+  @override
+  String a11yScoreTrend(int score, int count) {
+    return 'en son 100 üzerinden $score, $count kayıt';
+  }
+
+  @override
+  String get a11yScoreTrendEmpty => 'henüz geçmiş yok';
+
+  @override
+  String a11yChannelBars(int count, int channel, String rating) {
+    return '$count kanal değerlendirildi, en iyisi 10 üzerinden $rating ile kanal $channel';
+  }
+
+  @override
+  String get a11yChannelBarsEmpty => 'henüz kanal değerlendirmesi yok';
+
+  @override
+  String a11yNewDevices(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count yeni cihaz',
+      one: '1 yeni cihaz',
+      zero: 'yeni cihaz yok',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yThreatEvents(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count güvenlik olayı',
+      one: '1 güvenlik olayı',
+      zero: 'yakın zamanda güvenlik olayı yok',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11ySpeedSnapshot(String down, String up) {
+    return 'indirme $down megabit, yükleme $up megabit';
+  }
+
+  @override
+  String get a11ySpeedSnapshotEmpty => 'henüz hız testi yok';
+
+  @override
+  String a11ySpeedTrendChart(int count, String min, String max, String plan) {
+    return 'Hız eğilimi: $count test, $min ile $max megabit arasında, $plan megabitlik pakete karşı';
+  }
+
+  @override
+  String a11ySpectrumChart(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'bu bantta $count ağ',
+      one: 'bu bantta 1 ağ',
+      zero: 'bu bantta görünür ağ yok',
+    );
+    return '$_temp0, kanal ve genişliğe göre çizildi';
+  }
+
+  @override
+  String a11yHourlyChart(int count, int channels) {
+    return 'Saate göre kanal kalitesi: $channels kanalda $count örnek';
+  }
+
+  @override
+  String get a11yHourlyChartEmpty => 'henüz saatlik geçmiş yok';
+
+  @override
+  String a11yChannelHistoryChart(int count, int channels) {
+    return 'Kanal kalitesi geçmişi: $channels kanalda $count örnek';
+  }
+
+  @override
+  String a11yCoverageMap(int count, int weak) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ölçüm',
+      one: '1 ölçüm',
+      zero: 'henüz ölçüm yok',
+    );
+    return 'Kapsama haritası: $_temp0, bunların $weak tanesi zayıf';
+  }
+
+  @override
+  String a11yTopologyGraph(int nodes, int edges) {
+    String _temp0 = intl.Intl.pluralLogic(
+      nodes,
+      locale: localeName,
+      other: '$nodes cihaz',
+      one: '1 cihaz',
+      zero: 'cihaz yok',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      edges,
+      locale: localeName,
+      other: '$edges bağlantı',
+      one: '1 bağlantı',
+      zero: 'bağlantı yok',
+    );
+    return 'Ağ haritası: $_temp0, $_temp1. Aşağıdaki cihaz listesi aynı bilgiyi metin olarak taşıyor.';
+  }
 }

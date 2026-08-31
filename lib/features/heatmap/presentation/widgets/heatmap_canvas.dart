@@ -9,6 +9,7 @@ import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
 import 'package:torcav/features/heatmap/domain/services/survey_guidance_service.dart';
 import 'heatmap_compass.dart';
+import '../../../../core/extensions/context_extensions.dart';
 
 /// Renders signal-strength data as a 2D heatmap.
 class HeatmapCanvas extends StatefulWidget {
@@ -148,7 +149,16 @@ class _HeatmapCanvasState extends State<HeatmapCanvas> {
                                 );
                             widget.onTap?.call(viewport.canvasToWorld(transformed));
                           },
-                  child: Stack(
+                  child: Semantics(
+                    // The map itself cannot be read aloud; its census can, and
+                    // the placement advice below the survey says what to do
+                    // about it.
+                    label: context.l10n.a11yCoverageMap(
+                      points.length,
+                      points.where((p) => p.rssi <= -75).length,
+                    ),
+                    child: ExcludeSemantics(
+                    child: Stack(
                     children: [
                       // ── Static layer: grid, walls, heatmap, path, HUD overlays ──
                       // RepaintBoundary isolates this from position/heading updates.
@@ -185,6 +195,8 @@ class _HeatmapCanvasState extends State<HeatmapCanvas> {
                           ),
                         ),
                     ],
+                  ),
+                  ),
                   ),
                 ),
               ),

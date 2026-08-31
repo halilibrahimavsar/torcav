@@ -100,7 +100,12 @@ class _SpectrumOverlapChartState extends State<SpectrumOverlapChart> {
               );
               setState(() => _selected = selected);
             },
-            child: CustomPaint(
+            child: Semantics(
+              // The plot is the evidence behind the channel recommendation;
+              // its shape means nothing read aloud, its census does.
+              label: context.l10n.a11ySpectrumChart(widget.networks.length),
+              child: ExcludeSemantics(
+              child: CustomPaint(
               size: Size.infinite,
               painter: _SpectrumPainter(
                 networks: widget.networks,
@@ -117,6 +122,8 @@ class _SpectrumOverlapChartState extends State<SpectrumOverlapChart> {
                 padBottom: _padBottom,
                 minDbm: _minDbm,
                 maxDbm: _maxDbm,
+              ),
+            ),
               ),
             ),
           ),

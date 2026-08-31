@@ -5608,4 +5608,121 @@ class AppLocalizationsKu extends AppLocalizations {
   @override
   String get healthReportEmpty =>
       'Pêşî şopandineke Wi-Fi bike — rapor ji tiştên ku amûrên din pîvandine tê çêkirin.';
+
+  @override
+  String a11ySignalTrend(int quality, int count, int rssi) {
+    return 'ji sedî $quality kalîte, $count nimûneyên dawî, ya dawî $rssi dBm';
+  }
+
+  @override
+  String get a11ySignalTrendUnknown => 'hêj xwendina sînyalê tune';
+
+  @override
+  String a11yScoreTrend(int score, int count) {
+    return 'ya dawî $score ji 100, $count xal hatine tomarkirin';
+  }
+
+  @override
+  String get a11yScoreTrendEmpty => 'hêj dîrok tune';
+
+  @override
+  String a11yChannelBars(int count, int channel, String rating) {
+    return '$count kanal hatin nirxandin, ya çêtirîn kanala $channel bi $rating ji 10';
+  }
+
+  @override
+  String get a11yChannelBarsEmpty => 'hêj nirxandina kanalê tune';
+
+  @override
+  String a11yNewDevices(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count amûrên nû',
+      one: '1 amûra nû',
+      zero: 'amûrên nû tune',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yThreatEvents(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bûyerên ewlehiyê',
+      one: '1 bûyera ewlehiyê',
+      zero: 'bûyerên ewlehiyê yên dawî tune',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11ySpeedSnapshot(String down, String up) {
+    return 'daxistin $down megabît, barkirin $up megabît';
+  }
+
+  @override
+  String get a11ySpeedSnapshotEmpty => 'hêj testa leza tune';
+
+  @override
+  String a11ySpeedTrendChart(int count, String min, String max, String plan) {
+    return 'Rêça lezê: $count test, di navbera $min û $max megabît de, li hember pakêta $plan megabît';
+  }
+
+  @override
+  String a11ySpectrumChart(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'di vê bendê de $count tor',
+      one: 'di vê bendê de 1 tor',
+      zero: 'di vê bendê de tu tor xuya nake',
+    );
+    return '$_temp0, li gorî kanal û firehiyê hatiye xêzkirin';
+  }
+
+  @override
+  String a11yHourlyChart(int count, int channels) {
+    return 'Kalîteya kanalê li gorî demjimêrê: $count nimûne li ser $channels kanalan';
+  }
+
+  @override
+  String get a11yHourlyChartEmpty => 'hêj dîroka demjimêrî tune';
+
+  @override
+  String a11yChannelHistoryChart(int count, int channels) {
+    return 'Dîroka kalîteya kanalê: $count nimûne li ser $channels kanalan';
+  }
+
+  @override
+  String a11yCoverageMap(int count, int weak) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pîvan',
+      one: '1 pîvan',
+      zero: 'hêj pîvan tune',
+    );
+    return 'Nexşeya berfirehiyê: $_temp0, $weak ji wan qels';
+  }
+
+  @override
+  String a11yTopologyGraph(int nodes, int edges) {
+    String _temp0 = intl.Intl.pluralLogic(
+      nodes,
+      locale: localeName,
+      other: '$nodes amûr',
+      one: '1 amûr',
+      zero: 'amûr tune',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      edges,
+      locale: localeName,
+      other: '$edges girêdan',
+      one: '1 girêdan',
+      zero: 'girêdan tune',
+    );
+    return 'Nexşeya torê: $_temp0, $_temp1. Lîsteya amûran a jêrîn heman agahiyê wek nivîs dihewîne.';
+  }
 }

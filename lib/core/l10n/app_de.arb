@@ -6959,5 +6959,172 @@
     "healthReportEmpty": "Führen Sie zuerst einen WLAN-Scan durch — der Bericht entsteht aus dem, was die anderen Werkzeuge gemessen haben.",
     "@healthReportEmpty": {
         "description": "Home network health report"
+    },
+    "a11ySignalTrend": "{quality} Prozent Qualität, {count} letzte Messungen, zuletzt {rssi} dBm",
+    "@a11ySignalTrend": {
+        "placeholders": {
+            "quality": {
+                "type": "int"
+            },
+            "count": {
+                "type": "int"
+            },
+            "rssi": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11ySignalTrendUnknown": "noch keine Signalmessung",
+    "@a11ySignalTrendUnknown": {
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yScoreTrend": "zuletzt {score} von 100, {count} Punkte erfasst",
+    "@a11yScoreTrend": {
+        "placeholders": {
+            "score": {
+                "type": "int"
+            },
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yScoreTrendEmpty": "noch kein Verlauf",
+    "@a11yScoreTrendEmpty": {
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yChannelBars": "{count} Kanäle bewertet, bester ist Kanal {channel} mit {rating} von 10",
+    "@a11yChannelBars": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "channel": {
+                "type": "int"
+            },
+            "rating": {
+                "type": "String"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yChannelBarsEmpty": "noch keine Kanalbewertung",
+    "@a11yChannelBarsEmpty": {
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yNewDevices": "{count, plural, =0{keine neuen Geräte} =1{1 neues Gerät} other{{count} neue Geräte}}",
+    "@a11yNewDevices": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yThreatEvents": "{count, plural, =0{keine aktuellen Sicherheitsereignisse} =1{1 Sicherheitsereignis} other{{count} Sicherheitsereignisse}}",
+    "@a11yThreatEvents": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11ySpeedSnapshot": "Download {down} Megabit, Upload {up} Megabit",
+    "@a11ySpeedSnapshot": {
+        "placeholders": {
+            "down": {
+                "type": "String"
+            },
+            "up": {
+                "type": "String"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11ySpeedSnapshotEmpty": "noch kein Speedtest",
+    "@a11ySpeedSnapshotEmpty": {
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11ySpeedTrendChart": "Geschwindigkeitsverlauf: {count} Tests zwischen {min} und {max} Megabit, gegenüber einem {plan}-Megabit-Tarif",
+    "@a11ySpeedTrendChart": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "min": {
+                "type": "String"
+            },
+            "max": {
+                "type": "String"
+            },
+            "plan": {
+                "type": "String"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11ySpectrumChart": "{count, plural, =0{keine Netzwerke in diesem Band sichtbar} =1{1 Netzwerk in diesem Band} other{{count} Netzwerke in diesem Band}}, nach Kanal und Breite dargestellt",
+    "@a11ySpectrumChart": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yHourlyChart": "Kanalqualität nach Stunde: {count} Messungen über {channels} Kanäle",
+    "@a11yHourlyChart": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "channels": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yHourlyChartEmpty": "noch kein Stundenverlauf",
+    "@a11yHourlyChartEmpty": {
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yChannelHistoryChart": "Verlauf der Kanalqualität: {count} Messungen über {channels} Kanäle",
+    "@a11yChannelHistoryChart": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "channels": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yCoverageMap": "Abdeckungskarte: {count, plural, =0{noch keine Messungen} =1{1 Messung} other{{count} Messungen}}, davon {weak} schwach",
+    "@a11yCoverageMap": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "weak": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of a chart"
+    },
+    "a11yTopologyGraph": "Netzwerkkarte: {nodes, plural, =0{keine Geräte} =1{1 Gerät} other{{nodes} Geräte}}, {edges, plural, =0{keine Verbindungen} =1{1 Verbindung} other{{edges} Verbindungen}}. Die Geräteliste darunter enthält dieselben Informationen als Text.",
+    "@a11yTopologyGraph": {
+        "placeholders": {
+            "nodes": {
+                "type": "int"
+            },
+            "edges": {
+                "type": "int"
+            }
+        },
+        "description": "Screen-reader summary of the topology graph"
     }
 }

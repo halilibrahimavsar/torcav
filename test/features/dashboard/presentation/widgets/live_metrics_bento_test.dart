@@ -123,4 +123,65 @@ void main() {
 
     expect(tester.takeException(), isNull);
   });
+
+  // The tiles are sparklines, bars and waveforms — a screen reader gets
+  // nothing from them unless the value is spoken. Guards the six labels the
+  // 2026-08 audit's X-3 pass added.
+  testWidgets('each metric tile is a button that speaks its value', (
+    tester,
+  ) async {
+    final handle = tester.ensureSemantics();
+
+    await pumpAppWidget(
+      tester,
+      buildSubject(
+        signalQualityPct: 72,
+        rssiHistory: const [-60, -58, -55],
+        scoreHistory: const [70, 80, 88],
+        newDeviceCount: 2,
+        lastDownloadMbps: 94.5,
+        lastUploadMbps: 12.25,
+        onTapSignal: () {},
+      ),
+      surfaceSize: const Size(900, 1200),
+    );
+    await tester.pump(const Duration(milliseconds: 600));
+
+    expect(
+      find.bySemanticsLabel(RegExp(r'72 percent quality.*latest -55 dBm')),
+      findsOneWidget,
+    );
+    expect(
+      find.bySemanticsLabel(RegExp(r'latest 88 out of 100')),
+      findsOneWidget,
+    );
+    expect(find.bySemanticsLabel(RegExp(r'2 new devices')), findsOneWidget);
+    expect(
+      find.bySemanticsLabel(RegExp(r'download 94\.5 megabits')),
+      findsOneWidget,
+    );
+
+    handle.dispose();
+  });
+
+  testWidgets('empty metrics read as "not yet", never as zero', (tester) async {
+    final handle = tester.ensureSemantics();
+
+    await pumpAppWidget(
+      tester,
+      buildSubject(signalQualityPct: null),
+      surfaceSize: const Size(900, 1200),
+    );
+    await tester.pump(const Duration(milliseconds: 600));
+
+    // "0 dBm" or "0 out of 100" would be a lie; absence has to sound absent.
+    expect(
+      find.bySemanticsLabel(RegExp(r'no signal reading yet')),
+      findsOneWidget,
+    );
+    expect(find.bySemanticsLabel(RegExp(r'no history yet')), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp(r'no speed test yet')), findsOneWidget);
+
+    handle.dispose();
+  });
 }

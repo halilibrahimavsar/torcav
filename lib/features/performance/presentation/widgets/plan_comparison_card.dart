@@ -204,7 +204,20 @@ class _ComparisonBody extends StatelessWidget {
           ),
           if (comparison.recentDownloadsMbps.length >= 2) ...[
             const SizedBox(height: 12),
-            SizedBox(
+            Semantics(
+              // A sparkline against a plan line says nothing out loud; the
+              // range and the plan it is measured against are the content.
+              label: l10n.a11ySpeedTrendChart(
+                comparison.recentDownloadsMbps.length,
+                comparison.recentDownloadsMbps
+                    .reduce((a, b) => a < b ? a : b)
+                    .toStringAsFixed(1),
+                comparison.recentDownloadsMbps
+                    .reduce((a, b) => a > b ? a : b)
+                    .toStringAsFixed(1),
+                comparison.planMbps.toStringAsFixed(0),
+              ),
+              child: SizedBox(
               height: 44,
               width: double.infinity,
               child: CustomPaint(
@@ -216,6 +229,7 @@ class _ComparisonBody extends StatelessWidget {
                     alpha: 0.5,
                   ),
                 ),
+              ),
               ),
             ),
           ],

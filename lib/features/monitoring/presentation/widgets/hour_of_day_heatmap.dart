@@ -58,7 +58,14 @@ class HourOfDayHeatmap extends StatelessWidget {
         final totalH = channels.length * cellH + 26;
         final totalW = labelW + 24 * cellW;
 
-        return SizedBox(
+        return Semantics(
+          // A grid of coloured cells; the census is what can be spoken.
+          label:
+              samples.isEmpty
+                  ? l10n.a11yHourlyChartEmpty
+                  : l10n.a11yHourlyChart(samples.length, channels.length),
+          child: ExcludeSemantics(
+          child: SizedBox(
           height: totalH,
           width: totalW,
           child: CustomPaint(
@@ -71,6 +78,8 @@ class HourOfDayHeatmap extends StatelessWidget {
               textColor: onSurface,
               isDark: isDark,
             ),
+          ),
+          ),
           ),
         );
       },
