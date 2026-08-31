@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
-import 'package:torcav/features/heatmap/data/datasources/barometer_datasource.dart';
+import '../repositories/barometer_source.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
 import 'package:torcav/features/heatmap/domain/entities/position_update.dart';

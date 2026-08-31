@@ -3,14 +3,16 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../domain/repositories/ar_camera_pose_source.dart';
+
 /// Native ARCore camera pose bridge. Listens to the Kotlin-side EventChannel
 /// set up by `ArScenePlugin` and re-emits the tracked camera position,
 /// projected onto the floor plane (XZ), as an [Offset] stream.
 ///
 /// Also exposes [placeMarkerAtCamera] / [clearMarkers] to drop billboarded
 /// RSSI text quads into the native AR scene.
-@lazySingleton
-class ArCameraPoseDataSource {
+@LazySingleton(as: ArCameraPoseSource)
+class ArCameraPoseDataSource implements ArCameraPoseSource {
   ArCameraPoseDataSource()
     : _channel = const EventChannel('torcav/ar_scene/events'),
       _commands = const MethodChannel('torcav/ar_scene/commands');
@@ -23,8 +25,10 @@ class ArCameraPoseDataSource {
 
   /// Camera world position projected onto the floor (XZ). Emitted ~15 Hz
   /// whenever ARCore reports a tracked camera pose.
+  @override
   Stream<Offset> get cameraPoseStream => _cameraController.stream;
 
+  @override
   void start() {
     if (_subscription != null) return;
     _subscription = _channel.receiveBroadcastStream().listen(
@@ -38,6 +42,7 @@ class ArCameraPoseDataSource {
   /// Drops a billboarded RSSI text quad at the camera's last tracked AR
   /// position. [colorArgb] is a 0xAARRGGBB integer used as the pill's
   /// background. The native side caches textures per RSSI bucket.
+  @override
   Future<void> placeMarkerAtCamera({
     required int rssi,
     required int colorArgb,
@@ -52,18 +57,21 @@ class ArCameraPoseDataSource {
     }
   }
 
+  @override
   Future<void> clearMarkers() async {
     try {
       await _commands.invokeMethod<bool>('clearMarkers');
     } catch (_) {}
   }
 
+  @override
   Future<void> stop() async {
     await _subscription?.cancel();
     _subscription = null;
   }
 
   @disposeMethod
+  @override
   Future<void> dispose() async {
     await stop();
     await _cameraController.close();

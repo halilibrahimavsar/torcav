@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:torcav/core/errors/failures.dart';
-import 'package:torcav/features/heatmap/data/datasources/ar_camera_pose_datasource.dart';
+import '../../domain/repositories/ar_camera_pose_source.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
 import 'package:torcav/features/heatmap/domain/entities/survey_gate.dart';
@@ -35,7 +35,7 @@ class HeatmapBloc extends Cubit<HeatmapState> {
 
   final GetHeatmapSessionsUsecase _getSessions;
   final HeatmapRepository _repository;
-  final ArCameraPoseDataSource _arCameraPose;
+  final ArCameraPoseSource _arCameraPose;
   final HeatmapManager _heatmapManager;
   final SignalTracker _signalTracker;
   final SurveyGuidanceService _guidanceService;

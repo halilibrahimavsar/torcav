@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:injectable/injectable.dart';
-import 'package:torcav/features/heatmap/data/datasources/position_datasource.dart';
+import '../repositories/position_source.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
 import 'package:torcav/features/heatmap/domain/entities/position_update.dart';
 

@@ -1,22 +1,14 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:injectable/injectable.dart';
+
+import '../../domain/repositories/position_source.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:torcav/core/logging/app_logger.dart';
 import '../../domain/entities/position_update.dart';
 import '../../domain/services/dead_reckoning_engine.dart';
 
-abstract class PositionDataSource {
-  Stream<PositionUpdate> get positionStream;
-  void startTracking();
-  void stopTracking();
-  void setStepLength(double meters);
-  void setPosition(double x, double y);
-
-  /// Snaps the current relative heading to the absolute compass reference.
-  void realignHeading();
-}
 
 @LazySingleton(as: PositionDataSource)
 class PositionDataSourceImpl implements PositionDataSource {

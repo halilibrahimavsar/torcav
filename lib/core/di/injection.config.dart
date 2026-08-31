@@ -49,8 +49,14 @@ import '../../features/heatmap/data/datasources/position_datasource.dart'
     as _i989;
 import '../../features/heatmap/data/repositories/heatmap_repository_impl.dart'
     as _i531;
+import '../../features/heatmap/domain/repositories/ar_camera_pose_source.dart'
+    as _i451;
+import '../../features/heatmap/domain/repositories/barometer_source.dart'
+    as _i233;
 import '../../features/heatmap/domain/repositories/heatmap_repository.dart'
     as _i747;
+import '../../features/heatmap/domain/repositories/position_source.dart'
+    as _i822;
 import '../../features/heatmap/domain/services/connected_signal_service.dart'
     as _i192;
 import '../../features/heatmap/domain/services/connected_signal_smoother.dart'
@@ -317,10 +323,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i856.GetNetworkHealthScoreUseCase>(
       () => _i856.GetNetworkHealthScoreUseCase(),
     );
-    gh.lazySingleton<_i188.ArCameraPoseDataSource>(
-      () => _i188.ArCameraPoseDataSource(),
-      dispose: (i) => i.dispose(),
-    );
     gh.lazySingleton<_i106.ConnectedSignalSmoother>(
       () => const _i106.ConnectedSignalSmoother(),
     );
@@ -371,14 +373,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i683.OuiLookup>(
       () => _i683.OuiLookup(gh<_i1050.OuiDatabaseService>()),
     );
+    gh.lazySingleton<_i233.BarometerDataSource>(
+      () => _i761.BarometerDataSourceImpl(),
+    );
     gh.lazySingleton<_i119.ReportExportRepository>(
       () => _i953.ReportExportRepositoryImpl(),
     );
     gh.factory<_i113.ScanSnapshotBuilder>(
       () => _i113.ScanSnapshotBuilder(gh<_i683.OuiLookup>()),
-    );
-    gh.lazySingleton<_i989.PositionDataSource>(
-      () => _i989.PositionDataSourceImpl(),
     );
     gh.lazySingleton<_i5.VulnerabilityDataSource>(
       () => _i5.VulnerabilityDataSourceImpl(),
@@ -389,20 +391,21 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i901.ScheduledSpeedProbe>(
       () => _i858.ScheduledSpeedProbeImpl(),
     );
-    gh.lazySingleton<_i104.PositionTracker>(
-      () => _i104.PositionTracker(gh<_i989.PositionDataSource>()),
-    );
     gh.lazySingleton<_i167.BackgroundMonitor>(
       () => _i190.BackgroundMonitorImpl(),
     );
     gh.lazySingleton<_i389.SpeedTestRepository>(
       () => const _i275.SpeedTestRepositoryImpl(),
     );
-    gh.lazySingleton<_i761.BarometerDataSource>(
-      () => _i761.BarometerDataSourceImpl(),
-    );
     gh.lazySingleton<_i653.LinuxWifiDataSource>(
       () => _i653.LinuxWifiDataSource(gh<_i113.ScanSnapshotBuilder>()),
+    );
+    gh.lazySingleton<_i451.ArCameraPoseSource>(
+      () => _i188.ArCameraPoseDataSource(),
+      dispose: (i) => i.dispose(),
+    );
+    gh.lazySingleton<_i822.PositionDataSource>(
+      () => _i989.PositionDataSourceImpl(),
     );
     gh.lazySingleton<_i726.InAppAlertListener>(
       () => _i726.InAppAlertListener(gh<_i1014.PingStabilizerChannel>()),
@@ -530,6 +533,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i510.RunSpeedTestUseCase>(
       () => _i510.RunSpeedTestUseCase(gh<_i389.SpeedTestRepository>()),
+    );
+    gh.lazySingleton<_i104.PositionTracker>(
+      () => _i104.PositionTracker(gh<_i822.PositionDataSource>()),
     );
     gh.lazySingleton<_i269.PortScanRepository>(
       () => _i27.PortScanRepositoryImpl(gh<_i978.PortScanDataSource>()),
@@ -695,14 +701,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i796.NotificationBloc>(
       () => _i796.NotificationBloc(gh<_i578.SecurityRepository>()),
     );
-    gh.lazySingleton<_i869.HeatmapManager>(
-      () => _i869.HeatmapManager(
-        gh<_i1072.SignalTracker>(),
-        gh<_i104.PositionTracker>(),
-        gh<_i747.HeatmapRepository>(),
-        gh<_i761.BarometerDataSource>(),
-      ),
-    );
     gh.factory<_i676.SecurityBloc>(
       () => _i676.SecurityBloc(
         gh<_i578.SecurityRepository>(),
@@ -768,14 +766,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i646.BaselinePingUseCase>(
       () => _i646.BaselinePingUseCase(gh<_i534.PingNodeUseCase>()),
     );
-    gh.factory<_i931.HeatmapBloc>(
-      () => _i931.HeatmapBloc(
-        gh<_i716.GetHeatmapSessionsUsecase>(),
-        gh<_i747.HeatmapRepository>(),
-        gh<_i188.ArCameraPoseDataSource>(),
-        gh<_i869.HeatmapManager>(),
+    gh.lazySingleton<_i869.HeatmapManager>(
+      () => _i869.HeatmapManager(
         gh<_i1072.SignalTracker>(),
-        gh<_i904.SurveyGuidanceService>(),
+        gh<_i104.PositionTracker>(),
+        gh<_i747.HeatmapRepository>(),
+        gh<_i233.BarometerDataSource>(),
       ),
     );
     gh.factory<_i58.DashboardCubit>(
@@ -807,6 +803,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i640.NetworkContextResolver>(),
         gh<_i534.PingNodeUseCase>(),
         gh<_i846.NetworkInfo>(),
+      ),
+    );
+    gh.factory<_i931.HeatmapBloc>(
+      () => _i931.HeatmapBloc(
+        gh<_i716.GetHeatmapSessionsUsecase>(),
+        gh<_i747.HeatmapRepository>(),
+        gh<_i451.ArCameraPoseSource>(),
+        gh<_i869.HeatmapManager>(),
+        gh<_i1072.SignalTracker>(),
+        gh<_i904.SurveyGuidanceService>(),
       ),
     );
     gh.lazySingleton<_i548.PingStabilizerCubit>(

@@ -1,19 +1,12 @@
 import 'dart:async';
 
 import 'package:injectable/injectable.dart';
+
+import '../../domain/repositories/barometer_source.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 import '../../domain/entities/floor_reading.dart';
 
-abstract class BarometerDataSource {
-  Stream<FloorReading> get floorStream;
-
-  /// Start barometer tracking. Pass [baselinePressureHpa] = 0 to
-  /// auto-calibrate from the first sensor reading (recommended).
-  void startTracking(double baselinePressureHpa);
-
-  void stopTracking();
-}
 
 @LazySingleton(as: BarometerDataSource)
 class BarometerDataSourceImpl implements BarometerDataSource {
