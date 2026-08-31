@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 
@@ -13,13 +14,26 @@ import '../../domain/services/background_monitor.dart';
 /// `BGAppRefreshTask`. Other platforms are no-ops.
 @LazySingleton(as: BackgroundMonitor)
 class BackgroundMonitorImpl implements BackgroundMonitor {
+  /// Production constructor — the one `injectable` wires.
+  BackgroundMonitorImpl() : _isSupportedPlatform = _defaultPlatformCheck;
+
+  /// Overrides the platform gate so the channel contract can be tested on the
+  /// Dart VM. Without it every assertion short-circuits on `Platform.isAndroid`
+  /// and the test proves nothing.
+  @visibleForTesting
+  BackgroundMonitorImpl.forPlatform(this._isSupportedPlatform);
+
+  static bool _defaultPlatformCheck() => Platform.isAndroid || Platform.isIOS;
+
+  final bool Function() _isSupportedPlatform;
+
   static const _channel = MethodChannel('torcav/background_monitor');
 
   @override
   Future<bool> start({
     Duration tickInterval = const Duration(minutes: 30),
   }) async {
-    if (!Platform.isAndroid && !Platform.isIOS) return false;
+    if (!_isSupportedPlatform()) return false;
     try {
       final ok = await _channel.invokeMethod<bool>('start', {
         'tickMs': tickInterval.inMilliseconds,
@@ -38,7 +52,7 @@ class BackgroundMonitorImpl implements BackgroundMonitor {
 
   @override
   Future<bool> stop() async {
-    if (!Platform.isAndroid && !Platform.isIOS) return false;
+    if (!_isSupportedPlatform()) return false;
     try {
       final ok = await _channel.invokeMethod<bool>('stop');
       return ok ?? false;

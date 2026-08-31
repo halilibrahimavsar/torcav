@@ -58,3 +58,7 @@ hardcoded_strings.json
 
 # Gradle test raporları (build/ zaten yok sayılıyor, bu yalnızca netlik için)
 android/.gradle/
+
+# tool/ çıktıları — her çalıştırmada yeniden üretilir
+dead_symbols.cache.json
+dependency_analysis_report.md
