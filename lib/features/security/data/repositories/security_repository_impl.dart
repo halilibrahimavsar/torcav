@@ -13,6 +13,8 @@ import '../../domain/entities/security_finding.dart';
 import '../../domain/entities/trusted_network_profile.dart';
 import '../../domain/entities/vulnerability.dart';
 import '../../domain/repositories/security_repository.dart';
+import '../../domain/services/auto_trust_policy.dart';
+import '../../domain/services/notification_throttle.dart';
 import '../../domain/entities/vulnerable_router.dart';
 import '../datasources/vulnerability_data_source.dart';
 import '../../domain/services/captive_portal_detector.dart';
@@ -49,8 +51,11 @@ class SecurityRepositoryImpl implements SecurityRepository {
   /// Last OS-notification time per (event type, BSSID). A persistent
   /// condition (e.g. connected to an open network) would otherwise re-notify
   /// on every scan cycle.
-  final Map<String, DateTime> _lastNotifiedAt = {};
-  static const _notificationCooldown = Duration(minutes: 15);
+  /// Rate-limits repeat alerts; see [NotificationThrottle].
+  final NotificationThrottle _throttle;
+
+  /// Decides when a repeatedly-seen network earns trust.
+  final AutoTrustPolicy _autoTrust;
 
   SecurityRepositoryImpl(
     this._localDataSource,
@@ -66,6 +71,8 @@ class SecurityRepositoryImpl implements SecurityRepository {
     this._gatewayDriftDetector,
     this._captivePortalDetector,
     this._networkInfo,
+    this._throttle,
+    this._autoTrust,
   );
 
   @override
@@ -633,7 +640,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
                   connectedBssid != null &&
                   network.bssid.toLowerCase() == connectedBssid.toLowerCase();
               if (isConnectedNetwork &&
-                  _shouldNotify(eventType, network.bssid, now)) {
+                  _throttle.allow(eventType, network.bssid, now)) {
                 await _notificationService.showSecurityAlert(event);
               }
             }
@@ -669,7 +676,7 @@ class SecurityRepositoryImpl implements SecurityRepository {
       if (deauthEvent != null) {
         alerts.add(deauthEvent);
         await saveSecurityEvent(deauthEvent);
-        if (_shouldNotify(deauthEvent.type, deauthEvent.bssid, now)) {
+        if (_throttle.allow(deauthEvent.type, deauthEvent.bssid, now)) {
           await _notificationService.showSecurityAlert(deauthEvent);
         }
       }
@@ -699,16 +706,6 @@ class SecurityRepositoryImpl implements SecurityRepository {
     }
   }
 
-  bool _shouldNotify(SecurityEventType type, String bssid, DateTime now) {
-    final key = '${type.name}:${bssid.toLowerCase()}';
-    final last = _lastNotifiedAt[key];
-    if (last != null && now.difference(last) < _notificationCooldown) {
-      return false;
-    }
-    _lastNotifiedAt[key] = now;
-    return true;
-  }
-
   Future<void> _handleAutoTrust(
     WifiNetwork network,
     List<KnownNetwork> knowns,
@@ -728,8 +725,10 @@ class SecurityRepositoryImpl implements SecurityRepository {
       );
     } else {
       await incrementSeenCount(network.bssid);
-      // Promote to trusted if seen 3 times and security is not OPEN
-      if (known.seenCount >= 2 && network.security != SecurityType.open) {
+      if (_autoTrust.shouldTrust(
+        seenCount: known.seenCount,
+        security: network.security,
+      )) {
         await trustNetwork(network);
       }
     }

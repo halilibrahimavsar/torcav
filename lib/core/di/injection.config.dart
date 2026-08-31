@@ -207,6 +207,8 @@ import '../../features/security/data/stores/router_hardening_store.dart'
     as _i172;
 import '../../features/security/domain/repositories/security_repository.dart'
     as _i578;
+import '../../features/security/domain/services/auto_trust_policy.dart'
+    as _i1025;
 import '../../features/security/domain/services/captive_portal_detector.dart'
     as _i363;
 import '../../features/security/domain/services/evil_twin_classifier.dart'
@@ -221,6 +223,8 @@ import '../../features/security/domain/services/network_context_inferrer.dart'
     as _i241;
 import '../../features/security/domain/services/network_context_resolver.dart'
     as _i640;
+import '../../features/security/domain/services/notification_throttle.dart'
+    as _i167;
 import '../../features/security/domain/usecases/analyze_network_security_usecase.dart'
     as _i87;
 import '../../features/security/domain/usecases/arp_spoofing_detector.dart'
@@ -354,6 +358,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i656.VulnerabilityDbMetaDataSource>(
       () => _i656.VulnerabilityDbMetaDataSource(),
     );
+    gh.lazySingleton<_i1025.AutoTrustPolicy>(
+      () => const _i1025.AutoTrustPolicy(),
+    );
     gh.lazySingleton<_i618.EvilTwinExplainer>(
       () => const _i618.EvilTwinExplainer(),
     );
@@ -365,6 +372,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i241.NetworkContextInferrer>(
       () => const _i241.NetworkContextInferrer(),
+    );
+    gh.lazySingleton<_i167.NotificationThrottle>(
+      () => _i167.NotificationThrottle(),
     );
     gh.lazySingleton<_i363.DeauthDetector>(() => _i363.DeauthDetector());
     gh.lazySingleton<_i969.ChannelRatingEngine>(
@@ -645,23 +655,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i6.AppSettingsStore>(),
       ),
     );
-    gh.lazySingleton<_i578.SecurityRepository>(
-      () => _i997.SecurityRepositoryImpl(
-        gh<_i499.SecurityLocalDataSource>(),
-        gh<_i941.NotificationService>(),
-        gh<_i363.DeauthDetector>(),
-        gh<_i471.SecurityAnalyzer>(),
-        gh<_i640.NetworkContextResolver>(),
-        gh<_i991.DnsDataSource>(),
-        gh<_i5.VulnerabilityDataSource>(),
-        gh<_i151.ArpSpoofingDetector>(),
-        gh<_i927.DnsSecurityUseCase>(),
-        gh<_i1073.NetworkScanRepository>(),
-        gh<_i187.GatewayDriftDetector>(),
-        gh<_i363.CaptivePortalDetector>(),
-        gh<_i846.NetworkInfo>(),
-      ),
-    );
     gh.factory<_i455.PlanComparisonCubit>(
       () => _i455.PlanComparisonCubit(
         gh<_i565.ComparePlanSpeedUseCase>(),
@@ -691,28 +684,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i797.ScanSessionStore>(),
       ),
     );
-    gh.lazySingleton<_i87.AnalyzeNetworkSecurityUseCase>(
-      () => _i87.AnalyzeNetworkSecurityUseCase(gh<_i578.SecurityRepository>()),
-    );
-    gh.lazySingleton<_i923.CheckRouterVulnerabilityUseCase>(
-      () =>
-          _i923.CheckRouterVulnerabilityUseCase(gh<_i578.SecurityRepository>()),
-    );
-    gh.factory<_i796.NotificationBloc>(
-      () => _i796.NotificationBloc(gh<_i578.SecurityRepository>()),
-    );
-    gh.factory<_i676.SecurityBloc>(
-      () => _i676.SecurityBloc(
-        gh<_i578.SecurityRepository>(),
-        gh<_i87.AnalyzeNetworkSecurityUseCase>(),
-        gh<_i797.ScanSessionStore>(),
-        gh<_i471.SecurityAnalyzer>(),
-        gh<_i315.DnsLeakTestUsecase>(),
-        gh<_i6.AppSettingsStore>(),
-        gh<_i640.NetworkContextResolver>(),
-        gh<_i846.NetworkInfo>(),
-      ),
-    );
     gh.factory<_i529.HomeHealthCubit>(
       () => _i529.HomeHealthCubit(
         gh<_i648.HomeHealthReportBuilder>(),
@@ -721,9 +692,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i512.LanScanHistoryRepository>(),
         gh<_i846.NetworkInfo>(),
       ),
-    );
-    gh.factory<_i361.WifiDetailsBloc>(
-      () => _i361.WifiDetailsBloc(gh<_i578.SecurityRepository>()),
     );
     gh.lazySingleton<_i743.LocalDataExportService>(
       () => _i731.LocalDataExportServiceImpl(
@@ -755,6 +723,25 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i955.ScoreHistoryLocalDataSource>(),
         gh<_i256.NetworkContextOverrideStore>(),
         gh<_i172.RouterHardeningStore>(),
+      ),
+    );
+    gh.lazySingleton<_i578.SecurityRepository>(
+      () => _i997.SecurityRepositoryImpl(
+        gh<_i499.SecurityLocalDataSource>(),
+        gh<_i941.NotificationService>(),
+        gh<_i363.DeauthDetector>(),
+        gh<_i471.SecurityAnalyzer>(),
+        gh<_i640.NetworkContextResolver>(),
+        gh<_i991.DnsDataSource>(),
+        gh<_i5.VulnerabilityDataSource>(),
+        gh<_i151.ArpSpoofingDetector>(),
+        gh<_i927.DnsSecurityUseCase>(),
+        gh<_i1073.NetworkScanRepository>(),
+        gh<_i187.GatewayDriftDetector>(),
+        gh<_i363.CaptivePortalDetector>(),
+        gh<_i846.NetworkInfo>(),
+        gh<_i167.NotificationThrottle>(),
+        gh<_i1025.AutoTrustPolicy>(),
       ),
     );
     gh.lazySingleton<_i422.GetTopologyUseCase>(
@@ -844,6 +831,31 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i534.PingNodeUseCase>(),
         gh<_i244.TopologyRepository>(),
       ),
+    );
+    gh.lazySingleton<_i87.AnalyzeNetworkSecurityUseCase>(
+      () => _i87.AnalyzeNetworkSecurityUseCase(gh<_i578.SecurityRepository>()),
+    );
+    gh.lazySingleton<_i923.CheckRouterVulnerabilityUseCase>(
+      () =>
+          _i923.CheckRouterVulnerabilityUseCase(gh<_i578.SecurityRepository>()),
+    );
+    gh.factory<_i796.NotificationBloc>(
+      () => _i796.NotificationBloc(gh<_i578.SecurityRepository>()),
+    );
+    gh.factory<_i676.SecurityBloc>(
+      () => _i676.SecurityBloc(
+        gh<_i578.SecurityRepository>(),
+        gh<_i87.AnalyzeNetworkSecurityUseCase>(),
+        gh<_i797.ScanSessionStore>(),
+        gh<_i471.SecurityAnalyzer>(),
+        gh<_i315.DnsLeakTestUsecase>(),
+        gh<_i6.AppSettingsStore>(),
+        gh<_i640.NetworkContextResolver>(),
+        gh<_i846.NetworkInfo>(),
+      ),
+    );
+    gh.factory<_i361.WifiDetailsBloc>(
+      () => _i361.WifiDetailsBloc(gh<_i578.SecurityRepository>()),
     );
     gh.factory<_i613.MonitoringBloc>(
       () => _i613.MonitoringBloc(
