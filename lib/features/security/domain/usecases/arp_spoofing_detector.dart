@@ -1,15 +1,15 @@
 import 'package:injectable/injectable.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
-import '../../../network_scan/data/datasources/arp_data_source.dart';
+import '../../../network_scan/domain/repositories/arp_table_reader.dart';
 import '../entities/security_event.dart';
 
 @lazySingleton
 class ArpSpoofingDetector {
-  final ArpDataSource _arpDataSource;
+  final ArpTableReader _arpTable;
   final NetworkInfo _networkInfo;
 
-  ArpSpoofingDetector(this._arpDataSource, this._networkInfo);
+  ArpSpoofingDetector(this._arpTable, this._networkInfo);
 
   /// Analyzes the current ARP table for spoofing signatures.
   ///
@@ -18,7 +18,7 @@ class ArpSpoofingDetector {
     final gatewayIp = await _networkInfo.getWifiGatewayIP();
     if (gatewayIp == null) return null;
 
-    final arpResult = await _arpDataSource.readArpTable();
+    final arpResult = await _arpTable.readArpTable();
     return arpResult.fold(
       (failure) => null, // Cannot read ARP table on this platform
       (entries) {

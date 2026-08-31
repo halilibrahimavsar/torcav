@@ -11,6 +11,7 @@ import '../../domain/entities/arp_entry.dart';
 import '../../domain/entities/host_scan_result.dart';
 import '../../domain/entities/network_scan_profile.dart';
 import '../../domain/entities/service_fingerprint.dart';
+import 'package:torcav/features/network_scan/domain/repositories/arp_table_reader.dart';
 
 /// Fallback data source for Android and other non-Linux platforms.
 ///
@@ -18,13 +19,14 @@ import '../../domain/entities/service_fingerprint.dart';
 /// then probes common ports via basic TCP socket connections for
 /// service and device-type guessing.
 @LazySingleton()
-class ArpDataSource {
+class ArpDataSource implements ArpTableReader {
   final OuiLookup _ouiLookup;
   final NetworkInfo _networkInfo;
 
   ArpDataSource(this._ouiLookup, this._networkInfo);
 
   /// Reads the ARP table. Wrapper for static method to allow injection and mocking.
+  @override
   Future<Either<Failure, List<ArpEntry>>> readArpTable() =>
       readArpTableStatic();
   Stream<HostScanResult> discoverHostsStream({

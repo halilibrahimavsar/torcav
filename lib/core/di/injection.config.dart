@@ -104,6 +104,8 @@ import '../../features/network_scan/data/repositories/network_scan_repository_im
     as _i551;
 import '../../features/network_scan/data/repositories/port_scan_repository_impl.dart'
     as _i27;
+import '../../features/network_scan/domain/repositories/arp_table_reader.dart'
+    as _i220;
 import '../../features/network_scan/domain/repositories/lan_scan_history_repository.dart'
     as _i512;
 import '../../features/network_scan/domain/repositories/network_scan_repository.dart'
@@ -521,17 +523,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i510.RunSpeedTestUseCase>(
       () => _i510.RunSpeedTestUseCase(gh<_i389.SpeedTestRepository>()),
     );
-    gh.lazySingleton<_i151.ArpSpoofingDetector>(
-      () => _i151.ArpSpoofingDetector(
-        gh<_i1066.ArpDataSource>(),
-        gh<_i846.NetworkInfo>(),
-      ),
-    );
     gh.lazySingleton<_i269.PortScanRepository>(
       () => _i27.PortScanRepositoryImpl(gh<_i978.PortScanDataSource>()),
     );
+    gh.lazySingleton<_i220.ArpTableReader>(
+      () => appModule.arpTableReader(gh<_i1066.ArpDataSource>()),
+    );
     gh.lazySingleton<_i471.SecurityAnalyzer>(
       () => _i471.SecurityAnalyzer(gh<_i333.EvilTwinClassifier>()),
+    );
+    gh.lazySingleton<_i151.ArpSpoofingDetector>(
+      () => _i151.ArpSpoofingDetector(
+        gh<_i220.ArpTableReader>(),
+        gh<_i846.NetworkInfo>(),
+      ),
     );
     gh.lazySingleton<_i1012.WifiDataSource>(
       () => appModule.wifiDataSource(
