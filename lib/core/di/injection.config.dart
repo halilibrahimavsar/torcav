@@ -185,6 +185,8 @@ import '../../features/security/data/datasources/breach_data_source.dart'
     as _i876;
 import '../../features/security/data/datasources/dns_test_data_source.dart'
     as _i991;
+import '../../features/security/data/datasources/network_probe_data_source.dart'
+    as _i646;
 import '../../features/security/data/datasources/security_local_data_source.dart'
     as _i499;
 import '../../features/security/data/datasources/vulnerability_data_source.dart'
@@ -344,6 +346,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i876.BreachDataSource>(() => _i876.BreachDataSource());
     gh.lazySingleton<_i991.DnsDataSource>(() => _i991.DnsDataSource());
+    gh.lazySingleton<_i646.NetworkProbeDataSource>(
+      () => const _i646.NetworkProbeDataSource(),
+    );
     gh.lazySingleton<_i656.VulnerabilityDbMetaDataSource>(
       () => _i656.VulnerabilityDbMetaDataSource(),
     );
@@ -360,9 +365,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => const _i241.NetworkContextInferrer(),
     );
     gh.lazySingleton<_i363.DeauthDetector>(() => _i363.DeauthDetector());
-    gh.lazySingleton<_i927.DnsSecurityUseCase>(
-      () => _i927.DnsSecurityUseCase(),
-    );
     gh.lazySingleton<_i969.ChannelRatingEngine>(
       () => _i969.ChannelRatingEngine(),
     );
@@ -447,9 +449,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i696.FavoritesStore(gh<_i131.HiveStorageService>()),
       dispose: (i) => i.dispose(),
     );
-    gh.lazySingleton<_i363.CaptivePortalDetector>(
-      () => _i363.CaptivePortalDetector(gh<_i846.NetworkInfo>()),
-    );
     gh.lazySingleton<_i978.PortScanDataSource>(
       () => _i978.PortScanDataSource(gh<_i6.AppSettingsStore>()),
     );
@@ -479,6 +478,9 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i1066.ArpDataSource(gh<_i683.OuiLookup>(), gh<_i846.NetworkInfo>()),
     );
+    gh.lazySingleton<_i927.DnsSecurityUseCase>(
+      () => _i927.DnsSecurityUseCase(gh<_i646.NetworkProbeDataSource>()),
+    );
     gh.lazySingleton<_i672.AndroidWifiDataSource>(
       () => _i672.AndroidWifiDataSource(
         gh<_i113.ScanSnapshotBuilder>(),
@@ -500,6 +502,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i315.DnsLeakTestUsecase>(
       () => _i315.DnsLeakTestUsecase(gh<_i991.DnsDataSource>()),
+    );
+    gh.lazySingleton<_i363.CaptivePortalDetector>(
+      () => _i363.CaptivePortalDetector(
+        gh<_i846.NetworkInfo>(),
+        gh<_i646.NetworkProbeDataSource>(),
+      ),
     );
     gh.factory<_i712.BreachMonitorCubit>(
       () => _i712.BreachMonitorCubit(gh<_i130.CheckPasswordBreachUsecase>()),

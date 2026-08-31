@@ -1,21 +1,21 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:torcav/features/security/domain/entities/security_event.dart';
 import 'package:torcav/features/security/domain/usecases/dns_security_usecase.dart';
 
-/// The address any lookup stub hands back when it is meant to succeed.
-final _ok = [InternetAddress('93.184.216.34')];
+/// What a lookup stub hands back when it is meant to succeed.
+const _ok = ['93.184.216.34'];
+
+/// An empty list means the name genuinely does not resolve (NXDOMAIN).
+const _nxdomain = <String>[];
 
 void main() {
   group('DnsSecurityUseCase', () {
     test('clean: NXDOMAIN refused and canary resolves', () async {
       final usecase = DnsSecurityUseCase.withLookup(
         (host) async =>
-            host.startsWith('this-should-nxdomain')
-                ? throw const SocketException('not found')
-                : _ok,
+            host.startsWith('this-should-nxdomain') ? _nxdomain : _ok,
       );
 
       final result = await usecase.check();
@@ -38,9 +38,7 @@ void main() {
     test('finding: canary resolves to nothing', () async {
       final usecase = DnsSecurityUseCase.withLookup(
         (host) async =>
-            host.startsWith('this-should-nxdomain')
-                ? throw const SocketException('not found')
-                : <InternetAddress>[],
+            host.startsWith('this-should-nxdomain') ? _nxdomain : <String>[],
       );
 
       final result = await usecase.check();
@@ -53,10 +51,8 @@ void main() {
     // returned null and the caller read that as "DNS is fine".
     test('unavailable: canary lookup fails (device offline)', () async {
       final usecase = DnsSecurityUseCase.withLookup(
-        (host) async =>
-            host.startsWith('this-should-nxdomain')
-                ? throw const SocketException('not found')
-                : throw const SocketException('network unreachable'),
+        // null = the lookup itself could not run.
+        (host) async => host.startsWith('this-should-nxdomain') ? _nxdomain : null,
       );
 
       final result = await usecase.check();
@@ -77,7 +73,7 @@ void main() {
 
     test('unavailable: resolver never answers', () async {
       final usecase = DnsSecurityUseCase.withLookup(
-        (_) => Completer<List<InternetAddress>>().future, // never completes
+        (_) => Completer<List<String>?>().future, // never completes
       );
 
       final result = await usecase.check().timeout(const Duration(seconds: 20));
@@ -88,11 +84,9 @@ void main() {
     test('event is non-null exactly when the status is finding', () async {
       final cases = <DnsLookup>[
         (host) async =>
-            host.startsWith('this-should-nxdomain')
-                ? throw const SocketException('nx')
-                : _ok, // clean
+            host.startsWith('this-should-nxdomain') ? _nxdomain : _ok, // clean
         (_) async => _ok, // finding
-        (_) async => throw const SocketException('offline'), // unavailable
+        (_) async => null, // unavailable
       ];
 
       for (final lookup in cases) {
