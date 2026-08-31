@@ -1,13 +1,80 @@
 import 'package:injectable/injectable.dart';
-import '../storage/app_database.dart';
 import 'package:torcav/core/settings/app_settings_store.dart';
+import 'package:torcav/features/ai/data/stores/device_label_override_store.dart';
+import 'package:torcav/features/dashboard/data/datasources/score_history_local_data_source.dart';
+import 'package:torcav/features/heatmap/data/datasources/heatmap_local_data_source.dart';
+import 'package:torcav/features/network_scan/domain/repositories/lan_scan_history_repository.dart';
+import 'package:torcav/features/performance/domain/repositories/speed_test_history_repository.dart';
+import 'package:torcav/features/security/data/datasources/security_local_data_source.dart';
+import 'package:torcav/features/security/data/stores/network_context_override_store.dart';
+import 'package:torcav/features/security/data/stores/router_hardening_store.dart';
+import 'package:torcav/features/wifi_scan/data/datasources/channel_rating_local_data_source.dart';
+import 'package:torcav/features/wifi_scan/data/datasources/wifi_scan_history_local_data_source.dart';
+import 'package:torcav/features/wifi_scan/data/services/favorites_store.dart';
+import 'package:torcav/features/wifi_scan/domain/services/scan_session_store.dart';
+import '../storage/app_database.dart';
 
+/// Owns the two operations that span every store the app writes to: pruning
+/// by age, and wiping everything on request.
+///
+/// It is deliberately the one place that knows the full list. That knowledge
+/// used to live in `settings_page.dart`, which meant a settings screen
+/// reached into eleven datasources across eight features — and a new store
+/// could be added without anyone remembering to delete it here.
 @lazySingleton
 class DataRetentionService {
+  DataRetentionService(
+    this._database,
+    this._settingsStore,
+    this._scanSessions,
+    this._speedTests,
+    this._security,
+    this._channelRatings,
+    this._wifiScanHistory,
+    this._heatmap,
+    this._lanScans,
+    this._deviceLabels,
+    this._favorites,
+    this._scoreHistory,
+    this._networkContexts,
+    this._routerHardening,
+  );
+
   final AppDatabase _database;
   final AppSettingsStore _settingsStore;
+  final ScanSessionStore _scanSessions;
+  final SpeedTestHistoryRepository _speedTests;
+  final SecurityLocalDataSource _security;
+  final ChannelRatingLocalDataSource _channelRatings;
+  final WifiScanHistoryLocalDataSource _wifiScanHistory;
+  final HeatmapLocalDataSource _heatmap;
+  final LanScanHistoryRepository _lanScans;
+  final DeviceLabelOverrideStore _deviceLabels;
+  final FavoritesStore _favorites;
+  final ScoreHistoryLocalDataSource _scoreHistory;
+  final NetworkContextOverrideStore _networkContexts;
+  final RouterHardeningStore _routerHardening;
 
-  DataRetentionService(this._database, this._settingsStore);
+  /// Deletes every record the user has accumulated, in memory and on disk.
+  ///
+  /// The in-memory session store is cleared first so nothing re-persists a
+  /// snapshot while the deletes are in flight.
+  Future<void> wipeAllUserData() async {
+    _scanSessions.clear();
+    await Future.wait<void>([
+      _speedTests.deleteAll(),
+      _security.deleteAllData(),
+      _channelRatings.clearHistory(),
+      _wifiScanHistory.clear(),
+      _heatmap.deleteAll(),
+      _lanScans.deleteAllSessions(),
+      _deviceLabels.clearAll(),
+      _favorites.clearAll(),
+      _scoreHistory.deleteAll(),
+      _networkContexts.clearAll(),
+      _routerHardening.clearAll(),
+    ]);
+  }
 
   /// Deletes local records older than the configured retention period.
   /// Returns the total number of rows deleted across all tables.

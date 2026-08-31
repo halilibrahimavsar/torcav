@@ -14,7 +14,7 @@ import '../../../../features/network_scan/presentation/widgets/network_scanner_r
 import '../bloc/network_scan_bloc.dart';
 import '../widgets/host_device_card.dart';
 import '../../../../core/theme/prominent_disclosure_dialog.dart';
-import '../../data/datasources/lan_scan_history_local_data_source.dart';
+import 'package:torcav/features/network_scan/domain/repositories/lan_scan_history_repository.dart';
 import '../../../../core/errors/failure_labels.dart';
 
 class NetworkScanPage extends StatelessWidget {
@@ -113,7 +113,7 @@ class _NetworkScanViewState extends State<_NetworkScanView> {
           ),
     );
     if (confirmed == true) {
-      await getIt<LanScanHistoryLocalDataSource>().deleteAllSessions();
+      await getIt<LanScanHistoryRepository>().deleteAllSessions();
     }
   }
 

@@ -9,29 +9,18 @@ import '../../../../core/notifications/app_notifier.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/l10n/locale_cubit.dart';
 import '../../../../core/platform/battery_optimization.dart';
+import '../../../../core/services/data_retention_service.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../core/theme/neon_widgets.dart';
 import '../../../../core/theme/theme_cubit.dart';
-import '../../../performance/domain/repositories/speed_test_history_repository.dart';
 import '../../../performance/domain/services/scheduled_speed_probe.dart';
-import '../../../security/data/datasources/security_local_data_source.dart';
-import '../../../wifi_scan/data/datasources/channel_rating_local_data_source.dart';
-import '../../../wifi_scan/data/datasources/wifi_scan_history_local_data_source.dart';
-import '../../../heatmap/data/datasources/heatmap_local_data_source.dart';
 import '../../../monitoring/domain/services/background_monitor.dart';
-import '../../../network_scan/data/datasources/lan_scan_history_local_data_source.dart';
 import '../../../wifi_scan/domain/entities/scan_request.dart';
-import '../../../wifi_scan/domain/services/scan_session_store.dart';
 import 'package:torcav/core/storage/hive_storage_service.dart';
 import '../../../app_shell/presentation/pages/onboarding_page.dart';
 import 'privacy_policy_page.dart';
 import 'package:torcav/core/settings/app_settings.dart';
 import 'package:torcav/core/settings/app_settings_store.dart';
-import '../../../ai/data/stores/device_label_override_store.dart';
-import '../../../security/data/stores/network_context_override_store.dart';
-import '../../../security/data/stores/router_hardening_store.dart';
-import '../../../wifi_scan/data/services/favorites_store.dart';
-import '../../../dashboard/data/datasources/score_history_local_data_source.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -936,21 +925,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
     if (confirmed != true || !mounted) return;
 
-    // Clear in-memory session store and all persisted data.
-    getIt<ScanSessionStore>().clear();
-    await Future.wait<void>([
-      getIt<SpeedTestHistoryRepository>().deleteAll(),
-      getIt<SecurityLocalDataSource>().deleteAllData(),
-      getIt<ChannelRatingLocalDataSource>().clearHistory(),
-      getIt<WifiScanHistoryLocalDataSource>().clear(),
-      getIt<HeatmapLocalDataSource>().deleteAll(),
-      getIt<LanScanHistoryLocalDataSource>().deleteAllSessions(),
-      getIt<DeviceLabelOverrideStore>().clearAll(),
-      getIt<FavoritesStore>().clearAll(),
-      getIt<ScoreHistoryLocalDataSource>().deleteAll(),
-      getIt<NetworkContextOverrideStore>().clearAll(),
-      getIt<RouterHardeningStore>().clearAll(),
-    ]);
+    // One call: DataRetentionService owns the full list of stores, so a new
+    // one cannot be added without this screen deleting it too.
+    await getIt<DataRetentionService>().wipeAllUserData();
 
     if (!mounted) return;
     // Destructive completion — warning severity (turuncu) for emphasis.

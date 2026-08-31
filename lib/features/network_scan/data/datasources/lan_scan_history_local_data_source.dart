@@ -7,21 +7,11 @@ import 'package:torcav/core/storage/app_database.dart';
 import 'package:torcav/features/network_scan/domain/entities/host_scan_result.dart';
 import 'package:torcav/features/network_scan/domain/entities/lan_exposure_finding.dart';
 import 'package:torcav/features/network_scan/domain/entities/lan_scan_session.dart';
+import 'package:torcav/features/network_scan/domain/repositories/lan_scan_history_repository.dart';
 import 'package:torcav/features/network_scan/domain/entities/service_fingerprint.dart';
 
-abstract class LanScanHistoryLocalDataSource {
-  Future<void> saveSession({
-    required String target,
-    required String profile,
-    required List<HostScanResult> hosts,
-  });
-  Future<LanScanSession?> getLatestSession();
-  Future<void> deleteAllSessions();
-}
-
-@LazySingleton(as: LanScanHistoryLocalDataSource)
-class LanScanHistoryLocalDataSourceImpl
-    implements LanScanHistoryLocalDataSource {
+@LazySingleton(as: LanScanHistoryRepository)
+class LanScanHistoryLocalDataSourceImpl implements LanScanHistoryRepository {
   LanScanHistoryLocalDataSourceImpl(this._database);
 
   final AppDatabase _database;

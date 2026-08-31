@@ -8,7 +8,7 @@ import 'package:torcav/features/dashboard/data/datasources/score_history_local_d
 import 'package:torcav/features/heatmap/data/datasources/heatmap_local_data_source.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_point.dart';
 import 'package:torcav/features/heatmap/domain/entities/heatmap_session.dart';
-import 'package:torcav/features/network_scan/data/datasources/lan_scan_history_local_data_source.dart';
+import 'package:torcav/features/network_scan/domain/repositories/lan_scan_history_repository.dart';
 import 'package:torcav/features/network_scan/domain/entities/host_scan_result.dart';
 import 'package:torcav/features/network_scan/domain/entities/lan_exposure_finding.dart';
 import 'package:torcav/features/network_scan/domain/entities/lan_scan_session.dart';
@@ -44,7 +44,7 @@ class LocalDataExportServiceImpl implements LocalDataExportService {
   final SecurityLocalDataSource _security;
   final ChannelRatingLocalDataSource _channelRatings;
   final HeatmapLocalDataSource _heatmap;
-  final LanScanHistoryLocalDataSource _lanHistory;
+  final LanScanHistoryRepository _lanHistory;
   final ScoreHistoryLocalDataSource _scoreHistory;
   final DeviceLabelOverrideStore _deviceLabels;
   final FavoritesStore _favorites;

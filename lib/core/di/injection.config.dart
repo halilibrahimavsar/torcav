@@ -104,6 +104,8 @@ import '../../features/network_scan/data/repositories/network_scan_repository_im
     as _i551;
 import '../../features/network_scan/data/repositories/port_scan_repository_impl.dart'
     as _i27;
+import '../../features/network_scan/domain/repositories/lan_scan_history_repository.dart'
+    as _i512;
 import '../../features/network_scan/domain/repositories/network_scan_repository.dart'
     as _i1073;
 import '../../features/network_scan/domain/repositories/port_scan_repository.dart'
@@ -579,12 +581,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i797.ScanSessionStore(gh<_i239.WifiScanHistoryLocalDataSource>()),
       dispose: (i) => i.dispose(),
     );
-    gh.lazySingleton<_i533.DataRetentionService>(
-      () => _i533.DataRetentionService(
-        gh<_i690.AppDatabase>(),
-        gh<_i6.AppSettingsStore>(),
-      ),
-    );
     gh.factory<_i160.PortScanUseCase>(
       () => _i160.PortScanUseCase(gh<_i269.PortScanRepository>()),
     );
@@ -615,11 +611,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i885.SpeedTestHistoryRepository>(
       () => _i77.SpeedTestHistoryRepositoryImpl(gh<_i690.AppDatabase>()),
     );
-    gh.lazySingleton<_i190.LanScanHistoryLocalDataSource>(
-      () => _i190.LanScanHistoryLocalDataSourceImpl(gh<_i690.AppDatabase>()),
-    );
     gh.lazySingleton<_i451.ScanWifi>(
       () => _i451.ScanWifi(gh<_i1027.WifiRepository>()),
+    );
+    gh.lazySingleton<_i512.LanScanHistoryRepository>(
+      () => _i190.LanScanHistoryLocalDataSourceImpl(gh<_i690.AppDatabase>()),
     );
     gh.lazySingleton<_i305.ChannelRatingLocalDataSource>(
       () => _i305.ChannelRatingLocalDataSourceImpl(gh<_i690.AppDatabase>()),
@@ -669,15 +665,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i846.NetworkInfo>(),
       ),
     );
-    gh.factory<_i529.HomeHealthCubit>(
-      () => _i529.HomeHealthCubit(
-        gh<_i648.HomeHealthReportBuilder>(),
-        gh<_i797.ScanSessionStore>(),
-        gh<_i885.SpeedTestHistoryRepository>(),
-        gh<_i190.LanScanHistoryLocalDataSource>(),
-        gh<_i846.NetworkInfo>(),
-      ),
-    );
     gh.factory<_i968.WifiScanBloc>(
       () => _i968.WifiScanBloc(
         gh<_i451.ScanWifi>(),
@@ -715,6 +702,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i846.NetworkInfo>(),
       ),
     );
+    gh.factory<_i529.HomeHealthCubit>(
+      () => _i529.HomeHealthCubit(
+        gh<_i648.HomeHealthReportBuilder>(),
+        gh<_i797.ScanSessionStore>(),
+        gh<_i885.SpeedTestHistoryRepository>(),
+        gh<_i512.LanScanHistoryRepository>(),
+        gh<_i846.NetworkInfo>(),
+      ),
+    );
     gh.factory<_i361.WifiDetailsBloc>(
       () => _i361.WifiDetailsBloc(gh<_i578.SecurityRepository>()),
     );
@@ -725,11 +721,29 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i499.SecurityLocalDataSource>(),
         gh<_i305.ChannelRatingLocalDataSource>(),
         gh<_i652.HeatmapLocalDataSource>(),
-        gh<_i190.LanScanHistoryLocalDataSource>(),
+        gh<_i512.LanScanHistoryRepository>(),
         gh<_i955.ScoreHistoryLocalDataSource>(),
         gh<_i391.DeviceLabelOverrideStore>(),
         gh<_i696.FavoritesStore>(),
         gh<_i131.HiveStorageService>(),
+      ),
+    );
+    gh.lazySingleton<_i533.DataRetentionService>(
+      () => _i533.DataRetentionService(
+        gh<_i690.AppDatabase>(),
+        gh<_i6.AppSettingsStore>(),
+        gh<_i797.ScanSessionStore>(),
+        gh<_i885.SpeedTestHistoryRepository>(),
+        gh<_i499.SecurityLocalDataSource>(),
+        gh<_i305.ChannelRatingLocalDataSource>(),
+        gh<_i239.WifiScanHistoryLocalDataSource>(),
+        gh<_i652.HeatmapLocalDataSource>(),
+        gh<_i512.LanScanHistoryRepository>(),
+        gh<_i391.DeviceLabelOverrideStore>(),
+        gh<_i696.FavoritesStore>(),
+        gh<_i955.ScoreHistoryLocalDataSource>(),
+        gh<_i256.NetworkContextOverrideStore>(),
+        gh<_i172.RouterHardeningStore>(),
       ),
     );
     gh.lazySingleton<_i422.GetTopologyUseCase>(

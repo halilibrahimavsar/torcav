@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
-import '../../../network_scan/data/datasources/lan_scan_history_local_data_source.dart';
+import 'package:torcav/features/network_scan/domain/repositories/lan_scan_history_repository.dart';
 import '../../../network_scan/domain/entities/host_scan_result.dart';
 import '../../../performance/domain/repositories/speed_test_history_repository.dart';
 import '../../../wifi_scan/domain/entities/wifi_network.dart';
@@ -49,7 +49,7 @@ class HomeHealthCubit extends Cubit<HomeHealthState> {
   final HomeHealthReportBuilder _builder;
   final ScanSessionStore _scanStore;
   final SpeedTestHistoryRepository _speedRepository;
-  final LanScanHistoryLocalDataSource _lanHistory;
+  final LanScanHistoryRepository _lanHistory;
   final NetworkInfo _networkInfo;
 
   Future<void> load({int? securityScore}) async {
